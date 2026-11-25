@@ -6,15 +6,19 @@ const Metode = {
     3: "Hasil pengamatan visual dan instrumental memperlihatkan peningkatan aktivitas yang semakin nyata atau gunung api mengalami erupsi",
     2: "Hasil pengamatan visual dan instrumental mulai memperlihatkan peningkatan aktivitas. Pada beberapa gunung api dapat terjadi erupsi",
     1: "Hasil pengamatan visual dan instrumental fluktuatif, tetapi tidak memperlihatkan peningkatan aktivitas yang signifikan"},
-  /* kartu standar .ex-std tanpa kaki: sumber masuk isi sebagai baris terakhir */
-  /* kepala = nama seksi berikon (AGENTS.md 3.5); kalimat lama jadi title kepala lewat Insight.rapiKartu */
-  NAMA: {Level: ["Level aktivitas gunung api", "gunung"], "Sumber data": ["Data dari MAGMA Indonesia", "daftar"], "Model abu": ["Jejak abu skenario", "awan"], Simulasi: ["Lahar dan awan panas di Simulasi", "api"],
-    Paparan: ["Cara menghitung paparan", "orang"], Arsip: ["Arsip MAGMA 2018 sampai 2026", "buku"], Batas: ["Batasan Centurisk97", "perisai"], Istilah: ["Cari istilah gunung api", "buku"]},
-  kepala(h, ey) { const [n, ik] = this.NAMA[ey] || [ey, ""]; return Insight.rapiKartu(h, [ey, n, ik]); },
-  daftar(judul, baris, sumber, ey) { return this.kepala(Insight.std(ey, judul, `<ul class="mt">${baris.map(([a, b]) => `<li><b>${a}</b><span>${b}</span></li>`).join("")}</ul>${sumber ? Insight.ket(sumber) : ""}`), ey); },
-  /* cari istilah (glossary MAGMA, 438 istilah): berkasnya dimuat hanya saat bagian dibuka; ketik hanya menyaring dan menggambar 30 hasil */
+  /* PB-54b (F-28): tiap kartu = Cerita.metode (public/inti/cerita.js): kepala nama seksi berikon, tanpa kalimat temuan, sumber ke title kepala.
+     Baris [label, isi] masuk bab Rincian; label di `batas` dan kalimat `lain` masuk bab Batasan. */
+  NAMA: {Level: "Level aktivitas gunung api", "Sumber data": "Data dari MAGMA Indonesia", "Model abu": "Jejak abu skenario", Simulasi: "Lahar dan awan panas di Simulasi",
+    Paparan: "Cara menghitung paparan", Arsip: "Arsip MAGMA 2018 sampai 2026", Batas: "Batasan Centurisk97", Istilah: "Cari istilah gunung api"},
+  baris: R => R.map(([a, b]) => `<b>${a}</b>: ${b}`).join("<br>"),
+  daftar(ey, R, sumber, batas = [], lain = []) {
+    const rinci = R.filter(r => !batas.includes(r[0])), bt = R.filter(r => batas.includes(r[0]));
+    return Cerita.metode(this.NAMA[ey] || ey, {rincian: this.baris(rinci), batasan: [...lain.map(esc), this.baris(bt)].filter(Boolean).join("<br>")}, {sumber}); },
+  /* cari istilah (glossary MAGMA, 438 istilah): berkasnya dimuat hanya saat bagian dibuka; ketik hanya menyaring dan menggambar 30 hasil.
+     <details> tidak boleh di dalam <p> bab, jadi disisipkan sesudah bab di badan kartu */
   glosari() {
-    return this.kepala(Insight.std("Istilah", "Istilah gunung api dari glossary MAGMA bisa dicari di sini, dimuat saat dibuka", `<details class="gl" data-gl><summary>Buka pencarian istilah</summary><input class="gl-cari" type="search" placeholder="Ketik istilah, misalnya lahar" aria-label="Cari istilah" disabled><div class="gl-has" aria-live="polite"></div></details>${Insight.ket("Sumber: MAGMA Indonesia, PVMBG (glossary)")}`), "Istilah"); },
+    return Cerita.metode(this.NAMA.Istilah, {batasan: "Paling banyak 30 istilah tampil per pencarian."}, {sumber: "MAGMA Indonesia, PVMBG (glossary)"})
+      .replace(/<\/div><\/article>$/, `<details class="gl" data-gl><summary>Buka pencarian istilah</summary><input class="gl-cari" type="search" placeholder="Ketik istilah, misalnya lahar" aria-label="Cari istilah" disabled><div class="gl-has" aria-live="polite"></div></details></div></article>`); },
   pasangGlosari(el) {
     const d = el.querySelector("[data-gl]"); if (!d || d._siap) return; d._siap = 1;
     const isi = d.querySelector(".gl-has"), q = d.querySelector(".gl-cari"); let L = null;
@@ -49,8 +53,8 @@ const Metode = {
     const cv = rz?.cakupan_vona_semua, kv = Object.values(rz?.cakupan_kontrol || {}).reduce((a, c) => a + c[0], 0);
     const VNA = cv ? `Untuk ${fmt(Object.keys(rz.cakupan_vona || {}).length)} gunung dengan sedikitnya 50 letusan, ${fmt(cv[0])} dari ${fmt(cv[1])} letusan (${fmt(Math.round(cv[0] / cv[1] * 100))}%) punya VONA gunung yang sama 0 sampai 30 menit sesudahnya, lawan ${fmt(kv)} pada kontrol. ` : "";
     $("#metode").innerHTML = [
-      this.daftar("Level gunung api memakai status resmi PVMBG tanpa diubah", [4, 3, 2, 1].map(l => [pilLv(l), esc(this.ARTI[l])]), "Sumber: MAGMA Indonesia, PVMBG (Badan Geologi, KESDM)", "Level"),
-      this.daftar("Angka dan peta diambil dari halaman publik MAGMA Indonesia", [
+      this.daftar("Level", [4, 3, 2, 1].map(l => [pilLv(l), esc(this.ARTI[l])]), "MAGMA Indonesia, PVMBG (Badan Geologi, KESDM)", [], ["Level tampil persis seperti yang diterbitkan PVMBG, tanpa diubah; Centurisk97 tidak menentukan level sendiri.", "Level I Normal bukan jaminan tidak ada bahaya."]),
+      this.daftar("Sumber data", [
         ["Level dan nama gunung", "Halaman Tingkat Aktivitas Gunung Api, dibaca ulang tiap kali data diperbarui. Level tampil persis seperti yang diterbitkan PVMBG."],
         ["Radius rekomendasi", "Angka kilometer pada kalimat radius di laporan aktivitas harian gunung berstatus Level II ke atas. Jarak sektor (aliran awan panas dan lahar) dicatat terpisah dan tidak digambar sebagai lingkaran."],
         ["Erupsi terbaru", "Halaman Informasi Letusan MAGMA: waktu, gunung, dan tinggi kolom abu bila disebut."],
@@ -63,8 +67,8 @@ const Metode = {
         ["Letusan besar", "Korban dan kerusakan dari NOAA NCEI, besaran VEI dari Smithsonian GVP, tiap angka membawa tautan sumbernya. Yang tak ada di sumber dikosongkan, bukan ditebak."],
         ["Riwayat level lama", "Surat dan laporan PVMBG yang diarsipkan Pusdalops BNPB dibaca untuk tanggal, level, radius, dan kegempaan saja; daftar penerima dan nama pejabat tidak dibaca."],
         ...(dmp?.tren ? [["Dampak dan tren BNPB", `Kejadian, terdampak, pengungsi, dan rumah rusak tahunan ${dmp.tren.kejadian?.dari} sampai ${dmp.tren.kejadian?.sampai} dari data.bnpb.go.id. Tren diuji dengan Mann-Kendall dan kemiringan Theil-Sen, dianggap bermakna bila p di bawah 0,05; kejadian: ${esc(dmp.tren.kejadian?.vonis || "belum ada")}. Deret ${fmt(dmp.tren.kejadian?.n)} tahun itu pendek, dan naiknya pelaporan ikut terbaca sebagai tren.`]] : []),
-        ["Jiwa dalam radius", "Perkiraan WorldPop 1 km (R2025A 2026): jumlah piksel yang pusatnya masuk lingkaran radius. Galat tepi sekitar 1 km, jadi angkanya perkiraan, bukan hitungan per desa."]], "Sumber: MAGMA Indonesia, PVMBG; WorldPop; MIROVA; Smithsonian GVP; NOAA NCEI; data.bnpb.go.id", "Sumber data"),
-      this.daftar("Jejak abu adalah skenario Centurisk97, bukan peringatan resmi Volcanic Ash Advisory Centre (VAAC)", [
+        ["Jiwa dalam radius", "Perkiraan WorldPop 1 km (R2025A 2026): jumlah piksel yang pusatnya masuk lingkaran radius. Galat tepi sekitar 1 km, jadi angkanya perkiraan, bukan hitungan per desa."]], "MAGMA Indonesia, PVMBG; WorldPop; MIROVA; Smithsonian GVP; NOAA NCEI; data.bnpb.go.id", ["Pembaruan"]),
+      this.daftar("Model abu", [
         ["Skenario", "Gunung Level II ke atas diandaikan meletus sekarang. Tinggi kolom dari letusan MAGMA atau VONA yang terbit dalam 48 jam sebelum awal skenario, mana yang lebih baru, bila ada; bila tidak, asumsi per level: Level II 1 km, Level III 2 km, Level IV 5 km di atas puncak."],
         ["Model Lagrangian", `${fmt(nP)} partikel dilepas sepanjang kolom (profil Suzuki A = 4, k = 5) selama ${fmt(lepas)} jam, digeser angin per jam ECMWF IFS 0,25° di lapisan 1000 sampai 200 hPa dari Open-Meteo, langkah 15 menit, ditambah gerak acak horizontal dengan K_h = ${fmt(kh)} m²/dtk. Bilangan acak tetap (seed) supaya hasilnya bisa diulang.`],
         ["Massa abu", `MER = 2.500 × (H / 2)^(1 / 0,241) kg/dtk dengan H tinggi kolom di atas puncak dalam km (Mastin dkk. 2009). Massa total = MER × lama pelepasan; seluruhnya dianggap abu halus yang terbawa, tanpa penggumpalan. Empat kelas butir: ${butir}.`],
@@ -72,30 +76,30 @@ const Metode = {
         ["Jejak kosong", "Jejak kosong berarti abu di bawah ambang penerbangan, bukan tanpa abu: kolom 1 km atau lebih rendah hampir tak pernah menghasilkan sel yang lolos, padahal hujan abu di sekitar kawah tetap mungkin. Sebaran mentah tanpa ambang hanya dipakai untuk animasi di Simulasi, bukan sebagai area dampak."],
         ["Bandara", "Bandara dari OurAirports; bandara masuk jalur bila ada partikel di atas ambang dalam 25 km darinya, dan jam tiba = jam pertama itu."],
         ["Uji balik arah", [uji(UB, "Berambang"), uji(UT, "Tanpa ambang (sebaran mentah)")].filter(Boolean).join(". ") + `. Pembanding laporan VONA PVMBG (8 mata angin) dengan angin historis Open-Meteo. Uji balik memakai tinggi kolom dari VONA kejadian itu sendiri, bukan tinggi yang tersedia sebelum kejadian${UB?.periode ? ", " + esc(UB.periode) : ""}. Sampel kecil dan hanya arah yang diuji; jangkauan belum bisa diuji karena VONA tanpa jarak dan arsip VAAC Darwin tidak terbuka.`],
-        ...(ujiMaju ? [["Uji maju arah", `Tiap hari, tiap gunung Level II ke atas dicatat arahnya pada jam ke-${fmt(pros.jam_skenario ?? 6)} sebelum hasilnya diketahui, lalu dinilai sekali terhadap VONA pertama yang menulis arah dalam ${fmt(pros.jendela_jam ?? 12)} jam. Dicatat ${fmt(pros.dicatat)} entri, ${fmt(pros.dinilai)} sudah ditutup; hanya yang punya VONA berarah dihitung. ${ujiMaju}. ${ujiPB ? ujiPB + " " : ""}Sampel kecil dan hari berurutan di satu gunung berbagi angin, jadi peluang kebetulan terlalu optimis.`]] : [])].filter(r => r[1] && !/^\. /.test(r[1])), "Sumber: Open-Meteo, MAGMA Indonesia (VONA), OurAirports, Mastin dkk. 2009", "Model abu"),
-      this.daftar("Lahar dan awan panas di Simulasi adalah ilustrasi bahaya", [
+        ...(ujiMaju ? [["Uji maju arah", `Tiap hari, tiap gunung Level II ke atas dicatat arahnya pada jam ke-${fmt(pros.jam_skenario ?? 6)} sebelum hasilnya diketahui, lalu dinilai sekali terhadap VONA pertama yang menulis arah dalam ${fmt(pros.jendela_jam ?? 12)} jam. Dicatat ${fmt(pros.dicatat)} entri, ${fmt(pros.dinilai)} sudah ditutup; hanya yang punya VONA berarah dihitung. ${ujiMaju}. ${ujiPB ? ujiPB + " " : ""}Sampel kecil dan hari berurutan di satu gunung berbagi angin, jadi peluang kebetulan terlalu optimis.`]] : [])].filter(r => r[1] && !/^\. /.test(r[1])), "Open-Meteo, MAGMA Indonesia (VONA), OurAirports, Mastin dkk. 2009", ["Jejak kosong"], ["Jejak abu adalah skenario Centurisk97, bukan peringatan resmi Volcanic Ash Advisory Centre (VAAC)."]),
+      this.daftar("Simulasi", [
         ["Lahar", "LAHARZ (Iverson dkk. 1998): luas penampang A = 0,05 × V^(2/3) dan luas sebaran B = 200 × V^(2/3), diisi di lembah dari DEM terrarium zoom 12 (piksel sekitar 38 m). Awal lahar = titik alur mulai terkonsentrasi (aliran terkumpul 0,5 km² atau lebih, asumsi umum yang belum dicocokkan ke hulu sungai bernama); LAHARZ klasik memulai di batas zona proksimal H/L 0,2-0,3, sengaja tidak dipakai karena lahar hujan di sini bersumber di lereng atas. Volume dibagi: separuh ke alur dari dasar kawah, sisanya merata ke alur lain, dan luas total sama dengan B(V). Waktu tempuh hanya ilustrasi: 6 m/dtk, mulai 1 jam sesudah hujan memicu."],
         ["Awan panas", "Kerucut energi H/L dari puncak (Malin dan Sheridan 1982, pilihan 0,2 sampai 0,35) dengan pengungkungan lembah, tebal 15 m, 20 m/dtk. Di lereng terbuka lidahnya melebar setengah-lebar 0,2 kali jarak dari kawah di tiap sisi; angka 0,2 itu ilustrasi tanpa kalibrasi. Lembah sempit di bawah sekitar 80 m tak terpisah di DEM ini; kawah, kubah, dan tanggul baru tidak terbaca."],
-        ["Hujan abu di desa", "Angka relatif (100% = titik terbanyak), bukan milimeter, tanpa hujan, gedung, atau abu yang terangkat lagi."]], "Sumber: Iverson dkk. 1998, DEM terrarium (Mapzen, NASA SRTM, USGS)", "Simulasi"),
-      this.daftar("Paparan dihitung dari KRB PVMBG 2018, WorldPop, OpenStreetMap, dan WIUP ESDM", [
+        ["Hujan abu di desa", "Angka relatif (100% = titik terbanyak), bukan milimeter, tanpa hujan, gedung, atau abu yang terangkat lagi."]], "Iverson dkk. 1998, DEM terrarium (Mapzen, NASA SRTM, USGS)", ["Hujan abu di desa"], ["Lahar dan awan panas di Simulasi adalah ilustrasi bahaya, bukan prakiraan."]),
+      this.daftar("Paparan", [
         ["Zona KRB", "Kawasan Rawan Bencana III, II, I dari PVMBG edisi 2018 (geoportal ESDM, terbuka tanpa login). Bila suatu gunung tak punya poligon KRB, zonanya diganti proksi dan ditulis sebagai proksi."],
         ["Penduduk", "WorldPop R2025A 2026 constrained, kisi 1 km: jumlah piksel yang pusatnya jatuh di zona atau cincin. Galat tepi sekitar 1 km, jadi orde besar. Per desa: tiap piksel dialokasikan ke desa OpenStreetMap terdekat (paling jauh 3 km), perkiraan kasar, bukan penduduk administratif."],
         ["Desa, sekolah, faskes", "OpenStreetMap lewat Overpass dalam 20 km dari kawah (lisensi ODbL). Yang belum terpetakan di OSM tidak terhitung."],
         ["Izin tambang", "Wilayah Izin Usaha Pertambangan (WIUP) dari geoportal ESDM, hanya badan usaha. Zonanya yang tertinggi dari titik pusat dan simpul poligon."],
         ["Evakuasi", "Dijkstra berganda di jaringan jalan OSM (motorway sampai residential) dari titik tujuan di luar zona bahaya: jalan tersier ke atas di luar KRB III dan II dan di luar radius rekomendasi ditambah 2 km. Kecepatan per kelas jalan: 50, 40, 35, 30, 25, 18, dan 15 km/jam. Hasilnya waktu tempuh arus bebas, tanpa antrean evakuasi massal, dan di tampilan hanya desa KRB III dan II yang dihitung. Titik kumpul bertanda OSM (assembly point atau shelter) diutamakan bila selisihnya tak lebih dari 10 menit. Bila tak ada desa KRB III atau II yang tersambung ke jalan, rute cadangan dihitung dari desa KRB I terdekat dan ditandai di peta."],
-        ["Citra", "Sentinel-2 (Copernicus/ESA) bebas awan terbaik sebelum dan sesudah kejadian besar yang tercatat."]], "Sumber: ESDM, WorldPop, OpenStreetMap, Copernicus", "Paparan"),
-      this.daftar("Arsip MAGMA 2018 sampai 2026 diringkas per gunung sejak 2024 dan tidak diperbarui otomatis", [
+        ["Citra", "Sentinel-2 (Copernicus/ESA) bebas awan terbaik sebelum dan sesudah kejadian besar yang tercatat."]], "ESDM, WorldPop, OpenStreetMap, Copernicus", ["Desa, sekolah, faskes"]),
+      this.daftar("Arsip", [
         ["Letusan", rz?.n_arsip ? `Daftar informasi letusan MAGMA ${tg(rz.arsip_dari)} sampai ${tg(rz.akhir)} (${fmt(rz.n_arsip)} letusan), diringkas per gunung sejak ${tg(rz.awal)} di kartu Rezim letusan, Arah abu per musim, Cakupan VONA, dan Paparan lawan aktivitas. Berkasnya snapshot dari arsip lokal, diambil ${tg(rz.diambil)}, dan tidak ikut diperbarui otomatis; tanggal datanya tertulis di judul kartu.` : "Daftar informasi letusan MAGMA diringkas per gunung. Berkasnya snapshot dari arsip lokal dan tidak ikut diperbarui otomatis."],
         ["Tidak ada tren 2018 sampai 2023 lawan 2024", "Jumlah letusan melompat dari 457 pada 2023 ke 6.241 pada 2024: itu terutama mengikuti perubahan cara mencatat, sebagian aktivitas nyata, jadi deret tahunannya tidak digambar sebagai tren dan tidak dibandingkan."],
         ["VONA", VNA + "Hanya waktu dan gunung dari tiap VONA yang dihitung untuk cakupan: letusan tercakup bila ada VONA gunung yang sama 0 sampai 30 menit sesudahnya, dibandingkan dengan kontrol (waktu letusan digeser -37 jam) karena VONA sering terbit. Nama pembuat VONA tidak pernah dibaca atau ditampilkan. Selisih cakupan antar gunung bisa berarti satu VONA mewakili letusan menerus, bukan kelalaian."],
-        ["Daftar pantau kegempaan", "Hipotesis, bukan prediksi: gempa vulkanik 7 hari terakhir sedikitnya 10, sedikitnya 1,5 kali rata-rata sendiri, dan di atas persentil 90 riwayatnya. Hasil uji balik ditulis apa adanya di kartunya: " + KEG + "."]], "Sumber: MAGMA Indonesia, PVMBG", "Arsip"),
+        ["Daftar pantau kegempaan", "Hipotesis, bukan prediksi: gempa vulkanik 7 hari terakhir sedikitnya 10, sedikitnya 1,5 kali rata-rata sendiri, dan di atas persentil 90 riwayatnya. Hasil uji balik ditulis apa adanya di kartunya: " + KEG + "."]], "MAGMA Indonesia, PVMBG", ["Tidak ada tren 2018 sampai 2023 lawan 2024"], ["Berkas arsip tidak diperbarui otomatis."]),
       this.glosari(),
-      this.daftar("Centurisk97 tidak meramal letusan, tidak menentukan level sendiri, dan membuang data yang kosong", [
+      this.daftar("Batas", [
         ["Bukan prakiraan letusan", "Centurisk97 tidak meramal letusan dan tidak menentukan level sendiri. Untuk keputusan, ikuti rekomendasi PVMBG dan BPBD setempat; Level I Normal bukan jaminan tidak ada bahaya."],
         ...(PLU ? [["Tidak ada peluang letusan 7 hari", PLU]] : []),
         ["Bukan informasi penerbangan", "Informasi abu vulkanik untuk penerbangan (VONA, VAAC) tetap bersumber dari PVMBG dan BMKG."],
         ["Angin dan jarak", "Angin dari prakiraan, bukan pengukuran; satu skenario kolom tetap selama pelepasan. Jarak jangkauan belum teruji."],
-        ["Data tidak lengkap", "Tanpa data zona, desa, atau rute untuk suatu gunung, bagian itu dibuang, bukan ditulis kosong. Nol di OSM bukan bukti tidak ada."]], "Sumber: PVMBG, Badan Geologi", "Batas"),
+        ["Data tidak lengkap", "Tanpa data zona, desa, atau rute untuk suatu gunung, bagian itu dibuang, bukan ditulis kosong. Nol di OSM bukan bukti tidak ada."]], "PVMBG, Badan Geologi", ["Bukan prakiraan letusan", "Tidak ada peluang letusan 7 hari", "Bukan informasi penerbangan", "Angin dan jarak", "Data tidak lengkap"]),
     ].join("") + (PL ? Peluang.batasan(PL, {judul: "Peluang abu di bandara dan kota"}).replace(/<b>0\. /, "<b>") : "");
     this.pasangGlosari($("#metode")); },
 };
