@@ -96,6 +96,6 @@ export function maskot(pose = "sapa", judul = "", aksi = "") {
       <path d="M78 50c6-11 15-18 26-21" class="sg-helm-kilau" stroke-width="5" stroke-linecap="round" fill="none"/>
     </g>
   </g>
-  ${ik ? `<g class="mk-properti"><circle cx="206" cy="84" r="21" class="sg-papan"/><use href="#${ik}" x="193" y="71" width="26" height="26" class="sg-papan-ik"/></g>` : ""}
+  ${ik ? `<g class="mk-properti"><circle cx="206" cy="84" r="21" class="sg-aksi-papan"/><use href="#${ik}" x="193" y="71" width="26" height="26" class="sg-aksi-ik"/></g>` : ""}
 </svg>`;
 }
