@@ -141,6 +141,29 @@ test("npm run dorong: main bergerak karena commit data, percobaan ulang tidak me
   assert.match(r.stderr + r.stdout, /uji dilewati/);
 });
 
+// 25 Nov 2026: riwayat lokal memuat gabungan yang sudah menyelesaikan bentrok; rebase memutarnya ulang lalu bentrok, dan git merge
+// menolak karena index bersama memuat suntingan sesi lain. dorong harus menyusul lewat gabung tanpa index dan membiarkan index itu.
+test("npm run dorong: rebase bentrok dan index kotor, menyusul lewat gabung tanpa index, suntingan sesi lain utuh", () => {
+  const {d, a, log} = arenaPush(() => "exit 0\n");
+  const git = (cwd, ...x) => execFileSync("git", x, {cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"]}).trim();
+  const b = join(d, "b");
+  git(b, "pull", "-q", "origin", "main");
+  writeFileSync(join(b, "f.txt"), "2"); git(b, "add", "f.txt"); git(b, "commit", "-qm", "lawan-f"); git(b, "push", "-q", "origin", "main");
+  writeFileSync(join(a, "f.txt"), "3"); git(a, "add", "f.txt"); git(a, "commit", "-qm", "kita-f");
+  git(a, "fetch", "-q", "origin");
+  try { git(a, "merge", "-q", "--no-edit", "origin/main"); } catch {}
+  writeFileSync(join(a, "f.txt"), "3"); git(a, "add", "f.txt"); git(a, "commit", "-qm", "gabung-f");
+  mkdirSync(join(b, "public/data"), {recursive: true});
+  writeFileSync(join(b, "public/data/a.json"), "1"); git(b, "add", "public/data/a.json"); git(b, "commit", "-qm", "data"); git(b, "push", "-q", "origin", "main");
+  writeFileSync(join(a, "lain.txt"), "sesi lain"); git(a, "add", "lain.txt");
+  const r = spawnSync("sh", [join(process.cwd(), "scripts/agents/dorong.sh")], {cwd: a, encoding: "utf8", env: envPush});
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /gabung tanpa index/);
+  assert.equal(log()[0], "Merge remote-tracking branch 'origin/main'");
+  assert.equal(readFileSync(join(a, "public/data/a.json"), "utf8"), "1", "berkas dari origin disegarkan di folder kerja");
+  assert.match(git(a, "diff", "--cached", "--name-only"), /lain\.txt/, "suntingan sesi lain di index tidak tersentuh");
+});
+
 test("npm run dorong: uji merah berhenti di percobaan pertama, tidak ada yang masuk", () => {
   const {d, a, log} = arenaPush(d => `echo x >> ${d}/hitung\nexit 1\n`);
   const r = spawnSync("sh", [join(process.cwd(), "scripts/agents/dorong.sh")], {cwd: a, encoding: "utf8", env: envPush});
