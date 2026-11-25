@@ -34,7 +34,7 @@ const Metode = {
     }
     const T2 = J?.kejadian?.setel2;
     if (T2?.rancangan) {
-      const BD = "belum ada data", pn = x => x == null ? BD : fmt(Math.round(x * 100)) + "%", p1 = x => x == null ? BD : (x * 100).toFixed(1).replace(".", ",") + "%", mn = x => String(x).replaceAll("-", "−");
+      const BD = "belum ada data", pn = x => x == null ? BD : fmt(Math.round(x * 100)) + "%", p1 = pn, mn = x => String(x).replaceAll("-", "−");
       const ci2 = (v, ok) => ok === false ? " (selang tak andal, kurang dari 10 klaster)" : v ? ` (${p1(v[0])}–${p1(v[1])})` : "", br = Object.entries(T2.rancangan);
       const tb2 = tabel(["Rancangan", "Jenis", "Aturan terpilih (latih)", "Tertangkap (POD)", "Alarm palsu (FAR)", "CSI", "CSI alarm acak"], br.map(([k, h]) => { const u = h.terpilih_uji, c = h.terpilih_selang_bonferroni, a = c?.andal;
           return u ? [esc(`${k}, ${h.uraian}`), esc(h.jenis || ""), esc(mn(h.terpilih)), p1(u.pod) + (a === false ? "" : ci2(c?.pod, a)), p1(u.far) + (a === false ? "" : ci2(c?.far, a)), F3m(u.csi) + (a === false ? " (selang tak andal, kurang dari 10 klaster)" : ""), F3m(u.csi_acak)]
