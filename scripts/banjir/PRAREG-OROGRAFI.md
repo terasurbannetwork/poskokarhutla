@@ -94,8 +94,8 @@ Berkas yang dibekukan (sha256 saat dokumen ini dibuat):
 | `scripts/banjir/data/medan_orografi.json` | `1628e1c558075ef9f17c7ad12a5bfc931553181c01a3e21aeeafdfba40bb7338` |
 | `scripts/banjir/data/uji_orografi_open-meteo.json` (fixture respons asli) | `9ea2d7f16885330241848adfb83135c3cd38ca656bb4b3cbfe0b1fd9c77e956e` |
 | `data/raw/banjir/faktor_kec/elevasi_topo.json` (masukan medan) | `2b844f712564efd499247f5934daec7c5775ea0ea70d414d8b870818d7e197dd` |
-| `/Users/priyankaalfatehan28/proyek-on-hold/lab-bencana/repo/adu/banjir/skrip/kompak.py` (M0, diukur 24 Nov 2026) | `569b40dea2ffb79664790fe25ac070648344ec3284a05bdc51616c26a8b67b82` |
-| `/Users/priyankaalfatehan28/proyek-on-hold/lab-bencana/repo/adu/banjir/koefisien_kab.json` (M0, 645 KB, diukur 24 Nov 2026) | `754b6802362e39c0336c5606c6b589afec1ef45e8952835fad072332b0a41e38` |
+| `~/proyek-on-hold/lab-bencana/repo/adu/banjir/skrip/kompak.py` (M0, diukur 24 Nov 2026) | `569b40dea2ffb79664790fe25ac070648344ec3284a05bdc51616c26a8b67b82` |
+| `~/proyek-on-hold/lab-bencana/repo/adu/banjir/koefisien_kab.json` (M0, 645 KB, diukur 24 Nov 2026) | `754b6802362e39c0336c5606c6b589afec1ef45e8952835fad072332b0a41e38` |
 
 Sidik berkas INI ada di `PRAREG-OROGRAFI.sidik` (satu baris JSON; hash tidak bisa memuat dirinya sendiri). Berkas beku lain (`status.py`, `model_kab.py`,
 `uji_balik.py`, PRAREG DEBIT, PROSPEKTIF, DAMPAK) hanya dibaca. Mengubah satu kata di berkas ini, atau berkas di tabel, setelah sidik di-commit berarti protokol baru
@@ -105,6 +105,8 @@ dengan tanggal baru. Sidik di-commit (oleh pemilik) SEBELUM langkah latih ERA5 d
 
 Data uji belum dibuka dan `latih` belum jalan; perubahan ini sah dan sidik diperbarui.
 
-- F1 (§3, §8): berkas M0 ditemukan di `/Users/priyankaalfatehan28/proyek-on-hold/lab-bencana/repo/adu/banjir/` (bukan `Developer/lab-bencana`); sha256 diukur ulang dan sama dengan tabel §8.
+- F1 (§3, §8): berkas M0 ditemukan di `~/proyek-on-hold/lab-bencana/repo/adu/banjir/` (bukan `Developer/lab-bencana`); sha256 diukur ulang dan sama dengan tabel §8.
   Karena `koefisien_kab.json` 645 KB (>200 KB) tidak disalin ke repo ini. Prasyarat `latih`: ukur ulang kedua sha256 di lokasi itu; bila berbeda, berhenti.
 - F2 (§3, §5.4): kriteria (c) optimis (periode uji sudah terlihat lab); "LOLOS SARING" bukan bukti sinyal, vonis hanya prospektif (§6).
+
+- Amandemen 25 Nov 2026 (bukan perubahan isi uji): jalur absolut mesin lokal di §8 dan F1 ditulis ulang sebagai `~/proyek-on-hold/...` supaya lolos gerbang jalur mutlak. Hash berkas M0 di §8 tidak berubah. Sidik lama `81ede90689728c7fc7eb0ffe60fa3d02b5e521db29e7c85a268b6283f75a805c` dicatat di PRAREG-OROGRAFI.sidik.
