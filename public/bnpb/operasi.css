@@ -66,3 +66,6 @@
   .op-tabel tr{break-inside:avoid}
   .op-kartu{box-shadow:none;border:1px solid #ccc}
 }
+
+/* jarak kartu tab ke isi di bawahnya (pemilik 25 Nov 2026 "terlalu mepet"); sama dengan jarak antarkartu halaman Pusdalops lain */
+.op-tak-cetak{margin-bottom:16px}

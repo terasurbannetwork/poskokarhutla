@@ -107,8 +107,8 @@
     const m = h("div", {class: "dl-ek-menu", role: "menu", hidden: true}, ...JENIS.map(([k, t]) => h("button", {type: "button", role: "menuitem", "data-ek": k}, ikon("simpan"), h("span", {teks: t}))));
     const b = h("button", {type: "button", class: "dl-semua dl-ek-btn", "aria-haspopup": "menu", "aria-expanded": "false"}, ikon("simpan"), h("span", {teks: "Ekspor"}));
     const w = h("div", {class: "dl-ek"}, b, m), tutup = () => { m.hidden = true; b.setAttribute("aria-expanded", "false"); };
-    b.addEventListener("click", e => { e.stopPropagation(); m.hidden = !m.hidden; b.setAttribute("aria-expanded", String(!m.hidden)); });
-    document.addEventListener("click", e => { if (!w.contains(e.target)) tutup(); });
+    b.addEventListener("click", e => { e.stopPropagation(); if (m.hidden) window.DlMenu?.tutupSemua(w); m.hidden = !m.hidden; b.setAttribute("aria-expanded", String(!m.hidden)); });   // QA 25 Nov 2026: satu menu terbuka sekali
+    if (window.DlMenu) window.DlMenu.luarTutup(w, tutup); else document.addEventListener("click", e => { if (!w.contains(e.target)) tutup(); });
     m.addEventListener("click", async e => { const o = e.target.closest("[data-ek]"); if (!o) return; tutup();
       const t = section.querySelector(".ex-bd table"); if (!t) return alert("Tabel seksi ini belum termuat.");
       const D = data(t); if (!D.baris.length) return alert("Tidak ada baris untuk saringan ini.");

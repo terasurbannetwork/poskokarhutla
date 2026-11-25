@@ -80,3 +80,34 @@ aside.db-nav .db-nav-b.mp-induk{font-weight:800}
   .mp-merek #keluar{color:var(--ink2)}
   .mp-merek #keluar:hover{color:var(--ink);background:var(--surface)}
 }
+
+/* tombol tema terang/gelap (menu_pusdalops.js #mpTema): ikon polos tanpa kotak; putih di kepala navy (layar sempit), abu di baris merek (layar lebar) */
+.mp-tema{display:inline-grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:999px;background:none;color:var(--on-head);cursor:pointer;flex:none;margin-left:auto}
+.mp-tema svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mp-tema:focus-visible{outline:2px solid var(--info-tx);outline-offset:2px}
+.mp-merek .mp-tema{color:var(--ink2);margin-left:0}
+.mp-merek .mp-tema:hover{color:var(--ink);background:var(--surface)}
+/* panel kiri hanya bergulir tegak: isi yang terlalu panjang dipotong titik-titik, tidak menggeser butir ke samping (pemilik 25 Nov 2026) */
+.mp-side .db-nav-isi{overflow-x:hidden}
+.mp-side .mp-g,.mp-side .mp-anak,.mp-side .mp-slot,.mp-side .db-nav-b{min-width:0;max-width:100%}
+
+/* pindah halaman antarmenu Pusdalops tanpa kedip (pemilik 25 Nov 2026 "ketika ganti halaman itu seamless"): transisi lintas dokumen bawaan peramban.
+   Panel kiri punya nama transisi sendiri dan langsung berganti (tidak memudar, tidak bergeser); hanya isi halaman yang memudar singkat.
+   Peramban tanpa dukungan tetap pindah halaman biasa. Dimatikan bila pengguna memilih kurangi gerakan. */
+@view-transition{navigation:auto}
+@media (min-width:901px){body.mp-model-a .mp-a>.mp-side{view-transition-name:mp-panel}}
+::view-transition-group(mp-panel),::view-transition-old(mp-panel),::view-transition-new(mp-panel){animation:none}
+::view-transition-old(root){animation:120ms ease-out both mp-pudar-keluar}
+::view-transition-new(root){animation:180ms ease-out both mp-pudar-masuk}
+@keyframes mp-pudar-keluar{to{opacity:0}}
+@keyframes mp-pudar-masuk{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){@view-transition{navigation:none}}
+
+/* butir menu yang membuka dashboard lain (Laporan warga, Laporan Koordalops, Operasi lapangan): panah keluar kecil di ujung kanan */
+.mp-luar-ik{width:13px;height:13px;margin-left:auto;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;opacity:.65}
+aside.db-nav .db-nav-b.mp-luar .db-nav-t{flex:0 1 auto}
+.mp-menu a.mp-luar .mp-luar-ik,.mp-sub a.mp-luar .mp-luar-ik{margin-left:2px}
+
+/* tanpa aksen emas atau oranye di halaman Pusdalops (pemilik 25 Nov 2026 "jgn ada oren2nya"): token --emas dari admin.css dinetralkan jadi garis putih samar.
+   Berkas ini dimuat sesudah admin.css di semua halaman menu, jadi satu baris ini menghapus ring dan garis emas di tab, chip, sub-menu, kepala kartu, dan panah urut */
+:root{--emas:color-mix(in srgb,var(--on-head) 35%,transparent)}

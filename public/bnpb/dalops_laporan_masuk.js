@@ -128,7 +128,7 @@
       let sayaCache = null;
       const kartu = bagian("lm-bpbd", "daftar", "Data BPBD", "Memuat data kejadian dan dampak dari BPBD", kosong("tunggu", "Memuat…"));
       const isi = kartu.querySelector(".ex-bd"), judul = kartu.querySelector("h3");
-      const pakai = (tj, ...k) => { judul.replaceChildren(...[].concat(tj)); isi.replaceChildren(...k.filter(Boolean)); pasangTip(); };
+      const pakai = (tj, ...k) => { judul.title = [].concat(tj).map(x => x?.textContent ?? x).join(""); isi.replaceChildren(...k.filter(Boolean)); pasangTip(); };   /* kepala tetap nama seksi "Data BPBD"; kalimat temuan hanya di title (AGENTS 3.5), panel kiri membaca kepala ini */
       const pesanB = h("p", {class: "lm-pesan lm-pesan-b", role: "status"});
       let tampil = 50, data = [], boleh = false;   // 50 baris dulu, "Tampilkan lagi" menambah 50
       const kirim = (id, badan) => fetch("/api/meja/catatan/" + id, {method: "POST", credentials: "same-origin", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify({aksi: "status", ke: "masuk_logbook", ...badan})})

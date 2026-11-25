@@ -148,6 +148,26 @@
   const pulauDari = k => PULAU[String(k)[0]] || "Lainnya";
   /* picker sendiri pengganti daftar bawaan peramban (pemilik 12 Nov 2026 "kenapa pickernya kaya gitu"): select asli tetap jadi sumber nilai dan event change,
      tombol + daftar segaya menu jenis bencana; nilai yang diubah kode (select.value =, opsi diganti) ikut tampil */
+  /* QA 25 Nov 2026: satu menu terbuka sekali; Esc menutup dan mengembalikan fokus ke tombolnya; klik luar tidak membocorkan pendengar */
+  const MENU_BUKA = ".dl-pp-menu:not([hidden]), .dl-ubin-menu:not([hidden]), .dl-ek-menu:not([hidden])";
+  const tombolMenu = w => w.querySelector("[aria-expanded]");
+  window.DlMenu = {
+    tutupSemua(kecuali) {
+      document.querySelectorAll(MENU_BUKA).forEach(m => { const w = m.parentElement; if (w === kecuali) return; m.hidden = true; tombolMenu(w)?.setAttribute("aria-expanded", "false"); });
+      document.querySelectorAll(".dl-jenis-peta.buka").forEach(w => { if (w === kecuali) return; w.classList.remove("buka"); tombolMenu(w)?.setAttribute("aria-expanded", "false"); });
+    },
+    luarTutup(w, tutup) {   // klik di luar w menutup; pendengar lepas sendiri setelah w pernah terpasang lalu hilang dari halaman
+      let pernah = false;
+      const f = e => { if (w.isConnected) pernah = true; else if (pernah) return document.removeEventListener("click", f); if (!w.contains(e.target)) tutup(); };
+      document.addEventListener("click", f);
+    }
+  };
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Escape") return;
+    const dalam = [...document.querySelectorAll(MENU_BUKA + ", .dl-jenis-peta.buka")].map(m => m.matches(".dl-jenis-peta") ? m : m.parentElement).find(w => w.contains(document.activeElement));
+    window.DlMenu.tutupSemua();
+    if (dalam) tombolMenu(dalam)?.focus({preventScroll: true});
+  });
   const NILAI = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value");
   function hiasPilih(sel) {
     const t = h("span", {class: "dl-pp-t"}), b = h("button", {type: "button", class: "dl-pp-btn", "aria-haspopup": "listbox", "aria-expanded": "false", "aria-label": sel.getAttribute("aria-label")}, t, h("i", {class: "dl-pp-panah", "aria-hidden": "true"}));
@@ -160,12 +180,12 @@
     const buka = () => {
       m.replaceChildren(...[...sel.options].map(o => { const x = h("button", {type: "button", role: "option", "aria-selected": String(o.selected), teks: o.textContent});
         x.addEventListener("click", () => { sel.value = o.value; sel.dispatchEvent(new Event("change", {bubbles: true})); tutup(); b.focus(); }); return x; }));
-      m.hidden = false; b.setAttribute("aria-expanded", "true"); m.querySelector('[aria-selected="true"]')?.focus();
+      window.DlMenu.tutupSemua(w); m.hidden = false; b.setAttribute("aria-expanded", "true"); m.querySelector('[aria-selected="true"]')?.focus();
     };
     b.addEventListener("click", e => { e.stopPropagation(); m.hidden ? buka() : tutup(); });
     m.addEventListener("keydown", e => { if (e.key === "Escape") { tutup(); b.focus(); return; } if (!["ArrowDown", "ArrowUp"].includes(e.key)) return; e.preventDefault();
       const bs = [...m.children], i = bs.indexOf(document.activeElement); bs[(i + (e.key === "ArrowDown" ? 1 : bs.length - 1)) % bs.length]?.focus(); });
-    document.addEventListener("click", e => { if (!w.contains(e.target)) tutup(); });
+    window.DlMenu.luarTutup(w, tutup);
     segar(); return w;
   }
   function pilihWilayah(kodes, berubah) {
@@ -1014,9 +1034,9 @@
       m.replaceChildren(...[...grid.querySelectorAll("[data-ubin]")].map(u => { const c = h("input", {type: "checkbox"}); c.checked = !x.has(u.dataset.ubin);
         c.addEventListener("change", () => { const y = ubinSembunyi(); c.checked ? y.delete(u.dataset.ubin) : y.add(u.dataset.ubin); try { localStorage.setItem(KUNCI_UBIN, JSON.stringify([...y])); } catch (e) {} u.hidden = !c.checked; });
         return h("label", {role: "menuitemcheckbox"}, c, h("span", {teks: u.querySelector("header span")?.textContent || u.dataset.ubin})); }));
-      m.hidden = false; b.setAttribute("aria-expanded", "true"); });
+      window.DlMenu.tutupSemua(w); m.hidden = false; b.setAttribute("aria-expanded", "true"); });
     m.addEventListener("click", e => e.stopPropagation());
-    document.addEventListener("click", e => { if (!w.contains(e.target)) tutup(); });
+    window.DlMenu.luarTutup(w, tutup);
     terap(); return w;
   }
   /* pemilih periode di atas (pemilik 11 Nov 2026, rujukan /operasi): jendela hari logbook untuk kejadian, ubin, peta, dan tabel */
@@ -1084,7 +1104,9 @@
   const sudahBuka = new Set();
   let aktif = "banjir";   // tab yang tampil: J dikembalikan ke jenis ini sesudah tab lain selesai dimuat di latar
   let dlSegar = null;   // panel kiri dan pil jenis di peta ikut tab aktif
+  let tabPeta = "ringkasan";   // tab berpeta terakhir yang dibuka: tujuan butir "Peta" di panel kiri (pemilik 25 Nov 2026: dari Laporan tidak ada jalan kembali ke ringkasan berpeta)
   function pilihTab(k, tombol) {
+    if (!k.startsWith("laporan")) tabPeta = k;
     tombol.forEach(b => { b.setAttribute("aria-selected", String(b.dataset.tab === k)); b.setAttribute("aria-current", String(b.dataset.tab === k)); });
     const jd = document.getElementById("dlJudul"); if (jd) jd.textContent = TAB.find(x => x[0] === k)?.[1] || "Pantau Dalops";
     /* pindah jenis mulus (pemilik 11 Nov 2026 "agar smooth transisinya"): panel baru menahan tinggi panel lama sampai isinya jadi,
@@ -1100,7 +1122,8 @@
     if (k === "ringkasan") ringkas?.segar();   // Data Bencana (data_bencana.js): peta lahir di panel tersembunyi   // peta yang lahir di panel tersembunyi diukur ulang
     const pk = panel[k]?.querySelector(".maplibregl-map")?._peta; if (pk) { pk.resize(); if (KAM.c) pk.jumpTo(KAM.c); }
     if (k === "laporan") { if (!sudahBuka.has(k)) panelLaporan(panel.laporan); bukaLaporan(); }
-    else if (!sudahBuka.has(k)) muat(k);
+    else if (!sudahBuka.has(k)) {   // QA 25 Nov 2026: periode berganti = gambar ulang dari data tersimpan, bukan unduh ulang
+      if (dataTerakhir[k]) render(...dataTerakhir[k], k); else if (k === "karhutla" && dataKarhutla) window.DalopsKarhutla.render(panel.karhutla, dataKarhutla, alat()); else muat(k); }
     sudahBuka.add(k);
     dlSegar?.();
   }
@@ -1111,7 +1134,7 @@
     const grup = (teks, ik) => window.MenuPusdalops?.grup ? window.MenuPusdalops.grup(teks, ik) : h("p", {class: "db-nav-sub", teks});
     const seg = h("nav", {class: "db-nav-isi dl-seg-a", role: "tablist", "aria-label": "Jenis pantauan"}, grup("Bencana", "banjir"), ...tombol.slice(0, -2), grup("Laporan", "simpan"), ...tombol.slice(-2));
     seg.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) pilihTab(b.dataset.tab, tombol); });
-    const judul = h("h1", {class: "dl-l1", id: "dlJudul", teks: "Pantau Dalops", hidden: true}), slot = window.MenuPusdalops?.pakaiSlot?.();
+    const judul = h("h1", {class: "dl-l1", id: "dlJudul", teks: "Pantau Dalops", hidden: true}), slot = window.MenuPusdalops ? h("div", {class: "dl-tampil", role: "tablist", "aria-label": "Tampilan Pantau Dalops"}) : null;   /* panel kiri Pusdalops tetap (pemilik 25 Nov 2026, pilihan A): tiga tampilan jadi tab bergaris bawah di puncak isi, seksi jadi pil di bawahnya */
     if (slot) {
       /* pemilik 11 Nov 2026: "pilihan bencananya ada di dalam maps": pil jenis bencana di pojok peta tiap panel (panel tanpa peta: di puncak panel);
          panel kiri berisi seksi panel yang tampil + grup Laporan */
@@ -1132,8 +1155,9 @@
           const b = h("button", {type: "button", role: "option", "data-jenis": k, "aria-selected": String(k === aktif)}, h("i", null, ikon(ik)), h("span", {teks: t}));
           b.addEventListener("click", e => { e.stopPropagation(); tutupMenu(); if (k !== aktif) { pilihTab(k, tombol); segarBatang(); } }); return b; }));
         const w = h("div", {class: "dl-jenis-peta", "data-aktif": j[0]}, btn, menu);
-        btn.addEventListener("click", e => { e.stopPropagation(); const jadi = !w.classList.contains("buka"); tutupMenu(); w.classList.toggle("buka", jadi); btn.setAttribute("aria-expanded", String(jadi));
+        btn.addEventListener("click", e => { e.stopPropagation(); const jadi = !w.classList.contains("buka"); tutupMenu(); window.DlMenu.tutupSemua(w); w.classList.toggle("buka", jadi); btn.setAttribute("aria-expanded", String(jadi));
           if (jadi) menu.querySelector('[aria-selected="true"]')?.focus({preventScroll: true}); });
+        w.addEventListener("focusout", e => { if (e.relatedTarget && !w.contains(e.relatedTarget) && w.classList.contains("buka")) { w.classList.remove("buka"); btn.setAttribute("aria-expanded", "false"); } });   // QA 25 Nov 2026
         menu.addEventListener("keydown", e => { if (!["ArrowDown", "ArrowUp"].includes(e.key)) return; e.preventDefault(); const bs = [...menu.querySelectorAll("button")], i = bs.indexOf(document.activeElement);
           bs[(i + (e.key === "ArrowDown" ? 1 : bs.length - 1)) % bs.length]?.focus(); });
         return w; };
@@ -1145,6 +1169,9 @@
         "Kabar luar": ["Kabar dan Kelengkapan", "daftar"], "Kelengkapan data": ["Kabar dan Kelengkapan", "daftar"],
         "Usulan langkah": ["Penanganan dan Bantuan", "personel"], "Penanganan dan bantuan": ["Penanganan dan Bantuan", "personel"], "Status layanan": ["Penanganan dan Bantuan", "personel"]};
       let seksiNama = null;
+      /* pilihan A pemilik 25 Nov 2026 ("terlalu dinamis, jadinya bingung sendiri"): panel kiri TETAP tiga butir (Peta dan ringkasan, Laporan Masuk, Laporan),
+         tanpa grup atau seksi yang muncul dan hilang; seksi tiap halaman jadi deretan tab di puncak isi halaman (.dl-seksi). Klik Peta kembali ke peta terakhir
+         (Data Bencana atau jenis bencana yang dipilih di atas peta), labelnya tidak berganti. */
       const seksiSlot = () => {
         const p = panel[aktif], sek = p ? [...p.querySelectorAll(":scope > section.ex-std, :scope > .ex-std")] : [];
         const nama = x => x.querySelector(".ex-jd h3")?.textContent.trim() || "Bagian";
@@ -1152,12 +1179,39 @@
         const urut = [...new Set(sek.map(kel))];
         const kini = urut.includes(seksiNama) ? seksiNama : urut[0];
         sek.forEach(x => x.classList.toggle("dl-seksi-tutup", kel(x) !== kini));
+        /* pilihan C pemilik 25 Nov 2026 ("awalnya saya suka karena tampilan langsung ke peta"): tanpa bilah di atas peta. Pemilih tampilan (Peta dan ringkasan,
+           Laporan Masuk, Laporan) dan tab seksi masuk ke kepala kartu pertama seksi yang tampil, menggantikan judulnya. Data Bencana tanpa kepala kartu: pemilih masuk
+           bilah alat petanya. Panel tanpa kartu: satu baris tipis. Tanda sama dan kontrol masih terpasang = tidak digambar ulang (fokus tidak lepas, QA 25 Nov 2026). */
+        const tanda = aktif + "|" + urut.join("|") + "|" + kini, ada = p?.querySelector(".dl-kontrol");
+        if (slot.dataset.tandaDl === tanda && ada) return;
+        slot.dataset.tandaDl = tanda;
         for (const x of sek) { const pk = kel(x) === kini && x.querySelector(".maplibregl-map")?._peta; if (pk) requestAnimationFrame(() => pk.resize()); }
-        const bs = urut.map(k => { const x = sek.find(y => kel(y) === k), ikk = KELOMPOK[nama(x)]?.[1];
-          const b = h("button", {type: "button", class: "db-nav-b", "aria-current": String(k === kini)}, h("i", {class: "db-nav-ik"}, ikk && aktif !== "gunungapi" ? ikon(ikk === "banjir" ? (JN[aktif]?.ik || "banjir") : ikk) : x.querySelector(".ex-jd h3 svg")?.cloneNode(true) || ikon("daftar")), h("span", {class: "db-nav-t", teks: k}));
-          b.addEventListener("click", () => { seksiNama = k; seksiSlot(); document.querySelector(".db-kanan")?.scrollIntoView({block: "start"}); }); return b; });
-        const lap = tombol.slice(-2).map(t => { if (!t.dataset.dlKlik) { t.dataset.dlKlik = 1; t.classList.add("db-nav-b"); t.addEventListener("click", () => pilihTab(t.dataset.tab, tombol)); } return t; });
-        slot.replaceChildren(...(bs.length ? [grup("Isi halaman", "daftar"), ...bs] : []), grup("Laporan", "simpan"), ...lap);
+        const fokusTab = document.activeElement?.closest?.(".dl-kontrol") ? document.activeElement.dataset.seksi || "pilih" : null;
+        document.querySelectorAll(".dl-kontrol").forEach(x => x.remove()); document.querySelectorAll(".dl-hd-kontrol").forEach(x => x.classList.remove("dl-hd-kontrol"));
+        if (!p) return;
+        /* pemilih tampilan: komponen pilih Dalops (hiasPilih), sama dengan pemilih periode */
+        const diPeta = !aktif.startsWith("laporan"), sT = h("select", {"aria-label": "Tampilan"},
+          h("option", {value: tabPeta, teks: "Peta dan ringkasan"}), ...TAB.filter(([k]) => k.startsWith("laporan")).map(([k, t]) => h("option", {value: k, teks: t})));
+        sT.value = diPeta ? tabPeta : aktif;
+        sT.addEventListener("change", () => { if (sT.value !== aktif) pilihTab(sT.value, tombol); });
+        const pT = h("div", {class: "dl-pilih dl-tampil-pilih"}, ikon(diPeta ? "pin" : aktif === "laporan_masuk" ? "daftar" : "simpan"), hiasPilih(sT));
+        let tb = [];
+        const isiKontrol = [pT];
+        if (urut.length > 1) {
+          tb = urut.map(k => { const x = sek.find(y => kel(y) === k), ikk = KELOMPOK[nama(x)]?.[1];
+            const b = h("button", {type: "button", role: "tab", "aria-selected": String(k === kini), tabindex: k === kini ? "0" : "-1", "data-seksi": k}, (ikk && aktif !== "gunungapi" ? ikon(ikk === "banjir" ? (JN[aktif]?.ik || "banjir") : ikk) : x.querySelector(".ex-jd h3 svg")?.cloneNode(true) || ikon("daftar")), h("span", {teks: k}));
+            b.addEventListener("click", () => { seksiNama = k; seksiSlot(); }); return b; });
+          const nb = h("div", {class: "dl-seksi", role: "tablist", "aria-label": "Bagian halaman"}, ...tb);
+          nb.addEventListener("keydown", e => { const i = tb.indexOf(document.activeElement), ke = {ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tb.length - 1}[e.key];
+            if (i < 0 || ke == null) return; e.preventDefault(); tb[(ke + tb.length) % tb.length].click(); });
+          isiKontrol.push(nb);
+        }
+        const kontrol = h("div", {class: "dl-kontrol"}, ...isiKontrol);
+        const pertama = sek.find(x => kel(x) === kini), hd = pertama?.querySelector(":scope > .ex-hd"), alat = p.querySelector(".bd-alat");
+        if (hd) { hd.classList.add("dl-hd-kontrol"); hd.prepend(kontrol); }
+        else if (alat) { kontrol.classList.add("dl-kontrol-peta"); alat.prepend(kontrol); }
+        else { kontrol.classList.add("dl-kontrol-lepas"); p.prepend(kontrol); }
+        if (fokusTab) (fokusTab === "pilih" ? kontrol.querySelector(".dl-pp-btn") : kontrol.querySelector(`[data-seksi="${fokusTab}"]`))?.focus({preventScroll: true});
       };
       const pasangBatang = k => { const p = panel[k]; if (!p || k.startsWith("laporan")) return;
         if (k === "ringkasan") { const al = p.querySelector(".bd-alat"); if (al && !al.querySelector(".dl-jenis-peta")) al.prepend(batang()); return; }   // Data Bencana: pemilih jenis di bilah atas petanya sendiri
@@ -1170,7 +1224,8 @@
       seksiSlot(); app.classList.add("dl-dalam");
       /* periode jadi picker ringkas supaya bilah peta muat sebaris (pemilik 12 Nov 2026 "ini semua agar sebaris") */
       const sPer = h("select", {"aria-label": "Periode"}, ...PERIODE.map(([n, t]) => h("option", {value: String(n), teks: t}))); sPer.value = String(periode);
-      const terapPer = () => { for (const k of Object.keys(dataTerakhir)) if (k !== aktif) delete dataTerakhir[k], sudahBuka.delete(k);   // tab lain dihitung ulang saat dibuka
+      /* QA 25 Nov 2026: tab lain dihitung ulang dari data tersimpan saat dibuka (tanpa unduh ulang dan tanpa "Memuat…") */
+      const terapPer = () => { for (const k of Object.keys(dataTerakhir)) if (k !== aktif) sudahBuka.delete(k);
         if (aktif === "karhutla") { if (dataKarhutla) window.DalopsKarhutla.render(panel.karhutla, dataKarhutla, alat()); }
         else { if (dataKarhutla) sudahBuka.delete("karhutla");
           if (dataTerakhir[aktif]) render(...dataTerakhir[aktif], aktif); } };
@@ -1179,7 +1234,11 @@
       const rTgl = h("span", {class: "dl-per-rentang", hidden: true}, tMulai, h("span", {class: "dl-per-sd", teks: "sampai"}), tSampai);
       const geser = (t, n) => new Date(Date.parse(t + "T00:00:00Z") + n * 864e5).toISOString().slice(0, 10);
       const ubahTgl = () => { const dari = tMulai.value, sampai = tSampai.value; tMulai.max = sampai || tMulai.max; tSampai.min = dari;
-        if (!dari || !sampai || dari > sampai) return; rentang = {dari, sampai}; terapPer(); };
+        if (!dari || !sampai || dari > sampai) return; clearTimeout(tTgl);
+        /* QA 25 Nov 2026: tunda 500 ms (ketik tanggal memicu change tiap ruas) dan kembalikan fokus ke kolom yang sama sesudah panel digambar ulang */
+        tTgl = setTimeout(() => { const f = document.activeElement, lbl = f && pPer.contains(f) ? f.getAttribute("aria-label") : null; rentang = {dari, sampai}; terapPer();
+          if (lbl) setTimeout(() => { const n = pPer.querySelector(`[aria-label="${lbl}"]`); if (n && document.activeElement !== n) n.focus({preventScroll: true}); }, 150); }, 500); };
+      let tTgl = 0;
       tMulai.addEventListener("change", ubahTgl); tSampai.addEventListener("change", ubahTgl);
       sPer.addEventListener("change", () => { const n = +sPer.value; if (n === periode) return; periode = n; rTgl.hidden = n !== 0;
         if (n === 0) { const d = dataTerakhir[aktif]?.[0], akhir = d?.hari || new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
@@ -1190,7 +1249,7 @@
       const pPer = h("div", {class: "dl-pilih dl-per-pilih", role: "group", "aria-label": "Periode"}, ikon("kalender"), hiasPilih(sPer), rTgl);
       const segarPer = () => { pPer.hidden = aktif === "gunungapi" || aktif === "ringkasan" || aktif.startsWith("laporan"); };
       const lamaSegar = dlSegar; dlSegar = () => { lamaSegar(); segarPer(); const al = panel[aktif]?.querySelector(".maplibregl-map .dl-peta-alat"); if (al && !al.contains(pPer)) al.insertBefore(pPer, al.querySelector(".dl-semua-peta")); }; segarPer();
-      app.replaceChildren(h("div", {class: "db-kanan"}, judul, pPer, ...Object.values(panel)));
+      app.replaceChildren(h("div", {class: "db-kanan"}, judul, pPer, ...Object.values(panel)));   // tanpa bilah tampilan (pilihan C): slot hanya pemegang tanda, pemilih ada di kepala kartu
     } else {
       const nav = h("aside", {class: "db-nav dl-nav"}, h("div", {class: "db-nav-id"}, h("b", {teks: "Pantau Dalops"}), h("small", {teks: "Kejadian aktif per jenis bencana"})), seg);
       app.classList.add("db-a");

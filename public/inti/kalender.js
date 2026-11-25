@@ -55,12 +55,15 @@ function gambar() {
   }
   const top = K.terbanyak ? teratas(jm, t => t <= hi && bisa(t), K.terbanyak.n || 6) : [];
   const awal = (K.awal || Object.keys(jm).sort()[0] || hi).slice(0, 7);
+  /* fokus dipulihkan sesudah isi diganti (QA 25 Nov 2026): tombol bulan atau tanggal yang sama, supaya pengguna papan ketik tidak terlempar ke awal dialog */
+  const fk = d.contains?.(document.activeElement) ? document.activeElement : null, kunci = fk?.dataset?.geser != null ? `[data-geser="${fk.dataset.geser}"]` : fk?.dataset?.t ? `.kal-grid [data-t="${fk.dataset.t}"]` : null;
   d.innerHTML = `<div class="kal-kop"><b>${esc(K.judul)}</b><button type="button" class="kal-x" aria-label="Tutup">✕</button></div>
     <div class="kal-nav"><button type="button" data-geser="-1" aria-label="Bulan sebelumnya"${bulan <= awal ? " disabled" : ""}>‹</button><b>${BL[m - 1]} ${y}</b><button type="button" data-geser="1" aria-label="Bulan berikutnya"${bulan >= hi.slice(0, 7) ? " disabled" : ""}>›</button></div>
     <div class="kal-grid" role="grid"><span class="kal-hr">Sen</span><span class="kal-hr">Sel</span><span class="kal-hr">Rab</span><span class="kal-hr">Kam</span><span class="kal-hr">Jum</span><span class="kal-hr">Sab</span><span class="kal-hr">Min</span>${sel}</div>
     ${K.rentang ? `<p class="kal-petunjuk">${K.mulai ? `Mulai ${pendek(K.mulai)}. Ketuk tanggal akhir, atau ketuk tanggal yang sama untuk satu hari.` : "Ketuk tanggal awal, lalu tanggal akhir."}</p>` : ""}
     ${K.ket ? `<p class="kal-ket">${esc(K.ket)}</p>` : ""}
     ${top.length ? `<div class="kal-top"><span>${esc(K.terbanyak.judul || "Terbanyak")}</span>${top.map(t => `<button type="button" data-t="${t}">${pendek(t)} <b>${rb(jm[t])}</b></button>`).join("")}</div>` : ""}`;
+  if (kunci) { const el = d.querySelector?.(kunci); (el && !el.disabled ? el : d.querySelector?.(".kal-nav button:not([disabled]), .kal-grid button:not([disabled])"))?.focus(); }
 }
 async function buka(o) {
   const d = dialog(), n = K = {...o, judul: o.judul || "Pilih tanggal", data: null, bulan: ((o.rentang ? o.terpilih?.[1] : o.terpilih) || o.hariIni).slice(0, 7), mulai: null};

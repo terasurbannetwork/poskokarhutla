@@ -113,9 +113,14 @@
 
     // filter
     const chips = kategoriAda.map(k => { const [lbl, ik, w] = kat(k);
-      const b = h("button", {type: "button", class: DAS ? "db-jenis" : "dt-chip", "aria-pressed": String(st.kat.has(k)), "data-k": k}, warnai(h("i", {"aria-hidden": "true"}), w, "background"), ikon(ik), h("span", {teks: lbl}), h("b", {class: "dt-chip-n"}));
+      const b = h("button", {type: "button", class: DAS ? "db-jenis" : "dt-chip", "aria-pressed": String(st.kat.has(k)), "data-k": k}, warnai(h("i", {"aria-hidden": "true"}), w, "background"), ikon(ik), h("span", {class: "dt-geser", title: lbl}, h("span", {teks: lbl})), h("b", {class: "dt-chip-n"}));   // nama dibungkus: yang terpotong digeser bolak-balik (pemilik 25 Nov 2026)
       b.addEventListener("click", () => { st.kat.has(k) ? st.kat.delete(k) : st.kat.add(k); if (!st.kat.size) st.kat.add(k); segarChip(); gambar(); }); return b; });
     const segarChip = () => chips.forEach(b => b.setAttribute("aria-pressed", String(st.kat.has(b.dataset.k))));
+    /* nama kategori yang lebih panjang dari pilnya digeser pelan bolak-balik supaya terbaca utuh (pemilik 25 Nov 2026 "animasi geser2 teksnya");
+       jarak geser = lebar yang terpotong, durasi ikut jarak; diukur ulang saat lebar berubah. Gerak dimatikan bila pengguna memilih kurangi gerakan (CSS). */
+    const ukurGeser = () => { for (const w of akar.querySelectorAll(".dt-geser")) { const t = w.firstElementChild, lebih = Math.ceil(t.getBoundingClientRect().width) - w.clientWidth;   // span inline: scrollWidth selalu 0, lebar diukur dari kotaknya
+      w.classList.toggle("geser", lebih > 2); if (lebih > 2) { w.style.setProperty("--geser", -lebih + "px"); w.style.setProperty("--durasi", Math.max(4, 2.5 + lebih / 18).toFixed(1) + "s"); } } };
+    let rafGeser = 0; new ResizeObserver(() => { if (!rafGeser) rafGeser = requestAnimationFrame(() => { rafGeser = 0; ukurGeser(); }); }).observe(akar);
     const bAlam = h("button", {type: "button", class: "dt-btn-teks", teks: "Bencana alam"}), bSemua = h("button", {type: "button", class: "dt-btn-teks", teks: "Semua kategori"});
     bAlam.addEventListener("click", () => { st.kat = alam(); segarChip(); gambar(); });
     bSemua.addEventListener("click", () => { st.kat = new Set(kategoriAda); segarChip(); gambar(); });
@@ -212,14 +217,27 @@
       sumberCetak, filter, ringkasan, tabList, ...Object.values(panel), status, tip);
 
     /* ---------- tooltip ---------- */
-    const tampilTip = (e, isi) => { tip.replaceChildren(...isi); tip.hidden = false;
-      const r = (e.currentTarget || e.target).getBoundingClientRect?.(), x = e.clientX ?? (r.left + r.width / 2), y = e.clientY ?? r.top;
-      const lebar = tip.offsetWidth, tinggi = tip.offsetHeight;
+    /* QA 25 Nov 2026: isi tooltip hanya dibangun ulang saat pindah elemen, ukurannya disimpan; posisi diatur sekali per bingkai (tanpa paksa layout tiap gerak tetikus) */
+    let tipEl = null, tipUk = [0, 0], tipXY = null, tipRaf = 0;
+    const letakTip = () => { tipRaf = 0; if (!tipXY) return; const [x, y] = tipXY, [lebar, tinggi] = tipUk;
       tip.style.left = Math.min(window.innerWidth - lebar - 8, Math.max(8, x + 14)) + "px"; tip.style.top = Math.max(8, y - tinggi - 12) + "px"; };
-    const sembunyiTip = () => (tip.hidden = true);
-    const ikat = (el, isi, label) => { el.setAttribute("tabindex", "0"); el.setAttribute("role", "img"); el.setAttribute("aria-label", label);
-      el.addEventListener("pointermove", e => tampilTip(e, isi())); el.addEventListener("pointerleave", sembunyiTip);
-      el.addEventListener("focus", e => tampilTip({target: el, currentTarget: el}, isi())); el.addEventListener("blur", sembunyiTip); };
+    const tampilTip = (e, isi) => { const el = e.currentTarget || e.target;
+      if (el !== tipEl || tip.hidden) { tipEl = el; tip.replaceChildren(...isi()); tip.hidden = false; tipUk = [tip.offsetWidth, tip.offsetHeight]; }
+      const r = e.clientX == null ? el.getBoundingClientRect?.() : null; tipXY = [e.clientX ?? (r.left + r.width / 2), e.clientY ?? r.top];
+      if (!tipRaf) tipRaf = requestAnimationFrame(letakTip); };
+    const sembunyiTip = () => { tip.hidden = true; tipEl = null; tipXY = null; };
+    /* satu titik Tab per grafik (roving tabindex, QA 25 Nov 2026): butir lain tabindex -1, panah kiri/kanan/atas/bawah, Home, End berpindah di grafik yang sama */
+    const ikat = (el, isi, label) => { el.setAttribute("tabindex", "-1"); el.dataset.dtFokus = ""; el.setAttribute("role", "img"); el.setAttribute("aria-label", label);
+      el.addEventListener("pointermove", e => tampilTip(e, isi)); el.addEventListener("pointerleave", sembunyiTip);
+      el.addEventListener("focus", () => tampilTip({target: el, currentTarget: el}, isi)); el.addEventListener("blur", sembunyiTip); };
+    const grupFokus = el => [...(el.closest("svg, .dt-gulir, table") || akar).querySelectorAll("[data-dt-fokus]")];
+    let rovRaf = 0;
+    const rove = () => { rovRaf = 0; for (const g of akar.querySelectorAll("svg, .dt-gulir, table")) { const b = [...g.querySelectorAll(":scope [data-dt-fokus]")].filter(x => x.closest("svg, .dt-gulir, table") === g);
+      if (b.length && !b.some(x => x.tabIndex === 0)) b[0].tabIndex = 0; } };
+    new MutationObserver(() => { if (!rovRaf) rovRaf = requestAnimationFrame(rove); }).observe(akar, {childList: true, subtree: true});
+    akar.addEventListener("keydown", e => { const el = e.target.closest?.("[data-dt-fokus]"); if (!el) return;
+      const b = grupFokus(el), i = b.indexOf(el), ke = {ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: b.length - 1}[e.key];
+      if (ke == null || !b[ke]) return; e.preventDefault(); el.tabIndex = -1; b[ke].tabIndex = 0; b[ke].focus(); });
     const barisTip = (judul, baris) => [h("b", {teks: judul}), ...baris.map(([w, l, v]) => h("span", {class: "dt-tip-b"}, w ? warnai(h("i"), w, "background") : h("i", {class: "dt-tip-kosong"}), h("span", {teks: l}), h("strong", {teks: v})))];
 
     /* ---------- grafik batang per tahun (bertumpuk) + garis rata-rata 5 tahun ---------- */
@@ -421,8 +439,8 @@
       wadah.replaceChildren(h("ol", {class: "dt-hb-daftar"}, daftar.filter(x => x.v).map((x, i) => {
         const bar = h("span", {class: "dt-hb-bar"}); bar.style.inlineSize = (x.v / maks * 100).toFixed(2) + "%";
         if (perKat) for (const [kk, v] of [...perKat(x)].sort((a, b) => URUT_KAT.indexOf(a[0]) - URUT_KAT.indexOf(b[0]))) { const seg = warnai(h("i"), kat(kk)[2], "background"); seg.style.flexGrow = String(v); bar.append(seg); } else bar.append(warnai(h("i"), x.warna || "--brand2", "background"));
-        const isi = [h("span", {class: "dt-hb-no", teks: String(i + 1)}), h("span", {class: "dt-hb-nama"}, x.ikon ? ikon(x.ikon) : null, h("span", {teks: x.nama})), h("span", {class: "dt-hb-jalur"}, bar),
-          h("b", {teks: teks ? teks(x.v) : nilaiTeks(k, x.v)}), h("small", {teks: teks ? "" : F(Math.round(x.v / jumlah * 1000) / 10) + "%"})];
+        const isi = [h("span", {class: "dt-hb-no", teks: String(i + 1)}), h("span", {class: "dt-hb-nama"}, x.ikon ? ikon(x.ikon) : null, h("span", {teks: x.nama, title: x.nama})), h("span", {class: "dt-hb-jalur"}, bar),
+          h("b", {teks: teks ? teks(x.v) : SATUAN[k] === "rp" ? nilaiTeks(k, x.v) : F(Math.round(x.v)) + (SATUAN[k] === "ha" ? " ha" : "")})   /* angka penuh di semua baris: dulu 18.951 jadi "19 ribu" sementara 9.516 tetap utuh (QA 25 Nov 2026) */, h("small", {teks: teks ? "" : F(Math.round(x.v / jumlah * 1000) / 10) + "%"})];
         const baris = klik ? h("button", {type: "button", class: "dt-hb-baris", title: `Saring ke ${x.nama}`}, isi) : h("div", {class: "dt-hb-baris"}, isi);
         if (klik) baris.addEventListener("click", () => klik(x));
         if (perKat) ikat(baris, () => barisTip(x.nama, [...[...perKat(x)].sort((a, b) => b[1] - a[1]).map(([kk, v]) => [kat(kk)[2], kat(kk)[0], nilaiPenuh(k, v)]),
@@ -483,7 +501,7 @@
       for (const r of T.tahun_kab) { if (!lolos(r)) continue; const w = tingkatKab ? r[2] : T.kab[r[2]][1]; if (!m.has(w)) m.set(w, KOL_REKAP.map(() => 0)); const a = m.get(w); KOL_REKAP.forEach((k, j) => (a[j] += ambilNilai(r, k))); }
       const baris = [...m].map(([w, a]) => [tingkatKab ? T.kab[w][2] : PROV[w] || w, ...a.map(v => Math.round(v * 10) / 10)]).sort((a, b) => b[1] - a[1]);
       const tot = KOL_REKAP.map((_, j) => baris.reduce((x, r) => x + r[j + 1], 0));
-      const kolom = [{nama: tingkatKab ? "Kabupaten/kota" : "Provinsi"}, ...KOL_REKAP.map(k => ({nama: KEPALA_PENDEK[k], angka: true}))];
+      const kolom = [{nama: tingkatKab ? "Kabupaten/kota" : "Provinsi"}, ...KOL_REKAP.map(k => ({nama: KEPALA_PENDEK[k], angka: true, ...(k === "kejadian" ? {teks: v => F(Math.round(v))} : {})}))];   // kejadian lintas kab dibagi rata di data: tampil bulat seperti ringkasan (QA 25 Nov 2026)
       rekapData = {kepala: kolom.map(c => c.nama), baris};
       bTab.rekap.replaceChildren(tabelUrut("dtRekap", `Rekap ${wilNama()}, ${st.dari} sampai ${st.sampai}`, kolom, baris, {kakiTotal: ["Jumlah", ...tot]}));
     }
@@ -555,7 +573,7 @@
     const gambarTab = () => { if (st.tab === "tren") { trenKej(); trenKorban(); trenRumah(); trenBulan(); trenMusim(); trenHari(); }
       else if (st.tab === "sebaran") gambarSebaran(); else if (st.tab === "profil") gambarProfil(); else if (st.tab === "tabel") { gambarRekap(); gambarDaftar(); } };
     let antre = false;
-    function gambar() { if (antre) return; antre = true; nanti(() => { antre = false; gambarRingkasan(); gambarTab(); kirimPeta(); if (akar.id === "dtWadah") history.replaceState(history.state, "", tautan()); }); }
+    function gambar() { if (antre) return; antre = true; nanti(() => { antre = false; sembunyiTip();   /* elemen yang di-hover diganti: tanpa ini tooltip menggantung */ gambarRingkasan(); gambarTab(); kirimPeta(); if (akar.id === "dtWadah") history.replaceState(history.state, "", tautan()); }); }
     /* cetak A4: semua tab digambar, hanya wadah ini yang tercetak (kelas jalur di leluhurnya) */
     const jalur = []; for (let e = akar.parentElement; e && e !== document.documentElement; e = e.parentElement) jalur.push(e);
     const siapCetak = (hanyaProfil) => { document.documentElement.classList.add("dt-mencetak"); document.documentElement.classList.toggle("dt-cetak-profil", !!hanyaProfil);
