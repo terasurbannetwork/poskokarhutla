@@ -249,7 +249,7 @@ def t_kuantil(df, p):
         f = lambda u: (1 + u * u / df) ** (-(df + 1) / 2)
         h = x / n
         s = f(0) + f(x) + sum((4 if i % 2 else 2) * f(i * h) for i in range(1, n))
-        c = math.gamma((df + 1) / 2) / (math.sqrt(df * math.pi) * math.gamma(df / 2))
+        c = math.exp(math.lgamma((df + 1) / 2) - math.lgamma(df / 2)) / math.sqrt(df * math.pi)   # lgamma: df besar (ratusan klaster) tak meluap
         return .5 + c * s * h / 3
     lo, hi = 0.0, 50.0
     for _ in range(60):
