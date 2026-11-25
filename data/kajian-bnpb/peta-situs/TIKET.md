@@ -10,7 +10,7 @@ Ambil satu tiket dan kerjakan hanya cakupannya. Urutannya mengikuti `DESAIN-TEKN
 | PS-03 | `menuUntuk`, `GET /api/peta-situs`, uji per peran | `warga-api` → `guard-api`, `security-reviewer` | PS-01 | U2 | belum |
 | PS-04 | Nav admin Worker dari registri, menggantikan `GRUP_ADMIN`, `GRUP_STAF`, `SUB`, `RUANG_LAPORAN` | `warga-api` → `guard-api` | PS-03 | U3 | belum |
 | PS-05 | Kepala publik dengan Lapor dan Masuk; kaki publik dari JSON publik | `inti-layar` + `layar-peta` → `inp-reviewer`, `selera-angka` | PS-01 | U1, U5, U6 | belum |
-| PS-05b | `/prediksi` memuat kepala bersama (`details.bencana` + `/inti/kepala.js`) supaya Lapor dan Masuk juga tampil di sana | `prediksi` → `inp-reviewer` | PS-05 | U5 | belum |
+| PS-05b | `/prediksi` memuat kepala bersama (`details.bencana` + `/inti/kepala.js`) supaya Lapor dan Masuk juga tampil di sana | `prediksi` → `inp-reviewer` | PS-05 | U5 | selesai |
 | PS-05c | Kepala HP tidak meluap: ikon kanan masuk satu menu tiga titik di ≤640px, tanpa memindah elemen | `inti-layar` → `inp-reviewer` | PS-05 | ukur 9 halaman 360/390/1440 | selesai |
 | PS-06 | Menu staf dan pintu `/bnpb` dari `/api/peta-situs`, delapan grup, dipasang di semua `/bnpb/*` | `ruang-bnpb` → `inp-reviewer` | PS-03 | U2, U5 | belum |
 | PS-07 | Menu `/instansi`, `/petugas`, dan `/kemitraan` dari registri. Cookie `sesi_instansi` ber-`Path=/instansi` dan `/api/instansi`, jadi menu instansi memakai alias `GET /api/instansi/peta-situs`; pemegang kode saja (`x-kode`) mendapat menu tamu kecuali ditangani di sini | `warga-api`, `lapangan`, `kampus` | PS-03 | U1, U5 | belum |
