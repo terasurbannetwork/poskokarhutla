@@ -1,0 +1,77 @@
+name: Laporan Berkala (potongan harian dan berkas angka ke R2)
+
+# LB-10 (data/kajian-bnpb/laporan-berkala: ALUR 1, DESAIN-TEKNIS 1 dan 6, KEPUTUSAN D10).
+# Tidak commit, tidak terbit: hanya R2 privat berkala/ (bucket poskokarhutla-foto) lewat rakit.py, yang memakai put/get gudang.py.
+# 03.10 UTC = 10.10 WIB (Q26): data.yml 14.20 UTC dan titik.yml malam sudah menyegarkan DIBI dan karhutla hari kemarin.
+# Menghindari: 00:20 banjir, 01:10 gempa, 01:50 prediksi, 02:10 lintas, 02:30 kemitraan, 03:50 siklus, 04:20 kaji.
+# Versi beku tidak pernah ditulis di sini (milik rute Bekukan); potongan yang sudah ada tidak ditimpa (--timpa TIDAK PERNAH dipakai).
+# Rahasia: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID (sudah ada). Log hanya status sumber dan jumlah hari, bukan isi dalops.
+on:
+  schedule:
+    - cron: "10 3 * * *"
+  workflow_dispatch:
+    inputs:
+      periode:
+        description: "rakit ulang satu periode (jendela = periode yang jatuh hari ini menurut ALUR 1)"
+        type: choice
+        options: [jendela, harian, mingguan, bulanan, tahunan]
+        default: jendela
+      kode:
+        description: "kode periode: 2026-11-24, 2026-W47, 2026-10, atau 2025"
+        required: false
+
+permissions:
+  contents: read
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  TZ: Asia/Jakarta
+
+jobs:
+  rakit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency: {group: berkala, cancel-in-progress: false}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Uji perakit
+        id: uji
+        run: |
+          python3 -I scripts/berkala/hitung.py uji
+          python3 -I scripts/berkala/rakit.py uji
+      - name: Pasang wrangler sekali
+        run: |
+          npm i --prefix "$RUNNER_TEMP/w" wrangler@4.42.0
+          echo "W=$RUNNER_TEMP/w/node_modules/.bin/wrangler" >> "$GITHUB_ENV"
+      - name: Potongan hari kemarin (tidak ditimpa bila sudah ada)
+        id: potong
+        run: python3 -I scripts/berkala/rakit.py --potong --wrangler "$W"
+      # ALUR 1: potongan dulu, lalu harian, mingguan, bulanan, tahunan; satu periode gagal tidak menghentikan berikutnya,
+      # tapi job tetap merah di akhir supaya kegagalan terlihat. Jalan juga bila potongan gagal (periode membaca potongan yang ada).
+      - name: Berkas angka periode
+        if: ${{ !cancelled() && steps.uji.outcome == 'success' }}
+        env:
+          PERIODE: ${{ inputs.periode }}
+          KODE: ${{ inputs.kode }}
+        run: |
+          daftar=()
+          if [ -n "$PERIODE" ] && [ "$PERIODE" != jendela ]; then
+            [ -n "$KODE" ] || { echo "::error::dispatch periode $PERIODE butuh kode"; exit 1; }
+            daftar+=("$PERIODE $KODE")
+          else
+            daftar+=("harian $(date -d yesterday +%F)")
+            [ "$(date +%u)" -le 3 ] && daftar+=("mingguan $(date -d '7 days ago' +%G-W%V)")
+            [ "$(date +%-d)" -le 20 ] && daftar+=("bulanan $(date -d "$(date +%Y-%m-01) -1 day" +%Y-%m)")
+            [ "$(date +%m)" = 01 ] && daftar+=("tahunan $(( $(date +%Y) - 1 ))")
+          fi
+          gagal=0
+          for pk in "${daftar[@]}"; do
+            read -r p k <<< "$pk"
+            echo "::group::$p $k"
+            python3 -I scripts/berkala/rakit.py --periode "$p" --kode "$k" --wrangler "$W" || { echo "::error::rakit $p $k gagal"; gagal=1; }
+            echo "::endgroup::"
+          done
+          exit $gagal
