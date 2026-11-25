@@ -5794,6 +5794,23 @@ function mtUjiStatus() {
     </div></article>`);
   }).catch(() => {});
 }
+/* Peluang api (peluang_api_uji.json, KI-73): uji bersih 2026 pada jumlah alarm sama; bukan prakiraan operasional */
+function mtPeluangApi() {
+  const wadah = $("#metode"); if (!wadah || wadah.querySelector("[data-mt-peluangapi]")) return;
+  muatJSON("data/peluang_api_uji.json").then(U => {
+    const B = U?.uji_bersih_2026; if (!B || wadah.querySelector("[data-mt-peluangapi]")) return;
+    const e3 = v => typeof v === "number" ? v.toLocaleString("id-ID", {minimumFractionDigits: 3, maximumFractionDigits: 3}) : "–";
+    const bar = ["firespot_k1", "firespot_k2", "firespot_k3"].filter(k => B[k]?.ets).map(k => {
+      const x = B[k].ets;
+      return `<tr><td>Firespot hari +${esc(k.slice(-1))}</td><td class="n num">${fmt(B[k].n_baris)}</td><td class="n num">${e3(x.model_A)}</td><td class="n num">${e3(x.pers_asli)}</td><td class="n num">${e3(x.klim_A)}</td></tr>`;
+    }).join(""); if (!bar) return;
+    const th = (t, ket, n) => `<th${n ? ' class="n"' : ""} title="${esc(ket)}">${t}</th>`;
+    wadah.insertAdjacentHTML("beforeend", `<article class="ex ex-std" data-mt-peluangapi><header class="ex-hd"><span class="ex-ey">Metode</span><div class="ex-jd"><h3>Uji balik peluang api</h3></div></header><div class="ex-bd">
+      <div class="ex-tabel"><table><thead><tr>${th("Sasaran", "Kluster berpola firespot di kab/kota pada hari target, uji bersih 1 Jan sampai 12 Okt 2026")}${th("Kab-hari", "Jumlah kab/kota-hari dalam uji bersih", 1)}${th("ETS model", "Equitable threat score model peluang, pada jumlah alarm yang sama dengan persistensi asli", 1)}${th("ETS persistensi", "ETS persistensi asli (kondisi hari ini dianggap berlaku di hari target)", 1)}${th("ETS klimatologi", "ETS klimatologi kab x bulan, pada jumlah alarm yang sama", 1)}</tr></thead><tbody>${bar}</tbody></table></div>
+      <p style="font-size:12px;color:var(--ink2)">Dibandingkan pada jumlah alarm yang sama. Belum menjadi prakiraan operasional: fase bayangan dengan cuaca waktu-nyata belum berjalan.</p>
+    </div></article>`);
+  }).catch(() => {});
+}
 function renderMetode() {
   const M = S.meta || {}, d = M.dbscan || {};
   /* pembantu untuk rincian teknis (isi versi lama, tetap utuh) */
@@ -6023,7 +6040,7 @@ Indeks sel = eps / (111,195 · cos 12°) derajat; tetangga dicari di 3 × 3 sel
       "Pusat cluster adalah rata-rata, bisa jatuh di luar area api.", "Firespot: aturan ya dan mungkin berasal dari paparan Kemenhut yang disesuaikan; uji balik hanya mencakup api besar, jadi dampaknya pada api kecil belum diukur.", "Peta gambut global melebihkan luas gambut ± 2,5 kali angka BBSDLP, jadi hanya dipakai sebagai tanda ya/tidak."]});
 
   B.push({ik: "centang", j: "Status taktis dan prioritas", sub: "Empat status tindakan dan siapa yang dipadamkan dulu",
-    singkat: `Tiap cluster diberi satu dari empat status tindakan: ${(M.status || []).map(s => esc(s).toLowerCase()).join(", ")}. Statusnya ditentukan dua hal: seberapa besar api yang terlihat satelit, dan seberapa berbahaya cuacanya. Cuaca hanya boleh menaikkan status, tidak pernah menurunkannya. Cluster prioritas lalu diurutkan dengan skor supaya regu tahu mana yang didatangi lebih dulu.`,
+    singkat: `Tiap cluster diberi satu dari empat status tindakan: ${(M.status || []).map(s => esc(s).toLowerCase()).join(", ")}. Status ini menggambarkan keparahan kluster saat ini, bukan prakiraan. Statusnya ditentukan dua hal: seberapa besar api yang terlihat satelit, dan seberapa berbahaya cuacanya. Cuaca hanya boleh menaikkan status, tidak pernah menurunkannya. Cluster prioritas lalu diurutkan dengan skor supaya regu tahu mana yang didatangi lebih dulu.`,
     alur: [["d", "api", "Ukur besar api", "S1, S2, S3 dari front 24 jam dan hari menyala"], ["d", "awan", "Kelas cuaca", "kelas FWI BMKG"], ["o", "tabel", "Matriks status", "gabungan besar api dan cuaca"],
       ["u", "centang", "Uji prioritas", "front ≥ 15 piksel dan FWI ≥ 7"], ["h", "urut", "Urutkan", "skor di dalam wilayah kerja tiap Daops"]],
     contoh: () => {
@@ -6685,6 +6702,7 @@ rasio   = 3,0 untuk jendela yang berakhir sampai 2 Nov 2026 (masuk 180, keluar 9
 
   $("#metode").querySelectorAll("[data-buka]").forEach(b => b.onclick = () => bukaTab(b.dataset.buka));
   mtUjiStatus();
+  mtPeluangApi();
   /* bab tambahan: batasan peluang (inti/peluang.js), catatan sensor kumulatif, dan titik industri yang dibuang */
   Promise.all([typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, muatJSON("data/kumulatif.json").catch(() => null), muatJSON("data/prospektif.json").catch(() => null), muatJSON("data/gerbang_model.json").catch(() => null)]).then(([pl, kum, pr, gb]) => {
     mtProspektif(pr, gb);

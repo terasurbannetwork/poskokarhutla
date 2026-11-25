@@ -72,6 +72,10 @@
   "public/data/kemitraan/masalah_ikd.json": {
    "alasan": "Bahan antara pipeline Kemitraan Kampus: dibaca scripts/kemitraan/cocok_pakar.py (ikd.muat) lalu butirnya masuk keluaran pencocokan bulanan di R2 (KM-I01). Tidak dibaca layar langsung; dijadwalkan lewat kemitraan-pakar.yml bulanan.",
    "tanggal": "2026-11-24"
+  },
+  "public/data/peluang_api_uji.json": {
+   "alasan": "Vonis uji pra-registrasi KI-72 (sidik d5c5cffd413ed332), dibuka satu kali 25 Nov 2026 dan dibekukan; dibaca kartu Metode karhutla. Sengaja tanpa jadwal: menjalankan ulang berarti membuka uji kedua. Pengecualian dicabut saat fase bayangan harian (cuaca waktu-nyata) dipasang dengan keluaran sendiri.",
+   "tanggal": "2026-11-25"
   }
  }
 }
