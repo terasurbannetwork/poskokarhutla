@@ -50,7 +50,7 @@ if __name__ == "__main__":
     # self-check: kolom liar dibuang, baris cacat dibuang, tulis ke berkas
     kotor = [{"tanggal": "2026-01-01", "jenis": "banjir", "sumber": "warga", "status": "terjadi", "n": 2, "kec": "A", "id": "x", "lat": 1.0}, {"n": "2"}, "x"]
     assert bersih(kotor) == [{"tanggal": "2026-01-01", "prov": None, "kab": None, "kec": "A", "jenis": "banjir", "status": "terjadi", "sumber": "warga", "n": 2}]
-    if len(sys.argv) == 1:
+    if sys.argv[1:] in ([], ["uji"]):
         with tempfile.TemporaryDirectory() as t:
             m = os.path.join(t, "e.json"); json.dump({"sejak": "2026-01-01", "label": kotor}, open(m, "w"))
             AKAR = t; main(["--dari", m]); d = json.load(open(os.path.join(t, "data/raw/label_lapangan.json")))

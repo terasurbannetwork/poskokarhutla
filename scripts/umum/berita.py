@@ -636,7 +636,7 @@ def uji():
 
 
 def cli(argv):
-    if not argv:
+    if not argv or argv == ["uji"]:
         return uji()
     L = muat(f"scripts/berita/{argv[0]}.py", "berita_" + argv[0])
     if len(argv) > 1 and argv[1] == "uji":

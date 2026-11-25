@@ -163,7 +163,7 @@ def olah(posts, L, geo, sekarang):
 
 
 def main(argv):
-    if "--uji" in argv:
+    if "--uji" in argv or argv == ["uji"]:
         return uji()
     bencana = argv[argv.index("--bencana") + 1] if "--bencana" in argv else "karhutla"
     try:
