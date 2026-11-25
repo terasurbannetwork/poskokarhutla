@@ -494,7 +494,13 @@ const KT = {
   gempa_d1: ["SELECT kode, kode cid, mulai w, utama_id, lat, lon FROM gempa_kejadian WHERE mulai >= ?1 AND mulai < ?2 AND (mulai > ?3 OR kode > ?4) ORDER BY mulai, kode LIMIT ?5"],   // gempa_kejadian_mulai
   lapsus: ["SELECT l.operasi_id || ':' || l.kejadian_id kode, l.operasi_id || ':' || l.kejadian_id cid, l.dibuat w, k.jenis, k.prov, k.kab, k.mulai FROM lapsus_kejadian l JOIN logbook_kejadian k ON k.id = l.kejadian_id JOIN lapsus_operasi o ON o.id = l.operasi_id AND o.dummy = 0 WHERE k.dummy = 0 AND l.dibuat >= ?1 AND l.dibuat < ?2 AND (l.dibuat > ?3 OR l.operasi_id || ':' || l.kejadian_id > ?4) ORDER BY l.dibuat, l.operasi_id, l.kejadian_id LIMIT ?5"],   // lapsus_kejadian_dibuat
   /* LJ-14 (lapor-lanjutan): hanya tiket induk laporan tingkat bpbd yang punya berkas data lanjutan; tanpa WA, nama, atau isi. kab berkode "32.71" diterjemahkan item() di kejadian_tautan.js. */
-  lapor_ai: ["SELECT s.nomor kode, s.nomor cid, s.terkirim w, s.kab, s.jenis FROM lapor_sesi s WHERE s.terkirim >= ?1 AND s.terkirim < ?2 AND (s.terkirim > ?3 OR s.nomor > ?4) AND s.tingkat = 'bpbd' AND EXISTS (SELECT 1 FROM lj_berkas b WHERE b.induk = s.nomor) ORDER BY s.terkirim, s.nomor LIMIT ?5"],   // lapor_sesi_terkirim; lj_berkas UNIQUE (induk, kab)
+  /* LK-10 (lapor-kejadian K87, A6): ditambah usulan staf lk_usulan (kode LU-, kab4 baku, jenis sudah jenis Buku Besar), hanya putaran terakhir per kejadian laporan.
+     mulai = terkirim tiket kejadian laporan (LEFT JOIN: GL- tanpa baris lapor_sesi jatuh ke waktu usulan di item()). Tanpa oleh, anggota, WA, desa, atau catatan. */
+  lapor_ai: ["SELECT s.nomor kode, s.nomor cid, s.terkirim w, s.kab, s.jenis, 0 usulan, NULL mulai FROM lapor_sesi s WHERE s.terkirim >= ?1 AND s.terkirim < ?2 AND (s.terkirim > ?3 OR s.nomor > ?4) AND s.tingkat = 'bpbd' AND EXISTS (SELECT 1 FROM lj_berkas b WHERE b.induk = s.nomor)"
+    + " UNION ALL SELECT u.kode kode, u.kode cid, u.waktu w, u.kab4 kab, u.jenis, 1 usulan, s.terkirim mulai FROM lk_usulan u LEFT JOIN lapor_sesi s ON s.nomor = u.kejadian_laporan WHERE u.waktu >= ?1 AND u.waktu < ?2 AND (u.waktu > ?3 OR u.kode > ?4)"
+    + " AND NOT EXISTS (SELECT 1 FROM lk_usulan v WHERE v.kejadian_laporan = u.kejadian_laporan AND v.putaran > u.putaran) ORDER BY w, cid LIMIT ?5",
+    // cadangan bila migrasi 0170 (lk_usulan) belum diterapkan: tiket LA- saja, supaya tiket tidak ikut hilang
+    "SELECT s.nomor kode, s.nomor cid, s.terkirim w, s.kab, s.jenis, 0 usulan, NULL mulai FROM lapor_sesi s WHERE s.terkirim >= ?1 AND s.terkirim < ?2 AND (s.terkirim > ?3 OR s.nomor > ?4) AND s.tingkat = 'bpbd' AND EXISTS (SELECT 1 FROM lj_berkas b WHERE b.induk = s.nomor) ORDER BY s.terkirim, s.nomor LIMIT ?5"],   // lapor_sesi_terkirim + lk_usulan_waktu; lj_berkas UNIQUE (induk, kab); lk_usulan_kejadian
 };
 export const KT_SQL = KT, KT_SUMBER = Object.keys(KT);
 /* KP-06 baca tautan per pasangan (sumber, kode): satu kueri per pasangan lewat UNIQUE (sumber, kode, dummy), dibatch; dummy = 0 didahulukan. Tanpa nama/WA/isi. */
@@ -504,8 +510,14 @@ export const ktTautan = async (env, p, pairs, dummyOk) => {
 };
 export const ktKab = async (env, p, ids) => ids.length ? (await sedia(env, p, "sk_kejadian_kab", "baca", "SELECT kejadian_id, kab4 FROM sk_kejadian_kab WHERE kejadian_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(ids)).all()).results : [];
 export const ktBaris = async (env, sumber, {lo, hi, w, id, batas}) => {
-  try { return (await env.DB.prepare(KT[sumber][0]).bind(Math.max(lo, w), hi, w, id, batas + 1).all()).results; }
-  catch (e) { if (sumber === "lapor_ai" && /no such table/i.test(String(e?.message))) return []; throw e; }   // migrasi 0161 belum diterapkan
+  const baca = sql => env.DB.prepare(sql).bind(Math.max(lo, w), hi, w, id, batas + 1).all().then(r => r.results);
+  const tanpaTabel = e => sumber === "lapor_ai" && /no such table/i.test(String(e?.message));
+  try { return await baca(KT[sumber][0]); }
+  catch (e) {
+    if (!tanpaTabel(e)) throw e;
+    if (!/lk_usulan/i.test(String(e?.message))) return [];   // migrasi 0161 belum diterapkan
+    try { return await baca(KT[sumber][1]); } catch (e2) { if (tanpaTabel(e2)) return []; throw e2; }   // 0170 belum: tiket LA- saja
+  }
 };
 
 /* KP-19 titik pengungsian (migrasi 0134_titik_pengungsian, 0135_meja_pengungsi_titik; src/pengungsian_titik.js). Hak dicek di rute; tidak ada rute publik. */

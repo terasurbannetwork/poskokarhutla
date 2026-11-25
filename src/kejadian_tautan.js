@@ -36,9 +36,17 @@ const jenisSah = (sumber, r) => {
   return JENIS_SAH.includes(j) ? j : null;
 };
 function item(sumber, r) {
-  if (sumber === "lapor_ai") {   // kab "32.71" -> prov "32" dan nama kab (pasang.py memetakan nama + prov ke kab4; bolak-balik diuji untuk 514 kab); kab tak dikenal = tanpa wilayah
-    const k4 = String(r.kab ?? "").replace(".", ""); r = {...r, jenis: JENIS_BUKU_BESAR[r.jenis] ?? r.jenis, prov: k4.slice(0, 2) || null, kab: Object.hasOwn(NAMA_KAB4, k4) ? NAMA_KAB4[k4] : null};
-    if (r.kab == null) return null;
+  if (sumber === "lapor_ai") {   // kab "32.71" (tiket) atau "3271" (usulan) -> prov "32" dan nama kab (pasang.py memetakan nama + prov ke kab4; bolak-balik diuji untuk 514 kab)
+    const k4 = String(r.kab ?? "").replace(".", ""), usulan = r.usulan === 1;
+    r = {...r, jenis: usulan ? r.jenis : JENIS_BUKU_BESAR[r.jenis] ?? r.jenis, prov: k4.slice(0, 2) || null, kab: Object.hasOwn(NAMA_KAB4, k4) ? NAMA_KAB4[k4] : null};
+    if (!usulan && r.kab == null) return null;   // tiket kab tak dikenal: tidak dikirim (tiket hanya menempel)
+    const jenis = jenisSah(sumber, r); if (!jenis) return null;
+    const o = {sumber, kode: r.kode, jenis};
+    if (r.prov != null) o.prov = r.prov;
+    if (r.kab != null) o.kab = r.kab;   // usulan kab tak dikenal: dikirim tanpa kab supaya pasang.py menjawab tanpa_wilayah (LK-10)
+    o.mulai = tgl(usulan ? r.mulai ?? r.w : r.w);
+    if (usulan) o.usulan_staf = true;
+    return o;
   }
   const jenis = jenisSah(sumber, r); if (!jenis) return null;
   const o = {sumber, kode: r.kode, jenis};
