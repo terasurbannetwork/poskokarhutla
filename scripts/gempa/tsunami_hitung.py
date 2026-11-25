@@ -228,18 +228,20 @@ def massa(nama, bingkai=1):
 
 # ---------------------------------------------------------------- tolok ukur
 QINIT_SOLITER = """subroutine qinit(meqn,mbc,mx,my,xlower,ylower,dx,dy,q,maux,aux)
-    ! gelombang soliter NTHMP BP01/BP04: eta = H sech^2(gam (x-X1)/d), u = -sqrt(g/d) eta (menuju pantai)
+    ! gelombang soliter NTHMP BP01/BP04: eta = H sech^2(gam (x-X1)/d), menuju pantai.
+    ! eksak=0: u = -sqrt(g/d) eta (deskripsi NTHMP, linier); eksak=1: u = -c eta/(d+eta), c = sqrt(g(d+H)) (soliter SWE nirlinier)
     use geoclaw_module, only: grav
     implicit none
     integer, intent(in) :: meqn,mbc,mx,my,maux
     real(kind=8), intent(in) :: xlower,ylower,dx,dy
     real(kind=8), intent(inout) :: q(meqn,1-mbc:mx+mbc,1-mbc:my+mbc)
     real(kind=8), intent(inout) :: aux(maux,1-mbc:mx+mbc,1-mbc:my+mbc)
-    real(kind=8) :: H, dd, X1, gam, x, eta
+    real(kind=8) :: H, dd, X1, gam, x, eta, eksak, cc, uu
     integer :: i, j
     open(unit=77, file='soliter.data', status='old')
-    read(77,*) H, dd, X1, gam
+    read(77,*) H, dd, X1, gam, eksak
     close(77)
+    cc = sqrt(grav*(dd+H))
     do i=1-mbc,mx+mbc
         x = xlower + (i - 0.5d0)*dx
         eta = 0.d0
@@ -247,7 +249,9 @@ QINIT_SOLITER = """subroutine qinit(meqn,mbc,mx,my,xlower,ylower,dx,dy,q,maux,au
         do j=1-mbc,my+mbc
             if (aux(1,i,j) < 0.d0) then
                 q(1,i,j) = max(0.d0, eta - aux(1,i,j))
-                q(2,i,j) = -sqrt(grav/dd) * eta * q(1,i,j)
+                uu = -sqrt(grav/dd) * eta
+                if (eksak > 0.5d0) uu = -cc * eta / (dd + eta)
+                q(2,i,j) = uu * q(1,i,j)
             else
                 q(1,i,j) = 0.d0
                 q(2,i,j) = 0.d0
@@ -261,8 +265,9 @@ end subroutine qinit
 COT = 19.85  # pantai 1:19,85 (NTHMP BP01/BP04)
 
 
-def spek_lereng(H_d, d=1.0, tau_akhir=60.0, tingkat=2, soliter=True, kasar=10):
-    """Spesifikasi pantai miring cot=19,85: kedalaman datar d, soliter H/d (None = air tenang). Bernilai skala d."""
+def spek_lereng(H_d, d=1.0, tau_akhir=60.0, tingkat=2, soliter=True, kasar=10, eksak=False, dry_d=1e-3, manning=0.0):
+    """Spesifikasi pantai miring cot=19,85: kedalaman datar d, soliter H/d (None = air tenang). Bernilai skala d
+    (tanpa gesekan; dengan manning > 0 hasil bergantung d, pakai d lab). eksak: kondisi awal soliter nirlinier; dry_d: ambang basah dalam d."""
     g = 9.81
     tau = math.sqrt(d / g)
     X0 = d * COT
@@ -280,7 +285,7 @@ def spek_lereng(H_d, d=1.0, tau_akhir=60.0, tingkat=2, soliter=True, kasar=10):
     spec = {"koordinat": 1, "kotak": [xl, xr, 0.0, ny * dxk], "sel": [nx, ny], "tfinal": tau_akhir * tau,
             "topo": [[2, "lereng.topotype2"]], "dtopo": [], "qinit_eta": [],
             "amr": {"tingkat": tingkat, "rasio": rasio, "gelombang_tol": (H_d or 0.02) * d / 10},
-            "manning": 0.0, "muka_laut": 0.0, "dry_tol": 1e-3 * d, "tanpa_dispersi": True,
+            "manning": manning, "muka_laut": 0.0, "dry_tol": dry_d * d, "tanpa_dispersi": True,
             "regioes": [[tingkat, tingkat, 0.0, 1e10, -14 * d, X0, 0.0, ny * dxk]] if tingkat > 1 else [],
             "fgmax": {"x1": xl + dxf / 2, "x2": X0 + 0.0, "y1": dxk * 1.5 + 0.0, "y2": dxk * 1.5, "dx": dxf,
                       "tstart": 0.0, "dt_check": tau / 4, "min_level": tingkat},
@@ -293,7 +298,7 @@ def spek_lereng(H_d, d=1.0, tau_akhir=60.0, tingkat=2, soliter=True, kasar=10):
     spec["fgmax"]["y2"] = spec["fgmax"]["y1"] + dxf
     if soliter and H_d:
         spec["qinit_f90"] = QINIT_SOLITER
-        spec["qinit_data"] = "%.15g %.15g %.15g %.15g\n" % (H_d * d, d, X1, gam)
+        spec["qinit_data"] = "%.15g %.15g %.15g %.15g %d\n" % (H_d * d, d, X1, gam, 1 if eksak else 0)
     return spec
 
 
@@ -319,6 +324,13 @@ def jalankan_lereng(nama, H_d, **kw):
     tulis_topo_lereng(spec["d"], spec, topo)
     spec["topo"] = [[2, topo]]
     return spec, hitung(spec, nama)
+
+
+def runup_ambang(out, ambang):
+    """Run-up (elevasi muka air B+h, m) bila sel dianggap basah hanya jika h_maks > ambang (m); untuk menguji definisi run-up."""
+    f = out["fgmax"]
+    v = [b + h for b, h in zip(f["B"], f["h_maks"]) if h is not None and h > ambang and b > 0]
+    return max(v) if v else None
 
 
 def hukum_synolakis(H_d):

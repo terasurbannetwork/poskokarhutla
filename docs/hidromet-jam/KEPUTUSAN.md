@@ -24,7 +24,9 @@ Jakarta 377 mm, siklus hujan harian Jawa), lalu menjawab "Gas semua" atas 14 usu
 | Q1 | Uji akses radar dulu; panen sesudah laporan akses dibaca pemilik |
 | Q2 | Indeks badai tetap internal (dihitung dan diarsip) sampai vonis prospektif |
 | Q3 | Boleh membaca D1 produksi hanya-baca (SELECT), hasil disamarkan, tanpa data pelapor |
-| Q4 | Zona musim dipanen dari situs BMKG |
+| Q4 | Zona musim dipanen dari situs BMKG; unduh sekali buku PMH 2026/27 (±84 MB) disetujui, PDF tidak masuk repo |
+| Q5 | Bibit siklon: bila JTWC menolak akses otomatis, GDACS + TCWC saja; bibit ditulis null (sesi lain sudah memasang pengurai JTWC, commit a39cbdd16) |
+| Q6 | Commit lokal dulu; push dan panen ulang IMERG diputuskan pemilik sesudah melihat |
 
 ## Pertanyaan untuk pemilik (asli, disimpan sebagai jejak)
 

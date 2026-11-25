@@ -37,7 +37,7 @@ nama kabupaten kosong di `public/geo/kecamatan`; tidak diperbaiki di sini.
   Hari = Asia/Jakarta. `q850` dan `G` memakai FUNGSI yang sama dengan `faktor_orografi.py` (diimpor, bukan disalin).
 - **Label:** DIBI banjir dan banjir bandang kabupaten-hari (hari mulai), cara lab (`lab-bencana/adu/banjir/LAPORAN.md`);
   jumlah baris dan kejadian per bagian dicatat di keluaran sebelum model dilatih.
-- **M0:** logit kompak 7 faktor lab, kode dan koefisien awal `lab-bencana/adu/banjir/skrip/kompak.py` dan `koefisien_kab.json` (sha256 di §8),
+- **M0:** logit kompak 7 faktor lab, kode dan koefisien awal `kompak.py` dan `koefisien_kab.json` dari repo lab, lokasi mutlak dan sha256 di §8,
   dilatih ulang di sini pada latih yang sama, kisi C yang sama. M0 identik di semua kontras.
 - **M1:** M0 + `ln(1 + fluks_maks_24j(h))`, satu kolom. Fitur ini memakai informasi hari h saja, jadi cakrawala informasinya sama dengan M0
   (hujan sampai hari h). `fluks_jumlah_72j` memuat jam h+1 dan h+2, yaitu informasi yang M0 tidak punya, sehingga selisihnya
@@ -47,7 +47,8 @@ nama kabupaten kosong di `public/geo/kecamatan`; tidak diperbaiki di sini.
   ambang skor global (kuantil atas seluruh kabupaten-hari uji). Waspada dan Awas dilaporkan, tidak menghakimi.
 - ERA5 adalah reanalisis (prakiraan "sempurna"): hasil arsip bersifat optimis untuk operasi dan IFS lebih basah dari ERA5. Itu alasan arsip hanya boleh MENOLAK (§5).
 - Keterbukaan: periode uji 2023-2026 sudah dipakai lab untuk memilih 7 faktor M0 (ablasi menampilkan AP uji). Efeknya menguntungkan M0, jadi
-  menyulitkan M1 (bias konservatif untuk M1). Faktor orografi belum pernah dihitung untuk periode ini, dan penyusun dokumen ini
+  menyulitkan M1 HANYA pada kontras M1 - M0 (kriteria a, b). Kriteria (c) membandingkan M1 dengan klimatologi dan salinan ops pada periode yang SAMA
+  yang sudah terlihat lab, sehingga (c) justru optimis; bukan bias konservatif. Faktor orografi belum pernah dihitung untuk periode ini, dan penyusun dokumen ini
   TIDAK membuka label uji. Studi kasus 13-17 Nov 2026 (§7) di luar periode uji dan tanpa label.
 
 ## 4. Ukuran
@@ -61,7 +62,7 @@ dengan pengembalian, 1.000 ulangan, benih 11, selang persentil dua sisi; selisih
 1. **Gerbang validasi (2020-2022):** bila dAP(M1 - M0) titik <= 0, berhenti: uji TIDAK dibuka, vonis "ditolak di validasi".
 2. **Tanda fisika:** koefisien `ln(1+fluks_maks_24j)` di M1 (latih) harus > 0. Bila <= 0: ditolak, uji tidak dibuka. Tidak ada pembalikan tanda.
 3. **Uji arsip:** M1 DITERUSKAN ke prospektif hanya bila SEMUA terpenuhi: (a) batas bawah CI95 dETS(M1 - M0) pada Siaga > 0; (b) dAP(M1 - M0) titik > 0; (c) ETS(M1) > ETS(klimatologi) dan ETS(M1) > ETS(salinan ops), titik. Selain itu **DITOLAK**.
-4. Lolos arsip BUKAN lulus dan tidak boleh disebut LULUS. Hanya vonis prospektif (§6) yang boleh.
+4. "Lolos arsip" ("LOLOS SARING") BUKAN bukti adanya sinyal dan BUKAN lulus; periode uji sudah terlihat lab (§3), jadi hanya penyaring penolak. Tidak boleh disebut LULUS. Hanya vonis prospektif (§6) yang boleh.
 5. Vonis dikunci sekali; M1b dan Waspada/Awas tidak mengubahnya. Tidak ada setel ulang sesudah uji dibuka; menyetel apa pun sesudahnya = protokol baru bertanggal baru.
 
 ## 6. Kriteria prospektif (ikut `PRAREG-PROSPEKTIF.md`)
@@ -93,9 +94,17 @@ Berkas yang dibekukan (sha256 saat dokumen ini dibuat):
 | `scripts/banjir/data/medan_orografi.json` | `1628e1c558075ef9f17c7ad12a5bfc931553181c01a3e21aeeafdfba40bb7338` |
 | `scripts/banjir/data/uji_orografi_open-meteo.json` (fixture respons asli) | `9ea2d7f16885330241848adfb83135c3cd38ca656bb4b3cbfe0b1fd9c77e956e` |
 | `data/raw/banjir/faktor_kec/elevasi_topo.json` (masukan medan) | `2b844f712564efd499247f5934daec7c5775ea0ea70d414d8b870818d7e197dd` |
-| `lab-bencana/adu/banjir/skrip/kompak.py` (M0) | `569b40dea2ffb79664790fe25ac070648344ec3284a05bdc51616c26a8b67b82` |
-| `lab-bencana/adu/banjir/koefisien_kab.json` (M0) | `754b6802362e39c0336c5606c6b589afec1ef45e8952835fad072332b0a41e38` |
+| `/Users/priyankaalfatehan28/proyek-on-hold/lab-bencana/repo/adu/banjir/skrip/kompak.py` (M0, diukur 24 Nov 2026) | `569b40dea2ffb79664790fe25ac070648344ec3284a05bdc51616c26a8b67b82` |
+| `/Users/priyankaalfatehan28/proyek-on-hold/lab-bencana/repo/adu/banjir/koefisien_kab.json` (M0, 645 KB, diukur 24 Nov 2026) | `754b6802362e39c0336c5606c6b589afec1ef45e8952835fad072332b0a41e38` |
 
 Sidik berkas INI ada di `PRAREG-OROGRAFI.sidik` (satu baris JSON; hash tidak bisa memuat dirinya sendiri). Berkas beku lain (`status.py`, `model_kab.py`,
 `uji_balik.py`, PRAREG DEBIT, PROSPEKTIF, DAMPAK) hanya dibaca. Mengubah satu kata di berkas ini, atau berkas di tabel, setelah sidik di-commit berarti protokol baru
 dengan tanggal baru. Sidik di-commit (oleh pemilik) SEBELUM langkah latih ERA5 dijalankan.
+
+## Amandemen sebelum data dibuka (24 Nov 2026)
+
+Data uji belum dibuka dan `latih` belum jalan; perubahan ini sah dan sidik diperbarui.
+
+- F1 (§3, §8): berkas M0 ditemukan di `/Users/priyankaalfatehan28/proyek-on-hold/lab-bencana/repo/adu/banjir/` (bukan `Developer/lab-bencana`); sha256 diukur ulang dan sama dengan tabel §8.
+  Karena `koefisien_kab.json` 645 KB (>200 KB) tidak disalin ke repo ini. Prasyarat `latih`: ukur ulang kedua sha256 di lokasi itu; bila berbeda, berhenti.
+- F2 (§3, §5.4): kriteria (c) optimis (periode uji sudah terlihat lab); "LOLOS SARING" bukan bukti sinyal, vonis hanya prospektif (§6).
