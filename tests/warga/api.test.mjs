@@ -465,19 +465,19 @@ uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hil
     ASET_UJI["/data/berita.json"] = '{"judul":"tanpa dibuat"}';
     assert.ok((await panggil("GET", "/api/status")).j.basi.includes("berita"), "berkas tanpa 'dibuat' harus dianggap basi");
     ASET_UJI["/data/berita.json"] = metaUji(5);
-    for (const [nama, jalur] of [["kekeringan", "/data/kekeringan_meta.json"], ["kualitas", "/udara/data/prakiraan.json"]]) {
-      ASET_UJI[jalur] = metaUji(31);   // ambang 30 jam, bencana aktif
+    for (const [nama, jalur, jam] of [["kekeringan", "/data/kekeringan_meta.json", 48], ["kualitas", "/udara/data/prakiraan.json", 30]]) {
+      ASET_UJI[jalur] = metaUji(jam + 1);   // bencana aktif; kekeringan 48 jam (ALGORITMA 7.2)
       r = await panggil("GET", "/api/status");
-      assert.equal(r.status, 503, `${nama} 31 jam (> 30, aktif) harus 503: ${r.teks}`); assert.deepEqual(r.j.basi, [nama]);
+      assert.equal(r.status, 503, `${nama} ${jam + 1} jam (> ${jam}, aktif) harus 503: ${r.teks}`); assert.deepEqual(r.j.basi, [nama]);
       assert.ok(nama in r.j.sumber && !(nama in r.j.uji), `${nama} aktif masuk sumber, bukan uji`);
       ASET_UJI[jalur] = null;
       r = await panggil("GET", "/api/status");
       assert.equal(r.status, 503); assert.deepEqual(r.j.basi, [nama], `${nama} hilang harus basi`);
       ASET_UJI[jalur] = metaUji(2);
     }
-    ASET_UJI["/banjir/data/gunungapi_status.json"] = null;   // gunungapi kini berambang 30 jam (registry 19 Okt): hilang = basi = 503
+    ASET_UJI["/banjir/data/gunungapi_status.json"] = null;   // gunungapi kini berambang 48 jam (ALGORITMA 7.2, 25 Nov): hilang = basi = 503
     r = await panggil("GET", "/api/status");
-    assert.equal(r.status, 503); assert.deepEqual(r.j.basi, ["gunungapi"]); assert.equal(r.j.sumber.gunungapi.ambang_jam, 30);
+    assert.equal(r.status, 503); assert.deepEqual(r.j.basi, ["gunungapi"]); assert.equal(r.j.sumber.gunungapi.ambang_jam, 48);
     ASET_UJI["/banjir/data/gunungapi_status.json"] = metaUji(2);
     for (const n of ["gempa", "cuaca", "udara", "gunungapi", "kekeringan"]) {   // berita_<id>: aktif, ambang 30 jam
       ASET_UJI[`/banjir/data/berita_${n}.json`] = metaUji(31);
@@ -530,7 +530,7 @@ uji("status: sumber tahap uji (registry salinan dengan cuaca `uji`) basi/hilang 
   mkdirSync(path.join(tmp, "public/prediksi"), {recursive: true}); copyFileSync(path.join(AKAR, "public/prediksi/besok_inti.js"), path.join(tmp, "public/prediksi/besok_inti.js"));   // src/lapor_besok.js mengimpor fungsi tab Besok langsung
   mkdirSync(path.join(tmp, "public/lapor")); copyFileSync(path.join(AKAR, "public/lapor/kontak.js"), path.join(tmp, "public/lapor/kontak.js"));   // src/lapor_kontak.js mengekspor ulang modul kontak K88 (LA-84)
   mkdirSync(path.join(tmp, "public/gempa")); copyFileSync(path.join(AKAR, "public/gempa/pager.js"), path.join(tmp, "public/gempa/pager.js"));   // src/siklus_dummy.js mengimpor GempaPager (kaji dummy G2)
-  mkdirSync(path.join(tmp, "public/inti")); for (const f of ["jam_aturan.js", "jam_aturan.json", "kelengkapan.js", "spek.js", "impor.js"]) copyFileSync(path.join(AKAR, "public/inti", f), path.join(tmp, "public/inti", f));   // src/meja_spek.js mengimpor Jam Aturan langsung (MB-2, RU-008); meja, pendataan, uji pilot, SIPPA mengimpor spek.js (Keterpaduan KP-16..18)
+  mkdirSync(path.join(tmp, "public/inti")); for (const f of ["jam_aturan.js", "jam_aturan.json", "kelengkapan.js", "spek.js", "impor.js", "pantau_alat.js"]) copyFileSync(path.join(AKAR, "public/inti", f), path.join(tmp, "public/inti", f));   // src/meja_spek.js mengimpor Jam Aturan langsung (MB-2, RU-008); meja, pendataan, uji pilot, SIPPA mengimpor spek.js (Keterpaduan KP-16..18)
   writeFileSync(path.join(tmp, "src/bencana.generated.js"), `export default ${JSON.stringify(B)};\n`);
   const mf2 = new Miniflare({...opsi(), scriptPath: path.join(tmp, "src/worker.js"), modulesRoot: tmp, d1Databases: {DB: "uji-registry"}});
   try {

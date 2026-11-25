@@ -28,7 +28,7 @@
 
 | Rute | Hak | Isi |
 | --- | --- | --- |
-| `GET /api/alat/pos?bencana=banjir` | sesuai Q2: sumber publik untuk semua, sensor sendiri untuk staf | daftar pos bentuk D2 + `ringkas` (G3) + `gagal: [sumber]` |
+| `GET /api/alat/pos?bencana=banjir` | Q2 (25 Nov 2026): semua sumber publik; sensor sendiri dengan koordinat dibulatkan 0,01 derajat, sesi staf mendapat koordinat penuh | daftar pos bentuk D2 + `ringkas` (G3) + `gagal: [sumber]` |
 | `GET /api/alat/seri?pos=<id>&jam=24` | sama dengan pos | titik `[waktu, nilai]`, ambang, interval |
 
 - Kueri D1 dibatasi: pos terakhir per alat satu kueri, seri satu alat per permintaan, `LIMIT` tetap. Cache tepi 60 detik untuk sumber publik.
@@ -36,7 +36,7 @@
 
 ## Sumber luar
 
-Adapter di `src/alat.js` per sumber: `sensor` (D1), `sihka` (baca `public/banjir/data/pos_sungai.json` yang sudah ada), `pvmbg` (baca `gunungapi_status.json` dan `kegempaan.json`). Sumber berizin (Q1) ditambah sebagai adapter baru yang membaca `ews/<sumber>/terkini.json` di binding R2 `MEDIA`, diisi Worker terjadwal; jadwal masuk cron tunggal `* * * * *` yang sudah ada (batas 5 jadwal akun Free).
+Adapter di `src/alat.js` per sumber: `sensor` (D1), `sihka` (baca satu baris D1 `cuaca_sumber` kunci `sihka_status` yang dibangun `src/sihka.js`; seri lewat `SQL_RIWAYAT` dari `sihka_baca`. `public/banjir/data/pos_sungai.json` hanya berisi nama sungai per pos, bukan bacaan), `pvmbg` (baca `gunungapi_status.json` dan `kegempaan.json`). Sumber berizin (Q1) ditambah sebagai adapter baru yang membaca `ews/<sumber>/terkini.json` di binding R2 `MEDIA`, diisi Worker terjadwal; jadwal masuk cron tunggal `* * * * *` yang sudah ada (batas 5 jadwal akun Free).
 
 ## CCTV
 
