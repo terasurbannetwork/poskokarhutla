@@ -95,6 +95,7 @@ export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk den
   ["/desa-waspada", "daftar desa dengan titik panas 7 hari dan desa berulang terbakar, publik (KEPUTUSAN-DESA K6, pemilik 25 Nov 2026, KEPUTUSAN-MASUK K20); halaman tidak memuat data, JSON statis tanpa koordinat titik dan tanpa nama orang"],
   ["/bnpb/data-bencana", "Data Bencana Indonesia (tren, sebaran, tabel kejadian DIBI) publik (KEPUTUSAN-MASUK K22, pemilik 25 Nov 2026); halaman tanpa API, hanya JSON statis publik dibi_*.json tanpa nama orang"],
   ["/docs", "dokumentasi Centurisk97 (cara kerja, metode, referensi) terbuka tanpa login (KEPUTUSAN-DOCS Q1 bawaan); hanya HTML statis hasil scripts/docs/bangun.py, tanpa data pribadi, tanpa API, tanpa tulis; jalur dikunci ke pola tertutup (segmen [a-z0-9-], paling dalam 3 segmen)"],
+  ["/laporan-konsesi", "laporan konsesi terbakar 2026 publik (PETA-SITUS Q3, bawaan diterima pemilik 25 Nov 2026, KEPUTUSAN-MASUK K24); cangkang tanpa API, isinya JSON statis publik /data/konsesi2026/* tanpa nama orang; di luar alamat Centurisk97 tetap 404"],
   ["/masuk", "pintu masuk satu nomor WhatsApp dan kode sekali pakai harus bisa dibuka tamu (keputusan pemilik 15 Nov 2026, K8); halaman tidak memuat data, kode dan sesi dicek di tiap panggilan /api/masuk/*"],
   ["/alun-alun", "forum alun-alun dibuka tamu tanpa login (keputusan pemilik 15 Nov 2026, K8: \"alun alun\"); tulis dan baca lewat /api/alun* yang berlaju dan ber-Turnstile, daftar relawan dan peta utama tetap terkunci"]]);
 export function halamanTerkunci(url) {

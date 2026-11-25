@@ -21,10 +21,10 @@ for (const f of readdirSync(join(AKAR, "src")).filter(f => f.endsWith(".js"))) {
     nyata.add(ALIAS[r] || r);
   }
 }
-nyata.add("/api"); nyata.add("/lacak"); nyata.add("/warga");   // /api dan /lacak dilayani langsung di fetch(); /warga = public/warga/index.html
+nyata.add("/api"); nyata.add("/lacak");   // /api dan /lacak dilayani langsung di fetch()
 const BERKAS_KHUSUS = {"bnpb/kinerja": "/kinerja-bnpb", "pipa/uji_pilot": "/uji-pilot", "logpal/index": "/instansi/logpal", "siklus/publik": "/siklus/kejadian", "siklus/index": "/siklus",
   "inti/": null, "og/": null, "404": null, "500": null, "udara/sim/coba": null, "design-system-peta": "/design-system/sistem", "design-system-bnpb": "/design-system/bnpb",
-  "kemitraan": "/kemitraan", "tentang": "/tentang", "kejadian": "/kejadian.html", "lapor/poster": "/lapor/poster.html"};
+  "warga/index": null, "kemitraan": "/kemitraan", "tentang": "/tentang", "kejadian": "/kejadian.html", "lapor/poster": "/lapor/poster.html"};
 const targetHtmlRute = new Set(HTML_RUTE.map(([, b]) => b));
 (function jelajah(d) {
   for (const n of readdirSync(join(AKAR, "public", d))) {

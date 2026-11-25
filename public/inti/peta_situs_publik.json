@@ -293,14 +293,6 @@
    "induk": "/lapor"
   },
   {
-   "rute": "/warga",
-   "nama": "Lapor warga lama",
-   "ikon": "daftar",
-   "pintu": "publik",
-   "grup": "lapor",
-   "induk": "/lapor"
-  },
-  {
    "rute": "/masuk",
    "nama": "Masuk",
    "ikon": "personel",

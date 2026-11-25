@@ -658,10 +658,10 @@ uji("centurisk97.id: /lapangan terbuka tanpa sesi lewat daftar putih bernama; se
   assert.ok(halaman.has("/statistik"), "pemindai menemukan rute halaman");
   for (const j of halaman) { const r = await buka(j); assert.equal(r.status, 303, `${j} di centurisk97.id harus terkunci tanpa sesi, dapat ${r.status}`); assert.match(r.headers.get("location"), /^\/masuk/); }
   /* berkas HTML statis dibuka langsung lewat nama (run_worker_first ["/*.html"] di wrangler*.jsonc memanggil Worker HANYA untuk pola ini) */
-  for (const j of ["/laporan.html", "/index.html", "/warga/index.html", "/paparan.html", "/banjir/index.html", "/tentang.html", "/LAPORAN.HTML"]) { const r = await buka(j); assert.equal(r.status, 303, `${j} di centurisk97.id = ${r.status}`); assert.match(r.headers.get("location"), /^\/masuk/); }
+  for (const j of ["/laporan.html", "/index.html", "/privasi.html", "/paparan.html", "/banjir/index.html", "/tentang.html", "/LAPORAN.HTML"]) { const r = await buka(j); assert.equal(r.status, 303, `${j} di centurisk97.id = ${r.status}`); assert.match(r.headers.get("location"), /^\/masuk/); }
   const lh = await buka("/lapangan.html"); assert.equal(lh.status, 303); assert.equal(lh.headers.get("location"), "/lapangan", "lapangan.html dialihkan ke satu pintu");
   const sesi = await mf.dispatchFetch("https://centurisk97.id/laporan.html", {headers: ADMIN}); assert.equal(sesi.status, 200, "dengan sesi admin berkas terbuka"); await sesi.text();
-  for (const j of ["/laporan.html", "/index.html", "/warga/index.html"]) { const r = await mf.dispatchFetch("https://pantau.terasurban.com" + j, {redirect: "manual"}); await r.text(); assert.equal(r.status, 200, `${j} di host publik harus 200`); }
+  for (const j of ["/laporan.html", "/index.html", "/privasi.html"]) { const r = await mf.dispatchFetch("https://pantau.terasurban.com" + j, {redirect: "manual"}); await r.text(); assert.equal(r.status, 200, `${j} di host publik harus 200`); }
   for (const j of ["/data/meta.json", "/informasi_jenis.js", "/admin/admin.css"]) { const r = await buka(j); assert.equal(r.status, 200, `${j} (JSON/JS/CSS) tidak digerbang`); }
   assert.equal((await mf.dispatchFetch("https://centurisk97.id/masuk", {redirect: "manual"})).status, 200, "halaman masuk tetap terbuka");
   assert.equal((await mf.dispatchFetch("https://centurisk97.id/admin/masuk", {redirect: "manual"})).headers.get("location"), "/masuk#sandi", "alamat lama ke /masuk (K21)");

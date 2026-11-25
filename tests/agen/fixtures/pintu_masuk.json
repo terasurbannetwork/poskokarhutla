@@ -21,7 +21,8 @@
     "/verifikasi",
     "/desa-waspada",
     "/bnpb/data-bencana",
-    "/docs"
+    "/docs",
+    "/laporan-konsesi"
   ],
   "boleh_tambah_k8": [
     "/masuk",
