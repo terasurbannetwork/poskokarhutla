@@ -6,6 +6,7 @@
    - Suara (id-ID) bila peramban mendukung; foto dikecilkan di peramban (foto_kecil.js), EXIF dibaca dulu (exif.js). */
 import {maskot} from "/lapor/maskot.js?v=23"; // bervesi: berkas .js disajikan immutable
 import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
+import {gabung, saring, teksKartu} from "/lapor/alun_kabar.js?v=1";   // Kabar Alun-alun (KA-05): gabung resmi, warga, berita
 /* Pelapor mengetik nomor WhatsApp tanpa kode (KEPUTUSAN-LAPOR-AI K65, D99-D102); di situs, nomor ketikan diikat ke perangkat lewat kuki HttpOnly
    dari Worker. Sesi /masuk yang sudah ada tetap dipakai bila ada. Kiriman POST wajib x-pb: 1. */
 const LOKAL = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
@@ -1561,7 +1562,7 @@ $("bTutupInfo").addEventListener("click", () => { ke("beranda"); tampilBeranda()
 /* ============ Alun-alun (K30, Q14, K59): hanya laporan ditindaklanjuti atau selesai, tanpa identitas pelapor ============
    Peta titik pusat desa (D84), satu kartu per gugus dengan "N warga melapor" (D85), Ikuti kejadian di perangkat tanpa akun (D86):
    daftar id kartu dan status terakhir yang dilihat disimpan di localStorage; kartu yang statusnya berubah ditandai. */
-let alunJenis = "", alunPeta = null, alunData = [];
+let alunJenis = "", alunPeta = null, alunData = [], alunKabar, alunSumber = "", alunGiliran = 0;   // alunKabar: undefined = belum dicoba, null = tidak ada berkas resmi
 const ikutiBaca = () => { try { return JSON.parse(localStorage.getItem("lapor-ikuti") || "{}"); } catch { return {}; } };
 const ikutiTulis = x => { try { localStorage.setItem("lapor-ikuti", JSON.stringify(x)); } catch {} };
 // MapLibre butuh warna jadi (tanpa var() dan oklch): token tema diubah ke rgb lewat kanvas 1 piksel
@@ -1598,10 +1599,12 @@ function kartuAlun(x, ikut) {
 function gambarAlun() {
   const w = $("daftarAlun"), ikut = ikutiBaca();
   const nIkut = alunData.filter(x => ikut[x.id]).length, nUbah = alunData.filter(x => ikut[x.id] && ikut[x.id] !== x.status).length;
-  const jenis = [["", "Semua", "i-daftar"], ["diikuti", nIkut ? `Diikuti (${nIkut})` : "Diikuti", "i-centang"], ...Object.entries({banjir: "Banjir", longsor: "Tanah longsor", cuaca: "Cuaca ekstrem", gempa: "Gempa bumi", karhutla: "Karhutla", erupsi: "Erupsi", abrasi: "Abrasi", kekeringan: "Kekeringan"}).map(([id, t]) => [id, t, IKON_JENIS[id] || "i-kejadian"])];
+  const jenis = [["", "Semua", "i-daftar"], ["diikuti", nIkut ? `Diikuti (${nIkut})` : "Diikuti", "i-centang"], ...(alunKabar ? [["selesai", "Selesai", "i-status"]] : []), ...Object.entries({banjir: "Banjir", longsor: "Tanah longsor", cuaca: "Cuaca ekstrem", gempa: "Gempa bumi", karhutla: "Karhutla", erupsi: "Erupsi", abrasi: "Abrasi", kekeringan: "Kekeringan"}).map(([id, t]) => [id, t, IKON_JENIS[id] || "i-kejadian"])];
   $("saringAlun").replaceChildren(...jenis.map(([id, t, ik]) => { const b = el("button"); b.append(ikon(ik), el("span", null, t)); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(id === alunJenis));
     if (id === "diikuti" && nUbah) b.append(el("span", "lp-tab-jumlah", String(nUbah)));
-    b.addEventListener("click", () => { alunJenis = id; if (id === "diikuti" || !alunData.length) tampilAlun(); else tampilAlun(); }); return b; }));
+    b.addEventListener("click", () => { alunJenis = id; if (alunKabar) { for (const t of b.parentNode.children) t.setAttribute("aria-selected", String(t === b)); gambarAlun(); } else tampilAlun(); }); return b; }));   // chrome langsung, daftar ditunda
+  if (alunKabar) return gambarKabar(ikut);
+  $("sumberAlun").hidden = true;
   const daftar = alunJenis === "diikuti" ? alunData.filter(x => ikut[x.id]) : alunData;
   if (alunJenis === "diikuti" && nUbah) { const m = ikutiBaca(); for (const x of daftar) m[x.id] = x.status; ikutiTulis(m); } // dilihat = penanda berubah hilang pada buka berikutnya
   gambarPetaAlun(daftar);
@@ -1619,7 +1622,7 @@ async function gambarPetaAlun(daftar) {
   const wp = $("petaAlun"), titik = daftar.filter(x => x.titik);   // peta selalu tampil penuh; tanpa titik = seluruh Indonesia
   try { await muatMaplibre(); } catch { return; }
   const fc = {type: "FeatureCollection", features: titik.map(x => ({type: "Feature", geometry: {type: "Point", coordinates: [x.titik.lon, x.titik.lat]},
-    properties: {id: x.id, judul: x.jenis, tempat: [x.lokasi.desa && `Desa ${x.lokasi.desa}`, x.lokasi.kab].filter(Boolean).join(", "), status: x.statusLabel, warna: tok(x.status === "selesai" ? "--ok" : "--warn")}}))};
+    properties: {id: x.id, judul: x.jenis, tempat: [x.lokasi.desa && `Desa ${x.lokasi.desa}`, x.lokasi.kab].filter(Boolean).join(", "), status: x.statusLabel, warna: tok(x.status === "selesai" ? "--ok" : x.status === "belum" ? "--info" : x.status === "tanpa" ? "--ink2" : "--warn")}}))};
   const pas = () => { if (!fc.features.length) return alunPeta.jumpTo({center: [118, -2], zoom: 4});
     const b = new maplibregl.LngLatBounds(); for (const f of fc.features) b.extend(f.geometry.coordinates);
     const lebar = matchMedia("(min-width:900px)").matches;   // ruang untuk panel daftar (kiri di layar lebar, bawah di HP) dan saringan di atas
@@ -1640,11 +1643,80 @@ async function gambarPetaAlun(daftar) {
     pas();
   });
 }
+/* Kabar Alun-alun (KA-06, KA-07): satu kartu per kejadian, empat pita tetap urutannya: Resmi BNPB, Laporan warga, Berita, Media sosial.
+   Angka tiap sumber tampil di pitanya sendiri dan tidak pernah dijumlah (D3). Daftar digambar bertahap lewat requestAnimationFrame supaya klik tidak membeku. */
+const SUMBER_ALUN = [["", "Semua", "i-daftar"], ["resmi", "Resmi", "i-status"], ["warga", "Warga", "i-orang"], ["berita", "Berita", "i-pesan"], ["medsos", "Medsos", "i-bantuan"]];
+function pitaKabar(nama, ikonId, ...isi) {
+  const p = el("div", "lp-kb-pita"), h = el("span", "lp-kb-pil"); h.append(ikon(ikonId), nama); p.append(h, ...isi); return p;
+}
+const kosongKabar = t => el("p", "lp-redup lp-kb-kosong", t);
+function kartuKejadian(x, ikut) {
+  const t = teksKartu(x, Date.now()), k = el("section", "ex ex-std lp-kabar"); k.id = `alun-${x.id}`;
+  const hd = el("header", "ex-hd"), ey = el("span", "ex-ey"), jd = el("div", "ex-jd");
+  ey.append(ikon(IKON_JENIS[x.jenis] || "i-kejadian"), x.jenisLabel); jd.append(el("h3", null, x.kab || "Lokasi belum diketahui")); hd.append(ey, jd);
+  if (x.titikKet) hd.append(el("small", "lp-redup", x.titikKet.charAt(0).toUpperCase() + x.titikKet.slice(1)));
+  const bd = el("div", "ex-bd");
+  // Resmi BNPB
+  const r = t.resmi, pr = pitaKabar("Resmi BNPB", "i-status");
+  if (!r.ada) pr.append(kosongKabar(r.kosong));
+  else { const st = el("p", "lp-kb-status"); st.append(el("b", null, r.status)); if (r.baru) st.append(el("span", "lp-pil", "Baru")); pr.append(st);
+    // hanya angka yang ada; bila semuanya kosong, satu kalimat, bukan tiga kotak "belum ada data"
+    const ada = r.angka.filter(a => a.nilai != null), g = ada.length ? el("div", "lp-kb-angka") : el("p", "lp-redup lp-kecil", "Angka dampak belum dilaporkan.");
+    for (const a of ada) { const c = el("div"); c.append(el("b", null, a.teks), el("small", null, a.label)); g.append(c); }
+    pr.append(g, el("small", "lp-redup", r.kesegaran)); }
+  // Laporan warga
+  const pw = pitaKabar("Laporan warga", "i-orang");
+  if (!t.warga.baris.length) pw.append(kosongKabar(t.warga.kosong));
+  for (const b of t.warga.baris) {
+    const baris = el("div", "lp-kb-warga"), kep = el("p", "lp-kb-warga-kep");
+    kep.append(el("span", null, [b.tempat, b.waktu].filter(Boolean).join(", ")), el("span", `lp-pil ${b.status}`, b.statusLabel)); baris.append(kep);
+    if (b.nWarga) baris.append(el("small", "lp-redup", b.nWarga));
+    if (b.angka.length) { const d = el("div", "lp-alun-dampak"); for (const a of b.angka) d.append(el("span", null, `${a.teks} ${a.label}`)); baris.append(d); }
+    else baris.append(el("small", "lp-redup", b.kosongAngka));
+    const on = !!ikut[b.id], ik = el("button", `lp-kedua lp-alun-ikuti${on ? " aktif" : ""}`); ik.type = "button"; ik.setAttribute("aria-pressed", String(on));
+    ik.append(ikon(on ? "i-centang" : "i-plus"), on ? "Diikuti" : "Ikuti kejadian"); ik.title = "Disimpan di perangkat ini. Kartu ditandai saat statusnya berubah.";
+    ik.addEventListener("click", () => { const m = ikutiBaca(); if (m[b.id]) delete m[b.id]; else m[b.id] = b.status; ikutiTulis(m); gambarAlun(); });
+    baris.append(ik); pw.append(baris);
+  }
+  // Berita: tautan hanya http atau https, dibuka di tab baru
+  const pb = pitaKabar("Berita", "i-pesan");
+  if (!t.berita.baris.length) pb.append(kosongKabar(t.berita.kosong));
+  else { const ul = el("ul", "lp-kb-berita");
+    for (const b of t.berita.baris) { const li = el("li"), judul = b.url ? Object.assign(el("a", null, b.judul), {href: b.url, target: "_blank", rel: "noopener noreferrer"}) : el("span", null, b.judul);
+      li.append(judul, el("small", "lp-redup", [b.media, b.tgl].filter(Boolean).join(", "))); ul.append(li); }
+    pb.append(ul); if (t.berita.lebih) pb.append(el("small", "lp-redup", `Dan ${t.berita.lebih.toLocaleString("id-ID")} berita lain yang cocok.`)); }
+  // Media sosial (KA-07): belum tersambung, tanpa angka dan tanpa unggahan
+  const pm = pitaKabar("Media sosial", "i-bantuan", el("p", "lp-kb-status", t.medsos.teks), el("small", "lp-redup", t.medsos.ket));
+  bd.append(pr, pw, pb, pm); k.append(hd, bd); return k;
+}
+function gambarKabar(ikut) {
+  const sm = $("sumberAlun"); sm.hidden = false;
+  sm.replaceChildren(...SUMBER_ALUN.map(([id, tt, ik]) => { const b = el("button"); b.append(ikon(ik), el("span", null, tt)); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(id === alunSumber));
+    b.addEventListener("click", () => { alunSumber = id; for (const c of sm.children) c.setAttribute("aria-selected", String(c === b)); gambarAlun(); }); return b; }));
+  const giliran = ++alunGiliran, w = $("daftarAlun");
+  requestAnimationFrame(() => {   // kerja berat ditunda: chrome (tab, pil) sudah terpasang
+    if (giliran !== alunGiliran) return;
+    const JENIS = ["banjir", "longsor", "cuaca", "gempa", "karhutla", "erupsi", "abrasi", "kekeringan"];
+    let daftar = saring(gabung(alunKabar, alunData, Date.now()), {jenis: JENIS.includes(alunJenis) ? alunJenis : "", sumber: alunSumber, selesai: alunJenis === "selesai"});
+    if (alunJenis === "diikuti") { daftar = daftar.filter(x => x.warga.some(g => ikut[g.id])); const m = ikutiBaca(); for (const x of daftar) for (const g of x.warga) if (m[g.id]) m[g.id] = g.status; ikutiTulis(m); }
+    gambarPetaAlun(daftar.map(x => ({id: x.id, titik: x.titik, jenis: x.jenisLabel, lokasi: {kab: x.kab}, statusLabel: x.statusLabel, status: x.status})));
+    if (!daftar.length) {
+      const k = el("div", "lp-kosong-besar"), m = el("div", "lp-kosong-maskot"); m.innerHTML = maskot("berpikir");
+      const tx = el("div", "lp-kosong-teks"); tx.append(el("h2", null, alunJenis === "diikuti" ? "Belum ada kejadian yang Anda ikuti" : alunSumber === "medsos" ? "Media sosial belum tersambung" : "Belum ada kejadian untuk saringan ini"),
+        el("p", null, alunSumber === "medsos" ? "Belum ada unggahan media sosial yang ditampilkan." : "Coba ganti saringan jenis atau sumber."));
+      k.append(m, tx); return w.replaceChildren(k);
+    }
+    w.replaceChildren(...(alunJenis === "selesai" ? [el("p", "lp-redup lp-kb-catatan", "Kejadian selesai yang tampil hanya yang tercatat dalam 8 hari terakhir.")] : []));
+    let i = 0; const lanjut = () => { if (giliran !== alunGiliran) return; const f = document.createDocumentFragment(); for (const x of daftar.slice(i, i + 20)) f.append(kartuKejadian(x, ikut)); w.append(f);
+      i += 20; if (i < daftar.length) requestAnimationFrame(lanjut); else if (alunPeta) alunPeta.resize(); }; lanjut();
+  });
+}
 async function tampilAlun() {
   const w = $("daftarAlun");
   if (!alunData.length) w.replaceChildren(el("p", "lp-redup", "Memuat laporan..."));
   try {
-    const j = await (await fetch(`/api/lapor/alun?jenis=${alunJenis === "diikuti" ? "" : alunJenis}`, {signal: AbortSignal.timeout(10000)})).json();
+    if (alunKabar === undefined) alunKabar = await fetch("/data/alun/kabar.json", {cache: "no-cache", signal: AbortSignal.timeout(10000)}).then(r => r.ok ? r.json() : null).then(j => Array.isArray(j?.kejadian) ? j : null).catch(() => null);   // 404 = belum ada pita resmi
+    const j = await fetch(`/api/lapor/alun?jenis=${alunKabar || alunJenis === "diikuti" ? "" : alunJenis}`, {signal: AbortSignal.timeout(10000)}).then(r => r.json()).catch(e => { if (!alunKabar) throw e; return {}; });
     alunData = j.baris || [];
     gambarAlun();
   } catch { w.replaceChildren(el("p", "lp-redup", "Alun-alun belum bisa dimuat. Coba lagi.")); }

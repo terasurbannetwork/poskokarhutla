@@ -123,6 +123,14 @@ def pasang_berita(per, hari, cocok, muat):
             continue
         kk = {"kab_kode": [k["kab_kode"]], "prov_kode": k["prov"], "terakhir": k["mulai"]}
         hit = sorted((a for a in b["artikel"] if cocok(kk, a, jc, hari)), key=lambda a: a.get("tgl") or "", reverse=True)
+        # satu berita yang dimuat ulang beberapa media jaringan (judul sama) cukup tampil sekali, yang terbaru
+        lihat, unik = set(), []
+        for a in hit:
+            j = re.sub(r"\W+", " ", re.sub(r"\s+-\s+[^-]{1,40}$", "", a.get("judul") or "")).strip().lower()
+            if j and j in lihat:
+                continue
+            lihat.add(j); unik.append(a)
+        hit = unik
         k["n_berita"] = len(hit)
         k["berita"] = [{"judul": a.get("judul"), "media": a.get("sumber"), "tgl": (a.get("tgl") or "")[:10], "url": a.get("url")}
                        for a in hit[:MAKS_BERITA]]
@@ -208,13 +216,17 @@ def cek():
     assert isinstance(kk["Kota Subulussalam"], int) and len(log) - n0 == 1 and "bukan bilangan bulat" in log[-1], log[n0:]
     # P5/P6/P7/P12 berita
     tulis_hari(H, [E()], sub="kerja-251126")
-    art = [A(i, tgl=f"2026-11-{20 + i % 5}T10:00+07:00") for i in range(7)] + [A(9, kab=(), prov=("11",)), A(10, judul="Gempa di Subulussalam", tgl="2026-11-24T00:00+07:00")]
+    art = [A(i, judul=f"Banjir Subulussalam hari ke-{i}", tgl=f"2026-11-{20 + i % 5}T10:00+07:00") for i in range(7)] + [A(9, kab=(), prov=("11",)), A(10, judul="Gempa di Subulussalam", tgl="2026-11-24T00:00+07:00")]
     muat = lambda j, h: {"artikel": art, "gagal": False}
     k = B(tmp, muat)["kejadian"][0]
     assert k["n_berita"] == 7 and len(k["berita"]) == 5, (k["n_berita"], len(k["berita"]))
     assert [b["tgl"] for b in k["berita"]] == sorted((b["tgl"] for b in k["berita"]), reverse=True)
     assert all(set(b) == {"judul", "media", "tgl", "url"} and b["media"].startswith("Media") for b in k["berita"])   # P12
     assert all(b["tgl"] <= H for b in k["berita"]) and "RINGKAS" not in json.dumps(k)
+    # judul sama dari media satu jaringan ("... - TIMES Jatim", "... - TIMES Pacitan") tampil sekali
+    kembar = [A(20, judul="Banjir Subulussalam meluas - TIMES Jatim"), A(21, judul="Banjir Subulussalam meluas - TIMES Aceh")]
+    k2 = B(tmp, lambda j, h: {"artikel": kembar, "gagal": False})["kejadian"][0]
+    assert k2["n_berita"] == 1 and len(k2["berita"]) == 1, k2["n_berita"]
     k = B(tmp, lambda j, h: {"artikel": [], "gagal": True})["kejadian"][0]   # P7
     assert k["berita"] == [] and k["catatan"] == "berita tidak terjangkau" and k["n_berita"] == 0
     # P9 selesai_lama + P15 hari lain, kunci sama
