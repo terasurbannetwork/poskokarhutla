@@ -5,7 +5,7 @@ Ambil satu tiket dan kerjakan hanya cakupannya. Urutannya mengikuti `DESAIN-TEKN
 | Tiket | Isi | Pengerja → pemeriksa | Bergantung | Bukti siap | Status |
 | --- | --- | --- | --- | --- | --- |
 | PS-00 | Bagian "baca dulu, baru bangun" di AGENTS.md §2.49 dan pemilik berkas baru di `scripts/agents/roster.json` (`npm run agents:build`) | sesi induk, `mekanik-mesin` | - | `npm run uji:agen` | sebagian (§2.49 ada) |
-| PS-01 | `src/peta_situs.js` berisi semua halaman dari `HTML_RUTE`, `tabelRute()`, dan `public/**/*.html`; generator dan `peta_situs_publik.json` | `warga-api` + `mekanik-mesin` → `higiene-repo` | PS-00 | U1 mode laporan: yatim 0, hantu 0 | belum |
+| PS-01 | `src/peta_situs.js` berisi semua halaman dari `HTML_RUTE`, `tabelRute()`, dan `public/**/*.html`; generator dan `peta_situs_publik.json` | `warga-api` + `mekanik-mesin` → `higiene-repo` | PS-00 | U1 mode laporan: yatim 0, hantu 0 | registri selesai (cfdc34819); generator berjalan |
 | PS-02 | Gerbang `tests/agen/gerbang-peta-situs.test.mjs` dalam mode laporan | `penulis-gerbang` | PS-01 | U1 | belum |
 | PS-03 | `menuUntuk`, `GET /api/peta-situs`, uji per peran | `warga-api` → `guard-api`, `security-reviewer` | PS-01 | U2 | belum |
 | PS-04 | Nav admin Worker dari registri, menggantikan `GRUP_ADMIN`, `GRUP_STAF`, `SUB`, `RUANG_LAPORAN` | `warga-api` → `guard-api` | PS-03 | U3 | belum |
