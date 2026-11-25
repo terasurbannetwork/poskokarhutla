@@ -443,7 +443,7 @@ def muat_kering_kita(H, m, kini):
     ix = p["kolom"].index("p_model_t1")
     far = (p.get("model") or {}).get("far_uji")
     geo = {k["geo"]: k["id"] for k in m["kab_daftar"]}
-    H.src("kita_bulan", lembaga="Centurisk97", nama="Prediksi model: peluang kekeringan bulan depan (hipotesis)", terbit=p.get("dibuat"), diambil=p.get("dibuat"), cakupan="kabupaten", url=None, jenis="kita")
+    H.src("kita_bulan", lembaga="Centurisk97", nama="Prediksi model: peluang kekeringan bulan depan (hipotesis)", terbit=(p.get("dibuat") or "")[:10] or None, diambil=p.get("dibuat"), cakupan="kabupaten", url=None, jenis="kita")
     for g, v in p["kab"].items():
         i = geo.get(g)
         if i is None:
@@ -470,7 +470,7 @@ def muat_musim_rawan(H, m, kini):
     depan = kini.month % 12 + 1
     th = kini.year + (1 if kini.month == 12 else 0)
     th0, th1 = mr["tahun_pola"]
-    H.src("kita_musim", lembaga="Centurisk97", nama="Bulan rawan menurut pola kejadian DIBI (pola berulang atau hipotesis per jenis)", terbit=mr.get("dibuat"), diambil=mr.get("dibuat"), cakupan="kabupaten", url=None, jenis="kita")
+    H.src("kita_musim", lembaga="Centurisk97", nama="Bulan rawan menurut pola kejadian DIBI (pola berulang atau hipotesis per jenis)", terbit=(mr.get("dibuat") or "")[:10] or None, diambil=mr.get("dibuat"), cakupan="kabupaten", url=None, jenis="kita")
     ada = {k["id"] for k in m["kab_daftar"]}
     for j, daftar in (mr["bulan"].get(str(depan)) or {}).items():
         a, u = MR_ANCAMAN.get(j), (mr.get("uji") or {}).get(j) or {}

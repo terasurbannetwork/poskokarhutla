@@ -22,7 +22,7 @@ from wilayah import PROVINSI  # noqa: E402
 DATA = os.path.join(AKAR, "public", "prediksi", "data")
 ARSIP = os.path.join(DATA, "arsip")
 WIB = dt.timezone(dt.timedelta(hours=7))
-KODE = ["HJN", "API", "BNJ", "LSR", "ASP", "ROB", "GEL", "CEX"]
+KODE = ["HJN", "API", "BNJ", "LSR", "ASP", "ROB", "GEL", "CEX", "GNA", "KEK"]  # GNA/KEK (PB-51): jalur siap, belum ada sumber +1..+3
 # Model bayangan (bayangan/model.py): dinilai berdampingan dengan model lama, TIDAK tampil di kartu Besok.
 # DASAR = kode yang labelnya dipakai menilai (BNJ/LSR = DIBI, CEX = DIBI cuaca ekstrem, KRH = >= 5 titik VIIRS S-NPP).
 KODE_B = ["BNJ_B", "LSR_B", "CEX_B", "KRH_B"]

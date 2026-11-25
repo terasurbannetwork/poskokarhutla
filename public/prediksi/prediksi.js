@@ -71,7 +71,7 @@ const VONIS_KOL = {HJN: "p20", API: "p", BNJ: "ps", LSR: "ps"};
 const KELAS_GEL = ["di bawah 1,25 m", "Sedang (1,25 sampai di bawah 2,5 m)", "Tinggi (2,5 sampai di bawah 4 m)", "Awas (4 m ke atas)"];   // label gelombang Sedang, Tinggi, Awas (pemilik 19 Nov 2026, KEPUTUSAN-BESOK K12)
 const KELAS_CEX = ["di bawah ambang 46 km/jam", "angin kencang (46 km/jam ke atas)", "setara Beaufort 8 (63 km/jam ke atas)", "setara Beaufort 10 (89 km/jam ke atas)"];
 const tglSingkat = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"});
-Object.assign(KODE_NAMA, {GEL: "Gelombang", CEX: "Angin"});
+Object.assign(KODE_NAMA, {GEL: "Gelombang", CEX: "Angin", GNA: "Gunung api", KEK: "Kekeringan"});
 
 const daftarKab = () => {
   const q = $("#cari").value.trim().toLowerCase(), p = $("#prov").value;

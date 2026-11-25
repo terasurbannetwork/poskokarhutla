@@ -45,8 +45,10 @@ CEX_RE = B.CEX_RE        # label CEX = DIBI cuaca ekstrem/angin/puting (sama den
 MENUNGGU = {"ASP": "belum ada stasiun PM2,5 terukur (WAQI_TOKEN/OpenAQ tidak tersedia); CAMS tidak dinilai dengan CAMS",
             "ROB": "pasut IOC belum dipanen sebagai seri harian per titik",
             "GEL": "belum ada sumber pengamatan gelombang per kab; model tidak dinilai dengan modelnya sendiri",
+            "GNA": "belum ada prakiraan harian +1..+3 bersumber untuk gunung api (PVMBG hanya menerbitkan level terkini); tidak diprakirakan, belum ada pengamatan yang dinilai",
+            "KEK": "belum ada prakiraan harian +1..+3 bersumber untuk kekeringan (sumber berskala dasarian/bulan); belum ada pengamatan yang dinilai di sini",
             "CEX": "belum ada sumber pengamatan embusan angin per kab; DIBI cuaca ekstrem bukan ukuran yang sama (label CEX_B tetap terpisah)"}
-TANPA_NILAI = ("GEL", "CEX")     # arsip dibekukan tapi belum dinilai: tidak masuk pasangan, status "menunggu"
+TANPA_NILAI = ("GEL", "CEX", "GNA", "KEK")     # arsip dibekukan tapi belum dinilai: tidak masuk pasangan, status "menunggu"
 
 
 def log(*a):
@@ -649,6 +651,8 @@ def uji():
     assert pasangan(en[:1], amd, "2026-11-05", regu) == pasangan(en[:1], amd, "2026-11-05"), "sel DIBI identik dengan/tanpa regu"
     rr = ringkas([x for x in pasangan(en, amk, "2026-11-05", regu)], {})
     assert all(g["vonis"] == "tidak dibandingkan" and "bias seleksi" in g["catatan"] for g in rr["BNJ"]["grup"] if g["tahap"] == "regu"), rr
+    for k in ("GNA", "KEK"):
+        assert rr[k]["status"] == "menunggu" and rr[k]["prakiraan"] == 0 and "+1..+3" in rr[k]["alasan"], rr[k]
     rk = ringkas_konfirmasi(rows, {t0: {"j": "final", "kab": {}}})
     assert rk["BNJ"]["regu"] == {"n": 2, "positif": 1, "nol": 1, "dipakai": "label skor"} and rk["BNJ"]["warga"]["dipakai"] == "dihitung saja", rk
     assert rk["API"]["groundcheck"]["dipakai"] == "audit saja" and rk["API"]["groundcheck"]["audit_firms"]["firms_nol"] == 1, rk
