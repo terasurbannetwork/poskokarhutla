@@ -663,6 +663,17 @@ Sebelum menyentuh mesin bersama pemodelan (`scripts/umum/pembanding.py`, `sidik.
 
 Aturan berhentinya sama dengan §2.1. Tiket hanya dikerjakan bila berguna menurut D1; model baru tanpa lolos gerbang tampil sebagai hipotesis dan tidak dikirim keluar; pembanding wajib persistensi dan klimatologi pada jumlah alarm sama; satu mesin inti per kemampuan; tiket paket Paritas, LS, KS, PT tidak digandakan.
 
+### 2.49 Peta Situs (satu alur: registri halaman, lima pintu, menu dari satu sumber, `/masuk` satu pintu, tanpa halaman yatim): baca dulu, baru bangun
+
+Sebelum menambah halaman baru, menyentuh menu atau kepala halaman mana pun, atau mengubah arah sesudah masuk, baca dokumen di
+`data/kajian-bnpb/peta-situs/` dengan urutan otoritas ini (registri `src/peta_situs.js` dan rute `/api/peta-situs` milik `warga-api`; hasil generator `public/inti/peta_situs_publik.json` dan `public/inti/kepala.js` milik `inti-layar`; `public/bnpb/menu_pusdalops.js`, `public/bnpb/pintu.js` milik `ruang-bnpb`; `src/admin_halaman.js`, `src/masuk.js` juga milik `warga-api`; gerbang `tests/agen/gerbang-peta-situs.test.mjs` milik `penulis-gerbang`):
+
+1. `KEPUTUSAN-PETA-SITUS.md`: keputusan pemilik K1-K5 (25 Nov 2026), rancangan D1-D11, pertanyaan terbuka Q1-Q5 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md` (inventaris 150 rute, 24 yatim), 3. `PRD.md` (peta pintu dan grup), 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PS-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Tiap halaman baru wajib punya entri registri di commit yang sama; menu tidak ditulis tangan lagi, semuanya dari registri; peta halaman staf tidak pernah jadi berkas statis publik; menu bukan penjaga hak (hak tetap di Worker); alamat lama tidak dipindah; tautan bertoken tidak tampil di menu.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
