@@ -1158,3 +1158,12 @@ dialog.mj-ld-dlg h3{margin:0 0 6px}
 .mj-darurat-izin svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .mj-darurat.kecil .mj-darurat-izin{margin-right:2px!important}
 .mj-darurat.kecil .mj-darurat-aksi{border:0;background:none;padding:0 4px}
+/* Orang dicari (pemilik 25 Nov 2026: "bagusin"): dialog setinggi isi, pilihan berikon, keadaan kosong berikon */
+dialog.mj-oc{height:auto!important;max-height:calc(100dvh - 48px)!important}
+.mj-oc .mj-ld-isi{display:grid;gap:16px}
+.mj-oc-kosong{display:grid;justify-items:center;gap:8px;padding:40px 24px 48px;text-align:center}
+.mj-oc-kosong-ik{display:grid;place-items:center;width:56px;height:56px;border-radius:16px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2)}
+.mj-oc-kosong-ik svg{width:28px;height:28px}
+.mj-oc-kosong b{font:800 1.0625rem var(--display);color:var(--ink)}
+.mj-oc-kosong p{max-width:52ch;margin:0;color:var(--ink2);font-size:.875rem;line-height:1.55}
+.mj-oc .mj-chip-j b{min-width:22px;padding:1px 7px;border-radius:999px;background:color-mix(in oklab,currentColor 14%,transparent);text-align:center}

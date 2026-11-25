@@ -61,10 +61,14 @@ export async function bukaOrangDicari() {
   let semua = [], saring = "terbuka", jadwal = 0, rafId = 0;   // hanya render terakhir yang jalan
   const wadah = el("div"), chips = el("div", "mj-deret mj-ld-jenis");
   const cocok = (b, f) => f === "semua" || (f === "terbuka" ? b.status === "buka" : f === "kabar" ? b.cocok : b.status === f);
-  const PILIHAN = [["terbuka", "Terbuka"], ["kabar", "Ada kabar selamat"], ["semua", "Semua"]];
+  const PILIHAN = [["terbuka", "Terbuka", "m-orang"], ["kabar", "Ada kabar selamat", "m-centang"], ["semua", "Semua", "m-semua"]];
   const tabel = () => {
     const tampil = semua.filter(b => cocok(b, saring));
-    if (!tampil.length) return wadah.replaceChildren(el("p", "mj-kosong", saring === "terbuka" ? "Tidak ada laporan orang dicari yang terbuka." : "Tidak ada laporan yang cocok."));
+    // keadaan kosong berikon dan dialog memendek (pemilik 25 Nov 2026: "bagusin")
+    if (!tampil.length) { const k = el("div", "mj-oc-kosong"), u = el("span", "mj-oc-kosong-ik"); u.append(ikon(saring === "kabar" ? "m-centang" : "m-orang"));
+      k.append(u, el("b", null, saring === "terbuka" ? "Belum ada orang dicari yang terbuka" : saring === "kabar" ? "Belum ada kabar selamat yang cocok" : "Belum ada laporan orang dicari"),
+        el("p", null, "Laporan masuk dari tombol Lapor orang hilang di halaman warga. Bila ada kabar selamat yang cocok, tandanya muncul di sini."));
+      return wadah.replaceChildren(k); }
     const tb = el("table", "mj-tabel mj-ld-tabel"), th = el("thead"), tr = el("tr"), bd = el("tbody");
     for (const t of ["Orang dicari", "Terakhir terlihat", "Kab/kota", "Pelapor", "Status", "Kabar selamat", "Masuk", "Aksi"]) tr.append(el("th", null, t)); th.append(tr);
     const isiBaris = (dari, sampai) => bd.append(...tampil.slice(dari, sampai).map(b => baris(b, muat)));
@@ -73,8 +77,8 @@ export async function bukaOrangDicari() {
     if (lagi) { lagi.type = "button"; let n = BATAS; lagi.addEventListener("click", () => { isiBaris(n, n + BATAS); n += BATAS; if (n >= tampil.length) lagi.remove(); else lagi.textContent = `Tampilkan lagi, sisa ${F(tampil.length - n)}`; }); }
     wadah.replaceChildren(g, ...(lagi ? [lagi] : []));
   };
-  const chip = () => chips.replaceChildren(...PILIHAN.map(([k, t]) => { const c = el("button", "mj-chip-j"); c.type = "button"; c.setAttribute("aria-pressed", String(saring === k));
-    c.append(`${t} `, el("b", null, F(semua.filter(b => cocok(b, k)).length)));
+  const chip = () => chips.replaceChildren(...PILIHAN.map(([k, t, ik]) => { const c = el("button", "mj-chip-j"); c.type = "button"; c.setAttribute("aria-pressed", String(saring === k));
+    c.append(ikon(ik), `${t} `, el("b", null, F(semua.filter(b => cocok(b, k)).length)));
     c.addEventListener("click", () => { saring = k; for (const y of chips.children) y.setAttribute("aria-pressed", String(y === c)); clearTimeout(jadwal); cancelAnimationFrame(rafId); rafId = requestAnimationFrame(() => { jadwal = setTimeout(tabel, 0); }); }); return c; }));   // chip tercat dulu, tabel menyusul
   async function muat() {
     const r = await api("");
