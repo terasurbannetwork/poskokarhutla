@@ -105,6 +105,26 @@ def jalur(A, l, lon, lat, jam0):
     return t, None
 
 
+def mundur(A, l, lon, lat, jam0, jam_maks, langkah_menit=60):
+    """Lintasan mundur (Heun, angin dibalik) dari (lon, lat) pada jam0 sejak A['jam'][0].
+    -> [[lon, lat, jam_mundur]] (jam_mundur = jam0 - waktu titik); berhenti di luar kisi/waktu atau sel kosong."""
+    dt_s, jam = langkah_menit * 60, 0.0
+    t = [[round(lon, 3), round(lat, 3), 0.0]]
+    while jam + langkah_menit / 60 <= jam_maks + 1e-9:
+        a = angin_di(A, l, lon, lat, jam0 - jam)
+        if a is None:
+            break
+        lo1, la1 = geser(lon, lat, -a[0], -a[1], dt_s)
+        jam1 = jam + langkah_menit / 60
+        b = angin_di(A, l, lo1, la1, jam0 - jam1)
+        if b is None:
+            break
+        lon, lat = geser(lon, lat, -(a[0] + b[0]) / 2, -(a[1] + b[1]) / 2, dt_s)
+        jam = jam1
+        t.append([round(lon, 3), round(lat, 3), round(jam, 3)])
+    return t
+
+
 def indeks_kota(kota):
     idx = {}
     for k in kota:
@@ -226,6 +246,19 @@ def uji():
     assert len(tt) == 73 and abs(tt[-1][0] - (104 + 72 * 36000 / 111320)) < .01 and tt[-1][1] == 0 and tepi is None
     tt, tepi = jalur(A, 1, 139.0, -5.0, 0)
     assert tepi == "Papua Nugini" and tt[-1][0] > 141
+    # mundur: pulang-pergi maju 12 jam lalu mundur 12 jam kembali < 0,5 km; kisi berputar (u,v bervariasi)
+    Ar = angin_uji(0, 0)
+    for k in range(25):
+        for j in range(len(Ar["lat"])):
+            for i in range(len(Ar["lon"])):
+                Ar["u"][0][k][j][i] = 80 + 5 * math.sin(i / 7 + k / 5)
+                Ar["v"][0][k][j][i] = 30 + 5 * math.cos(j / 5)
+    mj, _ = jalur(Ar, 0, 100.0, -5.0, 0)
+    mm = mundur(Ar, 0, mj[12][0], mj[12][1], 12, 12, 60)
+    km = math.hypot((mm[-1][0] - 100.0) * 111.32 * math.cos(math.radians(-5.0)), (mm[-1][1] + 5.0) * 110.54)
+    assert len(mm) == 13 and mm[-1][2] == 12.0 and km < 0.5, km
+    assert len(mundur(Ar, 0, 100.0, -5.0, 6, 12)) == 7           # waktu <0 di kisi: berhenti di jam 0
+    assert mundur(angin_uji(100, 0), 0, 104.0, 0.0, 6, 3, 30)[-1][2] == 3.0
     A["u"][0][3][5][5] = None
     assert angin_di(A, 0, 100.5, -5.5, 9.5) is None          # sel kosong tidak ditebak
     kota = [{"kode": "1", "lat": 0.0, "lon": 104.3}, {"kode": "2", "lat": 1.0, "lon": 104.3}]
