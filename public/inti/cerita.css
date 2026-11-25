@@ -2,7 +2,7 @@
 .cr{display:grid;gap:10px;padding:2px 0}
 .cr>div{display:flex;gap:10px;align-items:flex-start}
 .cr .pl{flex:none;min-width:96px;justify-content:center;margin-top:1px}
-.cr p{margin:0;font-size:14px;line-height:1.5}
+.cr p{margin:0;font-size:14px;line-height:1.5;min-width:0;max-width:100%;overflow-x:auto}
 @media(max-width:640px){.cr>div{flex-direction:column;gap:4px}.cr .pl{min-width:0}}
 /* F-28 kartu bukti model (Cerita.galat, Cerita.pendorong): batang bertooltip [data-tip], warna hanya token */
 .cr-bts{display:grid;gap:var(--jr-2)}

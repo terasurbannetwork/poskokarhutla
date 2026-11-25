@@ -1039,7 +1039,7 @@ status 7 hari = tinggi bila ada hari di atas p90;  sedang bila di atas p75;  sel
     const [i, , t] = r, k = K.k[i], sel = `${Math.floor(k[0] / .5) * .5 + .25},${Math.floor(k[1] / .5) * .5 + .25}`; return {N, K, i, t, k, sel, p95: K.ambang_p95_mm?.[sel]}; };
   const skL = d => { const x = Math.min(1, Math.max(0, (d - 5) / 25)); return x * x * (3 - 2 * x); };
 
-  L.push({ik: "lereng", j: "Nowcast longsor gaya NASA LHASA", sub: "Kerentanan lereng yang tetap dikalikan seberapa ekstrem hujan 7 hari terakhir",
+  L.push({ik: "lereng", nc: 1, j: "Nowcast longsor gaya NASA LHASA", sub: "Kerentanan lereng yang tetap dikalikan seberapa ekstrem hujan 7 hari terakhir",
     singkat: `Longsor jarang dipicu hujan saja: lereng curam dan rawan gagal lebih mudah bila hujan beberapa hari terakhir sudah melewati kebiasaan tempat itu. Nowcast ini meniru cara NASA (LHASA, Stanley dan Kirschbaum 2017). Tiap kecamatan punya <b>kerentanan S</b> (0 sampai 1, tetap, dari lereng, tanah, dan jarak ke sesar aktif). Hujan 7 hari terakhir dibagi <b>batas hujan ekstrem</b> sel itu (persentil 95 hujan 7 hari sejak 2017) menjadi <b>pemicu t</b>. Bahaya tinggi bila t ≥ 1 dan S ≥ 0,50. Ia terpisah dari status longsor harian (bagian 5) dan <b>belum lulus uji balik</b>, jadi dibaca sebagai hipotesis, bukan peringatan.`,
     alur: [["d", "lereng", "Kerentanan S", "lereng, tanah, sesar: tetap"], ["d", "hujan", "Hujan 7 hari", "prakiraan model, kotak 0,25°"], ["o", "hitung", "t = hujan ÷ batas ekstrem", "persentil 95 sel 0,5°"], ["u", "centang", "Cek t dan S", "tinggi, sedang, rendah"], ["h", "pin", "Bahaya per kecamatan", "daftar kecamatan di tab Longsor"]],
     contoh: async () => {
@@ -1173,7 +1173,7 @@ Q  = (P − Ia)² ÷ (P + 0,8 × S)   untuk P > Ia, selain itu 0`)}`,
     teknis: `<p><code>scripts/longsor/pvmbg.py</code>. Layanan terbuka Kementerian PU (lapisan zonasi hamparan prakiraan gerakan tanah, sekitar 200 ribu poligon). Zona statis: sangat rendah, rendah, menengah, tinggi. Skala skor: 0, ⅓, ⅔, 1; rata-rata titik tercakup. Poligon disederhanakan 0,001° (± 110 m). Layanan geoportal ESDM tidak disentuh karena melarang robot.</p>`,
     batas: ["Poligon di luar Jawa sebagian kasar.", "Prakiraan bulanan hanya Desember 2024, jadi pembanding uji memakai zona statis.", "Kecamatan tanpa titik tercakup bernilai kosong, bukan rendah."]});
 
-  L.push({ik: "ukur", j: "Uji balik nowcast: vonis dan alasannya", sub: "Apakah nowcast lebih baik daripada menebak dari pola musim dan hujan saja",
+  L.push({ik: "ukur", nc: 1, j: "Uji balik nowcast: vonis dan alasannya", sub: "Apakah nowcast lebih baik daripada menebak dari pola musim dan hujan saja",
     singkat: `Nowcast diuji ke masa lalu pada kabupaten-hari: apakah hari-hari berbahaya tinggi lebih sering bertepatan dengan longsor DIBI daripada hari lain? Ukurannya AUC (0,5 = menebak, 1 = sempurna) dan dibandingkan dengan tiga pembanding sederhana: hujan saja, kerentanan saja, dan pola musim kabupaten. Syaratnya ketat: model harus mengalahkan pembanding terbaik. ${UBL ? `Vonis saat ini: <b>${esc(UBL.vonis)}</b>, jadi nowcast ditulis sebagai hipotesis.` : ""}`,
     alur: [["d", "berkas", "Kejadian DIBI 2022 sampai 2025", "tanpa 2024"], ["d", "hujan", "Hujan ERA5 yang sama", "batas ekstrem dari tahun latih"], ["o", "hitung", "Skor model dan pembanding", "kabupaten-hari"], ["u", "ukur", "AUC dan selang bootstrap", "blok tahun-bulan"], ["h", "centang", "Lulus atau gagal", "syarat dibekukan sebelum uji"]],
     contoh: async () => {
@@ -1228,7 +1228,7 @@ selang 95% = bootstrap blok per tahun-bulan, 300 ulangan`)}
     foto: "foto warga", posko: "lokasi, jenjang, dan anggaran", prakiraan: "4 hari per provinsi", daftar: "kecamatan berstatus, paling mendesak dulu", provinsi: "rekomendasi per provinsi", rob: "titik pantai dan peringatan BMKG", sungai: "debit dan ambang", keputusan: "empat paket kesiapsiagaan", sarana: "kesiapan alat posko", informasi: "laporan warga"};
   const TAB = (typeof TABS !== "undefined" ? TABS : []).filter(t => DESK[t[0]]).map(([k, n]) => [k, n, DESK[k]]);
   const panah = `<div class="mt-panah" aria-hidden="true"><svg class="mt-ikon" viewBox="0 0 24 24">${MT_IKON.panah}</svg></div>`;
-  const umur = M.dibuat ? (Date.now() - new Date(M.dibuat)) / 36e5 : null, BUKA = 3, A = B.concat(L);
+  const umur = M.dibuat ? (Date.now() - new Date(M.dibuat)) / 36e5 : null, BUKA = 3;
   const bab = (s, i, no) => `<details class="mt-sek" data-i="${i}"${i === BUKA ? " open" : ""}><summary><span class="mt-nom">${mtIkon(s.ik)}</span><span class="mt-jd"><b>${no}. ${s.j}</b><small>${s.sub}</small></span></summary>
     <div class="mt-isi">
       <div class="mt-singkat"><span class="mt-lbl">Singkatnya</span><p>${s.singkat}</p></div>
@@ -1238,6 +1238,13 @@ selang 95% = bootstrap blok per tahun-bulan, 300 ulangan`)}
       <div class="mt-batas"><span class="mt-lbl">Batasan</span><ul>${s.batas.filter(Boolean).map(x => `<li><span>${x}</span></li>`).join("")}</ul></div>
     </div></details>`;
 
+  /* PB-54b (F-28): bab longsor = Cerita.metode (inti/cerita.js): kepala nama seksi berikon, judul lengkap dan anak judul ke title kepala.
+     Komponen membungkus isi bab dengan <p>, jadi isi blok (alur, contoh, rumus, butir) diisi lewat DOM ke span tempat sesudah kartu terpasang.
+     Bab nowcast (nc) berpil hipotesis selama vonis uji balik longsor/data/uji_balik.json bukan LULUS (gagal-tertutup bila berkas tak terbaca). */
+  const tempat = (j, k) => `<span class="mt-blok" data-l="${j}" data-k="${k}" style="display:block"></span>`;
+  const pilNc = {nowcast_longsor: {boleh_tampil: UBL?.vonis === "LULUS", alasan: `Vonis uji balik nowcast: ${UBL?.vonis || "berkas uji tidak terbaca"}`}};
+  const kartuL = (s, j) => Cerita.metode(`L${j + 1}. ${s.j.split(":")[0]}`, {singkatnya: s.singkat, alur: tempat(j, "alur"), contoh: tempat(j, "contoh"), rincian: tempat(j, "rincian"), batasan: tempat(j, "batasan")},
+    {sumber: `${s.j}. ${s.sub}`, ...(s.nc ? {peta: pilNc, keluaran: "nowcast_longsor"} : {})});
   $("#metode").innerHTML = `<div class="head"><div><h2>Metode & data</h2><p>Cara tiap angka dihitung, dijelaskan dengan bahasa sehari-hari dan contoh dari data hari ini. Rumus lengkap ada di "Algoritma inti" pada tiap bagian.</p></div></div>
   <span class="mt-lbl" style="margin-bottom:8px">Cara membaca platform ini</span>
   <div class="mt-peta">
@@ -1251,7 +1258,7 @@ selang 95% = bootstrap blok per tahun-bulan, 300 ulangan`)}
   ${B.map((s, i) => bab(s, i, i + 1)).join("")}
   <div class="head" id="metode-longsor" style="margin-top:28px"><div><h2>Metode longsor</h2><p>Cara nowcast longsor di tab Longsor dihitung: kerentanan lereng, tanah, dan sesar, hujan pemicu, label kejadian, dan hasil uji baliknya. Nomor bagian diawali huruf L.</p></div></div>
   <span class="mt-lbl" style="margin-bottom:8px">Tiap metode longsor, langkah demi langkah</span>
-  ${L.map((s, j) => bab(s, B.length + j, "L" + (j + 1))).join("")}`;
+  ${L.map(kartuL).join("")}`;
 
   /* bab peluang hujan lebat per wilayah: batasan dan uji balik dari peluang.json (mesin bersama inti/peluang.js), ditaruh sesudah bab banjir dan sebelum kelompok longsor */
   if (typeof Peluang !== "undefined") Peluang.muat("data/peluang.json").then(d => { const h = Peluang.batasan(d, {judul: "Peluang hujan lebat per wilayah"});
@@ -1271,10 +1278,15 @@ selang 95% = bootstrap blok per tahun-bulan, 300 ulangan`)}
       tr("AUC model", mtA(E.auc_model, 3))}${tr("AUC pembanding utama", mtA(E.auc_pembanding?.[pb], 3))}${
       tr("Vonis", esc(E.vonis || "–"))}</tbody></table></div></article>`); }).catch(() => {});
 
+  const isiL = {alur: s => mtAlur(s.alur).replace('<span class="mt-lbl">Alurnya</span>', ""), contoh: () => '<div class="mt-muat"><div class="spin"></div>Menghitung contoh…</div>',
+    rincian: s => `<details class="mt-tek"><summary>Algoritma inti: rumus, konstanta, dan sumber</summary><div class="mt-tekisi">${s.teknis}</div></details>`, batasan: s => ul(s.batas.filter(Boolean))};
+  $("#metode").querySelectorAll(".mt-blok").forEach(e => { const s = L[e.dataset.l], k = e.dataset.k; e.innerHTML = isiL[k](s);
+    if (k === "contoh") nanti(() => Promise.resolve().then(() => s.contoh()).then(html => e.innerHTML = html)
+      .catch(x => e.innerHTML = `<p class="mt-cat">Contoh belum bisa dihitung: ${esc(x.message || x)}.</p>`)); });
   $("#metode").querySelectorAll("[data-buka]").forEach(b => b.onclick = () => bukaTab(b.dataset.buka));
   /* contoh dihitung saat bagian dibuka pertama kali */
   const isi = el => { if (el.dataset.ok) return; el.dataset.ok = 1; const i = +el.dataset.i, box = $("#mtc" + i);
-    nanti(() => Promise.resolve().then(() => A[i].contoh()).then(html => box.innerHTML = html)
+    nanti(() => Promise.resolve().then(() => B[i].contoh()).then(html => box.innerHTML = html)
       .catch(e => box.innerHTML = `<span class="mt-lbl">Contoh dengan data hari ini</span><p class="mt-cat">Contoh belum bisa dihitung: ${esc(e.message || e)}.</p>`)); };
   $("#metode").querySelectorAll("details.mt-sek").forEach(el => { el.addEventListener("toggle", () => el.open && isi(el)); if (el.open) isi(el); });
 }
