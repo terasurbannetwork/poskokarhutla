@@ -11,8 +11,9 @@
      dasbor menandai "perkiraan (sampel)". Batas kasar tulisan statistik: ~40 rb/hari + 5 % dari kelebihannya.
    - CPU: tanpa hash kriptografi, tanpa urai JSON besar; penggabungan JSON dikerjakan SQLite di D1. */
 import {json, gagal, sha, hex, acak, cekLaju, ipHash, gagalSudahBanyak, catatGagal, turnstileOK, adminOK, bacaBody, bacaBytes} from "./worker.js";
-import {CSP_ADMIN} from "./admin_halaman.js";
-import {hostTerkunci} from "./gerbang_halaman.js";
+import {CSP_ADMIN, arahStaf} from "./admin_halaman.js";
+import {CSP_MASUK} from "./masuk_konst.js";
+import {hostTerkunci, bolehHalaman} from "./gerbang_halaman.js";
 import {modOK} from "./posko.js";
 import {stafSesi, cobaMasukStaf, hanyaDirektori} from "./staf.js";
 import {masukPemirsa, arahPemirsa, cookiePemirsa} from "./pemirsa.js";
@@ -247,20 +248,22 @@ async function sesiDicabut(env, tanda) {
 const cookie = (nilai, umur) => `${COOKIE}=${nilai}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${umur}`;
 const html = (isi, status = 200, h = {}) => new Response(isi, {status, headers: {"content-type": "text/html; charset=utf-8", "cache-control": "no-store",
   "x-frame-options": "SAMEORIGIN", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "content-security-policy": CSP_ADMIN, ...h}});
-/* halaman login tidak perlu dibingkai: tetap DENY walau halaman admin lain boleh dibingkai sesama asal */
-const htmlMasuk = (isi, status = 200, h = {}) => html(isi, status, {"x-frame-options": "DENY", "content-security-policy": CSP_ADMIN.replace("frame-ancestors 'self'", "frame-ancestors 'none'"), ...h});
+/* balasan galat form sandi = halaman /masuk (K21): CSP halaman itu (Turnstile untuk kode WA), tidak pernah dibingkai; isi boleh janji (hal async, aset dibaca hanya saat galat) */
+const htmlMasuk = async (isi, status = 200, h = {}) => html(await isi, status, {"x-frame-options": "DENY", "content-security-policy": CSP_MASUK, ...h});
 const alihkan = (ke, h = {}) => new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store", ...h}});
 
 /* ?ke= tujuan sesudah masuk: hanya jalur di situs sendiri ("/..." tanpa "//" atau "/\\") */
-const tujuan = req => { const k = new URL(req.url).searchParams.get("ke") || ""; return /^\/(?![\/\\])[^\x00-\x20]*$/.test(k) ? k : ""; };   // tanpa karakter kontrol/spasi: "/<TAB>/evil.com" dibaca peramban sebagai //evil.com
+const tujuan = req => { const k = new URL(req.url).searchParams.get("ke") || ""; return /^\/(?![\/\\])[^\x00-\x20\x7f]*$/.test(k) ? k : ""; };   // tanpa karakter kontrol/spasi: "/<TAB>/evil.com" dibaca peramban sebagai //evil.com
 /* kuota baca D1 habis (Free 5 jt baris/hari, 11 Nov 2026): batas laju gagal-terbuka supaya akun secret (ADMIN_TOKEN/AKUN_SITUS, sesi HMAC tanpa D1) tetap bisa masuk; galat lain tetap dilempar */
 const d1Habis = e => /D1_ERROR|exceeded/i.test(String(e?.message || e));
 const lunak = (janji, cadangan) => janji.catch(e => { if (!d1Habis(e)) throw e; console.error("masuk tanpa D1", String(e?.message || e).slice(0, 120)); return cadangan; });
-export async function masuk(env, req, kini, halamanMasuk) {
-  const ke = tujuan(req), hal = g => halamanMasuk(g, ke);
+/* Form sandi satu pintu (K16, K21): POST /masuk dan POST /admin/masuk (klien lama). hal = galat => HTML halaman /masuk berpesan galat (src/worker.js masukSandi).
+   GET /admin/masuk: sesi sah dialihkan ke ?ke= (atau /admin/statistik; kontrak Admin.keMasuk), tamu dan akun gerbang ke /masuk?ke=...#sandi (?ke= ikut). */
+export async function masuk(env, req, kini, hal) {
+  const ke = tujuan(req);
+  /* ?ke= dari tombol "Masuk staf": akun gerbang (AKUN_SITUS) lolos adminOK tapi ditolak rute staf, jadi dialihkan balik = putar terus (9 Nov 2026). Dia harus bisa ganti akun: ke form. */
+  if (req.method === "GET") return alihkan((ke ? await modOK(env, req) : await adminOK(env, req, kini)) ? ke || "/admin/statistik" : "/masuk" + (ke ? "?ke=" + encodeURIComponent(ke) : "") + "#sandi");   // #sandi: alamat lama pintu sandi langsung membuka form sandi
   if (!env.SESI_KUNCI || !env.ADMIN_TOKEN) return htmlMasuk(hal("Server belum dikonfigurasi (SESI_KUNCI / ADMIN_TOKEN)."), 503);
-  /* ?ke= dari tombol "Masuk staf": akun gerbang (AKUN_SITUS) lolos adminOK tapi ditolak rute staf, jadi dialihkan balik = putar terus (9 Nov 2026). Dia harus bisa ganti akun: tampilkan form. */
-  if (req.method === "GET") return (ke ? await modOK(env, req) : await adminOK(env, req, kini)) ? alihkan(ke || "/admin/statistik") : htmlMasuk(hal(""));
   const iph = await ipHash(env, req), laju = await lunak(cekLaju(env, iph, "masuk", kini), null);
   if (laju) return htmlMasuk(hal("Terlalu banyak percobaan. Coba lagi nanti."), 429, {"retry-after": laju.headers.get("retry-after") || "900"});
   const u = await bacaBytes(req, 2048), t = u.b ? new TextDecoder().decode(u.b) : "";   // body dibaca per byte; lebih dari 2 KB = dianggap kosong (401)
@@ -287,17 +290,19 @@ export async function masuk(env, req, kini, halamanMasuk) {
       const m = email && sandi ? await cobaMasukStaf(env, req, email, sandi, kini).catch(e => (/no such table/i.test(String(e?.message || e)) || d1Habis(e) ? {hasil: "salah"} : Promise.reject(e))) : {hasil: "salah"};
       if (m.hasil === "ok") {
         const tolak = await tahan(); if (tolak) return tolak;
-        /* operator_cc SAJA ke peta utama "/" (dulu di form Meja Pantau), Direktori saja ke /direktori; ?ke= yang sah menang */
+        /* ?ke= yang sah menang (peta-situs D5), selain itu arahStaf (ALGORITMA "Arah sesudah masuk") */
         /* akun Direktori saja: ?ke= di luar /direktori diabaikan, kalau tidak "/" melempar balik ke /admin/masuk?ke=/ dan login berputar (3 Nov 2026) */
         const p = m.staf.peran || [], d = hanyaDirektori(p), keSah = d && !/^\/direktori([/?#]|$)/.test(ke) ? "" : ke;
-        const arah = m.staf.wajib_ganti ? "/admin/pantau" : keSah || (d ? "/direktori" : p.length === 1 && p[0] === "operator_cc" ? "/" : "/admin/pantau");
+        const arah = m.staf.wajib_ganti ? "/admin/pantau" : keSah || arahStaf(p, hostTerkunci(new URL(req.url).hostname));
         const r = alihkan(arah, {"set-cookie": m.cookie}); r.headers.append("set-cookie", cookie("", 0)); r.headers.append("set-cookie", cookiePemirsa("", 0)); return r;
       }
       /* akun instansi (BPBD, Polri, TNI; src/instansi.js) lewat pintu yang sama: tidak ada lagi layar masuk /instansi sendiri (pemilik 24 Nov 2026).
          Penguncian instansi ikut aturan instansi; sesudah masuk, pilih profil dan PIN tetap di /instansi. */
       const mi = email && sandi && m.hasil !== "kunci" ? await cobaMasukInstansi(env, req, email, sandi, kini).catch(e => (/no such table/i.test(String(e?.message || e)) || d1Habis(e) ? {hasil: "salah"} : Promise.reject(e))) : {hasil: "salah"};
       if (mi.hasil === "ok") {
-        const r = alihkan(/^\/instansi([/?#]|$)/.test(ke) ? ke : "/instansi"); for (const c of mi.cookie) r.headers.append("set-cookie", c);
+        /* ?ke= hanya di dalam /instansi, atau halaman yang dibuka gerbang host untuk akun instansi (bukan /admin, /api): selain itu ke /instansi (review PS-08) */
+        const keIns = /^\/instansi([/?#]|$)/.test(ke) || ke && !/^\/(admin|api)([/?#]|$)/.test(ke) && bolehHalaman(ke, {jenis: "instansi"}, hostTerkunci(new URL(req.url).hostname)) ? ke : "/instansi";
+        const r = alihkan(keIns); for (const c of mi.cookie) r.headers.append("set-cookie", c);
         r.headers.append("set-cookie", cookie("", 0)); r.headers.append("set-cookie", cookiePemirsa("", 0)); return r;
       }
       if (mi.hasil === "kunci") return htmlMasuk(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"});
@@ -318,7 +323,7 @@ export async function keluar(env, req, kini = Date.now()) {
   const m = await sesiSah(env, req, kini);   // hanya cookie sah yang dicatat: cookie karangan tidak bisa membanjiri D1 lewat /admin/keluar
   if (m && env.DB) try { await env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(m[3], AKSI_CABUT, kini).run(); }
     catch (e) { console.error("sesi cabut tulis", e?.message); }
-  return alihkan("/admin/masuk", {"set-cookie": cookie("", 0)});
+  return alihkan("/masuk", {"set-cookie": cookie("", 0)});
 }
 /* Kerangka halaman admin: undefined = admin penuh (token, akun gerbang, atau sesi admin); {nama, peran} = sesi staf; staf tak masuk = {nama: null, peran: []} (masuk lewat /admin/masuk, satu pintu). */
 export async function kerangka(env, req, kini = Date.now()) {
@@ -335,7 +340,7 @@ export async function halamanAdmin(env, req, kini, isi, bolehStaf = null) {
     const s = await stafSesi(env, req, kini);
     if (s) return s.peran.some(p => bolehStaf.includes(p)) ? buat({nama: s.nama, peran: s.peran, terkunci: hostTerkunci(new URL(req.url).hostname)}) : alihkan("/admin/pantau");
   }
-  const u = new URL(req.url); return alihkan("/admin/masuk?ke=" + encodeURIComponent(u.pathname + u.search));
+  const u = new URL(req.url); return alihkan("/masuk?ke=" + encodeURIComponent(u.pathname + u.search));
 }
 
 /* ================================================================ kotak pesan */

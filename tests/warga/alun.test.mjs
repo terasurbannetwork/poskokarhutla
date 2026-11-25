@@ -221,7 +221,7 @@ uji("halaman /alun-alun dan /admin/alun: 200 ber-CSP tanpa inline; admin tanpa t
   const csp = p.h.get("content-security-policy"); assert.match(csp, /script-src 'self'(;|$)/); assert.doesNotMatch(csp, /unsafe-inline/);
   assert.match(p.t, /alun-alun\.js/); assert.doesNotMatch(p.t, /\sonclick=|<script>[^<]/);
   const a = await U.api("GET", "/admin/alun", undefined, ADMIN); assert.equal(a.s, 200); assert.match(a.t, /\/admin\/alun\.js/); assert.match(a.t, /id="aksiJudul"/);
-  const tanpa = await U.mf.dispatchFetch("http://bnpb.lokal/admin/alun", {redirect: "manual"}); assert.ok([302, 303].includes(tanpa.status), String(tanpa.status)); assert.match(tanpa.headers.get("location"), /\/admin\/masuk/);
+  const tanpa = await U.mf.dispatchFetch("http://bnpb.lokal/admin/alun", {redirect: "manual"}); assert.ok([302, 303].includes(tanpa.status), String(tanpa.status)); assert.match(tanpa.headers.get("location"), /\/masuk/);
   for (const [m, j, b] of [["GET", "/api/alun/admin"], ["POST", "/api/alun/admin/abcdef0123456789", {aksi: "hapus"}]]) assert.equal((await U.api(m, j, b)).s, 403, j);
   assert.equal((await U.api("PUT", "/api/alun", {})).s, 405);
   assert.equal((await U.api("POST", "/api/alun", SAH, {...ip(80), origin: "https://jahat.example"})).s, 403, "origin lain");

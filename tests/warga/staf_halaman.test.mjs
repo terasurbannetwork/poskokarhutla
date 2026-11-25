@@ -37,16 +37,16 @@ uji("T1: /admin/instansi untuk staf berperan memakai kerangka staf; peran lain k
   const k = await api("GET", "/admin/posko", undefined, ana); assert.equal(k.s, 200); assert.match(k.t, /href="\/admin\/posko"/);
   const man = async (j, h = {}) => { const r = await U.mf.dispatchFetch("http://bnpb.lokal" + j, {headers: h, redirect: "manual"}); await r.text(); return {s: r.status, h: r.headers}; };
   const t = await man("/admin/instansi", tmc); assert.equal(t.s, 303); assert.equal(t.h.get("location"), "/admin/pantau", "staf tanpa peran cocok tidak dilempar ke login admin");
-  const an = await man("/admin/instansi"); assert.equal(an.s, 303); assert.match(an.h.get("location"), /\/admin\/masuk/);
+  const an = await man("/admin/instansi"); assert.equal(an.s, 303); assert.match(an.h.get("location"), /\/masuk/);
   const ad = await api("GET", "/admin/instansi", undefined, ADMIN); assert.equal(ad.s, 200); assert.match(ad.t, /<span class="ad-sep">Admin<\/span>/);
   /* PS-04: sub-nav admin = grup registri halaman ini (Akun instansi di grup Jejaring), dihitung dari src/peta_situs.js */
   assert.deepEqual(hrefs(ad.t.match(/<nav class="ad-sub"[\s\S]*?<\/nav>/)[0]), grupNav().find(g => g.id === "jejaring").butir.map(e => e.rute), "sub-nav Akun Instansi = grup Jejaring");
   const pa = await api("GET", "/admin/pantau", undefined, ver); assert.match(pa.t, /ad-sep staf/); assert.match(pa.t, /\/inti\/format\.js/);
   const omc = await api("GET", "/admin/omc", undefined, tmc); assert.equal(omc.s, 200); assert.match(omc.t, /data-masuk="1"/);
   /* halaman Ruang Koordinasi lain: staf tanpa peran yang cocok ke Meja Pantau, anonim ke login admin (bukan kerangka kosong) */
-  for (const [j, boleh, tolak] of [["/admin/omc", tmc, ver], ["/admin/inventaris", ver, tmc]]) { assert.equal((await api("GET", j, undefined, boleh)).s, 200, j); const sal = await man(j, tolak); assert.equal(sal.s, 303, j); assert.equal(sal.h.get("location"), "/admin/pantau", j + " peran tak cocok"); const an2 = await man(j); assert.equal(an2.s, 303, j); assert.match(an2.h.get("location"), /\/admin\/masuk/, j + " anonim"); }
-  assert.equal((await man("/admin/laporan-karhutla", tmc)).s, 200, "laporan karhutla: semua staf"); assert.equal((await man("/admin/laporan-karhutla")).s, 303); const pt = await man("/admin/pantau"); assert.equal(pt.s, 303, "Meja Pantau: tamu ke satu pintu masuk"); assert.equal(pt.h.get("location"), "/admin/masuk?ke=%2Fadmin%2Fpantau");
-  assert.equal((await man("/admin/omc?x=1")).h.get("location"), "/admin/masuk?ke=%2Fadmin%2Fomc%3Fx%3D1", "tamu kembali ke halaman asal sesudah masuk");
+  for (const [j, boleh, tolak] of [["/admin/omc", tmc, ver], ["/admin/inventaris", ver, tmc]]) { assert.equal((await api("GET", j, undefined, boleh)).s, 200, j); const sal = await man(j, tolak); assert.equal(sal.s, 303, j); assert.equal(sal.h.get("location"), "/admin/pantau", j + " peran tak cocok"); const an2 = await man(j); assert.equal(an2.s, 303, j); assert.match(an2.h.get("location"), /\/masuk/, j + " anonim"); }
+  assert.equal((await man("/admin/laporan-karhutla", tmc)).s, 200, "laporan karhutla: semua staf"); assert.equal((await man("/admin/laporan-karhutla")).s, 303); const pt = await man("/admin/pantau"); assert.equal(pt.s, 303, "Meja Pantau: tamu ke satu pintu masuk"); assert.equal(pt.h.get("location"), "/masuk?ke=%2Fadmin%2Fpantau");
+  assert.equal((await man("/admin/omc?x=1")).h.get("location"), "/masuk?ke=%2Fadmin%2Fomc%3Fx%3D1", "tamu kembali ke halaman asal sesudah masuk");
 });
 uji("Ruang Laporan: /admin/laporan memuat sidebar + iframe; halaman terbingkai boleh dibingkai sesama asal saja", async () => {
   const tmc = await bikin(["tmc"]), man = async (j, h = {}) => { const r = await U.mf.dispatchFetch("http://bnpb.lokal" + j, {headers: h, redirect: "manual"}); await r.text(); return {s: r.status, csp: r.headers.get("content-security-policy") || "", h: r.headers}; };
@@ -68,7 +68,7 @@ uji("Ruang Laporan: /admin/laporan memuat sidebar + iframe; halaman terbingkai b
     const r = await man(j, h); assert.equal(r.s, 200, j); assert.match(r.csp, /frame-ancestors 'self'/, j); assert.ok(!r.csp.includes("frame-ancestors 'none'") && !/\*/.test(r.csp.match(/frame-ancestors[^;]*/)[0]), j); assert.notEqual(r.h.get("x-frame-options"), "DENY", j);
   }
   /* yang tidak perlu dibingkai tetap tertutup: login admin (DENY) dan halaman /bnpb lain */
-  const lg = await U.mf.dispatchFetch("http://bnpb.lokal/admin/masuk", {redirect: "manual"}); await lg.text();
+  const lg = await U.mf.dispatchFetch("http://bnpb.lokal/masuk", {redirect: "manual"}); await lg.text();   // halaman masuk satu pintu (K21)
   assert.equal(lg.headers.get("x-frame-options"), "DENY"); assert.match(lg.headers.get("content-security-policy"), /frame-ancestors 'none'/);
   for (const j of ["/bnpb", "/meja"]) { const r = await man(j); assert.equal(r.s, 200, j); assert.match(r.csp, /frame-ancestors 'none'/, j); }
 });
@@ -99,7 +99,7 @@ uji("GET /bnpb/dokumen: kerangka publik tanpa cache, tak boleh dibingkai, .html 
   assert.match(r.headers.get("content-security-policy"), /frame-ancestors 'none'/);
   const h = await man("http://bnpb.lokal", "/bnpb/dokumen.html"); assert.equal(h.status, 301); assert.equal(new URL(h.headers.get("location"), "http://bnpb.lokal").pathname, "/bnpb/dokumen");
   const b = await man("http://bnpb.lokal", "/bnpb/bahan"); assert.equal(b.status, 200, "menu Bahan laporan punya rute"); assert.match(b.headers.get("cache-control"), /no-store/);
-  for (const j of ["/bnpb/logbook", "/bnpb/dokumen", "/bnpb/bahan"]) { const c = await man("https://centurisk97.id", j); assert.equal(c.status, 303, j); assert.match(c.headers.get("location"), /\/admin\/masuk/, j); }
+  for (const j of ["/bnpb/logbook", "/bnpb/dokumen", "/bnpb/bahan"]) { const c = await man("https://centurisk97.id", j); assert.equal(c.status, 303, j); assert.match(c.headers.get("location"), /\/masuk/, j); }
 });
 
 uji("GET /bnpb/perencanaan: kerangka publik tanpa cache, tak boleh dibingkai, .html dialihkan; di centurisk97.id anonim ke login", async () => {
@@ -107,7 +107,7 @@ uji("GET /bnpb/perencanaan: kerangka publik tanpa cache, tak boleh dibingkai, .h
   const r = await man("http://bnpb.lokal", "/bnpb/perencanaan"); assert.equal(r.status, 200);
   assert.match(r.headers.get("cache-control"), /no-store/); assert.match(r.headers.get("x-robots-tag"), /noindex/); assert.match(r.headers.get("content-security-policy"), /frame-ancestors 'none'/);
   const h = await man("http://bnpb.lokal", "/bnpb/perencanaan.html"); assert.equal(h.status, 301); assert.equal(new URL(h.headers.get("location"), "http://bnpb.lokal").pathname, "/bnpb/perencanaan");
-  const c = await man("https://centurisk97.id", "/bnpb/perencanaan"); assert.equal(c.status, 303); assert.match(c.headers.get("location"), /\/admin\/masuk/);
+  const c = await man("https://centurisk97.id", "/bnpb/perencanaan"); assert.equal(c.status, 303); assert.match(c.headers.get("location"), /\/masuk/);
 });
 
 uji("GET /bnpb/operasi: kerangka publik tanpa cache, tak boleh dibingkai, .html dialihkan; di centurisk97.id anonim ke login", async () => {
@@ -116,14 +116,14 @@ uji("GET /bnpb/operasi: kerangka publik tanpa cache, tak boleh dibingkai, .html 
   assert.match(r.headers.get("cache-control"), /no-store/); assert.match(r.headers.get("referrer-policy"), /no-referrer/); assert.match(r.headers.get("x-robots-tag"), /noindex/);
   assert.match(r.headers.get("content-security-policy"), /frame-ancestors 'none'/);
   const h = await man("http://bnpb.lokal", "/bnpb/operasi.html"); assert.equal(h.status, 301); assert.equal(new URL(h.headers.get("location"), "http://bnpb.lokal").pathname, "/bnpb/operasi");
-  const c = await man("https://centurisk97.id", "/bnpb/operasi"); assert.equal(c.status, 303); assert.match(c.headers.get("location"), /\/admin\/masuk/);
+  const c = await man("https://centurisk97.id", "/bnpb/operasi"); assert.equal(c.status, 303); assert.match(c.headers.get("location"), /\/masuk/);
 });
 
 uji("GET /bnpb/operasi-lapangan: dialihkan ke tab Operasi peta utama (/operasi); .html ikut; di centurisk97.id anonim tetap ke login", async () => {
   const man = async (asal, j) => { const r = await U.mf.dispatchFetch(asal + j, {redirect: "manual"}); await r.text(); return r; };
   const r = await man("http://bnpb.lokal", "/bnpb/operasi-lapangan"); assert.equal(r.status, 302); assert.equal(r.headers.get("location"), "/operasi"); assert.match(r.headers.get("cache-control"), /no-store/);
   const h = await man("http://bnpb.lokal", "/bnpb/operasi_lapangan.html"); assert.equal(h.status, 301); assert.equal(new URL(h.headers.get("location"), "http://bnpb.lokal").pathname, "/bnpb/operasi-lapangan");
-  const c = await man("https://centurisk97.id", "/bnpb/operasi-lapangan"); assert.equal(c.status, 303); assert.match(c.headers.get("location"), /\/admin\/masuk/);
+  const c = await man("https://centurisk97.id", "/bnpb/operasi-lapangan"); assert.equal(c.status, 303); assert.match(c.headers.get("location"), /\/masuk/);
 });
 
 uji("hak halaman staf sama dengan hak API-nya (satu sumber)", () => {

@@ -1447,6 +1447,7 @@
     "table mk_denyut": "masuk U-11:",
     "GET /api/masuk/saluran": "masuk U-11:",
     "GET /masuk": "peran U-12:",
+    "POST /masuk": "K21 U4: POST /masuk memakai logika yang sama",
     "POST /api/masuk/sandi": "peran U-18:",
     "POST /api/masuk/pilih": "peran U-15:",
     "POST /api/masuk/lengkapi": "halaman U-20:",

@@ -390,7 +390,7 @@ export const RUTE_PANTAU = Object.fromEntries(Object.entries({
     const k = await kerangka(env, req, kini);
     if (k === undefined || k.nama || await stafTertahan(env, req, kini)) return halaman(k);
     if (hanyaDirektori((await stafSesiSemua(env, req, kini))?.peran)) return new Response(null, {status: 303, headers: {location: "/direktori", "cache-control": "no-store"}});
-    return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search), "cache-control": "no-store"}});
+    return new Response(null, {status: 303, headers: {location: "/masuk?ke=" + encodeURIComponent(url.pathname + url.search), "cache-control": "no-store"}});
   },
   "GET /api/pantau": (env, req, url, kini) => baca(env, req, url, kini),
   "POST /api/pantau/butir": (env, req, url, kini) => ubahButir(env, req, url, kini),

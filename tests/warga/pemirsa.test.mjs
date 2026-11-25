@@ -91,9 +91,9 @@ uji("pemirsa: tab miliknya terbuka dengan data-pemirsa-tab dan no-store; tab dan
   for (const j of ["/banjir", "/banjir/", "/banjir/rob"]) { const r = await situs(j, {cookie}); assert.equal(r.status, 303, j); assert.equal(r.headers.get("location"), "/banjir/berita", j); }
   const bb = await situs("/banjir/berita", {cookie}); assert.equal(bb.status, 200, "/banjir/berita"); await bb.arrayBuffer();
   const dok = await situs("/api", {cookie}); assert.equal(dok.status, 200, "pemirsa boleh membaca dokumentasi /api"); assert.match(dok.headers.get("cache-control"), /no-store/); await dok.arrayBuffer();
-  const ad = await situs("/admin/statistik", {cookie}); assert.equal(ad.status, 303); assert.match(ad.headers.get("location"), /^\/admin\/masuk/);
+  const ad = await situs("/admin/statistik", {cookie}); assert.equal(ad.status, 303); assert.match(ad.headers.get("location"), /^\/masuk/);
   assert.equal((await api("GET", "/api/pemirsa/admin/daftar", undefined, {cookie})).s, 403, "pemirsa bukan admin");
-  const tanpa = await situs("/berita"); assert.equal(tanpa.status, 303); assert.match(tanpa.headers.get("location"), /^\/admin\/masuk/);
+  const tanpa = await situs("/berita"); assert.equal(tanpa.status, 303); assert.match(tanpa.headers.get("location"), /^\/masuk/);
   const adm = await situs("/peta", ADMIN); assert.equal(adm.status, 200); assert.doesNotMatch((await adm.text()).match(/<html[^>]*>/)[0], /data-pemirsa-tab/, "admin tidak dibatasi");
 });
 
@@ -110,7 +110,7 @@ uji("pemirsa: ubah tab berlaku untuk sesi yang hidup; cabut mengakhiri sesi; kel
   assert.equal((await masuk(A.username, A.sandi)).status, 401, "sandi lama mati");
   cookie = kuki(await masuk(A.username, rs.j.sandi));
   assert.equal((await api("POST", `/api/pemirsa/admin/${A.id}`, {aksi: "cabut"}, ADMIN)).s, 200);
-  assert.match((await situs("/berita", {cookie})).headers.get("location"), /^\/admin\/masuk/);
+  assert.match((await situs("/berita", {cookie})).headers.get("location"), /^\/masuk/);
   assert.equal((await masuk(A.username, rs.j.sandi)).status, 401, "akun dicabut tidak bisa masuk");
   assert.equal((await api("POST", `/api/pemirsa/admin/${A.id}`, {aksi: "ubah", tab: ["peta"]}, ADMIN)).s, 409);
 });

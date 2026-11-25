@@ -37,7 +37,7 @@ menuUntuk(sesi):
 
 1. Bila ada `?ke=` dan lolos `tujuan()` (`src/statistik.js`, jalur relatif sesama asal), pakai itu.
 2. Bila tidak, arahkan menurut jenis akun:
-   - staf ke `/bnpb`
+   - staf ke `/bnpb` bila `bolehHalaman` mengizinkan peran itu di host ini, selain itu ke butir pertama menu staf peran itu (Q7)
    - akun direktori saja ke `/direktori`
    - `operator_cc` ke `/command-center`
    - instansi ke `/instansi`

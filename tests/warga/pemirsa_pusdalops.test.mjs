@@ -59,7 +59,7 @@ uji("halaman menu: 200 untuk pusdalops, peta utama /?operasi membawa peta,operas
   for (const j of MENU.filter(x => x !== "/daftar-kontak")) { const r = await situs(j, {cookie: B.cookie}); assert.equal(r.status, 303, j); assert.equal(r.headers.get("location"), "/berita", j); await r.arrayBuffer(); }
   for (const j of ["/admin/pantau", "/admin/laporan-karhutla", "/admin/omc"]) {
     const r = await situs(j, {cookie: P.cookie}); assert.equal(r.status, 200, j); await r.arrayBuffer();
-    const t = await situs(j, {cookie: B.cookie}); assert.equal(t.status, 303, j); assert.match(t.headers.get("location"), /^\/admin\/masuk/); await t.arrayBuffer();
+    const t = await situs(j, {cookie: B.cookie}); assert.equal(t.status, 303, j); assert.match(t.headers.get("location"), /^\/masuk/); await t.arrayBuffer();
     const h = await situs(j, {cookie: P.cookie}, {method: "POST", body: "{}"}); assert.ok(h.status >= 400, j + " POST"); await h.arrayBuffer();
   }
 });

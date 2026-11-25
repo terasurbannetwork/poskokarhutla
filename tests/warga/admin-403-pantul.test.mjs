@@ -12,7 +12,7 @@ test("tidak ada 403 -> /admin/masuk?ke= di luar Admin.keMasuk", () => {
   const pipa = new URL("../../public/pipa/", import.meta.url), berkasPipa = existsSync(pipa) ? readdirSync(pipa).filter(f => f.endsWith(".js") && !f.includes(" ")).map(f => [`pipa/${f}`, new URL(f, pipa)]) : [];
   const berkas = [...readdirSync(dir).filter(f => f.endsWith(".js") && f !== "bersama.js" && !f.includes(" ")).map(f => [f, new URL(f, dir)]), ...berkasPipa];
   for (const [f, u] of berkas)
-    readFileSync(u, "utf8").split("\n").forEach((b, i) => { if (/403/.test(b) && /\/admin\/masuk\?ke=/.test(b)) salah.push(`${f}:${i + 1}`); });
+    readFileSync(u, "utf8").split("\n").forEach((b, i) => { if (/403/.test(b) && /\/(?:admin\/)?masuk\?ke=/.test(b)) salah.push(`${f}:${i + 1}`); });
   assert.deepEqual(salah, [], `403 dialihkan ke /admin/masuk?ke= tanpa cek sesi (pantulan tak berujung untuk akun tak berhak): ${salah.join(", ")}`);
-  assert.match(readFileSync(new URL("bersama.js", dir), "utf8"), /redirect: "manual"[\s\S]*opaqueredirect/, "Admin.keMasuk harus memeriksa sesi lewat GET /admin/masuk redirect:manual");
+  assert.match(readFileSync(new URL("bersama.js", dir), "utf8"), /fetch\("\/admin\/masuk"[\s\S]*pathname !== "\/masuk"/, "Admin.keMasuk harus memeriksa sesi lewat GET /admin/masuk: berakhir di /masuk = belum masuk (K21)");
 });

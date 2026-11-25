@@ -12,7 +12,7 @@ import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
 import {ruteBencana, sumberStatus, sumberUji, sitemap} from "./bencana.js";
-import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanLabelFoto, halamanSosmed, halamanKunciApi, halamanKontak, halamanBiayaBot, bolehStaf} from "./admin_halaman.js";
+import {halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanLabelFoto, halamanSosmed, halamanKunciApi, halamanKontak, halamanBiayaBot, bolehStaf} from "./admin_halaman.js";
 import {menuUntuk} from "./peta_situs.js";   // impor melingkar aman: peta_situs.js memakai bolehHalaman hanya di dalam fungsi
 import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
@@ -593,8 +593,9 @@ const RUTE = {
   "GET /api/pesan": (env, req, url, kini) => St.daftarPesan(env, req, url, kini),
   "POST /api/pesan/:id": (env, req, url, kini, ctx, id) => St.ubahPesan(env, req, id, kini),
   "GET /admin": () => new Response(null, {status: 303, headers: {location: "/admin/statistik"}}),
-  "GET /admin/masuk": (env, req, url, kini) => St.masuk(env, req, kini, halamanMasuk),
-  "POST /admin/masuk": (env, req, url, kini) => St.masuk(env, req, kini, halamanMasuk),
+  "GET /admin/masuk": (env, req, url, kini) => St.masuk(env, req, kini),   // 303 ke /masuk?ke= (K21); sesi sah ke ?ke=
+  "POST /admin/masuk": masukSandi,   // klien lama: logika dan balasan sama dengan POST /masuk
+  "POST /masuk": masukSandi,   // form sandi di halaman /masuk (K21)
   "POST /admin/keluar": async (env, req) => { await hapusSesiPemirsa(env, req); const k = await St.keluar(env, req); k.headers.append("set-cookie", cookiePemirsa("", 0)); return k; },   // keluar = sesi admin dan pemirsa
   "GET /admin/statistik": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanStatistik()),
   "GET /admin/pesan": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanPesan()),
@@ -694,7 +695,8 @@ pasangTabelRute(tabelRute);
    Pengecualian: halaman admin ber-Referrer-Policy no-referrer, jadi form POST sama-situs (Keluar, Masuk dengan cookie lama) dikirim peramban dengan
    Origin "null". Itu diterima HANYA bila Sec-Fetch-Site = same-origin (header terlarang, tak bisa dipalsukan halaman; iframe tersandbox mengirim cross-site). */
 export const tolakOrigin = (req, url) => {
-  const o = req.headers.get("origin"), sesi = /(?:^|;\s*)(?:sesi_admin|sesi_pendataan|sesi_staf|sesi_kemitraan|sesi_masuk|sesi_instansi|sesi_profil|lapor_perangkat|lapor_data)=/.test(req.headers.get("cookie") || "");
+  /* form sandi (POST /masuk, /admin/masuk) diperlakukan seperti kiriman bersesi: Origin kosong atau "null" ditolak kecuali Sec-Fetch-Site same-origin (cegah login-CSRF) */
+  const o = req.headers.get("origin"), sesi = /^\/(?:admin\/)?masuk\/?$/.test(url.pathname) || /(?:^|;\s*)(?:sesi_admin|sesi_pendataan|sesi_staf|sesi_kemitraan|sesi_masuk|sesi_instansi|sesi_profil|lapor_perangkat|lapor_data)=/.test(req.headers.get("cookie") || "");
   const kosong = !o || o === "null", samaPeramban = kosong && req.headers.get("sec-fetch-site") === "same-origin";
   if (sesi ? (!samaPeramban && (kosong || !URL.canParse(o) || new URL(o).host !== url.host)) : (!kosong && (!URL.canParse(o) || new URL(o).host !== url.host))) return gagal(403, "origin lain ditolak");
   return null;
@@ -848,6 +850,17 @@ function bisaDiIframe(res) {
 /* 404/500 untuk peramban: halaman berkepala situs (public/404.html, public/500.html), bukan badan kosong atau halaman galat Cloudflare.
    API, aset berekstensi selain .html, dan metode selain GET/HEAD tetap mendapat jawaban lama. */
 const mauHalaman = (req, url) => (req.method === "GET" || req.method === "HEAD") && !/^\/(api|mcp|ubin)(\/|$)/.test(url.pathname) && !/\.(?!html?$)[a-z0-9]{1,12}$/i.test(url.pathname);
+/* Form sandi satu pintu (KEPUTUSAN-MASUK K21): logika St.masuk apa adanya (laju, kunci akun, CSRF di rute()); galat = halaman /masuk berpesan di
+   <body data-galat>, dibaca public/masuk.js. Aset hilang = halaman polos berpesan. */
+async function masukSandi(env, req, url, kini) {
+  const esc = s => String(s).replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
+  return St.masuk(env, req, kini, async g => {   // aset dibaca hanya saat galat; sukses tidak menyentuh ASSETS
+    const a = await env.ASSETS.fetch(new Request(new URL("/masuk.html", url)));
+    const t = a.ok ? await a.text() : (a.body?.cancel(), "");
+    return t.includes("<body>") ? t.replace("<body>", () => `<body data-galat="${esc(g)}">`)   // fungsi pengganti: $& atau $1 di pesan tidak ditafsirkan
+      : `<!doctype html><html lang="id"><meta charset="utf-8"><title>Masuk</title><p>${esc(g)}</p><p><a href="/masuk">Coba lagi</a></p></html>`;
+  });
+}
 export async function halamanGalat(env, req, url, kode) {
   try {
     const a = await env.ASSETS.fetch(new Request(new URL(`/${kode}.html`, url)));
@@ -879,7 +892,7 @@ const W = {
     if ((url.pathname === "/api" || url.pathname === "/api/") && (req.method === "GET" || req.method === "HEAD")) {
       /* dokumentasi di centurisk97.id hanya untuk yang masuk: admin atau akun pemirsa (pemilik 23 Okt 2026, akun mitra); endpoint /api/v1 dan /mcp tetap terbuka */
       const kunci = hostTerkunci(url.hostname);
-      if (kunci && !await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=%2Fapi", "cache-control": "no-store"}});
+      if (kunci && !await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/masuk?ke=%2Fapi", "cache-control": "no-store"}});
       const d = await env.ASSETS.fetch(new Request(new URL("/api.html", url)));
       return new Response(d.body, {status: d.status, headers: {"content-type": "text/html; charset=utf-8", "cache-control": kunci ? "private, no-store" : "public, max-age=300", "x-content-type-options": "nosniff"}});
     }
@@ -928,13 +941,13 @@ const W = {
     /* /uji-lapangan (evaluasi internal): admin ATAU pemirsa di SEMUA host; pemirsa tidak dialihkan ke tab pertamanya oleh gerbang di bawah */
     let ujiOK = false;
     if (/^\/uji-lapangan\/?$/.test(url.pathname) && (req.method === "GET" || req.method === "HEAD")) {
-      if (!await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=" + encodeURIComponent(url.pathname), "cache-control": "no-store"}});
+      if (!await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/masuk?ke=" + encodeURIComponent(url.pathname), "cache-control": "no-store"}});
       ujiOK = true;
     }
     if (!ujiOK && hostTerkunci(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)
       && !await stafPeran(env, req, perananGerbang(url.pathname))) {   // operator command center (sesi staf) melihat semua halaman terkunci, GET/HEAD saja; staf berperan Direktori (P_AKADEMISI) membuka /direktori saja
       /* akun pemirsa (src/pemirsa.js): hanya tab miliknya; halaman lain dialihkan ke tab pertamanya */
-      const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname, url.search) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
+      const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname, url.search) : "/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
       if (ke) return new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store"}});
     }
     const r = await rute(env, req, url, ctx); if (r) return bacaSaja(env, req, pasangKeluar(req, url, r));

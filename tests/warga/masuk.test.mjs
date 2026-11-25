@@ -183,7 +183,7 @@ uji("masuk U-7: tabel mk_* belum ada: 503 dengan pesan migrasi; pintu sandi lama
     const r = await V.api(m, j, b, m === "GET" ? {cookie: "sesi_masuk=" + "a".repeat(64)} : H(1));
     assert.equal(r.s, 503, j); assert.match(r.j.galat, /migrasi masuk belum dijalankan/);
   }
-  assert.equal((await V.api("GET", "/admin/masuk")).s, 200, "pintu sandi lama");
+  const lama = await V.mf.dispatchFetch("http://bnpb.lokal/admin/masuk", {redirect: "manual"}); await lama.text(); assert.equal(lama.status, 303, "alamat lama pintu sandi (K21)"); assert.equal(lama.headers.get("location"), "/masuk#sandi");
 });
 
 uji("masuk U-8: tanpa x-pb atau Origin lain semua POST /api/masuk/* ditolak, termasuk form text/plain lintas situs", async () => {

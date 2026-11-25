@@ -7,7 +7,7 @@
   "use strict";
   const KERANGKA = `
   <p class="rr-siapa" data-r="siapa">Memeriksa akses…</p>
-  <p class="rr-banner" data-r="tanpaAkses" hidden>Halaman ini hanya untuk akun yang sudah masuk atau regu lapangan yang punya tautan dari posko. Masuk lewat <a href="/admin/masuk?ke=/rumah-rusak">halaman masuk</a>, atau buka lagi tautan regu Anda di <a href="/lapangan">Lapor Lapangan</a>.</p>
+  <p class="rr-banner" data-r="tanpaAkses" hidden>Halaman ini hanya untuk akun yang sudah masuk atau regu lapangan yang punya tautan dari posko. Masuk lewat <a href="/masuk?ke=/rumah-rusak">halaman masuk</a>, atau buka lagi tautan regu Anda di <a href="/lapangan">Lapor Lapangan</a>.</p>
   <p class="rr-pesan" data-r="pesan" role="status" aria-live="polite"></p>
   <form data-r="f" autocomplete="off" novalidate>
     <section class="rr-blok">

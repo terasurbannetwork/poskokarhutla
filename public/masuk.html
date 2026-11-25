@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Masuk, Centurisk97</title>
-<meta name="description" content="Masuk ke Centurisk97 dengan nomor WhatsApp dan kode sekali pakai.">
+<meta name="description" content="Masuk ke Centurisk97 dengan kode WhatsApp atau dengan username dan sandi.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
       <h1 id="mkJudul" tabindex="-1">Masuk</h1>
       <p id="mkInfo" class="bn-label" hidden></p>
     </div>
-    <p id="mkTerganggu" class="bn-pesan galat" role="status" hidden>Kode WhatsApp sedang terganggu. <a id="aTerganggu" href="/admin/masuk">Masuk dengan sandi</a></p>
+    <p id="mkTerganggu" class="bn-pesan galat" role="status" hidden>Kode WhatsApp sedang terganggu. <a id="aTerganggu" href="#sandi">Masuk dengan sandi</a></p>
 
     <p id="mkMuat" class="bn-label" role="status">Memuat...</p>
 
@@ -34,7 +34,19 @@
       <button class="bn-tombol" id="bKirim" type="submit">Kirim kode</button>
       <p class="bn-pesan" role="status"></p>
       <button class="mk-tautan" id="bEmailNomor" type="button" hidden>Kirim kode ke email</button>
-      <a class="mk-tautan" id="aSandi" href="/admin/masuk">Masuk dengan sandi</a>
+      <a class="mk-tautan" id="aSandi" href="#sandi">Masuk dengan sandi</a>
+    </form>
+
+    <form id="fAkun" class="bn-form" method="post" action="/masuk" hidden>
+      <label class="bn-isian" for="iAkun">Username atau email
+        <input id="iAkun" name="email" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="254" required>
+      </label>
+      <label class="bn-isian" for="iSandiAkun">Sandi
+        <input id="iSandiAkun" name="sandi" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" maxlength="200" required>
+      </label>
+      <button class="bn-tombol" id="bAkun" type="submit">Masuk</button>
+      <p class="bn-pesan" role="status"></p>
+      <button class="mk-tautan" id="bAkunKembali" type="button">Masuk dengan kode WhatsApp</button>
     </form>
 
     <form id="fKode" class="bn-form" novalidate hidden>
@@ -145,6 +157,6 @@
 <script src="/instansi_wilayah.js?v=1"></script>
 <script src="/bnpb/turnstile.js"></script>
 <script src="/inti/pesan.js?v=1"></script>
-<script src="/masuk.js?v=4"></script>
+<script src="/masuk.js?v=5"></script>
 </body>
 </html>

@@ -303,7 +303,7 @@ uji("sesi sah tapi tak berhak (peran direktori saja, sandi awal belum diganti) d
 
 uji("kelas penolakan HTTP: halaman /ai di centurisk97.id tanpa sesi 303 ke masuk; 405 metode salah; Origin asing 403; body 20001 byte 413", async () => {
   const hal = await mf.dispatchFetch("https://centurisk97.id/ai", {redirect: "manual"}); await hal.arrayBuffer();
-  assert.equal(hal.status, 303); const ke = new URL(hal.headers.get("location"), "https://centurisk97.id"); assert.equal(decodeURIComponent(ke.pathname + ke.search),"/admin/masuk?ke=/ai");
+  assert.equal(hal.status, 303); const ke = new URL(hal.headers.get("location"), "https://centurisk97.id"); assert.equal(decodeURIComponent(ke.pathname + ke.search),"/masuk?ke=/ai");
   const id = "0123456789abcdef";
   assert.equal((await api("GET", "/api/ai/agen/" + id + "/hapus", undefined, H("a"))).s, 405);
   assert.equal((await api("PUT", "/api/ai/agen/" + id, AGEN(), H("a"))).s, 405);

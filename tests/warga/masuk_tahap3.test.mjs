@@ -281,7 +281,7 @@ uji("tahap3 U-34: kode lewat email: jawaban sama untuk alamat cocok dan tidak; h
   const st = await bikinStaf(83, ["verifikator"], []); const emailStaf = "s83@bnpb.go.id", a2 = surat.length;
   assert.equal((await minta({wa: lokal(83), email: emailStaf})).s, 200); await tungguSurat(a2);
   const js = await api("POST", "/api/masuk/periksa", {wa: lokal(83), kode: surat[a2].text.match(/\b(\d{6})\b/)[1]}, H()); assert.equal(js.s, 200, js.t);
-  assert.deepEqual(js.j.ruang.map(x => [x.jenis, x.butuh_sandi, x.ke]), [["staf", true, "/admin/masuk"]], "staf lewat email: pintu sandi lama"); assert.ok(!js.h.getSetCookie().some(l => /^sesi_(staf|masuk)=/.test(l)), "tanpa sesi_staf dan sesi_masuk"); assert.ok(st.id);
+  assert.deepEqual(js.j.ruang.map(x => [x.jenis, x.butuh_sandi, x.ke]), [["staf", true, "/masuk"]], "staf lewat email: form sandi /masuk (K21)"); assert.ok(!js.h.getSetCookie().some(l => /^sesi_(staf|masuk)=/.test(l)), "tanpa sesi_staf dan sesi_masuk"); assert.ok(st.id);
   /* penjaga, Turnstile, bentuk, laju */
   assert.equal((await minta({wa: lokal(80), email: "dinas.uji@contoh.id"}, {"cf-connecting-ip": "10.6.250.1"})).s, 403, "tanpa x-pb");
   assert.equal((await minta({wa: lokal(80), email: "dinas.uji@contoh.id", turnstile: "salah"})).s, 403);

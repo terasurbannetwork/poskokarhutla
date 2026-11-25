@@ -53,11 +53,11 @@ uji("gel2/presiden: /presiden publik tanpa sesi di centurisk97.id dan boleh di-i
     const csp = r.headers.get("content-security-policy-report-only"); assert.match(csp, /frame-ancestors \*;/); assert.ok(!r.headers.get("content-security-policy"));
   }
   const h = await f("/presiden.html?w=provinsi"); assert.equal(h.status, 303); assert.equal(h.headers.get("location"), "/presiden?w=provinsi");
-  const i = await f("/"); assert.equal(i.status, 303, "/ tetap terkunci"); assert.match(i.headers.get("location"), /^\/admin\/masuk/);
+  const i = await f("/"); assert.equal(i.status, 303, "/ tetap terkunci"); assert.match(i.headers.get("location"), /^\/masuk/);
   assert.equal((await f("/paparan")).status, 303, "halaman HTML lain tetap terkunci");
   const hd = await f("/presiden", {method: "HEAD"}); assert.equal(hd.status, 200, "HEAD"); assert.equal(hd.headers.get("x-frame-options"), null, "HEAD tanpa XFO");
   const ganda = await f("/presiden//"); await ganda.text(); assert.notEqual(ganda.status, 200, "/presiden// bukan pintu kedua");
-  const besar = await f("/PRESIDEN.HTML"); assert.equal(besar.status, 303); assert.match(besar.headers.get("location"), /^\/admin\/masuk/);
+  const besar = await f("/PRESIDEN.HTML"); assert.equal(besar.status, 303); assert.match(besar.headers.get("location"), /^\/masuk/);
 });
 
 uji("gel2/W2: GET /api/lapangan/tugas: kode regu wajib, maks 20 tugas buka di kabupaten regu, regu lain tak melihat tugas regu ini, bentuk sama dengan rincian tugas, private no-store", async () => {

@@ -57,7 +57,7 @@ uji("saham: halaman /bnpb/saham pribadi (no-store, noindex)", async () => {
 
 uji("saham: di centurisk97.id anonim ke login, staf Pusdalops boleh membuka /bnpb/saham", async () => {
   const buka = async h => { const r = await mf.dispatchFetch("https://centurisk97.id/bnpb/saham", {redirect: "manual", headers: h}); await r.text(); return r; };
-  const a = await buka({}); assert.equal(a.status, 303); assert.match(a.headers.get("location"), /\/admin\/masuk/);
+  const a = await buka({}); assert.equal(a.status, 303); assert.match(a.headers.get("location"), /\/masuk/);
   assert.equal((await buka(STAF)).status, 200, "peran pusdalops lolos MENU_PUSDALOPS");
 });
 

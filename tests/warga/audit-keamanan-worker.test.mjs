@@ -75,7 +75,7 @@ test("jejak dan pesan: body chunked besar ditolak 413 (dibaca bertahap), bukan d
 
 /* ---------------- 3. batas gagal masuk per email ---------------- */
 test("masuk admin: 20 kegagalan per email per jam (IP berbeda-beda) mengunci akun itu, email lain tidak terganggu", async () => {
-  const masuk = (email, sandi, ip = ipBaru()) => kirim("POST", "/admin/masuk", {body: `email=${encodeURIComponent(email)}&sandi=${encodeURIComponent(sandi)}`, ip, h: {"content-type": "application/x-www-form-urlencoded"}});
+  const masuk = (email, sandi, ip = ipBaru()) => kirim("POST", "/admin/masuk", {body: `email=${encodeURIComponent(email)}&sandi=${encodeURIComponent(sandi)}`, ip, h: {"content-type": "application/x-www-form-urlencoded", origin: "http://warga.lokal"}});
   const A = ipBaru();
   const awal = await masuk("admin@contoh.id", SANDI, A); assert.equal(awal.s, 303, "login benar dari IP tetap A: " + awal.t); assert.match(awal.h.get("set-cookie") || "", /sesi_admin=/);
   for (let i = 0; i < 20; i++) assert.equal((await masuk("admin@contoh.id", "salah" + i)).s, 401, "percobaan " + i);

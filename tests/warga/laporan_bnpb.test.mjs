@@ -77,18 +77,18 @@ uji("laporan bnpb: POST dari origin lain ditolak (CSRF)", async () => {
 
 uji("akun AKUN_SITUS_<NAMA>: masuk lewat form, sesi membuka API laporan; AKUN_SITUS lama tetap berlaku", async () => {
   for (const [u, p] of [["dirga", "Sandi!!2026"], ["lama@x", "sandi-lama"]]) {
-    const m = await mf.dispatchFetch("https://centurisk97.id/admin/masuk", {method: "POST", headers: {"content-type": "application/x-www-form-urlencoded"}, body: `email=${encodeURIComponent(u)}&sandi=${encodeURIComponent(p)}`, redirect: "manual"});
+    const m = await mf.dispatchFetch("https://centurisk97.id/admin/masuk", {method: "POST", headers: {"content-type": "application/x-www-form-urlencoded", origin: "https://centurisk97.id"}, body: `email=${encodeURIComponent(u)}&sandi=${encodeURIComponent(p)}`, redirect: "manual"});
     assert.equal(m.status, 303, `${u} harus bisa masuk`);
     const kue = m.headers.get("set-cookie").split(";")[0];
     assert.equal((await api("GET", "/api/laporan-bnpb?jenis=harian", null, {cookie: kue})).s, 200, `${u}: sesi membuka API`);
   }
-  const salah = await mf.dispatchFetch("https://centurisk97.id/admin/masuk", {method: "POST", headers: {"content-type": "application/x-www-form-urlencoded"}, body: "email=dirga&sandi=salah", redirect: "manual"});
+  const salah = await mf.dispatchFetch("https://centurisk97.id/admin/masuk", {method: "POST", headers: {"content-type": "application/x-www-form-urlencoded", origin: "https://centurisk97.id"}, body: "email=dirga&sandi=salah", redirect: "manual"});
   assert.notEqual(salah.status, 303, "sandi salah tidak boleh masuk");
 });
 
 uji("halaman /laporan-bnpb: centurisk97.id wajib masuk; alamat lain 404", async () => {
   const r = await mf.dispatchFetch("https://centurisk97.id/laporan-bnpb", {redirect: "manual"});
-  assert.equal(r.status, 303); assert.match(r.headers.get("location"), /^\/admin\/masuk\?ke=%2Flaporan-bnpb/);
+  assert.equal(r.status, 303); assert.match(r.headers.get("location"), /^\/masuk\?ke=%2Flaporan-bnpb/);
   assert.equal((await mf.dispatchFetch("https://pantau.terasurban.com/laporan-bnpb", {redirect: "manual"})).status, 404);
 });
 

@@ -257,7 +257,7 @@ uji("sla: tanpa migrasi 0043 alarm/kabar/riwayat dilewati rapi dan /api/sla 503 
 
 uji("sla: halaman /admin/kinerja dan GET /api/sla: hak SAMA (adminOK atau staf berperan apa pun); anonim dan sesi palsu 303 dan 403", async () => {
   const hal = async h => (await U.mf.dispatchFetch("http://bnpb.lokal/admin/kinerja", {redirect: "manual", headers: h})), GERBANG = {"x-admin-token": "gerbang@x:sandi"};
-  const anon = await hal({}); assert.equal(anon.status, 303); assert.match(anon.headers.get("location"), /\/admin\/masuk/);
+  const anon = await hal({}); assert.equal(anon.status, 303); assert.match(anon.headers.get("location"), /\/masuk/);
   const palsu = await hal({cookie: "sesi_staf=" + "a".repeat(64)}); assert.equal(palsu.status, 303, "sesi staf palsu = bukan staf"); assert.equal((await api("GET", "/api/sla", undefined, {cookie: "sesi_staf=" + "a".repeat(64)})).s, 403);
   for (const [nama, h] of [["admin", ADMIN], ["akun gerbang AKUN_SITUS", GERBANG]]) { assert.equal((await hal(h)).status, 200, nama + " halaman"); assert.equal((await api("GET", "/api/sla", undefined, h)).s, 200, nama + " API"); }
   for (const peran of ["tmc", "pimpinan", "verifikator", "operator_cc"]) { const s = await staf([peran]); assert.equal((await hal(s)).status, 200, peran + " halaman"); assert.equal((await api("GET", "/api/sla", undefined, s)).s, 200, peran + " API"); }

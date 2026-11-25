@@ -77,8 +77,8 @@
     for (const v of ["vVerif", "vUtama", "vGanti", "vProfil", "vDaftarPic"]) $(v).hidden = true;
     $("profilKepala").hidden = true;
     $("keluar").hidden = !saya; $("akun").hidden = !saya;
-    /* satu pintu masuk untuk semua akun (pemilik 24 Nov 2026): tanpa sesi ke /admin/masuk; tanpa sinyal tetap di sini dengan pesan */
-    if (!saya) { undangAkun = null; if (statusSaya === 401) location.replace("/admin/masuk?ke=" + encodeURIComponent(location.pathname + location.search)); else if (statusSaya !== -1) pesan("Belum bisa memeriksa akun. Periksa sambungan, lalu muat ulang halaman.", "galat"); return; }
+    /* satu pintu masuk untuk semua akun (pemilik 24 Nov 2026): tanpa sesi ke /masuk (K21); tanpa sinyal tetap di sini dengan pesan */
+    if (!saya) { undangAkun = null; if (statusSaya === 401) location.replace("/masuk?ke=" + encodeURIComponent(location.pathname + location.search)); else if (statusSaya !== -1) pesan("Belum bisa memeriksa akun. Periksa sambungan, lalu muat ulang halaman.", "galat"); return; }
     $("akun").textContent = saya.akun.wilayah;
     if (saya.akun.status === "aktif" && saya.akun.wajib_ganti) { $("vGanti").hidden = false; return; }
     if (saya.akun.wajib_ganti && saya.profil_mode) { $("vGanti").hidden = false; return; }   // akun BPBD: sandi lembaga baru lebih dulu, baru daftar PIC

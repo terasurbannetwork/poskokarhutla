@@ -319,7 +319,7 @@ uji("halaman /riset, /riset/mitra, /admin/riset: 200 dengan CSP ketat, tanpa skr
     if (pribadi) { assert.match(r.h.get("cache-control"), /no-store/); assert.match(r.h.get("x-robots-tag"), /noindex/); assert.equal(r.h.get("referrer-policy"), "no-referrer"); }
     for (const [, src] of r.t.matchAll(/(?:src|href)="(\/[^"?]+\.(?:js|css|svg|png|jpg))(?:\?[^"]*)?"/g)) assert.ok(existsSync(path.join(AKAR, "public", src)), `aset ${src} tidak ada`);
   }
-  const tanpa = await U.api("GET", "/admin/riset"); assert.equal(tanpa.t.includes("/admin/riset.js"), false, "tanpa token dialihkan ke halaman masuk"); assert.match(tanpa.t, /\/admin\/masuk\.js/);
+  const tanpa = await U.api("GET", "/admin/riset"); assert.equal(tanpa.t.includes("/admin/riset.js"), false, "tanpa token dialihkan ke halaman masuk"); assert.match(tanpa.t, /\/masuk\.js/);
   const ada = await U.adm("GET", "/admin/riset"); assert.equal(ada.s, 200); assert.match(ada.t, /\/admin\/riset\.js/); assert.match(ada.t, /\/admin\/riset\.css/);
   assert.equal(existsSync(path.join(AKAR, "public/admin/riset.js")), true);
 });

@@ -153,7 +153,7 @@
   function masuk(s) {
     document.getElementById("kepala").replaceChildren();
     app.replaceChildren(h("div", {class: "bn-blok"}, h("h2", {teks: "Masuk dulu"}), h("p", {teks: s === 403 ? "Akunmu belum berhak membuka halaman ini. Pakai akun centurisk97, atau akun staf Pusdalops, Koordalops, Pimpinan, Udara, dan TMC." : "Halaman operasi butuh akun. Masuk dulu."}),
-      h("a", {class: "bn-tombol", href: "/admin/masuk?ke=" + encodeURIComponent(location.pathname + location.search), teks: "Masuk"})));
+      h("a", {class: "bn-tombol", href: "/masuk?ke=" + encodeURIComponent(location.pathname + location.search), teks: "Masuk"})));
   }
 
   /* ---------- muat data ---------- */

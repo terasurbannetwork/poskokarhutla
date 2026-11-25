@@ -14,7 +14,9 @@ import {sesiUntuk as sesiInstansi, cabutSesi as cabutInstansi, aturSandi as sand
 import {sesiUntuk as sesiPendataan, cabutSesi as cabutPendataan, aturSandi as sandiPendataan} from "./pendataan.js";
 import {sesiUntuk as sesiKampus, cabutSesi as cabutKampus, aturSandi as sandiKampus} from "./kemitraan_akun.js";
 import {sesiUntuk as sesiPemirsa, cabutSesi as cabutPemirsa, arahPemirsa} from "./pemirsa.js";
-import {cabutSesi as cabutStaf, cobaMasukStaf, hanyaDirektori} from "./staf.js";
+import {cabutSesi as cabutStaf, cobaMasukStaf} from "./staf.js";
+import {arahStaf} from "./admin_halaman.js";
+import {hostTerkunci} from "./gerbang_halaman.js";
 import {STATUS_RELAWAN_ARR} from "./lapangan.js";
 import {mkJedaTerakhir, mkKodeBaru, mkNaikCobaSemua, mkHanguskanBanyak, mkSelesaiKode, mkPakaiKode, mkDenyutBaca, mkAkunUntuk, mkSesiBaru, mkCabutSesi, mkLengkapi,
   mkRuangPeran, mkStafPerWa, mkLogMasuk, mkOrangDariWa, mkRelawanDariWa, mkPemirsaAda, mkPemirsaWaSet,
@@ -143,7 +145,7 @@ async function periksaKode(env, req, url, kini) {
 async function periksaEmail(env, menang, nomor, kini) {
   const ada = new Set((await mkKodeAkunAmbil(env, menang.id)).map(x => x.tabel + ":" + x.akun_id)), kuki = [], ruang = [], dipakai = new Set();
   for (const e of (await cariRuang(env, nomor)).ruang) {
-    if (e.jenis === "staf") { if (ada.has("staf:" + e.pilih)) ruang.push({jenis: "staf", nama_ruang: e.nama_ruang, lembaga: e.lembaga, wilayah: null, ke: "/admin/masuk", butuh_sandi: true}); continue; }
+    if (e.jenis === "staf") { if (ada.has("staf:" + e.pilih)) ruang.push({jenis: "staf", nama_ruang: e.nama_ruang, lembaga: e.lembaga, wilayah: null, ke: "/masuk", butuh_sandi: true}); continue; }
     if (!e._s || !ada.has(e._s[1] + ":" + e._s[2]) || dipakai.has(e._s[0])) continue;
     const c = await MODUL()[e._s[0]].buat(env, e._s[2], kini); if (!c) continue;   // akun yang gugur sejak kode diminta tidak dibuka
     dipakai.add(e._s[0]); kuki.push(...c);
@@ -305,7 +307,7 @@ async function sandiStaf(env, req, url, kini) {
   if (m.hasil === "kunci") return gagal(429, "terlalu banyak percobaan masuk yang salah; coba lagi sejam lagi", {"retry-after": "3600"});
   if (m.hasil !== "ok") return gagal(401, "sandi salah");
   await mkLogMasuk(env, [{id: acak(8), tabel: "staf", akun_id: st.id}], s.id, kini);
-  const peran = m.staf.peran || [], ke = m.staf.wajib_ganti ? "/admin/pantau" : hanyaDirektori(peran) ? "/direktori" : peran.length === 1 && peran[0] === "operator_cc" ? "/" : "/admin/pantau";
+  const ke = m.staf.wajib_ganti ? "/admin/pantau" : arahStaf(m.staf.peran || [], hostTerkunci(url.hostname));   // arah sesudah masuk satu sumber (peta-situs ALGORITMA)
   const r = json({ok: true, ke, wajib_ganti: !!m.staf.wajib_ganti}); r.headers.append("set-cookie", m.cookie); return r;
 }
 
@@ -392,11 +394,11 @@ async function pemirsaWa(env, req, url, kini) {
 }
 
 /* ---------------- halaman (PM-05): public/masuk.html milik PM-08; sebelum itu halaman sementara tanpa data ---------------- */
-const CSP_MASUK = "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
-const halSementara = '<!doctype html><html lang="id"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Masuk</title><body><h1>Masuk</h1><p>Masuk lewat kode WhatsApp belum tersedia di halaman ini. Gunakan <a href="/admin/masuk">masuk dengan sandi</a>.</p></body></html>';
+const CSP_MASUK = K.CSP_MASUK;
+const halSementara = '<!doctype html><html lang="id"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Masuk</title><body><h1>Masuk</h1><p>Halaman masuk belum tersedia. Coba lagi beberapa saat lagi.</p></body></html>';
 async function halamanMasuk(env, req, url) {
   const a = await env.ASSETS.fetch(new Request(new URL("/masuk.html", url)));
-  const h = {"content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "content-security-policy": CSP_MASUK};
+  const h = {"content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "x-frame-options": "DENY", "content-security-policy": CSP_MASUK};
   if (!a.ok) { a.body?.cancel(); return new Response(halSementara, {headers: h}); }
   return new Response(a.body, {headers: h});
 }

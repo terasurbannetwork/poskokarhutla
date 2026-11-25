@@ -78,3 +78,6 @@ export const LAJU_NOMOR_KODE_EMAIL = [[15 * MENIT, 3], [HARI, 8]];   // per nomo
 export const LAJU_GLOBAL_KODE_EMAIL = [[JAM, 100], [HARI, 500]];     // kode email semua orang; Resend punya kuota sendiri
 export const SANDI_MIN = 10;                     // sama dengan aturan sandi pendataan dan kampus (diperiksa modul masing-masing)
 export const LAJU_IP_SAYA = [[JAM, 300]];       // GET /api/masuk/saya per alamat (juga ?lunak=1, probe halaman lain)
+
+/* CSP halaman /masuk (kode WA + form sandi, K21): dipakai GET /masuk (src/masuk.js) dan balasan galat form sandi (src/statistik.js) */
+export const CSP_MASUK = "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";

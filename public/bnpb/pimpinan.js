@@ -8,7 +8,7 @@
     const r = await fetch(u, o);
     if (r.status === 401 || r.status === 403) {
       const a = document.createElement("a"); a.className = "bn-tombol"; a.textContent = "Masuk staf";
-      a.href = "/admin/masuk?ke=" + encodeURIComponent(location.pathname + location.search);
+      a.href = "/masuk?ke=" + encodeURIComponent(location.pathname + location.search);
       pesan.replaceChildren(a);
     }
     return r;

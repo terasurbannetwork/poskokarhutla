@@ -421,7 +421,7 @@ uji("anggota T2/T3/R8: undangan dari pengundang yang tak lagi berhak mati; antre
 /* ---------------- halaman papan ---------------- */
 uji("anggota halaman: /admin/aktivasi untuk admin dan staf berperan; tamu dan peran lain dialihkan; memuat skrip papan dan kartu standar", async () => {
   const buka = (h = {}) => U.mf.dispatchFetch(ASAL + "/admin/aktivasi", {redirect: "manual", headers: {"cf-connecting-ip": H()["cf-connecting-ip"], ...h}}).then(async r => ({s: r.status, loc: r.headers.get("location"), t: await r.text()}));
-  const tamu = await buka(); assert.equal(tamu.s, 303); assert.match(tamu.loc, /^\/admin\/masuk/);
+  const tamu = await buka(); assert.equal(tamu.s, 303); assert.match(tamu.loc, /^\/masuk\?ke=/);
   const a = await buka(ADMIN); assert.equal(a.s, 200); assert.match(a.t, /\/admin\/aktivasi\.js/); assert.match(a.t, /\/admin\/aktivasi\.css/); assert.match(a.t, /\/inti\/kartu\.css/); assert.match(a.t, /Aktivasi daerah/);
   const sv = await bikin(95, ["verifikator"], []); const s = await buka({cookie: sv.cookie}); assert.equal(s.s, 200); assert.match(s.t, /data-staf="1"/);
   const lain = await bikin(96, ["analis_konsesi"], []); const l = await buka({cookie: lain.cookie}); assert.equal(l.s, 303); assert.match(l.loc, /\/admin\/pantau/);
