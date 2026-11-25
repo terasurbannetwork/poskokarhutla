@@ -78,3 +78,26 @@ Waktu jalan dingin <= 75 menit, total R2 <= 12 MB, WorldCover <= 20 MB (terukur 
 - ADR-2 PNG pra-render, bukan ubin hidup: tanpa ketergantungan peladen luar saat staf membuka, ukuran terkendali, bisa disegel nanti.
 - ADR-3 Model kaji kedua, bukan mengganti `banjir_jam1`: jam pertama tetap berguna sebelum satelit lewat (6 sampai 12 hari).
 - ADR-4 Mesin paparan tidak diubah: zona baru hanya pembuat `fn`; satu mesin paparan (AGENTS 2.41).
+
+## 8. Versi publik (K4, GS-14)
+
+Genangan radar per kejadian tampil di `/banjir` (tab Dampak, bagian "Genangan radar"), berlabel "perkiraan radar" dan "hipotesis" sampai uji balik lulus. Satu mesin: versi publik hanya MEMBACA keluaran staf yang sudah ada, tidak menghitung ulang dan tidak memanggil jaringan.
+
+| Berkas | Isi | Pemilik |
+| --- | --- | --- |
+| `scripts/banjir/genangan_terbit.py` (baru) | mode `terbit [--sumber DIR] [--keluar DIR]` dan `uji`. Membaca `<sumber>/kaji/<KJ>_banjir_gfm_v<n>.json` versi TERBARU tiap kejadian dan `<sumber>/kaji_berkas/<KJ>/banjir_gfm/v<n>/*` (bawaan `data/raw/siklus/kaji/siklus/saji`); menulis JSON dan aset publik. `genangan_kaji.py` (siklus) tidak diubah | `banjir` |
+| `public/banjir/data/genangan_kejadian.json` | per kejadian yang punya hasil, per kab: `sah`, `status`, `lintasan`, `pra`, `cakupan_pct`, `luas` (baru, teramati, persen), `lahan` per kelas, `penduduk` per sumber hanya bila dua ujung ada, `sel`, `citra`; kab tak sah hanya `alasan`. Tingkat kejadian: `ringkas`, `ambang`, `atribusi`, `catatan`. Sekitar 33 KB untuk 52 kab | `banjir` |
+| `public/banjir/data/genangan_kejadian/<KJ>/v<n>/<kab4>_*` | `<kab4>_sel.geojson` dan `<kab4>_<radar\|asli\|swir>_<pra\|pasca>.png`; hanya versi terbaru, folder versi lama dihapus tiap terbit | `banjir` |
+| `public/banjir/genangan_kejadian.js`, `.css` (baru) | modul ES yang dimuat `import()` dari `dampak.js`; fungsi murni teruji di Node. Tidak mengimpor `public/siklus/genangan.js` karena `/siklus/*` berjalan lewat Worker dan butuh sesi staf (`wrangler.jsonc` `run_worker_first`); fungsi format yang sama ditulis ulang kecil di sini | `banjir` |
+| `public/banjir/dampak.js`, `index.html` | bagian `gen` di Dampak, tautan CSS, `inti/geser.js` dan `geser.css` | `banjir` |
+| `tests/banjir/genangan_kejadian.test.mjs` (baru) | uji pipeline, fungsi murni, kartu, dan invarian JSON publik | `banjir` |
+
+Aturan keluaran:
+
+- Daftar putih. Kunci yang tidak disebut di `kab_publik`/`kejadian_publik` tidak pernah keluar (kecamatan, id adegan, sidik, `jiwa_kab_sah`, akun). `kunci_terlarang` menggagalkan terbit bila `total`, `jumlah_gabungan`, `rata`, `nik`, `hp`, `email`, `akun`, `bangunan`, `kec` muncul.
+- Kab tak sah: tanpa `luas`, `lahan`, `penduduk`, `sel`. Tidak ada angka 0 untuk yang tak teramati.
+- `ringkas.luas_baru_ha`, `kab_sah`, `kab_semua` dihitung ulang dari kab publik; `kab_rentang` = jumlah kab sah yang punya angka penduduk pada sumber rentang, supaya layar menulis "6 dari 18 kabupaten".
+- Anggaran K5: PNG <= 120 KB, GeoJSON <= 300 KB, total aset <= 12 MB per kejadian. Kab sah disalin lebih dulu; yang tak muat tertulis `status: "dilewati: melebihi anggaran"`, bukan hilang diam-diam.
+- Nama berkas harus cocok `^\d{4}_(sel\.geojson|(radar|asli|swir)_(pra|pasca)\.png)$` (daftar izin yang sama dengan rute berkas staf, bagian 5); GeoJSON sel diperiksa: hanya `Point` dengan properti `ha`.
+- Atribusi Open Buildings hanya ikut bila ada kab dengan penduduk; atribusi GFM, WorldCover, dan Sentinel selalu.
+- Pemicu terbit: belum ada. Jadwal (GS-12 dan langkah workflow) menyusul sesudah pemilik menjawab Q13 butir b.

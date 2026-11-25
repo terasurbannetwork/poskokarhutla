@@ -1,0 +1,49 @@
+/* Genangan radar per kejadian di tab Dampak /banjir (GS-14). Warna hanya dari token tema.css; tanpa huruf kapital semua. */
+.gk-lay{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:20px;align-items:stretch}
+.gk-kol{display:flex;flex-direction:column;gap:20px;min-width:0}
+.gk-kol>.ex{margin:0}
+.gk-kol>.ex:last-child{flex:1}   /* kolom yang lebih pendek berakhir rata dengan yang panjang */
+.gk-baris{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.gk-pil{display:inline-flex;align-items:center;height:20px;padding:0 9px;border-radius:999px;font-size:.6875rem;font-weight:700;color:var(--brand2);background:color-mix(in oklch,var(--brand2) 12%,transparent)}
+.gk-pil-h{color:var(--warn-tx);background:color-mix(in oklch,var(--warn) 18%,transparent)}
+.gk-ber{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.gk-ber>div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:4px;background:var(--surface);text-align:center;align-content:start}
+.gk-ber b{font:800 1.375rem var(--display);font-variant-numeric:tabular-nums}
+.gk-ber small{font-size:.75rem;font-weight:700;color:var(--ink2)}
+.gk-sel{font-size:.75rem;font-weight:600;color:var(--ink2)}
+.gk-para{margin:0;text-align:justify;hyphens:auto;line-height:1.6;font-size:.875rem}
+.gk-kosong{margin:0;padding:18px;text-align:center;color:var(--ink2);font-size:.875rem}
+.gk-abu{color:var(--ink2);font-size:.8125rem;text-align:center}
+.gk-tw{max-height:420px;overflow:auto;max-inline-size:100%}
+.gk-tw:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.gk-tb{border-collapse:separate;border-spacing:0;width:100%}
+.gk-tb th[scope=row]{text-align:left;font-weight:600;white-space:nowrap;position:sticky;inset-inline-start:0;background:var(--card)}
+.gk-tb th{white-space:normal;padding:8px 6px}
+.gk-tb td{padding:7px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+.gk-tb td.n{text-align:right;font-variant-numeric:tabular-nums}
+.gk-tb tbody tr[data-kab4]{cursor:pointer}
+.gk-tb tbody tr[data-kab4]:hover th,.gk-tb tbody tr[data-kab4]:hover td{background:var(--surface)}
+.gk-tb tbody tr[aria-current=true] th,.gk-tb tbody tr[aria-current=true] td{background:color-mix(in srgb,var(--brand2) 12%,var(--card))}
+.gk-tb tbody tr:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+.gk-lahan{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--surface)}
+.gk-lahan>i{display:block;flex-basis:0;min-width:2px}
+.gk-sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:8px;background:var(--kat-lain)}
+.gk-lahan>i[data-kode="10"],.gk-sw[data-kode="10"]{background:var(--kat-longsor)}
+.gk-lahan>i[data-kode="20"],.gk-sw[data-kode="20"]{background:var(--ok)}
+.gk-lahan>i[data-kode="30"],.gk-sw[data-kode="30"]{background:var(--kat-kering)}
+.gk-lahan>i[data-kode="40"],.gk-sw[data-kode="40"]{background:var(--kat-gempa)}
+.gk-lahan>i[data-kode="50"],.gk-sw[data-kode="50"]{background:var(--kat-erupsi)}
+.gk-lahan>i[data-kode="60"],.gk-sw[data-kode="60"]{background:var(--kat-lain)}
+.gk-lahan>i[data-kode="80"],.gk-sw[data-kode="80"],.gk-sw[data-kode="air"]{background:var(--kat-banjir)}
+.gk-lahan>i[data-kode="90"],.gk-sw[data-kode="90"]{background:var(--kat-gelombang)}
+.gk-lahan>i[data-kode="95"],.gk-sw[data-kode="95"]{background:var(--kat-tsunami)}
+.gk-lahan>i[data-kode="100"],.gk-sw[data-kode="100"]{background:var(--kat-cuaca)}
+.gk-peta{height:360px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.gk-tbl{display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:.75rem;font-weight:700;cursor:pointer}
+.gk-tbl[aria-pressed=true]{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
+.gk-pilih{height:34px;max-width:100%;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 12px;font-size:.8125rem;font-weight:600}
+.gk-lipat{display:grid;gap:10px}
+.gk-lipat>summary{cursor:pointer;font-weight:700;font-size:.875rem;padding:4px 0}
+.gk-lipat>summary:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.gk-lipat b{font-size:.8125rem}
+@media (max-width:900px){.gk-lay{grid-template-columns:1fr}.gk-kol{display:contents}.gk-kol>.ex:last-child{flex:none}.gk-lay #gkPeta{order:-1}.gk-peta{height:220px}.gk-tw{max-height:360px}}

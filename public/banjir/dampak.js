@@ -10,8 +10,8 @@ const Dampak = (() => {
   const IKON = {pend: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8",
     sek: "M22 10 12 5 2 10l10 5 10-5ZM6 12v5c3 3 9 3 12 0v-5", kes: "M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7 7-7ZM3.5 12h5l1.5-3 2 6 1.5-3h7",
     jln: "M4 21 9 3M20 21 15 3M12 6v3M12 12v3M12 18v3",
-    hist: "M12 3 2 20h20zM12 10v4M12 17v.5", rus: "M3 11 12 3l9 8M5 10v10h14V10M10 20v-5h4v5"};
-  const BAG = {pend: ["Penduduk terdampak", W.merah], sek: ["Sekolah", W.ungu], kes: ["Kesehatan", W.teal], jln: ["Jalan", W.tua], hist: ["Korban dan kerugian", W.oranye], rus: ["Rumah rusak (perkiraan)", W.merah]};
+    hist: "M12 3 2 20h20zM12 10v4M12 17v.5", rus: "M3 11 12 3l9 8M5 10v10h14V10M10 20v-5h4v5", gen: "M2 8c3 0 3-2 5-2s2 2 5 2 3-2 5-2 2 2 5 2M2 14c3 0 3-2 5-2s2 2 5 2 3-2 5-2 2 2 5 2M2 20c3 0 3-2 5-2s2 2 5 2 3-2 5-2 2 2 5 2"};
+  const BAG = {pend: ["Penduduk terdampak", W.merah], sek: ["Sekolah", W.ungu], kes: ["Kesehatan", W.teal], jln: ["Jalan", W.tua], hist: ["Korban dan kerugian", W.oranye], rus: ["Rumah rusak (perkiraan)", W.merah], gen: ["Genangan radar", W.biru]};
   const KUNCI = {kejadian: ["Kejadian", "kejadian", "kejadian banjir"], meninggal: ["Meninggal", "jiwa", "jiwa meninggal akibat banjir"], hilang: ["Hilang", "jiwa", "jiwa hilang akibat banjir"],
     luka: ["Luka-luka", "jiwa", "jiwa luka-luka akibat banjir"], mengungsi: ["Mengungsi", "jiwa", "jiwa mengungsi akibat banjir"], terdampak: ["Terdampak", "jiwa", "jiwa terdampak banjir"],
     rumah_rusak: ["Rumah rusak", "rumah", "rumah rusak akibat banjir"], rumah_terendam: ["Rumah terendam", "rumah", "rumah terendam banjir"]};
@@ -22,6 +22,12 @@ const Dampak = (() => {
   /* kartu: pita bagian + kartu Insight dengan pil = nama bagian */
   const bag = (id, judul, isi, catatan, ctl = "") => { const [nm, w] = BAG[id];
     return `<section class="dk-bag" id="dk-${id}" data-bag="${id}"><header class="dk-sh" style="--w:${w}"><span class="dk-sn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[id]}"/></svg><h2>${nm}</h2></header>${Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${nm}</span>`)}</section>`; };
+  /* Genangan radar per kejadian (GS-14): bagian ini mandiri, diisi public/banjir/genangan_kejadian.js; tanpa datanya bagian hilang.
+     genTahan: render ulang tidak membuang bagian yang sudah berisi (peta WebGL dan pilihan pengguna ikut dipertahankan). */
+  const genangan = () => `<section class="dk-bag" id="dk-gen" data-bag="gen"><header class="dk-sh" style="--w:${BAG.gen[1]}"><span class="dk-sn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON.gen}"/></svg><h2>${BAG.gen[0]}</h2></header><div class="gk" data-gk><p class="gk-kosong" role="status">Memuat genangan radar…</p></div></section>`;
+  const pasangGen = () => { const h = document.querySelector("#dampak [data-gk]"); if (h) import("/banjir/genangan_kejadian.js").then(m => m.pasang(h)).catch(() => { h.closest("[data-bag]").hidden = true; }); };
+  const bongkarGen = () => document.querySelector("#dampak [data-gk]")?._bongkar?.();   // lepaskan konteks WebGL sebelum bagian ini hilang dari DOM
+  const genTahan = f => { const lama = document.querySelector("#dampak #dk-gen"); f(); const baru = document.querySelector("#dampak #dk-gen"); if (lama && !baru) lama.querySelector("[data-gk]")?._bongkar?.(); if (lama && baru) { baru.replaceWith(lama); if (lama.hidden) document.querySelectorAll('#dampak [data-ke="gen"]').forEach(b => { b.hidden = true; }); } else if (baru) pasangGen(); };
   const pw = t => String(t).length * 11 * .6 + 16;
   const hbar = Kartu.hbar;   /* inti/kartu.js */
   const baris = (pv, f) => Object.entries(pv).filter(([, o]) => o[f] != null).map(([k, o]) => ({k, v: o[f]})).sort((a, b) => b.v - a.v);
@@ -83,13 +89,13 @@ const Dampak = (() => {
       : `<p style="margin:0;padding:4px 2px">${pil} belum tersedia (n sah ${fmt(K.n_peristiwa_sah)} dari minimal ${fmt(K.n_min)}; n luput ${fmt(K.n_miss ?? 0)})</p>`;
     const tip = `${K.label}. Kedalaman memakai asumsi ${K.kedalaman_asumsi_m} m untuk semua bangunan tergenang (kedalaman per sel belum ada). n luput: model tidak menemukan bangunan tergenang padahal DIBI mencatat rumah rusak.`;
     return bag("rus", "", isi, "").replace("<h2>", `<h2 title="${esc(tip)}">`); };
-  const gambar = () => { const T = blokDi(st.h); const o = T ? terpapar(T) : D.hari_semua ? [bag("pend", `Tidak ada kecamatan siaga atau awas banjir pada ${tglH()}`, "", SM())] : []; const h = D.tahunan?.nasional ? hist() : ""; if (h) o.push(h); const r = rusak(); if (r && o.length) o.push(r); if (o.length) o.push(tautan()); return o.join(""); };
+  const gambar = () => { const T = blokDi(st.h); const o = T ? terpapar(T) : D.hari_semua ? [bag("pend", `Tidak ada kecamatan siaga atau awas banjir pada ${tglH()}`, "", SM())] : []; const h = D.tahunan?.nasional ? hist() : ""; if (h) o.push(h); const r = rusak(); if (r && o.length) o.push(r); if (o.length) o.push(genangan(), tautan()); return o.join(""); };
   async function render() {
     const el = $("#dampak"); if (!el) return;
     if (!el._dk) { el._dk = 1;
       el.addEventListener("click", e => {
         const s = e.target.closest("[data-dks]"); if (s) { st[s.dataset.dks] = s.dataset.v;
-          if (s.dataset.dks === "h") { s.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === s))); nanti(() => { el.querySelector("#dkIsi").innerHTML = gambar(); }); return; }
+          if (s.dataset.dks === "h") { s.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === s))); nanti(() => genTahan(() => { el.querySelector("#dkIsi").innerHTML = gambar(); })); return; }
           s.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === s)));
           nanti(() => { const b = el.querySelector("#dk-hist"), t = document.createElement("div"); t.innerHTML = hist(); if (!b || !t.firstChild) return;   /* ganti judul dan grafik saja, tombol yang diklik tetap */
             b.querySelector("h3").innerHTML = t.querySelector("h3").innerHTML; b.querySelector(".ex-bd").innerHTML = t.querySelector(".ex-bd").innerHTML; }); return; }
@@ -98,8 +104,8 @@ const Dampak = (() => {
         el.querySelectorAll(".dk-nav button").forEach(b => b.classList.toggle("on", b.dataset.ke === a)); }); }, {capture: true, passive: true}); }
     if (!D) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat dampak banjir…</div>`;
       try { [D, K, G] = await Promise.all([muatJSON("data/dampak.json"), muatJSON("data/kerusakan.json").catch(() => null), Gerbang.muat("banjir")]); } catch (e) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; } }
-    if (!st.h) st.h = D.hari; const isi = gambar(); if (!isi) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; }
+    if (!st.h) st.h = D.hari; const isi = gambar(); if (!isi) { bongkarGen(); el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; }
     const ada = Object.keys(BAG).filter(k => isi.includes(`id="dk-${k}"`));
-    el.innerHTML = `<div class="dk-lay"><nav class="dk-nav" aria-label="Bagian dampak">${ada.map(k => `<button data-ke="${k}" style="--w:${BAG[k][1]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[k]}"/></svg>${BAG[k][0]}</button>`).join("")}</nav><div><div id="dkHari">${pilihHari()}</div><div id="dkIsi">${isi}</div></div></div>`; }
+    genTahan(() => { el.innerHTML = `<div class="dk-lay"><nav class="dk-nav" aria-label="Bagian dampak">${ada.map(k => `<button data-ke="${k}" style="--w:${BAG[k][1]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[k]}"/></svg>${BAG[k][0]}</button>`).join("")}</nav><div><div id="dkHari">${pilihHari()}</div><div id="dkIsi">${isi}</div></div></div>`; }); }
   return {render};
 })();

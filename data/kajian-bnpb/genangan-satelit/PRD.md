@@ -10,7 +10,7 @@ Staf Pusdalops dan Koordalops melihat, dalam satu kartu Kaji Cepat, di mana air 
 | --- | --- | --- |
 | Pusdalops (PD), Koordalops (KO) | semua kejadian | Diperiksa, Dipakai, Tarik |
 | BPBD kab (BP) | kejadian wilayahnya | tidak |
-| Publik | tidak (Q1) | tidak |
+| Publik | ringkasan, rincian per kab, lahan, sel, citra di `/banjir` (K4, GS-14), berlabel perkiraan radar dan hipotesis | tidak |
 
 ## 3. Fitur
 
@@ -33,7 +33,7 @@ Staf Pusdalops dan Koordalops melihat, dalam satu kartu Kaji Cepat, di mana air 
 - Tanpa kata "aman", "tidak banjir", "surut", "terdampak" untuk angka radar. Yang dipakai: "di area genangan", "teramati radar".
 - Tanpa menjumlah atau merata-rata dengan DIBI, Logbook, atau isian petugas.
 - Tanpa data per bangunan atau per orang di D1, layar, atau `public/`.
-- Tanpa versi publik sebelum Q1 dijawab.
+- Versi publik hanya yang dirinci di DESAIN-TEKNIS 8 dan KEAMANAN-PRIVASI 6 (K4); tanpa kecamatan, bangunan, atau data orang di publik.
 
 ## 5. Ukuran berhasil
 

@@ -52,3 +52,19 @@ Lapis "Genangan radar": sel 110 m berisi titik baru, warna air dari token, opasi
 ## 8. Keadaan
 
 Memuat (kerangka abu), kosong ("belum ada lintasan radar sejak <tanggal>"), sebagian (kab tak sah), gagal (pesan singkat, kartu lain tetap), versi lama (pil "lintasan <tanggal>, versi <n>").
+
+## 9. Versi publik di `/banjir` (K4, GS-14)
+
+Tempat: tab Dampak, bagian baru "Genangan radar" sesudah "Rumah rusak (perkiraan)" dan sebelum tautan Bukti DAS. Pita bagian dan tombol pintasan di kiri memakai pola `dk-*` yang sudah ada. Bagian hilang bila `genangan_kejadian.json` tidak ada atau kosong; tombol pintasannya ikut hilang.
+
+Dua kolom (7 dan 5), kolom kiri: Ringkasan, Per kabupaten, Lahan tergenang, Metode; kolom kanan: Peta genangan, Citra sebelum dan sesudah. Kartu terakhir kolom kanan meregang supaya kedua kolom berakhir rata. Di bawah 900 px satu kolom, peta paling atas (220 px).
+
+- Kartu memakai `.ex.ex-std` dengan kepala = nama seksi (AGENTS 3.5): "Ringkasan", "Per kabupaten", "Lahan tergenang", "Peta genangan", "Citra sebelum dan sesudah", "Metode". Pil kategori kecil di atas judul. Tanpa kalimat kesimpulan.
+- Pemilih kejadian (select) di kanan judul "Ringkasan". Pil: `perkiraan radar`, `hipotesis` (selama `status_model` bukan `teruji`), `Copernicus GFM`.
+- Angka besar: luas tergenang baru, penduduk di area genangan (selalu dua ujung, dengan keterangan "n dari m kabupaten teramati sudah punya data bangunan"), kabupaten teramati. Tanpa rentang tertulis "belum dihitung".
+- Tabel per kab: sama dengan bagian 3, kepala tabel navy lewat gaya tabel bersama, nama kab `th scope=row` dan kolom pertama menempel saat digulir; pembungkus `role=region` `tabindex=0`, tinggi maksimum 420 px (`modern-web-guidance` `responsive-table`). Klik atau Enter pada baris: sorotan baris urgent, peta dan citra menyusul sesudah satu frame tercat (INP.md).
+- Lahan: bilah 10 px dan tabel; warna kelas hanya dari token `--kat-*` dan `--ok` di `tema.css`.
+- Peta: MapLibre kecil di dalam kartu, satu lapis titik sel `--kat-banjir` (diubah ke rgb lewat `inti/maplibre.js`, MapLibre tidak membaca oklch), tombol tampil dan sembunyi, tanpa penggeser opasitas. Ganti kab hanya mengganti sumber GeoJSON. Peta ke `/banjir` utama (tab Peta) belum dipasangi lapis ini.
+- Citra: `inti/geser.js` dan `geser.css` (`Geser.html`, `Geser.pasang`); pemilih kab dan segmen Radar, Warna asli, Semu SWIR.
+- Teks: bagian 7 berlaku; nilai kecil "kurang dari 0,1". Tanpa tombol `Hitung ulang` dan tanpa penyetel ambang (K2).
+- Keadaan: memuat ("Memuat genangan radar…"), kab tak sah (alasan abu), citra tak ada ("tertutup awan" atau "belum ada citra yang memenuhi syarat"), peta gagal (pesan, tabel dan citra tetap jalan).

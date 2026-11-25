@@ -36,3 +36,23 @@ Tanpa koordinat bangunan, tanpa nama, tanpa NIK. Sel 110 m menampung puluhan ban
 ## 5. Pemeriksa
 
 `security-reviewer` dan `guard-api` untuk perubahan `src/siklus_kaji.js` dan migrasi; `migrasi-idempoten` untuk migrasi.
+
+## 6. Versi publik (K4, GS-14)
+
+Bagian ini menggantikan "tanpa versi publik (Q1)" di bagian 3 dan "tidak pernah ke `public/`" di bagian 4 untuk berkas yang disebut di sini. Sisanya (hak staf, JSON R2 kaji, rute berkas) tidak berubah.
+
+| Data | Publik? | Alasan dan penjaga |
+| --- | --- | --- |
+| Luas tergenang baru, teramati, persen per kab | ya | sudah publik per kecamatan di `genangan_nasional.json`; label perkiraan radar |
+| Luas per kecamatan | tidak | tidak ada di daftar putih; kecamatan tetap di staf |
+| Lahan per kelas per kab | ya | rendah |
+| Penduduk di area genangan | ya, hanya rentang dua ujung per sumber, bila ada | sedang; pil hipotesis, istilah "di area genangan", ditulis bukan korban; tanpa angka tunggal; kab tanpa angka tidak diberi 0 |
+| Sel genangan 110 sampai 1.100 m (GeoJSON) | ya | hanya pusat sel dan `ha`; GeoJSON yang membawa properti lain ditolak pembuat; sel sebesar itu tidak menunjuk bangunan |
+| Citra PNG Sentinel (radar, warna asli, SWIR) | ya | data terbuka Copernicus; atribusi di kartu Metode dan JSON |
+| Titik atau sel per bangunan | tidak | tidak dibuat (D6) |
+| Data orang, akun, ringkas akun BPBD, sidik, id adegan | tidak | tidak ada di daftar putih |
+| Alasan kab tak sah | ya, satu kalimat pendek | bukan data orang |
+
+Penjaga mesin: daftar putih di `scripts/banjir/genangan_terbit.py`, `kunci_terlarang`, daftar izin nama berkas, anggaran ukuran, uji `tests/banjir/genangan_kejadian.test.mjs` (invarian JSON publik, tanpa kunci terlarang, kab tak sah tanpa angka). Layar menulis teks lewat `esc`, jadi isi JSON tidak dieksekusi sebagai HTML.
+
+Atribusi wajib tampil: Copernicus Emergency Management Service GFM, ESA WorldCover (CC BY 4.0), "Contains modified Copernicus Sentinel data", dan Google Open Buildings (CC BY 4.0) hanya bila penduduk tampil. Berkas kejadian uji (`KJ-UJI-*`) tidak pernah di-commit atau diterbitkan; di mesin pengembang keluarannya dikecualikan lewat `.git/info/exclude`.

@@ -9,3 +9,6 @@ data/grup_perusahaan.json
 # progresi arsip (cache CI, tidak terbit) dan data DOE tanpa izin, 24 Nov 2026
 data/progresi/arsip/
 udara/data/stasiun_asing.json
+
+# contoh uji genangan radar tidak pernah tayang (GS-14); pembuatnya juga menolak KJ-UJI-* tanpa --izinkan-uji
+banjir/data/genangan_kejadian/KJ-UJI-*
