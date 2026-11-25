@@ -2,13 +2,15 @@
 
 ## 1. Jalur 10 menit (Himawari)
 
-1. Cron Worker `* * * * *` (yang sudah ada) membaca R2 `data/satelit/picu.json` (pindaian terakhir yang dipicu). Pada menit ke-11 sampai ke-19 sesudah tiap jam pindai (HH:M0), satu permintaan daftar objek ke `noaa-himawari9` untuk awalan pindaian itu.
-2. Bila keenam kanal segmen S07 sudah ada dan pindaian belum dipicu: `workflow_dispatch` `satelit.yml` dengan masukan `pindai=YYYYMMDDHHMM`, lalu tulis `picu.json`. Satu pindaian dipicu paling banyak sekali (Q2).
+1. Cron Worker `* * * * *` (yang sudah ada) membaca R2 `data/satelit/picu.json` (pindaian 6 jam terakhir yang sudah dipicu, kunci idempoten = jam pindai). Tiap tik, untuk paling banyak 6 pindaian calon (belum `selesai`, belum dipicu atau pemicunya kedaluwarsa), satu permintaan daftar objek ke `noaa-himawari9` per pindaian.
+2. Susul: semua pindaian dalam 6 jam terakhir yang keenam kanalnya (S04 sampai S07) sudah ada di S3 tetapi belum `selesai` dipicu, terbaru dulu, paling banyak 3 dispatch per tik (DESAIN-TEKNIS 3). Jadi objek S3 yang telat, cron Worker yang terlewat, atau dispatch yang gagal disusul pada tik berikutnya. Pindaian yang lebih tua dari 6 jam tidak disusul otomatis; bila ada, `/api/status` menghitungnya sebagai `pindaian_hilang` (Q2, Q15).
 3. `satelit.yml` menjalankan `scripts/umum/himawari_pindai.py jalan --pindai ...`:
    - unduh B07, B08, B11, B13, B14, B15, segmen S04 sampai S07, sekali;
    - detektor api, abu, konveksi (dan kabut malam bila ST-15 jadi) dipanggil dengan kisi yang sama;
    - tiap keluaran membawa `acuan` (jam pindai UTC), `status_sumber`, `versi_kriteria`, `vonis`.
-4. Unggah ke R2: `data/satelit/<jenis>.json` (ditimpa) dan `arsip/satelit/<jenis>/YYYY/MM/DD/HHMM.json.gz`. Tanpa commit (Q4).
+4. Unggah ke R2: `data/satelit/<jenis>.json` (ditimpa, satu tulis per jenis per pindaian, hanya bila isinya berubah) dan potongan arsip per jam (DESAIN-TEKNIS 4). Tanpa commit (Q4).
+   - Arsip: tiap run menulis satu potongan `arsip/satelit/_potong/<jenis>/YYYYMMDD/HHMM.json.gz` (kunci = pindaian, jadi tulis ulang idempoten dan dua run paralel tidak saling menimpa). Langkah harian (paling cepat pukul 06.00 UTC hari berikutnya, sesudah jendela susulan 6 jam hari itu habis, supaya tidak ada potongan yatim) memadatkan potongan satu hari jadi `arsip/satelit/<jenis>/YYYY/MM/DD.jsonl.gz`, memeriksa jumlah barisnya sama dengan jumlah potongan, baru menghapus potongan (DESAIN-TEKNIS 4). Tanpa baca-ubah-tulis di jalur 10 menit.
+   - Penanda selesai: run terakhir menulis `data/satelit/selesai/<pindai>` (kosong) sesudah semua unggah sukses; Worker memakainya untuk tidak memicu ulang (bagian 6).
 5. Cron Worker pada menit berikutnya melihat etag R2 berubah:
    - detektor ber-vonis `lolos`: baris alarm ke D1 (pola `alarm_himawari`), lalu alur Posko yang ada;
    - detektor tanpa vonis `lolos`: tidak ada baris D1, tidak ada kabar; layar staf membaca JSON R2 berpil hipotesis (D8).
@@ -56,6 +58,8 @@ Layar: `terlambat` pil warn "terlambat, pindaian terakhir <jam WIB>"; `terputus`
 
 - S3 NOAA tidak menjawab: tidak ada pemicu; status menjadi `terlambat` lalu `terputus`.
 - Satu kanal hilang: detektor yang butuh kanal itu menulis `kanal_hilang`, detektor lain tetap jalan.
-- Dispatch GitHub gagal: `picu.json` tidak ditulis, menit berikutnya mencoba lagi sampai menit ke-19.
+- Dispatch GitHub gagal: pindaian itu tidak ditandai dipicu; tik susul berikutnya mencobanya lagi selama masih dalam 6 jam.
+- Run dipicu tetapi gagal atau melewati batas waktu 8 menit: penanda `dipicu` kedaluwarsa sesudah 20 menit tanpa `selesai`, lalu pindaian disusul paling banyak 2 kali lagi; sesudah itu `gagal_tetap` dan dihitung di `/api/status`.
+- Duplikat (dua tik memicu pindaian sama sebelum `picu.json` tersimpan): run kedua membaca R2 `data/satelit/selesai/<pindai>` di langkah pertama dan keluar tanpa menulis (DESAIN-TEKNIS 3).
 - Unggah R2 gagal: workflow merah, `jaga_pipa` mencatat; berkas lama tetap.
 - Label belum menjangkau periode uji: vonis `tak dapat dinilai`, bukan lulus.

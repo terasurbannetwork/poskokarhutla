@@ -33,34 +33,72 @@ Pemilik dicek dengan `node scripts/agents/ilmu.mjs pemilik <berkas>` (25 Nov 202
 - Unduh paralel 24 berkas dengan `concurrent.futures.ThreadPoolExecutor` (8 utas), dekompresi `bz2` per berkas, langsung ke `array('H')` per segmen; berkas mentah tidak disimpan.
 - Kisi: piksel 2 km dalam kotak Indonesia (sekitar 94-142 BT, 11 LS-7 LU). Tiap detektor menerima kanal yang dimintanya saja.
 - Detektor didaftar di satu kamus `DETEKTOR = {"api": ..., "abu": ..., "awan": ...}`; satu detektor gagal tidak menghentikan yang lain, keluarannya `{"status": "galat", "pesan": ...}`.
-- Sasaran waktu: unduh + hitung <= 4 menit di runner GitHub (18 MB terukur 4,5 detik untuk satu kanal; 70 MB diperkirakan < 1 menit unduh). `ukur` mencatat per pindaian: MB, detik unduh, detik hitung, latensi dari jam pindai.
+- Sasaran waktu hitung: unduh + hitung <= 4 menit di runner GitHub (18 MB terukur 4,5 detik untuk satu kanal; 70 MB diperkirakan < 1 menit unduh). `ukur` mencatat per pindaian: MB, detik unduh, detik hitung.
 
-## 3. Pemicu 10 menit (Q2)
+### 2.1 Anggaran latensi (jujur)
+
+| Komponen | Perkiraan | Diukur di |
+| --- | --- | --- |
+| Pindai mulai sampai berkas S07 lengkap di S3 | 11-14 menit [terukur 24 Nov] | `ukur` (LastModified S3 lawan jam pindai) |
+| Tik Worker sampai dispatch | 0-1 menit | `picu.json` (`dipicu_ms`) |
+| Dispatch sampai runner mulai | 0,5-3 menit, bisa lebih saat GitHub padat [belum diverifikasi] | `run_started_at` API GitHub |
+| Unduh + hitung | 1-4 menit | `ukur` |
+| Unggah R2 sampai Worker melihat etag | 0-1 menit | etag Worker |
+
+Jumlah: sekitar 13-23 menit. Sasaran yang jujur: **median <= 25 menit, p90 <= 35 menit** dari jam mulai pindai sampai keluaran terbaca Worker. Alasannya: 11-14 menit pertama milik JMA dan NOAA, dan antre runner GitHub tidak bisa kita kendalikan. Batas waktu job 8 menit; run yang melewatinya gagal, penanda `selesai` tidak ditulis, dan pindaian disusul (bagian 3).
+
+## 3. Pemicu dan susulan (Q2, Q15)
 
 ```
 src/satelit_picu.js, dipanggil dari cron * * * * * yang ada:
-  p = (sekarang UTC - 11 menit) dibulatkan ke bawah ke kelipatan 10 menit   (berkas muncul 11-14 menit sesudah jam pindai)
-  baca R2 data/satelit/picu.json -> {pindai_terakhir}
-  bila p > pindai_terakhir:
-     GET https://noaa-himawari9.s3.amazonaws.com/?list-type=2&prefix=AHI-L1b-FLDK/<p>/  (satu subrequest, host tetap)
-     bila 6 kanal S07 ada: POST dispatch satelit.yml {pindai: p} dengan GITHUB_TOKEN yang sudah dipakai jaga_jadwal.js ; tulis picu.json
+  baca R2 data/satelit/picu.json -> {pindai: {dipicu_ms, coba}} untuk 6 jam terakhir (kunci idempoten = YYYYMMDDHHMM)
+  calon = pindaian kelipatan 10 menit dalam [sekarang - 6 jam, sekarang - 11 menit]
+          yang belum punya data/satelit/selesai/<pindai>
+          dan (belum dipicu, atau dipicu > 20 menit lalu dengan coba < 3)
+  urut terbaru dulu ; periksa paling banyak 6 calon per tik:
+     GET https://noaa-himawari9.s3.amazonaws.com/?list-type=2&prefix=AHI-L1b-FLDK/YYYY/MM/DD/HHMM/  (host tetap, satu halaman)
+     bila 6 kanal x S04-S07 ada: dispatch satelit.yml {pindai} dengan GITHUB_TOKEN (sudah dipakai jaga_jadwal.js) ; paling banyak 3 dispatch per tik
+  tulis picu.json sekali per tik bila berubah ; buang entri > 6 jam ; calon coba = 3 yang tetap gagal -> gagal_tetap (dihitung di /api/status)
 ```
 
-Biaya: paling banyak 9 subrequest S3 per pindaian, 144 dispatch per hari. Tanpa cron baru (batas 5 jadwal akun). Mac mini tidak dipakai (Q2).
+- Batas per tik: <= 6 subrequest S3 + <= 3 subrequest GitHub + 2 operasi R2, jauh di bawah batas subrequest Worker; cron yang sama tetap menjalankan tugas lamanya.
+- Susulan sesudah Worker mati 1 jam: 6 pindaian tertunda, habis dalam 2 tik. Lebih dari 6 jam: tidak disusul otomatis (Q15).
+- Duplikat: (1) kunci idempoten per pindaian di `picu.json`; (2) `satelit.yml` memakai `concurrency: {group: satelit-${{ inputs.pindai }}, cancel-in-progress: false}`, jadi pindaian berbeda boleh jalan bersamaan, sedangkan dispatch kedua untuk pindaian yang sama menunggu, dan GitHub hanya menyimpan satu antrean per grup (antrean lama diganti yang baru, keduanya pindaian sama); (3) langkah pertama run membaca `data/satelit/selesai/<pindai>` dan keluar tanpa menulis bila ada; (4) semua kunci tulis disusun dari pindaian, jadi run ganda yang lolos hanya menulis ulang isi yang sama.
+- Mac mini tidak dipakai (Q2). Tanpa cron baru (batas 5 jadwal akun).
 
 ## 4. Penyimpanan
 
 | Tempat | Isi | Batas |
 | --- | --- | --- |
 | R2 `data/satelit/{api,abu,awan}.json` | pindaian terakhir, ditimpa | <= 500 KB tiap berkas |
-| R2 `arsip/satelit/<jenis>/YYYY/MM/DD/HHMM.json.gz` | arsip per pindaian | <= 200 KB per berkas, total Q5 |
+| R2 `arsip/satelit/_potong/<jenis>/YYYYMMDD/HHMM.json.gz` | potongan per pindaian, sementara (<= 2 hari) | <= 200 KB keras, rerata sasaran <= 50 KB |
+| R2 `arsip/satelit/<jenis>/YYYY/MM/DD.jsonl.gz` | arsip padat per hari per jenis | total Q5 |
+| R2 `data/satelit/selesai/<pindai>` | penanda kosong; pemadatan harian hanya menghapus penanda yang pindaiannya lebih tua dari jendela susulan 6 jam, supaya pindaian 18.00-23.50 UTC tidak terpicu ulang sesudah pemadatan | 0 byte |
 | R2 `data/satelit/{kawah,genangan_harian}.json` | harian | <= 300 KB |
-| R2 `data/satelit/picu.json` | pindaian terakhir yang dipicu | < 1 KB |
+| R2 `data/satelit/picu.json` | pindaian 6 jam terakhir yang dipicu | < 8 KB |
 | D1 `alarm_himawari` (+ kolom `sumber`) | baris alarm api yang lolos aturan | pola yang ada |
 | `public/data/gerbang/satelit.json` | vonis | < 100 KB (aturan gerbang) |
 | `public/gunungapi/data/{kawah_satelit,so2_satelit}.json`, `public/kekeringan/data/vhi_kab.json`, `public/udara/data/asap_satelit.json` | ringkasan harian atau mingguan | < 300 KB |
 
-Arsip 10 menit tidak masuk repo (Q4). Abu dan konveksi tidak membuat baris D1 sebelum vonis lolos dan Q6; bila nanti perlu, tabel baru dirancang di tiket sendiri, bukan diselipkan.
+Arsip 10 menit tidak masuk repo (Q4). Abu dan konveksi tidak membuat baris D1 sebelum vonis lolos dan Q6; bila nanti perlu, tabel baru dirancang di tiket sendiri, bukan diselipkan. Pemadatan harian jalan di langkah `data.yml` yang sudah ada.
+
+### 4.1 Hitungan anggaran per bulan (30 hari, 4.320 pindaian, 3 jenis Himawari)
+
+| Pos | Rumus | Kelas A | Kelas B |
+| --- | --- | --- | --- |
+| Tulis terbaru | 3 x 4.320 | 12.960 | - |
+| Tulis potongan | 3 x 4.320 | 12.960 | - |
+| Tulis `selesai` | 4.320 | 4.320 | - |
+| Run: cek `selesai` | 4.320 | - | 4.320 |
+| Pemadatan harian: list, tulis | 3 x 30 x 3 | 270 | - |
+| Pemadatan: baca potongan | 3 x 4.320 | - | 12.960 |
+| Worker: baca `picu.json` tiap menit | 43.200 | - | 43.200 |
+| Worker: tulis `picu.json` | sekitar 4.500 | 4.500 | - |
+| Worker: cek etag 3 berkas tiap menit | 3 x 43.200 | - | 129.600 |
+| Worker: cek `selesai` calon | <= 6 per tik saat ada calon, sekitar 20.000 | - | 20.000 |
+| **Jumlah** | | **sekitar 35.000** | **sekitar 210.000** |
+
+Hapus objek tidak dihitung kelas A atau B [belum diverifikasi aturan tagihan R2 terbaru]. Penyimpanan: rerata 15 KB x 3 jenis x 4.320 = sekitar 0,2 GB per bulan; pada batas rerata 50 KB = 0,65 GB per bulan; 13 bulan pada batas = 8,4 GB. Kuota gratis R2 akun ini dan pemakaian modul lain dicek di dasbor di ST-03A sebelum arsip dinyalakan [belum diverifikasi angka kuota akun]. GitHub: 4.320 dispatch per bulan, sekitar 6 per jam rata-rata, jauh di bawah batas API per jam token.
 
 ## 5. Bentuk keluaran per pindaian
 

@@ -24,7 +24,7 @@ Ikut AGENTS 3.5 (kartu `.ex.ex-std`, kepala = nama seksi berikon, tanpa kalimat 
 | Layar | Kartu dan lapis | Tinjau |
 | --- | --- | --- |
 | Peta utama karhutla | lapis "Himawari 10 menit" terpisah dari VIIRS; kartu Satelit: status sumber, jumlah titik pindaian terakhir per provinsi, menit dahulu median (dari rapor) | `http://localhost:8800/` |
-| Tugas api `/instansi` | kolom Himawari: jam pertama terlihat, atau "sumber terputus", atau kosong bertanda "belum lolos uji" | `http://localhost:8800/instansi` |
+| Tugas api `/instansi` | kolom Himawari: jam pertama terlihat dari sumber ber-vonis lolos; selama WLF mati dan L1b belum lolos kolom kosong dengan teks "sumber terputus sejak <jam WIB>" (D16), tidak pernah diisi dari L1b | `http://localhost:8800/instansi` |
 | `/gunungapi` | kartu "Abu dan panas kawah": per gunung level >= II, piksel abu pindaian terakhir, FRP kawah harian, SO2 (berlabel "data 2 sampai 4 hari lalu") | `http://localhost:8800/gunungapi` |
 | `/cuaca` | kartu "Awan konvektif 10 menit": kab dengan puncak tembus atau tumbuh cepat; lapis OT | `http://localhost:8800/cuaca` |
 | `/banjir` (staf) | kartu "Genangan harian": tabel kab aktif, baris tak teramati berteks | `http://localhost:8800/banjir` |

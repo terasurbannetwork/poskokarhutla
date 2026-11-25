@@ -43,7 +43,17 @@ Penanda dini memakai aturan `himawari.penanda()` apa adanya (terlihat 2 kali dal
 - Metrik: presisi per kelas pada jam lintas VIIRS (hanya piksel yang tercakup sapuan VIIRS dan tidak berawan di kedua sensor), recall terhadap gugus VIIRS, median menit waktu dahulu (Himawari pertama sebelum VIIRS pertama per gugus 3 km dan 24 jam).
 - Pembanding pada jumlah alarm sama: persistensi (sel 0,1 derajat dengan VIIRS dalam 24 jam sebelumnya), klimatologi (sel 0,1 derajat dengan frekuensi VIIRS tertinggi pada bulan yang sama tahun-tahun sebelumnya).
 - Pembanding kedua bila WLF pulih: WLF reliability >= 3 pada jendela yang sama.
-- Periode: kalibrasi dan uji dipisah per minggu berselang (bukan acak per titik), musim kering 2026 dari arsip R2 `arsip/satelit/api/`. Kriteria tidak boleh memakai minggu uji.
+- Periode: kalibrasi dan uji dipisah per minggu berselang (bukan acak per titik). Musim kering 2026 (Jul sampai Okt) diambil dari riwayat L1b di bucket `noaa-himawari9` (bucket menyimpan riwayat sejak Himawari-9 operasional) dengan pemindai yang sama dalam mode `riwayat`, sesudah kriteria dikunci; satu musim penuh (sekitar 70 MB per pindaian) tidak muat di runner, jadi mode `riwayat` hanya mengunduh cuplikan yang ditetapkan di kriteria ST-04 sebelum unduhan pertama (misalnya satu pindaian per jam pada hari uji terpilih, potongan kotak Indonesia saja); arsip R2 hidup dipakai untuk uji prospektif. Kriteria tidak boleh memakai minggu uji.
+
+### Kemandirian label api (dikunci di kriteria)
+
+Label uji adalah VIIRS, jadi apa pun yang memakai VIIRS tidak boleh ada di jalur yang dinilai:
+
+1. Presisi dan recall dilaporkan pada keluaran detektor MENTAH: tanpa saringan "tanpa VIIRS 5 km 72 jam", dan `penanda()` tidak pernah dipakai di uji presisi (aturan itu sendiri membuang titik yang dekat VIIRS, jadi presisinya tidak bisa dinilai lawan VIIRS).
+2. Saringan sumber statis dan alarm palsu dinilai dua kali berdampingan: tanpa saringan apa pun, dan dengan saringan yang asalnya bukan VIIRS. `himawari_alarm_palsu.csv` lahir dari "tidak pernah dilihat VIIRS", jadi ia dikeluarkan dari angka utama dan hanya dilaporkan sebagai baris tambahan berlabel "memakai VIIRS". Asal `titik_palsu.json` diperiksa di ST-04; bila memakai VIIRS, perlakuannya sama.
+3. Gugus VIIRS yang sudah dipakai untuk menyusun daftar alarm palsu dan kriteria tidak dipakai lagi sebagai label uji (minggu kalibrasi dan uji terpisah).
+4. Batas klaim yang ditulis di rapor: angka ini mengukur kesepakatan dengan VIIRS pada jam lintas VIIRS, bukan kebenaran lapangan; api kecil di bawah ambang VIIRS dan api di antara lintasan tidak terukur. Waktu dahulu hanya untuk gugus yang akhirnya dilihat VIIRS.
+5. Label kedua yang tidak bergantung VIIRS: tugas api terverifikasi lapangan di D1 dan Dalops karhutla (`label_dalops.py`), dilaporkan terpisah dan tidak dijumlah.
 
 ## 2. Abu gunung api (F-5)
 
@@ -56,6 +66,8 @@ abu bila   BTD_k < -0,5 K dan Tb13 < 290 K dan Tb11 - Tb13 > -1 K (menyingkirkan
 gugus    : piksel abu bertetangga >= 3 ; gugus satu piksel dibuang
 keluaran : per gunung: piksel abu, luas kasar km2 (dibulatkan 10), jarak gugus terjauh dari kawah, arah (8 mata angin) ; semua HIPOTESIS
 ```
+
+Jumlah label: VONA jarang dan terkumpul di sedikit gunung, sedangkan alarm dihitung per gunung-hari. Dengan arsip hidup beberapa minggu saja, n VONA hampir pasti < 20 dan vonis "tak dapat dinilai" adalah hasil yang diharapkan, bukan kegagalan. Karena itu periode uji utama adalah riwayat: semua VONA ber-jam sejak Himawari-9 operasional sampai akhir Okt 2026 (`arsip_magma.py`), pindaian L1b di sekitar tiap VONA dan sampel hari tanpa VONA diunduh dari bucket `noaa-himawari9` dalam mode `riwayat`. Kriteria (ambang, jendela, gunung, cara sampel hari kosong, pembagian kalibrasi dan uji per gunung-tahun) dikunci dan disidik SEBELUM unduhan riwayat pertama. Bila sesudah riwayat n tetap < 20, vonis "tak dapat dinilai" ditulis apa adanya dan detektor tetap hipotesis.
 
 Uji (ST-08): label = VONA PVMBG (waktu letusan, arah, tinggi; arsip `arsip_magma.py`). Deteksi per letusan: abu terlihat dalam [VONA - 30, VONA + 60] menit. Alarm palsu: hari-gunung beralarm tanpa VONA dan tanpa laporan erupsi MAGMA dalam 24 jam. Arah dinilai seperti `uji_abu.py` (dalam 45 derajat). Pembanding: persistensi (VONA kemarin) dan klimatologi (frekuensi VONA per gunung per bulan), jumlah alarm sama. VAAC tidak dipakai sebagai label karena arsipnya tidak tersedia (catatan `uji_abu.py`).
 
@@ -71,6 +83,16 @@ per kab per pindaian, sampel kisi 0,1 derajat (awan_himawari):
 ```
 
 Pindaian 10 menit menggantikan pasangan 30 menit di `awan_tumbuh.py`; definisi 30 menit lama tetap dihitung berdampingan selama uji supaya tidak mundur.
+
+Satuan alarm dan pembanding (dikunci di kriteria):
+
+- Satuan dinilai = **kab-hari WIB**. Banyak pindaian bersinyal di kab yang sama pada hari yang sama tetap SATU alarm; skor kab-hari = jumlah pindaian bersinyal hari itu (untuk mengurutkan). Pindaian bukan satuan uji karena label Dalops per hari.
+- n_alarm = jumlah kab-hari bersinyal model pada periode uji, dengan ambang terkunci.
+- Pembanding klimatologi: skor kab-hari = frekuensi label Dalops `cuaca` kab itu pada bulan kalender yang sama di tahun-tahun kalibrasi; ambil n_alarm kab-hari teratas per periode (seri diputus dengan acak berbiji tetap yang dikunci).
+- Pembanding persistensi: kab-hari dengan label Dalops `cuaca` kemarin (memakai `tanggal_lapor` supaya tidak bocor); bila lebih dari n_alarm, ambil yang laporannya paling awal; bila kurang, dibiarkan kurang dan jumlahnya ditulis.
+- Hanya kab-bulan yang teramati Dalops (`label_mutu`) masuk penyebut ketiganya.
+
+Periode: riwayat L1b musim hujan Nov 2025 sampai Mar 2026 dari bucket NOAA, kriteria dikunci sebelum unduhan; arsip hidup untuk prospektif.
 
 Uji (ST-09): label Dalops `cuaca` (puting beliung, cuaca ekstrem) per kab-hari lewat `label_dalops.py`, DIBI label kedua; hujan IMERG Late >= 50 mm/hari sebagai label ketiga terpisah. Metrik POD dan FAR kab-hari, toleransi 0 dan +-1 hari berdampingan (`skor_dua`). Pembanding: klimatologi kab-bulan dan persistensi kab kemarin pada jumlah alarm sama. Peringatan dini BMKG dinilai di baris terpisah, tidak digabung. Kab-bulan tak teramati Dalops tidak dinilai.
 
@@ -108,9 +130,11 @@ Uji (ST-12): Dalops kekeringan dan DIBI per kab-bulan; pembanding SPI-3 (`script
 ## 7. Asap (F-10)
 
 ```
-AI per kab per hari = kuantil 0,9 AI TROPOMI (aerosol_index_354_388, qa >= 0,8) dalam poligon kab, dari keluaran tropomi.py
+AI per kab per hari = kuantil 0,9 AI TROPOMI (aerosol_index_354_388, qa >= 0,8) dalam poligon kab ; < 10 piksel sah -> tak teramati
 asap bila AI >= 1 (definisi tropomi.py)
 ```
+
+Kerja baru, bukan pemakaian ulang keluaran: `tropomi.py` hari ini hanya menulis seri harian per PROVINSI (rata piksel sah) dan kisi 0,25 derajat. Agregasi per kab dibangun di `asap_aod.py`: daftar granul dan unduhan DAP4 memakai fungsi `tropomi.py` lewat impor (token dan aturan redirect tetap di sana), piksel dipetakan ke poligon kab lewat ray casting yang sama dengan pemetaan provinsinya. Seri provinsi `tropomi.py` tidak berubah.
 
 Uji (ST-13): PM2.5 darat per kota-hari (`scripts/udara/**`); metrik Spearman AI lawan PM2.5 dan kemampuan memisah hari ISPU tidak sehat (AUC). Pembanding: PM2.5 kemarin (persistensi) dan rerata bulan. Lintasan berawan = tak teramati.
 
@@ -129,5 +153,5 @@ Gerbang ditulis oleh `scripts/umum/gerbang.py` ke `public/data/gerbang/satelit.j
 ## 9. Lanjutan (Q14)
 
 - Kabut malam: Tb07 - Tb13 < -2 K dan Tb13 > 280 K, malam saja; label METAR jarak pandang < 1 km (`jarak_pandang.yml`); asap gambut malam diberi kelas terpisah, bukan kabut.
-- GSMaP_NOW: tertahan FTP JAXA.
+- GSMaP_NOW: tertahan FTP JAXA. Pembacanya sudah ada (`scripts/banjir/genangan/gsmap.py`, 23,8 KB) dan foldernya beku oleh sidik J4 sampai Apr 2027, jadi dipakai lewat impor saja dari berkas baru di luar `scripts/banjir/genangan/`; berkas beku tidak disunting.
 - LST split-window B13/B14/B15: satu komposit siang per hari, piksel cerah saja; tertahan sampai F-9 bervonis.
