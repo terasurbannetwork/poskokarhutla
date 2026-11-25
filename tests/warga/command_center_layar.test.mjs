@@ -211,6 +211,8 @@ else {
     assert.match(await q(tab, `q('${sebut(PA)} [data-riwayat]').innerText`), /\d{1,2} \p{L}+ \d\d\.\d\d WIB, Budi Santoso: tindak lanjut Baru → Dalam konfirmasi/u);
     /* keputusan akhir langsung, tanpa catatan */
     await tab.klik(`${sebut(PA)} button[data-cc-ke="ada_api"]`); await tab.tungguFungsi(`document.querySelector('${sebut(PA)} [data-cc]')?.dataset.cc === 'ada_api'`);
+    // riwayat dimuat ulang async sesudah transisi ("Memuat riwayat…" sebentar): tunggu isinya, CI lebih lambat dari lokal (terbit gagal 25 Nov 2026)
+    await tab.tungguFungsi(`/Dalam konfirmasi → Ada api/.test(document.querySelector('${sebut(PA)} [data-riwayat]')?.innerText ?? '')`);
     assert.match(await q(tab, `q('${sebut(PA)} [data-riwayat]').innerText`), /Dalam konfirmasi → Ada api/);
     /* koreksi: input kecil, catatan >= 3 huruf; Batal menutup tanpa menulis */
     const n0 = await jejakN(PD);
