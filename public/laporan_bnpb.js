@@ -4,6 +4,7 @@
    Isian = satu objek JSON per (jenis, tanggal); bentuknya ditentukan BENTUK di bawah dan digambar laporan_bnpb_slide.js.
    Draf yang belum disimpan ditahan di localStorage peramban ini (per jenis+tanggal). Klik tidak membekukan layar: pratinjau ditunda. */
 (() => {
+if (new URLSearchParams(location.search).get("jenis") === "berkala") return;   // Laporan Berkala diurus public/laporan_berkala.js
 const LB = window.LaporanBnpbSlide, PS = window.PaparanSlide, $ = s => document.querySelector(s);
 const LIB = {
   pdf: ["https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js", () => window.jspdf],   // sama dengan paparan.js
