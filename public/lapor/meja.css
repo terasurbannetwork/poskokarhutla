@@ -1135,3 +1135,26 @@ dialog.mj-ld-dlg h3{margin:0 0 6px}
 .mj-cari-cocok{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:var(--ok);color:var(--on-pekat);font:700 .75rem var(--font)}
 .mj-cari-cocok svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
 .mj-cari-aksi{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+/* kartu PIC BPBD (pemilik 25 Nov 2026 "itu jelek"): isi berjarak dari tepi kartu; tanpa PIC = baris kontak berikon dan tombol hubungi */
+.mj-pic{padding:10px 16px 14px}
+.mj-pic>.mj-redup{margin:0;font-size:.8125rem;color:var(--ink2)}
+.mj-pic-catatan{display:flex;align-items:center;gap:8px;margin:0;font-size:.75rem;font-weight:700;color:var(--ink2)}
+.mj-pic-catatan::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--warn,var(--ink2));flex:none}
+.mj-pic-situs{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.mj-pic-av{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:50%;background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2)}
+.mj-pic-av svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mj-pic-teks{display:grid;gap:2px;flex:1;min-width:0}
+.mj-pic-teks b{font:800 .875rem var(--mj-display);color:var(--ink);line-height:1.25}
+.mj-pic-teks small{font-size:.75rem;color:var(--ink2)}
+.mj-pic-hub{flex:none;padding:7px 12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mj-pic-hub svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:480px){.mj-pic-situs{flex-wrap:wrap}.mj-pic-hub{width:100%}}
+/* panel darurat: lonceng izin notifikasi = ikon polos sebaris kepala, bukan pil merah sebaris sendiri (pemilik 25 Nov 2026 "ini juga jelek") */
+.mj-darurat-kepala{flex-direction:row!important;align-items:center!important;gap:2px!important}
+.mj-darurat-kepala>.mj-darurat-buka{flex:1;min-width:0}
+.mj-darurat-izin{order:0!important;align-self:center!important;display:grid;place-items:center;width:32px;height:32px;min-height:0;margin:0!important;padding:0;border:0!important;border-radius:50%;background:none!important;color:var(--bad-tx);cursor:pointer;flex:none}
+.mj-darurat-izin:hover{background:color-mix(in oklab,var(--bad) 8%,transparent)!important}
+.mj-darurat-izin:focus-visible{outline:2px solid var(--bad);outline-offset:1px}
+.mj-darurat-izin svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mj-darurat.kecil .mj-darurat-izin{margin-right:2px!important}
+.mj-darurat.kecil .mj-darurat-aksi{border:0;background:none;padding:0 4px}
