@@ -13,14 +13,14 @@ Dasar urutan: musim hujan (banjir, longsor, cuaca dipakai tiap hari), modul hamp
 - [x] PB-50 uji balik hujan 50 mm: GAGAL, hanya musim kemarau (aaa2db9fd)
 - [x] Paket `peta-situs` (73f2495c6)
 - [x] Peta situs PS-00 sampai PS-11 selesai 25 Nov (474ac23c0, 4b4f15d10, 05a870e59); tinjau lokal sesudah terbit
-- [ ] Paritas PB-51 sampai PB-67 (selesai 25 Nov: PB-51..PB-54b, PB-59, PB-60 K17 tanpa naskah penerbit, PB-62, PB-63, PB-64, PB-65 (PB-65.3, PB-65.4 menunggu), PB-66; berjalan: PB-61; sisa: PB-67 penutup; rute Worker PB-52 dan unggah R2 menyusul)
-- [ ] Lapor Bencana sisa (LK-9..LK-13, sisa LA-*); cek dulu apakah sesi lain sedang memegang
-- [ ] Genangan GS-12, GS-13 (GS-09 migrasi menunggu pemilik)
+- [ ] Paritas PB-51 sampai PB-67 (selesai 25 Nov: PB-51..PB-66 kecuali yang tertahan kunci atau izin di PB-61.x dan PB-65.3/65.4; sisa: PB-67 penutup)
+- [ ] Lapor Bencana sisa (LK-09..LK-12 selesai 25 Nov; LK-13 tinjauan pemilik dan saklar LAPOR_USUL; sisa LA-*)
+- [ ] Genangan GS-12, GS-13 (kode GS-13 selesai 25 Nov; tertahan: migrasi GS-09 oleh pemilik, Q14, uji balik butuh izin jaringan)
 
 ## P1: berguna musim ini, kode belum ada
 
-- [ ] EWS panel sensor dan CCTV (EW-*), sensor sendiri boleh publik (Q2)
-- [ ] Laporan Berkala (LB-*)
+- [ ] EWS panel sensor dan CCTV (EW-01..EW-05, EW-09 selesai 25 Nov; migrasi 0176 diterapkan pemilik; EW-06/07/08/10 menunggu izin tertulis Q1, Q6)
+- [ ] Laporan Berkala (LB-00..LB-03, LB-10 selesai 25 Nov; Q28 baru; sisa LB-04..LB-09, LB-11, LB-12)
 - [ ] Lapor luring dan PWA: service worker `/lapor` (LR-*, PW-*)
 - [ ] Lifeline LF-9..LF-11
 - [ ] Kaji ulang KU-4..KU-12
