@@ -8,9 +8,13 @@
 // kodenya di gateway ditandai `// >>> lapor-ai` ... `// <<< lapor-ai` supaya tidak ikut sidik versi bot.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.7'
+export const VERSI = '2.8'
 
 export const CHANGELOG = [
+  { versi: '2.8', tanggal: '2026-11-25', isi: [
+    'Bot terjadwal bisa mengirim Laporan Penanganan Gempa Bumi dan Laporan Penanganan Kekeringan sesudah 17.00 WIB, seperti laporan banjir: angkanya dari laporan harian yang sudah tayang, tanpa bahan WA, dikirim sekali sehari ke penerima tetap.',
+    'Keduanya mati bawaan dan dinyalakan sendiri-sendiri oleh pengelola mesin. Bila data hari itu belum ada, hanya pemilik yang diberi tahu.',
+  ] },
   { versi: '2.7', tanggal: '2026-11-24', isi: [
     'Infografis bencana: ketik *infografis 2025* (tahun), *infografis 2026-10* (bulan), atau *infografis 2026-T3* (triwulan). Bot membuatnya dari data DIBI dan mengirim PPTX dan PDF hanya ke Anda.',
     'Periode yang belum genap (bulan atau triwulan berjalan) ditolak dengan penjelasan. Tidak ada jadwal otomatis dan tidak ada kiriman ke grup atau nomor lain.',
