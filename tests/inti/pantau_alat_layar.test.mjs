@@ -10,7 +10,7 @@ import {readFileSync, existsSync} from "node:fs";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {bukaPeramban, cariChrome} from "../bnpb/_peramban.mjs";
-import {tingkat, basi, ringkasan, urut} from "../../public/inti/pantau_alat.js";
+import {tingkat, basi, ringkasan, urut, grafikSvg} from "../../public/inti/pantau_alat.js";
 
 const AKAR = path.join(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PUB = path.join(AKAR, "public");
@@ -85,7 +85,7 @@ else {
     const baris = await tab.eval(`(() => { const k = [...document.querySelectorAll('.al-kartu')].map(e => e.getBoundingClientRect()); const g = {}; k.forEach(r => (g[Math.round(r.top)] ||= []).push(r)); return Object.values(g).map(r => ({h: [...new Set(r.map(x => Math.round(x.height)))], n: r.length, celah: r.length > 1 ? Math.round(r[1].left - r[0].right) : null})); })()`);
     for (const b of baris) { assert.equal(b.h.length, 1, "tinggi kartu sebaris sama: " + JSON.stringify(b)); if (b.celah != null) assert.equal(b.celah, 20); }
     assert.equal(baris[0].n, w > 900 ? 3 : 1);
-    await tab.klik("[data-lagi]"); assert.equal(await tab.eval("document.querySelectorAll('.al-kartu').length"), 15); assert.equal(await tab.eval("!!document.querySelector('[data-lagi]')"), false);
+    await tab.klik("[data-lagi]"); await tab.tungguFungsi("document.querySelectorAll('.al-kartu').length === 15"); assert.equal(await tab.eval("!!document.querySelector('[data-lagi]')"), false);
     assert.deepEqual(tab.galat().filter(bukanFavicon), []);
   });
 
@@ -167,4 +167,14 @@ test("U11: teks panel tanpa kata aman; CSS tanpa huruf kapital paksa", () => {
     assert.doesNotMatch(s, /\baman\b/i, f);
     assert.doesNotMatch(s, /text-transform\s*:\s*uppercase/i, f);
   }
+});
+
+test("grafik 1.440 titik: kolom tooltip paling banyak 300 (nilai terakhir tiap kelompok), garis tetap memuat semua titik", () => {
+  const t0 = Date.UTC(2026, 10, 25), titik = Array.from({length: 1440}, (_, i) => [t0 + i * 6e4, i]);
+  const svg = grafikSvg({titik, interval: 6e4, kunci: "getar_mms", satuan: "mm/s", ambang: null}, "Uji", 900);
+  const kolom = svg.match(/class="al-gh"/g).length;
+  assert.ok(kolom <= 300 && kolom >= 280, "kolom " + kolom);
+  assert.equal(svg.match(/<polyline[^>]*points="([^"]*)"/)[1].split(" ").length, 1440);
+  assert.match(svg, /Getaran: 1\.439 mm\/s/, "kolom terakhir memakai nilai terakhir");
+  assert.equal(grafikSvg({titik: titik.slice(0, 288), interval: 6e4}, "Uji", 900).match(/class="al-gh"/g).length, 288, "di bawah ambang: satu kolom per titik");
 });

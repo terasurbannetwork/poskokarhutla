@@ -174,11 +174,12 @@ export function kartuHtml(p, kini) {
 export function putusHtml(daftar, kini) {
   if (!daftar.length) return "";
   const n = daftar.slice(0, 5).map(p => `${esc(p.nama)} (${p.waktu == null ? "belum pernah mengirim" : umur(kini - p.waktu) + " lalu"})`).join(", ");
-  const sisa = daftar.length > 5 ? `, dan ${daftar.length - 5} lainnya` : "";
-  return `<div class="al-putus" role="status">${IK.awas}<p><b>${daftar.length} alat tanpa data terkini</b>: ${n}${sisa}</p><button type="button" class="al-ik" data-tutup-putus aria-label="Tutup pemberitahuan" title="Tutup">${IK.tutup}</button></div>`;
+  const sisa = daftar.length > 5 ? `, dan ${ANGKA.format(daftar.length - 5)} lainnya` : "";
+  return `<div class="al-putus" role="status">${IK.awas}<p><b>${ANGKA.format(daftar.length)} alat tanpa data terkini</b>: ${n}${sisa}</p><button type="button" class="al-ik" data-tutup-putus aria-label="Tutup pemberitahuan" title="Tutup">${IK.tutup}</button></div>`;
 }
 /* blok 7: grafik SVG (D8, pola polyline profil_wilayah.js). Segmen dari seri() (celah memutus garis), ambang garis putus-putus,
    kolom tak terlihat ber-data-tip untuk tooltip bersama #tip (public/inti/tip.js) */
+const MAKS_KOLOM = 300;
 export function grafikSvg(d, nama, lebarPx = 640) {
   const seg = seri(d?.titik, d?.interval || INTERVAL.tma), semua = seg.flat();
   if (!semua.length) return `<p class="al-kosong">Belum ada bacaan dalam 24 jam terakhir.</p>`;
@@ -192,16 +193,19 @@ export function grafikSvg(d, nama, lebarPx = 640) {
   const sumbuX = [0, .25, .5, .75, 1].map(r => { const t = t0 + r * (t1 - t0); return `<text x="${f(X(t))}" y="${H - 8}" text-anchor="middle">${JAM_SAJA.format(t)}</text>`; }).join("");
   const garisAmb = amb.map(([k, v]) => `<line class="al-ga" data-w="${esc(AMB_W[k] ?? k)}" x1="${L}" x2="${W - R}" y1="${f(Y(v))}" y2="${f(Y(v))}"/><text class="al-gal" x="${W - R + 4}" y="${f(Y(v) + 4)}">${esc(k.replace(/^siaga(\d)$/, "Siaga $1").replace(/^./, c => c.toUpperCase()))} ${ANGKA.format(v)}</text>`).join("");
   const garis = seg.map(s => s.length === 1 ? `<circle class="al-gt" cx="${f(X(s[0][0]))}" cy="${f(Y(s[0][1]))}" r="2.5"/>` : `<polyline class="al-gs" points="${s.map(t => f(X(t[0])) + "," + f(Y(t[1]))).join(" ")}"/>`).join("");
-  const akhir = semua.at(-1), lebar = Math.max(2, (W - L - R) / semua.length), besaran = namaBesaran(d.kunci || "");
-  const kolom = semua.map(t => `<rect class="al-gh" x="${f(Math.max(L, X(t[0]) - lebar / 2))}" y="${T}" width="${f(lebar)}" height="${H - T - B}" data-tip="${esc(`<b>${waktuTeks(t[0])}</b><br>${besaran}: ${ANGKA.format(t[1])}${sat ? " " + sat : ""}`)}"/>`).join("");
+  /* kolom tooltip paling banyak MAKS_KOLOM: titik dikelompokkan berurutan, tiap kelompok memakai nilai terakhirnya (garis tetap penuh) */
+  const per = Math.ceil(semua.length / MAKS_KOLOM), wakil = per > 1 ? semua.filter((_, i) => (i + 1) % per === 0 || i === semua.length - 1) : semua;
+  const akhir = semua.at(-1), lebar = Math.max(2, (W - L - R) / wakil.length), besaran = namaBesaran(d.kunci || "");
+  const kolom = wakil.map(t => `<rect class="al-gh" x="${f(Math.max(L, X(t[0]) - lebar / 2))}" y="${T}" width="${f(lebar)}" height="${H - T - B}" data-tip="${esc(`<b>${waktuTeks(t[0])}</b><br>${besaran}: ${ANGKA.format(t[1])}${sat ? " " + sat : ""}`)}"/>`).join("");
   return `<svg class="al-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(`Grafik ${besaran.toLowerCase()} ${nama}, 24 jam terakhir, terakhir ${ANGKA.format(akhir[1])} ${sat} pada ${waktuTeks(akhir[0])}`)}">`
     + sumbuY + sumbuX + garisAmb + garis + `<circle class="al-gt al-gt-akhir" cx="${f(X(akhir[0]))}" cy="${f(Y(akhir[1]))}" r="3.5"/>` + kolom + `</svg>`;
 }
-const ringHtml = r => r && r.jumlah_pos != null ? `<p class="al-ring"><span><b>${r.jumlah_pos}</b> pos</span><span${r.di_atas_ambang ? ' class="al-atas"' : ""}><b>${r.di_atas_ambang}</b> di atas ambang</span><span><b>${r.terputus}</b> tanpa data terkini</span>${r.kamera != null ? `<span><b>${r.kamera}</b> kamera</span>` : ""}</p>` : "";
+const ringHtml = r => r && r.jumlah_pos != null ? `<p class="al-ring"><span><b>${ANGKA.format(r.jumlah_pos)}</b> pos</span><span${r.di_atas_ambang ? ' class="al-atas"' : ""}><b>${ANGKA.format(r.di_atas_ambang)}</b> di atas ambang</span><span><b>${ANGKA.format(r.terputus)}</b> tanpa data terkini</span>${r.kamera != null ? `<span><b>${ANGKA.format(r.kamera)}</b> kamera</span>` : ""}</p>` : "";
 const gagalHtml = g => g.length ? `<p class="al-gagal">${g.map(s => `Sumber ${esc(SUMBER[s] ?? s)} gagal dimuat.`).join(" ")}</p>` : "";
 
 const PER_HALAMAN = 12;
-const nanti = f => requestAnimationFrame(() => setTimeout(f, 0));
+/* sesudah cat (dua rAF), cadangan setTimeout 120 ms untuk tab tersembunyi (rAF berhenti); sekali jalan (pola nanti di public/index.html) */
+const nanti = fn => { let ok = false; const go = () => { if (!ok) { ok = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
 const kunciTutup = b => "al-putus:" + b;
 const hariIni = kini => new Date(kini + 7 * 3600e3).toISOString().slice(0, 10);
 
@@ -252,7 +256,9 @@ async function muat(ref, bencana, ambil) {
       return;
     }
     if (b.hasAttribute("data-lagi")) {
-      kisi.insertAdjacentHTML("beforeend", daftar.slice(tampil, tampil + PER_HALAMAN).map(p => kartuHtml(p, kini)).join(""));
+      /* chrome urgent (tombol), kartu ditunda (INP) */
+      const ambilan = daftar.slice(tampil, tampil + PER_HALAMAN);
+      nanti(() => kisi.insertAdjacentHTML("beforeend", ambilan.map(p => kartuHtml(p, kini)).join("")));
       tampil += PER_HALAMAN; const sisa = daftar.length - tampil;
       if (sisa > 0) b.textContent = `Tampilkan ${Math.min(PER_HALAMAN, sisa)} pos lagi`; else b.remove();
       return;
