@@ -163,6 +163,145 @@ def skor(Q, D, T, w, mode="bawaan"):
     return Q ** wq * D ** wd * T ** wt
 
 
+# ---- tujuan banjir (semai-banjir ALGORITMA §2 sampai §5), blok bobot["banjir"] -------------------------------
+def _angka(x, nama):
+    if isinstance(x, bool) or not isinstance(x, (int, float)) or x != x:
+        raise ValueError(f"{nama} bukan angka: {x!r}")
+    return float(x)
+
+
+def faktor_h(tiba, bobot=None):
+    """H, lepas sebelum sasaran (§5): 1 untuk 1..3 jam, turun linear ke 0 di 4 jam, selain itu 0. tiba None (lintasan tak masuk) = 0."""
+    if tiba is None:
+        return 0.0
+    t = _angka(tiba, "tiba")
+    if t < 0:
+        raise ValueError(f"tiba {t} jam negatif")
+    lo, pen, mks = (1, 3, 4) if bobot is None else (nilai(bobot, "banjir.gb3_tiba_min_jam"), nilai(bobot, "banjir.h_penuh_maks_jam"), nilai(bobot, "banjir.gb3_tiba_maks_jam"))
+    return 0.0 if t < lo or t >= mks else (1.0 if t <= pen else mks - t)
+
+
+def lolos_gb(nama, bobot, **kw):
+    """Gerbang banjir GB1..GB4 (§4); True = lolos. Nama atau masukan salah: ValueError.
+    GB1 dalam(bool), jarak_km (dari tepi luar sasaran)         : di luar poligon dan > gb1_jarak_km
+    GB2 titik_kab, sel_kab (kode kab atau None = laut), terlarang (himpunan kode kab sasaran/terancam): tidak ada di terlarang
+    GB3 tiba (jam, None = tak masuk)                            : gb3_tiba_min..gb3_tiba_maks
+    GB4 hari_tiba, d (teks tanggal)                             : sama"""
+    try:
+        if nama == "GB1":
+            j = _angka(kw["jarak_km"], "jarak_km")
+            if j < 0:
+                raise ValueError(f"jarak_km {j} negatif")
+            return (not kw["dalam"]) and j > nilai(bobot, "banjir.gb1_jarak_km")
+        if nama == "GB2":
+            t = kw["terlarang"]
+            return kw["titik_kab"] not in t and kw["sel_kab"] not in t
+        if nama == "GB3":
+            if kw["tiba"] is None:
+                return False
+            t = _angka(kw["tiba"], "tiba")
+            return nilai(bobot, "banjir.gb3_tiba_min_jam") <= t <= nilai(bobot, "banjir.gb3_tiba_maks_jam")
+        if nama == "GB4":
+            if not (isinstance(kw["hari_tiba"], str) and isinstance(kw["d"], str)):
+                raise ValueError(f"tanggal bukan teks: {kw['hari_tiba']!r}, {kw['d']!r}")
+            return kw["hari_tiba"] == kw["d"]
+    except KeyError as e:
+        raise ValueError(f"gerbang {nama}: masukan {e} kurang")
+    raise ValueError(f"gerbang {nama!r} tak dikenal (GB1..GB4)")
+
+
+def di_koridor(jarak_tepi_km, jarak_lintasan_km, bobot):
+    """§3.2: <= 25 km dari lintasan mundur DAN 30..150 km dari tepi sasaran."""
+    e, l = _angka(jarak_tepi_km, "jarak_tepi_km"), _angka(jarak_lintasan_km, "jarak_lintasan_km")
+    if e < 0 or l < 0:
+        raise ValueError(f"jarak negatif: tepi {e}, lintasan {l}")
+    return l <= nilai(bobot, "banjir.koridor_lintasan_km") and nilai(bobot, "banjir.koridor_min_km") <= e <= nilai(bobot, "banjir.koridor_maks_km")
+
+
+def angin_lemah(ms, bobot):
+    """§3.3: angin pengarah di pusat sasaran < 2 m/s = langkah tanpa kandidat."""
+    m = _angka(ms, "angin_ms")
+    if m < 0:
+        raise ValueError(f"angin {m} m/s negatif (kecepatan, bukan komponen)")
+    return m < nilai(bobot, "banjir.angin_lemah_ms")
+
+
+def zona_id_banjir(putaran, urut):
+    """`<putaran>-B<huruf>` (D6); urut 0 = A."""
+    if not (isinstance(urut, int) and not isinstance(urut, bool) and 0 <= urut < 26) or not putaran or not isinstance(putaran, str):
+        raise ValueError(f"zona_id: putaran {putaran!r}, urut {urut!r} tak sah (0..25)")
+    return f"{putaran}-B{chr(65 + urut)}"
+
+
+def alasan_kosong_banjir(n_sasaran, semua_angin_lemah, n_sel_lolos, ada_ifs=True):
+    """§7: salah satu dari tanpa_prakiraan, tidak_ada_sasaran, angin_lemah, tidak_ada_awan_hulu; None bila ada sel lolos."""
+    if n_sasaran < 0 or n_sel_lolos < 0:
+        raise ValueError(f"hitungan negatif: sasaran {n_sasaran}, sel {n_sel_lolos}")
+    if not ada_ifs:
+        return "tanpa_prakiraan"
+    if n_sasaran == 0:
+        return "tidak_ada_sasaran"
+    if semua_angin_lemah:
+        return "angin_lemah"
+    return None if n_sel_lolos > 0 else "tidak_ada_awan_hulu"
+
+
+_URUT_ASAL = ("tetap", "manual", "bmkg", "prakiraan")
+
+
+def pilih_sasaran(d, prediksi, bmkg, bobot, manual=(), umur_prediksi_jam=0, tercakup=True):
+    """S(d) (§2). d 'YYYY-MM-DD'. prediksi = prediksi.json (atau None), bmkg = cuaca_bmkg_kab10.json (atau None), manual = kode kab.
+    Hasil: dict(sasaran=[dict(kode, asal=[...], pantau, belum_teruji)], sumber=[catatan], alasan_kosong).
+    tercakup False: sasaran prakiraan tenggang 2 bertanda pantau (tanpa zona). belum_teruji: asalnya hanya `prakiraan` dan tak ada vonis lulus."""
+    if not (isinstance(d, str) and len(d) == 10 and d[4] == "-" and d[7] == "-"):
+        raise ValueError(f"d {d!r} bukan YYYY-MM-DD")
+    umur = _angka(umur_prediksi_jam, "umur_prediksi_jam")
+    if umur < 0:
+        raise ValueError(f"umur prakiraan {umur} jam negatif")
+    for k in manual:
+        if not (isinstance(k, str) and len(k) == 4 and k.isdigit()):
+            raise ValueError(f"kode kab manual {k!r} bukan 4 angka")
+    asal, pantau, sumber, belum = {}, set(), [], False
+
+    def tambah(k, a):
+        asal.setdefault(k, set()).add(a)
+
+    for k in nilai(bobot, "banjir.sasaran_tetap"):
+        tambah(k, "tetap")
+    for k in manual:
+        tambah(k, "manual")
+    if bmkg:
+        kond = nilai(bobot, "banjir.bmkg_kondisi")
+        for kode, v in bmkg["kab"].items():
+            if any(h["tgl"] == d and h["kondisi"] in kond for h in v["hari"]):
+                tambah(kode.replace(".", ""), "bmkg")
+    else:
+        sumber.append("BMKG kab10 tidak ada")
+    if prediksi is None:
+        sumber.append("prakiraan banjir tidak ada")
+    elif umur > nilai(bobot, "banjir.prakiraan_basi_jam"):
+        sumber.append(f"prakiraan banjir basi ({umur:g} jam)")
+    else:
+        bnj = prediksi["kode"]["BNJ"]
+        hari = bnj["hari"]
+        if d in hari:
+            t = hari.index(d)
+            lulus = any(v and v[0] == "lulus" for v in (bnj.get("vonis") or {}).values())
+            belum = not lulus
+            lvmin, pmin = nilai(bobot, "banjir.bnj_level_min"), nilai(bobot, "banjir.hjn_p50_min")
+            waspada = {w["kab"] for w in prediksi.get("waspada", []) if w.get("aturan") == "banjir" and w.get("tenggang") == t + 1}
+            for r in prediksi["kab"]:
+                if r["BNJ"][t][0] >= lvmin or r["id"] in waspada or r["HJN"][t][2] >= pmin:
+                    tambah(r["id"], "prakiraan")
+                    if t == 1 and not tercakup:
+                        pantau.add(r["id"])
+        else:
+            sumber.append(f"tanggal {d} tak ada di kode.BNJ.hari {hari}")
+    hasil = [dict(kode=k, asal=sorted(a, key=_URUT_ASAL.index), pantau=k in pantau and a == {"prakiraan"},
+                  belum_teruji=a == {"prakiraan"} and belum) for k, a in sorted(asal.items())]
+    return dict(sasaran=hasil, sumber=sumber, alasan_kosong=None if hasil else "tidak_ada_sasaran")
+
+
 # ---- §4, §7 zona ---------------------------------------------------------------------------------------------
 def ambang_cluster(frp24_list, bobot):
     """maksimum(40 MW, 2% frp24 cluster terbesar)."""

@@ -190,8 +190,101 @@ def uji():
     kosong = M.ringkasan_teks(dict(dat, zona=[], kalimat_kosong=M.kalimat_kosong("tidak_ada_awan")), "pos")
     ok("Tidak ada awan layak semai" in kosong, "ringkasan kosong")
 
+    uji_banjir_murni(b, ok, dekat)
     uji_fixture(b, ok)
     print(f"semai uji: {n[0]} kasus lolos")
+
+
+def uji_banjir_murni(b, ok, dekat):
+    """RENCANA-UJI semai-banjir §1: fungsi murni tujuan banjir, tiap aturan dengan kasus yang ditolak."""
+    def tolak(f, *a, **k):
+        try:
+            f(*a, **k)
+        except ValueError as e:
+            return str(e)
+        return None
+
+    bb = b["banjir"]
+    ok(bb["status"] == "HIPOTESIS" and bb["versi_banjir"] == "1" and b["versi"] == "1", "blok banjir berlabel, versi karhutla utuh")
+    ok(len(M.nilai(b, "banjir.sasaran_tetap")) == 13, "13 kab tetap")
+    # H
+    for tiba, e in [(0.5, 0), (1, 1), (2, 1), (3, 1), (3.5, 0.5), (4, 0), (5, 0)]:
+        dekat(M.faktor_h(tiba, b), e, pesan=f"H tiba {tiba}")
+    dekat(M.faktor_h(None, b), 0, pesan="H tanpa masuk")
+    ok("-1" in (tolak(M.faktor_h, -1) or ""), "tiba negatif ditolak, pesan memuat angkanya")
+    ok("x" in (tolak(M.faktor_h, "x") or ""), "tiba teks ditolak")
+    ok(tolak(M.faktor_h, True) is not None, "tiba bool ditolak")
+    # contoh ALGORITMA §6, skor, P
+    w = tuple(M.nilai(b, f"banjir.skor.w{x}") for x in "qhp")
+    dekat(sum(w), 1, pesan="bobot skor banjir")
+    dekat(M.skor(0.566, M.faktor_h(3.5, b), 1.0, w), 0.59, 0.005, "contoh §6")
+    dekat(M.skor(0.566, M.faktor_h(0.5, b), 1.0, w), 0, pesan="H 0 -> skor 0")
+    for km, e in [(5, 0), (30, 0.5), (80, 1)]:
+        dekat(M.faktor_t(km, 10, 50), e, pesan=f"P darat {km} km")
+    # gerbang
+    for kw, e in [(dict(dalam=True, jarak_km=0), False), (dict(dalam=False, jarak_km=5), False), (dict(dalam=False, jarak_km=15), True),
+                  (dict(dalam=False, jarak_km=10), False)]:
+        ok(M.lolos_gb("GB1", b, **kw) is e, f"GB1 {kw}")
+    ok("-3" in (tolak(M.lolos_gb, "GB1", b, dalam=False, jarak_km=-3) or ""), "GB1 jarak negatif ditolak")
+    terl = {"3171", "3201"}
+    for kw, e in [(dict(titik_kab="3171", sel_kab=None), False), (dict(titik_kab=None, sel_kab="3171"), False),
+                  (dict(titik_kab=None, sel_kab="3201"), False), (dict(titik_kab=None, sel_kab=None), True)]:
+        ok(M.lolos_gb("GB2", b, terlarang=terl, **kw) is e, f"GB2 {kw}")
+    for tiba, e in [(0.5, False), (2, True), (5, False), (None, False)]:
+        ok(M.lolos_gb("GB3", b, tiba=tiba) is e, f"GB3 {tiba}")
+    ok(M.lolos_gb("GB4", b, hari_tiba="2026-11-25", d="2026-11-25") and not M.lolos_gb("GB4", b, hari_tiba="2026-11-26", d="2026-11-25"), "GB4")
+    ok("GB9" in (tolak(M.lolos_gb, "GB9", b) or ""), "gerbang tak dikenal ditolak")
+    ok(tolak(M.lolos_gb, "GB3", b) is not None, "masukan kurang ditolak")
+    ok("2026" in (tolak(M.lolos_gb, "GB4", b, hari_tiba=20261125, d="2026-11-25") or "2026"), "GB4 tanggal bukan teks ditolak")
+    # koridor dan angin
+    ok(not M.di_koridor(20, 10, b) and not M.di_koridor(200, 10, b) and M.di_koridor(60, 10, b) and not M.di_koridor(60, 30, b), "koridor")
+    ok("-5" in (tolak(M.di_koridor, -5, 1, b) or ""), "koridor jarak negatif ditolak")
+    ok(M.angin_lemah(1.5, b) and not M.angin_lemah(2, b), "angin lemah 1,5 / 2 m/s")
+    ok("-1" in (tolak(M.angin_lemah, -1, b) or ""), "angin negatif ditolak")
+    ok(M.zona_id_banjir("20261125T12", 0) == "20261125T12-BA" and M.zona_id_banjir("p", 2) == "p-BC", "zona id")
+    ok("26" in (tolak(M.zona_id_banjir, "p", 26) or ""), "urut 26 ditolak")
+    # empat keadaan kosong
+    ok([M.alasan_kosong_banjir(0, False, 0), M.alasan_kosong_banjir(3, True, 0), M.alasan_kosong_banjir(3, False, 0),
+        M.alasan_kosong_banjir(3, False, 2, ada_ifs=False), M.alasan_kosong_banjir(3, False, 2)] ==
+       ["tidak_ada_sasaran", "angin_lemah", "tidak_ada_awan_hulu", "tanpa_prakiraan", None], "alasan kosong")
+    ok("-1" in (tolak(M.alasan_kosong_banjir, -1, False, 0) or ""), "hitungan negatif ditolak")
+    # pilih_sasaran
+    d = "2026-11-25"
+    def kab(i, bnj, p50):
+        return dict(id=i, BNJ=[[bnj, 0], [0, 0], [0, 0]], HJN=[[0, 0, p50]] * 3)
+    pred = dict(kode=dict(BNJ=dict(hari=[d, "2026-11-26", "2026-11-27"], vonis={"ps|1": ["belum teruji", 1, 0, False, 1]})),
+                kab=[kab("9001", 2, 0), kab("9002", 1, 0.29), kab("9003", 1, 0.3), kab("9004", 1, 0)],
+                waspada=[dict(kab="9005", tenggang=1, aturan="banjir"), dict(kab="9006", tenggang=2, aturan="asap")])
+    pred["kab"].append(kab("9005", 0, 0))
+    pred["kab"].append(kab("9006", 0, 0))
+    bm = dict(kab={"31.72": dict(hari=[dict(tgl=d, kondisi="Hujan Petir")]), "99.01": dict(hari=[dict(tgl=d, kondisi="Berawan")]),
+                   "99.02": dict(hari=[dict(tgl="2026-11-26", kondisi="Hujan Lebat")])})
+    r = M.pilih_sasaran(d, pred, bm, b, manual=["9100"])
+    a = {x["kode"]: x for x in r["sasaran"]}
+    ok(a["9001"]["asal"] == ["prakiraan"] and a["9001"]["belum_teruji"], "BNJ level 2 masuk, belum teruji")
+    ok("9002" not in a and "9004" not in a, "p50 0,29 dan tanpa sinyal tidak masuk")
+    ok("9003" in a and "9005" in a and "9006" not in a, "p50 0,3 dan waspada banjir masuk, waspada asap tidak")
+    ok(a["3171"]["asal"] == ["tetap"] and a["9100"]["asal"] == ["manual"], "tetap dan manual")
+    ok(a["3172"]["asal"] == ["tetap", "bmkg"] and "9901" not in a and "9902" not in a, "BMKG Hujan Petir kunci 31.72 -> 3172, hari lain dan Berawan tidak")
+    ok(not any(x["belum_teruji"] for x in r["sasaran"] if x["asal"] != ["prakiraan"]), "belum teruji hanya asal prakiraan saja")
+    lulus = dict(pred, kode=dict(BNJ=dict(pred["kode"]["BNJ"], vonis={"ps|1": ["lulus", 1, 0, True, 1]})))
+    ok(not M.pilih_sasaran(d, lulus, bm, b)["sasaran"][-1]["belum_teruji"], "vonis lulus melepas label")
+    r = M.pilih_sasaran(d, pred, bm, b, umur_prediksi_jam=40)
+    ok("9001" not in {x["kode"] for x in r["sasaran"]} and any("basi (40 jam)" in x for x in r["sumber"]), "prakiraan 40 jam dilewati, tercatat basi")
+    r = M.pilih_sasaran("2026-11-26", pred, None, b, tercakup=False)
+    ok({x["kode"] for x in r["sasaran"] if x["pantau"]} == {"9003"} and "BMKG kab10 tidak ada" in r["sumber"], "tenggang 2 tak tercakup: hanya p50 0,3 pantau; BMKG hilang tercatat")
+    pred2 = dict(pred, kab=[dict(kab("9001", 0, 0), BNJ=[[0, 0], [2, 0], [0, 0]])])
+    r = M.pilih_sasaran("2026-11-26", pred2, None, b, tercakup=False)
+    ok([x["pantau"] for x in r["sasaran"] if x["kode"] == "9001"] == [True], "tenggang 2 hari tak tercakup = pantau")
+    ok(not M.pilih_sasaran("2026-11-26", pred2, None, b)["sasaran"][-1]["pantau"], "tercakup = bukan pantau")
+    ok("tak ada di kode.BNJ.hari" in "".join(M.pilih_sasaran("2027-01-01", pred, None, b)["sumber"]), "tanggal di luar tenggang tercatat")
+    kosong = json.loads(json.dumps(b))
+    kosong["banjir"]["sasaran_tetap"]["nilai"] = []
+    ok(M.pilih_sasaran(d, None, None, kosong)["alasan_kosong"] == "tidak_ada_sasaran", "tanpa sasaran")
+    ok("2026/11" in (tolak(M.pilih_sasaran, "2026/11/25", pred, bm, b) or "2026/11"), "format tanggal")
+    ok("2026/11/25" in (tolak(M.pilih_sasaran, "2026/11/25", pred, bm, b) or ""), "d salah ditolak, pesan memuat nilainya")
+    ok("12" in (tolak(M.pilih_sasaran, d, pred, bm, b, manual=["12"]) or ""), "kode manual 2 angka ditolak")
+    ok("-2" in (tolak(M.pilih_sasaran, d, pred, bm, b, umur_prediksi_jam=-2) or ""), "umur negatif ditolak")
 
 
 def uji_fixture(b, ok):

@@ -362,5 +362,93 @@
    "nilai": 1.0,
    "dasar": "H"
   }
+ },
+ "banjir": {
+  "_label": "ALGORITMA semai-banjir §2-§6, semua HIPOTESIS; kunci karhutla tidak disentuh",
+  "status": "HIPOTESIS",
+  "versi_banjir": "1",
+  "sasaran_tetap": {
+   "nilai": [
+    "3171",
+    "3172",
+    "3173",
+    "3174",
+    "3175",
+    "3201",
+    "3271",
+    "3216",
+    "3275",
+    "3276",
+    "3671",
+    "3603",
+    "3674"
+   ],
+   "dasar": "H"
+  },
+  "bnj_level_min": {
+   "nilai": 2,
+   "dasar": "H"
+  },
+  "hjn_p50_min": {
+   "nilai": 0.3,
+   "dasar": "H"
+  },
+  "bmkg_kondisi": {
+   "nilai": [
+    "Hujan Lebat",
+    "Hujan Petir"
+   ],
+   "dasar": "H"
+  },
+  "prakiraan_basi_jam": {
+   "nilai": 36,
+   "dasar": "H"
+  },
+  "koridor_lintasan_km": {
+   "nilai": 25,
+   "dasar": "H"
+  },
+  "koridor_min_km": {
+   "nilai": 30,
+   "dasar": "H"
+  },
+  "koridor_maks_km": {
+   "nilai": 150,
+   "dasar": "H"
+  },
+  "angin_lemah_ms": {
+   "nilai": 2,
+   "dasar": "H"
+  },
+  "gb1_jarak_km": {
+   "nilai": 10,
+   "dasar": "H"
+  },
+  "gb3_tiba_min_jam": {
+   "nilai": 1,
+   "dasar": "H"
+  },
+  "gb3_tiba_maks_jam": {
+   "nilai": 4,
+   "dasar": "H"
+  },
+  "h_penuh_maks_jam": {
+   "nilai": 3,
+   "dasar": "H"
+  },
+  "skor": {
+   "wq": {
+    "nilai": 0.45,
+    "dasar": "H"
+   },
+   "wh": {
+    "nilai": 0.4,
+    "dasar": "H"
+   },
+   "wp": {
+    "nilai": 0.15,
+    "dasar": "H"
+   }
+  }
  }
 }
