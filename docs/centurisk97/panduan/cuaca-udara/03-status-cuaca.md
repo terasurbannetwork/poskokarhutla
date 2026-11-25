@@ -38,7 +38,7 @@ Satelit Himawari-9 memindai (memotret) wilayah Indonesia tiap 10 menit. Centuris
 
 Contoh: sebuah titik muncul di dua pindaian berturut-turut, tidak ada titik panas satelit lain dalam 4 km sejak kemarin, maka titik itu ditandai api baru.
 
-Tiap penanda memberi alarm berjari-jari 2 km dan satu kabar ringkas ke Posko pusat. Kabar itu menyebut lokasinya baru perkiraan dalam radius 2 km dan meminta Posko menunggu VIIRS atau konfirmasi lapangan. Alarm berubah menjadi terkunci bila tugas api dibuat di dekatnya, dan hilang bila 6 jam tanpa pindaian baru. Lokasi bisa meleset sekitar 2 km.
+Tiap penanda memberi alarm berjari-jari 2 km dan satu kabar ringkas ke Posko pusat. Kabar itu menyebut lokasinya masih perkiraan dalam radius 2 km dan meminta penerima menunggu deteksi VIIRS atau konfirmasi lapangan. Alarm berubah menjadi terkunci bila tugas api dibuat di dekatnya, dan hilang bila 6 jam tanpa pindaian baru. Lokasi bisa meleset sekitar 2 km.
 
 ## Awan dingin dan awan tumbuh cepat
 
