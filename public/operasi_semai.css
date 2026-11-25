@@ -186,3 +186,11 @@
 
 /* judul dialog target terbaca di kepala terang */
 :is(html,#_) #opsLaporan .sm-dlg .ex>.ex-hd .ex-jd>h3{color:#0b2545;margin:0;font-size:1.0625rem}
+
+/* SB-08: saklar tujuan, segmen ujung ke ujung (DESIGN-SYSTEM semai-banjir §1) */
+#opsLaporan .sm-tujuan{display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:2px;margin-bottom:12px;border-radius:8px;background:var(--card);box-shadow:0 0 0 2px var(--line)}
+#opsLaporan .sm-tujuan button{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border:0;border-radius:6px;background:none;color:var(--ink);font:inherit;font-size:.8125rem;font-weight:700;cursor:pointer}
+#opsLaporan .sm-tujuan button[aria-pressed=true]{background:var(--brand);color:var(--on-brand)}
+#opsLaporan .sm-tujuan button:focus-visible{outline:2px solid var(--sm-sasaran);outline-offset:2px}
+#opsLaporan .sm-zb i{border-color:var(--sm-sasaran)}
+#opsLaporan .sm-zb span{border-color:var(--sm-sasaran);color:var(--sm-sasaran)}

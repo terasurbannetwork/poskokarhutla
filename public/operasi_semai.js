@@ -13,7 +13,7 @@
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
   const $ = (s, r = document) => r.querySelector(s);
   const ambil = async u => { try { const r = await fetch(u, {credentials: "same-origin"}); return r.ok ? await r.json() : {galat: r.status}; } catch (e) { return {galat: 0}; } };
-  const IK = {awan: '<path d="M7 16a4 4 0 0 1-.6-7.96A6 6 0 0 1 18 7a4.5 4.5 0 0 1-.5 9z"/><path d="M8 19v2M12 19v2M16 19v2"/>', api: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/>',
+  const IK = {banjir: '<path d="M12 3c3 4 5 6.5 5 9.5a5 5 0 0 1-10 0C7 9.5 9 7 12 3z"/><path d="M4 20c2-1.5 3.5-1.5 5.5 0s3.5 1.5 5.5 0 3.5-1.5 5 0"/>', awan: '<path d="M7 16a4 4 0 0 1-.6-7.96A6 6 0 0 1 18 7a4.5 4.5 0 0 1-.5 9z"/><path d="M8 19v2M12 19v2M16 19v2"/>', api: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/>',
     asap: '<path d="M4 15a4 4 0 0 1 4-4 5 5 0 0 1 9.6-1A3.5 3.5 0 0 1 18 17H7a3 3 0 0 1-3-2z"/>', angin: '<path d="M3 8h10a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/>', base: '<path d="M12 4 21 20H3z"/>', kota: '<circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/>',
     zona: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>', jam: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', salin: '<path d="M9 4h6v3H9z"/><path d="M15 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/><path d="M9 12h6M9 16h4"/>',
     target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>', sortie: '<path d="M4 19c4-1 6-5 8-9s5-6 8-6"/><circle cx="4" cy="19" r="1.6"/>', tabel: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/>',
@@ -23,7 +23,8 @@
   const CHEV = '<svg class="ops-chev sm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
   const kartu = (id, ik, nama, isi, o = {}) => `<details class="ex ex-std ops-kartu sm-k${o.lipat ? " sm-lipat" : ""}" id="${id}" open><summary class="ex-hd"><span class="ex-ey ops-ey-ik" title="${esc(nama)}" aria-label="${esc(nama)}" role="img">${sv(ik)}</span><div class="ex-jd"><h3>${nama}</h3>${o.kanan || ""}</div>${o.lipat ? CHEV : ""}</summary><div class="ex-bd">${isi}</div></details>`;
 
-  const st = {data: null, i: 0, zona: 0, kota: -1, peta: null, play: 0, rf: 0, ada: {awan: true, asap: true}, terap: {}, tampak: {api: true, awan: true, asap: true, pengarah: true, anginAsap: true, zona: true, kota: true}, target: {}, ctx: null, mk: {zona: [], base: [], kota: []}, semuaCluster: false, semuaKota: false, luar: false};
+  const st = {data: null, i: 0, zona: 0, kota: -1, peta: null, play: 0, rf: 0, ada: {awan: true, asap: true}, terap: {}, tampak: {api: true, awan: true, asap: true, pengarah: true, anginAsap: true, zona: true, kota: true}, target: {}, ctx: null, mk: {zona: [], base: [], kota: []}, semuaCluster: false, semuaKota: false, luar: false, tujuan: M.tujuanDariHash(location.hash), banjir: null, mkB: []};
+  const muatBanjir = M.malas(() => ambil(BAWAH + "semai_banjir.json"));   // SB-08: sekali per muatan halaman
   let akar = null;
   const zonaTerpilih = () => st.data?.zona?.[st.zona] || null;
   const L = () => st.data?.langkah || [];
@@ -110,6 +111,7 @@
     return [["zona", "zona", "Zona usulan", zs.length], ["teramati", "awan", "Awan teramati", zs.filter(M.teramati).length], ["api", "api", "Cluster besar", d.api?.n_cluster ?? (d.cluster || []).length], ["kota", "kota", "Kota berasap", as ? (as.kota_total ?? (as.kota || []).length) : "–"], ["lintas", "asap", "Lintas batas", as?.lintas ? 1 : "–"]]
       .map(([k, ik, t, n]) => `<button type="button" class="sm-chip" data-sm-chip="${k}" aria-pressed="${k === "teramati" ? st.luar : st.tampak[CHIPLAP[k]]}" title="Klik untuk ${k === "teramati" ? "menyaring zona dengan awan dingin teramati Himawari" : "menampilkan atau menyembunyikan lapisan"}">${sv(ik)}${t} <b>${typeof n === "number" ? M.fmt(n) : n}</b></button>`).join(""); };
   const CHIPLAP = {zona: "zona", api: "api", kota: "kota", lintas: "asap"};
+  const tujuanSeg = () => `<div class="sm-tujuan" role="group" aria-label="Tujuan semai"><button type="button" data-sm-tujuan="karhutla" aria-pressed="${st.tujuan !== "banjir"}">${lb("api", "Karhutla")}</button><button type="button" data-sm-tujuan="banjir" aria-pressed="${st.tujuan === "banjir"}">${lb("banjir", "Banjir")}</button></div>`;
   const peranSeg = () => `<div class="seg sm-peran" role="group" aria-label="Tampilan peran"><button type="button" aria-pressed="true">${lb("kota", "Pos komando")}</button><button type="button" disabled title="Segera: SA-13">${lb("angin", "Tinjau BMKG")}</button><button type="button" disabled title="Segera: SA-13">${lb("satelit", "Mitra")}</button></div>`;
   function strip() { const d = st.data, zs = d.zona || [], cl = d.cluster || [], as = d.asap, u = M.umurJam(d.dibuat), f = d.sumber?.firms;
     const mw = d.api?.frp_mw ?? cl.reduce((t, c) => t + (+c.frp24 || 0), 0), t = (ik, n, v, c = "", ttl = "") => `<div class="sm-ub ${c}" title="${esc(ttl)}"><i>${sv(ik)}</i><span>${n}</span><b>${v}</b></div>`;
@@ -117,15 +119,15 @@
   const legenda = () => { const f = st.data.sumber?.firms; return `<div class="sm-leg"><span><i class="sm-d" style="--w:#d7301f"></i>titik api di atas 40 MW</span><span><i class="sm-d" style="--w:#f28c28"></i>di bawahnya</span><span><i class="sm-seg3"></i>base</span><span><i class="sm-d sm-cincin"></i>zona</span>${f ? `<span class="sm-fi${f.jam && Date.now() - Date.parse(f.jam) > 6 * 36e5 ? " sm-basi" : ""}">${sv("satelit")}FIRMS VIIRS ${M.fmt(f.piksel)} piksel, ${f.satelit?.length ?? 0} dari ${(f.satelit?.length ?? 0) + (f.hilang?.length || 0)} satelit${f.hilang?.length ? `, belum masuk ${esc(f.hilang.join(", "))}` : ""}</span>` : `<span class="sm-fi sm-basi">${sv("satelit")}FIRMS belum tersedia</span>`}</div>`; };
   function bangun() {
     const d = st.data;
-    const peta = d ? `<div class="sm-peta-bungkus"><div id="smPeta" class="sm-peta" aria-label="Peta peluang semai"></div><div class="sm-alat"><div class="sm-chips" role="group" aria-label="Lapisan dan saringan">${pilAtas()}</div><div class="sm-alat-r">${peranSeg()}<button type="button" class="sm-tombol-garis" data-sm-ringkas>${lb("salin", "Salin ringkasan")}</button></div></div>${kotakLapis()}<div class="sm-dasar">${legenda()}${bilahJam()}${strip()}</div></div>`
-      : `<div class="sm-atas"><div class="sm-sumber">${sumber(null)}</div><button type="button" class="sm-tombol-garis" data-sm-ringkas>${lb("salin", "Salin ringkasan")}</button></div><p class="sm-kecil sm-peta-kosong">Peta tersedia setelah prakiraan terbit.</p>`;
+    const peta = d ? `${tujuanSeg()}<div class="sm-peta-bungkus"><div id="smPeta" class="sm-peta" aria-label="Peta peluang semai"></div><div class="sm-alat"><div class="sm-chips" role="group" aria-label="Lapisan dan saringan">${pilAtas()}</div><div class="sm-alat-r">${peranSeg()}<button type="button" class="sm-tombol-garis" data-sm-ringkas>${lb("salin", "Salin ringkasan")}</button></div></div>${kotakLapis()}<div class="sm-dasar">${legenda()}${bilahJam()}${strip()}</div></div>`
+      : `${tujuanSeg()}<div class="sm-atas"><div class="sm-sumber">${sumber(null)}</div><button type="button" class="sm-tombol-garis" data-sm-ringkas>${lb("salin", "Salin ringkasan")}</button></div><p class="sm-kecil sm-peta-kosong">Peta tersedia setelah prakiraan terbit.</p>`;
     akar.innerHTML = `<span class="sm-toast" id="smToast" role="status" aria-live="polite" hidden></span><div id="smPita">${pitaBasi(d)}</div>${kartu("smKP", "awan", "Peta peluang semai", peta)}
       <div class="sm-baris3">${kartu("smRek", "awan", "Rekomendasi", rekomendasi())}<div class="sm-kanan2">${kartu("smZona", "zona", "Zona usulan 24 jam", `<div class="sm-zdaf" id="smZdaf">${daftarZona()}</div>`)}${kartu("smAsap", "asap", "Peringatan asap", peringatanAsap())}</div></div>
       <div class="sm-bawah">${kartu("smCluster", "tabel", "Cluster aktif", tabelCluster())}<div class="sm-lipatan">${kartu("smCara", "info", "Cara memutuskan", CARA, {lipat: true})}${kartu("smTak", "peringatan", "Yang tidak terlihat satelit dan model", TAK, {lipat: true})}</div></div>`;
     for (const x of akar.querySelectorAll(".sm-lipat")) x.open = false;
   }
   const LAP = [["api", "api", "Titik api", "#d7301f"], ["awan", "awan", "Awan layak semai", "#2b7bd8"], ["asap", "asap", "Prakiraan asap", "#6e5426"], ["pengarah", "angin", "Angin pengarah (850 sampai 700 hPa)", "#8a94a6"], ["anginAsap", "angin", "Angin asap (10 m dan 850 hPa)", "#a88b5a"], ["zona", "zona", "Zona semai", "#a63a26"], ["kota", "base", "Kota dan base", "#0b2545"]];
-  const kotakLapis = () => `<div class="sm-lapis${matchMedia("(max-width:900px)").matches ? " sm-tutup" : ""}" role="group" aria-label="Lapisan peta"><b class="sm-lapis-hd" title="Tarik untuk menggeser, klik dua kali untuk mengembalikan">${sv("geser")}Lapisan</b>${LAP.map(([k, ik, t, w]) => `<label class="sm-ls" data-sm-lap="${k}"><input type="checkbox" ${st.tampak[k] ? "checked" : ""}><i style="--w:${w}"></i><span>${t}</span></label>`).join("")}</div>`;
+  const kotakLapis = () => `<div class="sm-lapis${matchMedia("(max-width:900px)").matches ? " sm-tutup" : ""}" role="group" aria-label="Lapisan peta"><b class="sm-lapis-hd" title="Tarik untuk menggeser, klik dua kali untuk mengembalikan">${sv("geser")}Lapisan</b>${LAP.map(([k, ik, t, w]) => `<label class="sm-ls" data-sm-lap="${k}"${st.tujuan === "banjir" && ["api", "asap", "anginAsap"].includes(k) ? " hidden" : ""}><input type="checkbox" ${st.tampak[k] ? "checked" : ""}><i style="--w:${w}"></i><span>${t}</span></label>`).join("")}</div>`;
   const bilahJam = () => { const d = st.data, n = L().length; if (!n) return "";
     return `<div class="sm-jam"><button type="button" class="sm-putar" data-sm-putar aria-label="Putar bilah jam">${sv("putar")}</button><div class="sm-jt"><b id="smJamT"></b><small id="smJamK"></small></div><input type="range" id="smGeser" min="0" max="${n - 1}" step="1" value="${st.i}" aria-label="Jam prakiraan"></div>`; };
   function catJam() { const d = st.data, l = L()[st.i]; if (l == null) return;
@@ -170,18 +172,53 @@
       for (const b of bs) st.mk.base.push(tekanMarker(`sm-bs${omc.has(b.id) ? " sm-omc" : ""}`, "", b.lon, b.lat, `${b.nama}${omc.has(b.id) ? ", armada OMC" : ""}`));
       (d.asap?.kota || []).forEach(k => { if (k.lat != null) st.mk.kota.push(tekanMarker("sm-kt", `<i></i><span>${esc(k.nama)}</span>`, k.lon, k.lat, k.nama)); });
       terapMarker(); pilihMarker(); gantiAngin(); catJam();
+      if (st.tujuan === "banjir") muatBanjir().then(b => { st.banjir = b; pasangBanjir(); terapTujuan(); });
       (window.requestIdleCallback || (f => setTimeout(f, 800)))(() => { for (const l of L()) for (const j of ["awan", "asap"]) if (l !== l0 && st.ada[j]) new Image().src = urlR(j, l); });
     });
     for (const j of ["awan", "asap"]) { const im = new Image(); im.onerror = () => { st.ada[j] = false; const cb = $(`[data-sm-lap="${j === "awan" ? "awan" : "asap"}"]`, akar); if (cb) { cb.classList.add("sm-mati"); cb.title = "belum tersedia"; cb.querySelector("input").disabled = true; } if (peta.getLayer("sm-" + j)) peta.setLayoutProperty("sm-" + j, "visibility", "none"); }; im.src = urlR(j, L()[st.i]); }
   }
-  const terapMarker = () => { const a = st.tampak; st.mk.zona.forEach((m, i) => { m.getElement().hidden = !a.zona || (st.luar && !M.teramati(st.data.zona[i])); }); for (const m of [...st.mk.base, ...st.mk.kota]) m.getElement().hidden = !a.kota; };
+  const terapMarker = () => { const a = st.tampak; st.mk.zona.forEach((m, i) => { m.getElement().hidden = !a.zona || st.tujuan === "banjir" || (st.luar && !M.teramati(st.data.zona[i])); }); for (const m of st.mk.base) m.getElement().hidden = !a.kota; for (const m of st.mk.kota) m.getElement().hidden = !a.kota || st.tujuan === "banjir"; for (const m of st.mkB) m.getElement().hidden = st.tujuan !== "banjir" || !a.zona; };
   /* pratinjau rute OMC zona terpilih (ALGORITMA §7c, dihitung semai.py) */
   const ruteFc = z => fc(z?.rute ? [{type: "Feature", properties: {}, geometry: {type: "LineString", coordinates: z.rute.cp.map(c => [c.lon, c.lat])}}] : []);
   const pilihMarker = () => st.mk.zona.forEach((m, i) => m.getElement().classList.toggle("sm-pilih", i === st.zona));
+  /* SB-08: tujuan banjir. Lapisan sasaran dan zona cegat dari semai_banjir.json (diambil malas); titik api dan asap disembunyikan. */
+  const warna = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const nrm = n => String(n || "").toLowerCase().replace(/^(kota administrasi|kabupaten|kota|kab\.?)\s+/, "").replace(/[^a-z0-9]/g, "");
+  const sasaranFc = (b, ada = new Set()) => fc((b?.zona || []).flatMap(z => (z.cegat || []).filter(c => c.masuk && !ada.has(c.kab)).map(c => { const s = (b.sasaran || []).find(x => x.kab === c.kab); return {type: "Feature", properties: {nama: s?.nama || c.kab, tg: s?.tenggang > 1 ? 1 : 0}, geometry: {type: "Point", coordinates: [c.masuk.lon, c.masuk.lat]}}; })));
+  function pasangBanjir() { const p = st.peta, b = st.banjir; if (!p?.getSource || !b || b.galat || p.getSource("sm-sasaran")) return;
+    const w = warna("--sm-sasaran");
+    p.addSource("sm-sasaran", {type: "geojson", data: sasaranFc(b)});
+    p.addSource("sm-sasaran-poly", {type: "geojson", data: fc([])});
+    p.addLayer({id: "sm-sasaran-poly", type: "fill", source: "sm-sasaran-poly", paint: {"fill-color": w, "fill-opacity": .12}});
+    p.addLayer({id: "sm-sasaran-garis", type: "line", source: "sm-sasaran-poly", filter: ["==", ["get", "tg"], 0], paint: {"line-color": w, "line-width": 2}});
+    p.addLayer({id: "sm-sasaran-garis2", type: "line", source: "sm-sasaran-poly", filter: ["==", ["get", "tg"], 1], paint: {"line-color": w, "line-width": 2, "line-dasharray": [3, 2]}});
+    p.addLayer({id: "sm-sasaran", type: "circle", source: "sm-sasaran", paint: {"circle-radius": 9, "circle-color": w, "circle-opacity": .12, "circle-stroke-color": w, "circle-stroke-width": 2}});
+    p.addLayer({id: "sm-sasaran-tg", type: "circle", source: "sm-sasaran", filter: ["==", ["get", "tg"], 1], paint: {"circle-radius": 13, "circle-color": w, "circle-opacity": 0, "circle-stroke-color": w, "circle-stroke-width": 1}});
+    p.addSource("sm-cegat", {type: "geojson", data: fc((b.zona || []).flatMap(z => (z.cegat || []).filter(c => c.masuk && z.hujan).map(c => ({type: "Feature", properties: {}, geometry: {type: "LineString", coordinates: [[z.hujan.lon, z.hujan.lat], [c.masuk.lon, c.masuk.lat]]}}))))});
+    p.addLayer({id: "sm-cegat", type: "line", source: "sm-cegat", paint: {"line-color": warna("--sm-garis"), "line-width": 1.5, "line-dasharray": [3, 2]}});
+    setTimeout(() => poligonSasaran(b), 0);   // poligon kab menyusul; cincin tetap dipakai selama memuat atau bila tak ada
+    for (const z of b.zona || []) st.mkB.push(tekanMarker("sm-zm sm-zb", `<i></i><span>B${esc(z.huruf)} ${M.fmt(z.skor, 2)}</span>`, z.lon, z.lat, `Zona cegat ${z.huruf}, skor ${M.fmt(z.skor, 2)}`));
+  }
+  async function poligonSasaran(b) { const p = st.peta, ss = b.sasaran || [], ada = new Set(), fs = [];
+    for (const pv of new Set(ss.map(x => x.prov).filter(Boolean))) { const g = await ambil(`/geo/kabupaten/${pv}.json`); if (!g?.features) continue;
+      for (const s of ss.filter(x => x.prov === pv)) { const f = g.features.find(f => nrm(f.properties.kab) === nrm(s.nama)); if (f) { ada.add(s.kab); fs.push({type: "Feature", properties: {tg: s.tenggang > 1 ? 1 : 0}, geometry: f.geometry}); } } }
+    if (!p?.getSource || !fs.length || !p.getSource("sm-sasaran-poly")) return;
+    p.getSource("sm-sasaran-poly").setData(fc(fs)); p.getSource("sm-sasaran").setData(sasaranFc(b, ada)); }
+  function terapTujuan() { const p = st.peta, v = M.tampakLapis(st.tujuan, st.tampak), ban = st.tujuan === "banjir";
+    if (p?.getLayer) { const set = (id, on) => p.getLayer(id) && p.setLayoutProperty(id, "visibility", on ? "visible" : "none");
+      set("sm-api", v.api); set("sm-asap", v.asap && st.ada.asap); set("sm-anginAsap", v.anginAsap); for (const id of ["sm-sasaran", "sm-sasaran-tg", "sm-sasaran-poly", "sm-sasaran-garis", "sm-sasaran-garis2", "sm-cegat"]) set(id, v.sasaran); }
+    for (const k of ["api", "asap", "anginAsap"]) { const e = $(`[data-sm-lap="${k}"]`, akar); if (e) e.hidden = ban; }
+    for (const k of ["api", "kota", "lintas"]) { const e = $(`[data-sm-chip="${k}"]`, akar); if (e) e.hidden = ban && k !== "kota"; }
+    terapMarker(); if (!ban) { gantiRaster(); gantiAngin(); } }
+  async function setTujuan(t) { if (st.tujuan === t) return; st.tujuan = t;
+    akar.querySelectorAll("[data-sm-tujuan]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.smTujuan === t)));
+    try { history.replaceState(null, "", M.hashTujuan(t)); } catch (e) {}
+    requestAnimationFrame(terapTujuan);
+    if (t === "banjir" && !st.banjir) { st.banjir = await muatBanjir(); if (st.banjir.galat) toast(st.banjir.galat === 404 ? "Prakiraan banjir belum tersedia" : `Prakiraan banjir gagal dibaca (kode ${st.banjir.galat})`); requestAnimationFrame(() => { pasangBanjir(); terapTujuan(); }); } }
   function gantiRaster() { const l = L()[st.i], p = st.peta; if (!p?.getSource) return;
-    for (const j of ["awan", "asap"]) if (st.tampak[j] && st.ada[j] && st.terap[j] !== l && p.getSource("sm-" + j)) { p.getSource("sm-" + j).updateImage({url: urlR(j, l), coordinates: KOOR}); st.terap[j] = l; } }
+    for (const j of ["awan", "asap"]) if (st.tampak[j] && st.ada[j] && !(j === "asap" && st.tujuan === "banjir") && st.terap[j] !== l && p.getSource("sm-" + j)) { p.getSource("sm-" + j).updateImage({url: urlR(j, l), coordinates: KOOR}); st.terap[j] = l; } }
   function gantiAngin() { const p = st.peta; if (!p?.getSource) return;
-    for (const [k, g] of [["pengarah", st.data.angin], ["anginAsap", st.data.angin_asap || st.data.asap?.angin_asap]]) if (st.tampak[k] && p.getSource("sm-" + k) && st.terap["a" + k] !== st.i) { p.getSource("sm-" + k).setData(panah(g, st.i)); st.terap["a" + k] = st.i; } }
+    for (const [k, g] of [["pengarah", st.data.angin], ["anginAsap", st.data.angin_asap || st.data.asap?.angin_asap]]) if (st.tampak[k] && !(k === "anginAsap" && st.tujuan === "banjir") && p.getSource("sm-" + k) && st.terap["a" + k] !== st.i) { p.getSource("sm-" + k).setData(panah(g, st.i)); st.terap["a" + k] = st.i; } }
   function setLangkah(i) { st.i = Math.max(0, Math.min(L().length - 1, i)); catJam(); if (!st.rf) st.rf = requestAnimationFrame(() => { st.rf = 0; gantiRaster(); gantiAngin(); }); }
   function pilihZona(i) { if (!st.data?.zona?.[i]) return; st.zona = i;
     akar.querySelectorAll("[data-sm-zona]").forEach(b => b.setAttribute("aria-current", String(+b.dataset.smZona === i))); pilihMarker();
@@ -243,6 +280,7 @@
     akar.addEventListener("click", e => {
       const sm = e.target.closest(".sm-lipat>summary"); if (sm) { e.stopPropagation(); return; }   // lipat sungguhan: pengendali kartu utama menahan klik kepala kartu
       let t;
+      if ((t = e.target.closest("[data-sm-tujuan]"))) return setTujuan(t.dataset.smTujuan);
       if ((t = e.target.closest("[data-sm-zona]"))) { t.setAttribute("aria-current", "true"); return pilihZona(+t.dataset.smZona); }
       if ((t = e.target.closest("[data-sm-kota]"))) return pilihKota(+t.dataset.smKota);
       if ((t = e.target.closest("[data-sm-salin]"))) { navigator.clipboard?.writeText(t.dataset.smSalin).then(() => toast(`Koordinat disalin: ${t.dataset.smSalin}`), () => toast("Salin gagal: izin papan klip ditolak")); return; }
@@ -261,7 +299,7 @@
 
   async function tampil(el, ctx) {
     st.ctx = ctx; if (akar === el && st.mulai) { requestAnimationFrame(() => { st.peta?.resize(); }); return; }
-    clearInterval(st.play); st.play = 0; st.peta?.remove(); st.peta = null; st.terap = {}; st.mk = {zona: [], base: [], kota: []}; st.ada = {awan: true, asap: true}; st.kota = -1;
+    clearInterval(st.play); st.play = 0; st.peta?.remove(); st.peta = null; st.terap = {}; st.mk = {zona: [], base: [], kota: []}; st.ada = {awan: true, asap: true}; st.kota = -1; st.mkB = [];
     akar = el; st.mulai = true; el.classList.add("sm"); el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat peluang semai…</div>`;
     const r = await ambil(BAWAH + "semai.json"), ok = r && !r.galat && r.putaran && r.dibuat;
     st.data = ok ? r : null; st.i = 0; st.zona = 0;

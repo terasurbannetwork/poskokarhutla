@@ -104,6 +104,13 @@
     return out.join("\n");
   }
 
-  const api = {teramati, fmt, dms, desimal, salinKoordinat, jam, hariJam, jendela, putaranTeks, waktuLangkah, plusJam, umurJam, umurTeks, kalimatKosong, judulKosong, urutKota, sudahBerasap, barisAsal, alasan, ketinggianTeks, bahanTeks, jumlahTeks, asapKalimat, ringkasan, namaNegara, arahKata};
+  /* SB-08: tujuan Karhutla | Banjir. Hash #semai (karhutla, bawaan) atau #semai/banjir. */
+  const tujuanDariHash = h => /^#semai\/banjir\/?$/.test(h || "") ? "banjir" : "karhutla";
+  const hashTujuan = t => t === "banjir" ? "#semai/banjir" : "#semai";
+  /* lapisan yang tampak per tujuan: tujuan banjir menyembunyikan titik api, asap, angin asap, dan kota berasap (DESIGN-SYSTEM semai-banjir §2) */
+  const tampakLapis = (t, tampak) => { const b = t === "banjir"; return {api: !b && !!tampak.api, asap: !b && !!tampak.asap, anginAsap: !b && !!tampak.anginAsap, kotaAsap: !b, zonaKarhutla: !b && !!tampak.zona, sasaran: b && tampak.zona !== false, awan: !!tampak.awan, pengarah: !!tampak.pengarah}; };
+  /* ambil sekali lalu simpan janjinya; panggilan berikut memakai hasil yang sama (muat malas semai_banjir.json) */
+  const malas = f => { let j = null; return () => (j ||= f()); };
+  const api = {tujuanDariHash, hashTujuan, tampakLapis, malas, teramati, fmt, dms, desimal, salinKoordinat, jam, hariJam, jendela, putaranTeks, waktuLangkah, plusJam, umurJam, umurTeks, kalimatKosong, judulKosong, urutKota, sudahBerasap, barisAsal, alasan, ketinggianTeks, bahanTeks, jumlahTeks, asapKalimat, ringkasan, namaNegara, arahKata};
   if (typeof module !== "undefined" && module.exports) module.exports = api; else akar.OpsSemaiMurni = api;
 })(typeof window !== "undefined" ? window : globalThis);

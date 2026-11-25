@@ -76,3 +76,36 @@ test("tidak ada huruf kapital semua di teks layar", async () => {
   assert.doesNotMatch(css, /font-size\s*:[^;}]*\dpx/, "ukuran huruf harus rem");
   assert.doesNotMatch(js, />[A-Z]{4,}</);
 });
+
+test("SB-08 hash tujuan: bawaan karhutla, #semai/banjir ke banjir, bolak-balik", () => {
+  for (const h of ["", "#semai", "#semai/", "#semai/karhutla", "#lain", undefined]) assert.equal(M.tujuanDariHash(h), "karhutla", String(h));
+  assert.equal(M.tujuanDariHash("#semai/banjir"), "banjir");
+  assert.equal(M.tujuanDariHash("#semai/banjir/"), "banjir");
+  assert.equal(M.hashTujuan("banjir"), "#semai/banjir");
+  assert.equal(M.hashTujuan("karhutla"), "#semai");
+  for (const t of ["karhutla", "banjir"]) assert.equal(M.tujuanDariHash(M.hashTujuan(t)), t);
+});
+
+test("SB-08 saklar: banjir menyembunyikan api dan asap, karhutla tidak berubah", () => {
+  const tampak = {api: true, awan: true, asap: true, pengarah: true, anginAsap: true, zona: true, kota: true};
+  assert.deepEqual(M.tampakLapis("karhutla", tampak), {api: true, asap: true, anginAsap: true, kotaAsap: true, zonaKarhutla: true, sasaran: false, awan: true, pengarah: true});
+  const b = M.tampakLapis("banjir", tampak);
+  assert.deepEqual([b.api, b.asap, b.anginAsap, b.kotaAsap, b.zonaKarhutla], [false, false, false, false, false]);
+  assert.deepEqual([b.sasaran, b.awan, b.pengarah], [true, true, true]);
+  assert.equal(M.tampakLapis("banjir", {...tampak, zona: false}).sasaran, false);
+});
+
+test("SB-08 muat malas: semai_banjir.json diambil sekali", async () => {
+  let n = 0; const muat = M.malas(async () => { n++; return {zona: []}; });
+  assert.equal(n, 0, "belum dipanggil sebelum saklar dipilih");
+  const [a, b] = await Promise.all([muat(), muat()]); await muat();
+  assert.equal(n, 1); assert.equal(a, b);
+});
+
+test("SB-08 layar: memuat semai_banjir.json dari BAWAH yang sama dan tanpa warna literal baru di CSS", async () => {
+  const {readFileSync} = await import("node:fs"), js = readFileSync(new URL("../../public/operasi_semai.js", import.meta.url), "utf8"), css = readFileSync(new URL("../../public/operasi_semai.css", import.meta.url), "utf8");
+  assert.match(js, /BAWAH \+ "semai_banjir\.json"/);
+  assert.match(js, /BAWAH \+ "semai\.json"/);
+  const baru = css.slice(css.indexOf("/* SB-08"));
+  assert.doesNotMatch(baru, /#[0-9a-f]{3,8}\b|rgb\(|oklch\(/i);
+});

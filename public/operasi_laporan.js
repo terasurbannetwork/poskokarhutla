@@ -63,7 +63,7 @@
   const seksiDaftar = m => SEKSI[m].flatMap(g => g[1]);
   const seksiPilih = {udara: "ringkasan", darat: "ringkasan"};
   for (const m of Object.keys(seksiPilih)) try { const k = localStorage.getItem("ops_seksi_" + m); if (seksiDaftar(m).some(x => x[0] === k)) seksiPilih[m] = k; } catch (e) {}
-  if (typeof location !== "undefined" && location.hash === "#semai") seksiPilih.udara = "semai";   // hash seksi Peluang semai (DESIGN-SYSTEM semai-awan §1)
+  if (typeof location !== "undefined" && /^#semai(\/|$)/.test(location.hash)) seksiPilih.udara = "semai";   // hash seksi Peluang semai (DESIGN-SYSTEM semai-awan §1)
   const seksiKartu = (m, id) => seksiDaftar(m).find(x => x[3].includes(id))?.[0];
   /* PB-17 sarana dan fasilitas lintas bencana: seksi muncul hanya bila registri menyalakan kemampuan.operasi untuk bencana selain karhutla (kini semuanya mati: tampilan karhutla tidak berubah) */
   let pbBencana = [];
@@ -114,9 +114,9 @@
     requestAnimationFrame(pasangPeta);
   }
   let semaiMuat = null;   // modul seksi Peluang semai dimuat malas saat #semai pertama dibuka
-  const muatSemai = () => semaiMuat ||= (() => { if (!document.querySelector('link[href^="/operasi_semai.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/operasi_semai.css?v=3"; document.head.append(l); }
-    return muatSkrip("/operasi_semai_murni.js?v=2").then(() => muatSkrip("/operasi_semai.js?v=3")); })();
-  const pindahSeksi = k => { seksiPilih[st.mode] = k; try { if (k === "semai" || location.hash === "#semai") history.replaceState(null, "", k === "semai" ? "#semai" : location.pathname + location.search); } catch (e) {} try { localStorage.setItem("ops_seksi_" + st.mode, k); } catch (e) {} terapSeksi(); const u = $("#opsLaporan .ops-utama"); if (u) { u.scrollTop = 0; u.scrollIntoView({block: "nearest"}); } };
+  const muatSemai = () => semaiMuat ||= (() => { if (!document.querySelector('link[href^="/operasi_semai.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/operasi_semai.css?v=4"; document.head.append(l); }
+    return muatSkrip("/operasi_semai_murni.js?v=3").then(() => muatSkrip("/operasi_semai.js?v=4")); })();
+  const pindahSeksi = k => { seksiPilih[st.mode] = k; try { const hs = /^#semai(\/|$)/.test(location.hash); if (k === "semai" ? !hs : hs) history.replaceState(null, "", k === "semai" ? "#semai" : location.pathname + location.search); } catch (e) {} try { localStorage.setItem("ops_seksi_" + st.mode, k); } catch (e) {} terapSeksi(); const u = $("#opsLaporan .ops-utama"); if (u) { u.scrollTop = 0; u.scrollIntoView({block: "nearest"}); } };
   const pilKategori = m => `<div class="seg ops-kat" role="group" aria-label="Kategori informasi">${KATEGORI_MODE[m].map(([k, t, ik]) => `<button type="button" data-kat="${k}" aria-pressed="${k === katPilih[m]}">${lbl(ik, t)}</button>`).join("")}</div>`;
   /* hanya atribut hidden, tanpa render ulang (INP) */
   const terapKat = root => root?.querySelectorAll("details.ops-kartu[data-kat], [data-kat-bungkus]").forEach(el => { el.hidden = (el.dataset.kat || el.dataset.katBungkus) !== katPilih[st.mode]; });

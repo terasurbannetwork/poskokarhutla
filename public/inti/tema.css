@@ -18,20 +18,21 @@
   --kat-banjir:oklch(64% .13 232); --kat-cuaca:oklch(42% .1 268); --kat-longsor:oklch(66% .14 152); --kat-karhutla:oklch(70% .17 48);
   --kat-kering:oklch(58% .06 70); --kat-gelombang:oklch(72% .1 195); --kat-gempa:oklch(80% .15 88); --kat-erupsi:oklch(55% .19 25);
   --kat-tsunami:oklch(55% .15 305); --kat-lain:oklch(70% .02 256);
+  --sm-sasaran:#1d4f91; --sm-garis:#5b6577; /* sasaran dan zona cegat semai banjir (biru tua air) */
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --paper:oklch(18% .035 256); --card:oklch(22.5% .045 256); --surface:oklch(26% .05 256);
   --ink:oklch(94% .012 255); --ink2:oklch(76% .035 255); --line:oklch(33% .05 256);
   --brand:oklch(64% .12 252); --brand2:oklch(70% .11 250); --accent:oklch(72% .1 252);
-  --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); --on-brand:oklch(18% .035 256); color-scheme:dark;
+  --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); --on-brand:oklch(18% .035 256); --sm-sasaran:#6fa8ee; --sm-garis:#a3adbf; color-scheme:dark;
   --ok-tx:oklch(62% .16 150); --warn-tx:oklch(76% .16 75); --bad-tx:oklch(65% .21 27); --info-tx:oklch(66% .13 235); --f2-tx:oklch(73% .17 58); --accent-tx:oklch(68% .09 252);
 }}
 :root[data-theme="dark"]{
   --paper:oklch(18% .035 256); --card:oklch(22.5% .045 256); --surface:oklch(26% .05 256);
   --ink:oklch(94% .012 255); --ink2:oklch(76% .035 255); --line:oklch(33% .05 256);
   --brand:oklch(64% .12 252); --brand2:oklch(70% .11 250); --accent:oklch(72% .1 252);
-  --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); --on-brand:oklch(18% .035 256); color-scheme:dark;
+  --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); --on-brand:oklch(18% .035 256); --sm-sasaran:#6fa8ee; --sm-garis:#a3adbf; color-scheme:dark;
   --ok-tx:oklch(62% .16 150); --warn-tx:oklch(76% .16 75); --bad-tx:oklch(65% .21 27); --info-tx:oklch(66% .13 235); --f2-tx:oklch(73% .17 58); --accent-tx:oklch(68% .09 252);
 }
 /* dasar halaman bersama (dulu disalin di gaya.css, semua.css, tabel.css) */
