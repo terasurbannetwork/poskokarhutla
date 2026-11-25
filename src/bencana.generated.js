@@ -436,6 +436,16 @@ export default {
           ],
           "tangga": true
         },
+        "alat": {
+          "sumber": [
+            "sensor",
+            "sihka"
+          ],
+          "jenis": [
+            "tma",
+            "hujan"
+          ]
+        },
         "dasbor": {
           "ringkas": "banjir",
           "papan_sk": true
@@ -1402,6 +1412,16 @@ export default {
             "gunungapi"
           ],
           "tangga": true
+        },
+        "alat": {
+          "sumber": [
+            "sensor",
+            "pvmbg"
+          ],
+          "jenis": [
+            "geofon",
+            "tma"
+          ]
         },
         "dasbor": {
           "ringkas": "gunungapi",
