@@ -185,3 +185,32 @@ test('sambungan: tab Tangga di index.html, prediksi.js, rantai jalan.py; tanpa t
   assert.doesNotMatch(js, /Sumber: /)
   assert.doesNotMatch(js, /\.innerHTML\s*=\s*[^;]*\b(?:e\.x|e\.t)\b(?![^;]*esc\()/, 'teks sumber harus lewat esc()')
 })
+
+// PB-60 (F-17, Q9): ambang prediksi kita hanya bersumber bila rujukan naskah penerbit ada di repo; selain itu "belum ada ambang bersumber"
+test('ambang kita: tanpa naskah di repo = belum ada ambang bersumber; tiap pernyataan kita tertutup', () => {
+  const py = 'import json,sys; sys.path.insert(0, sys.argv[1]); import tangga; print(json.dumps(tangga.AMBANG))'
+  const A = JSON.parse(execFileSync('python3', ['-c', py, new URL('scripts/prediksi', akar).pathname], { encoding: 'utf8' }))
+  for (const [sid, g] of Object.entries(A)) for (const [j, e] of Object.entries(g)) {
+    assert.ok(e.kode && e.di, `${sid}/${j} tanpa ambang kode`)
+    assert.doesNotMatch(JSON.stringify(e), /\baman\b/i)
+    if (e.rujukan) {
+      const [f, b] = [e.rujukan.replace(/:\d+$/, ''), Number(e.rujukan.match(/:(\d+)$/)?.[1])]
+      assert.ok(ada(f) && b > 0 && baca(f).split('\n').length >= b, `${sid}/${j}: rujukan ${e.rujukan} tidak ada di repo`)
+      assert.equal(e.status, 'bersumber')
+    } else assert.equal(e.status, 'belum ada ambang bersumber')
+  }
+  if (!ada('public/prediksi/data/tangga.json')) return
+  const t = JSON.parse(baca('public/prediksi/data/tangga.json'))
+  if (!t.ambang) return // tangga.json lama sebelum PB-60; dibuat ulang di giliran prediksi berikutnya
+  for (const k of Object.values(t.kab)) for (const s of ORDE) for (const e of k[s] || []) {
+    if (t.sumber[e.s]?.jenis !== 'kita') continue
+    const g = t.ambang[e.s] || {}
+    assert.ok(g[e.j] || g['*'], `pernyataan kita ${e.s}/${e.j} tanpa entri ambang`)
+  }
+})
+
+test('layar Tangga menampilkan pil ambang untuk pernyataan kita', () => {
+  const js = baca('public/prediksi/tangga.js')
+  assert.match(js, /t\.ambang\?\.\[e\.s\]/)
+  assert.match(js, /perlu cek/)
+})

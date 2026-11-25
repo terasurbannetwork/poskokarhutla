@@ -30,6 +30,26 @@ ISPU = ["Baik/Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"]
 GANDA = "entri ganda bertentangan"
 KEKERINGAN = {"1": (1, "Waspada"), "2": (2, "Siaga"), "3": (3, "Awas")}
 SEVERITY = {"Minor": 1, "Moderate": 2, "Severe": 3, "Extreme": 3}
+# PB-60 (F-17, Q9 diputuskan 25 Nov 2026 sesuai bawaan): ambang prediksi kita tetap ambang kode; ambang baru hanya dari naskah
+# penerbit yang ada di repo (rujukan berkas:baris). Belum ada naskah penerbit di repo untuk ambang di bawah (angka BMKG dan
+# P.14/2020 bertanda [ingatan] [perlu cek] di docs/multi-bencana/PRAKTIK-PENANGANAN.md), jadi semua rujukan None.
+# kunci: id sumber -> j pernyataan ("*" = semua j sumber itu). di = "berkas simbol" letak ambang kode (diperiksa uji).
+BELUM = "belum ada ambang bersumber"
+AMBANG = {
+    "kita": {
+        "banjir": {"kode": "level dari hujan 3 hari, indeks bahaya, dan kelembapan tanah", "di": "scripts/banjir/status.py level_banjir"},
+        "longsor": {"kode": "level dari hujan 3 dan 7 hari, kelembapan tanah, dan indeks bahaya", "di": "scripts/banjir/status.py level_longsor"},
+        "karhutla": {"kode": "peluang FWI Sangat Tinggi 0,6 atau lebih dan hujan 3 hari kurang dari 3 mm", "di": "scripts/prediksi/aturan.json API.ps"},
+        "asap": {"kode": "kategori ISPU dari PM2,5 24 jam (Tidak sehat di atas 55,4 µg/m³)", "di": "scripts/prediksi/aturan.json ASP.kat"},
+    },
+    "kita_kering": {"hth": {"kode": "kelas hari tanpa hujan 5, 10, 20, 30, 60 hari; hari hujan 1 mm atau lebih", "di": "scripts/prediksi/tangga.py HTH_KELAS"}},
+    "kita_bulan": {"kekeringan": {"kode": "peluang model saja, tanpa tingkat", "di": "scripts/prediksi/tangga.py p_model_t1"}},
+    "kita_musim": {"*": {"kode": "bulan puncak pola kejadian DIBI, bukan ambang peringatan", "di": "scripts/prediksi/musim_rawan.py puncak"}},
+}
+for _g in AMBANG.values():
+    for _e in _g.values():
+        _e.setdefault("rujukan", None)
+        _e["status"] = "bersumber" if _e["rujukan"] else BELUM
 
 
 # ---------- umum ----------
@@ -635,7 +655,7 @@ def susun(m, kini):
                 cak[s]["kosong"] += 1
         kab_out[i] = e
     skala = [{"id": s, "nama": n, "ok": {a: bool(H.ok.get((s, a))) for a in ("k", "b")}, "gagal": [g for g in H.gagal if g.lower().startswith(tuple(PREFIKS.get(s, ())))]} for s, n in SKALA]
-    return {"versi": 1, "dibuat": kini.isoformat(timespec="seconds"), "hari": kini.date().isoformat(), "skala": skala, "sumber": H.sumber, "nasional": H.nas,
+    return {"versi": 1, "dibuat": kini.isoformat(timespec="seconds"), "hari": kini.date().isoformat(), "skala": skala, "sumber": H.sumber, "ambang": AMBANG, "nasional": H.nas,
             "prov": H.prov, "kab": kab_out,
             "ringkas": {"n_kab": len(kab_out), "cakupan": cak, "menguat": menguat, "searah": searah, "belum_selaras": selaras, "tak_cocok": H.tak_cocok},
             "catatan": ["Peringkat 0 sampai 3 hanya untuk sinyal; label resmi tidak diubah. Sinyal hanya dari BMKG; prediksi kita terpisah.",
@@ -903,6 +923,20 @@ def uji():
         assert tambah_arsip(b, tmp) is True and tambah_arsip(dict(b, dibuat="lain"), tmp) is False, "hari sama tidak menimpa"
         assert len(D.baris_arsip(os.path.join(tmp, "2026-11.jsonl"))) == 1
         assert baris_arsip("2026-11-10", t2) is not None
+    # PB-60: tiap pernyataan kita punya entri ambang; tanpa rujukan naskah = "belum ada ambang bersumber"; letak ambang kode masih ada
+    for tt in (t, t5, t6):
+        for e in [x for k in tt["kab"].values() for sk in ORDE for x in k.get(sk, []) if tt["sumber"][x["s"]]["jenis"] == "kita"]:
+            g = tt["ambang"].get(e["s"]) or {}
+            assert e["j"] in g or "*" in g, f"pernyataan kita {e['s']}/{e['j']} tanpa entri ambang"
+    for g in AMBANG.values():
+        for e in g.values():
+            assert e["status"] == ("bersumber" if e["rujukan"] else BELUM)
+            f, sym = e["di"].split(" ", 1)
+            with open(os.path.join(AKAR, f), encoding="utf-8") as fh:
+                assert sym in fh.read(), f"ambang kode {e['di']} tidak ditemukan"
+            if e["rujukan"]:
+                rf, rb = e["rujukan"].rsplit(":", 1)
+                assert os.path.exists(os.path.join(AKAR, rf)) and int(rb) > 0, f"rujukan naskah {e['rujukan']} tidak ada di repo"
     os.environ.pop("LIVE", None)
     assert tarik_live("banjir/data/peringatan.json") is None, "tanpa LIVE tidak ada jaringan"
     print("tangga: uji lulus")
