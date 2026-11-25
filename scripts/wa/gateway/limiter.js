@@ -58,7 +58,8 @@ const WARMUP_PERCAKAPAN_PER_DAY = num(process.env.WA_WARMUP_PERCAKAPAN_PER_DAY, 
 // gagalkan kiriman karena "jam senyap". Pengaturan jam ada di sisi app
 // (wa_umum) tapi TIDAK ditegakkan di gateway.
 
-const STATE_FILE = path.join(process.env.WA_STATE_DIR || path.join(require('os').homedir(), '.wa-bot'), 'limit-state.json')
+// WA_RUMAH: tiap gateway (peran lapor / laporan, ../peran.cjs) punya nomor sendiri, jadi jatah dan pemanasan sendiri.
+const STATE_FILE = path.join(process.env.WA_STATE_DIR || require('../umum.cjs').RUMAH, 'limit-state.json')
 const rnd = (a, b) => a + Math.floor(Math.random() * Math.max(0, b - a + 1))
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 const todayStr = () => {

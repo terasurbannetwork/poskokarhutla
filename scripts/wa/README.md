@@ -142,3 +142,43 @@ Gateway menjadi jembatan ke mesin Lapor di Worker (`data/kajian-bnpb/lapor-ai`, 
 - `lapor_pdf.mjs` (proses terpisah, plist `launchd/id.centurisk97.wa-lapor-pdf.plist`, tiap 60 dtk): `GET /api/lapor/pdf/antre`, foto diunduh ke folder sementara, `python3 scripts/lapor/dokumen.py` (.docx dan .pdf lewat LibreOffice), unggah `POST /api/lapor/pdf/:nomor/:versi?jenis=pdf|docx`. `LAPOR_PY` mengganti interpreter.
 - Nomor tidak ditulis utuh di log. Uji: `node --test tests/wa/lapor_arah.test.mjs` (server HTTP lokal sebagai Worker, tanpa WA sungguhan).
 - Pasang (pemilik): `git pull`, isi `.env` bila perlu (`LAPOR_PY`), pasang plist PDF seperti plist lain (`sed ... > ~/Library/LaunchAgents/...; launchctl load`), lalu mulai ulang gateway (`launchctl kickstart -k gui/$(id -u)/id.centurisk97.wa-gateway`); daftarkan nomor uji dengan mengirim `lapor izin <nomor>` dari WA PEMILIK.
+
+## Dua bot, dua nomor (`peran.cjs`, pemilik 24 Nov 2026)
+
+Satu kode gateway dipasang dua kali. Saklarnya `WA_PERAN` di plist (bukan `.env`, karena `.env` dipakai bersama):
+
+| Peran | Nomor | Melayani | Rumah | PORT | Plist |
+| --- | --- | --- | --- | --- | --- |
+| `lapor` | WA lama | Lapor Bencana (`lapor_wa.mjs`, `lapor izin/cabut`), antrean Worker `lapangan_tarik.mjs` (kode `/masuk`, relawan `/petugas`) | `~/.wa-lapor` | 3102 | `launchd/id.centurisk97.wa-gateway-lapor.plist` |
+| `laporan` | WA baru | Bot Laporan BNPB (proyek, perintah, `setuju/tolak`, `bl_daftar`), bahan `WA_IZIN`, grup `OPERASI_GRUP`, logbook `LOGBOOK_GRUP`, Drive, OCR, pemicu `otomatis.mjs` | `~/.wa-bot` | 3101 | `launchd/id.centurisk97.wa-gateway-laporan.plist` |
+| kosong (`semua`) | satu nomor | keduanya, perilaku sebelum dipisah | `~/.wa-bot` | 3101 | `launchd/id.centurisk97.wa-gateway.plist` |
+
+- Tiap rumah punya sesi WA, outbox, `terlihat.json`, dan jatah limiter (`limit-state.json`) sendiri, jadi kiriman satu bot tidak memakan jatah bot lain.
+- Peran `lapor` membuang tanpa balasan semua yang bukan nomor berizin lapor atau perintah `lapor ...` dari PEMILIK (grup, nomor `WA_IZIN`, nomor asing). Bawaan sementara: nomor asing tidak dibalas, supaya nomor lama tidak membalas orang tak dikenal.
+- Peran `laporan` tidak lagi mengalihkan nomor berizin lapor; nomor itu diperlakukan seperti nomor lain (terdaftar = bot laporan, asing = "belum terdaftar").
+- `otomatis.mjs`, `logbook_wa.mjs`, `tarik_riwayat.mjs` tetap memanggil 127.0.0.1:3101 dan rumah `~/.wa-bot`, jadi tidak perlu diubah. `lapor_pdf.mjs` tidak mengirim WA dan tidak berubah.
+- `WA_PERAN` selain `lapor`, `laporan`, kosong = gateway berhenti dengan galat.
+
+Pindah (pemilik, di Mac mini, sesudah nomor baru siap dan `git pull`):
+
+```bash
+launchctl bootout gui/$(id -u)/id.centurisk97.wa-gateway                      # hentikan gateway gabungan
+rm ~/Library/LaunchAgents/id.centurisk97.wa-gateway.plist
+mkdir -p ~/.wa-lapor/log && chmod 700 ~/.wa-lapor
+mv ~/.wa-bot/auth ~/.wa-lapor/auth                                            # sesi nomor lama ikut Lapor Bencana, tanpa scan ulang
+mv ~/.wa-bot/limit-state.json ~/.wa-lapor/                                    # jatah nomor lama ikut; nomor baru mulai pemanasan 7 hari
+cd ~/Developer/poskokarhutla/scripts/wa
+WA_PERAN=laporan WA_AUTH_DIR=~/.wa-bot/auth-laporan node gateway/index.js     # scan QR dari HP nomor baru, tunggu "WA terhubung", Ctrl+C
+for n in gateway-lapor gateway-laporan; do
+  sed -e "s#__REPO__#$HOME/Developer/poskokarhutla#" -e "s#__NODE__#$(which node)#" -e "s#__HOME__#$HOME#" \
+    launchd/id.centurisk97.wa-$n.plist > ~/Library/LaunchAgents/id.centurisk97.wa-$n.plist
+  launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/id.centurisk97.wa-$n.plist
+done
+tail -n 5 ~/.wa-lapor/log/gateway.log ~/.wa-bot/log/gateway.log               # cari "peran lapor" dan "peran laporan", lalu "WA terhubung"
+```
+
+Sesudah itu: masukkan nomor baru ke grup operasi dan grup logbook BPBD (nomor lama boleh keluar dari grup itu), dan kabari tim bahwa
+bahan dan perintah `buat` dikirim ke nomor baru. Mulai ulang satu bot: `launchctl kickstart -k gui/$(id -u)/id.centurisk97.wa-gateway-lapor`
+(atau `-laporan`). Balik ke satu nomor: bootout keduanya, `mv ~/.wa-lapor/auth ~/.wa-bot/auth` dan `mv ~/.wa-lapor/limit-state.json ~/.wa-bot/`, pasang lagi `id.centurisk97.wa-gateway.plist`.
+Jangan isi `WA_STATE_DIR` di `.env`: dua gateway lalu menulis satu `limit-state.json`.
+Uji: `node --test tests/wa/peran.test.mjs`.

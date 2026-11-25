@@ -570,3 +570,21 @@ Catatan pelaksanaan LA-78 dan LA-83 (23 Nov 2026), mengoreksi rancangan di atas:
 - D124: lihat Q65. Batas 1 per perangkat (atau nomor) per 30 menit dan 3 per IP per jam berjalan di Worker; server lokal hanya batas per nomor.
 - D125: tanpa sinyal, kiriman dicoba lagi saat peramban kembali tersambung selama halaman terbuka. Antrean IndexedDB (`antre.js`) belum dipakai. Laporan tanpa titik tidak menanyakan desa di Tambah kabar; pelapor diminta menyebut desanya saat menelepon.
 - D131: tanpa pertanyaan GPS bertentangan. Kartu lokasi menawarkan "Desa dari poster yang Anda pindai" di samping GPS dan pencarian; pelapor memilih sendiri, desa yang terbaca tampil di pesan berikutnya dan bisa dibatalkan dengan Kembali. Ketelitian lokasi tercatat "lokasi dari poster desa" (D132), tanpa kolom `sumber_lokasi` baru.
+
+## Keputusan pemilik (nomor WA sendiri, 24 Nov 2026)
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K93 | 24 Nov 2026 | Lapor Bencana dan Bot Laporan BNPB dipisah jadi dua bot. Pemilik: "untuk lapor bencana pakai nomor WA sekarang, yang pembuatan laporan pakai nomor WA baru". Nomor lama juga tetap mengirim kode `/masuk` dan panggilan relawan `/petugas` (pembagian disetujui pemilik: "Sudah benar"). Rincian pelaksanaan: `data/kajian-bnpb/bot-laporan/KEPUTUSAN-BOT-LAPORAN.md` K47, D41, D42. |
+
+## Keputusan rancangan (nomor WA sendiri, agent, bisa dibatalkan pemilik)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D134 | Gateway peran `lapor` hanya melayani nomor berizin lapor dan perintah `lapor izin/cabut` dari PEMILIK; pesan lain (grup, nomor asing, nomor tim laporan) dibuang tanpa balasan. | Nomor lama tidak membalas orang tak dikenal (risiko blokir), dan pesan bot laporan "nomor belum terdaftar" tidak cocok untuk calon pelapor. Lihat Q71. |
+
+## Pertanyaan terbuka (nomor WA sendiri)
+
+| No | Pertanyaan | Bawaan sementara |
+| --- | --- | --- |
+| Q71 | Nomor yang belum berizin menulis ke nomor Lapor Bencana: dibalas (misalnya "layanan lapor belum dibuka untuk nomor ini, hubungi BPBD setempat") atau diam? | **[BAWAAN SEMENTARA]** Diam, sampai pintu publik F2 dibuka atau pemilik memberi kalimatnya. |

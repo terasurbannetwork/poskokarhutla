@@ -14,6 +14,9 @@ export const CHANGELOG = [
   { versi: '2.7', tanggal: '2026-11-24', isi: [
     'Infografis bencana: ketik *infografis 2025* (tahun), *infografis 2026-10* (bulan), atau *infografis 2026-T3* (triwulan). Bot membuatnya dari data DIBI dan mengirim PPTX dan PDF hanya ke Anda.',
     'Periode yang belum genap (bulan atau triwulan berjalan) ditolak dengan penjelasan. Tidak ada jadwal otomatis dan tidak ada kiriman ke grup atau nomor lain.',
+    'Bot Laporan BNPB bisa berjalan di nomor WhatsApp sendiri, terpisah dari Lapor Bencana. Sesudah dipindah, bahan, perintah *buat*, revisi, dan *final* dikirim ke nomor baru; nomor lama hanya untuk Lapor Bencana.',
+    'Jatah kiriman kedua bot tidak lagi dipakai bersama, jadi percakapan Lapor Bencana yang ramai tidak menahan draf atau berkas final.',
+    'Nomor yang diberi izin Lapor Bencana tetap bisa membuat laporan di nomor bot laporan.',
   ] },
   { versi: '2.6.1', tanggal: '2026-11-21', isi: [
     'Bahan yang kalimat pembukanya berubah tetap dikenali: bila bot tidak mengenali kiriman dari bentuk teksnya, Claude membaca isinya dan menentukan jenis bahan (misalnya rekap Koordalops, BMKG, PVMBG) beserta tanggal laporannya. Tiap kiriman cukup dibaca sekali.',

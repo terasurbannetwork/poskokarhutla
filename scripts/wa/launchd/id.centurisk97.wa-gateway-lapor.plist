@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- TEMPLATE peran lapor (nomor WA lama: Lapor Bencana, kode /masuk, relawan /petugas), belum terpasang. Ganti __REPO__, __NODE__, __HOME__
+     lalu salin ke ~/Library/LaunchAgents/. Langkah pindah: scripts/wa/README.md bagian "Dua bot, dua nomor". -->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>id.centurisk97.wa-gateway-lapor</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__NODE__</string>
+    <string>__REPO__/scripts/wa/gateway/index.js</string>
+  </array>
+  <key>KeepAlive</key>
+  <true/>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>WorkingDirectory</key>
+  <string>__REPO__/scripts/wa/gateway</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <key>WA_PERAN</key>
+    <string>lapor</string>
+    <key>WA_RUMAH</key>
+    <string>__HOME__/.wa-lapor</string>
+    <key>WA_AUTH_DIR</key>
+    <string>__HOME__/.wa-lapor/auth</string>
+    <key>PORT</key>
+    <string>3102</string>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>__HOME__/.wa-lapor/log/gateway.log</string>
+  <key>StandardErrorPath</key>
+  <string>__HOME__/.wa-lapor/log/gateway.err.log</string>
+</dict>
+</plist>

@@ -3,7 +3,9 @@ const fs = require('fs')
 const os = require('os')
 const path = require('path')
 
-const RUMAH = path.join(os.homedir(), '.wa-bot')
+const rumah = (p) => String(p || '').replace(/^~(?=\/|$)/, os.homedir())
+// WA_RUMAH (diisi plist launchd tiap peran, scripts/wa/peran.cjs): dua gateway = dua rumah. Kosong = ~/.wa-bot seperti dulu.
+const RUMAH = rumah(process.env.WA_RUMAH) || path.join(os.homedir(), '.wa-bot')
 // ~/.wa-bot memuat sesi WA dan token: hanya pemilik akun.
 try { fs.mkdirSync(RUMAH, { recursive: true, mode: 0o700 }); fs.chmodSync(RUMAH, 0o700) } catch {}
 
@@ -30,6 +32,5 @@ function normalWa(v) {
 }
 
 const daftar = (v) => String(v ?? '').split(',').map((x) => x.trim()).filter(Boolean)
-const rumah = (p) => String(p || '').replace(/^~(?=\/|$)/, os.homedir())
 
 module.exports = { muatEnv, normalWa, daftar, rumah, RUMAH }
