@@ -16,7 +16,9 @@ Bentuk masukan `berkas_angka(periode, kode, m, hari_ini)`, m = dict:
   gunungapi:  {"tanggal", "level": {nama: 1..4}}
   gempa:      {"tarik", "peristiwa": [{"id", "tanggal", "prov_kode", "mag"?}]}
   erupsi:     {"tarik", "peristiwa": [{"id", "gunung", "tanggal", "prov_kode"}]}
-  peluang:    {"kab_tinggi": n} (LB-04, opsional)    enso: {"nilai", "golongan", "musim"} (LB-04, opsional)
+  riwayat:    isi public/data/logbook_riwayat.json (opsional; Bab 7.1 peluang, ALGORITMA 8)
+  iklim:      isi public/data/iklim_outlook.json (opsional; Bab 4.4 hujan dan indeks ENSO Bab 7.1, ALGORITMA 6 dan 8)
+  peluang:    {"kab_tinggi": n}, enso: {"nilai", "golongan", "musim"}  (opsional; menimpa turunan riwayat/iklim untuk T6, T7)
 """
 import datetime as dt
 import importlib.util
@@ -541,6 +543,79 @@ def bab4(periode, kode, m, g):
             "sebelumnya": {"kode": seb, **{j: banding(g["jenis"][j]["kejadian"], sg["jenis"][j]["kejadian"] if sg else None) for j in ("cuaca_ekstrem", "kekeringan")}}}
 
 
+# ------------------------------------------------------------------ prakiraan (ALGORITMA 6 dan 8, LB-04)
+# Hanya membaca keluaran yang sudah terbit (D8, K6): tidak ada model baru di sini, tidak memakai /prediksi (+1..+3 hari).
+JENIS_PELUANG = ("banjir", "longsor")
+AMBANG_ENSO = 0.5   # NOAA CPC: indeks >= +0,5 kondisi El Nino, <= -0,5 La Nina (ambang ONI, dipakai juga untuk RONI)
+SUMBER_HUJAN = "Model statistik GIS BNPB (CHIRPS, NOAA RONI, DMI)"
+BUKAN_BMKG = "Angka ini bukan prakiraan resmi BMKG."
+
+
+def _tarik(berkas):
+    return str(berkas.get("dibuat"))[:10] if berkas.get("dibuat") else None
+
+
+def hujan_depan(kode, ik):
+    """ALGORITMA 6: butir prakiraan ber-bulan_tengah B+1, hanya wilayah ber-tampil; wilayah yang fit-nya tidak lulus uji balik
+    leave-one-out berlabel hipotesis. Tanpa berkas atau tanpa butir itu = belum_ada, tidak pernah 0."""
+    bt = geser("bulanan", kode, 1)
+    s = {"tarik": _tarik(ik or {}), "terbit": _tarik(ik or {}), "status": "belum_ada"}
+    p = next((x for x in (ik or {}).get("prakiraan") or [] if x.get("bulan_tengah") == bt), None)
+    if not p:
+        return {"status": "belum_ada", "bulan_tengah": bt}, s
+    fit = ((ik.get("fit") or {}).get(p.get("musim")) or {})
+    nama = ik.get("wilayah") or {}
+    wil, tak = [], []
+    for w, x in (p.get("wilayah") or {}).items():
+        if not x.get("tampil") or x.get("anom_pct") is None:
+            tak.append(w)
+            continue
+        wil.append({"kode": w, "nama": (nama.get(w) or {}).get("nama", w), "anom_pct": x["anom_pct"], "p10": x.get("p10"), "p90": x.get("p90"),
+                    "mutu": "uji_balik_lulus" if (fit.get(w) or {}).get("lulus") else "hipotesis"})
+    s["status"] = "ok" if wil else "belum_ada"
+    pd = p.get("pendorong") or {}
+    return {"status": s["status"], "bulan_tengah": bt, "musim": p.get("musim"), "tahun": p.get("tahun"), "label": p.get("label"),
+            "horizon_bulan": p.get("horizon_bulan"), "ekstrapolasi": bool(p.get("ekstrapolasi")), "di_luar_rentang": bool(p.get("di_luar_rentang")),
+            "jenis_pendorong": p.get("jenis_pendorong"), "pendorong": {"roni": pd.get("roni"), "dmi": pd.get("dmi")},
+            "wilayah": wil, "tidak_tampil": sorted(tak), "sumber": SUMBER_HUJAN, "dibuat": ik.get("dibuat"), "catatan": BUKAN_BMKG}, s
+
+
+def peluang_bulan(rw, bulan):
+    """ALGORITMA 8: kab berpeluang tinggi jenis j di bulan itu = tercatat >= 1 kejadian j di bulan itu pada paling sedikit
+    separuh tahun penuh logbook (H14: 5 dari 9 masuk, 4 dari 9 tidak)."""
+    n, i = len(rw["tahun_penuh"]), int(bulan[5:7]) - 1
+    out, semua = {"bulan": bulan}, set()
+    for j in JENIS_PELUANG:
+        ks = [(k, v["tahun_ada"][j][i]) for k, v in sorted(rw["kab"].items()) if (v.get("tahun_ada") or {}).get(j) and 2 * v["tahun_ada"][j][i] >= n]
+        semua.update(k for k, _ in ks)
+        out[j] = {"kab_n": len(ks), "kab": [{"prov_kode": k.split("|")[0], "nama": k.split("|", 1)[-1], "tahun": t} for k, t in ks]}
+    out["gabung_n"] = len(semua)
+    return out
+
+
+def enso(ik):
+    r = (((ik or {}).get("keadaan_sekarang") or {}).get("roni")) or {}
+    if r.get("nilai") is None:
+        return {"status": "belum_ada"}
+    v = float(r["nilai"])
+    gol = "di atas ambang El Niño" if v >= AMBANG_ENSO else "di bawah ambang La Niña" if v <= -AMBANG_ENSO else "netral"
+    return {"status": "ok", "nilai": v, "musim": r.get("musim"), "tahun": r.get("tahun"), "golongan": gol, "ambang": AMBANG_ENSO,
+            "sumber": "NOAA CPC (RONI)", "dibuat": ik.get("dibuat")}
+
+
+def bab7(periode, kode, m):
+    """Bab 7.1: peluang banjir dan longsor B+1 dan B+2 dari riwayat logbook (belum diuji balik: hipotesis), indeks ENSO."""
+    rw = m.get("riwayat")
+    s = {"asal": "logbook_riwayat", "tarik": _tarik(rw or {}), "status": "belum_ada"}
+    pel = {"status": "belum_ada"}
+    if rw and rw.get("tahun_penuh") and rw.get("kab"):
+        s.update(status="ok", tahun_penuh=[int(t) for t in rw["tahun_penuh"]])
+        pel = {"status": "ok", "asal": "logbook_riwayat", "tahun_penuh": s["tahun_penuh"], "mutu": "hipotesis",
+               "aturan": f"paling sedikit separuh dari {len(rw['tahun_penuh'])} tahun penuh logbook Pusdalops mencatat kejadian di bulan itu",
+               "bulan": [peluang_bulan(rw, geser("bulanan", kode, k)) for k in (1, 2)]}
+    return {"peluang": pel, "enso": enso(m.get("iklim")), "catatan": BUKAN_BMKG}, s
+
+
 # ------------------------------------------------------------------ geologi (bagian 7)
 def peristiwa(baris, daftar, jenis_):
     """7.2: satu peristiwa = satu kejadian data gempa/gunung api yang punya baris DIBI pada tanggal sama atau sehari sesudahnya
@@ -637,23 +712,26 @@ def usulan(periode, kode, b1, b2, b3, b5, m):
                     "kalimat": f"Pada {tgl(b2['akhir']['tanggal'])} perkiraan luas belum padam {fmt(b2['belum'])} ha."})
     pel = (m.get("peluang") or {}).get("kab_tinggi")
     if pel:
-        out.append({"kode": "T6", "pil": "prediksi", "sumber": "Riwayat logbook Pusdalops", "angka": {"kab": pel},
-                    "kalimat": f"{fmt(pel)} kab/kota berpeluang tinggi banjir atau longsor pada periode berikutnya menurut riwayat kejadian. Angka ini bukan prakiraan resmi BMKG."})
+        bl = (m.get("peluang") or {}).get("bulan")
+        pada = f"pada {nama_periode('bulanan', bl)}" if bl else "pada periode berikutnya"
+        out.append({"kode": "T6", "pil": "prediksi", "sumber": "Riwayat logbook Pusdalops", "angka": {"kab": pel}, "mutu": "hipotesis",
+                    "kalimat": f"{fmt(pel)} kab/kota berpeluang tinggi banjir atau longsor {pada} menurut riwayat kejadian (hipotesis, belum diuji balik). {BUKAN_BMKG}"})
     en = m.get("enso")
     if en and en.get("nilai") is not None:
         out.append({"kode": "T7", "pil": "iklim", "sumber": "NOAA CPC (RONI)", "angka": dict(en),
-                    "kalimat": f"Indeks Pasifik (RONI) {en.get('musim') or ''} bernilai {fmt(bulat(float(en['nilai']), 2))}, golongan {en.get('golongan')}.".replace("  ", " ")})
+                    "kalimat": " ".join(f"Indeks Pasifik (RONI) {en.get('musim') or ''} {en.get('tahun') or ''} bernilai {fmt(bulat(float(en['nilai']), 2))}, {en.get('golongan')}.".split())})
     return out
 
 
 # ------------------------------------------------------------------ berkas angka
 WAJIB = {"bulanan": {"bab1": ["alam", "kelompok", "jenis", "prov", "prov_teratas", "riwayat", "sebelumnya", "tahun_lalu", "bukan_alam"],
-                     "bab2": ["status"], "bab3": ["banjir", "longsor", "sebelumnya"], "bab4": ["cuaca_ekstrem", "kekeringan", "tabel", "sebelumnya"],
-                     "bab5": ["laporan", "gempa", "erupsi", "peristiwa", "selisih", "gunungapi"], "lampiran": ["prov_jenis", "metode"]}}
+                     "bab2": ["status"], "bab3": ["banjir", "longsor", "sebelumnya"], "bab4": ["cuaca_ekstrem", "kekeringan", "tabel", "sebelumnya", "hujan"],
+                     "bab5": ["laporan", "gempa", "erupsi", "peristiwa", "selisih", "gunungapi"], "bab7": ["peluang", "enso", "catatan"],
+                     "lampiran": ["prov_jenis", "metode"]}}
 
 
 def berkas_angka(periode, kode, m, hari_ini=None, dirakit=None):
-    """Berkas angka satu periode (DESAIN-TEKNIS 2). Bab 7 dan Bab 4.4 hujan ditambah LB-04."""
+    """Berkas angka satu periode (DESAIN-TEKNIS 2). Bulanan menambah Bab 4.4 hujan dan Bab 7.1 (LB-04)."""
     hari_ini = hari_ini or dt.date.today()
     periksa_selesai(periode, kode, hari_ini)
     a, b = rentang(periode, kode)
@@ -665,6 +743,15 @@ def berkas_angka(periode, kode, m, hari_ini=None, dirakit=None):
     b4 = bab4(periode, kode, m, g)
     b5, s_geo = bab5(periode, kode, m, baris, g)
     tl = b1["tahun_lalu"]
+    turunan, s_pr = {}, {}
+    if periode == "bulanan":
+        b4["hujan"], s_pr["prakiraan_hujan"] = hujan_depan(kode, m.get("iklim"))
+        b7, s_pr["peluang"] = bab7(periode, kode, m)
+        if b7["peluang"]["status"] == "ok":
+            p1 = b7["peluang"]["bulan"][0]
+            turunan["peluang"] = {"kab_tinggi": p1["gabung_n"], "bulan": p1["bulan"]}
+        if b7["enso"]["status"] == "ok":
+            turunan["enso"] = {k: b7["enso"][k] for k in ("nilai", "golongan", "musim", "tahun")}
     out = {
         "v": 1, "periode": periode, "kode": kode, "nama": nama_periode(periode, kode), "rentang": [a.isoformat(), b.isoformat()],
         "dirakit": dirakit or dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -672,10 +759,12 @@ def berkas_angka(periode, kode, m, hari_ini=None, dirakit=None):
         "sumber": {"dibi": s_dibi,
                    "dibi_tahun_lalu": {"asal": tl["asal"], "tarik": (m.get("dibi_lalu") or {}).get("tarik") if tl["asal"] not in (None, "dibi_kejadian") else s_dibi["tarik"],
                                        "status": "ok" if tl["kejadian"] else "belum_ada"},
-                   "karhutla": s_kh, "dalops_banjir": s_su, **s_geo},
+                   "karhutla": s_kh, "dalops_banjir": s_su, **s_geo, **s_pr},
         "bab1": b1, "bab2": b2, "bab3": b3, "bab4": b4, "bab5": b5, "lampiran": lampiran(g, s_dibi),
     }
-    out["usulan_temuan"] = usulan(periode, kode, b1, b2, b3, b5, m)
+    if periode == "bulanan":
+        out["bab7"] = b7
+    out["usulan_temuan"] = usulan(periode, kode, b1, b2, b3, b5, {**turunan, **m})
     return out
 
 
@@ -825,13 +914,48 @@ def uji():
     ok(len(ep) == 3 and sum(e["dampak"]["rr_berat"] for e in ep) == 4, "baris kejadian 3: dampak sekali")
     ok(status_gunung({"level": {"Ibu": 3}})["level_3"] == ["Ibu"], "gunung tanpa tanggal")
     u = usulan("bulanan", "2026-10", {"jenis": {"gempa": {"dampak": {"rumah_rusak": 0}}}}, {"status": "ok"}, {"banjir": {"status": None}},
-               {"gunungapi": status_gunung({"level": {"Ibu": 3}})}, {"enso": {"nilai": 1.9749, "golongan": "La Nina", "musim": "ASO"}})
+               {"gunungapi": status_gunung({"level": {"Ibu": 3}})}, {"enso": {"nilai": 1.9749, "golongan": "di atas ambang El Niño", "musim": "ASO"}})
     ok(any(x["kode"] == "T4" and " per " not in x["kalimat"] for x in u) and any(x["kode"] == "T7" and "1,97" in x["kalimat"] for x in u), "T4 tanpa tanggal, T7 dua desimal")
     # H10 gunung api 0/3/24/42
     lv = {f"G{i}": 1 for i in range(42)} | {f"W{i}": 2 for i in range(24)} | {"Lewotobi Laki-laki": 3, "Semeru": 3, "Ibu": 3}
     s = status_gunung({"tanggal": "2026-11-01", "level": lv})
     ok(s["per_level"] == {"1": 42, "2": 24, "3": 3, "4": 0} and s["level_3"] == ["Ibu", "Lewotobi Laki-laki", "Semeru"], "H10")
     ok(status_gunung(None) is None, "gunung tanpa data")
+
+    # H14 peluang tinggi: 5 dari 9 tahun penuh masuk, 4 dari 9 tidak; B+1 dan B+2 lintas tahun
+    ada = lambda nov, des: [0] * 10 + [nov, des]
+    rw = {"dibuat": "2026-11-01T11:44:52+00:00", "tahun_penuh": [str(t) for t in (2014, 2015, 2016, 2017, 2018, 2019, 2020, 2024, 2025)],
+          "kab": {"11|Aceh Barat": {"tahun_ada": {"banjir": ada(5, 4), "longsor": ada(5, 0)}}, "12|Nias": {"tahun_ada": {"banjir": ada(4, 9)}},
+                  "13|Agam": {"tahun_ada": {"karhutla": ada(9, 9)}}}}
+    b7, s7 = bab7("bulanan", "2026-10", {"riwayat": rw})
+    nov, des = b7["peluang"]["bulan"]
+    ok(nov["bulan"] == "2026-11" and nov["banjir"]["kab_n"] == 1 and nov["banjir"]["kab"][0] == {"prov_kode": "11", "nama": "Aceh Barat", "tahun": 5}
+       and nov["longsor"]["kab_n"] == 1 and nov["gabung_n"] == 1, f"H14 {nov}")
+    ok(des["bulan"] == "2026-12" and des["banjir"]["kab_n"] == 1 and des["banjir"]["kab"][0]["nama"] == "Nias" and des["longsor"]["kab_n"] == 0, "H14 Desember")
+    ok(peluang_bulan(rw, "2027-01")["gabung_n"] == 0 and bab7("bulanan", "2026-12", {"riwayat": rw})[0]["peluang"]["bulan"][0]["bulan"] == "2027-01", "B+1 lintas tahun")
+    ok(b7["peluang"]["mutu"] == "hipotesis" and s7["status"] == "ok" and s7["tahun_penuh"][0] == 2014 and s7["tarik"] == "2026-11-01", "peluang hipotesis")
+    b7, s7 = bab7("bulanan", "2026-10", {})
+    ok(b7["peluang"] == {"status": "belum_ada"} and b7["enso"] == {"status": "belum_ada"} and s7["status"] == "belum_ada" and BUKAN_BMKG in b7["catatan"], "tanpa riwayat bukan 0")
+    # ALGORITMA 6 hujan B+1: hanya tampil, fit tidak lulus = hipotesis; tanpa butir = belum_ada
+    ik = {"dibuat": "2026-11-09T07:10+07:00", "wilayah": {"jawa": {"nama": "Jawa"}, "papua": {"nama": "Papua"}, "maluku": {"nama": "Maluku"}},
+          "keadaan_sekarang": {"roni": {"musim": "ASO", "tahun": 2026, "nilai": 1.97}},
+          "fit": {"OND": {"jawa": {"lulus": True}, "papua": {"lulus": False}}},
+          "prakiraan": [{"musim": "OND", "tahun": 2026, "bulan_tengah": "2026-11", "label": "Okt 2026 - Des 2026", "horizon_bulan": 1, "ekstrapolasi": False,
+                         "di_luar_rentang": False, "jenis_pendorong": "persistensi", "pendorong": {"roni": 1.97, "dmi": 0.6},
+                         "wilayah": {"jawa": {"anom_pct": -49.3, "p10": -80.0, "p90": -18.0, "tampil": True}, "papua": {"anom_pct": -30.0, "p10": -50.0, "p90": -10.0, "tampil": True},
+                                     "maluku": {"anom_pct": -43.3, "p10": -70.0, "p90": -16.0, "tampil": False}}}]}
+    h, sh = hujan_depan("2026-10", ik)
+    ok(h["status"] == "ok" and [w["kode"] for w in h["wilayah"]] == ["jawa", "papua"] and h["tidak_tampil"] == ["maluku"]
+       and h["wilayah"][0]["mutu"] == "uji_balik_lulus" and h["wilayah"][1]["mutu"] == "hipotesis" and sh == {"tarik": "2026-11-09", "terbit": "2026-11-09", "status": "ok"}, f"hujan {h}")
+    ok(hujan_depan("2026-11", ik)[0] == {"status": "belum_ada", "bulan_tengah": "2026-12"} and hujan_depan("2026-10", None)[1]["status"] == "belum_ada", "hujan tanpa butir")
+    e = enso(ik)
+    ok(e["nilai"] == 1.97 and e["golongan"] == "di atas ambang El Niño" and enso({"keadaan_sekarang": {"roni": {"nilai": -0.5}}})["golongan"] == "di bawah ambang La Niña"
+       and enso({"keadaan_sekarang": {"roni": {"nilai": 0.49}}})["golongan"] == "netral", "ENSO ambang CPC")
+    u = usulan("bulanan", "2026-10", {"jenis": {"gempa": {"dampak": {"rumah_rusak": 0}}}}, {"status": "ok"}, {"banjir": {"status": None}}, {},
+               {"peluang": {"kab_tinggi": 57, "bulan": "2026-11"}, "enso": {k: e[k] for k in ("nilai", "golongan", "musim", "tahun")}})
+    t6, t7 = (next(x for x in u if x["kode"] == k) for k in ("T6", "T7"))
+    ok("57 kab/kota" in t6["kalimat"] and "November 2026" in t6["kalimat"] and "hipotesis" in t6["kalimat"] and BUKAN_BMKG in t6["kalimat"], t6["kalimat"])
+    ok(t7["kalimat"] == "Indeks Pasifik (RONI) ASO 2026 bernilai 1,97, di atas ambang El Niño.", t7["kalimat"])
 
     # H11 usulan T2, dan berkas angka utuh dari fixture
     m = json.load(open(os.path.join(FIX, "masukan_bulanan.json")))
@@ -844,6 +968,7 @@ def uji():
         ok(all(k in ba[bab] for k in ks), f"kunci wajib {bab}")
     ok(ba["bab1"]["tahun_lalu"]["asal"] == "siklus_bersih" and ba["bab1"]["tahun_lalu"]["banding"]["kejadian"]["arah"] is not None, "Q3 tahun lalu dari lapis Siklus")
     ok(ba["bab1"]["riwayat"][0]["kejadian"] is None, "riwayat di luar cakupan DIBI = None")
+    ok(ba["bab4"]["hujan"]["status"] == "ok" and ba["bab7"]["peluang"]["status"] == "ok" and {"T6", "T7"} <= set(kode_u), f"LB-04 dari fixture {kode_u}")
     try:
         berkas_angka("bulanan", "2026-11", m, hari_ini=hi)
         ok(False, "H13 berkas_angka")

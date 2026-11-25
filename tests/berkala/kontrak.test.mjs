@@ -15,8 +15,9 @@ const WAJIB = {
   bab1: ["alam", "kelompok", "jenis", "prov", "prov_teratas", "riwayat", "sebelumnya", "tahun_lalu", "bukan_alam"],
   bab2: ["status", "hot", "luas", "belum", "puncak", "akhir", "turun_dari_puncak", "prov", "teratas", "satelit_lawan_dibi", "sebelumnya", "per_bulan"],
   bab3: ["banjir", "longsor", "sebelumnya"],
-  bab4: ["cuaca_ekstrem", "kekeringan", "tabel", "sebelumnya"],
+  bab4: ["cuaca_ekstrem", "kekeringan", "tabel", "sebelumnya", "hujan"],
   bab5: ["laporan", "gempa", "erupsi", "peristiwa", "selisih", "gunungapi"],
+  bab7: ["peluang", "enso", "catatan"],
   lampiran: ["prov_jenis", "metode"],
 };
 const JENIS = ["karhutla", "banjir", "longsor", "cuaca_ekstrem", "kekeringan", "gelombang", "gempa", "erupsi"];
@@ -67,6 +68,17 @@ test("usulan temuan: angka dan sumber, tanpa kata aman", () => {
     assert.ok(u.pil && u.sumber && u.angka && u.kalimat);
     assert.ok(!/\baman\b/i.test(u.kalimat));
   }
+});
+
+test("Bab 4.4 dan 7.1: hanya keluaran terbit, berlabel, bukan prakiraan resmi BMKG", () => {
+  const h = angka.bab4.hujan, p = angka.bab7.peluang;
+  assert.equal(h.status, "ok");
+  for (const w of h.wilayah) assert.ok(["uji_balik_lulus", "hipotesis"].includes(w.mutu) && typeof w.anom_pct === "number");
+  assert.ok(!h.wilayah.some((w) => h.tidak_tampil.includes(w.kode)));
+  assert.equal(p.mutu, "hipotesis");
+  for (const b of p.bulan) assert.ok(b.gabung_n <= b.banjir.kab_n + b.longsor.kab_n && b.gabung_n >= Math.max(b.banjir.kab_n, b.longsor.kab_n));
+  assert.match(angka.bab7.catatan, /bukan prakiraan resmi BMKG/);
+  assert.equal(typeof angka.bab7.enso.nilai, "number");
 });
 
 test("fixture angka_bulanan.json segar (python3 -I scripts/berkala/hitung.py fixture)", () => {

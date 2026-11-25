@@ -2685,5 +2685,263 @@
     "prov_kode": "53"
    }
   ]
+ },
+ "riwayat": {
+  "dibuat": "2026-11-01T11:44:52+00:00",
+  "tahun_penuh": [
+   "2014",
+   "2015",
+   "2016",
+   "2017",
+   "2018",
+   "2019",
+   "2020",
+   "2024",
+   "2025"
+  ],
+  "kab": {
+   "11|Aceh Barat": {
+    "tahun_ada": {
+     "banjir": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      6
+     ],
+     "longsor": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      5
+     ]
+    }
+   },
+   "12|Nias Selatan": {
+    "tahun_ada": {
+     "banjir": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      3
+     ],
+     "longsor": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      2
+     ]
+    }
+   },
+   "14|Kota Pekanbaru": {
+    "tahun_ada": {
+     "banjir": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      9,
+      9
+     ]
+    }
+   },
+   "32|Bogor": {
+    "tahun_ada": {
+     "banjir": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      7,
+      8
+     ],
+     "longsor": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      8,
+      9
+     ]
+    }
+   },
+   "53|Kupang": {
+    "tahun_ada": {
+     "banjir": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      5
+     ]
+    }
+   }
+  }
+ },
+ "iklim": {
+  "dibuat": "2026-11-09T07:10+07:00",
+  "wilayah": {
+   "aceh_sumut": {
+    "nama": "Aceh-Sumut"
+   },
+   "jawa": {
+    "nama": "Jawa"
+   },
+   "kalbar_kalteng": {
+    "nama": "Kalbar-Kalteng"
+   },
+   "nasional": {
+    "nama": "Indonesia"
+   }
+  },
+  "keadaan_sekarang": {
+   "roni": {
+    "musim": "ASO",
+    "tahun": 2026,
+    "nilai": 1.97
+   },
+   "dmi": 0.6
+  },
+  "fit": {
+   "OND": {
+    "aceh_sumut": {
+     "lulus": false
+    },
+    "jawa": {
+     "lulus": true
+    },
+    "kalbar_kalteng": {
+     "lulus": false
+    },
+    "nasional": {
+     "lulus": true
+    }
+   }
+  },
+  "prakiraan": [
+   {
+    "musim": "SON",
+    "tahun": 2026,
+    "bulan_tengah": "2026-10",
+    "label": "Sep 2026 - Nov 2026",
+    "horizon_bulan": 0,
+    "ekstrapolasi": false,
+    "di_luar_rentang": false,
+    "jenis_pendorong": "persistensi",
+    "pendorong": {
+     "roni": 1.97,
+     "dmi": 0.6
+    },
+    "wilayah": {
+     "jawa": {
+      "anom_pct": -60.0,
+      "p10": -100.0,
+      "p90": -20.0,
+      "sd_total": 9.0,
+      "tampil": true
+     }
+    }
+   },
+   {
+    "musim": "OND",
+    "tahun": 2026,
+    "bulan_tengah": "2026-11",
+    "label": "Okt 2026 - Des 2026",
+    "horizon_bulan": 1,
+    "ekstrapolasi": false,
+    "di_luar_rentang": false,
+    "jenis_pendorong": "persistensi",
+    "pendorong": {
+     "roni": 1.97,
+     "dmi": 0.6
+    },
+    "wilayah": {
+     "aceh_sumut": {
+      "anom_pct": -11.8,
+      "p10": -23.0,
+      "p90": -0.6,
+      "sd_total": 9.0,
+      "tampil": true
+     },
+     "jawa": {
+      "anom_pct": -49.3,
+      "p10": -88.0,
+      "p90": -10.6,
+      "sd_total": 9.0,
+      "tampil": true
+     },
+     "kalbar_kalteng": {
+      "anom_pct": -17.6,
+      "p10": -40.0,
+      "p90": 4.8,
+      "sd_total": 9.0,
+      "tampil": false
+     },
+     "nasional": {
+      "anom_pct": -29.0,
+      "p10": -45.0,
+      "p90": -13.0,
+      "sd_total": 9.0,
+      "tampil": true
+     }
+    }
+   }
+  ]
  }
 }

@@ -1978,6 +1978,53 @@
     "prov": 1
    }
   },
+  "hujan": {
+   "bulan_tengah": "2026-11",
+   "catatan": "Angka ini bukan prakiraan resmi BMKG.",
+   "di_luar_rentang": false,
+   "dibuat": "2026-11-09T07:10+07:00",
+   "ekstrapolasi": false,
+   "horizon_bulan": 1,
+   "jenis_pendorong": "persistensi",
+   "label": "Okt 2026 - Des 2026",
+   "musim": "OND",
+   "pendorong": {
+    "dmi": 0.6,
+    "roni": 1.97
+   },
+   "status": "ok",
+   "sumber": "Model statistik GIS BNPB (CHIRPS, NOAA RONI, DMI)",
+   "tahun": 2026,
+   "tidak_tampil": [
+    "kalbar_kalteng"
+   ],
+   "wilayah": [
+    {
+     "anom_pct": -11.8,
+     "kode": "aceh_sumut",
+     "mutu": "hipotesis",
+     "nama": "Aceh-Sumut",
+     "p10": -23.0,
+     "p90": -0.6
+    },
+    {
+     "anom_pct": -49.3,
+     "kode": "jawa",
+     "mutu": "uji_balik_lulus",
+     "nama": "Jawa",
+     "p10": -88.0,
+     "p90": -10.6
+    },
+    {
+     "anom_pct": -29.0,
+     "kode": "nasional",
+     "mutu": "uji_balik_lulus",
+     "nama": "Indonesia",
+     "p10": -45.0,
+     "p90": -13.0
+    }
+   ]
+  },
   "kekeringan": {
    "kab": [
     {
@@ -2201,6 +2248,121 @@
    "gempa": 1
   }
  },
+ "bab7": {
+  "catatan": "Angka ini bukan prakiraan resmi BMKG.",
+  "enso": {
+   "ambang": 0.5,
+   "dibuat": "2026-11-09T07:10+07:00",
+   "golongan": "di atas ambang El Niño",
+   "musim": "ASO",
+   "nilai": 1.97,
+   "status": "ok",
+   "sumber": "NOAA CPC (RONI)",
+   "tahun": 2026
+  },
+  "peluang": {
+   "asal": "logbook_riwayat",
+   "aturan": "paling sedikit separuh dari 9 tahun penuh logbook Pusdalops mencatat kejadian di bulan itu",
+   "bulan": [
+    {
+     "banjir": {
+      "kab": [
+       {
+        "nama": "Aceh Barat",
+        "prov_kode": "11",
+        "tahun": 5
+       },
+       {
+        "nama": "Kota Pekanbaru",
+        "prov_kode": "14",
+        "tahun": 9
+       },
+       {
+        "nama": "Bogor",
+        "prov_kode": "32",
+        "tahun": 7
+       }
+      ],
+      "kab_n": 3
+     },
+     "bulan": "2026-11",
+     "gabung_n": 4,
+     "longsor": {
+      "kab": [
+       {
+        "nama": "Nias Selatan",
+        "prov_kode": "12",
+        "tahun": 6
+       },
+       {
+        "nama": "Bogor",
+        "prov_kode": "32",
+        "tahun": 8
+       }
+      ],
+      "kab_n": 2
+     }
+    },
+    {
+     "banjir": {
+      "kab": [
+       {
+        "nama": "Aceh Barat",
+        "prov_kode": "11",
+        "tahun": 6
+       },
+       {
+        "nama": "Kota Pekanbaru",
+        "prov_kode": "14",
+        "tahun": 9
+       },
+       {
+        "nama": "Bogor",
+        "prov_kode": "32",
+        "tahun": 8
+       },
+       {
+        "nama": "Kupang",
+        "prov_kode": "53",
+        "tahun": 5
+       }
+      ],
+      "kab_n": 4
+     },
+     "bulan": "2026-12",
+     "gabung_n": 4,
+     "longsor": {
+      "kab": [
+       {
+        "nama": "Aceh Barat",
+        "prov_kode": "11",
+        "tahun": 5
+       },
+       {
+        "nama": "Bogor",
+        "prov_kode": "32",
+        "tahun": 9
+       }
+      ],
+      "kab_n": 2
+     }
+    }
+   ],
+   "mutu": "hipotesis",
+   "status": "ok",
+   "tahun_penuh": [
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2024,
+    2025
+   ]
+  }
+ },
  "dirakit": "2026-11-25T03:10:00Z",
  "kode": "2026-10",
  "label_jenis": {
@@ -2378,6 +2540,27 @@
    "hari_rentang": 31,
    "status": "ok",
    "tarik": "2026-11-01"
+  },
+  "peluang": {
+   "asal": "logbook_riwayat",
+   "status": "ok",
+   "tahun_penuh": [
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2024,
+    2025
+   ],
+   "tarik": "2026-11-01"
+  },
+  "prakiraan_hujan": {
+   "status": "ok",
+   "tarik": "2026-11-09",
+   "terbit": "2026-11-09"
   }
  },
  "usulan_temuan": [
@@ -2430,6 +2613,28 @@
    "kode": "T5",
    "pil": "karhutla",
    "sumber": "Sistem karhutla Centurisk97"
+  },
+  {
+   "angka": {
+    "kab": 4
+   },
+   "kalimat": "4 kab/kota berpeluang tinggi banjir atau longsor pada November 2026 menurut riwayat kejadian (hipotesis, belum diuji balik). Angka ini bukan prakiraan resmi BMKG.",
+   "kode": "T6",
+   "mutu": "hipotesis",
+   "pil": "prediksi",
+   "sumber": "Riwayat logbook Pusdalops"
+  },
+  {
+   "angka": {
+    "golongan": "di atas ambang El Niño",
+    "musim": "ASO",
+    "nilai": 1.97,
+    "tahun": 2026
+   },
+   "kalimat": "Indeks Pasifik (RONI) ASO 2026 bernilai 1,97, di atas ambang El Niño.",
+   "kode": "T7",
+   "pil": "iklim",
+   "sumber": "NOAA CPC (RONI)"
   }
  ],
  "v": 1

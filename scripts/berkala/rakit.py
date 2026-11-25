@@ -48,7 +48,8 @@ G = _muat("siklus_gudang", "scripts/siklus/gudang.py")
 W = _muat("data_wilayah", "scripts/data/wilayah.py")
 
 BERKAS = {"dibi": "data/dibi_kejadian.json", "karhutla": "data/peta_karhutla.json", "gunungapi": "banjir/data/gunungapi_status.json",
-          "perubahan_level": "gunungapi/data/perubahan_level.json", "gempa": "gempa/data/inatews_detail_{bulan}.json"}
+          "perubahan_level": "gunungapi/data/perubahan_level.json", "gempa": "gempa/data/inatews_detail_{bulan}.json",
+          "riwayat": "data/logbook_riwayat.json", "iklim": "data/iklim_outlook.json"}
 R2_DALOPS = "dalops/banjir.json"
 R2_SIKLUS = "siklus/bersih/dibi/{tahun}.jsonl.gz"
 R2_SIKLUS_LAPORAN = "siklus/bersih/dibi/laporan.json"
@@ -358,6 +359,22 @@ def kumpul(periode, kode, src, be, hari_ini):
     except Exception as e:
         gagal["gempa"] = type(e).__name__
     catatan.append("Data erupsi per peristiwa belum diarsipkan, jadi tiap laporan DIBI erupsi dihitung satu peristiwa.")
+    # Bab 4.4 dan 7.1 (LB-04): hanya keluaran yang sudah terbit dibaca, tanpa model baru (D8, K6)
+    if periode == "bulanan":
+        for k in ("riwayat", "iklim"):
+            try:
+                x = src.baca(BERKAS[k])
+                if x:
+                    m[k] = x
+            except Exception as e:
+                gagal["peluang" if k == "riwayat" else "prakiraan_hujan"] = type(e).__name__
+        if m.get("iklim"):
+            catatan.append(f"Hujan tiga bulan ke depan dan indeks ENSO dari iklim_outlook.json terbitan {H.tgl(str(m['iklim'].get('dibuat'))[:10])}: "
+                           "pendorong musim depan = persistensi nilai RONI dan DMI terakhir, bukan prakiraan; wilayah yang hubungannya tidak lulus "
+                           "uji balik leave-one-out berlabel hipotesis, wilayah yang rentangnya tidak lebih sempit dari iklim biasa tidak ditampilkan.")
+        if m.get("riwayat"):
+            catatan.append("Peluang banjir dan longsor dua bulan berikutnya dihitung dari frekuensi kejadian di logbook Pusdalops per kab/kota "
+                           "(tahun penuh saja); aturan ini belum diuji balik, jadi berlabel hipotesis.")
     return m, catatan, gagal
 
 
@@ -430,6 +447,13 @@ def uji():
                 {"tgl": "2025-10-09", "jenis": "Wabah Penyakit", "kab4": "3201", "kej": 1}]
         simpan(R2_SIKLUS.format(tahun=2025), lalu, r2)
         simpan(R2_SIKLUS_LAPORAN, {"diambil": "2026-11-10"}, r2)
+        ada = lambda nov, des: [0] * 10 + [nov, des]
+        simpan(BERKAS["riwayat"], {"dibuat": "2026-11-01T11:44:52+00:00", "tahun_penuh": ["2014", "2015", "2016", "2017", "2018", "2019", "2020", "2024", "2025"],
+                                   "kab": {"11|Aceh Barat": {"tahun_ada": {"banjir": ada(5, 4), "longsor": ada(0, 6)}}, "12|Nias": {"tahun_ada": {"banjir": ada(4, 9)}}}})
+        simpan(BERKAS["iklim"], {"dibuat": "2026-11-09T07:10+07:00", "wilayah": {"jawa": {"nama": "Jawa"}},
+                                 "keadaan_sekarang": {"roni": {"musim": "ASO", "tahun": 2026, "nilai": 1.97}}, "fit": {"OND": {"jawa": {"lulus": True}}},
+                                 "prakiraan": [{"musim": "OND", "tahun": 2026, "bulan_tengah": "2026-11", "pendorong": {"roni": 1.97, "dmi": 0.6},
+                                                "wilayah": {"jawa": {"anom_pct": -49.3, "p10": -88.0, "p90": -10.6, "tampil": True}}}]})
         src = Sumber(pub)
 
         # normalisasi
@@ -465,6 +489,11 @@ def uji():
         ok(out["bab5"]["gunungapi"]["per_level"] == {"1": 1, "2": 1, "3": 1, "4": 0} and out["bab5"]["peristiwa"]["gempa"] == 1
            and out["bab5"]["gempa"][0]["asal"] == "data", f"geologi {out['bab5']['peristiwa']}")
         ok(any("celah" in c for c in out["lampiran"]["metode"]["catatan"]) and any("Papua" in c for c in out["lampiran"]["metode"]["catatan"]), "catatan metode")
+        b7 = out["bab7"]
+        ok(b7["peluang"]["bulan"][0]["gabung_n"] == 1 and b7["peluang"]["bulan"][1]["gabung_n"] == 2 and b7["enso"]["nilai"] == 1.97
+           and out["bab4"]["hujan"]["wilayah"][0]["anom_pct"] == -49.3 and out["sumber"]["prakiraan_hujan"]["terbit"] == "2026-11-09"
+           and out["sumber"]["peluang"]["status"] == "ok", f"LB-04 {b7}")
+        ok({u["kode"] for u in out["usulan_temuan"]} >= {"T6", "T7"} and any("iklim_outlook" in c for c in out["lampiran"]["metode"]["catatan"]), "T6 T7 dan catatan LB-04")
         ok(be.get("berkala/bulanan/2026-10/angka/2026-11-12.json") and be.get("berkala/bulanan/2026-10/angka/terbaru.json"), "tulis R2")
         for k in ("berkala/bulanan/2026-10/beku/v1.json", "berkala/../dalops/banjir.json", "public/data/x.json"):
             try:
