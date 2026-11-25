@@ -57,7 +57,7 @@ $("bKembali").addEventListener("click", () => { ke("beranda"); tampilBeranda(); 
 $("bLaporBaru").addEventListener("click", () => bukaChat()); $("bDarurat")?.addEventListener("click", () => bukaChat(true));
 $("bCekStatus").addEventListener("click", () => { ke("chat"); kirim({teks: "status", tampil: "Cek status laporan"}); });
 document.querySelectorAll("[data-aksi]").forEach(b => b.addEventListener("click", () => ({lapor: () => bukaChat(), darurat: () => bukaChat(true), sekali: () => sekaliKetuk(), info: () => bukaInfo("info"), prediksi: () => bukaInfo("prediksi"),
-  penting: () => bukaInfo("penting"), edukasi: () => { ke("bantuan"); pilihGrup("Edukasi siaga"); }})[b.dataset.aksi]()));
+  penting: () => bukaInfo("penting"), edukasi: () => { ke("bantuan"); pilihGrup("Edukasi"); }})[b.dataset.aksi]()));
 $("bSemuaBantu").addEventListener("click", () => ke("bantuan"));
 /* Sigap memandu fitur beranda (pemilik 21 Nov 2026): gelembung bergilir 8 detik, berhenti saat disentuh atau difokus,
    tombol Jeda sesuai WCAG 2.2.2; tanpa gilir otomatis bila pengguna meminta gerak dikurangi. Delegasi: salinan di Cara melapor ikut jalan. */
@@ -148,7 +148,16 @@ const ikonKebutuhan = (o, bawaan = "i-kebutuhan") => [  // kelompok rentan dan l
   [/bayi|lansia/i, "k-bayi"], [/sembako|pangan/i, "k-makan"], [/sandang/i, "k-baju"], [/matras|tikar|kasur/i, "k-kasur"], [/family kit/i, "k-sabun"], [/kidsware/i, "k-bayi"], [/tangki/i, "b-banjir"], [/mandi|kebersihan/i, "b-banjir"], [/tandon|penampungan/i, "b-banjir"], [/mesin|selang|pemadam/i, "b-api"], [/masker/i, "i-plus"], [/karung|bronjong/i, "b-longsor"], [/evakuasi|perahu/i, "k-perahu"], [/alat berat/i, "k-alat"], [/lainnya/i, "i-tambah-teks"], [/belum/i, "i-centang"]].find(([r]) => r.test(o))?.[1] || bawaan;
 // sub-jenis bergambar sendiri; yang belum punya gambar memakai ikon jenisnya (pemilik 25 Nov 2026: "biar iconnya beda-beda")
 const ikonSub = o => [[/luapan sungai/i, "b-sungai"], [/genangan/i, "b-genangan"], [/bandang/i, "b-bandang"], [/banjir rob/i, "b-rob"], [/lahar/i, "b-lahar"], [/tanggul|waduk|bendungan/i, "b-tanggul"]].find(([r]) => r.test(o))?.[1];
+/* batang bertingkat hanya untuk skala berurutan; pilihan kategori (hubungan, jenis) tidak boleh berbatang sinyal */
+const RE_LEWATI = /^(lewati|lewat)\b/i;
+const bertingkat = ps => { const p = ps.filter(x => !/tidak tahu|ragu|lainnya/i.test(x)); return p.length >= 2 && (p.every(x => /^(tidak ada|sedikit|sedang|banyak|sangat banyak|ringan|berat|rendah|tinggi|kecil|besar)$/i.test(x)) || p.every(x => /^(sekitar |lebih dari |kurang dari )?[\d,.]+/i.test(x))); };
+const isiTeksBebas = (isi, j) => { const t = el("textarea"); t.rows = 3; t.maxLength = 300; t.autocapitalize = "sentences"; t.autocomplete = "off"; t.placeholder = j.ket?.[0] || "Tulis di sini, misalnya umur, pakaian terakhir, atau tanda yang mudah dikenali"; t.setAttribute("aria-label", "Jawaban");
+  const h = el("small", "lp-hitung", "0/300"), k = el("button", "lp-utama", "Kirim"), l = el("button", "lp-catatan-kecil lp-tautan-polos", j.pilihan[0]); k.type = l.type = "button"; k.disabled = true;
+  t.addEventListener("input", () => { h.textContent = `${t.value.length}/300`; k.disabled = !t.value.trim(); });
+  k.addEventListener("click", () => kirim({teks: t.value.trim(), tampil: t.value.trim()})); l.addEventListener("click", () => kirim({teks: "1", tampil: j.pilihan[0]}));
+  isi.append(t, h, k, l); };
 const ikonOpsi = o => [
+  [/^(anak|orang tua|suami|istri|saudara|teman|tetangga|kerabat|keluarga)\b/i, "i-orang"], [/^lainnya$/i, "i-daftar"],
   // dicocokkan dengan pertanyaannya (pemilik 25 Nov 2026: "cari kesesuaian icon dan pertanyaan"); null = skala bertingkat berbatang
   [/^SIG |menutupi tanah/i, null], [/^pelan, sedikit/i, "k-air-naik"], [/merayap/i, "b-longsor"], [/\d+\s*jam\b|setengah hari|sehari|seperempat|setengah jam|minggu|kali ini/i, "k-jam"],
   [/^bisa dilewati/i, "k-jalan"], [/^terputus/i, "i-tutup"], [/^sudah tenang/i, "i-centang"], [/reda dan cerah/i, "b-matahari"], [/^antre/i, "i-orang"], [/tempat jauh/i, "i-lokasi"], [/tertimpa atau terjepit/i, "i-orang"], [/^mulai sulit/i, "k-air-turun"],
@@ -239,12 +248,13 @@ function kartuPilihan(j) {
       const b = tombolOpsi(t, ket, () => kirim({teks: String(i + 1), tampil: j.pilihan[i]}), kls); const u = el("span", "lp-opsi-ubin"); u.append(ikon(ik)); b.prepend(u); d.append(b); }
     isi.append(d); return;
   }
+  if (j.minta !== "setuju" && j.pilihan.length === 1 && RE_LEWATI.test(j.pilihan[0])) { isiTeksBebas(isi, j); return; }   // pertanyaan isian bebas: kotak ketik, Lewati hanya tautan kecil
   const dua = j.pilihan.length === 2 && !j.ket?.some(Boolean);
   const d = el("div", `lp-opsi${dua ? " dua" : ""}${j.minta === "setuju" ? "" : " lp-opsi-ikon lp-opsi-banyak"}`), n = j.pilihan.length;
   if (j.minta !== "setuju") { d.style.setProperty("--kol", kolomSimetris(n)); d.classList.add("lp-simetris"); if (kolomSimetris(n) >= 5) d.classList.add("lp-tegak"); } // lima sebaris: gambar di atas, teks di bawah supaya tidak terlipat
   j.pilihan.forEach((o, i) => { const b = tombolOpsi(o, j.ket?.[i], () => kirim({teks: String(i + 1), tampil: o}), i === 0 && j.minta === "setuju" ? "utama" : "");
     if (j.minta !== "setuju") { const u = el("span", "lp-opsi-ubin"), air = tinggiAir(j.ket?.[i]), ik = ikonOpsi(o);
-      if (air != null) { u.classList.add("lp-ubin-air"); u.innerHTML = gambarAir(air); } else if (ik) u.append(ikon(ik)); else { u.classList.add("lp-ubin-tingkat"); u.innerHTML = gambarTingkat(i, j.pilihan.filter(x => !/tidak tahu/i.test(x)).length); } b.prepend(u); } // tinggi air bergambar, ikon bila cocok, selain itu nomor
+      if (air != null) { u.classList.add("lp-ubin-air"); u.innerHTML = gambarAir(air); } else if (ik) u.append(ikon(ik)); else if (bertingkat(j.pilihan)) { u.classList.add("lp-ubin-tingkat"); u.innerHTML = gambarTingkat(i, j.pilihan.filter(x => !/tidak tahu/i.test(x)).length); } else u.append(ikon("i-daftar")); b.prepend(u); } // tinggi air bergambar, ikon bila cocok, selain itu nomor
     d.append(b); });
   isi.append(d);
   if (j.minta === "setuju") isi.append(Object.assign(el("a", "lp-catatan-kecil", "Baca kebijakan privasi"), {href: "/lapor/privasi.html", target: "_blank"}));
@@ -745,12 +755,16 @@ async function kirim({teks = "", lokasi = null, form = null, pilih = null, tampi
     if (cache.keadaan) terapkan(cache.keadaan, {dariCache: true});
   } finally { sibuk = false; }
 }
+/* tanda terima ("*Lokasi tercatat*"): satu baris kecil berpusat centang, bukan gelembung percakapan */
+function tambahResi(t) { const [judul, ...sisa] = t.split("\n"), li = el("li", "lp-resi"), tx = el("span"); tx.append(el("b", null, trStatis(judul.replace(/\*/g, ""))), ...(sisa.length ? [el("small", null, sisa.join(" "))] : []));
+  li.append(ikon("i-centang"), tx); log.append(li); }
 function selesaiBalas(j) {
   // identitas sudah diisi di kartu awal: pertanyaan "kenal" (Ganti) dan kartu identitas mesin dijawab diam-diam dengan isian itu
   if (idAwal && (j.minta === "identitas" || (j.pilihanAsli || j.pilihan)?.join("|") === "Ya|Ganti")) {
     const form = idAwal; if (j.minta === "identitas") idAwal = null;
     setTimeout(() => j.minta === "identitas" ? kirim({form, tampil: false}) : kirim({teks: "2", tampil: false}), 0); return; }
   $("mengetik").hidden = true;
+  if (j.konfirmasi && j.balasan?.startsWith(j.konfirmasi)) { tambahResi(j.konfirmasi); j = {...j, balasan: j.balasan.slice(j.konfirmasi.length).trim()}; }   // tanda terima terpisah dari pertanyaan
   if (j.balasan) tambah("bot", j.minta === "setuju" ? (idAwal ? "Terima kasih. Sebelum mulai, baca dan setujui pemakaian data di bawah." : "Halo, saya Sigap, asisten AI Pantau Bencana BNPB. Sebelum mulai, baca dan setujui pemakaian data di bawah.") : j.balasan);
   if (j.pelapor?.nama) cache.pelapor = j.pelapor.nama;
   if (j.nomor && j.susulan) { const l = (cache.laporan || []).find(x => x.nomor === j.nomor); if (l) { l.versi = j.susulan; if (j.foto) l.foto = j.foto; } cache.fotoSesi = []; } // susulan: kartu tetap, versi naik
@@ -1163,18 +1177,18 @@ const BANTU = [
   ["Istilah", "Skala guncangan gempa", "Pilih keadaan yang Anda lihat: hampir tidak terasa, terasa tanpa kerusakan, kerusakan ringan, sedang, atau berat. Pilihan mengikuti Skala Intensitas Gempabumi BMKG (SIG I sampai V)."],
   ["Status", "Apa arti status laporan?", "Urutannya: diterima, dilihat petugas, ditelaah, diteruskan ke BPBD setempat, ditindaklanjuti, lalu selesai ditangani. Tanggal setiap perubahan tampil di halaman lacak."],
   /* edukasi siaga (pemilik 19 Nov 2026): teks tetap, bukan jawaban AI. ponytail: disusun dari praktik kesiapsiagaan umum; perlu ditinjau Direktorat Kesiapsiagaan BNPB sebelum publik. */
-  ["Edukasi siaga", "Gempa bumi: saat guncangan", "Lindungi kepala dan leher, berlindung di bawah meja yang kuat, jauhi kaca dan lemari. Bila di luar, jauhi bangunan, tiang, dan pohon. Keluar bangunan sesudah guncangan berhenti, lewat tangga, bukan lift."],
-  ["Edukasi siaga", "Tsunami: tanda dan tindakan", "Bila di pantai terasa gempa kuat atau lama, atau air laut tiba-tiba surut, segera menjauh dari pantai ke tempat tinggi tanpa menunggu peringatan. Jangan kembali sebelum ada pengumuman resmi."],
-  ["Edukasi siaga", "Banjir: sebelum dan saat air naik", "Simpan dokumen penting di wadah kedap air dan di tempat tinggi. Matikan listrik dari meteran saat air mulai masuk. Jangan berjalan atau berkendara melewati arus deras; arus setinggi lutut dapat menghanyutkan orang."],
-  ["Edukasi siaga", "Tanah longsor: tanda bahaya", "Waspadai retakan baru di tanah atau dinding, pintu dan jendela yang tiba-tiba sulit dibuka, mata air baru, atau air sungai mendadak keruh. Saat hujan lebat lama di lereng, mengungsilah ke tempat yang lebih aman."],
-  ["Edukasi siaga", "Kebakaran hutan dan lahan: asap", "Kurangi kegiatan di luar saat asap tebal, pakai masker yang rapat, dan utamakan perlindungan bayi, lansia, ibu hamil, dan penderita sesak napas. Jangan membakar lahan atau sampah."],
-  ["Edukasi siaga", "Erupsi gunung api: hujan abu", "Ikuti radius bahaya dari PVMBG dan perintah petugas. Saat hujan abu, pakai masker dan kacamata, tutup sumber air, dan bersihkan abu dari atap supaya tidak roboh."],
-  ["Edukasi siaga", "Tas siaga bencana", "Siapkan tas berisi air minum, makanan tahan lama, obat pribadi, senter, peluit, salinan dokumen penting, uang tunai, dan pakaian ganti. Letakkan di tempat yang mudah diambil."],
+  ["Edukasi", "Gempa bumi: saat guncangan", "Lindungi kepala dan leher, berlindung di bawah meja yang kuat, jauhi kaca dan lemari. Bila di luar, jauhi bangunan, tiang, dan pohon. Keluar bangunan sesudah guncangan berhenti, lewat tangga, bukan lift."],
+  ["Edukasi", "Tsunami: tanda dan tindakan", "Bila di pantai terasa gempa kuat atau lama, atau air laut tiba-tiba surut, segera menjauh dari pantai ke tempat tinggi tanpa menunggu peringatan. Jangan kembali sebelum ada pengumuman resmi."],
+  ["Edukasi", "Banjir: sebelum dan saat air naik", "Simpan dokumen penting di wadah kedap air dan di tempat tinggi. Matikan listrik dari meteran saat air mulai masuk. Jangan berjalan atau berkendara melewati arus deras; arus setinggi lutut dapat menghanyutkan orang."],
+  ["Edukasi", "Tanah longsor: tanda bahaya", "Waspadai retakan baru di tanah atau dinding, pintu dan jendela yang tiba-tiba sulit dibuka, mata air baru, atau air sungai mendadak keruh. Saat hujan lebat lama di lereng, mengungsilah ke tempat yang lebih aman."],
+  ["Edukasi", "Kebakaran hutan dan lahan: asap", "Kurangi kegiatan di luar saat asap tebal, pakai masker yang rapat, dan utamakan perlindungan bayi, lansia, ibu hamil, dan penderita sesak napas. Jangan membakar lahan atau sampah."],
+  ["Edukasi", "Erupsi gunung api: hujan abu", "Ikuti radius bahaya dari PVMBG dan perintah petugas. Saat hujan abu, pakai masker dan kacamata, tutup sumber air, dan bersihkan abu dari atap supaya tidak roboh."],
+  ["Edukasi", "Tas siaga bencana", "Siapkan tas berisi air minum, makanan tahan lama, obat pribadi, senter, peluit, salinan dokumen penting, uang tunai, dan pakaian ganti. Letakkan di tempat yang mudah diambil."],
   ["Privasi", "Siapa yang bisa membaca laporan saya?", "Hanya petugas BNPB dan BPBD yang menangani laporan. Nomor WhatsApp dan foto tidak tampil ke publik. Rincian ada di kebijakan privasi."],
 ];
 /* FAQ gaya halaman Tentang (details name="faq": satu terbuka sekaligus); edukasi dari edukasi.json bila ada (riset sumber resmi) */
 let EDU = null, grupAktif = "Semua";
-const GRUP = ["Semua", "Melapor", "Istilah", "Status", "Edukasi siaga", "Privasi"];
+const GRUP = ["Semua", "Melapor", "Istilah", "Status", "Edukasi", "Privasi"];
 /* ikon per pertanyaan, bukan satu ikon per kelompok (pemilik 19 Nov 2026: "iconnya ganti-ganti dong") */
 const IKON_TANYA = [[/disiapkan/i, "i-kebutuhan"], [/lokasi/i, "i-lokasi"], [/resmi/i, "i-centang"], [/pengungsi/i, "i-pengungsian"], [/KK/, "i-korban"], [/rusak/i, "i-rumah"],
   [/guncangan|gempa/i, "i-kejadian"], [/status/i, "i-status"], [/tas siaga/i, "i-kebutuhan"], [/membaca|privasi/i, "i-orang"], [/foto/i, "i-kamera"], [/waktu/i, "i-kalender"]];
@@ -1188,8 +1202,8 @@ function faqEl(t, isiFn, gambar, {sub, idIlus, ikonGrup} = {}) { const d = el("d
   let terisi = false; d.addEventListener("toggle", () => { if (d.open && !terisi) { isiFn(w); terisi = true; } }); // isi dibuat saat dibuka: daftar panjang tetap ringan
   return d; }
 function itemBantu() {
-  const dasar = BANTU.filter(([g]) => !(EDU && g === "Edukasi siaga")).map(([g, t, i]) => ({g, t, isi: w => w.append(el("p", null, i)), cari: `${t} ${i}`}));
-  const edu = (EDU?.topik || []).map(x => ({g: "Edukasi siaga", t: x.judul, cari: `${x.judul} ${x.ringkas || ""} ${[...(x.tanda || []), ...(x.sebelum || []), ...(x.saat || []), ...(x.sesudah || []), ...(x.butir || [])].join(" ")}`,
+  const dasar = BANTU.filter(([g]) => !(EDU && g === "Edukasi")).map(([g, t, i]) => ({g, t, isi: w => w.append(el("p", null, i)), cari: `${t} ${i}`}));
+  const edu = (EDU?.topik || []).map(x => ({g: "Edukasi", t: x.judul, cari: `${x.judul} ${x.ringkas || ""} ${[...(x.tanda || []), ...(x.sebelum || []), ...(x.saat || []), ...(x.sesudah || []), ...(x.butir || [])].join(" ")}`,
     gambar: x.gambar, id: x.id, sub: x.ringkas,
     isi: w => {
       // ilustrasi: foto bencana, tanda bahaya menonjol, lalu Sebelum, Saat, Sesudah sebagai langkah bernomor (pemilik 19 Nov 2026: "kasih gambar atau ilustrasi")
@@ -1212,12 +1226,12 @@ function itemBantu() {
 function pilihGrup(g) { grupAktif = g; $("iCariBantu2").value = ""; tampilBantu(); }
 function tampilBantu(q = "") {
   const kata = q.toLowerCase().trim(), semua = itemBantu();
-  const IKON_SARING = {"Semua": "i-daftar", "Melapor": "i-kirim", "Istilah": "i-bantuan", "Status": "i-status", "Edukasi siaga": "i-kejadian", "Privasi": "i-orang"};
+  const IKON_SARING = {"Semua": "i-daftar", "Melapor": "i-kirim", "Istilah": "i-bantuan", "Status": "i-status", "Edukasi": "i-kejadian", "Privasi": "i-orang"};
   // pilihan kelompok selebar layar, dibagi rata, berikon dan berjumlah (aturan deretan pilihan ujung ke ujung)
   $("saringBantu").replaceChildren(...GRUP.map(g => { const b = el("button"); b.append(ikon(IKON_SARING[g]), el("span", null, g), el("small", null, String(g === "Semua" ? semua.length : semua.filter(x => x.g === g).length))); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(g === grupAktif && !kata)); b.addEventListener("click", () => pilihGrup(g)); return b; }));
   const cocok = semua.filter(x => kata ? x.cari.toLowerCase().includes(kata) : grupAktif === "Semua" || x.g === grupAktif);
   // tiap kelompok satu kompartemen berkepala ikon (pemilik 19 Nov 2026: "kasih icon kompartemen")
-  const IKON_GRUP = {"Melapor": "i-kirim", "Istilah": "i-daftar", "Status": "i-status", "Edukasi siaga": "i-bantuan", "Privasi": "i-orang"};
+  const IKON_GRUP = {"Melapor": "i-kirim", "Istilah": "i-daftar", "Status": "i-status", "Edukasi": "i-bantuan", "Privasi": "i-orang"};
   const per = new Map(); for (const x of cocok) per.set(x.g, [...(per.get(x.g) || []), x]);
   const isi = [...per].map(([g, daftar]) => {
     const k = el("section", "lp-kompartemen"), h = el("h2", "lp-kompartemen-kepala"); h.append(ikon(IKON_GRUP[g] || "i-bantuan"), g, el("span", "lp-kompartemen-jumlah", String(daftar.length)));
@@ -1233,7 +1247,7 @@ function tampilBantu(q = "") {
 let grupRingkas = "Semua";
 function tampilRingkas(semua, g) {
   grupRingkas = g;
-  const IK = {"Semua": "i-daftar", "Melapor": "i-kirim", "Istilah": "i-bantuan", "Status": "i-status", "Edukasi siaga": "i-kejadian", "Privasi": "i-orang"};
+  const IK = {"Semua": "i-daftar", "Melapor": "i-kirim", "Istilah": "i-bantuan", "Status": "i-status", "Edukasi": "i-kejadian", "Privasi": "i-orang"};
   $("saringRingkas").replaceChildren(...GRUP.map(k => { const b = el("button"); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(k === g));
     b.append(ikon(IK[k]), el("span", null, k), el("small", null, String(k === "Semua" ? semua.length : semua.filter(x => x.g === k).length)));
     b.addEventListener("click", () => tampilRingkas(semua, k)); return b; }));
@@ -1663,7 +1677,7 @@ async function terjemahKartu() {   // satu putaran sekaligus; perubahan selama b
 /* kamus statis per bahasa (public/lapor/tr/<kode>.json, dibuat scripts/lapor/tr_buat.mjs): semua teks tetap sudah diterjemahkan sebelumnya,
    jadi layar berganti seketika tanpa menunggu AI (pemilik 20 Nov 2026: "semua statis, lu terjemahin aja semua dulu"). API hanya untuk teks tersusun saat jalan. */
 const kunciTr = t => String(t).replace(/\s+/g, " ").trim();
-const TR_VERSI = "20261120d";   // naikkan tiap kamus public/lapor/tr dibuat ulang
+const TR_VERSI = "20261125a";   // naikkan tiap kamus public/lapor/tr dibuat ulang
 const STATIS = new Map();   // kode -> {kunci: terjemahan} | Promise
 function muatStatis(b) {
   if (!STATIS.has(b)) STATIS.set(b, fetch(`/lapor/tr/${b}.json?v=${TR_VERSI}`).then(r => r.ok ? r.json() : {}).catch(() => ({})).then(k => { STATIS.set(b, k); return k; }));

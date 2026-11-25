@@ -17,11 +17,11 @@ export const TEMPLAT = ["Kejadian:", "Kronologi:"].join("\n");
 const SELESAI = new Set(["terkirim", "batal", "kedaluwarsa"]);
 const KATA_BATAL = /^(batal|batalkan)$/i, KATA_BELUM = /^(belum tahu|tidak tahu|gak tahu|ga tahu|nggak tahu|belum|lewati|skip)$/i;
 const KATA_TIDAK = /^(tidak ada|tidak|nihil|nol|ga ada|gak ada|nggak ada|tdk ada)$/i, KATA_KIRIM = /^kirim$/i, KATA_LAPOR = /^(lapor|halo|hai|hi|p|ping|mulai)$/i, KATA_DARURAT = /^(lapor )?darurat!?$/i;
-const NEGASI = /\b(tidak ada|tidak|nihil|tanpa|nol|belum ada)\b/i;
+export const NEGASI = /\b(tidak ada|tidak|nihil|tanpa|nol|belum ada)\b/i;
 const PERAN = {warga: "Warga", bpbd_klaim: "Petugas BPBD", bpbd: "Petugas BPBD"};
 
 const rapi = s => String(s ?? "").normalize("NFKC").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim();
-const kecil = s => rapi(s).toLowerCase().replace(/[*_~`"'‘’“”]/g, "");
+export const kecil = s => rapi(s).toLowerCase().replace(/[*_~`"'‘’“”]/g, "");
 const tanpaEkor = s => rapi(s).replace(/[^\p{L}\p{N}]+$/u, "");
 
 /* ---------- angka dari teks: digit dan bilangan tertulis ("dua belas", "seratus lima") ---------- */
@@ -478,7 +478,8 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     if (pesan?.saluran === "web") balasan = balasan.replace(/, atau di WhatsApp: lampiran, \*Lokasi\*/g, "").replace(/\s*Di WhatsApp[^\n]*/g, ""); // petunjuk khusus WA tidak tampil di web
     const lengkapTeks = pilihan ? `${balasan}\n\n${daftar(pilihan, ket)}` : balasan;
     sesi.transkrip.push({dari: "bot", teks: balasan, pilihan, waktu: kini});
-    return {sesi, pelapor, balasan: lengkapTeks, inti: balasan, pilihan, pilihanKet: ket, kirim, minta, isiAwal: sesi.isiAwal, form: sesi.form, banyak: false}; // inti = tanpa daftar bernomor (web menampilkan tombol)
+    const resi = /^\*[^*\n]*tercatat\*(?:\n[^\n]+)*(?=\n\n|$)/.exec(balasan)?.[0] ?? null;   // blok "*... tercatat*" = tanda terima, bukan pertanyaan; web menampilkannya terpisah, WA tetap satu teks
+    return {sesi, pelapor, balasan: lengkapTeks, konfirmasi: resi, inti: resi ? balasan.slice(resi.length).trim() : balasan, pilihan, pilihanKet: ket, kirim, minta, isiAwal: sesi.isiAwal, form: sesi.form, banyak: false}; // inti = tanpa daftar bernomor (web menampilkan tombol)
   };
   /* sesudah lokasi, jenis bencana dipilih dulu (kartu bergambar), baru cerita (pemilik 19 Nov 2026: "pilihan bencananya dulu") */
   const tanyaJenis = kepalaTeks => {

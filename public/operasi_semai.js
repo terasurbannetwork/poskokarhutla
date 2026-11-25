@@ -23,8 +23,9 @@
   const CHEV = '<svg class="ops-chev sm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
   const kartu = (id, ik, nama, isi, o = {}) => `<details class="ex ex-std ops-kartu sm-k${o.lipat ? " sm-lipat" : ""}" id="${id}" open><summary class="ex-hd"><span class="ex-ey ops-ey-ik" title="${esc(nama)}" aria-label="${esc(nama)}" role="img">${sv(ik)}</span><div class="ex-jd"><h3>${nama}</h3>${o.kanan || ""}</div>${o.lipat ? CHEV : ""}</summary><div class="ex-bd">${isi}</div></details>`;
 
-  const st = {data: null, i: 0, zona: 0, kota: -1, peta: null, play: 0, rf: 0, ada: {awan: true, asap: true}, terap: {}, tampak: {api: true, awan: true, asap: true, pengarah: true, anginAsap: true, zona: true, kota: true}, target: {}, ctx: null, mk: {zona: [], base: [], kota: []}, semuaCluster: false, semuaKota: false, luar: false, tujuan: M.tujuanDariHash(location.hash), banjir: null, mkB: []};
+  const st = {data: null, i: 0, zona: 0, kota: -1, peta: null, play: 0, rf: 0, ada: {awan: true, asap: true}, terap: {}, tampak: {api: true, awan: true, asap: true, pengarah: true, anginAsap: true, zona: true, kota: true}, target: {}, ctx: null, mk: {zona: [], base: [], kota: []}, semuaCluster: false, semuaKota: false, luar: false, tujuan: M.tujuanDariHash(location.hash), banjir: null, mkB: [], zB: 0, bobotB: M.BOBOT_B.slice(), manualB: [], namaKab: null};
   const muatBanjir = M.malas(() => ambil(BAWAH + "semai_banjir.json"));   // SB-08: sekali per muatan halaman
+  const namaKabMuat = M.malas(async () => { const j = await ambil("/banjir/data/cuaca_peluang.json"); return Object.fromEntries(Object.entries(j?.wilayah || {}).map(([k, v]) => [k, v.nama])); });
   let akar = null;
   const zonaTerpilih = () => st.data?.zona?.[st.zona] || null;
   const L = () => st.data?.langkah || [];
@@ -122,7 +123,8 @@
     const peta = d ? `${tujuanSeg()}<div class="sm-peta-bungkus"><div id="smPeta" class="sm-peta" aria-label="Peta peluang semai"></div><div class="sm-alat"><div class="sm-chips" role="group" aria-label="Lapisan dan saringan">${pilAtas()}</div><div class="sm-alat-r">${peranSeg()}<button type="button" class="sm-tombol-garis" data-sm-ringkas>${lb("salin", "Salin ringkasan")}</button></div></div>${kotakLapis()}<div class="sm-dasar">${legenda()}${bilahJam()}${strip()}</div></div>`
       : `${tujuanSeg()}<div class="sm-atas"><div class="sm-sumber">${sumber(null)}</div><button type="button" class="sm-tombol-garis" data-sm-ringkas>${lb("salin", "Salin ringkasan")}</button></div><p class="sm-kecil sm-peta-kosong">Peta tersedia setelah prakiraan terbit.</p>`;
     akar.innerHTML = `<span class="sm-toast" id="smToast" role="status" aria-live="polite" hidden></span><div id="smPita">${pitaBasi(d)}</div>${kartu("smKP", "awan", "Peta peluang semai", peta)}
-      <div class="sm-baris3">${kartu("smRek", "awan", "Rekomendasi", rekomendasi())}<div class="sm-kanan2">${kartu("smZona", "zona", "Zona usulan 24 jam", `<div class="sm-zdaf" id="smZdaf">${daftarZona()}</div>`)}${kartu("smAsap", "asap", "Peringatan asap", peringatanAsap())}</div></div>
+      <div class="sm-baris3" id="smK">${kartu("smRek", "awan", "Rekomendasi", rekomendasi())}<div class="sm-kanan2">${kartu("smZona", "zona", "Zona usulan 24 jam", `<div class="sm-zdaf" id="smZdaf">${daftarZona()}</div>`)}${kartu("smAsap", "asap", "Peringatan asap", peringatanAsap())}</div></div>
+      <div class="sm-baris3 sm-banjir" id="smB" hidden></div>
       <div class="sm-bawah">${kartu("smCluster", "tabel", "Cluster aktif", tabelCluster())}<div class="sm-lipatan">${kartu("smCara", "info", "Cara memutuskan", CARA, {lipat: true})}${kartu("smTak", "peringatan", "Yang tidak terlihat satelit dan model", TAK, {lipat: true})}</div></div>`;
     for (const x of akar.querySelectorAll(".sm-lipat")) x.open = false;
   }
@@ -197,7 +199,7 @@
     p.addSource("sm-cegat", {type: "geojson", data: fc((b.zona || []).flatMap(z => (z.cegat || []).filter(c => c.masuk && z.hujan).map(c => ({type: "Feature", properties: {}, geometry: {type: "LineString", coordinates: [[z.hujan.lon, z.hujan.lat], [c.masuk.lon, c.masuk.lat]]}}))))});
     p.addLayer({id: "sm-cegat", type: "line", source: "sm-cegat", paint: {"line-color": warna("--sm-garis"), "line-width": 1.5, "line-dasharray": [3, 2]}});
     setTimeout(() => poligonSasaran(b), 0);   // poligon kab menyusul; cincin tetap dipakai selama memuat atau bila tak ada
-    for (const z of b.zona || []) st.mkB.push(tekanMarker("sm-zm sm-zb", `<i></i><span>B${esc(z.huruf)} ${M.fmt(z.skor, 2)}</span>`, z.lon, z.lat, `Zona cegat ${z.huruf}, skor ${M.fmt(z.skor, 2)}`));
+    (b.zona || []).forEach((z, i) => st.mkB.push(tekanMarker("sm-zm sm-zb", `<i></i><span>B${esc(z.huruf)} ${M.fmt(z.skor, 2)}</span>`, z.lon, z.lat, `Zona cegat ${z.huruf}, skor ${M.fmt(z.skor, 2)}`, () => pilihZonaB(i))));
   }
   async function poligonSasaran(b) { const p = st.peta, ss = b.sasaran || [], ada = new Set(), fs = [];
     for (const pv of new Set(ss.map(x => x.prov).filter(Boolean))) { const g = await ambil(`/geo/kabupaten/${pv}.json`); if (!g?.features) continue;
@@ -209,6 +211,8 @@
       set("sm-api", v.api); set("sm-asap", v.asap && st.ada.asap); set("sm-anginAsap", v.anginAsap); for (const id of ["sm-sasaran", "sm-sasaran-tg", "sm-sasaran-poly", "sm-sasaran-garis", "sm-sasaran-garis2", "sm-cegat"]) set(id, v.sasaran); }
     for (const k of ["api", "asap", "anginAsap"]) { const e = $(`[data-sm-lap="${k}"]`, akar); if (e) e.hidden = ban; }
     for (const k of ["api", "kota", "lintas"]) { const e = $(`[data-sm-chip="${k}"]`, akar); if (e) e.hidden = ban && k !== "kota"; }
+    for (const [id, tampak] of [["#smK", !ban], ["#smCluster", !ban], ["#smB", ban]]) { const e = $(id, akar); if (e) e.hidden = !tampak; }
+    if (ban) isiBanjir();
     terapMarker(); if (!ban) { gantiRaster(); gantiAngin(); } }
   async function setTujuan(t) { if (st.tujuan === t) return; st.tujuan = t;
     akar.querySelectorAll("[data-sm-tujuan]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.smTujuan === t)));
@@ -246,6 +250,84 @@
     b.innerHTML = sv("jeda"); if (st.i >= L().length - 1) setLangkah(0);
     st.play = setInterval(() => { if (document.hidden || st.i >= L().length - 1) { putar(); return; } setLangkah(st.i + 1); }, 1200); }
 
+
+  /* ---------------- SB-09: kolom kanan tujuan banjir ---------------- */
+  const wib = n => new Date(Date.now() + 7 * 36e5 + n * 864e5).toISOString().slice(0, 10);
+  const hariRel = t => ["hari ini", "besok", "lusa"][Math.round((Date.parse(t) - Date.parse(wib(0))) / 864e5)] || M.hariJam(t + "T00:00:00Z").replace(/,.*/, "");
+  const geser1 = (t, n) => new Date(Date.parse(t) + n * 864e5).toISOString().slice(0, 10);
+  const manualBaru = () => st.manualB.filter(m => !(st.banjir?.sasaran || []).some(s => s.kab === m.kab));
+  const namaB = kab => (st.banjir?.sasaran || []).find(s => s.kab === kab)?.nama || st.namaKab?.[kab] || `kab ${kab}`;
+  const barisSasaran = (nama, asal, ket, tg, o = {}) => `<li class="sm-sb"><span class="sm-sb1"><strong>${esc(nama)}</strong>${asal.map(a => `<small class="sm-t sm-as-${esc(a)}">${esc(M.asalTeks(a))}</small>`).join("")}${o.belum ? '<small class="sm-t">belum teruji</small>' : ""}</span><span class="sm-sb2"><span>${esc(tg)}</span>${ket ? `<code>${esc(ket)}</code>` : ""}${o.cat ? `<span title="${esc(o.cat)}">${esc(o.cat.slice(0, 60))}</span>` : ""}</span></li>`;
+  function sasaranHtml() { const b = st.banjir, tombol = `<button type="button" class="sm-tombol-garis" data-sm-tambah>${lb("target", "Tambah sasaran")}</button>`;
+    if (!b || b.galat) return `<p class="sm-kosong-judul">prakiraan banjir belum tersedia</p><p class="sm-kecil">${esc(b?.galat === 401 || b?.galat === 403 ? "Masuk dulu dengan akun staf berperan." : "Berkas prakiraan banjir belum terbit untuk putaran ini.")}</p>${tombol}`;
+    const t0 = b.hari_sasaran || wib(1), ss = (b.sasaran || []).map(s => { const tg = s.tenggang ?? (s.pantau ? 2 : 1), ket = [s.bnj_lv != null ? `level ${s.bnj_lv}` : "", s.hjn_p50 != null ? M.fmt(s.hjn_p50, 2) : ""].filter(Boolean).join(", ");
+        return barisSasaran(s.nama || s.kab, s.asal || [], ket, `${hariRel(geser1(t0, tg - 1))}${M.pantau(s) ? ", pantau" : ""}`, {belum: s.belum_teruji}); }),
+      mn = manualBaru().map(m => barisSasaran(namaB(m.kab), ["manual"], "", `${hariRel(m.tanggal)}, dihitung di putaran berikutnya`, {cat: m.catatan}));
+    return ss.length || mn.length ? `<ul class="sm-sblist">${ss.join("")}${mn.join("")}</ul>${tombol}` : `<p class="sm-kosong-judul">${esc(M.judulKosongB(b.alasan_kosong))}</p><p class="sm-kecil">${esc(b.kalimat_kosong || M.kalimatKosongB(b.alasan_kosong, b.hari_sasaran))}</p>${tombol}`; }
+  const zonaBTerpilih = () => st.banjir?.zona?.[st.zB] || null;
+  function rekB() { const b = st.banjir, z = zonaBTerpilih();
+    if (!b || b.galat || !z) { const a = b && !b.galat ? b.alasan_kosong : "tanpa_prakiraan"; return `<p class="sm-kosong-judul">${esc(M.judulKosongB(a))}</p><p class="sm-kecil">${esc((b && b.kalimat_kosong) || M.kalimatKosongB(a, b?.hari_sasaran))}</p>`; }
+    const alasan = M.alasanB(z).filter(x => x[2]).map(([h, n, t]) => `<li><b class="sm-h sm-h${h}" aria-hidden="true">${h}</b><span><em>${n}</em>${esc(t)}${h === "B" && z.base?.terdaftar === false ? ' <small class="sm-t sm-oranye">bandara, bukan base terdaftar</small>' : ""}</span></li>`).join("");
+    const lindung = (z.alasan?.sasaran || (z.cegat || []).map(c => c.kab)).map(namaB).join(", ");
+    const renlap = [["awan", "Ketinggian", M.ketinggianTeks(z)], ["angin", "Bahan", "bahan dari BMKG"], ["target", "Sasaran", lindung || "belum tersedia"]].map(([k, n, t]) => `<div>${lb(k, n)}<span>${esc(t)}</span></div>`).join("");
+    return `<small class="sm-lab">Rekomendasi</small><h4 class="sm-judul">Zona B${esc(z.huruf)}</h4><p class="sm-prov">${esc(z.prov || "")}${z.kota ? `, ${esc(z.kota)}` : ""}</p>
+      <p class="sm-prov">Melindungi: ${esc(lindung || "belum tersedia")}</p>
+      <div class="sm-skor"><b>${M.fmt(z.skor, 2)}</b><span class="sm-pil sm-hijau">${lb("jam", `terbang ${esc(M.jendela(z))}`)}</span><small class="sm-t">${z.laut ? "laut" : "darat"}</small>${z.belum_teruji ? '<small class="sm-t">belum teruji</small>' : ""}</div>
+      <button type="button" class="sm-koor" data-sm-salin="${esc(M.salinKoordinat(z.lat, z.lon))}" title="Klik untuk menyalin koordinat"><span>${esc(M.dms(z.lat, z.lon))}</span><span>${esc(M.desimal(z.lat, z.lon))}</span></button>
+      ${alasan ? `<h5 class="sm-sub">Alasan</h5><ul class="sm-alasan">${alasan}</ul>` : ""}<h5 class="sm-sub">Untuk renlap</h5><div class="sm-renlap">${renlap}</div>
+      <div class="sm-aksi"><a class="sm-tombol-garis" href="/renlap-omc?zona=${encodeURIComponent(z.id)}" target="_blank" rel="noopener" title="Renlap OMC zona ini: rute terbang, ketinggian, PDF, KML, GPX">${lb("salin", "Renlap OMC")}</a></div>`; }
+  const daftarZonaB = () => { const zs = st.banjir?.zona || [];
+    return zs.length ? zs.map((z, i) => `<button type="button" class="sm-zr" data-sm-zonab="${i}" aria-current="${i === st.zB}"><b class="sm-zl sm-zlb">B${esc(z.huruf)}</b><span><strong>${esc(z.prov || "")}</strong><small>terbang ${esc(M.jendela(z).replace(/ (WIB|WITA|WIT)$/, ""))}, ${z.laut ? "laut" : "darat"}</small>${z.base?.nama ? `<small>dari ${esc(z.base.nama)}${z.base.menit != null ? `, sekitar ${M.fmt(z.base.menit)} menit` : ""}</small>` : ""}</span><code>${M.fmt(z.skor, 2)}</code></button>`).join("")
+      : `<p class="sm-kecil">${esc((st.banjir && st.banjir.kalimat_kosong) || M.kalimatKosongB(st.banjir?.alasan_kosong, st.banjir?.hari_sasaran))}</p>`; };
+  /* Tinjau: bobot Q H P digeser, skor dihitung ulang di peramban dari faktor yang sama (ALGORITMA §8) */
+  const NAMA_BOBOT = [["Q", "Kualitas awan"], ["H", "Lepas sebelum sasaran"], ["P", "Paparan zona"]];
+  const bobotNorm = () => M.normBobot(st.bobotB);
+  function baruTinjau() { const b = st.banjir, w = bobotNorm(), zs = b?.zona || [], baru = M.hitungUlangBanjir(b, w);
+    return {w, baru, baris: zs.map(z => ({id: `B${z.huruf}`, Q: z.Q, H: z.H, P: z.P, file: z.skor, baru: M.skorBanjir(z.Q, z.H, z.P, w)}))}; }
+  function tinjauHtml() { const b = st.banjir; if (!b || b.galat) return `<p class="sm-kecil">Tersedia setelah prakiraan banjir terbit.</p>`;
+    const sl = NAMA_BOBOT.map(([k, n], i) => `<label class="sm-sl"><span><b class="sm-h sm-h${k}" aria-hidden="true">${k}</b>${n}</span><input type="range" min="0" max="1" step="0.05" value="${st.bobotB[i]}" data-sm-bobot="${i}" aria-label="Bobot ${n}"><code id="smBw${i}"></code></label>`).join("");
+    return `<div class="sm-sls">${sl}</div><p class="sm-kecil" id="smTj"></p><div class="tw sm-tw ex-tabel" id="smTt"></div><div class="sm-aksi"><button type="button" class="sm-tombol-garis" data-sm-csv>${lb("tabel", "Salin CSV")}</button></div>`; }
+  function isiTinjau() { const t = baruTinjau(), w = t.w;
+    NAMA_BOBOT.forEach((_, i) => { const e = $(`#smBw${i}`, akar); if (e) e.textContent = `${M.fmt(w[i] * 100)}%`; });
+    const tj = $("#smTj", akar), tt = $("#smTt", akar); if (!tj || !tt) return;
+    tj.textContent = `Dengan bobot ini zona dari kandidat: ${t.baru.length ? t.baru.map(z => `${M.fmt(z.skor, 2)} di ${M.desimal(z.lat, z.lon)}`).join("; ") : "tidak ada yang mencapai 0,35"}.`;
+    tt.innerHTML = `<table class="sm-tabel"><thead><tr><th>Zona</th><th class="n" title="Kualitas awan">Q</th><th class="n" title="Lepas sebelum sasaran">H</th><th class="n" title="Paparan zona">P</th><th class="n" title="Skor di berkas">Skor berkas</th><th class="n" title="Skor dengan bobot di atas">Skor bobot ini</th></tr></thead><tbody>${t.baris.map(r => `<tr><td>${r.id}</td><td class="n">${M.fmt(r.Q, 2)}</td><td class="n">${M.fmt(r.H, 2)}</td><td class="n">${M.fmt(r.P, 2)}</td><td class="n">${M.fmt(r.file, 2)}</td><td class="n">${M.fmt(r.baru, 2)}</td></tr>`).join("")}</tbody></table>`; }
+  const csvTinjau = () => { const t = baruTinjau(); return M.csv([["zona", "Q", "H", "P", "skor_berkas", `skor_bobot_${t.w.map(x => x.toFixed(2)).join("_")}`], ...t.baris.map(r => [r.id, r.Q, r.H, r.P, r.file, r.baru.toFixed(3)])]); };
+  function geserBobot(el) { st.bobotB[+el.dataset.smBobot] = +el.value; NAMA_BOBOT.forEach((_, i) => { const e = $(`#smBw${i}`, akar); if (e) e.textContent = `${M.fmt(bobotNorm()[i] * 100)}%`; });
+    cancelAnimationFrame(geserBobot.r); geserBobot.r = requestAnimationFrame(isiTinjau); }
+  function isiBanjir() { const b = st.banjir, el = $("#smB", akar); if (!el || !b) return;
+    if (el.dataset.siap !== (b.galat ? "g" : b.dibuat)) { el.dataset.siap = b.galat ? "g" : b.dibuat; st.zB = 0;
+      el.innerHTML = `<div class="sm-kol">${kartu("smSas", "target", "Sasaran hari ini", sasaranHtml())}${kartu("smRekB", "banjir", "Rekomendasi", rekB())}</div><div class="sm-kol">${kartu("smZonaB", "zona", "Zona usulan 24 jam", `<div class="sm-zdaf" id="smZdafB">${daftarZonaB()}</div>`)}${kartu("smTinjau", "tabel", "Tinjau", tinjauHtml(), {lipat: true})}</div>`;
+      const tj = $("#smTinjau", akar); if (tj) tj.open = false; (window.requestIdleCallback || (f => setTimeout(f, 200)))(isiTinjau);
+      muatManualB(); namaKabMuat().then(n => { st.namaKab = n; const bd = $("#smSas .ex-bd", akar); if (bd) bd.innerHTML = sasaranHtml(); }); }
+    pilihMarkerB(); }
+  const pilihMarkerB = () => st.mkB.forEach((m, i) => m.getElement().classList.toggle("sm-pilih", i === st.zB));
+  function pilihZonaB(i) { const z = st.banjir?.zona?.[i]; if (!z) return; st.zB = i;
+    akar.querySelectorAll("[data-sm-zonab]").forEach(b => b.setAttribute("aria-current", String(+b.dataset.smZonab === i))); pilihMarkerB();
+    requestAnimationFrame(() => { const rek = $("#smRekB .ex-bd", akar); if (rek) rek.innerHTML = rekB(); setLangkah(idxLangkah(z.langkah)); st.peta?.easeTo({center: [z.lon, z.lat], zoom: Math.max(st.peta.getZoom(), 6.5), duration: 600}); }); }
+  async function muatManualB() { const a = [];
+    for (const t of [wib(0), wib(1)]) { const r = await ambil(`/api/operasi/semai/sasaran?tanggal=${t}`); if (Array.isArray(r)) a.push(...r); }
+    st.manualB = a; const bd = $("#smSas .ex-bd", akar); if (bd && a.length) bd.innerHTML = sasaranHtml(); }
+  /* dialog Tambah sasaran: pencari kab/kota (datalist), tanggal hari ini atau besok, catatan <= 300 huruf */
+  async function bukaSasaran() {
+    let dlg = $("#smDlgS"); if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "smDlgS"; dlg.className = "ops-dlg sm-dlg"; ($("#opsLaporan") || document.body).append(dlg);
+      dlg.addEventListener("click", e => { if (e.target === dlg || e.target.closest("[data-sm-batal]")) dlg.close(); if (e.target.closest("[data-sm-simpans]")) simpanSasaran(dlg); }); }
+    dlg.innerHTML = `<div class="ops-dlg-isi"><article class="ex ex-std sm-dk"><header class="ex-hd"><span class="ex-ey ops-ey-ik" role="img" aria-label="Sasaran">${sv("target")}</span><div class="ex-jd"><h3>Tambah sasaran banjir</h3><small class="sm-sj">Untuk akun pusdalops dan tmc</small></div></header><div class="ex-bd sm-form">
+      <label>${lb("kota", "Kab/kota")}<input id="smKab" list="smKabL" autocomplete="off" placeholder="Ketik nama kab/kota" maxlength="80"><datalist id="smKabL"></datalist></label>
+      <label>${lb("jam", "Tanggal")}<select id="smTglS"><option value="${wib(0)}">hari ini, ${wib(0)}</option><option value="${wib(1)}" selected>besok, ${wib(1)}</option></select></label>
+      <label>${lb("tabel", "Catatan, boleh kosong")}<textarea id="smCatS" maxlength="300" rows="2"></textarea></label><p class="sm-galat" id="smGalatS" role="alert" hidden></p>
+      <div class="sm-aksi"><button type="button" class="sm-tombol" data-sm-simpans>Simpan sasaran</button><button type="button" class="sm-tombol-garis" data-sm-batal>Batal</button></div></div></article></div>`;
+    dlg.showModal();   // terbuka seketika; daftar kab menyusul
+    st.namaKab = st.namaKab || await namaKabMuat(); const l = $("#smKabL", dlg); if (l && dlg.open) l.innerHTML = Object.values(st.namaKab).map(n => `<option value="${esc(n)}"></option>`).join(""); }
+  async function simpanSasaran(dlg) { const g = $("#smGalatS", dlg), salah = t => { g.textContent = t; g.hidden = false; }, v = $("#smKab", dlg).value.trim().toLowerCase(), cat = $("#smCatS", dlg).value.trim(), tanggal = $("#smTglS", dlg).value;
+    const kab = Object.entries(st.namaKab || {}).find(([k, n]) => n.toLowerCase() === v || k === v)?.[0]; if (!kab) return salah("Pilih kab/kota dari daftar yang muncul.");
+    let r; try { r = await fetch("/api/operasi/semai/sasaran", {method: "POST", credentials: "same-origin", headers: {"Content-Type": "application/json"}, body: JSON.stringify({kab, tanggal, ...(cat ? {catatan: cat} : {})})}); } catch (e) { return salah("Tidak tersambung ke server. Coba lagi."); }
+    if (!r.ok) { const j = await r.json().catch(() => ({})), t = {401: "Masuk dulu untuk menambah sasaran.", 403: "Akun ini tidak punya hak menambah sasaran.", 409: "Kab/kota itu sudah jadi sasaran untuk tanggal itu.", 429: "Batas sasaran hari ini sudah tercapai.", 503: "Fitur sasaran belum diaktifkan di server."}[r.status];
+      return salah((typeof j.galat === "string" && j.galat) || t || j.error || `Tidak tersimpan (kode ${r.status}).`); }
+    const j = await r.json().catch(() => ({})); st.manualB.push({id: j.id, kab, tanggal, catatan: cat}); dlg.close();
+    toast((st.banjir?.sasaran || []).some(s => s.kab === kab) ? "Sasaran dicatat sebagai Pusdalops; kab itu sudah ada di daftar." : "Sasaran disimpan, dihitung di putaran berikutnya.");
+    requestAnimationFrame(() => { const bd = $("#smSas .ex-bd", akar); if (bd) bd.innerHTML = sasaranHtml(); (window.requestIdleCallback || (f => setTimeout(f, 200)))(isiTinjau); }); }
+
   /* ---------------- dialog Jadikan target ---------------- */
   function bukaTarget() {
     const z = zonaTerpilih(); if (!z) return; const D = st.ctx?.D?.() || {}, bs = (D.peta?.base || []).filter(b => b.lat != null), omc = new Set((D.peta?.armada || []).filter(a => a.peran === "omc").map(a => a.base_id));
@@ -281,10 +363,13 @@
       const sm = e.target.closest(".sm-lipat>summary"); if (sm) { e.stopPropagation(); return; }   // lipat sungguhan: pengendali kartu utama menahan klik kepala kartu
       let t;
       if ((t = e.target.closest("[data-sm-tujuan]"))) return setTujuan(t.dataset.smTujuan);
+      if ((t = e.target.closest("[data-sm-zonab]"))) { t.setAttribute("aria-current", "true"); return pilihZonaB(+t.dataset.smZonab); }
+      if (e.target.closest("[data-sm-tambah]")) return bukaSasaran();
+      if (e.target.closest("[data-sm-csv]")) { navigator.clipboard?.writeText(csvTinjau()).then(() => toast("Tabel faktor disalin sebagai CSV"), () => toast("Salin tidak berhasil: izin papan klip ditolak")); return; }
       if ((t = e.target.closest("[data-sm-zona]"))) { t.setAttribute("aria-current", "true"); return pilihZona(+t.dataset.smZona); }
       if ((t = e.target.closest("[data-sm-kota]"))) return pilihKota(+t.dataset.smKota);
       if ((t = e.target.closest("[data-sm-salin]"))) { navigator.clipboard?.writeText(t.dataset.smSalin).then(() => toast(`Koordinat disalin: ${t.dataset.smSalin}`), () => toast("Salin gagal: izin papan klip ditolak")); return; }
-      if (e.target.closest("[data-sm-ringkas]")) { navigator.clipboard?.writeText(M.ringkasan(st.data)).then(() => toast("Ringkasan disalin"), () => toast("Salin gagal: izin papan klip ditolak")); return; }
+      if (e.target.closest("[data-sm-ringkas]")) { navigator.clipboard?.writeText(st.tujuan === "banjir" ? M.ringkasanBanjir(st.banjir, manualBaru()) : M.ringkasan(st.data)).then(() => toast("Ringkasan disalin"), () => toast("Salin gagal: izin papan klip ditolak")); return; }
       if (e.target.closest("[data-sm-putar]")) return putar();
       if (e.target.closest("[data-sm-target]:not(:disabled)")) return bukaTarget();
       if (e.target.closest(".sm-lapis-hd") && matchMedia("(max-width:900px)").matches) { e.target.closest(".sm-lapis").classList.toggle("sm-tutup"); return; }
@@ -293,13 +378,13 @@
       if (e.target.closest("[data-sm-semua]")) { st.semuaCluster = true; $("#smCluster .ex-bd", akar).innerHTML = tabelCluster(); return; }
       if ((t = e.target.closest("[data-sm-cluster]"))) { const c = (st.data.cluster || []).find(x => String(x.id) === t.dataset.smCluster); if (c?.lat != null) requestAnimationFrame(() => st.peta?.easeTo({center: [c.lon, c.lat], zoom: Math.max(st.peta.getZoom(), 7), duration: 600})); }
     });
-    akar.addEventListener("input", e => { if (e.target.id === "smGeser") { if (st.play) putar(); setLangkah(+e.target.value); } });
+    akar.addEventListener("input", e => { if (e.target.dataset.smBobot != null) return geserBobot(e.target); if (e.target.id === "smGeser") { if (st.play) putar(); setLangkah(+e.target.value); } });
     akar.addEventListener("change", e => { const lb2 = e.target.closest("[data-sm-lap]"); if (lb2) setLapis(lb2.dataset.smLap, e.target.checked); });
   }
 
   async function tampil(el, ctx) {
     st.ctx = ctx; if (akar === el && st.mulai) { requestAnimationFrame(() => { st.peta?.resize(); }); return; }
-    clearInterval(st.play); st.play = 0; st.peta?.remove(); st.peta = null; st.terap = {}; st.mk = {zona: [], base: [], kota: []}; st.ada = {awan: true, asap: true}; st.kota = -1; st.mkB = [];
+    clearInterval(st.play); st.play = 0; st.peta?.remove(); st.peta = null; st.terap = {}; st.mk = {zona: [], base: [], kota: []}; st.ada = {awan: true, asap: true}; st.kota = -1; st.mkB = []; st.zB = 0; st.manualB = [];
     akar = el; st.mulai = true; el.classList.add("sm"); el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat peluang semai…</div>`;
     const r = await ambil(BAWAH + "semai.json"), ok = r && !r.galat && r.putaran && r.dibuat;
     st.data = ok ? r : null; st.i = 0; st.zona = 0;
@@ -309,6 +394,7 @@
     else if (r?.galat != null && r.galat !== 404 && r.galat !== 0) $("#smPita", akar).innerHTML = `<p class="sm-pita sm-pita-basi" role="status">${lb("peringatan", `Berkas prakiraan gagal dibaca (kode ${r.galat}).`)}</p>`;
     { const kp = $(".sm-lapis", akar); if (kp) geserPanel(kp, kp.querySelector(".sm-lapis-hd"), kp.parentElement); }
     pasangPendengar(); requestAnimationFrame(pasangPeta); muatTarget();
+    if (st.tujuan === "banjir" && !st.data) muatBanjir().then(b => { st.banjir = b; terapTujuan(); });
     window.OpsSemaiHit = st.data?.zona?.length ? M.fmt(st.data.zona.length) : "–"; const b = $('[data-seksi="semai"]'); if (b && !b.querySelector("b")) b.insertAdjacentHTML("beforeend", `<b>${window.OpsSemaiHit}</b>`);
   }
   window.OpsSemai = {tampil, hentikan() { if (st.play) putar(); }};

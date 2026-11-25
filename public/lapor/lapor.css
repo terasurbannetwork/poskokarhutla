@@ -2801,3 +2801,15 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-kaca-pasang{--kc:var(--ok-tx)}
 .lp-kaca-peringatan{--kc:var(--warn-tx)}
 .lp-kaca-hilang{--kc:var(--info-tx)}
+
+/* tanda Pantau Bencana di samping lambang BNPB */
+.lp-sampul-atas img.lp-logo-pantau,.lp-tab-merek img.lp-logo-pantau{border-radius:10px!important;padding:0!important;background:none!important;box-shadow:none!important;margin-left:-2px}
+
+/* pembuka: lambang BNPB dan tanda Pantau Bencana berdampingan, teks di bawah keduanya */
+.lp-pb-merek{display:grid!important;grid-template-columns:auto auto;justify-content:center;column-gap:16px}
+.lp-pb-merek span{grid-column:1/-1}
+.lp-pb-merek img.lp-logo-pantau{border-radius:22%}
+.lp-resi{display:flex;gap:8px;align-items:flex-start;margin:4px 0 4px 36px;color:var(--ink2);font-size:.8125rem;list-style:none}
+.lp-resi svg{width:16px;height:16px;flex:none;color:var(--ok)}
+.lp-resi b{font-weight:600}.lp-resi small{display:block}
+.lp-hitung{display:block;text-align:right;color:var(--ink2)}

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Pantau Bencana">
+  <!-- Tanda Pantau Bencana (pilihan pemilik 25 Nov 2026): perisai lindung, penanda lokasi laporan, tangan yang menolong, gelombang peringatan dini.
+       Palet BNPB: oranye D9600B (dasar), navy 051C2C, putih. Simetri: perisai dan tangan pada sumbu tegak x=50, gelombang di celah kanan atas. -->
+  <defs>
+    <radialGradient id="ubin" cx=".28" cy=".18" r="1.1"><stop offset="0" stop-color="#F7963F"/><stop offset=".55" stop-color="#E8650F"/><stop offset="1" stop-color="#C9550A"/></radialGradient>
+    <filter id="bayang" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1.2" stdDeviation="1.1" flood-color="#5A2200" flood-opacity=".35"/></filter>
+  </defs>
+  <rect width="100" height="100" rx="22" fill="url(#ubin)"/>
+  <rect x="1" y="1" width="98" height="98" rx="21" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="1.2"/>
+  <g filter="url(#bayang)">
+  <path d="M55 21.6C46.6 25.6 36 28 25 28v21c0 16.5 11 27.5 25 32.5 14-5 25-16 25-32.5v-5" fill="none" stroke="#051C2C" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="none" stroke="#fff" stroke-width="4.4" stroke-linecap="round">
+    <path d="M60.6 29.2A13 13 0 0 1 70.8 39.4"/>
+    <path d="M62.3 21.6A20.5 20.5 0 0 1 78.4 37.7"/>
+    <path d="M64 14A28 28 0 0 1 86 36"/>
+  </g>
+  <path d="M50 34a10 10 0 0 1 10 10c0 7.2-10 17-10 17s-10-9.8-10-17a10 10 0 0 1 10-10z" fill="#051C2C"/>
+  <circle cx="50" cy="44" r="3.8" fill="#E8650F"/>
+  <path d="M30.5 63.5c4.8-3.6 10-3.5 15.2-.6l2.6 1.5h9.7c2.6 0 2.6 4.3 0 4.3h-8.3c5.6 1.6 11.4.2 16.3-4.3l2.3-2c2.1-1.8 4.6.6 3 2.7C66.4 72 58.4 76 50.6 76c-7.8 0-14.3-4.3-20.1-12.5z" fill="#051C2C"/>
+  </g>
+</svg>

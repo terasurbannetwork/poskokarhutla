@@ -111,6 +111,44 @@
   const tampakLapis = (t, tampak) => { const b = t === "banjir"; return {api: !b && !!tampak.api, asap: !b && !!tampak.asap, anginAsap: !b && !!tampak.anginAsap, kotaAsap: !b, zonaKarhutla: !b && !!tampak.zona, sasaran: b && tampak.zona !== false, awan: !!tampak.awan, pengarah: !!tampak.pengarah}; };
   /* ambil sekali lalu simpan janjinya; panggilan berikut memakai hasil yang sama (muat malas semai_banjir.json) */
   const malas = f => { let j = null; return () => (j ||= f()); };
-  const api = {tujuanDariHash, hashTujuan, tampakLapis, malas, teramati, fmt, dms, desimal, salinKoordinat, jam, hariJam, jendela, putaranTeks, waktuLangkah, plusJam, umurJam, umurTeks, kalimatKosong, judulKosong, urutKota, sudahBerasap, barisAsal, alasan, ketinggianTeks, bahanTeks, jumlahTeks, asapKalimat, ringkasan, namaNegara, arahKata};
+
+  /* SB-09: tujuan banjir. Port JS fungsi murni semai_murni.py (faktor_h, skor, zona_nms); diuji silang tests/operasi/semai_banjir_silang.test.mjs.
+     Peramban hanya menghitung ulang zona dari kandidat_sasaran saat bobot Q H P digeser (ALGORITMA semai-banjir §8); angka lain dibaca apa adanya. */
+  const R_BUMI_KM = 6371.0088, BOBOT_B = [0.45, 0.4, 0.15], ZONA_B = {jarak: 40, maks: 5, ambang: 0.35};
+  const haversine = (a1, o1, a2, o2) => { const r = Math.PI / 180, p1 = a1 * r, p2 = a2 * r, a = Math.sin((p2 - p1) / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin((o2 - o1) * r / 2) ** 2; return 2 * R_BUMI_KM * Math.asin(Math.sqrt(a)); };
+  const faktorH = (tiba, lo = 1, pen = 3, mks = 4) => tiba == null || tiba < lo || tiba >= mks ? 0 : tiba <= pen ? 1 : mks - tiba;
+  const normBobot = w => { const j = w.reduce((a, b) => a + b, 0); return j > 0 ? w.map(x => x / j) : BOBOT_B; };
+  const skorBanjir = (Q, H, P, w = BOBOT_B) => (Q <= 0 || H <= 0 || P <= 0) ? 0 : Q ** w[0] * H ** w[1] * P ** w[2];
+  function zonaNms(cells, minKm = ZONA_B.jarak, maks = ZONA_B.maks, ambang = ZONA_B.ambang) { const pilih = [];
+    for (const c of cells.slice().sort((a, b) => b.skor - a.skor)) { if (pilih.length >= maks || c.skor < ambang) break; if (pilih.every(z => haversine(c.lat, c.lon, z.lat, z.lon) > minKm)) pilih.push(c); }
+    return pilih; }
+  /* zona dari kandidat_sasaran: skor tertinggi per sel (lat, lon), NMS 40 km, paling banyak 5, skor >= 0,35 (ALGORITMA §6) */
+  function hitungUlangBanjir(d, w = BOBOT_B) { const k = Object.fromEntries((d?.kandidat_kolom || []).map((n, i) => [n, i])), ww = normBobot(w), sel = new Map();
+    for (const r of d?.kandidat_sasaran || []) { const sk = skorBanjir(r[k.Q], r[k.H], r[k.P], ww), key = r[k.lat] + "," + r[k.lon], b = sel.get(key);
+      if (!b || sk > b.skor) sel.set(key, {lat: r[k.lat], lon: r[k.lon], skor: sk, langkah: r[k.langkah], sasaran_idx: r[k.sasaran_idx], laut: !!r[k.laut], Q: r[k.Q], H: r[k.H], P: r[k.P]}); }
+    return zonaNms([...sel.values()]); }
+  const ASAL = {prakiraan: "prakiraan kita", bmkg: "BMKG", tetap: "daftar tetap", manual: "Pusdalops"};
+  const asalTeks = a => ASAL[a] || a;
+  const pantau = s => !!s.pantau || s.tenggang > 1;
+  const KOSONG_B = {tidak_ada_sasaran: "Tidak ada sasaran banjir untuk {d} dari prakiraan kita, BMKG, daftar tetap, atau Pusdalops.", angin_lemah: "Angin pengarah di sasaran terlalu lemah untuk mencegat awan dari hulu.",
+    tidak_ada_awan_hulu: "Tidak ada awan layak semai di hulu sasaran dalam 24 jam ke depan. Hujan sasaran bisa tumbuh di tempat.", tanpa_prakiraan: "Prakiraan belum tersedia.",
+    semua_pantau: "Semua sasaran banjir untuk {d} baru jatuh di hari yang belum tercakup putaran ini; zona menyusul di putaran berikutnya.", di_luar_kisi: "Sasaran berada di luar kisi angin putaran ini, jadi lintasan hulu tidak bisa dihitung."};
+  const kalimatKosongB = (a, d) => (KOSONG_B[a] || KOSONG_B.tidak_ada_awan_hulu).replace("{d}", d || "hari itu");
+  const judulKosongB = a => ({tidak_ada_sasaran: "tidak ada sasaran banjir", angin_lemah: "angin pengarah lemah", tanpa_prakiraan: "prakiraan belum tersedia", semua_pantau: "semua sasaran masih pantau", di_luar_kisi: "sasaran di luar kisi angin"})[a] || "tidak ada awan layak semai di hulu";
+  /* alasan C, H, P, B zona banjir: teks sudah disusun mesin di zona.alasan (ALGORITMA §5) */
+  const alasanB = z => [["C", "Awan", z.alasan?.C], ["H", "Lepas sebelum sasaran", z.alasan?.H], ["P", "Paparan", z.alasan?.P], ["B", "Base", z.alasan?.B]];
+  /* ringkasan teks Pos komando tujuan banjir (DESIGN-SYSTEM semai-banjir §5), ditutup kalimat batas */
+  function ringkasanBanjir(data, manual = []) {
+    if (!data || data.galat) return "Peluang semai (banjir): prakiraan belum tersedia.\nUsulan mesin, bukan prakiraan resmi. Konfirmasi tiap operasi dengan BMKG.";
+    const ss = (data.sasaran || []).map(s => `${String(s.nama || s.kab).replace(/^(Kota Administrasi|Kabupaten|Kota|Kab\.)\s+/, "")} (${(s.asal || []).map(asalTeks).join(", ")})`), zs = data.zona || [];
+    const out = [`Peluang semai (banjir), ${hariJam(data.dibuat)} (ECMWF ${String(new Date(data.putaran.init).getUTCHours()).padStart(2, "0")}z)`, `Sasaran: ${ss.length ? ss.join(", ") : "belum ada"}${manual.length ? `; Pusdalops menambah ${manual.length}, dihitung di putaran berikutnya` : ""}`];
+    if (zs.length) for (const z of zs) { const t = z.cegat?.[0]?.tiba_jam, b = z.base;
+      out.push(`- B${z.huruf} ${z.kota || z.prov}, ${jendela(z)}, skor ${fmt(z.skor, 2)}${t != null ? `, tiba di sasaran sekitar ${fmt(t, 1)} jam` : ""}${b?.nama ? `, dari ${b.nama}${b.icao ? ` (${b.icao})` : ""}${b.menit != null ? ` sekitar ${fmt(b.menit)} menit` : ""}` : ""}`); }
+    else out.push(data.kalimat_kosong || kalimatKosongB(data.alasan_kosong, data.hari_sasaran));
+    out.push("Usulan mesin, bukan prakiraan resmi. Konfirmasi tiap operasi dengan BMKG.");
+    return out.join("\n"); }
+  /* tabel faktor Tinjau sebagai CSV: tanda kutip dikutip ganda, pemisah koma */
+  const csv = baris => baris.map(r => r.map(x => { const t = String(x ?? ""); return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; }).join(",")).join("\n");
+  const api = {faktorH, skorBanjir, zonaNms, hitungUlangBanjir, normBobot, BOBOT_B, asalTeks, pantau, kalimatKosongB, judulKosongB, alasanB, ringkasanBanjir, csv, tujuanDariHash, hashTujuan, tampakLapis, malas, teramati, fmt, dms, desimal, salinKoordinat, jam, hariJam, jendela, putaranTeks, waktuLangkah, plusJam, umurJam, umurTeks, kalimatKosong, judulKosong, urutKota, sudahBerasap, barisAsal, alasan, ketinggianTeks, bahanTeks, jumlahTeks, asapKalimat, ringkasan, namaNegara, arahKata};
   if (typeof module !== "undefined" && module.exports) module.exports = api; else akar.OpsSemaiMurni = api;
 })(typeof window !== "undefined" ? window : globalThis);

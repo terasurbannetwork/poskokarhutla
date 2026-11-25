@@ -194,3 +194,25 @@
 #opsLaporan .sm-tujuan button:focus-visible{outline:2px solid var(--sm-sasaran);outline-offset:2px}
 #opsLaporan .sm-zb i{border-color:var(--sm-sasaran)}
 #opsLaporan .sm-zb span{border-color:var(--sm-sasaran);color:var(--sm-sasaran)}
+
+/* SB-09: kolom kanan tujuan banjir (DESIGN-SYSTEM semai-banjir §3); hanya token */
+#opsLaporan .sm-baris3[hidden],#opsLaporan #smCluster[hidden]{display:none}
+#opsLaporan .sm-kol{display:grid;gap:20px;align-content:start;min-width:0}
+#opsLaporan .sm-sblist{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+#opsLaporan .sm-sb{display:grid;gap:4px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+#opsLaporan .sm-sb1{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px}
+#opsLaporan .sm-sb1 strong{color:var(--ink);font-size:.8125rem}
+#opsLaporan .sm-sb1 .sm-t{margin:0}
+#opsLaporan .sm-sb2{display:flex;flex-wrap:wrap;gap:2px 10px;color:var(--ink2);font-size:.75rem}
+#opsLaporan .sm-sb2 code{font:600 .75rem ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink)}
+#opsLaporan .sm-as-bmkg{border-color:var(--sm-sasaran);color:var(--sm-sasaran)}
+#opsLaporan .sm-as-manual{border-color:var(--sm-garis);color:var(--ink)}
+#opsLaporan .sm-hH{background:var(--sm-sasaran)}
+#opsLaporan .sm-hP{background:var(--sm-garis)}
+#opsLaporan .sm-zlb{width:auto;min-width:26px;padding:0 6px;border-radius:13px;border-color:var(--sm-sasaran);color:var(--sm-sasaran)}
+#opsLaporan .sm-sls{display:grid;gap:8px}
+#opsLaporan .sm-sl{display:grid;grid-template-columns:minmax(0,1fr) 140px 44px;gap:10px;align-items:center;font-size:.8125rem}
+#opsLaporan .sm-sl>span{display:flex;align-items:center;gap:8px}
+#opsLaporan .sm-sl code{font:600 .75rem ui-monospace,SFMono-Regular,Menlo,monospace;text-align:right}
+#opsLaporan .sm-sl input[type=range]{width:100%;accent-color:var(--sm-sasaran)}
+@media (max-width:900px){#opsLaporan .sm-sl{grid-template-columns:minmax(0,1fr) 110px 40px}}

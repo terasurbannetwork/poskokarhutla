@@ -669,3 +669,9 @@ Dasar: `riset/R-PERTANYAAN-LANJUT.md` (Perka 9/2008 Format-7 sampai 9, Lampiran 
 | K104 | 25 Nov 2026 | Kuota pesan per nomor naik menjadi 120 per jam (pemilik: "kuotanya satu orang 120, pertanyaannya banyak"); harian 300 supaya tidak lebih ketat dari jam. Batas 20 per menit dan pintu web per IP tetap. |
 
 Catatan pelaksanaan: semua isian baru tipe pilihan, tidak pernah wajib, selalu punya "Tidak tahu". Pita jarak dan pita jumlah orang adalah kategori pilihan, bukan ambang resmi. Penanda merah di meja untuk "ada yang terjebak" (QP-2) belum dibangun di putaran ini.
+
+## Keputusan pemilik 25 Nov 2026: foto orang dicari dibaca AI
+
+| No | Tanggal | Keputusan | Kutipan |
+| --- | --- | --- | --- |
+| K105 | 25 Nov 2026 | Alur cari orang: pelapor boleh mengunggah foto orang yang dicari **dari galeri** (pengecualian K75, hanya langkah foto orang dicari; foto kejadian tetap wajib kamera). Sesudah pelapor setuju, foto dikirim ke Claude API (Anthropic, dipanggil dari Worker Cloudflare lewat `src/lapor_model.js`) untuk membaca ciri fisik: perkiraan rentang umur, jenis kelamin yang tampak, rambut, bentuk wajah dan hidung, perawakan, pakaian, tanda khusus. Hasilnya usulan yang diperiksa dan dibetulkan pelapor sebelum disimpan (pengecualian D17). Foto hanya untuk staf, tidak publik, tanpa vektor wajah, tidak dipakai untuk pencocokan otomatis. | "Ya kasih dong fotonya ... AI nya memproses ciri fisik ... range umur dll jenis kelamin jenis rambut hidung"; "Boleh ini tapi worker nya cloudflare atau Anthropic kan ada API nya ya" |
