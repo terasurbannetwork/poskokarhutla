@@ -127,3 +127,6 @@ data/kajian-bnpb/hitung-bencana/mesin/_kerja/
 # insiden-kaya (24 Nov 2026): arsip deteksi per insiden lewat cache data- saja; data DOE Malaysia belum berizin terbit
 public/data/progresi/arsip/
 public/udara/data/stasiun_asing.json
+
+# desa-waspada (24 Nov 2026): dibuat titik.yml lewat cache data-, tidak di-commit (DESAIN-TEKNIS §5)
+public/data/desa_waspada.json

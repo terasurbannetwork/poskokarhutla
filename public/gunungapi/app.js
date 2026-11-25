@@ -63,7 +63,7 @@ const IK_TAB = {kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 1
 /* Tab Simulasi: sim.js (+ abu_model.js, sim_lahar.js) dimuat malas saat tab dibuka; Sim.buka({id}) mengisi #sim-akar. Tab lain menjeda pemutarnya, peta tetap hidup. */
 const SimTab = {
   _p: null,
-  muat() { return this._p ||= Promise.all(["abu_model.js", "sim_lahar.js", "sim_tanggap.js", "sim.js"].map(f => new Promise((ok, gagal) => { const e = document.createElement("script"); e.src = f; e.onload = ok; e.onerror = () => gagal(new Error(f)); document.head.append(e); }))).catch(e => { this._p = null; throw e; }); },
+  muat() { return this._p ||= Promise.all(["../inti/perlakuan.js", "abu_model.js", "sim_lahar.js", "sim_tanggap.js", "sim.js"].map(f => new Promise((ok, gagal) => { const e = document.createElement("script"); e.src = f; e.onload = ok; e.onerror = () => gagal(new Error(f)); document.head.append(e); }))).catch(e => { this._p = null; throw e; }); },
   async render() {
     const akar = $("#sim-akar"); if (!akar) return;
     const id = S.simId || window.Sim?.keadaan?.id || new URLSearchParams(location.search).get("g") || ""; S.simId = null;   /* kosong = bawaan: gunung level MAGMA tertinggi hari ini (Sim.buka) */

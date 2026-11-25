@@ -17,7 +17,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <script src="/halaman_awal.js" data-tema></script>
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/lapor/lapor.css?v=160" rel="stylesheet">
+<link href="/lapor/lapor.css?v=166" rel="stylesheet">
+<link href="/lapor/selamat.css?v=1" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
 <svg width="0" height="0" class="lp-sr" aria-hidden="true">
@@ -162,6 +163,12 @@
           <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-telepon"/></svg></span>
           <b>Nomor penting</b><small>BPBD, rumah sakit, polisi, dan pemadam kebakaran terdekat.</small></button>
       </div>
+      <!-- Kabar selamat (K91, D126; LA-81): bisa dibuka kapan saja; kartu ajakan menunggu sinyal kejadian aktif di kab/kota (Q68) -->
+      <div class="lp-kompartemen-isi">
+        <button class="sl-pita" type="button" data-buka-selamat>
+          <svg aria-hidden="true"><use href="#i-centang"/></svg>
+          <span><b>Kabar selamat</b><small>Kabari keluarga bahwa Anda selamat, atau laporkan orang yang belum ditemukan.</small></span></button>
+      </div>
 
       </section>
       <!-- aplikasi dan peringatan dini (paket pwa-peringatan): diisi public/lapor/peringatan.js -->
@@ -186,6 +193,7 @@
       <button class="lp-ikon" id="bTutupInfo" type="button" aria-label="Kembali"><svg aria-hidden="true"><use href="#i-kembali"/></svg></button>
       <span class="lp-info-ikon" id="infoIkon" aria-hidden="true"></span>
       <div class="lp-chat-judul"><b id="infoJudul">Info bencana di daerah</b><small id="infoSub">Asisten AI Pantau Bencana</small></div>
+      <button type="button" class="lp-tema lp-tema-atas" aria-label="Ganti tema terang atau gelap"><svg class="lp-tema-bulan" aria-hidden="true"><use href="#i-bulan"/></svg><svg class="lp-tema-matahari" aria-hidden="true"><use href="#i-matahari"/></svg></button>
     </header>
     <div class="lp-gulir" id="gulirInfo"><ol class="lp-log" id="logInfo" role="log" aria-live="polite"></ol><div class="lp-langkah-wadah" id="kartuInfo"></div></div>
   </section>
@@ -246,7 +254,7 @@
 
   <!-- ===== layar kebijakan privasi (tata letak meniru halaman privasi Anthropic; isi untuk layanan BNPB) ===== -->
   <section class="lp-layar" id="lPrivasi" hidden>
-    <header class="lp-chat-kepala"><button class="lp-ikon" id="bTutupPrivasi" type="button" aria-label="Kembali"><svg aria-hidden="true"><use href="#i-kembali"/></svg></button><div class="lp-chat-judul"><b>Kebijakan privasi</b><small>Pantau Bencana BNPB</small></div></header>
+    <header class="lp-chat-kepala"><button class="lp-ikon" id="bTutupPrivasi" type="button" aria-label="Kembali"><svg aria-hidden="true"><use href="#i-kembali"/></svg></button><div class="lp-chat-judul"><b>Kebijakan privasi</b><small>Pantau Bencana BNPB</small></div><button type="button" class="lp-tema lp-tema-atas" aria-label="Ganti tema terang atau gelap"><svg class="lp-tema-bulan" aria-hidden="true"><use href="#i-bulan"/></svg><svg class="lp-tema-matahari" aria-hidden="true"><use href="#i-matahari"/></svg></button></header>
     <article class="lp-legal" id="isiPrivasi"></article>
   </section>
 
@@ -320,6 +328,7 @@
       <img class="lp-avatar" src="/lapor/lambang-bnpb.png" alt="" width="36" height="36">
       <div class="lp-chat-judul"><b>Pantau Bencana BNPB</b><small id="langkahTeks">Asisten AI</small></div>
       <button class="lp-ikon lp-isian-tombol" id="bIsian" type="button" aria-controls="panelIsian" aria-expanded="false"><svg aria-hidden="true"><use href="#i-daftar"/></svg><span id="lengkapKecil">0%</span></button>
+      <button type="button" class="lp-tema lp-tema-atas" aria-label="Ganti tema terang atau gelap"><svg class="lp-tema-bulan" aria-hidden="true"><use href="#i-bulan"/></svg><svg class="lp-tema-matahari" aria-hidden="true"><use href="#i-matahari"/></svg></button>
     </header>
     <div class="lp-progres" aria-hidden="true"><span id="progres"></span></div>
     <div class="lp-gulir" id="gulir">
@@ -373,7 +382,6 @@
     <button type="button" class="lp-bahasa-menu" hidden aria-label="Ganti bahasa"><svg aria-hidden="true"><use href="#i-bahasa"/></svg><span>Indonesia</span></button>
     <!-- tur bisa diputar ulang kapan saja (pemilik 21 Nov 2026: "kenapa ga mulai tournya? ... ada mulai tour gitu") -->
     <button type="button" class="lp-menu-tur" id="bMulaiTur"><svg aria-hidden="true"><use href="#i-bantuan"/></svg><span>Mulai tur</span></button>
-    <button type="button" class="lp-menu-tur lp-tema" aria-label="Ganti tema terang atau gelap"><svg class="lp-tema-bulan" aria-hidden="true"><use href="#i-bulan"/></svg><svg class="lp-tema-matahari" aria-hidden="true"><use href="#i-matahari"/></svg><span>Mode gelap</span></button>
     <div class="lp-tab-profil" id="tabProfil" hidden><span class="lp-tab-avatar" id="tabAvatar"></span><span><b id="tabNama"></b><small id="tabWa"></small></span></div>
     <!-- Sigap di ruang kosong menu samping (pemilik 19 Nov 2026: "ini agar disini") -->
     <div class="lp-sigap" id="sigapPanel" aria-live="polite"><div class="lp-sigap-maskot" id="sigapMaskot"></div><div class="lp-sigap-gelembung" id="sigapTeks"><b>Sigap</b><span>Saya bantu sampai laporan lengkap.</span></div></div>
@@ -384,8 +392,10 @@
 <script src="/inti/foto_kecil.js" defer></script>
 <script src="/inti/antre.js" defer></script>
 <script src="/bagi.js" defer></script>
-<script type="module" src="/lapor/lapor.js?v=135"></script>
-<script type="module" src="/lapor/peringatan.js?v=1"></script>
+<script type="module" src="/lapor/lapor.js?v=137"></script>
+<script type="module" src="/lapor/peringatan.js?v=2"></script>
 <script type="module" src="/lapor/luring.js?v=1"></script>
+<script src="/bnpb/turnstile.js" defer></script>
+<script type="module" src="/lapor/selamat.js?v=1"></script>
 </body>
 </html>

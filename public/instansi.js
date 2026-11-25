@@ -31,7 +31,7 @@
   /* serahkan kerja berat SESUDAH satu frame tercat (dua rAF, setTimeout sebagai jaring untuk tab tersembunyi) */
   const sesudahCat = fn => { let jalan = false; const f = () => { if (!jalan) { jalan = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(f)); setTimeout(f, 120); };
 
-  let saya = null, tugas = [], tab = "tugas", terpilih = null, konsesi = {}, sibuk = false, muatStatus = "memuat", posisi = null, filter = {kab: "", status: "aktif", bencana: ""}, berkas = [], peta = null, penanda = new Map(), picKab = {}, panelSig = "", petaGagal = false, petaMemuat = false;
+  let saya = null, tugas = [], tab = "tugas", terpilih = null, konsesi = {}, sibuk = false, muatStatus = "memuat", posisi = null, filter = {kab: "", status: "aktif", bencana: ""}, berkas = [], peta = null, penanda = new Map(), picKab = {}, panelSig = "", petaGagal = false, petaMemuat = false, statusSaya = 0;
   const draf = new Map();   // tugasId -> isian form yang belum terkirim, akun yang sedang masuk saja (salinan di IndexedDB store draf, tahan muat ulang)
   let akunTerakhir = null;
 
@@ -44,7 +44,8 @@
     const j = await r.json().catch(() => ({}));
     if (r.status === 401 && saya && j.profil_perlu) { saya.profil = null; tampil(); pesan("Pilih profil dan isi PIN dulu.", "galat"); return {ok: false, status: r.status, j}; }   // akun BPBD: sesi akun masih hidup, sesi profil tidak
     if (r.status === 403 && j.pin_wajib_ganti && window.InstansiProfil) { window.InstansiProfil.wajibGanti(); return {ok: false, status: r.status, j}; }   // PIN sementara dari admin: PIN baru wajib dulu
-    if (r.status === 401 && saya) { saya = null; bersihkanAkun(); tampil(); pesan(GALAT[401], "galat"); }
+    /* PIN salah juga 401 (src/profil.js), tapi sesi akun masih hidup: jangan dianggap keluar, cukup pesan di dialog PIN */
+    if (r.status === 401 && saya && !/\/profil\/(pin|gantipin)\//.test(url)) { saya = null; statusSaya = 401; bersihkanAkun(); tampil(); pesan(GALAT[401], "galat"); }
     if (r.status === 403 && j.wajib_ganti && saya && !saya.akun.wajib_ganti) { saya.akun.wajib_ganti = true; tampil(); }   // sandi awal masih diketahui admin: wajib dibuat baru
     return {ok: r.ok, status: r.status, j};
   }
@@ -73,11 +74,11 @@
   /* ================= tampilan utama ================= */
   function tampil() {
     window.InstansiSaya = saya;   // dibaca instansi_laporan.js (satu panggilan /saya saja)
-    for (const v of ["vMasuk", "vVerif", "vUtama", "vGanti", "vProfil", "vDaftarPic"]) $(v).hidden = true;
+    for (const v of ["vVerif", "vUtama", "vGanti", "vProfil", "vDaftarPic"]) $(v).hidden = true;
     $("profilKepala").hidden = true;
     $("keluar").hidden = !saya; $("akun").hidden = !saya;
-    document.body.classList.toggle("in-layar-masuk", !saya);   // layar masuk belah dua seperti /admin/masuk
-    if (!saya) { undangAkun = null; $("vMasuk").hidden = false; return; }
+    /* satu pintu masuk untuk semua akun (pemilik 24 Nov 2026): tanpa sesi ke /admin/masuk; tanpa sinyal tetap di sini dengan pesan */
+    if (!saya) { undangAkun = null; if (statusSaya === 401) location.replace("/admin/masuk?ke=" + encodeURIComponent(location.pathname + location.search)); else if (statusSaya !== -1) pesan("Belum bisa memeriksa akun. Periksa sambungan, lalu muat ulang halaman.", "galat"); return; }
     $("akun").textContent = saya.akun.wilayah;
     if (saya.akun.status === "aktif" && saya.akun.wajib_ganti) { $("vGanti").hidden = false; return; }
     if (saya.akun.wajib_ganti && saya.profil_mode) { $("vGanti").hidden = false; return; }   // akun BPBD: sandi lembaga baru lebih dulu, baru daftar PIC
@@ -128,26 +129,17 @@
   window.InstansiProfil?.pasang({api, pesan, muatSaya: () => muatSaya(), unggahDok: (j, f, i) => unggahDok(j, f, i), saya: () => saya});
   async function muatSaya() {
     const r = await api("GET", "/api/instansi/saya");
-    saya = r.ok ? r.j : null;
+    saya = r.ok ? r.j : null; statusSaya = r.status;
     if (saya && saya.akun.id !== akunTerakhir) { bersihkanAkun(); akunTerakhir = saya.akun.id; }   // akun lain di ponsel yang sama tidak melihat form, draf, atau berkas akun sebelumnya
     tampil();
   }
-  $("fMasuk").addEventListener("submit", async e => {
-    e.preventDefault(); const t = $("mKirim"); t.disabled = true; pesan("Memeriksa…");
-    if (!$("mUser").value.trim() || !$("mSandi").value) { t.disabled = false; return pesan("Isi username dan sandi dulu.", "galat"); }
-    const r = await api("POST", "/api/instansi/masuk", {username: $("mUser").value.trim(), sandi: $("mSandi").value});
-    t.disabled = false;
-    if (!r.ok) return pesan(r.status === 401 ? "Username atau sandi salah. Periksa huruf besar dan kecil, lalu coba lagi. Bila tetap gagal, minta admin mengatur ulang sandi." : manusiawi(r, "Belum bisa masuk. Coba lagi sebentar lagi."), "galat");
-    $("mSandi").value = ""; pesan(""); await muatSaya();
-  });
-  $("mMata").addEventListener("click", () => { const buka = $("mSandi").type === "password"; $("mSandi").type = buka ? "text" : "password"; $("mMata").setAttribute("aria-pressed", String(buka)); $("mMata").setAttribute("aria-label", buka ? "Sembunyikan sandi" : "Tampilkan sandi"); });
   $("keluar").addEventListener("click", async () => {
     const n = (await antreanKu()).filter(x => x.status === "menunggu").length;
     const r = await api("POST", "/api/instansi/keluar", {});
     /* tanpa sinyal sesi di server belum dicabut: jangan pura-pura keluar (orang berikutnya di ponsel ini akan masuk sebagai akun ini) */
     if (!r.ok && r.status !== 401) return pesan(r.status === 0 ? "Tidak ada sinyal, belum bisa keluar. Sesi masih aktif di ponsel ini; tekan Keluar lagi saat ada sinyal." : manusiawi(r, "Belum bisa keluar. Coba lagi."), "galat");
-    saya = null; bersihkanAkun(); akunTerakhir = null;
-    pesan(n ? `${n} isian akunmu belum terkirim. Isian itu tetap tersimpan di ponsel ini dan terkirim saat akun ini masuk lagi, paling lambat 6 jam sesudah foto diambil (lokasi yang lebih tua ditolak server).` : ""); tampil();
+    saya = null; bersihkanAkun(); akunTerakhir = null; statusSaya = n ? -1 : 401;   // -1: tetap di sini supaya pesan isian tertunda terbaca
+    tampil(); if (n) pesan(`${n} isian akunmu belum terkirim. Isian itu tetap tersimpan di ponsel ini dan terkirim saat akun ini masuk lagi, paling lambat 6 jam sesudah foto diambil (lokasi yang lebih tua ditolak server). Muat ulang halaman untuk masuk lagi.`);
   });
   /* keluar, sesi habis, atau akun lain masuk: tidak ada form, berkas, daftar, banner, atau draf akun lama yang tersisa di layar maupun memori; antrean yang sedang jalan berhenti */
   function bersihkanAkun() {
@@ -716,7 +708,7 @@
       if (b.kamera) fd.append("kamera", "1");
       if (it.akun !== akunKu()) return {tunda: "akun berganti", s: 0};   // pagar: tiap kiriman memakai sesi pemilik isian
       const r = await unggahXHR(fd, f => { infoAntre(it, `Mengunggah berkas ${i + 1} dari ${it.berkas.length}: ${Math.round(f * 100)}%`); progresBerkas(it, i, f, `${Math.round(f * 100)}%`); }, it.akun);
-      if (r.status === 401 && saya) { saya = null; bersihkanAkun(); tampil(); pesan(GALAT[401], "galat"); }
+      if (r.status === 401 && saya) { saya = null; statusSaya = 401; bersihkanAkun(); tampil(); pesan(GALAT[401], "galat"); }
       if (!r.ok) { progresBerkas(it, i, 0, r.status === 0 ? "menunggu sinyal" : "gagal"); } if (!r.ok) return bisaUlang(r.status) ? {tunda: manusiawi(r), s: r.status} : {tolak: manusiawi(r, "Berkas ditolak."), s: r.status};
       b.mediaId = r.j.id; b.media = b.thumb = b.bingkai = null; progresBerkas(it, i, 1, "terunggah"); await simpanAntrean(it).catch(() => {});
     }

@@ -1,0 +1,85 @@
+{
+ "banjir_jam1": {
+  "masukan": {
+   "kode": "B0007",
+   "sumber": "kejadian_aktif",
+   "waktu_data": "2026-10-18"
+  },
+  "ringkas": {
+   "bangunan_terpapar": 200,
+   "batas_atas_jam1": 1400,
+   "jiwa_terpapar": {
+    "dukcapil": 600,
+    "ghsl": null,
+    "worldpop": 667
+   },
+   "kec_tak_dikenal": 0,
+   "n_kec_siaga": 2,
+   "rentang": [
+    600,
+    1400
+   ]
+  },
+  "status": "dihitung"
+ },
+ "kaji_banjir": {
+  "alasan_rentang": null,
+  "bahaya": "banjir",
+  "bangunan_terpapar": 200,
+  "batas_atas_jam1": 1400,
+  "catatan": "Poligon kejadian aktif bukan genangan terukur: ini paparan, bukan dampak. Batas atas = seluruh kecamatan Siaga/Awas, bukan hanya bagian tergenang.",
+  "fasilitas": null,
+  "jiwa_selisih": 67,
+  "jiwa_terpapar": {
+   "dukcapil": 600,
+   "ghsl": null,
+   "worldpop": 667
+  },
+  "kec_tak_dikenal": [
+   "Z"
+  ],
+  "kerusakan": {
+   "status": "kedalaman belum tersedia"
+  },
+  "rentang_jiwa": [
+   600,
+   1400
+  ],
+  "status": "ok",
+  "yakin": "estimasi-model"
+ },
+ "kec_siaga": [
+  "A",
+  "B",
+  "Z"
+ ],
+ "masukan_paparan": {
+  "kec": {
+   "A": {
+    "jiwa_worldpop": 1000
+   },
+   "B": {
+    "jiwa_worldpop": 400
+   },
+   "C": {
+    "jiwa_worldpop": null
+   }
+  },
+  "zona": {
+   "banjir": {
+    "per_zona": {
+     "poligon": {
+      "jiwa": {
+       "dukcapil": 600,
+       "ghsl": null,
+       "worldpop": 667
+      },
+      "jiwa_selisih": 67,
+      "n": 200
+     }
+    },
+    "tersedia": true
+   }
+  }
+ }
+}

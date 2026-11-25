@@ -1,0 +1,18 @@
+{
+ "sidik": "d80dadde7f78265e",
+ "berkas": {
+  "scripts/banjir/PRAREG-ESKALASI2.md": "62a54225d388e9ba26fb6d922962fdb3b72527f996bb7bacbde746e7e07485b5",
+  "scripts/banjir/debit_glofas.py": "0ba9dfc0a987f828bb9f4974fee08c0d7994a1374c6750f36db723b65ee66e59",
+  "scripts/banjir/eskalasi.py": "89726529a0bffb9e2260be13f20325c38201493cfc439856fac9e096799af845",
+  "scripts/banjir/eskalasi2.kriteria.json": "6d9c460f8adbdefc1738191fe3ed87362e74bcd3a7b3ad1939c08698c78f8e58",
+  "scripts/banjir/eskalasi2.py": "335e1b47497a34aacdfb6f7221b6d304a5b66f07b35b28191cb7b3c1fb77c53e",
+  "scripts/umum/pembanding.py": "cf97cf5d63016caefec1ddeacba7f93ca84a02ab1413f0426db00551cb6741bb"
+ },
+ "masukan": [
+  "label_dalops:067a710232106be6",
+  "titik_glofas_kab:da28676a1025f1b3",
+  "logbook:f1b7a5df1a86b6dd",
+  "p90_latih_batas:2023-12-31"
+ ],
+ "dibuat": "2026-11-25T02:29:34Z"
+}

@@ -16,37 +16,67 @@ export const TINGKAT = {
 /* hari: kunci yang dipakai email & layar untuk "hari ini / besok / lusa" */
 export const HARI = ["Hari ini", "Besok", "Lusa"];
 
+/* KI-56: rujukan butir karhutla, banjir, longsor, dan rob. Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana, BNPB:
+   edisi 2012 = bnpb.go.id/storage/app/media/uploads/migration/pubs/478.pdf, cetakan 4 (2019) = bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf
+   (nomor halaman = nomor cetak di buku, dibaca 25 Nov 2026). Dipakai lewat b12(hlm) dan b19(hlm). */
+const b12 = n => `BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. ${n}`;
+const b19 = n => `BNPB, Buku Saku Tanggap Tangkas Tangguh (cetakan 4, 2019), hlm. ${n}`;
+
 export const BENCANA = {
   karhutla: {nama: "Kebakaran hutan & lahan", pendek: "Karhutla", warna: "#e2711d", gambar: "bencana-karhutla.jpg",
     sumber: "Indeks cuaca kebakaran (FWI) prakiraan 3 hari dan titik panas satelit NASA FIRMS",
+    /* KI-56: butir lama tanpa sumber (nomor 113 dan Manggala Agni, tas siaga, matikan listrik dan gas, jangan memadamkan api besar sendiri, ke puskesmas bila sesak,
+       anak/lansia/ibu hamil) dibuang atau diganti butir yang ada di Buku Saku. */
     tindakan: {
-      1: ["Jangan membakar sampah, lahan, atau sisa panen.", "Siapkan masker N95 atau KN95 untuk tiap anggota keluarga.",
-        "Simpan nomor darurat: Manggala Agni, BPBD, pemadam kebakaran 113."],
-      2: ["Tutup jendela dan pintu saat asap tercium; pakai masker N95 bila keluar rumah.", "Kurangi kegiatan di luar, terutama anak, lansia, ibu hamil, dan penderita asma.",
-        "Siapkan tas siaga: dokumen penting, obat rutin, air minum, senter.", "Laporkan api atau asap baru lewat menu Lapor Warga."],
-      3: ["Bila api terlihat dekat permukiman, jauhi arah angin dan asap, ikuti arahan petugas.", "Matikan listrik dan gas sebelum meninggalkan rumah bila diminta mengungsi.",
-        "Jangan memadamkan api besar sendiri; hubungi 113 atau Manggala Agni.", "Sesak napas atau dada nyeri: segera ke puskesmas atau rumah sakit."],
+      1: ["Jangan membakar rumput, sampah, atau puing, dan hindari membakar saat cuaca berangin.", "Bila terpaksa membakar, pastikan api sudah mati dan area bersih dari bahan mudah terbakar sebelum pergi.",
+        "Jangan membuang puntung rokok sembarangan, dan matikan api setelah berkemah."],
+      2: ["Bila tidak berkepentingan, jangan keluar rumah; tutup akses udara berasap ke dalam rumah.",
+        "Lindungi pernapasan dengan masker atau kain saat beraktivitas di luar ruangan; masker N95 memberi perlindungan lebih baik. Cuci tangan dan wajah sesudahnya.",
+        "Cukupi asupan air putih, buah, dan makanan bergizi.", "Bila melihat api, laporkan kepada Ketua RT atau pemuka masyarakat agar pemadaman diusahakan."],
+      3: ["Bila api terus menjalar, segera laporkan kepada Posko Kebakaran terdekat atau pihak terkait.", "Tinggal di dalam rumah, tutup akses udara berasap, dan jaga udara dalam ruangan sebersih mungkin.",
+        "Segera periksa ke dokter bila memiliki gangguan jantung atau paru-paru."],
+    },
+    rujukan: {
+      1: [b19(55), b19(55), b12(36)],
+      2: [b19(56), b19(56), b19(56), b12(36)],
+      3: [b19(56), b19(56), b19(56)],
     }},
   banjir: {nama: "Banjir", pendek: "Banjir", warna: "#1f78c8", gambar: "bencana-banjir.jpg",
     sumber: "Status banjir per kecamatan dari prakiraan hujan dan kondisi sungai",
+    /* KI-56: angka 15 cm dan 60 cm, "bersihkan selokan", "pantau tinggi air sungai" tidak ada di Buku Saku dan dibuang. */
     tindakan: {
-      1: ["Bersihkan saluran air dan selokan di sekitar rumah.", "Pindahkan dokumen, barang elektronik, dan obat ke tempat tinggi.",
-        "Pantau tinggi air sungai terdekat dan info dari BPBD."],
-      2: ["Siapkan tas siaga: dokumen dalam plastik kedap air, obat, air minum, makanan 3 hari, senter, pengisi daya.",
-        "Ketahui jalur evakuasi dan lokasi pengungsian terdekat.", "Isi penuh baterai ponsel dan simpan nomor BPBD."],
-      3: ["Matikan listrik dari meteran dan tutup katup gas.", "Segera mengungsi ke tempat tinggi, dahulukan anak, lansia, dan difabel.",
-        "Jangan berjalan atau berkendara menembus arus: air 15 cm bisa menjatuhkan orang, 60 cm menghanyutkan mobil.",
-        "Jauhi kabel listrik dan tiang yang terendam."],
+      1: ["Ketahui rute evakuasi dan daerah yang lebih tinggi, dan bicarakan dengan keluarga tempat bertemu bila terpencar.",
+        "Siapkan diri untuk hidup mandiri sekurangnya tiga hari: tas siaga bencana, makanan, dan air minum.",
+        "Ketahui cara mematikan air, listrik, dan gas.", "Simpan dokumen penting dengan baik."],
+      2: ["Simak informasi banjir dari media; informasi resmi biasanya berasal dari BPBD di daerah Anda.",
+        "Bila bersiap evakuasi, amankan rumah dan letakkan barang berharga di bagian yang lebih tinggi di dalam rumah.",
+        "Bersihkan dan siapkan penampungan air untuk berjaga-jaga bila kehabisan air bersih."],
+      3: ["Segera evakuasi ke tempat yang lebih tinggi; mengungsilah sedini mungkin selagi genangan masih bisa dilewati.",
+        "Matikan jaringan listrik bila ada instruksi pihak berwenang, cabut alat yang tersambung listrik, dan jangan menyentuh peralatan listrik saat berdiri di atas atau dalam air.",
+        "Jangan berjalan di arus air: beberapa langkah di arus bisa membuat Anda jatuh. Jangan mengemudikan mobil di wilayah banjir.",
+        "Waspada saluran air dan tempat lewatnya arus deras, karena banjir bandang kerap tiba tanpa peringatan."],
+    },
+    rujukan: {
+      1: [b19(34), b19(34), b19(34), b19(35)],
+      2: [b19(36) + "; " + b19(33), b19(36), b19(37)],
+      3: [b19(36) + "; " + b12(19), b19(36), b19(37), b19(37)],
     }},
   longsor: {nama: "Tanah longsor", pendek: "Longsor", warna: "#8a5a2b", gambar: "bencana-longsor.jpg",
     sumber: "Status longsor per kecamatan dari hujan kumulatif dan kerentanan lereng",
+    /* KI-56: butir lama tanpa sumber ("hujan lebih dari 2 jam", tidur di kamar menempel lereng, tas siaga, lari menyamping, jangan kembali sampai petugas menyatakan)
+       diganti butir Buku Saku. Buku Saku hanya memberi tindakan saat bencana (menjauhi gemuruh dan zona evakuasi), bukan ambang jam hujan. */
     tindakan: {
-      1: ["Perhatikan tanda awal: retakan baru di tanah atau dinding, pohon atau tiang miring, mata air keruh tiba-tiba.",
-        "Tutup retakan tanah dengan tanah liat agar air hujan tidak meresap.", "Kenali jalur menjauhi lereng menuju tempat aman."],
-      2: ["Saat hujan deras lebih dari 2 jam, jangan tidur di kamar yang menempel lereng.", "Siapkan tas siaga dan sepakati titik kumpul keluarga.",
-        "Hindari melintas di jalan bawah tebing selama hujan."],
-      3: ["Segera tinggalkan rumah di kaki atau puncak lereng; mengungsi ke tanah datar yang jauh dari tebing.",
-        "Bila terdengar gemuruh atau tanah bergerak, lari menyamping menjauhi arah longsoran.", "Jangan kembali ke rumah sampai dinyatakan aman oleh petugas."],
+      1: ["Kenali tanda utama longsor: retakan vertikal pada tebing, air tanah muncul tiba-tiba, air sumur di sekitar tebing keruh, atau longsoran batu-batu kecil.",
+        "Tutup rekahan di atas lereng agar air tidak cepat masuk ke dalam tanah.", "Kenali daerah rawan longsor di sekitar tempat tinggal Anda."],
+      2: ["Waspada saat curah hujan tinggi.", "Jaga selokan dan saluran drainase agar tidak tersumbat, supaya air hujan mengalir menjauhi lereng.",
+        "Longsor biasanya terjadi begitu cepat sehingga waktu evakuasi mandiri terbatas; kenali lebih dulu zona evakuasi yang telah ditentukan."],
+      3: ["Segera evakuasi menjauhi suara gemuruh atau arah datangnya longsoran.", "Bila mendengar sirine peringatan longsor, segera evakuasi ke zona evakuasi yang telah ditentukan.",
+        "Hindari wilayah longsor karena tanah labil, dan antisipasi longsor susulan bila hujan turun setelahnya."],
+    },
+    rujukan: {
+      1: [b12(23), b19(43), b19(42)],
+      2: [b19(43), b19(41) + "; " + b19(43), b19(40) + "; " + b19(44)],
+      3: [b19(44), b19(44), b19(44)],
     }},
   cuaca: {nama: "Cuaca ekstrem", pendek: "Cuaca ekstrem", warna: "#5b5fc7", gambar: "bencana-cuaca.jpg",
     sumber: "Peringatan dini cuaca BMKG (nowcast) untuk kecamatan Anda",
@@ -121,13 +151,54 @@ export const BENCANA = {
         "BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. 10", "BMKG, Petunjuk Keselamatan Gempabumi dan Tsunami, Perhatikan Jika Terasa Gempa Besar butir 6"],
     }},
   rob: {nama: "Banjir rob (pasang laut)", pendek: "Rob", warna: "#2b8c86", gambar: "bencana-rob.jpg",
-    sumber: "Prakiraan pasang air laut di titik pesisir dan peringatan rob BMKG",
+    sumber: "Prakiraan pasang air laut dari model Centurisk97 (hipotesis); peringatan rob dari BMKG bila ada",
+    /* KI-56: Buku Saku menggolongkan banjir rob sebagai salah satu kategori banjir (hlm. 17, 2012) dan punya bab Gelombang Pasang; butir diambil dari kedua bab.
+       Butir lama tanpa sumber (karung pasir, lubang saluran, parkir kendaraan, tambatkan perahu, ternak, jam pasang) dibuang. */
     tindakan: {
-      1: ["Pindahkan barang berharga dan dokumen ke tempat tinggi.", "Perhatikan jam pasang tertinggi pada siang atau malam hari."],
-      2: ["Siapkan karung pasir di pintu rumah; tutup lubang saluran yang bisa membalikkan air laut.",
-        "Hindari parkir kendaraan di jalan pesisir yang rendah.", "Nelayan: tambatkan perahu lebih kuat."],
-      3: ["Matikan listrik bila air mulai masuk rumah.", "Ungsikan anak, lansia, dan ternak ke tempat yang lebih tinggi.",
-        "Jangan menyeberang jalan yang tergenang air laut berarus."],
+      1: ["Ikuti pemberitahuan dini dari prakiraan cuaca lewat radio dan alat komunikasi.", "Segera amankan barang berharga ke tempat yang lebih tinggi.",
+        "Rencanakan tempat pengungsian bila terjadi gelombang pasang di pinggir pantai."],
+      2: ["Perhatikan tanda: angin kencang, badai di tengah laut, atau cuaca yang tiba-tiba menjadi gelap.", "Bila sedang berlayar, hindari daerah laut yang sedang dilanda cuaca buruk.",
+        "Bila bersiap evakuasi, amankan rumah dan letakkan barang berharga di bagian yang lebih tinggi di dalam rumah."],
+      3: ["Saat gelombang pasang terjadi, jauhi pantai dan berlarilah ke dataran yang lebih tinggi.", "Matikan aliran listrik di dalam rumah.",
+        "Mengungsilah ke posko banjir sedini mungkin selagi genangan masih bisa dilewati.", "Jangan berjalan di arus air."],
+    },
+    rujukan: {
+      1: [b12(33), b12(19), b12(33)],
+      2: [b12(32), b12(33), b19(36)],
+      3: [b12(33), b12(18), b12(19), b19(37)],
+    }},
+  /* Pesisir (gelombang tinggi/pasang) dan kekeringan: butir dari Buku Saku BNPB. pesisir = bab Gelombang Pasang edisi 2012 (hlm. 31-34); kekeringan = bab Kekeringan cetakan 4 (2019) hlm. 49-52.
+     Butir mitigasi struktural (tembok penahan, mangrove, pemecah ombak, waduk, sumur resapan, perda, pokja) bukan tindakan warga per peringatan dan tidak ditulis; hujan buatan/TMC tindakan pemerintah, dibuang.
+     Buku Saku tidak memberi tingkat: tiga tingkat di sini hanya mengurutkan butir dari persiapan ke saat kejadian. Gambar memakai berkas yang sudah punya kredit di public/img/kredit.json. */
+  pesisir: {nama: "Gelombang tinggi di pesisir", pendek: "Gelombang", warna: "#1a6f9c", gambar: "bencana-rob.jpg",
+    sumber: "Peringatan gelombang tinggi BMKG Maritim per perairan",
+    tindakan: {
+      1: ["Ikuti pemberitahuan dini dari prakiraan cuaca lewat radio dan alat komunikasi.", "Bila sedang berlayar, hindari daerah laut yang sedang dilanda cuaca buruk.",
+        "Rencanakan tempat pengungsian bila terjadi gelombang pasang di pinggir pantai."],
+      2: ["Perhatikan tanda: angin kencang, badai di tengah laut, atau cuaca yang tiba-tiba menjadi gelap.", "Lengkapi diri dengan alat komunikasi.",
+        "Laporkan secepatnya tanda-tanda akan terjadinya gelombang pasang kepada Kepala Desa, Polisi, Stasiun Radio, atau SATLAK PB."],
+      3: ["Saat gelombang pasang terjadi, jauhi pantai dan berlarilah ke dataran yang lebih tinggi.", "Bila sedang berlayar, hindari daerah laut yang sedang dilanda cuaca buruk.",
+        "Laporkan secepatnya kepada petugas yang berwenang bila melihat tanda-tanda gelombang pasang."],
+    },
+    rujukan: {
+      1: [b12(33), b12(33), b12(33)],
+      2: [b12(32), b12(34), b12(34)],
+      3: [b12(33), b12(33), b12(34)],
+    }},
+  kekeringan: {nama: "Kekeringan", pendek: "Kekeringan", warna: "#b8860b", gambar: "bencana-karhutla.jpg",
+    sumber: "BMKG peringatan dini kekeringan meteorologis dan indeks hujan 3 bulan (hipotesis)",
+    tindakan: {
+      1: ["Gunakan air dengan bijak dan jaga sumber atau mata air.", "Buat tandon air di sekitar pekarangan rumah untuk menampung air hujan.",
+        "Jangan merusak hutan atau kawasan cagar alam."],
+      2: ["Kurangi pemakaian air yang berlebih dan matikan keran bila tidak digunakan.", "Atur jadwal penggunaan air yang masih ada.",
+        "Simak informasi terkini dari radio, televisi, media online, dan sumber informasi resmi pemerintah."],
+      3: ["Laporkan dan minta bantuan air bersih kepada pihak yang berwenang.", "Atur jadwal penggunaan air yang masih ada.",
+        "Kurangi pemakaian air yang berlebih dan matikan keran bila tidak digunakan."],
+    },
+    rujukan: {
+      1: [b19(50), b19(50), b19(50)],
+      2: [b19(51), b19(51), b19(51)],
+      3: [b19(51), b19(51), b19(51)],
     }},
   /* Udara (PB-38a). Tingkat BAWAAN SEMENTARA Q37 (rancangan agent): 1 = ISPU PM2,5 Tidak sehat (Permen LHK P.14/2020), 2 = Sangat tidak sehat, 3 = Berbahaya; label resmi kategori tampil di samping tingkat.
      Hanya anjuran warga dari siaran resmi Kemenkes; tiap butir punya rujukan paralel (dijaga tests/layar/ews_tindakan.test.mjs). Anjuran khusus tingkat ISPU, tindakan sekolah, dan tindakan dinas
@@ -155,9 +226,9 @@ export const BENCANA = {
       3: ["KRB I: segera mengungsi berdasarkan perintah pemerintah daerah sesuai rekomendasi teknis KESDM.", "KRB II: segera mengungsi berdasarkan perintah pemerintah daerah sesuai rekomendasi teknis KESDM.", "KRB III: warga di wilayah terancam tidak boleh beraktivitas dan segera mengungsi.", "Ikuti radius dan sektor yang ditetapkan PVMBG untuk gunung ini."],
     },
     rujukan: {
-      1: ["Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:30)", "Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:36)", "Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:42)", "MAGMA PVMBG (gunungapi_status.json)"],
-      2: ["Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:31)", "Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:37)", "Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:43)", "MAGMA PVMBG (gunungapi_status.json)"],
-      3: ["Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:32)", "Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:38)", "Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:44)", "MAGMA PVMBG (gunungapi_status.json)"],
+      1: ["Permen ESDM 15/2011 lewat MAGMA PVMBG", "Permen ESDM 15/2011 lewat MAGMA PVMBG", "Permen ESDM 15/2011 lewat MAGMA PVMBG", "MAGMA PVMBG"],
+      2: ["Permen ESDM 15/2011 lewat MAGMA PVMBG", "Permen ESDM 15/2011 lewat MAGMA PVMBG", "Permen ESDM 15/2011 lewat MAGMA PVMBG", "MAGMA PVMBG"],
+      3: ["Permen ESDM 15/2011 lewat MAGMA PVMBG", "Permen ESDM 15/2011 lewat MAGMA PVMBG", "Permen ESDM 15/2011 lewat MAGMA PVMBG", "MAGMA PVMBG"],
     }},
 };
 

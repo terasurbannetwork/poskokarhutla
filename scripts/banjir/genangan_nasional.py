@@ -3,6 +3,10 @@
 Pakai:  python3 scripts/banjir/genangan_nasional.py katalog [--dari 2015-01] [--sampai 2026-10]
         python3 scripts/banjir/genangan_nasional.py luas [--aktif] [--riwayat] [--prov 63] [--dari TGL] [--sampai TGL]
                                                         [--maks N] [--pilih prov|kab|tanggal ...] [--anggaran N]
+                                                        [--pra-sebelum-acuan]  (pra wajib sebelum tanggal acuan; hasil di berkas terpisah, tanpa terbit)
+        python3 scripts/banjir/genangan_nasional.py kejadian --kj KJ-... --mulai YYYY-MM-DD --kab 1112 ...
+                                                        (jendela 12 hari, pra selalu sebelum `mulai`, ambang sah dari scripts/siklus/genangan_kriteria.json
+                                                         -> data/raw/banjir/gfm_nasional/kejadian/<KJ>.json, bukan public/)
         python3 scripts/banjir/genangan_nasional.py terbit      (susun ulang keluaran dari cache, tanpa jaringan)
         python3 scripts/banjir/genangan_nasional.py uji         (self-check sintetis, tanpa jaringan)
 
@@ -418,11 +422,12 @@ class Lintas:
         return 255, 0
 
 
-def hitung(pt, nama_ubin, lin, r, pra=None, bgn=None, hasil_b=None):
+def hitung(pt, nama_ubin, lin, r, pra=None, bgn=None, hasil_b=None, jejak=None):
     """Akumulasi per kecamatan (urutan KUNCI) untuk titik `pt` di ubin `nama_ubin`. lin/pra = Lintas; r = air tetap (nilai/siapkan).
     flood: 0 kering, 1 tergenang, 255 tak teramati; mask 1 = ter-mask; r 1 = air tetap. Titik luar ubin hanya menambah luas.
     baru = tergenang sesudah, kering TERAMATI (0) di pra; latar = piksel yang teramati di lintasan sesudah (v != 255), bukan air tetap, dan tergenang di pra dengan pra tak ter-mask (domain sama dengan tergenang).
-    bgn = {(i,j): (n, luas)} grid bangunan halus; hasil_b diisi {(ki,i,j): [n, ha_tergenang, ha_baru]} hanya sel berisi bangunan."""
+    bgn = {(i,j): (n, luas)} grid bangunan halus; hasil_b diisi {(ki,i,j): [n, ha_tergenang, ha_baru]} hanya sel berisi bangunan.
+    jejak (list, opsional) diisi (lon, lat, ha) tiap titik tergenang baru."""
     g, x0, ya = ubin_dari_nama(nama_ubin)
     sel, blok = [], set()
     for i, (x, y) in enumerate(pt.xy(g)):
@@ -456,6 +461,8 @@ def hitung(pt, nama_ubin, lin, r, pra=None, bgn=None, hasil_b=None):
             baru = pra is not None and pv == 0
             if baru:
                 a[6] += ha
+                if jejak is not None:
+                    jejak.append((round(pt.p[i][1], 5), round(pt.p[i][2], 5), round(ha, 5)))
             if bgn is not None:
                 _, lo, la, _ = pt.p[i]
                 c = (math.floor((la - BG.LAT0) * BG.HALUS), math.floor((lo - BG.LON0) * BG.HALUS))
@@ -524,8 +531,9 @@ def menit(iso):
     return dt.datetime.fromisoformat(iso.replace("Z", "+00:00"))
 
 
-def pilih_pra(lintasan_ub, post):
-    """Lintasan PRA ubin yang sama: 8-45 hari sebelum, jam lintas +-90 mnt (orbit sama); terdekat ke post."""
+def pilih_pra(lintasan_ub, post, sebelum=None):
+    """Lintasan PRA ubin yang sama: 8-45 hari sebelum, jam lintas +-90 mnt (orbit sama); terdekat ke post.
+    sebelum (datetime UTC, opsi --pra-sebelum-acuan): pra harus jatuh sebelum tanggal acuan; None = perilaku lama."""
     t = menit(post["t"])
     out = []
     for k in lintasan_ub:
@@ -533,7 +541,7 @@ def pilih_pra(lintasan_ub, post):
         sel = (t - s).total_seconds() / 86400
         dm = abs((s.hour * 60 + s.minute) - (t.hour * 60 + t.minute))
         dm = min(dm, 1440 - dm)
-        if PRA[0] <= sel <= PRA[1] and dm <= JAM_PRA:
+        if PRA[0] <= sel <= PRA[1] and dm <= JAM_PRA and (sebelum is None or s < sebelum):
             out.append((sel, k))
     return min(out, key=lambda x: x[0])[1] if out else None
 
@@ -567,8 +575,14 @@ class Katalog:
         return [(n, l) for _, _, n, l in sorted(c, key=lambda z: z[:3])]
 
 
-def hitung_pasangan(pt, kat, awal, jendela, buka=Raster, prov=None):
-    """-> dict hasil kabupaten untuk satu pasangan, atau {'status': 'tanpa_lintasan'}. `buka` = pembuat Raster (disuntik saat uji)."""
+def batas_acuan(d):
+    """Tanggal acuan -> awal hari itu, tengah malam WIB (pra harus jatuh sebelum ini)."""
+    return dt.datetime.combine(d, dt.time(), WIB)
+
+
+def hitung_pasangan(pt, kat, awal, jendela, buka=Raster, prov=None, pra_sebelum=None, titik=False):
+    """-> dict hasil kabupaten untuk satu pasangan, atau {'status': 'tanpa_lintasan'}. `buka` = pembuat Raster (disuntik saat uji).
+    pra_sebelum (date): pra wajib sebelum tanggal itu; tanpa pra sah -> status 'tanpa_pra' (tanpa nilai baru). titik: sertakan titik_baru."""
     akhir = awal + dt.timedelta(days=jendela)
     cand = kat.kandidat(pt.ubin(), awal, akhir)[:MAKS_KANDIDAT]
     if not cand:
@@ -583,26 +597,43 @@ def hitung_pasangan(pt, kat, awal, jendela, buka=Raster, prov=None):
             ras.update(zip(hrefs, ex.map(lambda h: buka(HULU + h), hrefs)))
     muat([l for _, l in cand])
     lintas = lambda l: Lintas([(ambil(k["f"]), ambil(k["m"]) if k["m"] else None) for k in l["fr"]])
-    baik = None
+    hs = []
     for n, l in cand:
         tot = rangkum(hitung(pt, n, lintas(l), ambil(l["r"])))
-        c = cakupan(tot)
-        if baik is None or (c, tot[1]) > baik[:2]:
-            baik = (c, tot[1], n, l)
-    c, diamati, n, l = baik
+        hs.append((cakupan(tot), tot[1], n, l, tot))
+    sebelum = batas_acuan(pra_sebelum) if pra_sebelum else None
+    pra = None
+    if sebelum is None:
+        baik = max(hs, key=lambda x: x[:2])   # perilaku lama: terbaik dari semua kandidat; pra dipilih di bawah
+    else:
+        # opsi: pilih terbaik hanya di antara kandidat teramati yang PUNYA pra sah; tanpa_pra hanya bila tak satu pun punya
+        ada = [x for x in hs if x[1] > 0]
+        pp = [(x, pilih_pra(kat.ub[x[2]], x[3], sebelum)) for x in ada]
+        pp = [(x, q) for x, q in pp if q]
+        if pp:
+            baik, pra = max(pp, key=lambda z: z[0][:2])
+        else:
+            baik = max(ada or hs, key=lambda x: x[:2])
+    c, diamati, n, l, tot0 = baik
     if diamati <= 0:   # tak satu bingkai pun menutup kabupaten dalam jendela: bukan "tak banjir", hanya tak teramati
         return {"status": "tanpa_cakupan", "n_kandidat": len(cand), "luas_ha": round(sum(p[3] for p in pt.p), 1)}
-    pra = pilih_pra(kat.ub[n], l)
+    if sebelum is None:
+        pra = pilih_pra(kat.ub[n], l)
+    if sebelum is not None and not pra:   # ada lintasan, tak ada pra sah: tergenang_baru tidak ditulis (bukan 0)
+        return {"status": "tanpa_pra", "post": l["id"], "tgl": l["t"], "n_bingkai": len(l["fr"]), "ubin": n, "n_kandidat": len(cand),
+                "luas_ha": round(tot0[0], 1), "diamati_ha": round(tot0[1], 1), "mask_ha": round(tot0[2], 1),
+                "cakupan_pct": cakupan(tot0), "sinyal_lemah": None}
     if pra:
         muat([pra])
     bgn, alasan = grid_bangunan(prov) if prov else (None, "provinsi tak diketahui")
     sel = {}
-    acc = hitung(pt, n, lintas(l), ambil(l["r"]), lintas(pra) if pra else None, bgn, sel)
+    jejak = [] if titik else None
+    acc = hitung(pt, n, lintas(l), ambil(l["r"]), lintas(pra) if pra else None, bgn, sel, jejak)
     tot = rangkum(acc)
     lat = tot[5] if pra else None
     kec = {nm: [round(x, 1) for x in a[:5]] + [round(a[5], 1) if pra else None, round(a[6], 1) if pra else None]
            for nm, a in zip(pt.nama, acc) if a[1] > 0}
-    return {"status": "ok", "post": l["id"], "tgl": l["t"], "n_bingkai": len(l["fr"]), "pra": pra["id"] if pra else None,
+    hasil = {"status": "ok", "post": l["id"], "tgl": l["t"], "n_bingkai": len(l["fr"]), "pra": pra["id"] if pra else None,
             "pra_tgl": pra["t"] if pra else None, "ubin": n, "n_kandidat": len(cand), "luas_ha": round(tot[0], 1),
             "diamati_ha": round(tot[1], 1), "mask_ha": round(tot[2], 1), "air_ha": round(tot[3], 1), "tergenang_ha": round(tot[4], 1),
             "latar_ha": round(lat, 1) if pra else None, "tergenang_baru_ha": round(tot[6], 1) if pra else None,
@@ -610,6 +641,9 @@ def hitung_pasangan(pt, kat, awal, jendela, buka=Raster, prov=None):
             "byte": sum(r.rf.byte for r in ras.values()), "kec": kec,
             "bangunan_sel": [[ki, i, j] + v for (ki, i, j), v in sorted(sel.items())] if bgn is not None else None,
             "bangunan_nama": pt.nama, "bangunan_alasan": alasan}
+    if titik:
+        hasil["titik_baru"] = jejak
+    return hasil
 
 
 # ---------------------------------------------------------------- pasangan
@@ -680,6 +714,9 @@ def tambah_hasil(rec):
 
 
 def luas(a):
+    global HASIL
+    if a.pra_sebelum_acuan:   # hasil terpisah: tidak bercampur dengan cache lama dan tidak menimpa keluaran publik (terbit)
+        HASIL = os.path.join(DIR, "hasil_pra_sebelum_acuan.jsonl")
     kat = Katalog(muat_item())
     if not kat.ub:
         sys.exit("katalog kosong: jalankan `katalog` dulu")
@@ -697,7 +734,8 @@ def luas(a):
         t0 = time.time()
         try:
             kec = kec_kab(ps["prov"], ps["kab"], set(ps["kec"]) if ps["kec"] else None)
-            rec = {"status": "tanpa_poligon"} if not kec else hitung_pasangan(Titik(kec), kat, tgl(ps["acuan"]), JENDELA[ps["sumber"]], prov=ps["prov"])
+            rec = {"status": "tanpa_poligon"} if not kec else hitung_pasangan(Titik(kec), kat, tgl(ps["acuan"]), JENDELA[ps["sumber"]], prov=ps["prov"],
+                                                                                              pra_sebelum=tgl(ps["acuan"]) if a.pra_sebelum_acuan else None)
         except Exception as e:   # satu pasangan gagal tidak mematikan sisanya; tidak di-cache, diulang jalan berikut
             print(f"  GAGAL {ps['kunci']}: {type(e).__name__} {e}", file=sys.stderr)
             return
@@ -709,7 +747,105 @@ def luas(a):
                   f"tergenang={rec.get('tergenang_ha')} cakupan={rec.get('cakupan_pct')} lemah={rec.get('sinyal_lemah')} ({time.time() - t0:.0f} dtk)", flush=True)
     with ThreadPoolExecutor(a.paralel) as ex:
         list(ex.map(kerja, todo))
-    terbit(sudah)
+    if not a.pra_sebelum_acuan:
+        terbit(sudah)
+
+
+# ---------------------------------------------------------------- mode kejadian
+JENDELA_KEJADIAN = 12
+KRITERIA = os.path.join(AYAH, "..", "siklus", "genangan_kriteria.json")   # terkunci (GS-02): hanya dibaca
+
+
+def ambang():
+    return json.load(builtins.open(KRITERIA))["ambang"]
+
+
+def sah(status, cakupan_pct, sinyal_lemah, amb):
+    """Ambang dari berkas kriteria terkunci; None pada sinyal_lemah tidak lolos (hanya False).
+    cakupan_pct sudah dibulatkan 1 desimal (cakupan()) dan pembulatan itu ikut menentukan batas: 9,96 menjadi 10,0 dan lolos."""
+    return status == "ok" and cakupan_pct >= amb["cakupan_pct_min"] and sinyal_lemah == amb["sinyal_lemah"]
+
+
+def alasan_tak_sah(status, cakupan_pct, sinyal_lemah):
+    if status == "tanpa_lintasan":
+        return "tidak ada lintasan radar dalam jendela"
+    if status == "tanpa_cakupan":
+        return "tidak teramati oleh radar dalam jendela"
+    if status == "tanpa_pra":
+        return "tidak ada citra pembanding sebelum kejadian"
+    if sinyal_lemah is not False:
+        return "sinyal lemah"
+    return f"tidak teramati cukup (cakupan {cakupan_pct} persen)"
+
+
+def kab_dari_kode(kab4):
+    """kode Kemendagri 4 digit -> (kode provinsi berkas geo, nama kab); None bila tak dikenal."""
+    import importlib.util
+    sp = importlib.util.spec_from_file_location("hvc_dasar_gs", os.path.join(AYAH, "..", "bnpb", "hvc_dasar.py"))
+    m = importlib.util.module_from_spec(sp)
+    sp.loader.exec_module(m)
+    inv = {v: k for k, v in m.kab_kode().items()}
+    if kab4 not in inv:
+        return None
+    prov, nama = inv[kab4].split("|", 1)
+    if not kec_kab(prov, nama):   # provinsi lama/baru (Papua) bisa beda berkas: cari nama kab di semua berkas
+        prov = next((p for p in PROVINSI if os.path.exists(os.path.join(AKAR, "public/geo/kecamatan", f"{p}.json")) and kec_kab(p, nama)), prov)
+    return prov, nama
+
+
+def rekam_kab(kab4, prov, nama, pt, h, amb):
+    """Satu kab untuk keluaran kejadian. Pemakai tampil membaca `tampil` (None bila tak sah, tidak pernah 0)."""
+    diamati, mask = h.get("diamati_ha"), h.get("mask_ha")
+    teramati = round(diamati - mask, 1) if diamati is not None else None
+    baru = h.get("tergenang_baru_ha")
+    ok = sah(h["status"], h.get("cakupan_pct"), h.get("sinyal_lemah"), amb)
+    kec = {n: {"luas_ha": v[0], "mask_ha": v[2]} for n, v in h.get("kec", {}).items()}
+    if ok:
+        tampil = {"baru_ha": baru, "persen_teramati": round(100 * baru / teramati, 1) if teramati else None}
+    else:
+        tampil = {"baru_ha": None, "alasan": alasan_tak_sah(h["status"], h.get("cakupan_pct"), h.get("sinyal_lemah"))}
+    return {"kab4": kab4, "prov": prov, "kab": nama, "status": h["status"], "sah": ok, "lintasan": h.get("tgl"), "pra": h.get("pra_tgl"),
+            "langkah": round(pt.langkah, 6), "kisi_kasar": pt.langkah > 0.001, "tampil": tampil,
+            # audit, pemakai tampil membaca `tampil`
+            "mentah": {"luas_ha": h.get("luas_ha"), "diamati_ha": diamati, "mask_ha": mask, "teramati_ha": teramati,
+                       "cakupan_pct": h.get("cakupan_pct"), "baru_ha": baru, "latar_ha": h.get("latar_ha"),
+                       "sinyal_lemah": h.get("sinyal_lemah"), "kec": kec, "titik_baru": h.get("titik_baru", []) if ok else []}}
+
+
+def kerja_kab(kab4, kat, amb, mulai_t):
+    """Satu kab; galat apa pun menjadi baris `gagal` (tidak mematikan kab lain, tidak pernah 0)."""
+    try:
+        pn = kab_dari_kode(kab4)
+        if not pn:
+            return {"kab4": kab4, "status": "kab_tak_dikenal", "sah": False, "tampil": {"baru_ha": None, "alasan": "kode kab tidak dikenal"}}
+        pt = Titik(kec_kab(*pn))
+        h = hitung_pasangan(pt, kat, mulai_t, JENDELA_KEJADIAN, prov=pn[0], pra_sebelum=mulai_t, titik=True)
+        return rekam_kab(kab4, pn[0], pn[1], pt, h, amb)
+    except Exception as e:
+        return {"kab4": kab4, "status": "gagal", "sah": False, "tampil": {"baru_ha": None, "alasan": "gagal baca data"},
+                "mentah": {"galat": f"{type(e).__name__}: {e}"}}
+
+
+def kejadian(a):
+    if not (a.kj and a.mulai and a.kab):
+        sys.exit("kejadian butuh --kj, --mulai, --kab")
+    kat, amb, mulai_t = Katalog(muat_item()), ambang(), tgl(a.mulai)
+    if not kat.ub:
+        sys.exit("katalog kosong: jalankan `katalog` dulu")
+    t0 = time.time()
+
+    def kerja(kab4):
+        r = kerja_kab(kab4, kat, amb, mulai_t)
+        m = r.get("mentah", {})
+        print(f"  {kab4} {r.get('kab', '')}: {r['status']} sah={r['sah']} cakupan={m.get('cakupan_pct')} baru={m.get('baru_ha')} ({time.time() - t0:.0f} dtk)", flush=True)
+        return r
+    with ThreadPoolExecutor(a.paralel) as ex:
+        kabs = list(ex.map(kerja, a.kab))
+    out = {"kj": a.kj, "mulai": a.mulai, "jendela_hari": JENDELA_KEJADIAN, "ambang": amb, "sumber": ATRIBUSI,
+           "dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "kab": kabs}
+    jalur = os.path.join(DIR, "kejadian", f"{a.kj}.json")   # data/raw (git-ignored), bukan public/
+    simpan(jalur, out)
+    print(f"{jalur}: {sum(k['sah'] for k in kabs)} dari {len(kabs)} kab sah")
 
 
 # ---------------------------------------------------------------- keluaran
@@ -863,6 +999,106 @@ def uji():
         return {"id": i, "ub": "OC020M_E030N096T3", "t": t, "f": "f", "m": "m", "r": "r", "fp": 5, "an": False}
     kt = Katalog({i: b(i, t) for i, t in (("a", "2020-01-05T22:00:00Z"), ("b", "2020-01-05T22:00:25Z"), ("c", "2020-01-05T22:00:50Z"), ("d", "2020-01-06T10:00:00Z"))})
     assert [(len(l["fr"]), l["fp"]) for l in kt.ub["OC020M_E030N096T3"]] == [(3, 15), (1, 5)]
+    # --pra-sebelum-acuan, status tanpa_pra, ambang sah (T1): semua sintetis, tanpa jaringan
+    UB = "OC020M_E042N087T3"
+    sebelum_ = dt.datetime(2024, 1, 10, tzinfo=dt.timezone.utc)
+    ks = [{"t": "2024-01-12T22:00:00Z"}]
+    assert pilih_pra(ks, {"t": "2024-01-20T22:00:00Z"}) is ks[0]
+    assert pilih_pra(ks, {"t": "2024-01-20T22:00:00Z"}, sebelum_) is None   # pra sesudah tanggal acuan (DIBI atau mulai) ditolak
+    assert pilih_pra(ks, {"t": "2024-01-20T22:00:00Z"}, dt.datetime(2024, 1, 13, tzinfo=dt.timezone.utc)) is ks[0]
+
+    class TT:   # n titik 1 ha di kolom 0..n-1 ubin UB; luas kab = n
+        langkah = 0.0006
+        def __init__(self, n):
+            self.nama, self.p = ["K"], [(0, 100.0, 1.0, 1.0)] * n
+        def xy(self, g):
+            return [(4200000 + 20 * i + 1, 9000000 - 1) for i in range(len(self.p))]
+        def ubin(self):
+            return {UB: 1.0}
+
+    def item(i, t, f, m=None):
+        return {"id": i, "ub": UB, "t": t, "f": f, "m": m, "r": "rr", "fp": 1, "an": False}
+
+    def jalan(n, post, pra, awal, jendela=JENDELA_KEJADIAN, pra_sebelum=None, titik=False, mask=None):
+        """post/pra: (waktu, {kolom: nilai}, nilai bawaan) atau None; mask = kolom ter-mask di post."""
+        its, ras = {}, {HULU + "rr": Palsu({}, 0)}
+        if post:
+            its["post"] = item("post", post[0], "fp", "mp")
+            ras[HULU + "fp"], ras[HULU + "mp"] = Palsu(post[1], post[2]), Palsu({(c, 0): 1 for c in (mask or [])}, 0)
+        if pra:
+            its["pra"] = item("pra", pra[0], "fpra")
+            ras[HULU + "fpra"] = Palsu(pra[1], pra[2])
+        pt = TT(n)
+        h = hitung_pasangan(pt, Katalog(its), awal, jendela, buka=lambda u: ras[u], pra_sebelum=pra_sebelum, titik=titik)
+        return pt, h
+    amb, mulai_ = ambang(), dt.date(2024, 1, 15)
+    POST = "2024-01-20T22:00:00Z"
+    PRA_OK, PRA_SESUDAH = "2024-01-10T22:00:00Z", "2024-01-12T22:00:00Z"   # 10 dan 8 hari sebelum POST; kedua dari tanggal mulai 15 Jan: sebelum / sebelum
+    # kasus: tanpa lintasan (lintasan di luar jendela 12 hari) dan tanpa cakupan (semua 255)
+    _, h = jalan(10, ("2024-02-20T22:00:00Z", {}, 0), None, mulai_, pra_sebelum=mulai_)
+    assert h["status"] == "tanpa_lintasan"
+    _, h = jalan(10, (POST, {}, 255), (PRA_OK, {}, 0), mulai_, pra_sebelum=mulai_)
+    assert h["status"] == "tanpa_cakupan"
+    # tanpa pra: tak ada kandidat; dan satu-satunya pra jatuh sesudah mulai (17 Jan, 8 hari sebelum lintasan 25 Jan) harus ditolak
+    pt, h = jalan(10, ("2024-01-25T22:00:00Z", {(0, 0): 1}, 0), None, mulai_, pra_sebelum=mulai_)
+    assert h["status"] == "tanpa_pra" and "tergenang_baru_ha" not in h and "latar_ha" not in h, h
+    pt, h = jalan(10, ("2024-01-25T22:00:00Z", {(0, 0): 1}, 0), ("2024-01-17T22:00:00Z", {(0, 0): 0}, 255), mulai_, pra_sebelum=mulai_)
+    assert h["status"] == "tanpa_pra", h
+    _, h_lama = jalan(10, ("2024-01-25T22:00:00Z", {(0, 0): 1}, 0), ("2024-01-17T22:00:00Z", {(0, 0): 0}, 255), mulai_)
+    assert h_lama["status"] == "ok" and h_lama["pra_tgl"].startswith("2024-01-17"), "tanpa opsi, perilaku lama (pra sesudah mulai tetap dipakai)"
+    r = rekam_kab("0000", "00", "K", pt, h, amb)
+    assert not r["sah"] and r["tampil"]["baru_ha"] is None and r["mentah"]["baru_ha"] is None and "pembanding" in r["tampil"]["alasan"]
+    # cakupan 9 persen: 100 ha, 10 piksel teramati, 1 ter-mask -> (10 - 1) / 100 = 9 persen, tak sah walau diamati 10 persen
+    kol = {(c, 0): 0 for c in range(10)}
+    kol[(0, 0)] = 1
+    pt, h = jalan(100, (POST, kol, 255), (PRA_OK, {}, 0), mulai_, pra_sebelum=mulai_, mask=[1])
+    assert h["status"] == "ok" and h["cakupan_pct"] == 9.0 and h["diamati_ha"] == 10.0 and h["mask_ha"] == 1.0, h
+    r = rekam_kab("0000", "00", "K", pt, h, amb)
+    assert not r["sah"] and r["tampil"]["baru_ha"] is None and "cakupan 9.0 persen" in r["tampil"]["alasan"] and r["mentah"]["teramati_ha"] == 9.0 and r["mentah"]["cakupan_pct"] == 9.0
+    # batas ambang: tepat 10 persen sah (>=), nilai ambang dari berkas kriteria
+    pt, h = jalan(100, (POST, kol, 255), (PRA_OK, {}, 0), mulai_, pra_sebelum=mulai_, titik=True)
+    r = rekam_kab("0000", "00", "K", pt, h, amb)
+    assert h["cakupan_pct"] == 10.0 and h["sinyal_lemah"] is False and r["sah"] and r["tampil"]["baru_ha"] == 1.0, (h, r)
+    assert h["titik_baru"] == [(100.0, 1.0, 1.0)] and r["mentah"]["titik_baru"] == h["titik_baru"] and r["kisi_kasar"] is False
+    # sinyal lemah: genangan sudah ada di pra (latar) -> baru 0, tak sah, tampil None
+    pt, h = jalan(100, (POST, kol, 255), (PRA_OK, {(0, 0): 1}, 0), mulai_, pra_sebelum=mulai_)
+    r = rekam_kab("0000", "00", "K", pt, h, amb)
+    assert h["sinyal_lemah"] is True and not r["sah"] and r["tampil"] == {"baru_ha": None, "alasan": "sinyal lemah"}, (h, r)
+    # tanpa opsi: pasangan identik (kasus yang pranya sudah sebelum acuan) dan tanpa kunci tambahan
+    _, h0 = jalan(100, (POST, kol, 255), (PRA_OK, {}, 0), mulai_)
+    _, h1 = jalan(100, (POST, kol, 255), (PRA_OK, {}, 0), mulai_, pra_sebelum=mulai_)
+    assert h0 == h1 and "titik_baru" not in h0, "opsi tidak mengubah hasil bila pra sudah sebelum acuan"
+    # mode riwayat meniru produksi: jendela 6 hari, awal == pra_sebelum (tanggal DIBI). Pra <= lintasan - 8 <= awal - 2, jadi opsi TIDAK mengikat
+    # di jendela 6 hari: hasil dengan dan tanpa opsi sama. Penolakan pra sesudah tanggal DIBI dibuktikan lewat pilih_pra di atas.
+    dibi_ = dt.date(2024, 1, 17)
+    _, h2 = jalan(100, ("2024-01-20T22:00:00Z", kol, 255), (PRA_SESUDAH, {}, 0), dibi_, JENDELA["dibi"], dibi_)
+    _, h2b = jalan(100, ("2024-01-20T22:00:00Z", kol, 255), (PRA_SESUDAH, {}, 0), dibi_, JENDELA["dibi"])
+    assert h2["status"] == "ok" and h2 == h2b
+    # batas acuan = tengah malam WIB: pra 14 Jan 22:00 UTC (= 15 Jan 05:00 WIB) tak boleh dipakai untuk mulai 15 Jan; 14 Jan 16:00 UTC (23:00 WIB) boleh
+    assert batas_acuan(dt.date(2024, 1, 15)) == dt.datetime(2024, 1, 14, 17, tzinfo=dt.timezone.utc)
+    ks = [{"t": "2024-01-14T22:00:00Z"}]
+    assert pilih_pra(ks, {"t": "2024-01-23T22:00:00Z"}, batas_acuan(dt.date(2024, 1, 15))) is None
+    ks = [{"t": "2024-01-14T16:00:00Z"}]
+    assert pilih_pra(ks, {"t": "2024-01-23T16:00:00Z"}, batas_acuan(dt.date(2024, 1, 15))) is ks[0]
+    assert sah("ok", 10, None, amb) is False and sah("ok", 10.0, False, amb) is True and sah("ok", 9.9, False, amb) is False
+    # dua kandidat: A (cakupan terbesar, orbit 10:00) tanpa pra; B (22:00) punya pra 10 Jan -> dengan opsi hasilnya ok dari B
+    def dua(pra_sebelum):
+        its = {"A": item("A", "2024-01-21T10:00:00Z", "fa"), "B": item("B", "2024-01-20T22:00:00Z", "fb"), "P": item("P", "2024-01-10T22:00:00Z", "fp")}
+        ras = {HULU + "rr": Palsu({}, 0), HULU + "fa": Palsu({(0, 0): 1}, 0), HULU + "fb": Palsu(kol, 255), HULU + "fp": Palsu({}, 0)}
+        return hitung_pasangan(TT(100), Katalog(its), mulai_, JENDELA_KEJADIAN, buka=lambda u: ras[u], pra_sebelum=pra_sebelum)
+    ha, hb = dua(None), dua(mulai_)
+    assert ha["post"] == "A" and ha["pra"] is None, "tanpa opsi: kandidat terbaik A, tanpa pra, perilaku lama"
+    assert hb["status"] == "ok" and hb["post"] == "B" and hb["pra"] == "P", hb
+    # semua kandidat tak teramati -> tanpa_cakupan (bukan tanpa_pra)
+    assert jalan(10, (POST, {}, 255), None, mulai_, pra_sebelum=mulai_)[1]["status"] == "tanpa_cakupan"
+    # kab_dari_kode dan kab yang gagal, tanpa jaringan
+    assert kab_dari_kode("1116") == ("11", "Aceh Tamiang") and kab_dari_kode("0000") is None
+    class KatRusak:
+        def kandidat(self, *a):
+            raise RuntimeError("raster putus")
+    g = kerja_kab("1172", KatRusak(), amb, mulai_)   # Kota Sabang: kecil, titik cepat dibuat
+    assert g["status"] == "gagal" and g["sah"] is False and g["tampil"] == {"baru_ha": None, "alasan": "gagal baca data"} and "raster putus" in g["mentah"]["galat"], g
+    assert kerja_kab("0000", KatRusak(), amb, mulai_)["status"] == "kab_tak_dikenal"
     # katalog lanjut dari cache: bulan selesai tidak diminta lagi, item terpotong dibuang
     global DIR, ITEM, BULAN, UBIN_BULAN, stac_post, JEDA
     simpan_ = (DIR, ITEM, BULAN, UBIN_BULAN, stac_post, JEDA)
@@ -899,7 +1135,7 @@ def uji():
 
 def utama():
     p = argparse.ArgumentParser()
-    p.add_argument("mode", choices=["katalog", "luas", "terbit", "uji"])
+    p.add_argument("mode", choices=["katalog", "luas", "terbit", "kejadian", "uji"])
     p.add_argument("--dari")
     p.add_argument("--sampai")
     p.add_argument("--aktif", action="store_true")
@@ -909,8 +1145,14 @@ def utama():
     p.add_argument("--pilih", nargs="*")
     p.add_argument("--anggaran", type=int, default=40)
     p.add_argument("--paralel", type=int, default=2, help="pasangan yang dikerjakan bersamaan (server GFM lambat, 3-7 dtk per permintaan)")
+    p.add_argument("--pra-sebelum-acuan", action="store_true", help="pra wajib jatuh sebelum tanggal acuan (mode luas; kejadian selalu)")
+    p.add_argument("--kj")
+    p.add_argument("--mulai")
+    p.add_argument("--kab", nargs="*", help="kode Kemendagri 4 digit")
     a = p.parse_args()
-    if a.mode == "uji":
+    if a.mode == "kejadian":
+        kejadian(a)
+    elif a.mode == "uji":
         uji()
     elif a.mode == "katalog":
         katalog(a.dari or AWAL_ARSIP, a.sampai)

@@ -39,7 +39,7 @@ Revisi 24 Nov 2026 (K6, K7, K8): satu berkas modul lama menjadi banyak berkas ha
 | `tests/docs/*.test.mjs`, `tests/agen/gerbang-docs.test.mjs` | Uji dan gerbang | `docs-situs` (gerbang di `tests/agen`: `penulis-gerbang`) |
 | `.github/workflows/terbit.yml` | Langkah `bangun.py --cek` | `mekanik-mesin` |
 | `scripts/agents/roster.json` | Entri agent `docs-situs` | `mekanik-mesin` |
-| `AGENTS.md` | Bagian 2.47 dan baris peta modul (perlu diperbarui: lima bagian baku tidak lagi berlaku per halaman) | pemilik repo |
+| `AGENTS.md` | Bagian 2.50 dan baris peta modul (perlu diperbarui: lima bagian baku tidak lagi berlaku per halaman) | pemilik repo |
 
 Catatan: `public/docs/` berisi keluaran dan aset tulisan tangan. Generator tidak pernah menimpa `docs.css`, `gambar.css`, `cetak.css`,
 `docs.js`, dan `gambar/`; daftar keluaran yang boleh ditulis tertanam di kode (`index.html`, `pengembang/**`, `<modul>/**`,

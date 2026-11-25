@@ -499,7 +499,7 @@
       "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
       "judul": "Hujan Tiga Hari Tertinggi {{angka:sl.p.hmax|satuan}} di Danau Kembar; Status Banjir per Kecamatan Kabupaten Solok, 24–27 Nov",
       "utama": {
-        "judul": "Status banjir dan hujan tiga hari per kecamatan, empat hari ke depan",
+        "judul": "Status banjir per tanggal; angka = hujan tiga hari, sehari sebelum sampai sehari sesudah tanggal itu",
         "ikon": "peringatan",
         "heatmap": {
           "mode": "kategori",

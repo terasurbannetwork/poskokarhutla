@@ -27,7 +27,7 @@ Rancangan lengkap: `data/kajian-bnpb/docs-situs/DESAIN-TEKNIS.md` (berkas, rute,
 
 ## Gerbang yang menghakimi
 
-- `tests/agen/gerbang-paket-modul.test.mjs` (paket `data/kajian-bnpb/docs-situs/` dan bagian AGENTS.md 2.47).
+- `tests/agen/gerbang-paket-modul.test.mjs` (paket `data/kajian-bnpb/docs-situs/` dan bagian AGENTS.md 2.50).
 - `tests/agen/gerbang-token-warna.test.mjs` untuk `public/docs/docs.css`.
 - `tests/docs/*.test.mjs` (generator, halaman, rute) lewat `npm run uji:docs` (dibuat di DC-05).
 

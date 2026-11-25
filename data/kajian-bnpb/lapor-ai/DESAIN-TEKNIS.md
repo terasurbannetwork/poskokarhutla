@@ -276,7 +276,7 @@ Batas laju tambahan: verifikasi 20 per jam per staf; tanya 30 per jam per nomor;
 
 ### Skema D1 (migrasi berikutnya, nomor diambil saat LA-80 dikerjakan)
 
-- `lapor_selamat`: `id`, `nomor` (62…), `nama_panggil`, `status` (`selamat`, `butuh_bantuan`), `kab`, `token_sha`, `dibuat`, `kedaluwarsa`, `dicabut`. Indeks `nomor`, `token_sha`.
+- `lapor_selamat`: `id`, `nomor` (62…), `nama_panggil`, `status` (`selamat`, `butuh_bantuan`), `kab`, `token_id` (ke `tautan_token` lewat `src/token.js`, bukan kolom token sendiri), `dibuat`, `kedaluwarsa`, `dicabut`. Indeks `(nomor, dibuat)`, `dibuat`, dan indeks unik sebagian `(nomor) WHERE dicabut IS NULL` (satu tanda aktif per nomor; ganti tanda = satu batch cabut lama plus tambah baru). `lapor_cari_riwayat` dikunci trigger BEFORE UPDATE dan BEFORE DELETE (append-only di database).
 - `lapor_cari`: `id`, `nomor_pencari`, `nama_dicari`, `ciri`, `lokasi_terakhir`, `waktu_terakhir`, `nomor_dicari` (boleh kosong), `hubungan`, `kab`, `status` (`buka`, `ditemukan_selamat`, `ditemukan_meninggal`, `ke_sar`, `tutup`), `dibuat`, `ditutup_oleh`, `ditutup`. Riwayat status append-only di `lapor_cari_riwayat`.
 - Laporan: kolom `cara` (`biasa`, `darurat`, `sekali_ketuk`) dan `sumber_lokasi` (`gps`, `pilih`, `poster`) bila belum ada padanannya.
 

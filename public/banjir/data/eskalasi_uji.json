@@ -1,0 +1,46 @@
+{
+ "n_latih": 1104,
+ "n_uji": 398,
+ "y1_latih": 333,
+ "y1_uji": 154,
+ "pembanding_utama": "klimatologi_prov_bulan",
+ "brier_latih_pembanding": {
+  "klimatologi_bulan": 0.204,
+  "klimatologi_prov_bulan": 0.1758,
+  "persistensi": 0.2059
+ },
+ "brier_model": 0.2255,
+ "brier_pembanding": {
+  "klimatologi_bulan": 0.2529,
+  "klimatologi_prov_bulan": 0.23,
+  "persistensi": 0.235
+ },
+ "auc_model": 0.662,
+ "auc_pembanding": {
+  "klimatologi_bulan": 0.4921,
+  "klimatologi_prov_bulan": 0.6509,
+  "persistensi": 0.5977
+ },
+ "selisih_brier": 0.00442,
+ "selang95": [
+  -0.00899,
+  0.01865
+ ],
+ "n_blok": 184,
+ "bobot": {
+  "b0": -0.917,
+  "lh1": 0.404,
+  "lh3": -0.166,
+  "la7": 0.076,
+  "sm": 0.316,
+  "lknown": 0.276,
+  "lnew0": -0.099,
+  "lnew12": 0.055,
+  "sinm": -0.085,
+  "cosm": 0.086
+ },
+ "vonis": "tidak lolos",
+ "sidik": "d5405318adc604ce",
+ "dibuat": "2026-11-25",
+ "label": "logbook Pusdalops, dicatat d+1..d+2 kab lain di provinsi sama"
+}

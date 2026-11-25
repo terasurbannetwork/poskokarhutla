@@ -24,7 +24,7 @@ Alat di peta utama untuk menggambar wilayah sendiri (poligon, kotak, buffer) dan
 | F-2 | Luas wilayah digambar | km2 dan ha, geodesik, label tegas bukan luas terbakar | AG-02 |
 | F-3 | Titik panas dan FRP | lokasi unik per hari, jumlah FRP dan maksimum, per periode 24 jam, 3 hari, 7 hari | AG-03 |
 | F-4 | Siang lawan malam | dua angka, tanpa tafsir | AG-03 |
-| F-5 | Sel berdeteksi dan jejak sel | petak 375 m dan jejak sel × 14,0625 ha, berlabel | AG-03 |
+| F-5 | Sel berdeteksi dan jejak sel | sel angka utama (±375 m) dan jejak sel × luas sel (sekitar 14,08 ha), berlabel | AG-03 |
 | F-6 | Luas dNBR insiden dalam gambar | per insiden, bila ada, tidak dijumlah | AG-04 |
 | F-7 | Desa dan kecamatan | daftar desa beririsan; penduduk kecamatan beririsan berpil perkiraan kasar | AG-05 |
 | F-8 | Kartu hasil | kartu standar, keadaan kosong jujur | AG-06 |

@@ -262,7 +262,7 @@ def hitung():
              "bendera_transien": bendera, "provinsi": prov, "stasiun": out,
              "catatan": "Kecepatan dalam kerangka IGS20 (termasuk gerak lempeng Sunda ~30 mm/th; hilang pada gradien regangan). Jendela 6 tahun TERAKHIR "
                         "tiap stasiun, jadi stasiun yang berhenti 2021-2024 mencerminkan zaman lebih tua (sebagian mengandung relaksasi pasca-gempa Bengkulu 2007/"
-                        "Aceh 2004 yang sudah mengecil). Indeks regangan = fitur kasar untuk peluang_gempa.py, BUKAN prakiraan gempa. Bendera transien = "
+                        "Aceh 2004 yang sudah mengecil). Indeks regangan = lapisan peta saja (tidak dipakai peluang_gempa.py), BUKAN prakiraan gempa. Bendera transien = "
                         "penanda statistik 3x latar robust (tidak setara peringatan; latar dihitung dalam-sampel jadi terlalu sempit), bukan klaim slow-slip."}
     umum.simpan(os.path.join(umum.KELUAR, "gnss.json"), hasil)
     print(json.dumps({"cacah": hasil["cacah"], "bendera": bendera, "provinsi": {k: (v["stasiun"], v["indeks_nstrain_th"]) for k, v in prov.items()}}, ensure_ascii=False))

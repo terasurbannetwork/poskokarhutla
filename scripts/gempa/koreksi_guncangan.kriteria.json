@@ -1,0 +1,16 @@
+{
+ "id": "KI-81-koreksi-guncangan-v1",
+ "tujuan": "Vs30 per tapak (vs30.bin) ditambah koreksi bias jarak dan kedalaman pada MMI guncangan.py, diuji lawan MMI laporan MAGMA",
+ "data": "pasangan (MMI laporan MAGMA, tempat kabupaten/kecamatan) dari kajian_magma.banding, masukan BMKG; n=1474, 496 kejadian, 2016-08-07 sampai 2026-04-08",
+ "pembagian": "per kejadian menurut tanggal: LATIH = tanggal <= 2020-11-18, UJI = tanggal > 2020-11-18 (median tanggal kejadian; dipilih dari tanggal dan jumlah saja, galat belum dilihat)",
+ "pembanding": "model lama = guncangan.mmi_perkiraan dengan Vs30 400 seragam, tanpa koreksi",
+ "model_baru": "Vs30 per tapak di pusat tempat (guncangan.muat_vs30, baku 400 bila bukan darat) lalu MMI -= (mu + a_jarak + b_kelas_dalam); mu, a, b dari LATIH saja: mu = rerata (model-laporan), a dan b dikecilkan dengan K=10 (jumlah/(n+10)), 25 putaran backfitting; sel jarak = 5 kelas kajian_magma.JARAK, sel dalam = 3 kelas kajian_magma.kelas_dalam; hasil dipotong 1..10",
+ "jenis_tektonik": "tebak_jenis yang ada; logic tree GEM hanya BSSA14 (kerak) dan Zhao 2006 (antarmuka, intraslab) yang tersedia, bobot dinormalkan 1; CB14, CY14, AG20, Kuehn 2020 tidak ada dan tidak ditulis dari ingatan",
+ "metrik": "MAE |MMI model - MMI laporan| di UJI; bias = rerata (model-laporan) per kelas jarak dan kelas dalam",
+ "selang": "pembanding.bootstrap_blok, blok = id kejadian, B=1000, benih 11, selisih = MAE_lama - MAE_baru",
+ "vonis_lolos": "MAE_baru < MAE_lama di UJI DAN batas bawah selang selisih > 0 DAN |bias kelas 'kurang dari 25 km'| baru < lama di UJI; selain itu gagal",
+ "laporan_tambahan": "model hanya-Vs30 (tanpa koreksi) dilaporkan lawan lama tanpa vonis; MAE dan bias per kelas jarak dan dalam, lama lawan baru",
+ "peringatan_data": "MMI laporan ada hanya untuk tempat yang merasakan gempa (bias seleksi) dan kajian dibuat untuk gempa merusak; koreksi dapat menyerap bias seleksi, bukan hanya galat GMPE",
+ "tampil": "layar tidak berubah kecuali vonis lolos; lulus tidak otomatis memasang koreksi",
+ "buka_sekali": "UJI dibuka sekali lewat sidik.buka; diulang = ditolak"
+}

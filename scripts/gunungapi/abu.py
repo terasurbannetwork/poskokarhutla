@@ -72,6 +72,9 @@ DURASI_LEPAS_JAM = 3
 FL350_M = 10668.0
 RADIUS_BANDARA_KM = 25.0
 JAM_JEJAK = (6, 12, 24, 48, 72)
+JAM_ARAH = 3             # jam potret arah skenario prospektif = jam penilaian uji balik (uji_abu.JAM_NILAI); ditetapkan sama (KI-80)
+OFFSET_MAKS = 12         # skenario dijalankan untuk awal erupsi 0..12 jam sesudah angin.mulai (VONA bisa terbit hingga 12 jam kemudian)
+MIN_ATAS = 20            # arah kolom atas sah bila >= segini partikel melayang di pita 0,5H-1H
 SEL_DEG = 0.1            # kisi beban kolom
 AMBANG_MGM3 = 2.0        # mg/m3: ambang abu penerbangan (batas bawah "kontaminasi sedang" ICAO/CAA; ASUMSI pilihan)
 TEBAL_AWAN_M = 2000.0    # ketebalan efektif awan untuk mengubah massa per luas menjadi konsentrasi (ASUMSI)
@@ -212,7 +215,7 @@ def jalankan(lat, lon, puncak_m, kolom_m, angin, durasi_jam=DURASI_LEPAS_JAM, ja
             if z[i] <= 0:
                 z[i], st[i] = 0.0, 2
     return {"jam": list(range(jam + 1)), "snap": snaps, "lepas": [r * dt_s / 3600.0 for r in rel], "vent": {"lat": lat, "lon": lon},
-            "massa_kg": mer_kg_s(kolom_m) * durasi_jam * 3600.0, "n": n}
+            "massa_kg": mer_kg_s(kolom_m) * durasi_jam * 3600.0, "n": n, "puncak_m": puncak_m, "kolom_m": kolom_m}
 
 
 def _proyeksi(vent):
@@ -313,6 +316,45 @@ def jejak_tipis(hasil, jam):
     arah = (math.degrees(math.atan2(mx, my)) + 360.0) % 360.0
     hull = selubung(kept)
     return {"poligon": [[v["lon"] + x / kx, v["lat"] + y / ky] for x, y in hull], "arah_deg": arah, "jangkau_km": thr}
+
+
+def arah_atas(hasil, jam):
+    """Arah (derajat, ke mana) kolom ATAS: rata-rata perpindahan partikel melayang yang tingginya 0,5H sampai 1H di atas puncak pada jam itu
+    (H = tinggi kolom; awan yang terlihat VONA ada di puncak kolom). Tiap partikel bermassa sama (massa_kg/n), jadi rata-rata = berbobot massa.
+    Tanpa ambang konsentrasi dan tanpa pangkas persentil. None bila < MIN_ATAS partikel. Metrik BARU di samping jejak_tipis (yang tetap)."""
+    s = next(x for x in hasil["snap"] if x["jam"] == jam)
+    v = hasil["vent"]
+    kx, ky = _proyeksi(v)
+    lo, hi = hasil["puncak_m"] + 0.5 * hasil["kolom_m"], hasil["puncak_m"] + hasil["kolom_m"]
+    xy = [((s["lon"][i] - v["lon"]) * kx, (s["lat"][i] - v["lat"]) * ky) for i in range(len(s["lon"])) if s["aktif"][i] and lo <= s["z"][i] <= hi]
+    if len(xy) < MIN_ATAS:
+        return None
+    return (math.degrees(math.atan2(sum(x for x, _ in xy), sum(y for _, y in xy))) + 360.0) % 360.0
+
+
+def angin_mulai_ke(angin, k):
+    """Angin yang sama tetapi `mulai` digeser k jam (erupsi diandaikan k jam sesudah angin.mulai); k >= 0 dan k < jam."""
+    return {**angin, "jam": angin["jam"] - k, "lapis": [{**L, "z_m": L["z_m"][k:], "u": L["u"][k:], "v": L["v"][k:]} for L in angin["lapis"]]}
+
+
+def angin_kolom(angin, z):
+    """(arah ke mana derajat, kecepatan m/s) angin pada ketinggian z di jam pertama `angin`."""
+    u, v = angin_di(profil(angin, 0), z)
+    return (math.degrees(math.atan2(u, v)) + 360.0) % 360.0, math.hypot(u, v)
+
+
+def arah_mulai(r, a, kol, n=N_PRODUKSI):
+    """Skenario prospektif: untuk tiap awal erupsi k = 0..OFFSET_MAKS jam, arah titik tengah sebaran mentah (metrik lama) dan arah kolom atas (baru)
+    pada JAM_ARAH, plus angin di tengah pita atas (0,75H). Dicatat sekarang; penilaian memilih k menurut jam terbit VONA."""
+    out = []
+    for k in range(OFFSET_MAKS + 1):
+        ak = angin_mulai_ke(a, k)
+        h = jalankan(r["lat"], r["lon"], r["puncak_m"], kol, ak, jam=JAM_ARAH, n=n, seed=1)
+        t, at = jejak_tipis(h, JAM_ARAH)["arah_deg"], arah_atas(h, JAM_ARAH)
+        ar, kc = angin_kolom(ak, r["puncak_m"] + 0.75 * kol)
+        out.append({"k": k, "tipis_deg": None if t is None else round(t), "atas_deg": None if at is None else round(at),
+                    "angin_kolom": {"arah_deg": round(ar), "kec_ms": round(kc, 1)}})
+    return {"jam": JAM_ARAH, "kolom_m": kol, "per_offset": out}
 
 
 def endapan(hasil, titik, radius_km=2.0):
@@ -517,7 +559,7 @@ def hitung_gunung(r, a, kol, kol_s, bandara, n):
            "kolom_m": kol, "kolom_sumber": kol_s, "massa_lepas_kg": round(h["massa_kg"], -3), "angin": a,
            "jejak": [bulat_jejak(jejak(h, j), j) for j in JAM_JEJAK],
            "jejak_maks": bulat_maks(jejak_maks(h)),
-           "jejak_tipis": [bulat_jejak(jejak_tipis(h, j), j) for j in JAM_JEJAK], "bandara": bd}
+           "jejak_tipis": [bulat_jejak(jejak_tipis(h, j), j) for j in JAM_JEJAK], "arah_mulai": arah_mulai(r, a, kol, n), "bandara": bd}
     return rec, ter
 
 
@@ -693,6 +735,23 @@ def uji():
     mk = jejak_maks(besar)
     assert mk and mk["jangkau_km"] >= jejak(besar, 12)["jangkau_km"] and 0 <= mk["jam"] <= 12 and mk["sel_n"] >= MIN_SEL, mk
     assert jejak_maks(kecil) is None
+    # arah kolom atas (KI-80): angin bawah ke timur, angin atas ke barat -> metrik baru HARUS mengikuti angin atas
+    zs = [1500, 3100, 4200, 5800, 7600, 9700, 10800, 12300]
+    gs = {"mulai": "2026-01-01T00:00:00Z", "langkah_jam": 1, "jam": 24,
+          "lapis": [{"hpa": p, "z_m": [zs[i]] * 24, "u": [10.0 if zs[i] < 4000 else -10.0] * 24, "v": [0.0] * 24} for i, p in enumerate(HPA)]}
+    hg = jalankan(0.0, 100.0, 0, 8000, gs, jam=JAM_ARAH, n=1500, seed=3)
+    aa = arah_atas(hg, JAM_ARAH)
+    assert aa is not None and abs((aa - 270 + 180) % 360 - 180) < 20, aa
+    assert angin_kolom(gs, 6000)[0] > 260 and abs(angin_kolom(gs, 6000)[0] - 270) < 1 and abs(angin_kolom(gs, 2000)[0] - 90) < 1
+    assert arah_atas(jalankan(0.0, 100.0, 0, 8000, angin_contoh(0, 0), jam=JAM_ARAH, n=5, seed=3), JAM_ARAH) is None   # < MIN_ATAS partikel
+    am = angin_mulai_ke(gs, 5)
+    assert am["jam"] == 19 and len(am["lapis"][0]["u"]) == 19
+    # geser awal 5 jam: angin yang berubah di jam ke-5 terbaca sebagai angin jam pertama
+    gb = {**gs, "lapis": [{**L, "u": [10.0] * 5 + [-10.0] * 19} for L in gs["lapis"]]}
+    assert angin_kolom(angin_mulai_ke(gb, 5), 6000)[0] > 260 and angin_kolom(gb, 6000)[0] < 100
+    am0 = arah_mulai({"lat": 0.0, "lon": 100.0, "puncak_m": 0}, gb, 8000, n=800)
+    assert am0["jam"] == JAM_ARAH == 3 and [x["k"] for x in am0["per_offset"]] == list(range(OFFSET_MAKS + 1))
+    assert abs((am0["per_offset"][0]["atas_deg"] - 90 + 180) % 360 - 180) < 25 and abs((am0["per_offset"][OFFSET_MAKS]["atas_deg"] - 270 + 180) % 360 - 180) < 25, am0["per_offset"]
     # ambil_byte menolak respons melebihi batas
     import http.server, threading
     class H(http.server.BaseHTTPRequestHandler):

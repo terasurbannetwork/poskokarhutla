@@ -1,7 +1,7 @@
 // U2 (lapor-kejadian RENCANA-UJI): terverifikasiBpbd, lima syarat A3 satu per satu dibalik.
 import {test} from "node:test";
 import assert from "node:assert/strict";
-import {terverifikasiBpbd, kejadianTerverifikasi, penandaPemeriksa, waktuVerifikasi} from "../../src/lapor_kejadian.js";
+import {terverifikasiBpbd, kejadianTerverifikasi, penandaPemeriksa, waktuVerifikasi, syaratPublik} from "../../src/lapor_kejadian.js";
 import {cakupanMeja} from "../../src/lapor_meja_hak.js";
 
 const W = {provKode: "13", kabKode: "13.71", kab: "Kota Padang"};
@@ -58,4 +58,16 @@ test("kejadian: satu anggota terverifikasi cukup; hanya anggotanya yang dihitung
   assert.deepEqual(k, {terverifikasi: true, waktu: 2000, anggota: ["LA-201126-01", "LA-201126-03"]});
   assert.deepEqual(kejadianTerverifikasi([{nomor: "x", laporan: LAP, periksa: [], versi: []}]), {terverifikasi: false, waktu: null, anggota: []});
   assert.equal(waktuVerifikasi(LAP, OK, [], [{id: 1, aktif: 1, waktu: 9}]), null);
+});
+
+test("syaratPublik: lima syarat sebagai daftar centang meja, sumber yang sama dengan terverifikasiBpbd (LK-07)", () => {
+  const ok = s => Object.fromEntries(s.map(x => [x.id, x.ok]));
+  assert.deepEqual(syaratPublik(LAP, OK).map(x => x.id), ["valid", "bpbd", "tiket", "versi", "tarik"]);
+  assert.ok(syaratPublik(LAP, OK).every(x => x.ok && x.label));
+  assert.deepEqual(ok(syaratPublik(LAP, [])), {valid: false, bpbd: false, tiket: true, versi: true, tarik: true}, "belum dicek: hanya syarat pengecekan yang merah");
+  assert.equal(ok(syaratPublik(LAP, OK, [], [{id: 1, aktif: 1, waktu: 9}])).tarik, false);
+  assert.equal(ok(syaratPublik(LAP, OK, [{waktu: 2000}])).versi, false);
+  assert.equal(ok(syaratPublik({...LAP, status: "tidak_valid"}, OK)).tiket, false);
+  for (const args of [[LAP, OK], [LAP, []], [LAP, OK, [{waktu: 2000}]], [LAP, OK, [], [{id: 1, aktif: 1, waktu: 9}]]])
+    assert.equal(terverifikasiBpbd(...args), syaratPublik(...args).every(x => x.ok));
 });

@@ -77,6 +77,10 @@ jobs:
         run: |
           python3 scripts/udara/openaq_mos.py || echo "::warning title=openaq_mos::gagal; berkas lamanya dibiarkan"
           python3 scripts/udara/geoscf.py || echo "::warning title=geoscf::gagal; berkas lamanya dibiarkan"
+          # KI-74: arsip prospektif append-only di data/raw/udara (ikut cache udara-). Hilang sesudah tgl 27 = cache terbuang: kerasan, jangan diam.
+          [ -s data/raw/udara/mos_ridge2_arsip.jsonl ] || [ "$(date -u +%F)" \< "2026-11-28" ] || echo "::error title=mos_ridge2::arsip prospektif HILANG (cache udara- luput); uji 28 hari mulai ulang, catat di KI-74"
+          python3 -I scripts/udara/mos_ridge2.py bayangan || echo "::warning title=mos_ridge2::gagal"
+          python3 scripts/udara/gerbang_udara.py || echo "::warning title=gerbang_udara::gagal; berkas lamanya dibiarkan"
 
       - name: Simpan arsip udara untuk jalan berikutnya
         if: always()
@@ -92,9 +96,9 @@ jobs:
         run: |
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add public/udara/data
-          git diff --cached --quiet -- public/udara/data && { echo "data udara tidak berubah"; exit 0; }
-          git commit -q -m "data: udara $(TZ=Asia/Jakarta date '+%F %H:%M') WIB" -- public/udara/data
+          git add public/udara/data public/data/gerbang/udara.json
+          git diff --cached --quiet -- public/udara/data public/data/gerbang/udara.json && { echo "data udara tidak berubah"; exit 0; }
+          git commit -q -m "data: udara $(TZ=Asia/Jakarta date '+%F %H:%M') WIB" -- public/udara/data public/data/gerbang/udara.json
           git pull -q --rebase --autostash && git push -q || { echo "::error title=Push data udara gagal::git push ke main gagal (bentrok atau token tanpa scope workflow/contents:write); data udara belum masuk main"; exit 1; }
 
       # Deploy mengirim seluruh situs. Tanpa cache ini public/banjir/data terkirim dari git (Oktober) dan menimpa data tayang: banjir, rob, cuaca, gelombang,

@@ -322,7 +322,7 @@ Sebelum menyentuh cara orang masuk (halaman `/masuk`, kode sekali pakai, akun um
 2. `RISET.md`, 3. `PRD.md` (F-1..F-14), 4. `ALUR.md`, 5. `ALGORITMA.md` (kode, batas laju, pencocokan nomor, anggota aktif otomatis), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PM-*`), `GLOSARIUM.md`.
 
-Aturan berhentinya sama dengan §2.1. Sesi peran tetap diterbitkan modulnya sendiri; pintu lama tidak ditutup; staf selalu wajib sandi dan akun rahasia tidak pernah lewat kode; paket ini tidak membuat baris `staf` atau `instansi_akun`; tidak pernah membaca WA masuk; kode tidak pernah tersimpan atau tercatat dalam bentuk terbaca.
+Aturan berhentinya sama dengan §2.1. Sesi peran tetap diterbitkan modulnya sendiri; layar masuk sandi hanya satu, `/admin/masuk`, untuk staf, admin, pemirsa, dan instansi (K16, 24 Nov 2026); staf selalu wajib sandi dan akun rahasia tidak pernah lewat kode; paket ini tidak membuat baris `staf` atau `instansi_akun`; tidak pernah membaca WA masuk; kode tidak pernah tersimpan atau tercatat dalam bentuk terbaca.
 
 ### 2.18 Misi Udara (renlap flight semua bencana: dropping, pantau, evakuasi, angkut, pencarian, kunjungan): baca dulu, baru bangun
 
@@ -615,7 +615,7 @@ Aturan berhentinya sama dengan §2.1. Satu mesin desa: tidak mengubah `preventif
 Sebelum menyentuh genangan Copernicus GFM per kejadian Buku Besar, zona sel di paparan, lahan tergenang WorldCover, citra radar dan optik sebelum dan sesudah per kejadian, atau model kaji `banjir_gfm`, baca dokumen di
 `data/kajian-bnpb/genangan-satelit/` dengan urutan otoritas ini (kode di `scripts/banjir/genangan_nasional.py`, `scripts/banjir/genangan_lahan.py`, `scripts/banjir/citra_banjir.py`, `public/banjir/bukti.*` milik `banjir`; `scripts/siklus/paparan.py`, `scripts/siklus/kaji_banjir.py`, `scripts/siklus/genangan_kaji.py`, `public/siklus/kaji.js` milik `siklus`; `src/siklus_kaji.js` dan migrasi `sk_kaji` milik `warga-api`; `public/inti/geser.*` milik `inti-layar`; langkah `siklus.yml` milik `mekanik-mesin`):
 
-1. `KEPUTUSAN-GENANGAN.md`: keputusan pemilik K1-K3, rancangan D1-D12, pertanyaan terbuka Q1-Q9 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-GENANGAN.md`: keputusan pemilik K1-K3, rancangan D1-D13, pertanyaan terbuka Q1-Q12 dengan bawaan sementara; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md` (F-1..F-10), 4. `ALUR.md`, 5. `ALGORITMA.md` (pasangan, cakupan sah, zona sel, lahan, uji balik peringkat), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`GS-*`), `GLOSARIUM.md`.
 
@@ -643,7 +643,40 @@ Sebelum menyentuh alat gambar di peta utama (mode gambar, hitungan titik panas, 
 
 Aturan berhentinya sama dengan §2.1. Luas gambar bernama "luas wilayah digambar", tidak pernah luas terbakar; titik panas memakai definisi angka utama; tanpa tafsir "malam berarti gambut"; tanpa "aman" atau "bebas api"; hitung di peramban, gambar tidak disimpan atau masuk URL; penduduk hanya kecamatan beririsan berpil perkiraan kasar.
 
-### 2.47 Docs Centurisk97 (`/docs`, panduan pengguna dan pengembang, metode di dalam sistem): baca dulu, baru bangun
+### 2.47 Pemetaan bekas longsor dari satelit (Sentinel-2 rdNDVI sebelum-sesudah, kerapatan radar Sentinel-1, kasus Tapanuli Tengah Nov 2025): baca dulu, baru bangun
+
+Sebelum menyentuh pemetaan bekas longsor sesudah kejadian (komposit, rdNDVI, saringan tebangan, poligon dan luas per kecamatan, uji balik lembar buta), baca dokumen di
+`data/kajian-bnpb/longsor-satelit/` dengan urutan otoritas ini (pipeline `scripts/longsor/bekas*.py` dan `tests/longsor/bekas*` milik `longsor`; rute staf di `src/siklus*.js` milik `warga-api`; lapisan `public/siklus/**` milik `siklus`):
+
+1. `KEPUTUSAN-LONGSOR-SATELIT.md`: keputusan pemilik K1-K3, rancangan D1-D9, pertanyaan terbuka Q1-Q8 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (komposit, rdNDVI, saringan, kriteria terkunci), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LS-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Tanpa vonis lulus tidak ada luas atau jumlah bekas longsor di layar mana pun; tebangan dilaporkan terpisah tanpa klaim sebab; tidak membuat kejadian di Buku Besar dan tidak masuk Jitupasna; nowcast longsor dan pra-registrasi LHASA2 tidak disentuh.
+
+### 2.48 Kemampuan Inti (prediksi, simulasi, peringatan dini, pemodelan, analisa dampak disilangkan ke semua bencana): baca dulu, baru bangun
+
+Sebelum menyentuh mesin bersama pemodelan (`scripts/umum/pembanding.py`, `sidik.py`, `gerbang.py`, `selang.py`, `setara.mjs`, `label_mutu.py`, `berantai_lift.py`, `lonjakan.py`, `senyap.py` milik `pipa-umum`; `public/inti/gerbang.js` dan `public/inti/perlakuan.js` milik `inti-layar`), gerbang tampil per bencana `public/data/gerbang/**`, atau tiket `KI-*` di modul bencana mana pun, baca dokumen di
+`data/kajian-bnpb/kemampuan-inti/` dengan urutan otoritas ini (berkas per bencana tetap milik pengerja bencananya; cek `ilmu.mjs pemilik`):
+
+1. `KEPUTUSAN-KEMAMPUAN.md`: keputusan pemilik K1-K6, rancangan D1-D12, pertanyaan terbuka Q1-Q6 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md` (matriks silang lima bidang x sebelas bencana, + `riset/R1-R4` inventaris 330 teknik), 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`KI-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Tiket hanya dikerjakan bila berguna menurut D1; model baru tanpa lolos gerbang tampil sebagai hipotesis dan tidak dikirim keluar; pembanding wajib persistensi dan klimatologi pada jumlah alarm sama; satu mesin inti per kemampuan; tiket paket Paritas, LS, KS, PT tidak digandakan.
+
+### 2.49 Pemantauan Satelit (Himawari 10 menit: titik panas, abu, konveksi; panas kawah, SO2, genangan harian, VHI, asap): baca dulu, baru bangun
+
+Sebelum menyentuh pemindai Himawari L1b, detektor api, abu, konveksi, status sumber satelit, atau pemicu 10 menit, baca dokumen di
+`data/kajian-bnpb/satelit/` dengan urutan otoritas ini (`scripts/umum/himawari_pindai.py` milik `pipa-umum`; `scripts/data/himawari.py`, `api_himawari.py` milik `pipa-data`; `abu_satelit.py`, `kawah.py`, `so2.py`, `vhi.py` milik `gunungapi-kering`; `awan_tumbuh.py`, `asap_aod.py` milik `cuaca-udara`; `genangan_harian.py` milik `banjir`; `src/satelit_picu.js`, `src/alarm_himawari.js` milik `warga-api`; `public/inti/satelit.*` milik `inti-layar`; `satelit.yml` milik `mekanik-mesin`):
+
+1. `KEPUTUSAN-SATELIT.md`: keputusan pemilik K1-K6, rancangan D1-D15, pertanyaan terbuka Q1-Q14 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`ST-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Satu pemindai, tanpa pembaca HSD atau GFM kedua; kriteria dikunci sebelum diuji; tanpa vonis lolos tetap hipotesis dan tidak dikirim ke luar; status BMKG, PVMBG, VAAC terpisah; sumber putus tidak pernah 0 dan tidak pernah diam; titik Himawari tidak dijumlah dengan VIIRS; tidak pernah menulis "aman" atau "padam".
+
+### 2.50 Docs Centurisk97 (`/docs`, panduan pengguna dan pengembang, metode di dalam sistem): baca dulu, baru bangun
 
 Sebelum menyentuh sumber isi Docs, generator halamannya, tampilan `/docs`, indeks cari, rute Worker `/docs`, atau alias `docs.centurisk97.id`, baca dokumen di
 `data/kajian-bnpb/docs-situs/` dengan urutan otoritas ini (kode di `scripts/docs/**`, `public/docs/**`, `tests/docs/**`, `docs/centurisk97/**` milik `docs-situs`; `src/docs_rute.js` dan penyesuaian `src/worker.js` milik `warga-api`; langkah `bangun.py --cek` di `terbit.yml` milik `mekanik-mesin`):

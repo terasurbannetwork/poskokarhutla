@@ -1,13 +1,13 @@
 # Draf bagian AGENTS.md untuk ditempel sesi induk
 
 Berkas ini bukan bagian dari paket yang dibaca agent saat membangun; isinya draf teks siap tempel. Tempel dua
-potongan di bawah: (1) bagian 2.47 sesudah bagian 2.46 di AGENTS.md, (2) satu baris di tabel peta modul §2.
+potongan di bawah: (1) bagian 2.50 sesudah bagian 2.49 di AGENTS.md, (2) satu baris di tabel peta modul §2.
 Sesudah ditempel, jalankan `npm run uji:agen`. Hapus berkas ini bila tidak lagi dibutuhkan.
 
-## Potongan 1: bagian 2.47
+## Potongan 1: bagian 2.50
 
 ```markdown
-### 2.47 Docs Centurisk97 (`/docs`, panduan pengguna dan pengembang, metode di dalam sistem): baca dulu, baru bangun
+### 2.50 Docs Centurisk97 (`/docs`, panduan pengguna dan pengembang, metode di dalam sistem): baca dulu, baru bangun
 
 Sebelum menyentuh sumber isi Docs, generator halamannya, tampilan `/docs`, indeks cari, rute Worker `/docs`, atau alias `docs.centurisk97.id`, baca dokumen di
 `data/kajian-bnpb/docs-situs/` dengan urutan otoritas ini (kode di `scripts/docs/**`, `public/docs/**`, `tests/docs/**`, `docs/centurisk97/**` milik `docs-situs`; `src/docs_rute.js` dan penyesuaian `src/worker.js` milik `warga-api`; langkah `bangun.py --cek` di `terbit.yml` milik `mekanik-mesin`):

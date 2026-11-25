@@ -26,7 +26,7 @@ Dua butir terakhir menentukan D3 dan D5.
 | Definisi titik utama | `scripts/data/titik_unik.py`: lokasi unik per hari WIB, semua satelit, semua keyakinan | ada | satu definisi (D4) |
 | FRP dan keyakinan | kolom `frp`, `keyakinan` di `hotspot.json` | ada | ya |
 | Siang lawan malam | `gambut_bara.py` memakai malam 18.00 sampai 06.00 WIB; `jam` relatif terhadap `acuan` | ada | ya (D5) |
-| Petak 375 m | `scripts/data/riwayat_petak.py` (`PETAK` 0,0034 derajat), `PIKSEL_HA = 14.0625` di `gambut_bara.py` | ada | sel berdeteksi (D6) |
+| Petak 375 m | `AngkaKawasan.selUnik` (sel 0,003375 derajat, bujur diskalakan cos lintang; dipakai angka utama) | ada | sel berdeteksi (D6) |
 | Luas dNBR | `scripts/data/luas_citra.py` (per insiden); `public/data/citra.json` berisi `dibuat, hari, kotak_km, kompleks, atribusi`; berkas `luas_citra.json` yang disebut skrip tidak ada di `public/data` per 24 Nov 2026 | tak pasti | diperiksa di AG-01 (D7) |
 | Desa | `public/geo/desa/<kode kab>.json` (513 berkas, kira-kira 80 sampai 130 KB masing-masing), `public/data/desa_cari.json` (3,4 MB) | ada | ya (D8) |
 | Kecamatan | `public/geo/kecamatan/<kode provinsi>.json` (mis. `11.json` 585 KB), `public/geo/kabupaten`, `public/geo/provinsi.json` | ada | ya (D8) |

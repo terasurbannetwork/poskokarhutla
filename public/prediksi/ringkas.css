@@ -4,6 +4,7 @@
 body.rk main>.page.scroll{overflow-y:auto}
 .rk-wrap{display:flex;flex-direction:column;gap:20px;padding:24px 16px 64px;max-width:1100px}
 .rk-wrap>.ex.ex-std{margin:0}
+.rk-wrap #waspada{display:grid;gap:20px}
 .rk-wrap #waspada:empty{display:none}
 .rk-wrap #waspada>.ex{margin:0}
 .rk-wrap .pr-lagi{margin:-8px 0 0}

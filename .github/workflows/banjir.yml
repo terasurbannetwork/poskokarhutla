@@ -15,6 +15,10 @@ on:
         description: "Panen GSMaP per jam (JAXA) untuk jendela kejadian genangan Jakarta (gsmap.py; ratusan berkas, puluhan menit) lalu commit public/banjir/data/genangan/gsmap.json"
         type: boolean
         default: false
+      rob_uji:
+        description: "Uji balik rob KI-06 (rob_uji.py kunci + jalan, SEKALI: dilewati selamanya setelah scripts/banjir/rob_uji.buka ada di repo)"
+        type: boolean
+        default: false
 
 concurrency:
   group: data
@@ -177,6 +181,25 @@ jobs:
         run: |
           command -v pdftotext >/dev/null || sudo apt-get install -y -qq poppler-utils >/dev/null || true
           python3 scripts/banjir/rob.py
+
+      # KI-06, SEKALI SEUMUR HIDUP: uji balik ambang rob dibuka satu kali (rob_uji.buka dibuat O_EXCL). Lewat jadwal bila belum dibuka,
+      # atau dispatch dengan input rob_uji. Urutan WAJIB: uji, kunci (sidik), jalan (membuka). Commit hanya bila SEMUA berhasil, jadi gagal
+      # di tengah tidak meninggalkan .buka (tree runner dibuang); sesudah .buka ter-commit langkah ini dilewati selamanya.
+      - name: Uji balik rob KI-06 (sekali, boleh gagal)
+        if: github.event_name != 'workflow_dispatch' || inputs.rob_uji
+        continue-on-error: true
+        run: |
+          [ -e scripts/banjir/rob_uji.buka ] && { echo "rob_uji sudah dibuka, dilewati"; exit 0; }
+          set -e
+          python3 -I scripts/banjir/rob_uji.py uji
+          python3 -I scripts/banjir/rob_uji.py kunci
+          python3 -I scripts/banjir/rob_uji.py jalan
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          RU="scripts/banjir/rob_uji.sidik scripts/banjir/rob_uji.buka scripts/banjir/rob_uji.jejak.jsonl public/banjir/data/rob_uji.json"
+          git add -f $RU
+          git commit -q -m "data: uji balik rob KI-06 dibuka (sekali) $(TZ=Asia/Jakarta date +%F)" -- $RU
+          git pull -q --rebase --autostash && git push -q || { sleep 20; git pull -q --rebase --autostash && git push -q; }
 
       - name: InaRISK dan riwayat BNPB (bila belum ada)
         continue-on-error: true
@@ -349,6 +372,32 @@ jobs:
         continue-on-error: true
         run: python3 scripts/banjir/arsip_debit.py || echo "::warning::arsip_debit gagal (kode $?)"
 
+      # KI-77: reanalisis debit GloFAS per kab (data/raw/banjir/glofas, ikut cache banjir-). ~311 bobot per titik; anggaran 1300 = 4 titik/hari
+      # supaya jauh di bawah 10.000/hari milik IP runner (ansambel_hujan ~3.600, sungai, arsip_debit ~104, hujan, rob, orografi, + udara/prediksi/data.yml).
+      # Lanjut dari cache, kab yang sudah ada dilewati; 429 = berhenti bersih (kode 75, bukan galat).
+      - name: Debit GloFAS reanalisis KI-77 (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 15
+        run: |
+          python3 -I scripts/banjir/debit_glofas.py ambil --maks-bobot 1300 --jeda 40 || echo "::warning title=debit_glofas::ambil berhenti (kode $?); cache lama dipakai besok"
+          python3 -I scripts/banjir/debit_glofas.py ringkas | head -c 400
+
+      # Snapshot ansambel harian = bukti uji prospektif, TIDAK bisa dibuat ulang bila hilang. Mentah di cache (gitignored); salinan gzip
+      # di data/banjir/arsip_glofas_ens di-commit oleh langkah Terbitkan (JP), jadi hilangnya cache tak menghapus arsip.
+      - name: Snapshot ansambel GloFAS KI-77 (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 10
+        run: |
+          hari=$(date -u +%F)
+          mkdir -p data/banjir/arsip_glofas_ens
+          if [ -f data/banjir/arsip_glofas_ens/$hari.json.gz ]; then echo "snapshot $hari sudah diarsipkan"; exit 0; fi
+          rm -f data/raw/banjir/glofas/ensemble/$hari.json   # sisa cache hari ini tanpa arsip git: ambil ulang, jangan sys.exit
+          python3 -I scripts/banjir/debit_glofas.py snapshot || { echo "::warning title=glofas snapshot::gagal; hari $hari tidak terarsip"; exit 0; }
+          gzip -9c data/raw/banjir/glofas/ensemble/$hari.json > data/banjir/arsip_glofas_ens/$hari.json.gz
+          # arsip git yang pernah ada tak boleh menyusut (cache hilang tidak menghapus apa pun, tetapi cek berkas yang terlacak)
+          n=$(git ls-files data/banjir/arsip_glofas_ens | wc -l); m=$(ls data/banjir/arsip_glofas_ens | wc -l)
+          [ "$m" -ge "$n" ] || echo "::error title=glofas ens::arsip menyusut ($m < $n berkas)"
+
       # Sumber tanpa arsip publik: hari yang tidak diarsip hilang. BMKG per desa wakil kab (513 desa, <=50/menit, ~11 mnt);
       # PetaBencana kemarin WIB + ulangi hari gagal <=7 hari. Append-only gzip, TIDAK tayang, di-commit oleh langkah Terbitkan (JP).
       - name: Arsip prakiraan BMKG per desa (boleh gagal)
@@ -373,7 +422,7 @@ jobs:
           # vonis prospektif + arsip hari terjangkar di git tiap run, juga di jalur token (jalur ini deploy lalu keluar); sebelum checkout FETCH_HEAD yang men-stage
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          JP="public/banjir/data/prospektif.json public/banjir/data/prospektif_skor.json public/banjir/data/siaga_persentil_log.json public/banjir/data/siaga_persentil_skor.json public/banjir/data/hari public/banjir/data/wilayah_hari.json data/banjir/arsip_kab2 data/banjir/arsip_debit data/banjir/arsip_bmkg_desa data/banjir/arsip_petabencana public/banjir/data/faktor_orografi.json public/banjir/data/faktor_surut_arsip.jsonl data/raw/banjir/orografi"
+          JP="public/banjir/data/prospektif.json public/banjir/data/prospektif_skor.json public/banjir/data/siaga_persentil_log.json public/banjir/data/siaga_persentil_skor.json public/banjir/data/hari public/banjir/data/wilayah_hari.json data/banjir/arsip_kab2 data/banjir/arsip_debit data/banjir/arsip_bmkg_desa data/banjir/arsip_petabencana data/banjir/arsip_glofas_ens public/banjir/data/faktor_orografi.json public/banjir/data/faktor_surut_arsip.jsonl data/raw/banjir/orografi"
           for f in $JP; do [ -e "$f" ] && git add -f "$f"; done   # satu per satu: git add dengan satu path hilang tidak men-stage apa pun
           git diff --cached --quiet -- $JP 2>/dev/null || { git commit -q -m "data: prospektif dan arsip hari banjir $(TZ=Asia/Jakarta date +%F)" -- $(for f in $JP; do [ -e "$f" ] && echo "$f"; done) && { git pull -q --rebase --autostash && git push -q || { sleep 20; git pull -q --rebase --autostash && git push -q; }; } || echo "::error::commit prospektif/arsip hari gagal (arsip KAB2 hari ini hilang bila tidak terdorong)"; }
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data' ':!data/raw'

@@ -247,10 +247,19 @@ def eksposur(ids, indeks):
                 evak[i] = evak.get(i, 0) + 1
     for i, n in evak.items():
         out[i]["evakuasi"] = n
+    # KI-67: bandara ber-ICAO (public/gunungapi/data/bandara.json) dipasang ke kabupaten lewat pusat kecamatan terdekat <= 25 km (perkiraan).
+    # Tanpa klaim jarak ke pantai (tak ada data garis pantai di repo) dan tanpa penilaian genangan landasan. [] = tak ada bandara di daftar itu.
+    for i in ids:
+        out[i]["bandara"] = []
+    for b in baca("public/gunungapi/data/bandara.json"):
+        i = terdekat(b["lat"], b["lon"], None, 25)
+        if i in out:
+            out[i]["bandara"].append({"icao": b["icao"], "nama": b["nama"]})
     sumber = {"penduduk": "WorldPop 2026 (public/data/penduduk.json), dijumlah per kabupaten",
               "sekolah": "Dapodik/EMIS (public/data/sekolah.json); hanya provinsi yang ada di berkas itu",
               "faskes": "OSM rumah sakit dan puskesmas (public/data/fasilitas.json), dipasang ke kabupaten lewat pusat kecamatan terdekat (perkiraan); hanya provinsi yang ada di berkas itu",
-              "evakuasi": "BNPB (public/cuaca/data/evakuasi_tsunami.json), 4 wilayah rintisan; kabupaten di luarnya belum ada data"}
+              "evakuasi": "BNPB (public/cuaca/data/evakuasi_tsunami.json), 4 wilayah rintisan; kabupaten di luarnya belum ada data",
+              "bandara": "Bandara di kabupaten berperingatan, bukan penilaian genangan landasan. OurAirports ber-ICAO (public/gunungapi/data/bandara.json, bukan semua lapangan terbang), dipasang ke kabupaten lewat pusat kecamatan terdekat <= 25 km (perkiraan); tanpa jarak ke pantai"}
     return out, sumber
 
 
@@ -354,6 +363,13 @@ def uji():
     assert all(b["tidak_terurai"] is None for k in hasil["kejadian"].values() for b in k["buletin"]), "semua judul terurai"
     assert "aman" not in json.dumps(hasil, ensure_ascii=False).lower().replace("amanah", "")
     assert rakit(tsu, kamus, indeks, dengan_eksposur=False)[1] == hasil, "deterministik"
+    # KI-67: bandara terpasang, daftar (bukan null), tiap bandara masuk paling banyak satu kabupaten
+    ek, sm = eksposur(["5310", "7172"], {"5310": ["NTT", "Kab. Manggarai"], "7172": ["SULUT", "Kota Bitung"]})
+    assert all(isinstance(v["bandara"], list) for v in ek.values()) and "bandara" in sm and "landasan" in sm["bandara"], ek
+    ak = baca("public/gunungapi/data/bandara.json")
+    ek2, _ = eksposur(["5310", "5315", "7172", "5308", "7204"], {**indeks, **{k: v for k, v in indeks.items()}})
+    n = [b["icao"] for v in ek2.values() for b in v["bandara"]]
+    assert len(n) == len(set(n)) and set(n) <= {b["icao"] for b in ak}, n
     print("tsunami_zona uji OK:", r)
 
 

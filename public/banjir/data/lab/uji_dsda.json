@@ -1,0 +1,40 @@
+{
+ "dibuat_oleh": "scripts/banjir/uji_dsda.py",
+ "atribusi": "Poligon genangan DSDA dan BPBD DKI 3-4 Mar 2025 dari dataset Kusuma dkk. 2026 (Zenodo 10.5281/zenodo.17309354), CC BY 4.0.",
+ "replay": "maret2025",
+ "ambang_cm": 10,
+ "domain_lonlat": [
+  106.8248,
+  -6.3622,
+  106.8731,
+  -6.2406
+ ],
+ "poligon": 19,
+ "luas_benar_ha": 157,
+ "luas_basah_model_ha": 967,
+ "model": {
+  "tp": 310,
+  "fp": 2376,
+  "fn": 125,
+  "kena": 0.713,
+  "csi": 0.11
+ },
+ "terendah": {
+  "tp": 155,
+  "fp": 2531,
+  "fn": 280,
+  "kena": 0.356,
+  "csi": 0.052
+ },
+ "n_basah": 2686,
+ "n_benar": 435,
+ "n_domain": 20114,
+ "dekat_sungai": {
+  "tp": 363,
+  "fp": 2323,
+  "fn": 72,
+  "kena": 0.834,
+  "csi": 0.132
+ },
+ "catatan": "FP terhitung di koridor yang dipetakan DSDA saja; DSDA bisa tidak lengkap, jadi CSI bias ke bawah. Poligon DSDA kasar (kotak tangan), kisi model 60 m."
+}

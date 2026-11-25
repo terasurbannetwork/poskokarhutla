@@ -24,6 +24,10 @@ Kriteria dikunci tertulis di berkas ini **sebelum** `desa_waspada.py laju` perta
 | laju kelompok B | ≥ 2 kali laju "semua lainnya", `n_B ≥ 200`, batas bawah Wilson B > laju "semua lainnya" |
 | periksa kepekaan | NOAA-20 2023 (`viirs_n20_2023.csv`) dan metode tahun alternatif (Q3, Q4) juga lulus; tidak lulus = vonis akhir `gagal` untuk klaim "lebih mungkin", angka tetap tampil dengan keterangan |
 
+**Terkunci 24 Nov 2026, sebelum `desa_waspada.py laju` pertama dijalankan** (konstanta `AMBANG` di `scripts/data/desa_waspada.py`): A ≥ 3 x lain, B ≥ 2 x lain, `n_A` dan `n_B` ≥ 200, batas bawah Wilson A dan B > laju lain, ditambah dua periksa kepekaan (NOAA-20 2023, tahun berbeda di mana pun di desa). Minggu 0 sampai 16 (1 Jul sampai 27 Okt 2023), pasangan (w, w+1); riwayat desa 2012 sampai 2022. Ambang tidak diubah sesudah angka terlihat; lulus semua tiga = `lulus_sementara` (Q2 belum dijawab), selain itu `gagal`.
+
+**Tambahan 24 Nov 2026 (ditulis sebelum run ulang; run pertama SUDAH dilihat).** Run pertama (A 0,389, B 0,119, lain 0,011, lulus_sementara) sudah terlihat sebelum aturan ini ditulis; stratifikasi ditambah atas saran pemeriksa `validasi-model`, bukan dari rencana awal, karena laju A naik tajam dengan luas desa (desa luas hampir selalu punya titik). Aturan baru: desa dibagi empat kuartil luas (batas dari seluruh universe, sama untuk A, B, dan lain). Di TIAP kuartil dan untuk TIAP dari tiga hasil (S-NPP, NOAA-20, tahun berbeda): `n_A`, `n_B`, dan `n_lain` ≥ 200, laju A > laju lain, laju B > laju lain, dan batas bawah Wilson A dan B > batas atas Wilson lain (selang tidak bersinggungan). Gagal di satu kuartil mana pun = vonis `gagal`; hasil per kuartil tetap ditulis lengkap. Ambang 200 tidak diubah.
+
 Prosedur:
 
 1. Tulis ambang di atas (bila pemilik mengubah Q2, ubah di sini dulu) dan commit sebelum menjalankan.

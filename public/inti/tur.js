@@ -284,7 +284,7 @@
     addEventListener("resize", tataNanti); addEventListener("scroll", tataNanti, true); addEventListener("keydown", kunci, true);
     if (!otomatis) tutupModal(); layarSambut();
     // modal yang muncul sendiri selama tur (pewaktu laman) ditutup juga
-    const jaga = setInterval(() => {
+    const jaga = setInterval(() => { if (document.hidden) return;   // tab tersembunyi: lewati, tidak ada modal yang perlu ditutup (gerbang poll-tampak)
       if (tutup || !w.isConnected) return clearInterval(jaga);
       // sambutan otomatis mengalah pada jendela laman yang muncul belakangan (mis. sapaan harian): tutup diam-diam, tampil lagi sesudahnya
       if (otomatis && !mode && document.querySelector("dialog[open]")?.matches(":modal")) {

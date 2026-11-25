@@ -1386,6 +1386,7 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
 <link href="operasi.css" rel="stylesheet">
 <link href="citra.css" rel="stylesheet">
 <link href="pembanding.css" rel="stylesheet">
+<link href="insiden_kaya.css" rel="stylesheet">
 <link href="konsesi.css" rel="stylesheet">
 <link href="aktor.css" rel="stylesheet">
 <link href="sim_perlakuan.css" rel="stylesheet">
@@ -1564,6 +1565,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
       <button class="iconbtn" id="lapisBtn" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Overlay peta" title="Lapisan peta">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
       </button>
+      <button class="iconbtn ag-tombol" id="alatGambarBtn" type="button" aria-pressed="false" aria-label="Gambar wilayah" title="Gambar wilayah"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7l8-3 6 6-3 9-10-2z"/></svg></button>
       <div class="box lapis" id="lapis">
         <div class="lapis-hd"><span>Overlay</span><button type="button" id="lapisLipat" aria-label="Tutup semua grup" title="Tutup semua grup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m7 11 5-5 5 5M7 18l5-5 5 5"/></svg></button></div>
         <details open><summary>Api & respons</summary>
@@ -5772,6 +5774,43 @@ function mtProspektif(pr, gb) {
   if (el("sensor") && pr.peralihan?.beralih) el("sensor").textContent = `sejak ${tgl(pr.peralihan.beralih)}, sensor utama sekarang ${({N20: "NOAA-20", N21: "NOAA-21", N: "S-NPP"})[pr.sensor] || pr.sensor || "NOAA-20"}`;
 }
 
+/* Uji balik status 4 tingkat (ujibalik_status.json, KI-27): dibaca apa adanya; tanpa berkas = kartu tidak tampil */
+function mtUjiStatus() {
+  const wadah = $("#metode"); if (!wadah || wadah.querySelector("[data-mt-ujistatus]")) return;
+  muatJSON("data/ujibalik_status.json").then(U => {
+    const T = U?.tingkat; if (!T || !Object.keys(T).length || wadah.querySelector("[data-mt-ujistatus]")) return;
+    const e3 = v => typeof v === "number" ? v.toLocaleString("id-ID", {minimumFractionDigits: 3, maximumFractionDigits: 3}) : "–";
+    const pr = v => typeof v === "number" ? (v * 100).toLocaleString("id-ID", {maximumFractionDigits: 1}) + "%" : "–";
+    const sel = o => o && typeof o.est === "number" ? `${o.est > 0 ? "+" : ""}${e3(o.est)} (${e3(o.lo)} sampai ${e3(o.hi)})` : "–";
+    const th = (t, ket, n) => `<th${n ? ' class="n"' : ""} title="${esc(ket)}">${t}</th>`;
+    const td = (v, n) => `<td${n ? ' class="n num"' : ""}>${v}</td>`;
+    const D = U.deskriptif || {}, DT = D.tingkat || {};
+    const t1 = Object.entries(T).map(([k, v]) => `<tr>${td(esc(k))}${td(fmt(v.n_alarm), 1)}${td(pr(v.pod), 1)}${td(pr(v.far), 1)}${td(e3(v.ets), 1)}${td(e3(v.pembanding_ets?.persistensi_asli), 1)}${td(esc(v.vonis || "–"))}</tr>`).join("");
+    const t2 = Object.entries(DT).map(([k, v]) => `<tr>${td(esc(k))}${td(fmt(v.n_alarm), 1)}${td(sel(v.persistensi_disamakan?.selisih_ets), 1)}${td(sel(v.klimatologi_disamakan?.selisih_ets), 1)}</tr>`).join("");
+    const lbl = D.label || "deskriptif, bukan vonis";
+    wadah.insertAdjacentHTML("beforeend", `<article class="ex ex-std" data-mt-ujistatus><header class="ex-hd"><span class="ex-ey">Metode</span><div class="ex-jd"><h3>Uji balik status</h3></div></header><div class="ex-bd">
+      <div class="ex-tabel"><table><thead><tr>${th("Tingkat", "Tingkat status kab/kota")}${th("Alarm", "Jumlah kab-hari yang diberi status setingkat ini atau lebih tinggi pada periode uji", 1)}${th("POD", "Peluang terdeteksi: bagian kab-hari ber-firespot esok hari yang didahului alarm", 1)}${th("FAR", "Rasio alarm palsu: bagian alarm yang tidak diikuti firespot esok hari", 1)}${th("ETS status", "Equitable threat score status kita, skor 0 sampai 1 setelah dikoreksi kebetulan", 1)}${th("ETS persistensi asli", "ETS pembanding persistensi (status hari ini dianggap berlaku esok hari), jumlah alarm dibiarkan bebas", 1)}${th("Vonis", "Vonis terkunci: selisih ETS lawan pembanding terbaik, batas bawah CI95")}</tr></thead><tbody>${t1}</tbody></table></div>
+      ${t2 ? `<div class="ex-tabel"><table><thead><tr>${th("Tingkat", lbl)}${th("Alarm", lbl, 1)}${th("Selisih ETS lawan persistensi disamakan", lbl + ". Selisih ETS status dikurangi persistensi dengan jumlah alarm sama, CI95 bootstrap blok provinsi x minggu", 1)}${th("Selisih ETS lawan klimatologi disamakan", lbl + ". Selisih ETS status dikurangi klimatologi kab x bulan dengan jumlah alarm sama, CI95 bootstrap blok provinsi x minggu", 1)}</tr></thead><tbody>${t2}</tbody></table></div>` : ""}
+    </div></article>`);
+  }).catch(() => {});
+}
+/* Peluang api (peluang_api_uji.json, KI-73): uji bersih 2026 pada jumlah alarm sama; bukan prakiraan operasional */
+function mtPeluangApi() {
+  const wadah = $("#metode"); if (!wadah || wadah.querySelector("[data-mt-peluangapi]")) return;
+  muatJSON("data/peluang_api_uji.json").then(U => {
+    const B = U?.uji_bersih_2026; if (!B || wadah.querySelector("[data-mt-peluangapi]")) return;
+    const e3 = v => typeof v === "number" ? v.toLocaleString("id-ID", {minimumFractionDigits: 3, maximumFractionDigits: 3}) : "–";
+    const bar = ["firespot_k1", "firespot_k2", "firespot_k3"].filter(k => B[k]?.ets).map(k => {
+      const x = B[k].ets;
+      return `<tr><td>Firespot hari +${esc(k.slice(-1))}</td><td class="n num">${fmt(B[k].n_baris)}</td><td class="n num">${e3(x.model_A)}</td><td class="n num">${e3(x.pers_asli)}</td><td class="n num">${e3(x.klim_A)}</td></tr>`;
+    }).join(""); if (!bar) return;
+    const th = (t, ket, n) => `<th${n ? ' class="n"' : ""} title="${esc(ket)}">${t}</th>`;
+    wadah.insertAdjacentHTML("beforeend", `<article class="ex ex-std" data-mt-peluangapi><header class="ex-hd"><span class="ex-ey">Metode</span><div class="ex-jd"><h3>Uji balik peluang api</h3></div></header><div class="ex-bd">
+      <div class="ex-tabel"><table><thead><tr>${th("Sasaran", "Kluster berpola firespot di kab/kota pada hari target, uji bersih 1 Jan sampai 12 Okt 2026")}${th("Kab-hari", "Jumlah kab/kota-hari dalam uji bersih", 1)}${th("ETS model", "Equitable threat score model peluang, pada jumlah alarm yang sama dengan persistensi asli", 1)}${th("ETS persistensi", "ETS persistensi asli (kondisi hari ini dianggap berlaku di hari target)", 1)}${th("ETS klimatologi", "ETS klimatologi kab x bulan, pada jumlah alarm yang sama", 1)}</tr></thead><tbody>${bar}</tbody></table></div>
+      <p style="font-size:12px;color:var(--ink2)">Dibandingkan pada jumlah alarm yang sama. Belum menjadi prakiraan operasional: fase bayangan dengan cuaca waktu-nyata belum berjalan.</p>
+    </div></article>`);
+  }).catch(() => {});
+}
 function renderMetode() {
   const M = S.meta || {}, d = M.dbscan || {};
   /* pembantu untuk rincian teknis (isi versi lama, tetap utuh) */
@@ -6001,7 +6040,7 @@ Indeks sel = eps / (111,195 · cos 12°) derajat; tetangga dicari di 3 × 3 sel
       "Pusat cluster adalah rata-rata, bisa jatuh di luar area api.", "Firespot: aturan ya dan mungkin berasal dari paparan Kemenhut yang disesuaikan; uji balik hanya mencakup api besar, jadi dampaknya pada api kecil belum diukur.", "Peta gambut global melebihkan luas gambut ± 2,5 kali angka BBSDLP, jadi hanya dipakai sebagai tanda ya/tidak."]});
 
   B.push({ik: "centang", j: "Status taktis dan prioritas", sub: "Empat status tindakan dan siapa yang dipadamkan dulu",
-    singkat: `Tiap cluster diberi satu dari empat status tindakan: ${(M.status || []).map(s => esc(s).toLowerCase()).join(", ")}. Statusnya ditentukan dua hal: seberapa besar api yang terlihat satelit, dan seberapa berbahaya cuacanya. Cuaca hanya boleh menaikkan status, tidak pernah menurunkannya. Cluster prioritas lalu diurutkan dengan skor supaya regu tahu mana yang didatangi lebih dulu.`,
+    singkat: `Tiap cluster diberi satu dari empat status tindakan: ${(M.status || []).map(s => esc(s).toLowerCase()).join(", ")}. Status ini menggambarkan keparahan kluster saat ini, bukan prakiraan. Statusnya ditentukan dua hal: seberapa besar api yang terlihat satelit, dan seberapa berbahaya cuacanya. Cuaca hanya boleh menaikkan status, tidak pernah menurunkannya. Cluster prioritas lalu diurutkan dengan skor supaya regu tahu mana yang didatangi lebih dulu.`,
     alur: [["d", "api", "Ukur besar api", "S1, S2, S3 dari front 24 jam dan hari menyala"], ["d", "awan", "Kelas cuaca", "kelas FWI BMKG"], ["o", "tabel", "Matriks status", "gabungan besar api dan cuaca"],
       ["u", "centang", "Uji prioritas", "front ≥ 15 piksel dan FWI ≥ 7"], ["h", "urut", "Urutkan", "skor di dalam wilayah kerja tiap Daops"]],
     contoh: () => {
@@ -6662,6 +6701,8 @@ rasio   = 3,0 untuk jendela yang berakhir sampai 2 Nov 2026 (masuk 180, keluar 9
     </div></details>`).join("")}</div></article>`;
 
   $("#metode").querySelectorAll("[data-buka]").forEach(b => b.onclick = () => bukaTab(b.dataset.buka));
+  mtUjiStatus();
+  mtPeluangApi();
   /* bab tambahan: batasan peluang (inti/peluang.js), catatan sensor kumulatif, dan titik industri yang dibuang */
   Promise.all([typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, muatJSON("data/kumulatif.json").catch(() => null), muatJSON("data/prospektif.json").catch(() => null), muatJSON("data/gerbang_model.json").catch(() => null)]).then(([pl, kum, pr, gb]) => {
     mtProspektif(pr, gb);
@@ -7271,6 +7312,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="satelit_lintas.js"></script>
 <script src="citra.js"></script>
 <script src="pembanding.js"></script>
+<script src="insiden_kaya.js"></script>
 <script src="konsesi.js"></script>
 <script src="aktor.js"></script>
 <script src="operasi.js"></script>
@@ -7290,6 +7332,8 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="unduh_tabel.js"></script>
 <script src="bagikan.js" data-halaman="karhutla" defer></script>
 <script src="persetujuan.js" defer></script>
+<script src="alat_gambar_geo.js" defer></script>
+<script src="alat_gambar.js" defer></script>
 <script src="kaki.js" defer></script>
 <script src="jejak.js" data-halaman="karhutla" defer></script>
 <script src="pesan.js?v=1014c" defer></script>

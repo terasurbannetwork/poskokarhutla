@@ -204,6 +204,9 @@
     dekat(tp.bcrRendah / ev.bcrRendah, 6 / 13.9, 1e-9, "rentang ikut VSL rendah param_banjir"); dekat(tp.bcrTinggi / ev.bcrTinggi, 15.7 / 13.9, 1e-9);
     ok(perlakuan(rz, null).every(x => x.bcr == null && x.biaya == null && x.bcrRendah === undefined), "tanpa param uang: Rp tidak dikarang");
   }
-  return {PARAM, KAPAL, phi, rapuh, pAtap, pPohon, scsQ, tergenang, dpPusat, dpDi, badai, jamKapal, mdpl, ubin, bobot, langkah, baru, petaAnsambel, hujanPita, ringkas, perlakuan, kapal, hariKe, tglWib, jarak, uji};
+  /* kebutuhan minimum Sphere 2018 per hari = salinan scripts/prediksi/aturan.json "sphere" (satu sumber; sim_model.js menimpanya dari prediksi.json saat jalan, uji menjaga salinan = aturan.json) */
+  const SPHERE = {air_l: 15, hunian_m2: 3.5, jamban_per: 20, kkal: 2100};
+  const kebutuhanSphere = jiwa => ({jiwa, air_l: jiwa * SPHERE.air_l, hunian_m2: jiwa * SPHERE.hunian_m2, jamban: Math.ceil(jiwa / SPHERE.jamban_per), kkal: jiwa * SPHERE.kkal});
+  return {SPHERE, kebutuhanSphere, PARAM, KAPAL, phi, rapuh, pAtap, pPohon, scsQ, tergenang, dpPusat, dpDi, badai, jamKapal, mdpl, ubin, bobot, langkah, baru, petaAnsambel, hujanPita, ringkas, perlakuan, kapal, hariKe, tglWib, jarak, uji};
 });
 if (typeof process !== "undefined" && /sim_dampak\.js$/.test(process.argv[1] || "")) globalThis.SimDampak.uji(), console.log("sim_dampak: lolos");

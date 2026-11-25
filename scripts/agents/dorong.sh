@@ -34,8 +34,20 @@ while [ "$percobaan" -le 5 ]; do
       # padahal gabung biasa bersih. Coba gabung dulu sebelum menyerah.
       if ! git merge -q --no-edit origin/main; then
         git merge --abort 2>/dev/null
-        echo "dorong: gagal menyusul origin/main karena bentrok. Commit lokal utuh, belum ada yang didorong."
-        exit 1
+        # 25 Nov 2026: index bersama memuat suntingan sesi lain yang di-stage, jadi git merge menolak walau gabungnya bersih.
+        # Gabung tanpa menyentuh index: merge-tree, commit-tree, update-ref; berkas yang diubah origin dan bersih di folder kerja disegarkan.
+        lama=$(git rev-parse HEAD)
+        if pohon=$(git merge-tree --write-tree HEAD origin/main 2>/dev/null | head -n 1) && [ -n "$pohon" ] \
+          && baru=$(git commit-tree "$pohon" -p "$lama" -p origin/main -m "Merge remote-tracking branch 'origin/main'") \
+          && git update-ref refs/heads/main "$baru" "$lama"; then
+          git diff --name-only "$(git merge-base "$lama" origin/main)" origin/main | while IFS= read -r f; do
+            git diff --quiet "$lama" -- "$f" 2>/dev/null && git diff --cached --quiet "$lama" -- "$f" 2>/dev/null && git checkout -q HEAD -- "$f" 2>/dev/null
+          done
+          echo "dorong: menyusul origin/main lewat gabung tanpa index (ada suntingan sesi lain di index)."
+        else
+          echo "dorong: gagal menyusul origin/main karena bentrok. Commit lokal utuh, belum ada yang didorong."
+          exit 1
+        fi
       fi
     fi
   fi

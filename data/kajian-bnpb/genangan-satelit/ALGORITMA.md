@@ -88,7 +88,7 @@ Kasus uji. Lima titik bobot 0,3 ha dengan kelas 40, 40, 40, 10, 80: pertanian 0,
 
 ## 7. Uji balik (GS-13, Q5)
 
-Satuan: pasangan kab-hari DIBI banjir atau banjir bandang dengan terdampak > 0, lintasan GFM 0 sampai 6 hari sesudah tanggal DIBI (jendela mode riwayat yang sudah ada), pra sebelum tanggal DIBI, cakupan sah.
+Satuan: pasangan kab-hari DIBI banjir atau banjir bandang dengan terdampak > 0, lintasan GFM 0 sampai 6 hari sesudah tanggal DIBI (jendela mode riwayat yang sudah ada), pra sebelum tanggal DIBI, cakupan sah. Catatan jujur: dengan jendela 6 hari dan pra minimal 8 hari sebelum lintasan, pra selalu jatuh paling lambat 2 hari sebelum tanggal DIBI, sehingga opsi `--pra-sebelum-acuan` tidak mengubah hasil riwayat; pra yang sudah tergenang sebelum tanggal lapor DIBI tetap mungkin (Q11) dan ditulis sebagai keterbatasan di laporan vonis.
 
 ```
 x_i       = WorldPop tengah = (bawah + atas) / 2

@@ -140,7 +140,7 @@ async function renderDeck() {
   setDeckStatus("Menyusun pratinjau…");
   try {
     await muatDeckSkrip(); const s = terkunci && snapshotTampil ? snapshotTampil.snapshot : await snapshotDraf(); if (id !== deckGen) return;
-    const d = await window.LaporanKarhutlaDeck.pratinjau(w, s, {draf: !terkunci, hash: snapshotTampil?.hash, gen: () => id === deckGen}); if (id !== deckGen) return;
+    const d = await window.LaporanKarhutlaDeck.pratinjau(w, s, {draf: !terkunci, hash: snapshotTampil?.hash, segel: terkunci ? snapshotTampil?.segel : null, gen: () => id === deckGen}); if (id !== deckGen) return;
     setDeckStatus(`${d.slide.length} slide${terkunci ? "" : ", DRAF belum dikunci"}${d.dilewati.length ? `, ${d.dilewati.length} lampiran dilewati karena belum ada data (alasan di daftar lampiran)` : ""}.`);
   } catch (e) { setDeckStatus("Pratinjau gagal: " + (e.message || e)); }
 }
@@ -338,7 +338,7 @@ app.addEventListener("click", async e => {
     const semua = [...app.querySelectorAll('[data-a="unduh-deck"]')], jenis = t.dataset.jenis; semua.forEach(x => { x.disabled = true; }); setDeckStatus("Menyiapkan…");
     requestAnimationFrame(() => setTimeout(async () => {
       try {
-        await muatDeckSkrip(); const D = window.LaporanKarhutlaDeck, r = await D.buat(jenis, snapshotTampil.snapshot, {hash: snapshotTampil.hash, status: setDeckStatus});
+        await muatDeckSkrip(); const D = window.LaporanKarhutlaDeck, r = await D.buat(jenis, snapshotTampil.snapshot, {hash: snapshotTampil.hash, segel: snapshotTampil.segel, status: setDeckStatus});
         D.simpan(r.blob, r.nama); window.__lkDeckTerakhir = {jenis, slide: r.slide, bytes: r.blob.size, nama: r.nama, dilewati: r.dilewati.map(x => x.id)};
         setDeckStatus(`${r.nama}: ${r.slide} slide, ${r.ukuran}${r.dilewati.length ? `. ${r.dilewati.length} lampiran dilewati karena belum ada data` : ""}.`);
       } catch (e) { console.error(e); setDeckStatus("Gagal menyusun berkas: " + (e.message || e)); }

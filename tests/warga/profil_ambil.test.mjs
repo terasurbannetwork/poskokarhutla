@@ -114,3 +114,12 @@ uji("aksi lihat yang ditolak (luar wilayah) tidak tercatat sebagai dilihat; liha
   const baru = await laporan(PADANG), ok = await api("POST", `/api/lapor/meja/${baru}/lihat`, {}, pakai(budi)); assert.equal(ok.s, 200, ok.t);
   assert.equal(await n("instansi_profil_log", `jenis = 'meja' AND objek = '${baru}' AND rute LIKE '%/lihat'`), 1);
 });
+uji("rapor respons: staf Pusdalops dan Koordalops boleh membaca (pemilik 24 Nov 2026), peran staf lain 403", async () => {
+  const sesi = async (id, peran) => { const tok = sha256("sesi-uji-" + id);
+    await DB.batch([DB.prepare(`INSERT INTO staf (id, username, nama, nip, unit, email, wa, peran, wilayah, garam, sandi_sha, wajib_ganti, dibuat, dibuat_oleh, dummy)
+      VALUES (?, ?, 'Staf Uji', ?, 'Unit', ?, ?, ?, '[]', 'gggggggggggggggggggggggggggggggg', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 0, 1, 'tes', 0)`).bind(id, "rsp" + id.slice(0, 6), "1990010" + id[1], id + "@b.id", "628120000111" + id[1], JSON.stringify([peran])),
+      DB.prepare("INSERT INTO staf_sesi (token_sha, staf_id, dibuat, kedaluwarsa) VALUES (?, ?, 1, ?)").bind(sha256(tok), id, Date.now() + 3600e3)]);
+    return {cookie: "sesi_staf=" + tok}; };
+  for (const [id, peran] of [["r1r1r1r1r1r1r1r1", "pusdalops"], ["r2r2r2r2r2r2r2r2", "koordalops"]]) { const r = await api("GET", "/api/lapor/respons", undefined, await sesi(id, peran)); assert.equal(r.s, 200, peran + " " + r.t); }
+  assert.equal((await api("GET", "/api/lapor/respons", undefined, await sesi("r3r3r3r3r3r3r3r3", "verifikator"))).s, 403, "verifikator");
+});

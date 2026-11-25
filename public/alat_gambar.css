@@ -1,0 +1,35 @@
+/* alat_gambar.css: tombol dan kartu alat gambar wilayah di peta utama. Token dari inti/tema.css saja. */
+.ag-tombol{background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid}
+.ag-tombol[aria-pressed="true"]{background:var(--brand);color:var(--on-brand)}
+.ag-kartu{width:100%;flex:none}
+.ag-kartu[hidden]{display:none}
+.ag-kartu .ex-jd{align-items:center}
+.ag-tutup{border:0;background:none;color:var(--on-head);width:44px;height:44px;margin:-10px -10px -10px 0;display:grid;place-items:center;cursor:pointer;border-radius:var(--r-sm)}
+.ag-tutup:hover{opacity:.75}
+.ag-kartu .seg{display:flex;width:100%}
+.ag-kartu .seg button{flex:1 1 0;min-width:0;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:5px}
+.ag-kartu .seg svg{width:14px;height:14px;flex:none}
+.ag-baris{display:flex;align-items:center;gap:8px;font-size:var(--fs-3);color:var(--ink2)}
+.ag-baris[hidden]{display:none}
+.ag-baris label{white-space:nowrap}
+.ag-baris input[type=range]{flex:1;min-width:0;min-height:44px}
+.ag-baris output{min-width:3.4em;white-space:nowrap;text-align:right;color:var(--ink);font-weight:700}
+.ag-hapus{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:var(--r-sm);min-height:44px;padding:0 14px;cursor:pointer;font:inherit;font-size:var(--fs-3)}
+.ag-hapus:hover{background:var(--surface)}
+.ag-pesan{margin:0;font-size:var(--fs-3);color:var(--ink2);line-height:1.5}
+.ag-kartu .ex-tabel td:first-child{text-align:left}
+.ag-kartu .ex-tabel td:last-child{text-align:center;font-variant-numeric:tabular-nums}
+.ag-kartu .ex-tabel th:first-child{text-align:center}
+@media (max-width:1023px){.ag-kartu{position:fixed;z-index:30;left:12px;right:12px;bottom:12px;width:auto;max-height:45vh;overflow:auto;overscroll-behavior:contain}}
+.ag-kartu .ex-bd{grid-template-columns:minmax(0,1fr)}
+.ag-kartu .ex-tabel th,.ag-kartu .ex-tabel td{padding:8px 7px;font-size:var(--fs-2)}
+.ag-kartu .tw{overflow-x:hidden}
+.ag-kartu .ex-tabel table{width:100%}
+.ag-kartu .ex-jd>h3{font-size:var(--fs-6)}
+.ag-hasil-ruang{display:grid;gap:14px}
+.ag-pil{display:inline-block;font-size:var(--fs-1);font-weight:800;color:var(--brand2);background:color-mix(in oklch,var(--brand2) 12%,transparent);padding:2px 8px;border-radius:var(--r-pill);margin-right:6px}
+.ag-daftar{font-size:var(--fs-2);color:var(--ink2)}
+.ag-daftar summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700;color:var(--ink)}
+.ag-daftar ul{margin:0;padding:0 0 8px 18px;max-height:180px;overflow:auto;line-height:1.5}
+.ag-kartu .ex-tabel td:first-child{max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body:has(.ag-kartu:not([hidden])) .ps-fab{display:none}

@@ -11,8 +11,9 @@ Nomor K mengikuti `data/kajian-bnpb/pembanding-pantaukarhutla/TIKET.md` (bagian 
 | No | Tanggal | Keputusan | Berlaku di paket ini | Kalimat pemilik |
 | -- | ------- | --------- | -------------------- | --------------- |
 | K1 | 24 Nov 2026 | Kelompok G (PKH-33 sampai 45) ikut jalan dengan urutan bawaan Q8 pembanding; PKH-34 dan PKH-37 tetap lewat paket dokumen dulu lalu kode (AGENTS §3.7). Dalam urutan itu PKH-34 paling akhir. | ya | "Gas semua" |
+| K2 | 24 Nov 2026 | Q1 dijawab: unduhan LiCSAR dan LiCSBAS untuk Palangka Raya boleh dijalankan. Bawaan sementara Q2 sampai Q6 diterima apa adanya (D InSAR tidak menggantikan literatur, α = 1,0, L-band tidak diunduh, satu wilayah, ambang RENCANA-UJI §2 dikunci). Batas mesin: unduhan berhenti bila sisa disk di bawah 15 GB. | ya | "Gas semua" |
 
-Pemilik belum memutuskan apa pun yang khusus tentang InSAR gambut selain K1. Semua yang lain di bawah adalah rancangan (D) atau pertanyaan (Q).
+Pemilik memutuskan K1 dan K2 (24 Nov 2026). Semua yang lain di bawah adalah rancangan (D) atau pertanyaan (Q).
 
 Aturan turunan dari TIKET pembanding yang mengikat paket ini:
 

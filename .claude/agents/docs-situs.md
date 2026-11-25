@@ -53,7 +53,7 @@ Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 
 ## Yang wajib kamu pegang
 
-- Baca data/kajian-bnpb/docs-situs/ dulu (AGENTS.md 2.47)
+- Baca data/kajian-bnpb/docs-situs/ dulu (AGENTS.md 2.50)
 - Satu sumber isi: Markdown; HTML keluaran tidak disunting tangan dan harus segar (bangun.py --cek)
 - Angka, ambang, rute, dan hak akses hanya dari kode dengan rujukan berkas:baris; tidak ketemu ditulis 'belum terdokumentasi di kode'
 - Token tema.css, kepala situs bersama, tanpa skrip inline

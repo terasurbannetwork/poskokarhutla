@@ -170,6 +170,12 @@ jobs:
           python3 scripts/data/watak_kluster.py uji && python3 scripts/data/watak_kluster.py || echo "::warning title=watak::watak_kluster.py gagal; cluster tanpa pola lokasi"
           python3 scripts/data/kabar_kab.py --uji && python3 scripts/data/kabar_kab.py || echo "::warning title=kabar::kabar_kab.py gagal; /kabar memakai data sebelumnya"
 
+      # Desa waspada (PKH-18): titik panas 7 hari + desa berulang terbakar -> public/data/desa_waspada.json (cache data- seperti insiden.json, BUKAN di-commit;
+      # TIDAK terbit: public/.assetsignore, sampai Q1 dijawab). Butuh hotspot.json (isi_data/harian), insiden.py di atas, data/desa_statik.json dan riwayat_petak.bin dari repo.
+      - name: Desa waspada (boleh gagal)
+        continue-on-error: true
+        run: python3 -I scripts/data/desa_waspada.py --uji && python3 -I scripts/data/desa_waspada.py || echo "::warning title=desa_waspada::gagal, berkas lama dibiarkan"
+
       # Arsip deteksi per insiden sejak 1 Jul 2026 -> public/data/progresi/arsip/<id>.json. Membaca insiden.json + titik_hari (cache data-);
       # menumpuk lewat cache data-, TIDAK di-commit (.gitignore) dan TIDAK terbit (public/.assetsignore).
       - name: Arsip deteksi per insiden (boleh gagal)

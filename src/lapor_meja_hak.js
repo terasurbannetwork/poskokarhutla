@@ -35,7 +35,7 @@ export function dalamWilayah(c, w) {
 }
 
 /* aksi meja: lihat, balas, status, bukti, bukti-publik. BPBD tidak membuka kembali tiket Selesai atau Tidak valid (D96). */
-const AKSI_BPBD = new Set(["lihat", "balas", "status", "bukti", "bukti-publik", "periksa", "tindakan", "ambil"]);   // ambil: PF-08, hanya profil BPBD (dicek di rute)   // periksa, tindakan: K69-K70
+const AKSI_BPBD = new Set(["lihat", "balas", "status", "bukti", "bukti-publik", "periksa", "tindakan", "ambil", "tarik"]);   // tarik: halaman publik hari ini (lapor-kejadian LK-07, Q18 bawaan)   // ambil: PF-08, hanya profil BPBD (dicek di rute)   // periksa, tindakan: K69-K70
 export function bolehAksi(c, aksi, dari = null, ke = null) {
   if (!c) return false;
   if (c.jenis === "bnpb") return true;

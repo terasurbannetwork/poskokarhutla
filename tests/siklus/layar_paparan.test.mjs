@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {sajikan, bukaPeramban, cariChrome, galatNyata, PUB} from './_layar.mjs';
-import {agregat, kelasDipilih} from '../../public/siklus/paparan.js';
+import {agregat, kelasDipilih, LAPISAN_INARISK} from '../../public/siklus/paparan.js';
 
 const kelas = (b, l, w, d, g) => ({bangunan: {n: b, y: 'estimasi-model'}, luas_m2: {n: l, y: 'estimasi-model'}, jiwa: {worldpop: {n: w}, dukcapil: {n: d}, ghsl: {n: g}}});
 const KAB = {v: 1, jenis: 'paparan_kab', kab4: '3301', bahaya: {banjir: {kelas_batas: [0.33, 0.66], kelas: {rendah: kelas(100, 9000, 400, 420, 380), sedang: kelas(200, 18000, 800, 850, null), tinggi: kelas(50, 4000, 300, 310, 290)}}},
@@ -34,6 +34,13 @@ test('sumber paparan.js: pegangan tarik, lebar diingat, rAF, token warna tanpa h
   assert.doesNotMatch(t, /#[0-9a-fA-F]{6}\b/);
 });
 
+test('lapisan InaRISK F2 (U22/SK-114): nama ada di LAPISAN proksi, mati secara bawaan, lewat proksi', async () => {
+  await import('../../src/worker.js'); const {LAPISAN} = await import('../../src/inarisk.js');   // worker dulu: inarisk.js dan worker.js saling impor
+  for (const [b, l] of Object.entries(LAPISAN_INARISK)) assert.ok(LAPISAN.has(l), `${b}: ${l} tidak ada di LAPISAN proksi`);
+  const t = readFileSync(path.join(PUB, 'siklus/paparan.js'), 'utf8');
+  assert.match(t, /inarisk: false/); assert.match(t, /\/api\/inarisk\/ubin\//); assert.doesNotMatch(t, /gis\.bnpb\.go\.id/);
+});
+
 const chrome = cariChrome();
 test('layar paparan di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome tidak ditemukan; set CHROME_BIN'}, async (t) => {
   const pb = await bukaPeramban();
@@ -46,7 +53,7 @@ test('layar paparan di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome t
           segPenuh: k.querySelectorAll('.seg.penuh').length, tarik: !!document.querySelector('.panel .tarik'), mapa: !!document.querySelector('#peta')}; })()`);
         assert.match(d.t, /0,70/); assert.match(d.t, /0,8 km/); assert.match(d.t, /bukan klasifikasi resmi/i); assert.match(d.t, /WorldPop 1\.500, Dukcapil 1\.580, GHSL 670, selisih 910/);
         assert.deepEqual(d.ber.map((x) => x.toLowerCase()), ['worldpop', 'dukcapil', 'ghsl']); assert.ok(d.ex && d.hl && !d.ft && d.segPenuh >= 2 && d.tarik && d.mapa);
-        assert.match(d.t, /350 bangunan berada di zona banjir/i); assert.match(d.t, /Sekolah/);
+        assert.match(d.t, /350\s+bangunan berada di zona banjir/i); assert.match(d.t, /Sekolah/);
         // chrome urgent: segmen berubah di tick klik; bahaya tanpa data menulis menunggu, bukan 0
         assert.equal(await T.eval(`(() => { const b = [...document.querySelectorAll('#p-utama .seg.penuh button')].find(x => /Gempa/.test(x.textContent)); b.click(); return b.getAttribute('aria-pressed'); })()`), 'true');
         await T.tungguFungsi(`/menunggu/i.test(document.querySelector('#p-utama h3').innerText)`);

@@ -1,0 +1,12 @@
+{
+ "sidik": "25cbb68e67af4c44",
+ "berkas": {
+  "scripts/longsor/model_dampak.kriteria.json": "051731ea5e70a13f87b22dc4c075a4945920f55db96d6d3e45cf1f9eeba535ec",
+  "scripts/longsor/model_dampak.py": "bdee7453920e6541b338eb93418e0ab7f4da4bbb54a9759965897ba4ede1026e"
+ },
+ "masukan": [
+  "71f6ae73148b2e055ecd746d0adf1fe04d7f2ce36345e659636792bda7e66367",
+  "5b8b46a86fc407afb819f3d0721a4686833e56c3c3ab65b23dea3335b5794433"
+ ],
+ "dibuat": "2026-11-24T19:04:19Z"
+}

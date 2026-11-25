@@ -17,4 +17,17 @@ Kerjakan urut. Tiket yang ditahan Q tidak dikerjakan sebelum pemilik menjawab at
 | SG-11 | `tests/agen/gerbang-segel.test.mjs` | penulis-gerbang | gerbang merah pada fixture pembeku tanpa segel | SG-07 |
 | SG-12 | QR di deck generator Python | pipa-data | - | Q4 |
 | SG-13 | Segel `lj_beku` dan Laporan Berkala | warga-api | - | Q1, LJ dan LB selesai |
-| SG-14 | Pemilik menerapkan migrasi segel di D1 produksi | pemilik | `wrangler d1 migrations apply` | SG-01 |
+| SG-14 | Pemilik menerapkan migrasi segel 0171 dan 0172 di D1 produksi | pemilik | `wrangler d1 migrations apply` | SG-01 |
+
+Catatan dari pemeriksaan SG-02 (24 Nov 2026), wajib dikerjakan di rutenya:
+
+- SG-04: `segelCari` mengembalikan sidik penuh, `rujukan`, dan `dasar` untuk hitung ulang di Worker. Jawaban publik WAJIB diproyeksikan ulang: `sidik12` = 12 huruf pertama, `rujukan` dan `dasar` dibuang (KEAMANAN-PRIVASI). T6-T8 memeriksanya.
+- SG-10: `segelCabut` tidak memvalidasi. Rute menormalkan kode (`normalKode`), menolak alasan di luar 5-500 huruf dengan 400, dan memetakan galat PK cabut kedua ke 409; galat D1 mentah tidak pernah sampai ke klien.
+- SG-05 sampai SG-07 (pembeku): `penerbit` diisi nama lembaga (mis. "Pusdalops BNPB"), tidak pernah nama staf; satu uji memastikan kolom `penerbit`, `judul`, `wilayah` tanpa nama orang. Halaman `public/verifikasi.*` menulis ketiganya lewat `textContent`.
+- SG-13: rute verifikasi belum punya pembaca sumber `lj`, jadi segel `lj` tampil Tidak cocok. Pembaca `lj_beku` di `src/segel.js` `isiSumber` wajib ada sebelum segel `lj` pertama disisipkan.
+- SG-11: `gerbang-segel` ikut memeriksa tidak ada `UPDATE` atau `DELETE` ke `segel` dan `segel_cabut` di `src/**` (append-only hanya dijaga kode, tanpa trigger).
+
+## Status 24 Nov 2026
+
+- Selesai di kode: SG-01 sampai SG-11. SG-09 mencakup lembar cetak dokumen PB (`public/inti/segel.js` di `public/inti/dokumen.js`) dan slide akhir "Keaslian dokumen" di deck laporan harian karhutla dan bencana (`public/laporan_karhutla_deck.js` `tambahSegel`, KEPUTUSAN K5); rute snapshot lk dan lkb membawa `segel {kode, sidik12}`.
+- SG-12 (deck Python) tetap di luar fase 1 (Q4). SG-13 menunggu LJ dan LB. SG-14 menunggu pemilik menerapkan migrasi 0171 dan 0172 di D1 produksi.

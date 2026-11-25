@@ -54,6 +54,36 @@ def zona_dari_bagian(daftar, bahaya, kunci, radius_km=0.0, galat_km=GALAT_HALUS_
     return {"bahaya": bahaya, "kunci": kunci, "tersedia": True, "fn": fn, "galat_km": galat_km, "radius_km": radius_km or None}
 
 
+def _ha_sel(lat):
+    """Luas satu sel halus bangunan (ha) di lintang `lat`; rumus yang sama dengan genangan_nasional.ha_sel, konstanta dari BG."""
+    return BG.STEP / 10 * 111.32 * math.cos(math.radians(lat)) * BG.STEP / 10 * 110.57 * 100
+
+
+def _sel_halus(lon, lat):
+    """Indeks (i, j) sel halus 110 m: kisi BG.LAT0/LON0/HALUS, sama dengan hitung_bangunan di genangan_nasional dan sel_kab."""
+    return math.floor((lat - BG.LAT0) * BG.HALUS), math.floor((lon - BG.LON0) * BG.HALUS)
+
+
+def zona_dari_sel(sel_set, kunci):
+    """GS-06: zona baku dari himpunan sel halus {(i, j)}; fn dinilai pada pusat sel seperti zona poligon. hitung_kab tidak berubah."""
+    return {"bahaya": "banjir", "kunci": kunci, "tersedia": True, "galat_km": GALAT_HALUS_KM, "radius_km": None,
+            "fn": lambda lon, lat: _sel_halus(lon, lat) in sel_set}
+
+
+def zona_gfm(titik_baru, langkah):
+    """titik_baru [(lon, lat, ha)] dari genangan_nasional (mentah.titik_baru) -> {"atas", "bawah", "kisi_kasar"}.
+    atas = sel ber ha_baru > 0; bawah = ha_baru/ha_sel >= ambang.zona_bawah (genangan_kriteria.json, terkunci, hanya dibaca).
+    GHSL tidak punya padanan zona sel: hitung_kab tidak diberi kunci ini, jiwa.ghsl = None (tidak tersedia, bukan 0)."""
+    amb = json.load(open(os.path.join(AB, "genangan_kriteria.json"), encoding="utf-8"))["ambang"]["zona_bawah"]
+    ha = {}
+    for lon, lat, h in titik_baru:
+        c = _sel_halus(lon, lat)
+        ha[c] = ha.get(c, 0.0) + h
+    atas = {c for c, v in ha.items() if v > 0}
+    bawah = {c for c in atas if ha[c] / _ha_sel(BG.LAT0 + (c[0] + .5) / BG.HALUS) >= amb}
+    return {"atas": zona_dari_sel(atas, "gfm_atas"), "bawah": zona_dari_sel(bawah, "gfm_bawah"), "kisi_kasar": langkah > 0.001}
+
+
 def tak_tersedia(bahaya, alasan):
     return {"bahaya": bahaya, "kunci": None, "tersedia": False, "alasan": alasan}
 
@@ -417,6 +447,20 @@ def _uji():
         hs, ms = jalankan_kejadian(t, aw, ge, None, sel_fn, lambda *a: [], {})
         assert ms == [] and hs[0] == ("B0007", "ok") and hs[1][1].startswith("menunggu"), hs
         assert json.load(open(os.path.join(t, "siklus/saji/paparan/B0007.json")))["zona"]["banjir"]["per_zona"]["poligon"]["n"] == 150
+    # GS-06 golden: zona poligon identik dengan fixture yang direkam sebelum zona_dari_sel ada
+    gp = json.load(open(os.path.join(AKAR, "tests/siklus/fixtures/paparan_golden_poligon.json"), encoding="utf-8"))
+    hg = hitung_kab(sel, [zona_dari_bagian([persegi], "banjir", "poligon"), tak_tersedia("rob", "x")], desa, wp)
+    assert json.loads(json.dumps(hg, sort_keys=True)) == gp, "zona poligon berubah dari golden"
+    # GS-06 ALGORITMA 4: satu kec WorldPop 1.000; A 10 bangunan rasio 0,6; B 30 rasio 0,2; C 60 rasio 0 -> bawah 100, atas 400, GHSL null
+    i0 = 100
+    ctr = lambda j: (BG.LON0 + (j + .5) / BG.HALUS, BG.LAT0 + (i0 + .5) / BG.HALUS)
+    ha1 = _ha_sel(ctr(0)[1])
+    sg = [(i0, j, n, 1000.0, "K", *ctr(j)) for j, n in ((0, 10), (1, 30), (2, 60))]
+    zg = zona_gfm([(*ctr(0), .6 * ha1), (*ctr(1), .2 * ha1)], 0.0006)
+    assert not zg["kisi_kasar"] and zona_gfm([], 0.0011)["kisi_kasar"]
+    hz = hitung_kab(sg, [zg["bawah"], zg["atas"]], [], {"K": 1000})["zona"]["banjir"]["per_zona"]
+    assert hz["gfm_bawah"]["jiwa"] == {"worldpop": 100, "dukcapil": None, "ghsl": None}, hz
+    assert hz["gfm_atas"]["jiwa"] == {"worldpop": 400, "dukcapil": None, "ghsl": None}, hz
     print("paparan: uji hijau")
 
 

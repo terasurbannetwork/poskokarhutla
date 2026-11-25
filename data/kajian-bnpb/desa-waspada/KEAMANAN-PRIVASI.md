@@ -8,7 +8,7 @@
 | Titik panas 7 dan 24 jam per desa | `hotspot.json` (FIRMS) | rendah, sudah publik per titik | ya, agregat per desa |
 | Tahun terbakar per desa | `riwayat_petak.bin` | sedang: riwayat bisa dibaca sebagai stigma; nama desa publik tidak berisiko hukum bila tanpa kata sebab, pelaku, atau kepemilikan (diperiksa 24 Nov 2026: tidak ada kunci orang atau lahan di paket) | ya, sebagai bilangan dan tanpa kata sebab; menunggu Q1 |
 | Porsi gambut per desa | `gambut.geojson` | rendah | ya, berpil perkiraan |
-| Peluang kab/kota 3 hari | `prediksi.json` | rendah | ya, berpil hipotesis |
+| Peluang kab/kota 3 hari | `prediksi.json` | rendah | ya, berpil hipotesis selama status peluang belum `dinilai` (D9) |
 | Pin desa | titik tengah poligon | rendah | ya, 0,001 derajat |
 | Koordinat titik individual atau petak | `riwayat_petak.bin`, `hotspot.json` | sedang bila ditautkan ke desa | **tidak** ditambahkan salinan baru ke berkas ini |
 | Data orang, pemilik lahan, konsesi | tidak dipakai | tinggi | tidak ada di paket ini |

@@ -13,7 +13,8 @@ PKH-42 hari tinggi -> public/udara/data/hari_tinggi.json: jumlah hari PM2,5 rata
   Jendela : tiap tahun dihitung 1 Jan sampai tanggal data terakhir (sama untuk semua tahun) supaya tahun berjalan sebanding.
             Tahun dengan data < 70% hari jendela: hari_di_atas = null (kosong, bukan 0).
   Tetangga: belum ada arsip multi-tahun (stasiun_asing.json hanya 6 hari, ditahan menunggu izin DOE) -> `tetangga` null dengan alasan.
-  Hanya angka hari; tanpa konversi "setara rokok" (keputusan pemilik).
+  Setara rokok (K8, perkiraan kasar): rata PM2,5 harian tahun itu (hari bernilai saja) / 22 = batang per hari, dibulatkan ke 0,5; Berkeley Earth: 22 ug/m3 selama 24 jam ~ 1 batang.
+  Null bila hari_di_atas null (data < ambang jendela).
 """
 import datetime as dt
 import glob
@@ -48,6 +49,7 @@ def hitung(r24, kota):
 
 
 AMBANG_HARI, MIN_JAM, MIN_TUTUP, JARAK_MAKS = 55.0, 18, 0.7, 30
+UG_PER_BATANG = 22.0   # Berkeley Earth (Muller, 2015): 22 ug/m3 x 24 jam ~ 1 batang rokok; perkiraan kasar
 
 
 def harian_wib(h):
@@ -82,9 +84,12 @@ def hari_tinggi(stasiun, kota):
         for y in sorted({d[:4] for d in rata}):
             n_jendela = (dt.date.fromisoformat(f"{y}-{akhir}") - dt.date(int(y), 1, 1)).days + 1
             ada = [x for d, x in rata.items() if d[:4] == y]
-            th[y] = [len(ada), sum(x > AMBANG_HARI for x in ada) if len(ada) >= MIN_TUTUP * n_jendela else None]
+            cukup = len(ada) >= MIN_TUTUP * n_jendela
+            th[y] = [len(ada), sum(x > AMBANG_HARI for x in ada) if cukup else None,
+                     round(sum(ada) / len(ada) / UG_PER_BATANG * 2) / 2 if cukup else None]
         out[kode] = {"nama": nama[kode], "tahun": th}
-    return {"jendela": f"01-01 s/d {akhir}", "kolom": ["hari_data", "hari_di_atas"], "ambang_ug": AMBANG_HARI, "kota": out,
+    return {"jendela": f"01-01 s/d {akhir}", "kolom": ["hari_data", "hari_di_atas", "setara_rokok_per_hari"], "setara_rokok_status": "perkiraan kasar",
+            "setara_rokok_rujukan": "Berkeley Earth: 22 ug/m3 selama 24 jam ~ 1 batang", "ambang_ug": AMBANG_HARI, "kota": out,
             "tetangga": None, "tetangga_alasan": "arsip multi-tahun kota negara tetangga belum ada di repo"}
 
 
@@ -126,7 +131,7 @@ def uji():
     r = hari_tinggi([{"lat": 0.01, "lon": 100, "h": h1}, {"lat": 5, "lon": 100, "h": {"2026-03-01T00": 99}}, {"lat": 20, "lon": 0, "h": h1}], ko)
     assert r["jendela"] == "01-01 s/d 03-01" and list(r["kota"]) == ["a"], r   # stasiun jauh dan stasiun 1 jam (b) tak menghasilkan kota; c tanpa data
     a = r["kota"]["a"]["tahun"]
-    assert a["2024"] == [1, None] and a["2026"] == [1, None], a   # data < 70% jendela -> null, bukan 0
+    assert a["2024"] == [1, None, None] and a["2026"] == [1, None, None], a   # data < 70% jendela -> null, bukan 0
     n = 70   # jendela 70 hari penuh
     pen = {}
     for i in range(n):
@@ -134,6 +139,7 @@ def uji():
         pen.update(jam(d, 56 if i < 10 else 20))
     r = hari_tinggi([{"lat": 0, "lon": 100, "h": pen}], ko)
     assert r["kota"]["a"]["tahun"]["2025"][1] == 10, r
+    assert r["kota"]["a"]["tahun"]["2025"][2] == round((10 * 56 + 60 * 20) / 70 / 22 * 2) / 2, r
     print("riwayat uji: lulus")
 
 

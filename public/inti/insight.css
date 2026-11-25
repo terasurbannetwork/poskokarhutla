@@ -18,7 +18,7 @@
 .ex-ft .ex-leg{flex:1 1 100%;justify-content:center}
 #insight .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
 #insight .ex-ft em{font-style:italic;opacity:.9}
-#insight .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+#insight .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.01em;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
 #insight .ex-ey:empty{display:none}
 .ex-jd{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
 .ex-jd > select{flex:none;margin-top:2px;box-shadow:none;background-color:var(--card)}

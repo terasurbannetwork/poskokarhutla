@@ -84,7 +84,8 @@ const MT_RK = ["di bawah banjir 2 tahunan", "≥ banjir 2 tahunan", "≥ banjir 
 /* periode ulang Gumbel dari debit q: T = 1 / (1 − e^(−e^(−(q − u)/α))) */
 const mtGumbel = t => { const a = (t.q5 - t.q2) / (1.5 - .3665), u = t.q2 - .3665 * a; return {a, u, T: q => 1 / (1 - Math.exp(-Math.exp(-(q - u) / a)))}; };
 
-const mtGabung = a => a.length > 1 ? a.slice(0, -1).join(", ") + " dan " + a.at(-1) : a[0] || "";
+const mtTip = t => ` <span title="${esc(t)}" style="cursor:help;opacity:.6">ⓘ</span>`;
+const mtGabung =a => a.length > 1 ? a.slice(0, -1).join(", ") + " dan " + a.at(-1) : a[0] || "";
 async function renderMetode() {
   const M = S.meta || {};
   /* berkas kecil yang angkanya dikutip di teks (dibaca saat render, bukan ditulis tangan); gagal = null, kutipannya dilewati */
@@ -1255,6 +1256,20 @@ selang 95% = bootstrap blok per tahun-bulan, 300 ulangan`)}
   /* bab peluang hujan lebat per wilayah: batasan dan uji balik dari peluang.json (mesin bersama inti/peluang.js), ditaruh sesudah bab banjir dan sebelum kelompok longsor */
   if (typeof Peluang !== "undefined") Peluang.muat("data/peluang.json").then(d => { const h = Peluang.batasan(d, {judul: "Peluang hujan lebat per wilayah"});
     if (h) $("#metode-longsor").insertAdjacentHTML("beforebegin", h.replace(/<b>0\. /, `<b>${B.length + 1}. `)); });
+
+  /* kartu uji eskalasi kejadian 48 jam (KI-30): berkas hilang = kartu tidak tampil, bukan angka nol */
+  mtJSON("data/eskalasi_uji.json").then(E => { if (!E || E.n_uji == null) return;
+    const pb = E.pembanding_utama, sb = E.selang95 || [], ad = (k, tip) => `<th title="${esc(tip)}">${k}</th>`, tr = (k, v) => `<tr><td>${k}</td><td class="num">${v}</td></tr>`;
+    const nm = {klimatologi_prov_bulan: "klimatologi provinsi × bulan", klimatologi_bulan: "klimatologi bulan", persistensi: "persistensi"}[pb] || esc(pb || "–");
+    $("#metode").insertAdjacentHTML("beforeend", `<article class="ex ex-std" id="metode-eskalasi"><header class="ex-hd"><span class="ex-ey">Uji balik</span><div class="ex-jd"><h3>Uji eskalasi kejadian</h3></div></header><div class="ex-bd"><table class="ex-tabel"><thead><tr>${
+      ad("Ukuran", "Eskalasi = kejadian banjir tercatat di logbook Pusdalops (bukan status kita) pada kabupaten lain di provinsi yang sama, dicatat d+1 sampai d+2 sesudah hari d")}${ad("Nilai", "Dihitung pada periode uji, di luar data latih")}</tr></thead><tbody>${
+      tr("Jumlah kasus uji" + mtTip("Kabupaten-hari pada periode uji"), mtA(E.n_uji, 0))}${
+      tr("Kasus positif" + mtTip("Kasus uji dengan eskalasi tercatat di logbook"), mtA(E.y1_uji, 0))}${
+      tr("Brier model" + mtTip("Makin kecil makin baik; selisih dihitung pembanding dikurangi model"), mtA(E.brier_model, 4))}${
+      tr("Brier pembanding utama (" + nm + ")" + mtTip("Pembanding paling kuat di data latih"), mtA(E.brier_pembanding?.[pb], 4))}${
+      tr("Selisih Brier dan selang 95%" + mtTip("Selang bootstrap blok; selang yang memuat 0 berarti belum terbukti lebih baik"), `${mtA(E.selisih_brier, 4)} (${mtA(sb[0], 4)} sampai ${mtA(sb[1], 4)})`)}${
+      tr("AUC model", mtA(E.auc_model, 3))}${tr("AUC pembanding utama", mtA(E.auc_pembanding?.[pb], 3))}${
+      tr("Vonis", esc(E.vonis || "–"))}</tbody></table></div></article>`); }).catch(() => {});
 
   $("#metode").querySelectorAll("[data-buka]").forEach(b => b.onclick = () => bukaTab(b.dataset.buka));
   /* contoh dihitung saat bagian dibuka pertama kali */

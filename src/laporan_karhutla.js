@@ -22,6 +22,7 @@ import {halamanAdmin} from "./statistik.js";
 import * as S from "../public/laporan_karhutla_spek.js";
 import {teksWA} from "../public/laporan_karhutla_wa.js";
 import {laju} from "./bnpb.js";
+import {batchBersegel, segelDokumen} from "./segel.js";
 import {buatXlsx} from "./xlsx_mini.js";
 import {buatRute as buatRuteBencana, tanpa0048} from "./laporan_bencana.js";
 
@@ -414,13 +415,15 @@ async function kunci(env, req, kini) {
   snap.pengecualian = snap.pengecualian.map(x => x);   // data_terakhir sudah tercetak oleh agregasi
   const teks = JSON.stringify(snap), hash = await sha(teks), status = pengecualian.length ? "dikunci_pengecualian" : "dikunci";
   const simpanPeng = JSON.stringify(snap.pengecualian);
+  let segel = null;
   try {
-    const r = await env.DB.batch([
+    const b = await batchBersegel(env, [
       env.DB.prepare("INSERT INTO lk_snapshot (tanggal_laporan, ralat, hash, isi, oleh, waktu, dummy) VALUES (?1, 0, ?2, ?3, ?4, ?5, ?6)").bind(tanggal, hash, teks, p.oleh, kini, hari.dummy),
-      env.DB.prepare("UPDATE lk_hari SET status = ?1, pengecualian = ?2, ralat = 0, hash = ?3, dikunci_oleh = ?4, dikunci_pada = ?5 WHERE tanggal_laporan = ?6 AND status = 'terbuka'").bind(status, simpanPeng, hash, p.oleh, kini, tanggal)]);
-    if (!r[1].meta.changes) return gagal(409, "laporan sudah dikunci oleh orang lain");
+      env.DB.prepare("UPDATE lk_hari SET status = ?1, pengecualian = ?2, ralat = 0, hash = ?3, dikunci_oleh = ?4, dikunci_pada = ?5 WHERE tanggal_laporan = ?6 AND status = 'terbuka'").bind(status, simpanPeng, hash, p.oleh, kini, tanggal)], sampulLk(tanggal, 0, hash, kini), hari.dummy);
+    segel = b.kode;
+    if (!b.r[1].meta.changes) return gagal(409, "laporan sudah dikunci oleh orang lain");
   } catch (e) { const m = String(e?.message); if (/CHECK constraint/i.test(m)) return gagal(/length\(isi\)/i.test(m) ? 413 : 400, "snapshot melanggar batas skema: " + m.slice(0, 160)); if (/UNIQUE|constraint/i.test(m)) return gagal(409, "laporan sudah dikunci oleh orang lain"); throw e; }
-  return json({ok: true, tanggal, status, ralat: 0, hash, pengecualian: snap.pengecualian}, 201);
+  return json({ok: true, tanggal, status, ralat: 0, hash, pengecualian: snap.pengecualian, segel}, 201);
 }
 async function ralat(env, req, kini) {
   const p = await pelaku(env, req, kini); if (p instanceof Response) return p;
@@ -461,9 +464,12 @@ async function ralat(env, req, kini) {
   const teks = JSON.stringify(snap), hash = await sha(teks);
   st.push(env.DB.prepare("INSERT INTO lk_snapshot (tanggal_laporan, ralat, hash, isi, alasan, perubahan, oleh, waktu, dummy) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)").bind(tanggal, n, hash, teks, alasan, JSON.stringify(perubahan), p.oleh, kini, hari.dummy),
     env.DB.prepare("UPDATE lk_hari SET ralat = ?1, hash = ?2 WHERE tanggal_laporan = ?3 AND ralat = ?4").bind(n, hash, tanggal, hari.ralat));
-  try { await env.DB.batch(st); } catch (e) { const m = String(e?.message); if (/CHECK constraint/i.test(m)) return gagal(/length\(isi\)/i.test(m) ? 413 : 400, "ralat melanggar batas skema: " + m.slice(0, 160)); if (/UNIQUE|constraint/i.test(m)) return gagal(409, "ralat bersamaan dari orang lain; muat ulang"); throw e; }
-  return json({ok: true, tanggal, ralat: n, hash, perubahan}, 201);
+  let segel = null;
+  try { ({kode: segel} = await batchBersegel(env, st, sampulLk(tanggal, n, hash, kini), hari.dummy)); } catch (e) { const m = String(e?.message); if (/CHECK constraint/i.test(m)) return gagal(/length\(isi\)/i.test(m) ? 413 : 400, "ralat melanggar batas skema: " + m.slice(0, 160)); if (/UNIQUE|constraint/i.test(m)) return gagal(409, "ralat bersamaan dari orang lain; muat ulang"); throw e; }
+  return json({ok: true, tanggal, ralat: n, hash, perubahan, segel}, 201);
 }
+/* sampul segel laporan karhutla (paket segel-dokumen SG-05): hanya data sampul, penerbit = lembaga */
+const sampulLk = (tanggal, ralat, sidik, kini) => ({jenis: "lk", rujukan: `${tanggal}#${ralat}`, versi: ralat, sidik, judul: "Laporan Harian Karhutla", wilayah: "Nasional", periode: tanggal, penerbit: "BNPB", terbit: kini});
 const bedaAman = (lama, baru) => lama ? S.bedaSnapshot(lama, baru) : [];
 
 /* ================================================================ baca snapshot (stabil) */
@@ -478,7 +484,7 @@ async function bacaSnapshot(env, req, url, kini, ctx, tanggal) {
   if (!r) return gagal(404, "nomor ralat tidak ada");
   const daftar = (await env.DB.prepare("SELECT ralat, hash, alasan, waktu, json_array_length(perubahan) berubah FROM lk_snapshot WHERE tanggal_laporan = ? ORDER BY ralat").bind(tanggal).all()).results;
   const snap = JSON.parse(r.isi), utuh = (await sha(r.isi)) === r.hash;
-  return json({tanggal, ralat: r.ralat, terbaru: r.ralat === hari.ralat, hash: r.hash, utuh, dikunci_pada: snap.dikunci_pada, alasan_ralat: r.alasan, perubahan: JSON.parse(r.perubahan), ralat_tersedia: daftar, snapshot: snap, teks_wa: teksWA(snap)});
+  return json({tanggal, ralat: r.ralat, terbaru: r.ralat === hari.ralat, hash: r.hash, utuh, segel: await segelDokumen(env, "lk", `${tanggal}#${r.ralat}`), dikunci_pada: snap.dikunci_pada, alasan_ralat: r.alasan, perubahan: JSON.parse(r.perubahan), ralat_tersedia: daftar, snapshot: snap, teks_wa: teksWA(snap)});
 }
 
 /* ================================================================ dummy: satu hari penuh dari laporan 21 Okt 2026 (data per provinsi 20 Okt, angka nyata; tanpa angka karangan) */

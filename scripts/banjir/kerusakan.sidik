@@ -1,0 +1,13 @@
+{
+ "sidik": "cf474d6c07ce740a",
+ "berkas": {
+  "scripts/banjir/data/kurva_jrc_asia.json": "3e1ee3220fe982717246b8dea0a3d437e1c461c75a5f1b6f2577d03ac75073d1",
+  "scripts/banjir/kerusakan.kriteria.json": "85f92896107220ad8f9a7bbbce8d69698dd312515d2f04e9a745d617357126a8",
+  "scripts/banjir/kerusakan.py": "c23f7d1fa55b3d2eb4f57bd5c7e09a57978df21727c3a2f45f9ace2142c4572d",
+  "scripts/umum/selang.py": "bbdfa9de09027eefacb0f3167281bec83a841e881d5f5a7e9d3a71f02885cad4"
+ },
+ "masukan": [
+  "kunci ke-4, 25 Nov 2026; sebelumnya dikunci ulang 2 kali sesudah jumlah peristiwa (15 GFM, 4 sah dengan DIBI>0) terlihat, sebelum galat model dihitung; perubahan: kelas n_miss (model 0 bangunan, DIBI>0); kriteria tidak berubah"
+ ],
+ "dibuat": "2026-11-24T19:07:40Z"
+}

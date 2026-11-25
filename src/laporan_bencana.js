@@ -11,6 +11,11 @@ import {json, gagal, sha, bacaBody} from "./worker.js";
 import {wib} from "./posko.js";
 import * as K from "../public/laporan_karhutla_spek.js";
 import {spek, pilihPrioritas, dariLaporan} from "../public/laporan_bencana_spek.js";
+import {batchBersegel, segelDokumen} from "./segel.js";
+import REGISTRY from "./bencana.generated.js";
+/* sampul segel laporan bencana (paket segel-dokumen SG-06): judul dari nama registri, penerbit = lembaga, tanpa nama orang */
+const NAMA_BENCANA = Object.fromEntries((Array.isArray(REGISTRY.bencana) ? REGISTRY.bencana : Object.values(REGISTRY.bencana)).map(x => [x.id, x.nama]));
+const sampulLkb = (b, tanggal, ralat, sidik, kini) => ({jenis: "lkb", rujukan: `${b}/${tanggal}#${ralat}`, versi: ralat, sidik, judul: `Laporan Harian ${NAMA_BENCANA[b] ?? b}`, wilayah: "Nasional", periode: tanggal, penerbit: "BNPB", terbit: kini});
 
 const JAM = 3600e3, HARI = 24 * JAM;
 export const tanpa0048 = e => /no such table: lkb_/i.test(String(e?.message || e));
@@ -217,13 +222,15 @@ export function buatRute(kit) {
     for (const s of wajib) if (!tanpa.has(s)) { const cek = SP.cek(s, jsonDari(kir[s].isi)); if (K.adaMerah(cek)) return json({galat: `cek merah menahan kunci pada ${SP.labelSumber(s)}`, sumber: s, merah: cek.filter(x => x.t === "merah")}, 422); }
     const snap = await bangun(env, b, hari, tanggal, kir, pengecualian, 0, null, p.oleh, kini, undefined, null);
     const teks = JSON.stringify(snap), hash = await sha(teks), status = pengecualian.length ? "dikunci_pengecualian" : "dikunci";
+    let segel = null;
     try {
-      const r = await env.DB.batch([
+      const {r, kode} = await batchBersegel(env, [
         env.DB.prepare("INSERT INTO lkb_snapshot (bencana, tanggal_laporan, ralat, hash, isi, oleh, waktu, dummy) VALUES (?1, ?2, 0, ?3, ?4, ?5, ?6, ?7)").bind(b, tanggal, hash, teks, p.oleh, kini, hari.dummy),
-        env.DB.prepare("UPDATE lkb_hari SET status = ?1, pengecualian = ?2, ralat = 0, hash = ?3, dikunci_oleh = ?4, dikunci_pada = ?5 WHERE bencana = ?6 AND tanggal_laporan = ?7 AND status = 'terbuka'").bind(status, JSON.stringify(snap.pengecualian), hash, p.oleh, kini, b, tanggal)]);
+        env.DB.prepare("UPDATE lkb_hari SET status = ?1, pengecualian = ?2, ralat = 0, hash = ?3, dikunci_oleh = ?4, dikunci_pada = ?5 WHERE bencana = ?6 AND tanggal_laporan = ?7 AND status = 'terbuka'").bind(status, JSON.stringify(snap.pengecualian), hash, p.oleh, kini, b, tanggal)], sampulLkb(b, tanggal, 0, hash, kini), hari.dummy);
+      segel = kode;
       if (!r[1].meta.changes) return gagal(409, "laporan sudah dikunci oleh orang lain");
     } catch (e) { const m = String(e?.message); if (/CHECK constraint/i.test(m)) return gagal(/length\(isi\)/i.test(m) ? 413 : 400, "snapshot melanggar batas skema: " + m.slice(0, 160)); if (/UNIQUE|constraint/i.test(m)) return gagal(409, "laporan sudah dikunci oleh orang lain"); throw e; }
-    return json({ok: true, bencana: b, tanggal, status, ralat: 0, hash, pengecualian: snap.pengecualian}, 201);
+    return json({ok: true, bencana: b, tanggal, status, ralat: 0, hash, pengecualian: snap.pengecualian, segel}, 201);
   }
   async function ralat(env, req, kini, b) {
     const SP = spek(b), p = await pelaku(env, req, kini); if (p instanceof Response) return p;
@@ -264,8 +271,9 @@ export function buatRute(kit) {
     const teks = JSON.stringify(snap), hash = await sha(teks);
     st.push(env.DB.prepare("INSERT INTO lkb_snapshot (bencana, tanggal_laporan, ralat, hash, isi, alasan, perubahan, oleh, waktu, dummy) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)").bind(b, tanggal, n, hash, teks, alasan, JSON.stringify(perubahan), p.oleh, kini, hari.dummy),
       env.DB.prepare("UPDATE lkb_hari SET ralat = ?1, hash = ?2 WHERE bencana = ?3 AND tanggal_laporan = ?4 AND ralat = ?5").bind(n, hash, b, tanggal, hari.ralat));
-    try { await env.DB.batch(st); } catch (e) { const m = String(e?.message); if (/CHECK constraint/i.test(m)) return gagal(/length\(isi\)/i.test(m) ? 413 : 400, "ralat melanggar batas skema: " + m.slice(0, 160)); if (/UNIQUE|constraint/i.test(m)) return gagal(409, "ralat bersamaan dari orang lain; muat ulang"); throw e; }
-    return json({ok: true, bencana: b, tanggal, ralat: n, hash, perubahan}, 201);
+    let segel = null;
+    try { ({kode: segel} = await batchBersegel(env, st, sampulLkb(b, tanggal, n, hash, kini), hari.dummy)); } catch (e) { const m = String(e?.message); if (/CHECK constraint/i.test(m)) return gagal(/length\(isi\)/i.test(m) ? 413 : 400, "ralat melanggar batas skema: " + m.slice(0, 160)); if (/UNIQUE|constraint/i.test(m)) return gagal(409, "ralat bersamaan dari orang lain; muat ulang"); throw e; }
+    return json({ok: true, bencana: b, tanggal, ralat: n, hash, perubahan, segel}, 201);
   }
   async function bacaSnapshot(env, req, url, kini, b, tanggal) {
     const p = await pelaku(env, req, kini); if (p instanceof Response) return p;
@@ -278,7 +286,7 @@ export function buatRute(kit) {
     if (!r) return gagal(404, "nomor ralat tidak ada");
     const daftar = (await env.DB.prepare("SELECT ralat, hash, alasan, waktu, json_array_length(perubahan) berubah FROM lkb_snapshot WHERE bencana = ? AND tanggal_laporan = ? ORDER BY ralat").bind(b, tanggal).all()).results;
     const snap = JSON.parse(r.isi), utuh = (await sha(r.isi)) === r.hash;
-    return json({bencana: b, tanggal, ralat: r.ralat, terbaru: r.ralat === hari.ralat, hash: r.hash, utuh, dikunci_pada: snap.dikunci_pada, alasan_ralat: r.alasan, perubahan: JSON.parse(r.perubahan), ralat_tersedia: daftar, snapshot: snap, teks_wa: spek(b).teksWA(snap)});
+    return json({bencana: b, tanggal, ralat: r.ralat, terbaru: r.ralat === hari.ralat, hash: r.hash, utuh, segel: await segelDokumen(env, "lkb", `${b}/${tanggal}#${r.ralat}`), dikunci_pada: snap.dikunci_pada, alasan_ralat: r.alasan, perubahan: JSON.parse(r.perubahan), ralat_tersedia: daftar, snapshot: snap, teks_wa: spek(b).teksWA(snap)});
   }
 
   /* ---------------- dummy: satu hari contoh per bahaya, berlabel DUMMY (Super Admin). Tanpa angka dampak karangan: hanya teks contoh. */

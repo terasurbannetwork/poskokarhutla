@@ -196,11 +196,17 @@ Berlaku untuk V1 dan V2. Keputusan di atas tetap berlaku; yang berubah hanya car
 | K45 | (20 Nov) Draf P-201126-03 gagal "max() iterable argument is empty": bahan Satgas tanpa armada udara yang terbaca. Pemilik: "Buang panelnya" dan "kalau omc dan armada gaada 22nya, hapus aja slide itu". Laporan penanganan: armada udara kosong (tidak ada unit patroli maupun WB) = panel ARMADA UDARA dibuang, panel MODIFIKASI CUACA direntang selebar slide, subjudul tanpa "N armada udara dan"; armada kosong DAN OMC kosong (tidak ada sortie maupun sasaran) = slide Operasi tidak dibuat. Keduanya dicatat di draf sebagai peringatan generator. |
 | K46 | (20 Nov) "kalau saya minta bot wa bikin laporan gempa, kayak gini" (Laporan Khusus Gempa M5,4 Nias Barat 191126, gaya baku hasil belasan revisi pemilik 20 Nov), lalu "sesuaikan perubahan2 yang bot dengan yang bikin di repo ya biar selaras". Jenis `gempa` (Laporan Khusus Gempa): `buat gempa [tempat] [tanggal]`, juga kalimat bebas ("buatkan laporan gempa nias", Haiku mengisi `lokasi`); tempat disimpan di mesin per proyek (`lokasi.json`, pola periode K42). Langsung dibangun tanpa bahan WA; generator `data/laporan-bnpb/generator/gempa_bot.py` menyusun KONFIG dari BMKG (arsip InaTEWS repo + feed gempaterkini, gempadirasakan, autogempa), daftar dirasakan BMKG yang dipetakan ke kab/kota lewat `public/data/desa_cari.json`, laporan BPBD dari laphar terurai, lalu membangun lewat mesin yang sama dengan laporan buatan tangan (`data/laporan-bnpb/insidental/gempa_khusus.py`, label peta ditata otomatis). Agen V2 hanya merapikan kalimat kondisi BPBD (`PEDOMAN-GEMPA.md`); angka MMI, penduduk, dan peluang susulan dari model repo tidak diubah. Hanya mode V2, tidak pernah terjadwal; final ke Drive kategori Laporan Harian Bencana (BAWAAN SEMENTARA). Menjawab Q3 untuk gempa. |
 
+## Infografis DIBI lewat perintah (24 Nov 2026)
+
+| No | Keputusan pemilik |
+| --- | --- |
+| K47 | (24 Nov) "gas lanjut semua yang tadi berhenti", menerima bawaan sementara untuk infografis DIBI di bot. Perintah `infografis <periode>` (`2025`, `2026-10`, atau `2026-t3`) membangun infografis tahunan, bulanan, atau triwulanan lewat `scripts/bnpb/infografis_tahunan.py` dan mengirim PPTX serta PDF hanya ke pengirim. Hanya nomor terdaftar (K6, K14); satu pembuatan dalam satu waktu; periode yang belum genap atau tidak ada di DIBI ditolak dengan pesan. Hanya lewat perintah: tidak terjadwal (K12) dan tidak diunggah ke Drive. Bot v2.7 (`scripts/wa/infografis.mjs`, uji `tests/wa/infografis.test.mjs`). |
+
 ## Dua bot, dua nomor (24 Nov 2026)
 
 | No | Keputusan pemilik |
 | --- | --- |
-| K47 | (24 Nov) Bot Laporan BNPB dan Lapor Bencana bertabrakan di satu nomor: nomor yang diberi `lapor izin` tidak bisa lagi memakai bot laporan, dan jatah kiriman dipakai bersama. Pemilik: "buat jadi 2 bot terpisah aja, untuk lapor bencana pakai nomor WA sekarang, yang pembuatan laporan pakai nomor WA baru, nanti saya kasih". Pembagian fitur ke nomor (bahan, grup operasi, logbook, Drive, `otomatis.mjs` ke nomor baru; kode `/masuk` dan relawan `/petugas` tetap di nomor lama) disetujui pemilik: "Sudah benar". |
+| K48 | (24 Nov) Bot Laporan BNPB dan Lapor Bencana bertabrakan di satu nomor: nomor yang diberi `lapor izin` tidak bisa lagi memakai bot laporan, dan jatah kiriman dipakai bersama. Pemilik: "buat jadi 2 bot terpisah aja, untuk lapor bencana pakai nomor WA sekarang, yang pembuatan laporan pakai nomor WA baru, nanti saya kasih". Pembagian fitur ke nomor (bahan, grup operasi, logbook, Drive, `otomatis.mjs` ke nomor baru; kode `/masuk` dan relawan `/petugas` tetap di nomor lama) disetujui pemilik: "Sudah benar". |
 
 | No | Keputusan rancangan (agent, bisa dibatalkan pemilik) | Alasan |
 | --- | --- | --- |

@@ -6,6 +6,7 @@
 import {kelengkapan, butir, BAGIAN} from "/inti/kelengkapan.js";
 import {periksa, gambar as gambarSpek, dariMeja} from "/inti/spek.js";
 import {bacaXlsx, barisDariLembar, potong, angkaId} from "/inti/impor.js";
+import {bedaLapor, dariDaftar, rekapBaru, dataUbah} from "/bnpb/meja_lapor.js";
 import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/titik_pengungsian.js";
 {
   const app = document.getElementById("app"), KUNCI = "meja_kode", HAL = 15;
@@ -52,7 +53,7 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
   /* bantuan privasi: kolom teks bebas di meja dampak (server menolak pola nama/NIK/telepon dan menyebut kolomnya) */
   const BANTU = new Set(["nama_kejadian", "kronologis", "deskripsi", "upaya", "penyebab"]);
   const isian = (k, v) => {
-    const n = esc(k.nama), l = esc(k.label) + (k.wajib ? " *" : ""), bantu = k.bagian && BANTU.has(k.nama) ? `<small class="mj-bantu">Tanpa nama orang, alamat rumah, NIK, atau nomor telepon</small>` : "";
+    const n = esc(k.nama), l = esc(k.label) + (k.wajib ? " *" : "") + (dariDaftar(form?.baris?.data, k.nama) ? `<span class="mj-pil mj-kecil t-info" title="Angka kolom ini dari daftar Data lanjutan">${IK.berkas}dari daftar</span>` : ""), bantu = k.bagian && BANTU.has(k.nama) ? `<small class="mj-bantu">Tanpa nama orang, alamat rumah, NIK, atau nomor telepon</small>` : "";
     const bila = k.bila ? ` data-bila="${esc(k.bila.join(","))}" hidden` : "";
     const bungkus = isi => k.bila ? `<div class="mj-bila"${bila}>${isi}</div>` : isi;
     if (k.tipe === "wilayah") return `<label class="bn-isian">${l}<input name="_${n}" maxlength="80" autocomplete="off" value="${esc(v ?? "")}"></label>`;
@@ -82,6 +83,17 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
   const M = () => S.meja.find(m => m.id === meja);
   const dampakM = () => !!M().bagian;
   const AKSI_DAMPAK = {diverifikasi: "Ajukan verifikasi", dilaporkan: "Tarik kembali"};
+  /* LJ-16: pita rekap baru dari daftar Data lanjutan (catatan berkas); angka tidak dihitung di layar, hanya ditampilkan dari data catatan */
+  const pitaRekap = (r) => {
+    const rb = r.bisa_ubah && rekapBaru(r.data, M().kolom); if (!rb) return "";
+    return `<div class="mj-pita" role="status"><b>${IK.info}Ada rekap baru dari daftar</b><span>${rb.butir.length ? rb.butir.map(x => `${esc(x.label)}: <b>${x.nilai == null ? "tidak ada" : ID.format(x.nilai)}</b>`).join(", ") : "daftar sekarang belum punya angka"}</span>
+      <button type="button" class="mj-btn kecil utama" data-terima-rekap="${esc(r.id)}">${IK.ok}Terima rekap baru</button></div>`;
+  };
+  const blokBeda = r => {
+    const b = r && bedaLapor(r.data, M().kolom); if (!b?.length) return "";
+    return `<div class="mj-beda"><b>${IK.bahaya}Angka ketikan dan angka daftar berbeda</b>${b.map(x => `<div class="mj-beda-baris"><span>${esc(x.label)}</span><span>ketikan <b>${x.ketik == null ? "belum didata" : ID.format(x.ketik)}</b></span><span>dari daftar <b>${ID.format(x.daftar)}</b></span>
+      <button type="button" class="mj-btn kecil" data-pakai="${esc(x.nama)}" data-nilai="${esc(x.daftar)}">Pakai angka daftar</button></div>`).join("")}</div>`;
+  };
   const pilKel = k => !k ? "" : `<span class="mj-pil t-${k.persen >= 100 ? "ok" : k.persen >= 50 ? "tunggu" : "bahaya"}" title="Persen butir yang sudah terjawab">${IK.meter}${ID.format(k.persen)}%</span>`
     + (k.inti_lengkap ? `<span class="mj-pil t-ok">${IK.ok}Inti lengkap</span>` : `<span class="mj-pil t-bahaya" title="Butir inti yang belum terjawab">${IK.bahaya}Inti kurang ${ID.format(k.kurang_inti.length)}</span>`);
   const ringkasIsi = r => {
@@ -98,7 +110,7 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
     const stokAksi = (r.aksi_stok || []).filter(a => a.boleh).map(a => `<button class="mj-btn kecil" data-stok="${esc(a.jenis)}">${IK.tambah}${esc(label(a.jenis))}</button>`).join("");
     const lain = r.aksi.filter(a => !a.boleh).length ? `<span class="mj-redup">menunggu admin</span>` : "";
     const rin = buka.get(r.id);
-    return `<tr data-id="${esc(r.id)}"><td><b>${wilayahF(r)}</b></td><td>${ringkasIsi(r) || "–"}${tanda ? `<div class="mj-tanda">${tanda}</div>` : ""}</td>
+    return `<tr data-id="${esc(r.id)}"><td><b>${wilayahF(r)}</b></td><td>${ringkasIsi(r) || "–"}${pitaRekap(r)}${tanda ? `<div class="mj-tanda">${tanda}</div>` : ""}</td>
       <td>${pil(r.status_efektif)}${r.status_efektif !== r.status ? ` ${pil(r.status)}` : ""}${dampakM() ? `<div class="mj-tanda">${pilKel(r.kelengkapan)}</div>` : ""}</td><td>${esc(waktuF(r.diubah))}</td>
       <td><div class="mj-aksi">${aksi}${stokAksi}<button class="mj-btn kecil" data-rinci="1">${IK.riwayat}Rincian</button>${lain}</div></td></tr>${rin ? rinci(r, rin) : ""}`;
   };
@@ -146,7 +158,7 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
     return `<form class="bn-blok mj-form mj-dampak" id="mjForm" autocomplete="off" novalidate><h2>${IK.tambah}${esc(t === "ubah" ? "Ubah" : "Tambah")} ${esc(m.nama.toLowerCase())}</h2>
       <div class="mj-meter" role="group" aria-label="Kelengkapan isian"><div class="mj-meter-a"><b data-persen>…</b><span data-ket>Menghitung kelengkapan</span></div><progress max="100" value="0" aria-label="Persen kelengkapan"></progress>
         <button type="button" class="mj-btn kecil" data-kurang="1" aria-expanded="false">${IK.info}Butir yang kurang</button></div>
-      <div class="mj-kurang" hidden></div>
+      <div class="mj-kurang" hidden></div>${t === "ubah" ? pitaRekap(form.baris) + blokBeda(form.baris) : ""}
       <p class="mj-redup mj-nol">Angka 0 berarti memang tidak ada. Kolom kosong berarti belum didata. Bagian tanpa kejadian dipilih Tidak ada.</p>
       ${bagianHtml}<div class="mj-aksi"><button class="mj-btn utama" type="submit">${IK.ok}Simpan</button><button class="mj-btn" type="button" data-batal="1">${IK.tutup}Batal</button></div></form>`;
   };
@@ -421,6 +433,18 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
       return;
     }
     if (t.dataset.stok && r) { form = {mode: "stok", baris: r, jenis: t.dataset.stok}; return gambar(); }
+    if (d.pakai) {   // isi kolom dengan angka daftar; petugas lalu menyimpan seperti biasa (server menandai sumber)
+      const f = document.getElementById("mjForm"), g = M().kolom.find(k => k.nama === d.pakai)?.bagian; if (g) bukaBagian(g); const e = f?.elements[d.pakai];
+      if (e) { e.value = teksAngka(d.nilai); jadwalHitung(); t.textContent = "Terpakai, tekan Simpan"; t.disabled = true; } return;
+    }
+    if (d.terimaRekap) {
+      const b = form?.baris?.id === d.terimaRekap ? form.baris : daftar.find(x => x.id === d.terimaRekap); if (!b) return;
+      t.disabled = true; t.setAttribute("aria-busy", "true");
+      const x = await antre.kirim("POST", `/api/meja/catatan/${b.id}`, {aksi: "ubah", data: dataUbah(b.data, M().kolom), terima_rekap: true});
+      if (!x.ok) { t.disabled = false; t.removeAttribute("aria-busy"); return salah(x, "Gagal menerima rekap"); }
+      form = null; if (x.antre) { lapor("Disimpan di perangkat. Dikirim otomatis begitu ada sinyal.", true); segarkanPita(); return gambar(); }
+      lapor("Rekap baru diterima.", true); return muat();
+    }
     if (t.dataset.batal) { if (dampakM()) { clearTimeout(tmDraf); tulisDraf(null); } form = null; return gambar(); }
     if (t.dataset.ubah && r) { form = {mode: "ubah", baris: r}; return gambar(); }
     if (t.dataset.status && r && dampakM()) {   // meja dampak: tanpa isian tahap, kirim langsung; server menolak verifikasi yang intinya belum lengkap dan menyebut butirnya

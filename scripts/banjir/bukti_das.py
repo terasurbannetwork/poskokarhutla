@@ -50,7 +50,7 @@ KONSESI = os.path.join(AKAR, "public/data/lahan/konsesi.geojson")
 PLAFON_KM2 = 25_000     # luas tangkapan terbesar yang dipakai sebagai titik keluaran
 MIN_KM2 = 300           # lebih kecil dari ini bukan DAS yang berarti untuk hutan
 N_DAERAH, MAKS_PER_PROV, MAKS_JAWA = 10, 2, 4   # Jawa (kode 31-36) dibatasi: konsesi sawit/HTI/tambang di sana sedikit, bukti hulunya kurang beragam
-PLAFON_JSON, PLAFON_TOTAL, PLAFON_PNG = 200_000, 6_000_000, 120_000
+PLAFON_JSON, PLAFON_TOTAL, PLAFON_PNG = 200_000, 8_000_000, 120_000  # total 6 -> 8 MB: pemilik 24 Nov 2026 ("Naikkan ke 8 MB") untuk citra Bekasi, Kota Bekasi, Aceh Tamiang
 INDO = (94, -11.5, 141.5, 6.5)
 HANSEN = "https://storage.googleapis.com/earthenginepartners-hansen/GFC-2025-v1.13/Hansen_GFC-2025-v1.13_{}_{}.tif"
 PX, S, UJUNG = 0.00025, 4, 40000     # derajat per piksel Hansen, langkah cuplik, sisi ubin
@@ -501,7 +501,7 @@ def slug(kunci):
     return re.sub(r"[^a-z0-9]+", "-", kunci.lower()).strip("-")
 
 
-def pilih_daerah(titik, attr, milik):
+def pilih_daerah(titik, attr, milik, paksa=()):
     """Kandidat urut menurut jumlah kejadian banjir DIBI 2010-2023 (maks MAKS_PER_PROV per provinsi) + wilayah Siaga/Awas hari ini.
     -> [(kunci kabupaten, id sub-DAS keluaran, kunci kecamatan keluaran, alasan)]"""
     kej = baca_json("public/banjir/data/kejadian.json")["kab"]
@@ -534,6 +534,12 @@ def pilih_daerah(titik, attr, milik):
         prov[kab[:2]] += 1
         if len(hasil) >= N_DAERAH:
             break
+    for kab in paksa:  # `bangun "<prov|kab>"`: kabupaten pilihan tetap dibangun walau di luar kuota daftar otomatis
+        k = keluaran(kab)
+        if k and kab not in [h[0] for h in hasil]:
+            n = next((x for x, kk in skor if kk == kab), 0)
+            hasil.append((kab, k[2], k[1], f"{n} kejadian banjir DIBI 2010-2023"))
+            pakai.add(k[2])
     for kab in siaga:
         k = keluaran(kab)
         if k and k[2] not in pakai and kab not in [h[0] for h in hasil]:
@@ -741,7 +747,7 @@ def bangun(pilihan=None):
     print("indeks HydroBASINS ...", file=sys.stderr)
     attr, milik = indeks_basin(titik)
     print(f"  {len(attr)} sub-DAS Indonesia, {len(milik)}/{len(titik)} kecamatan terpetakan", file=sys.stderr)
-    daftar = pilih_daerah(titik, attr, milik)
+    daftar = pilih_daerah(titik, attr, milik, sorted(pilihan or ()))
     if pilihan:
         daftar = [d for d in daftar if d[0] in pilihan]
     idx_lama = {}

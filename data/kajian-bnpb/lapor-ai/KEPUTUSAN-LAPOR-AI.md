@@ -571,6 +571,12 @@ Catatan pelaksanaan LA-78 dan LA-83 (23 Nov 2026), mengoreksi rancangan di atas:
 - D125: tanpa sinyal, kiriman dicoba lagi saat peramban kembali tersambung selama halaman terbuka. Antrean IndexedDB (`antre.js`) belum dipakai. Laporan tanpa titik tidak menanyakan desa di Tambah kabar; pelapor diminta menyebut desanya saat menelepon.
 - D131: tanpa pertanyaan GPS bertentangan. Kartu lokasi menawarkan "Desa dari poster yang Anda pindai" di samping GPS dan pencarian; pelapor memilih sendiri, desa yang terbaca tampil di pesan berikutnya dan bisa dibatalkan dengan Kembali. Ketelitian lokasi tercatat "lokasi dari poster desa" (D132), tanpa kolom `sumber_lokasi` baru.
 
+### Catatan pelaksanaan LA-80 (24 Nov 2026)
+
+- D127 dijalankan tanpa "tujuan `selamat`" di kode `/masuk`: cukup sesi `sesi_masuk` yang hidup (nomor sudah terbukti lewat kode sekali pakai); tanpa sesi, rute menjawab 401 dan menyuruh minta kode, nomor ketikan dan kunci mesin tidak cukup. `DESAIN-TEKNIS.md` baris rute "kode sekali pakai tujuan `selamat`" dibaca sebagai sesi `/masuk`.
+- Migrasi nomor 0173. Kolom `lapor_cari_riwayat` hanya mencatat perubahan status oleh meja; laporan baru tidak punya baris riwayat awal (status `buka` ada di `lapor_cari`).
+- Laporan orang dicari tidak ikut bersih-bersih 30 hari (Q67: mengikuti masa simpan laporan Lapor Bencana, ditutup petugas); batas simpannya belum dipasang dan menunggu keputusan pemilik.
+
 ## Keputusan pemilik (nomor WA sendiri, 24 Nov 2026)
 
 | No | Tanggal | Keputusan |

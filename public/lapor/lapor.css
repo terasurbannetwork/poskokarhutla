@@ -1712,7 +1712,7 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-pb-riak i{position:absolute;left:-180px;top:-180px;width:360px;height:360px;border-radius:50%;border:1.5px solid color-mix(in oklab,var(--on-head) 22%,transparent)}
 .lp-pembuka-maskot{position:relative;width:min(240px,54vw)!important;margin-bottom:18px!important}
 .lp-pembuka-sapa{font:600 clamp(1rem,2vw,1.25rem) var(--font)!important;color:var(--on-head-2);letter-spacing:.02em}
-.lp-pembuka-judul{font:800 clamp(3.25rem,10vw,6.5rem)/.95 var(--display)!important;letter-spacing:-.045em;margin-top:6px!important}
+.lp-pembuka-judul{font:800 clamp(2.25rem,6vw,4rem)/1 var(--display)!important;letter-spacing:-.045em;margin-top:6px!important}
 .lp-pembuka-judul em{font-style:normal;color:var(--head-hl)}
 .lp-pembuka-bnpb{margin-top:18px!important;font:600 clamp(.875rem,1.6vw,1.0625rem) var(--font)!important;color:var(--on-head-2)}
 .lp-pb-muat{position:absolute;bottom:clamp(28px,7vh,60px);left:50%;translate:-50% 0;width:min(220px,50vw);height:4px;border-radius:99px;background:color-mix(in oklab,var(--on-head) 18%,transparent);overflow:hidden}
@@ -2318,7 +2318,7 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-hero-kanan{container-type:inline-size}
 .lp-cc2-sosial{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))}
 .lp-cc2-sosial li{min-width:0!important}
-@container (width < 540px){
+@container (width < 640px){
   .lp-cc2-sosial{grid-template-columns:repeat(6,minmax(0,1fr))}
   .lp-cc2-sosial li{grid-column:span 2}
   .lp-cc2-sosial li:nth-child(4){grid-column:2 / span 2;border-left:0}
@@ -2382,3 +2382,153 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-geser-kanan{transform:translate(-100%,-50%)}
 .lp-geser-panah:hover{color:var(--brand2);border-color:var(--brand2)}
 .lp-geser-panah svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* 24 Nov 2026 (pemilik: "terlalu rapat berdua ini"): gelembung SIGAP tidak boleh melebar keluar kolom maskot dan menempel kartu kontak */
+@media (min-width:900px){.lp-hero{column-gap:28px!important}.lp-hero-gelembung{max-width:100%!important;box-sizing:border-box}}
+
+/* 24 Nov 2026 (pemilik: "diganti jadi gini", "bagusin lagi"): kartu pasang berbaris per perangkat + QR, dua kartu sama tinggi, jenis ancaman jadi pil */
+.lp-pw-kisi{align-items:stretch!important}
+.lp-pw-pbadan{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-items:center}
+@container (width > 560px){.lp-pw-pbadan:has(.lp-pw-qr){grid-template-columns:minmax(0,1fr) 180px}}
+.lp-pw-pasang{container-type:inline-size}
+.lp-pw-daftar{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.lp-pw-baris{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.lp-pw-baris>span{display:grid;gap:1px}
+.lp-pw-baris b{font:700 .9375rem var(--font);color:var(--ink)}
+.lp-pw-baris small{font-size:.75rem;color:var(--ink2)}
+.lp-pw-tbl{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:700 .8125rem var(--font);cursor:pointer;list-style:none}
+.lp-pw-tbl::-webkit-details-marker{display:none}
+.lp-pw-tbl:hover{border-color:var(--brand2);color:var(--brand2)}
+.lp-pw-tbl svg{width:16px;height:16px}
+.lp-pw-lipat{display:contents}
+.lp-pw-lipat[open]>.lp-pw-tbl{border-color:var(--brand2);color:var(--brand2)}
+.lp-pw-lipat>.lp-pw-langkah{flex-basis:100%;margin-top:4px;padding:10px 12px 10px 30px;border-radius:12px;background:var(--surface);font-size:.8125rem}
+.lp-pw-qr{display:grid;justify-items:center;gap:10px;margin:0;padding:16px;border:1px solid var(--line);border-radius:14px;text-align:center}
+.lp-pw-qr canvas{width:132px;height:132px;image-rendering:pixelated}
+.lp-pw-qr figcaption{display:grid;gap:2px}
+.lp-pw-qr b{font:700 .875rem var(--font);color:var(--ink)}
+.lp-pw-qr small{font-size:.75rem;color:var(--ink2);overflow-wrap:anywhere}
+.lp-pw-kartu{display:flex!important;flex-direction:column}
+.lp-pw-isi{flex:1;display:flex;flex-direction:column}
+.lp-pw-form{flex:1;display:flex!important;flex-direction:column;gap:12px}
+.lp-pw-catatan{margin-top:auto!important;padding-top:12px;border-top:1px solid var(--line)}
+.lp-pw-pil label{min-height:36px;padding:0 14px 0 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);cursor:pointer;font-weight:600}
+.lp-pw-pil label:has(input:checked){border-color:var(--brand2);background:color-mix(in oklab,var(--brand2) 10%,var(--card));color:var(--brand2)}
+.lp-pw-pil label:has(input:focus-visible){outline:2px solid var(--brand2);outline-offset:2px}
+.lp-pw-pil input{width:16px!important;height:16px!important}
+.lp-pw-baris .lp-pw-tbl{margin-left:auto}
+.lp-pw-baris{column-gap:0!important}.lp-pw-baris>span{margin-right:12px}
+/* 24 Nov 2026 (pemilik: pembuka "bagusin"): riak berpusat di maskot (dulu di 38% layar, lepas dari maskot), subjudul tidak menempel judul */
+.lp-pb-riak{display:none!important}
+.lp-pembuka-maskot{isolation:isolate}
+.lp-pembuka-maskot::before{content:"";position:absolute;inset:-14%;z-index:-1;border-radius:50%;background:radial-gradient(closest-side,color-mix(in oklab,var(--on-head) 16%,transparent),transparent)}
+.lp-pembuka-maskot::after{content:"";position:absolute;inset:-14%;z-index:-1;border-radius:50%;border:1.5px solid color-mix(in oklab,var(--on-head) 22%,transparent)}
+@media (prefers-reduced-motion:no-preference){.lp-pembuka-maskot::after{animation:lp-riak 3s var(--ease) infinite both}}
+.lp-pembuka-sapa{margin-top:clamp(8px,2vh,20px)!important}
+.lp-pembuka-judul{margin:4px 0 0!important;padding-bottom:.08em}
+.lp-pembuka-nama{margin-top:clamp(12px,2vh,18px)!important;padding:6px 16px;border-radius:999px;background:color-mix(in oklab,var(--on-head) 12%,transparent);font-weight:600!important;font-size:clamp(.875rem,1.5vw,1.0625rem)!important}
+.lp-pembuka-bnpb{margin-top:10px!important;font-weight:500!important;color:color-mix(in oklab,var(--on-head) 72%,transparent)!important}
+/* 24 Nov 2026 (pemilik: "rapiin"): dua kartu ditumpuk penuh lebar, tidak ada kolom pendek yang menyisakan ruang kosong */
+.lp-pw-kisi{grid-template-columns:minmax(0,1fr)!important;gap:20px!important}
+.lp-pw-kartu{container-type:inline-size}
+@container (width > 640px){
+  .lp-pw-pbadan:has(.lp-pw-qr){grid-template-columns:minmax(0,1fr) 220px!important;gap:32px}
+  .lp-pw-form{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:24px;row-gap:12px;align-items:end}
+  .lp-pw-form>*{grid-column:1 / -1}
+  .lp-pw-form>.lp-pw-jenis{grid-column:1}
+  .lp-pw-form>.lp-pw-label:has(select){grid-column:2}
+  .lp-pw-form>.lp-utama{justify-self:start;width:auto;min-width:280px;padding:0 28px}
+}
+.lp-pw-qr{align-self:stretch;align-content:center}
+/* 24 Nov 2026 (pemilik): di obrolan lapor kejadian tombol "Lapor kejadian" di menu samping tidak perlu lagi */
+.lp-app.di-lapor .lp-tab .lp-tab-lapor{display:none!important}
+/* 24 Nov 2026 (pemilik: mode gelap "ditaruh di kanan atas, atau di sini" samping Beranda): tombol tema bulat di ujung kanan tiap kepala dan di pojok hero; tidak lagi di menu samping */
+.lp-tema-atas{order:10;flex:none;display:grid;place-items:center;width:36px;height:36px;padding:0;margin-left:8px;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--brand2);cursor:pointer}
+.lp-tema-atas:hover{border-color:var(--brand2)}
+.lp-tema-atas svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}
+.lp-chat-kepala:not(:has(#bKembali)) .lp-tema-atas{margin-left:auto}
+@media (max-width:899px){.lp-chat-kepala .lp-tema-atas{margin-left:auto}.lp-chat-kepala:has(.lp-isian-tombol) .lp-tema-atas{margin-left:8px}}
+.lp-tema-hp{display:grid!important}
+/* 24 Nov 2026 (pemilik: "biar natural jadi bubble chat, keterangannya di atas orangnya"): di menu samping gelembung Sigap di atas maskot, berekor ke bawah */
+@media (min-width:900px){
+  .lp-tab .lp-sigap{gap:14px!important}
+  .lp-tab .lp-sigap-gelembung{order:-1;position:relative;border:1px solid var(--line)!important;border-left-width:1px!important;border-radius:16px!important;box-shadow:0 10px 24px -16px color-mix(in oklab,var(--head-bg) 60%,transparent)}
+  .lp-tab .lp-sigap-gelembung::after{content:"";position:absolute;left:50%;bottom:-8px;width:14px;height:14px;translate:-50% 0;rotate:45deg;background:var(--card);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+}
+/* ===== 24 Nov 2026 (pemilik: "bagusin", "jelek banget"): kartu Analisis daerah, prediksi 3 hari, info hari ini ===== */
+/* tingkat: lv1 Waspada (warn), lv2 Siaga (brand-accent), lv3 Awas (bad) */
+.lp-an{gap:16px!important}
+.lp-an-status{display:flex;gap:14px;padding:14px 16px;border-radius:16px;border:1px solid color-mix(in oklab,var(--bad) 35%,var(--line));background:color-mix(in oklab,var(--bad) 7%,var(--card))}
+.lp-an-status-ik{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--bad);color:var(--on-pekat)}
+.lp-an-status-ik svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
+.lp-an-status-isi{display:grid;gap:10px;min-width:0;flex:1}
+.lp-an-status-kep{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.lp-an-status-kep b{font:800 1rem/1.3 var(--display);color:var(--bad)}
+.lp-an-status-kep small{font:600 .8125rem var(--font);color:var(--ink2)}
+.lp-an-jenis{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.lp-an-jenis li{display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 8px;border-radius:10px;background:var(--card);border:1px solid var(--line);font:600 .8125rem var(--font);color:var(--ink)}
+.lp-an-jenis svg,.lp-an-lain svg,.lp-an-ubin h4 svg,.lp-an-batang svg,.lp-pr-ancaman svg,.lp-pred-imbauan h4 svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8}
+.lp-an-jenis svg{color:var(--bad)}
+.lp-an-lain{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px}
+.lp-an-lain-baris{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--surface);font:600 .8125rem var(--font);color:var(--ink2)}
+.lp-an-lain-baris b{margin-left:auto;font:800 .875rem var(--font);color:var(--ink)}
+.lp-an-lain-baris.lv1 svg{color:var(--warn)}.lp-an-lain-baris.lv2 svg{color:var(--brand-accent)}.lp-an-lain-baris.lv3 svg{color:var(--bad)}
+.lp-an-kisi{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px}
+.lp-an-ubin{display:grid;gap:12px;align-content:start;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+.lp-an-ubin h4{display:flex;align-items:center;gap:8px;margin:0;font:700 .8125rem var(--font);color:var(--ink2)}
+.lp-an-nilai{display:grid;gap:2px}
+.lp-an-nilai b{font:800 2rem/1.05 var(--display);letter-spacing:-.02em;color:var(--ink)}
+.lp-an-nilai.lv1 b{color:color-mix(in oklab,var(--warn) 70%,var(--ink))}.lp-an-nilai.lv2 b{color:var(--brand-accent)}.lp-an-nilai.lv3 b{color:var(--bad)}
+.lp-an-nilai small{font:500 .8125rem/1.45 var(--font);color:var(--ink2)}
+.lp-an-meter{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.lp-an-meter i{height:6px;border-radius:99px;background:var(--surface)}
+.lp-an-meter i.isi.lv0{background:var(--ok)}.lp-an-meter i.isi.lv1{background:var(--warn)}.lp-an-meter i.isi.lv2{background:var(--brand-accent)}.lp-an-meter i.isi.lv3{background:var(--bad)}
+.lp-an-ket{display:grid;gap:2px;margin:0;padding-top:10px;border-top:1px solid var(--line);font-size:.8125rem;line-height:1.45}
+.lp-an-ket b{font-weight:700;color:var(--ink)}.lp-an-ket span{color:var(--ink2)}
+.lp-an-kosong{margin:0;color:var(--ink2);font-size:.875rem}
+.lp-an-batang{margin:0;padding:10px 0 0;list-style:none;display:grid;gap:8px;border-top:1px solid var(--line)}
+.lp-an-batang li{display:grid;grid-template-columns:16px minmax(90px,auto) 1fr auto;align-items:center;gap:8px;font:600 .8125rem var(--font);color:var(--ink)}
+.lp-an-batang svg{color:var(--brand2)}
+.lp-an-batang-jalur{height:6px;border-radius:99px;background:var(--surface);overflow:hidden}
+.lp-an-batang-jalur i{display:block;height:100%;border-radius:inherit;background:var(--brand2)}
+.lp-an-batang b{font-weight:800;font-variant-numeric:tabular-nums}
+/* prediksi: ancaman sebagai baris, garis warna di kiri kartu hari menurut tingkat tertinggi */
+.lp-pred-hari{position:relative;overflow:hidden}
+.lp-pred-hari.lv1,.lp-pred-hari.lv2,.lp-pred-hari.lv3{border-left-width:4px!important}
+.lp-pred-hari.lv1{border-left-color:var(--warn)!important}.lp-pred-hari.lv2{border-left-color:var(--brand-accent)!important}.lp-pred-hari.lv3{border-left-color:var(--bad)!important}
+.lp-pr-ancaman{margin:0;padding:10px 0 0;list-style:none;display:grid;gap:6px;border-top:1px solid var(--line)}
+.lp-pr-ancaman li{display:flex;align-items:center;gap:8px;font:600 .8125rem var(--font);color:var(--ink)}
+.lp-pr-ancaman li svg{color:var(--ink2)}
+.lp-pr-normal{color:var(--ink2)!important;font-weight:500!important}
+.lp-pr-tingkat{margin-left:auto;padding:3px 10px;border-radius:99px;font:700 .75rem var(--font)}
+.lp-pr-tingkat.lv1{background:color-mix(in oklab,var(--warn) 28%,var(--card));color:var(--ink)}
+.lp-pr-tingkat.lv2{background:color-mix(in oklab,var(--brand-accent) 22%,var(--card));color:color-mix(in oklab,var(--brand-accent) 60%,var(--ink))}
+.lp-pr-tingkat.lv3{background:var(--bad);color:var(--on-pekat)}
+/* info hari ini: cuaca dan imbauan satu kartu, dipisah garis */
+.lp-pred-kisi.hari-ini{grid-template-columns:minmax(0,1fr)!important;gap:0!important;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.lp-pred-kisi.hari-ini>.lp-pred-hari{border:0!important;border-radius:0!important}
+.lp-pred-kisi.hari-ini>.lp-pred-hari.lv1,.lp-pred-kisi.hari-ini>.lp-pred-hari.lv2,.lp-pred-kisi.hari-ini>.lp-pred-hari.lv3{border-left:4px solid!important}
+.lp-pred-imbauan{display:grid;gap:10px;align-content:start;padding:16px;border-top:1px solid var(--line);background:var(--card)}
+.lp-pred-imbauan h4{display:flex;align-items:center;gap:8px;margin:0;font:700 .875rem var(--font);color:var(--ink)}
+.lp-pred-imbauan h4 svg{color:var(--brand2)}
+.lp-pred-imbauan p{margin:0;font-size:.875rem}
+@container (width > 640px){.lp-pred-kisi.hari-ini{grid-template-columns:minmax(260px,1fr) minmax(0,1.6fr)!important}.lp-pred-imbauan{border-top:0;border-left:1px solid var(--line)}}
+.lp-pred{container-type:inline-size}
+/* kepala Isian laporan (24 Nov 2026, pemilik: "bagusin"): cincin saja tanpa bilah kembar, hitungan dan waktu berkeping, isian berikutnya berpil */
+#panelIsian .lp-panel-kepala{flex-wrap:wrap;align-items:center}
+#panelIsian .lp-panel-bar{display:none}
+#ringkasIsian{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:0;font:500 .8125rem var(--font)!important;color:var(--ink2)}
+#ringkasIsian b{font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.lp-panel-waktu{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;background:var(--surface);font:600 .75rem var(--font);color:var(--ink2)}
+.lp-panel-waktu svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2}
+#panelIsian .lp-panel-sisa{order:9;flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 0!important;padding:10px 12px;border-radius:12px;background:var(--surface);font-size:.75rem!important}
+.lp-panel-sisa small{flex-basis:100%;font:700 .6875rem var(--font);color:var(--ink2)}
+.lp-panel-pil{padding:3px 9px;border-radius:99px;background:var(--card);border:1px solid var(--line);font:600 .75rem var(--font);color:var(--ink)}
+.lp-panel-pil.lain{color:var(--ink2);border-style:dashed}
+.lp-panel-sisa.selesai{background:color-mix(in oklab,var(--ok) 12%,var(--card));color:var(--ok)!important;font-weight:700!important}
+.lp-panel-sisa svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2}
+.lp-pr-ancaman li>span{flex:1;min-width:0}
+.lp-pr-ancaman li>.lp-pr-tingkat{flex:none;margin-left:0}
+.lp-pred-kisi.hari-ini>.lp-pred-hari.lv1{border-left-color:var(--warn)!important}
+.lp-pred-kisi.hari-ini>.lp-pred-hari.lv2{border-left-color:var(--brand-accent)!important}
+.lp-pred-kisi.hari-ini>.lp-pred-hari.lv3{border-left-color:var(--bad)!important}

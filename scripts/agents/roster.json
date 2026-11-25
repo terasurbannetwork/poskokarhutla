@@ -44,7 +44,8 @@
         "public/data/feeds/**",
         "public/data/luas_pembanding.json",
         "public/data/tanah_gambut_bulanan.json",
-        "tests/insar-gambut/**"
+        "tests/insar-gambut/**",
+        "public/data/desa_waspada.json"
       ]
     },
     {
@@ -235,7 +236,8 @@
         "scripts/og/**",
         "scripts/situs/**",
         "scripts/terbit/**",
-        "public/lapor/**"
+        "public/lapor/**",
+        "public/desa-waspada/**"
       ]
     },
     {
@@ -280,6 +282,7 @@
       "milik": [
         "scripts/umum/**",
         "scripts/berita/**",
+        "public/data/gerbang/**",
         "public/data/foto_dasar.json",
         "public/data/gdelt.json",
         "public/data/internet_padam.json",
@@ -383,7 +386,8 @@
       "tidak": "memperbaiki kode domain yang digerbang",
       "milik": [
         "tests/agen/**",
-        "tests/beban/**"
+        "tests/beban/**",
+        "tests/desa-waspada/**"
       ]
     },
     {
@@ -769,7 +773,7 @@
       "ringkas": "Pengerja Docs Centurisk97 di /docs: sumber Markdown docs/centurisk97, generator stdlib scripts/docs/bangun.py, layar public/docs, indeks cari, uji tests/docs.",
       "kapan": "docs/centurisk97/**, scripts/docs/**, public/docs/**, atau tests/docs/** disentuh, isi docs basi terhadap kode, atau halaman /docs rusak",
       "fokus": [
-        "Baca data/kajian-bnpb/docs-situs/ dulu (AGENTS.md 2.47)",
+        "Baca data/kajian-bnpb/docs-situs/ dulu (AGENTS.md 2.50)",
         "Satu sumber isi: Markdown; HTML keluaran tidak disunting tangan dan harus segar (bangun.py --cek)",
         "Angka, ambang, rute, dan hak akses hanya dari kode dengan rujukan berkas:baris; tidak ketemu ditulis 'belum terdokumentasi di kode'",
         "Token tema.css, kepala situs bersama, tanpa skrip inline",

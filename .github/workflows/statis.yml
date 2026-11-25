@@ -164,11 +164,11 @@ jobs:
             data/raw/gunungapi
           key: lintas-${{ github.run_id }}
 
-      # Abrasi garis pantai tahunan (Landsat via Planetary Computer): hanya Februari atau dispatch tangan; cache adegan supaya tahun berikutnya hanya membaca adegan baru.
+      # Abrasi garis pantai tahunan (Landsat via Planetary Computer): hanya Januari, Februari, atau dispatch tangan; cache adegan supaya tahun berikutnya hanya membaca adegan baru.
       - name: Bulan abrasi?
         id: abrasi
         run: |
-          if [ "$(date -u +%m)" = "02" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "jalan=1" >> "$GITHUB_OUTPUT"; fi
+          if [ "$(date -u +%m)" = "01" ] || [ "$(date -u +%m)" = "02" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "jalan=1" >> "$GITHUB_OUTPUT"; fi
 
       - name: Pulihkan cache adegan abrasi
         if: steps.abrasi.outputs.jalan == '1'
@@ -184,6 +184,12 @@ jobs:
         timeout-minutes: 200
         run: python3 scripts/pesisir/abrasi.py uji && python3 scripts/pesisir/abrasi.py
 
+      # KI-25: tabel pelabuhan -> kab (tanpa jaringan, dari rob.json + cuaca_sarana.json di repo); setahun sekali cukup.
+      - name: Pelabuhan di zona rob (boleh gagal)
+        if: steps.abrasi.outputs.jalan == '1'
+        continue-on-error: true
+        run: python3 -I scripts/pesisir/pelabuhan.py uji && python3 -I scripts/pesisir/pelabuhan.py
+
       - name: Simpan cache adegan abrasi
         if: always() && steps.abrasi.outputs.jalan == '1'
         uses: actions/cache/save@v4
@@ -196,7 +202,7 @@ jobs:
         run: |
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          B="public/gempa/data/riwayat_m5.json public/gempa/data/riwayat_prov.json public/gempa/data/riwayat_grid.json public/gempa/data/risiko.json public/gempa/data/meta.json public/gempa/data/inarisk_gempa.json public/gempa/data/inarisk_tsunami.json public/gempa/data/batas_lempeng.geojson public/gempa/data/bahaya_meta.json public/gempa/data/sesar.geojson public/gempa/data/bukti.json public/gempa/data/citra.json public/gempa/data/citra public/kekeringan/data/embung.json public/gunungapi/data/paparan.json public/gunungapi/data/risiko.json public/gunungapi/data/citra public/gunungapi/data/pop public/pesisir/data/abrasi.json"
+          B="public/gempa/data/riwayat_m5.json public/gempa/data/riwayat_prov.json public/gempa/data/riwayat_grid.json public/gempa/data/risiko.json public/gempa/data/meta.json public/gempa/data/inarisk_gempa.json public/gempa/data/inarisk_tsunami.json public/gempa/data/batas_lempeng.geojson public/gempa/data/bahaya_meta.json public/gempa/data/sesar.geojson public/gempa/data/bukti.json public/gempa/data/citra.json public/gempa/data/citra public/kekeringan/data/embung.json public/gunungapi/data/paparan.json public/gunungapi/data/risiko.json public/gunungapi/data/citra public/gunungapi/data/pop public/pesisir/data/abrasi.json public/pesisir/data/abrasi_prospektif.json public/pesisir/data/pelabuhan_kab.json public/data/gerbang/pesisir.json"
           for f in $B; do [ ! -e "$f" ] || git add "$f"; done
           git checkout -- public/gempa/data public/kekeringan/data public/gunungapi/data public/pesisir/data
           git diff --cached --quiet && { echo "lapisan bulanan tidak berubah"; exit 0; }
@@ -258,6 +264,24 @@ jobs:
             echo "push bentrok, ulang $i"; sleep $((i * 10))
           done
           echo "::error title=Push panen bulanan gagal::git push ke main gagal 3x"
+          exit 1
+
+      # Desa waspada (PKH-18), bagian bulanan: riwayat_petak.bin + poligon desa -> data/desa_statik.json (di-commit, dilacak git seperti riwayat_petak.bin).
+      - name: Desa waspada statik (boleh gagal)
+        continue-on-error: true
+        run: |
+          python3 -I scripts/data/desa_waspada.py --uji
+          python3 -I scripts/data/desa_waspada.py statik
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/desa_statik.json
+          git diff --cached --quiet && { echo "desa_statik tidak berubah"; exit 0; }
+          git commit -q -m "data: desa statik bulanan $(TZ=Asia/Jakarta date +%F)"
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::error title=Push desa statik gagal::git push ke main gagal 3x"
           exit 1
 
       # Penjaga data beku (PB-68.10): langkah `continue-on-error` di atas menelan galat, jadi periksa umur berkas keluaran di akhir. Merah = galat.

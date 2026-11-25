@@ -1,0 +1,49 @@
+/* /verifikasi (segel-dokumen SG-08, DESIGN-SYSTEM 1-2): komposisi token tema.css dan kartu .ex-std, tanpa literal warna baru */
+header.top .mark{display:flex;align-items:center;gap:12px;min-width:0}
+.top .logo img{width:30px;height:30px}
+.bencana .menu{display:none}.bencana[open] .menu{display:block}
+.bencana summary{color:var(--on-head)}
+:focus-visible{outline:3px solid var(--brand2);outline-offset:2px}
+
+.vf{max-width:560px;margin:0 auto;padding:24px 16px 48px;display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
+.vf-judul h1{margin:0 0 6px;font:800 1.75rem/1.2 var(--display);text-wrap:balance}
+.vf-judul p{margin:0;color:var(--ink2);text-wrap:pretty}
+
+.vf-cari{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px}
+.vf-field{display:grid;grid-template-columns:minmax(0,1fr);gap:4px}
+.vf-field label{font-weight:700}
+.vf-hint{font-size:.8125rem;color:var(--ink2)}
+.vf-baris{display:flex;gap:8px;margin-top:4px}
+.vf-baris input{flex:1 1 0;min-width:0;min-height:var(--h-ctl,44px);padding:0 12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--paper);color:var(--ink);
+  font:600 1.125rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
+.vf-baris button{min-height:var(--h-ctl,44px);padding:0 18px;border:0;border-radius:var(--r-sm);background:var(--head-bg);color:var(--on-head);font:700 1rem/1 var(--font);cursor:pointer}
+.vf-galat{display:none;margin:4px 0 0;font-size:.875rem;color:var(--bad-tx)}
+.vf-galat span{display:inline-grid;place-items:center;width:1.25em;height:1.25em;border-radius:50%;background:var(--bad);color:var(--on-brand);font-weight:800;margin-right:4px}
+:is(.vf-baris input:user-invalid,.vf-baris input.vf-salah){border-color:var(--bad);background:color-mix(in oklch,var(--bad) 8%,var(--paper))}
+.vf-field:has(:is(input:user-invalid,input.vf-salah)) .vf-galat{display:block}
+
+.vf-hasil:empty{display:none}
+.vf-kartu .ex-jd{align-items:center}
+.vf-kartu .ex-jd>h2{margin:0;font:800 1.3125rem/1.3 var(--display);color:inherit}
+.vf-pil{flex:none;display:inline-flex;align-items:center;min-height:28px;padding:0 12px;border-radius:var(--r-pill);font-weight:700;font-size:.875rem;border:1px solid}
+.vf-ok{color:var(--ok-tx);background:color-mix(in oklch,var(--ok) 14%,var(--card));border-color:color-mix(in oklch,var(--ok) 40%,var(--card))}
+.vf-warn{color:var(--warn-tx);background:color-mix(in oklch,var(--warn) 16%,var(--card));border-color:color-mix(in oklch,var(--warn) 45%,var(--card))}
+.vf-bad{color:var(--bad-tx);background:color-mix(in oklch,var(--bad) 12%,var(--card));border-color:color-mix(in oklch,var(--bad) 40%,var(--card))}
+.vf-abu{color:var(--ink2);background:var(--surface);border-color:var(--line)}
+
+.vf-dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:10px 16px;margin:0}
+.vf-dl dt{color:var(--ink2);font-size:.875rem;font-weight:600}
+.vf-dl dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.vf-status{display:grid;gap:4px}
+.vf-sidik{font:600 .9375rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;user-select:all}
+.vf-tautan{color:var(--accent-tx);font-weight:700}
+.vf-kecil{margin:0;font-size:.8125rem;color:var(--ink2)}
+.vf-cocok{display:grid;gap:6px;padding-top:12px;border-top:1px solid var(--line)}
+.vf-cocok label{font-weight:700}
+.vf-pesan{margin:0;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+.vf-batas{margin:0;font-size:.8125rem;color:var(--ink2)}
+
+@media (max-width:420px){
+  .vf-dl{grid-template-columns:minmax(0,1fr);gap:2px}
+  .vf-dl dd{margin-bottom:8px}
+}

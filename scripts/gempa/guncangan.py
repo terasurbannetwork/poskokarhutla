@@ -12,15 +12,20 @@ Koefisien BSSA14 (PGA) dan Zhao 2006 (PGA) dicocokkan ke OpenQuake (boore_2014.p
 Zhao: magnitudo INTRASLAB dipotong 7,8 (np.clip seperti ZhaoEtAl2006SSlabNSHMP2014 di OpenQuake); antarmuka TIDAK dipotong (ZhaoEtAl2006SInter tanpa klip; perbaikan 18 Okt 2026), suku kedalaman e*(min(h,125)-hc), suku kuadrat magnitudo
 slab P*(M-Mc)+Q*(M-Mc)^2+W (Mc 6,5); antarmuka Mc 7,1 dengan P/Q/W = 0 untuk PGA. BSSA14 tidak dipotong.
 Jenis: gempa dangkal (15-50 km) M >= 7 butuh jenis eksplisit, atau ditebak "antarmuka" bila <= 200 km dari segmen subduksi (param "palung", PB2002 batas_lempeng); tidak pernah diam-diam BSSA14 untuk megathrust.
-Hanya mean (tanpa sigma). Vs30 seragam 400 m/s (belum ada peta Vs30 di repo). Tsunami TIDAK dibahas di sini.
+Hanya mean (tanpa sigma). Vs30: baku 400 m/s bila tak diberi; per tapak dari vs30.bin (proksi kemiringan, vs30.py) lewat vs30_grid() yang bisa diberikan ke mmi_kecamatan.
+Suku Vs30 tiap GMPE dipakai apa adanya (BSSA14 Flin+Fnl, Zhao kelas tapak). Logic tree GEM Indonesia: hanya BSSA14 (kerak) dan Zhao 2006 (antarmuka, intraslab) yang ada di repo,
+bobot lainnya dinormalkan ulang menjadi 1 (PARAM["logic_tree"]); CB14, CY14, AG20, Kuehn 2020 TIDAK ada (koefisien tidak ditulis dari ingatan). Tsunami TIDAK dibahas di sini.
 
 Pakai:  python3 scripts/gempa/guncangan.py uji | ekspor
 """
-import datetime as dt, json, math, os, sys
+import datetime as dt, hashlib, json, math, os, sys
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(__file__), "../.."))
 PUSAT = os.path.join(AKAR, "public/banjir/data/pusat_kec.json")  # {"prov|kab|kec": [lat, lon]}, 7.274 titik; tidak disalin
 KELUAR = os.path.join(AKAR, "public/gempa/data/model_guncangan.json")
+MAGMA = os.path.join(AKAR, "public/gempa/data/kajian_magma.json")  # dibaca sebagai JSON (kajian_magma.py mengimpor modul ini: jangan balik)
+KOREKSI_JSON = os.path.join(AKAR, "public/gempa/data/koreksi_guncangan.json")  # hasil buka-sekali koreksi_guncangan.py (KI-81), sumber tabel beku
+SIDIK_KOREKSI = os.path.join(AKAR, "scripts/gempa/koreksi_guncangan.sidik")
 G = 980.665  # cm/s^2
 R_BUMI = 6371.0088
 VS30_BAKU = 400.0
@@ -35,6 +40,10 @@ PARAM = {
     "worden12_pga": {"c1": 1.78, "c2": 1.55, "c3": -1.60, "c4": 3.70, "t1": 1.57},
     "wells_coppersmith94": {"a": -2.44, "b": 0.59},
     "mmi_min": 1.0, "mmi_maks": 10.0, "ambang_jendela": 2.0, "jendela_maks_km": 400.0, "mmi_valid_min": 3.0, "mmi_valid_maks": 8.0,
+    "logic_tree": {"bobot_gem": {"kerak": {"bssa14": 0.34, "cb14": 0.33, "cy14": 0.33}, "antarmuka": {"ag20": 0.34, "zhao06": 0.33, "kuehn20": 0.33},
+                                 "intraslab": {"ag20": 0.34, "zhao06": 0.33, "kuehn20": 0.33}},
+                   "bobot_pakai": {"kerak": {"bssa14": 1.0}, "antarmuka": {"zhao06": 1.0}, "intraslab": {"zhao06": 1.0}},
+                   "tak_ada": ["cb14", "cy14", "ag20", "kuehn20"], "vs30_min": 180.0},
     "radius_palung_km": 200.0, "palung": [[[104.576,-8.167],[104.981,-8.569],[105.59,-8.926],[106.123,-9.24],[106.345,-9.371],[106.827,-9.665],[107.379,-9.89],[107.836,-10.053],[108.363,-10.178],[109.067,-10.328],[109.626,-10.371],[110.159,-10.44],[110.615,-10.477],[111.015,-10.477],[111.523,-10.577],[112.17,-10.652],[112.563,-10.758],[113.204,-10.87],[113.756,-10.964],[114.41,-11.088],[115.013,-11.15],[115.571,-11.219],[116.174,-11.275],[116.853,-11.331],[117.576,-11.337],[118.236,-11.387],[118.75,-11.362],[119.27,-11.393],[119.841,-11.462],[120.451,-11.524],[120.886,-11.492]],[[138.359,9.379],[138.574,9.953],[138.71,10.649],[138.813,11.121],[139.483,10.901],[140.1,10.946],[140.772,10.858],[141.608,11.058],[142.122,11.285],[142.961,11.403],[143.097,11.569]],[[143.097,11.569],[143.503,11.494],[144.157,11.79],[144.619,12.021],[145.024,12.211],[145.349,12.314],[145.691,12.647],[146.221,13.002],[146.752,13.363]],[[92.278,6.948],[92.376,6.333],[92.537,5.702],[92.665,5.005],[92.903,4.384],[93.227,3.716],[93.754,3.048],[94.405,2.457],[94.979,2.104]],[[94.979,2.104],[95.542,1.882],[96.089,1.487],[96.202,1.345]],[[96.202,1.345],[96.379,1.123],[96.67,0.759],[97.011,0.116],[97.372,-0.547],[97.769,-1.247],[98.035,-1.634],[98.301,-2.021],[98.874,-2.665],[99.37,-3.312],[99.675,-3.729],[99.98,-4.145],[100.359,-4.656],[100.791,-5.305],[101.346,-5.983],[101.858,-6.558],[102.452,-7.197],[103.183,-7.621],[103.763,-7.863],[104.576,-8.167]],[[125.494,13.306],[125.686,12.818],[126.137,12.265],[126.24,11.63],[126.214,11.06],[126.573,10.296],[126.824,9.449],[127.053,8.75],[127.219,8.136],[127.234,7.292],[127.25,6.447],[127.459,5.897],[127.498,5.474],[127.836,5.224],[128.151,4.763],[128.387,4.335],[128.684,3.7],[128.998,3.114],[129.217,2.671],[129.246,1.928],[129.197,1.059]],[[126.872,2.346],[126.426,1.706]],[[126.426,1.706],[126.144,1.001],[125.969,0.19]],[[123.43,2.006],[123.219,2.024],[122.48,2.377],[121.669,2.309],[120.824,2.311],[120.189,2.208],[119.696,2.033],[119.306,1.577],[119.249,0.714],[119.475,-0.081]],[[125.969,-0.278],[125.969,0.19],[126.144,1.001],[126.426,1.706]],[[119.475,-0.081],[119.296,-0.68],[119.045,-1.491],[118.884,-1.95],[118.723,-2.408],[118.578,-3.255],[118.823,-3.61]],[[128.383,-2.286],[129.258,-2.416],[130.107,-2.519],[130.585,-2.694],[131.063,-2.868],[131.489,-3.149],[131.915,-3.429],[132.316,-3.935],[132.717,-4.44]],[[138.793,-1.159],[138.674,-0.82],[138.054,-0.718],[137.435,-0.616],[136.943,-0.422],[136.451,-0.228],[135.656,-0.023],[134.938,0.421],[134.471,0.259],[133.899,0.057],[133.327,-0.146],[132.824,-0.043],[132.515,0.017]],[[132.515,0.017],[132.373,0.034],[131.738,0.15],[131.102,0.266],[130.546,0.475],[129.989,0.684],[129.197,1.059]],[[92.278,6.948],[91.903,7.663],[91.781,8.16],[91.651,8.656],[91.596,9.13],[91.533,9.604],[91.559,10.056],[91.576,10.514],[91.591,11.3],[91.643,11.791],[91.7,12.283],[91.889,13.154],[92.068,13.715]],[[125.969,0.19],[125.616,-0.128],[125.263,-0.446]],[[138.793,-1.159],[139.257,-1.39],[139.805,-1.557],[140.226,-1.767],[140.837,-1.893],[141.195,-2.167],[141.594,-2.272],[141.868,-2.398],[142.246,-2.693]],[[142.246,-2.693],[142.449,-2.814],[142.633,-2.932],[142.936,-3.018],[143.172,-3.053],[143.508,-3.156],[143.743,-3.46]]],
 }
 
@@ -147,36 +156,101 @@ def jarak_km(lat1, lon1, lat2, lon2):
     return 2 * R_BUMI * math.asin(min(1.0, math.sqrt(a)))
 
 
+def vs30_grid(meta, data, baku=VS30_BAKU):
+    """Kembaran vs30Grid di guncangan.js: (lat, lon) -> Vs30 m/s dari vs30.bin; di luar grid atau bukan darat (0) -> baku."""
+    def f(lat, lon):
+        i, j = math.floor((lon - meta["lon0"]) / meta["d"] + 0.5), math.floor((lat - meta["lat0"]) / meta["d"] + 0.5)  # bulat setengah ke atas, sama dengan Math.round
+        if i < 0 or j < 0 or i >= meta["nx"] or j >= meta["ny"]:
+            return baku
+        v = data[j * meta["nx"] + i]
+        return v * meta["sat"] if v else baku
+    return f
+
+
+def muat_vs30(dir_data=os.path.join(AKAR, "public/gempa/data")):
+    return vs30_grid(json.load(open(os.path.join(dir_data, "vs30.json"))), open(os.path.join(dir_data, "vs30.bin"), "rb").read())
+
+
+def koreksi_beku(jalur=KOREKSI_JSON):
+    """Tabel koreksi MMI KI-81 apa adanya dari berkas hasil uji (tidak dilatih ulang di sini); None bila vonis bukan lolos (fail-closed)."""
+    d = json.load(open(jalur))
+    if d["uji"]["vonis"] != "lolos":
+        return None
+    t, u = d["koreksi"], d["uji"]
+    return {"sidik": d["sidik"], "vonis": "lolos", "tgl_belah": d["tgl_belah"], "n_uji": u["n"], "kejadian_uji": u["kejadian"],
+            "mae_lama": u["mae"]["lama"], "mae_baru": u["mae"]["baru"], "selang_lo": u["selang_selisih_mae_lama_minus_baru"]["lo"],
+            "bias_dekat_lama_baru": u["bias_dekat_lama_baru"], "mu": t["mu"], "a": t["a"], "b": t["b"],
+            "batas_jarak_km": [25, 50, 100, 200], "batas_dalam_km": [60, 300],
+            "sha": hashlib.sha256(json.dumps(t, sort_keys=True).encode()).hexdigest()[:16]}
+
+
+def koreksi_mmi(v, repi, dalam, K):
+    """MMI -= mu + a[kelas jarak] + b[kelas dalam], dipotong 1..10. Jarak dibulatkan ke km (setengah ke atas) seperti pasangan uji; kelas: jarak < batas, dalam < 60 / <= 300."""
+    r = math.floor(repi + 0.5)
+    i, j = sum(r >= x for x in K["batas_jarak_km"]), (dalam >= 60) + (dalam > 300)
+    return min(10.0, max(1.0, v - (K["mu"] + list(K["a"].values())[i] + list(K["b"].values())[j])))
+
+
 def mmi_kecamatan(g, pusat, vs30=VS30_BAKU, P=PARAM):
-    """g = {lat, lon, m, dalam, jenis?}; pusat = {kunci: [lat, lon]} -> {kunci: {"mmi", "ekstrapolasi"}} hanya di dalam jendela_km."""
+    """g = {lat, lon, m, dalam, jenis?}; pusat = {kunci: [lat, lon]} -> {kunci: {"mmi", "ekstrapolasi"}} hanya di dalam jendela_km.
+    vs30 = angka (seragam) atau fungsi (lat, lon) -> Vs30 per tapak (vs30_grid); dengan fungsi, jendela dihitung pada Vs30 terlunak (konservatif, lebih lebar)
+    dan MMI dikoreksi dengan tabel beku KI-81 (koreksi_beku) bila lolos; dengan angka seragam tetap tanpa koreksi."""
     jenis = g.get("jenis") or tebak_jenis(g["dalam"], g["m"], g["lat"], g["lon"], P)
-    win = jendela_km(g["m"], g["dalam"], jenis, vs30, P)
-    out = {}
+    fn = vs30 if callable(vs30) else None
+    win = jendela_km(g["m"], g["dalam"], jenis, P["logic_tree"]["vs30_min"] if fn else vs30, P)
+    out, K = {}, (koreksi_beku() if fn else None)
     for k, (la, lo) in pusat.items():
         d = jarak_km(g["lat"], g["lon"], la, lo)
         if d <= win:
-            v = mmi_perkiraan(g["m"], d, g["dalam"], jenis, vs30, P)
+            v = mmi_perkiraan(g["m"], d, g["dalam"], jenis, fn(la, lo) if fn else vs30, P)
+            if K:
+                v = koreksi_mmi(v, d, g["dalam"], K)
             out[k] = {"mmi": v, "ekstrapolasi": ekstrapolasi(v, P)}
     return out
+
+
+def pembanding_magma(jalur=MAGMA):
+    """Banding MMI model vs MMI laporan MAGMA dari kajian_magma.json; None bila berkas/isi tak ada (fail-closed)."""
+    try:
+        r = json.load(open(jalur))["ringkas"]["banding_mmi"]
+        b, j, k = r["semua"], r["per_jarak"], r["per_kelas_dalam"]
+        dalam = next(v for n, v in k.items() if n.startswith("dalam"))
+        # bias gabungan TIDAK diterbitkan: arahnya berbalik menurut jarak (kajian_magma.py), jadi bukan ciri model
+        return {"n_pasangan": b["n"], "n_kajian": b["kajian"], "mae": b["mae"],
+                "dalam_1_persen": round(b["benar_1"] * 100, 1),
+                "bias_dekat": j["kurang dari 25 km"]["bias"], "bias_jauh": j["lebih dari 200 km"]["bias"], "bias_dalam": dalam["bias"],
+                "catatan": "pembanding, bukan kalibrasi; bias seleksi: kajian MAGMA dibuat untuk gempa merusak; pasangan tempat dari kajian yang sama tidak saling bebas",
+                "sumber_berkas": "kajian_magma.json"}
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def kinerja_uji_baku(pm):
+    ku = {"status": "belum_diuji", "n_laporan": 0, "metrik": None,
+          "alasan": "Belum ada arsip laporan Dirasakan BMKG yang bisa dibaca: tabel D1 `gempa` (kolom mmi_maks) diisi cron Worker milik warga-api dan belum "
+                    "terkumpul/diekspor ke repo; BMKG hanya menyimpan 15 butir terakhir. Tidak ada angka kinerja yang dikarang.",
+          "rencana": "Bandingkan MMI model di kecamatan/kab yang dilaporkan dengan MMI Dirasakan (rentang ambil tertinggi): bias, RMSE, persen dalam +-1 kelas, "
+                     "lawan pembanding. Uji dibuka sekali.",
+          "pembanding_magma": pm}
+    if pm:  # tanpa aturan lulus: bukan vonis, hanya pembanding
+        ku["status"] = "dibanding_magma"
+    return ku
 
 
 def ekspor():
     kini = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
     model = {
         "versi": 1, "dibuat": kini, "jenis": "guncangan_gmpe_gmice",
-        "param": PARAM, "vs30_baku": VS30_BAKU, "jenis_tektonik": list(JENIS),
+        "param": PARAM, "vs30_baku": VS30_BAKU, "koreksi_mmi": koreksi_beku(), "jenis_tektonik": list(JENIS),
         "sitasi": {"kerak": "Boore, Stewart, Seyhan, Atkinson 2014, Earthquake Spectra 30(3):1057-1085",
                    "antarmuka": "Zhao et al. 2006, BSSA 96(3):898-913", "intraslab": "Zhao et al. 2006, BSSA 96(3):898-913",
                    "gmice": "Worden, Gerstenberger, Rhoades, Wald 2012, BSSA 102(1):204-221",
                    "panjang_rupture": "Wells & Coppersmith 1994, BSSA 84(4):974-1002"},
-        "kinerja_uji": {"status": "belum_diuji", "n_laporan": 0, "metrik": None,
-                        "alasan": "Belum ada arsip laporan Dirasakan BMKG yang bisa dibaca: tabel D1 `gempa` (kolom mmi_maks) diisi cron Worker milik warga-api dan belum "
-                                  "terkumpul/diekspor ke repo; BMKG hanya menyimpan 15 butir terakhir. Tidak ada angka kinerja yang dikarang.",
-                        "rencana": "Bandingkan MMI model di kecamatan/kab yang dilaporkan dengan MMI Dirasakan (rentang ambil tertinggi): bias, RMSE, persen dalam +-1 kelas, "
-                                   "lawan pembanding. Uji dibuka sekali."},
+        "kinerja_uji": kinerja_uji_baku(pembanding_magma()),
         "pembanding": {"nama": "satu GMPE tanpa kelas tektonik (BSSA14 untuk semua jenis)", "status": "belum_diuji"},
         "catatan": ["BSSA14 dan Zhao dicocokkan ke OpenQuake 16 Okt 2026; Worden 2012 dicocokkan manual.",
-                    "Hanya nilai rata-rata, tanpa sigma; Vs30 seragam 400 m/s karena belum ada peta Vs30 di repo (efek tapak diabaikan).",
+                    "Koreksi MMI KI-81 (koreksi_mmi) berlaku hanya bersama Vs30 per tapak; tabel disalin dari koreksi_guncangan.json hasil uji dan tidak dilatih ulang.",
+                    "Hanya nilai rata-rata, tanpa sigma; Vs30 baku 400 m/s; per tapak tersedia dari vs30.bin (proksi kemiringan, galat tipikal sekitar 30%) lewat vs30_grid. Logic tree GEM hanya BSSA14 dan Zhao 2006 yang ada, CB14, CY14, AG20, Kuehn 2020 belum.",
                     "Jenis tektonik ditebak dari kedalaman (>= 50 km intraslab, selain itu kerak); gempa dangkal 15-50 km M>=7 butuh jenis eksplisit atau ditebak antarmuka bila <= 200 km dari segmen subduksi PB2002.",
                     "Gempa titik diubah ke Rjb lewat Rjb = max(0, Repi - L/4), L Wells & Coppersmith: tanpa arah patahan, mengabaikan efek direktivitas.",
                     "Zhao 2006: magnitudo intraslab dipotong 7,8 (seperti OpenQuake SSlabNSHMP2014); antarmuka tidak dipotong (perbaikan 18 Okt 2026: sebelumnya M8,5 selatan Jawa memberi MMI permukiman terkuat 5,49, kini sekitar 6,4); jarak x = sqrt(Rjb^2 + h^2) dipakai sebagai perkiraan Rrup; tanpa koreksi regional; MMI dipotong di 1 sampai 10, di luar 3 sampai 8 ditandai ekstrapolasi.",
@@ -221,7 +295,20 @@ def uji():
     if os.path.exists(KELUAR):  # berkas ekspor harus selaras dengan PARAM (JS membaca berkas ini)
         mdl = json.load(open(KELUAR))
         assert mdl["param"] == PARAM, "model_guncangan.json basi: jalankan `guncangan.py ekspor`"
-        assert mdl["kinerja_uji"]["status"] in ("belum_diuji", "diuji") and mdl["dibuat"] and mdl["catatan"]
+        K = koreksi_beku()  # tabel terpasang harus identik dengan yang diuji (sidik KI-81), bukan hasil latih ulang
+        assert mdl["koreksi_mmi"] == K and K and K["sha"] == mdl["koreksi_mmi"]["sha"], "koreksi_mmi di model_guncangan.json beda dari koreksi_guncangan.json yang diuji"
+        assert K["sidik"] == json.load(open(SIDIK_KOREKSI))["sidik"], "sidik hasil uji KI-81 tak sama dengan .sidik terkunci"
+        assert list(K["a"]) == [n for _, n in ((25, "kurang dari 25 km"), (50, "25 sampai 50 km"), (100, "50 sampai 100 km"), (200, "100 sampai 200 km"), (1e9, "lebih dari 200 km"))] and len(K["b"]) == 3
+        assert abs(koreksi_mmi(5.0, 10, 10, K) - (5.0 - K["mu"] - K["a"]["kurang dari 25 km"] - K["b"]["dangkal (kurang dari 60 km)"])) < 1e-12
+        assert koreksi_mmi(1.0, 300, 10, K) >= 1.0 and koreksi_mmi(10.0, 10, 10, K) <= 10.0
+        assert mdl["kinerja_uji"]["status"] in ("belum_diuji", "diuji", "dibanding_magma") and mdl["dibuat"] and mdl["catatan"]
+        assert (mdl["kinerja_uji"]["status"] == "dibanding_magma") == bool(mdl["kinerja_uji"].get("pembanding_magma")), "status vs pembanding_magma tak selaras"
+    k0 = kinerja_uji_baku(None)  # berkas MAGMA hilang: fail-closed, status lama, tidak pernah "lulus"
+    assert k0["status"] == "belum_diuji" and k0["pembanding_magma"] is None and pembanding_magma("/tidak/ada.json") is None
+    pm = pembanding_magma()
+    if pm:
+        k1 = kinerja_uji_baku(pm)
+        assert k1["status"] == "dibanding_magma" and pm["n_pasangan"] > 0 and 0 <= pm["dalam_1_persen"] <= 100 and pm["mae"] >= 0
     if os.path.exists(PUSAT):
         pusat = json.load(open(PUSAT))
         assert len(pusat) == 7274

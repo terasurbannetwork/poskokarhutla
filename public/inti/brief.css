@@ -13,16 +13,16 @@
   #bf-cetak .bf-kop b{display:block;font:700 8.5pt var(--font);letter-spacing:.14em}
   #bf-cetak .bf-kop span{font:700 13pt var(--display)}
   #bf-cetak .bf-kr{text-align:right;font-size:8.6pt;color:GrayText}
-  #bf-cetak h2{font:700 8.6pt var(--font);text-transform:uppercase;letter-spacing:.1em;margin:13pt 0 5pt;padding:0}
+  #bf-cetak h2{font:700 8.6pt var(--font);letter-spacing:.01em;margin:13pt 0 5pt;padding:0}
   #bf-cetak p{margin:0 0 5pt}
   #bf-cetak .bf-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:6pt;margin:0 0 6pt}
   #bf-cetak .bf-kpi>div{border:.5pt solid GrayText;padding:5pt 6pt}
-  #bf-cetak .bf-kpi span{display:block;font:600 7.4pt var(--font);text-transform:uppercase;letter-spacing:.06em;color:GrayText}
+  #bf-cetak .bf-kpi span{display:block;font:600 7.4pt var(--font);letter-spacing:.01em;color:GrayText}
   #bf-cetak .bf-kpi b{display:block;font:700 16pt/1.2 var(--display);margin:2pt 0}
   #bf-cetak .bf-kpi i{display:block;font-style:normal;font-size:7.8pt;color:GrayText}
   #bf-cetak table{width:100%;border-collapse:collapse;font-size:8.8pt}
   #bf-cetak td,#bf-cetak th{border:0;border-bottom:.5pt solid GrayText;padding:3pt 6pt 3pt 0;vertical-align:top;white-space:normal;position:static;background:none} #bf-cetak td{text-align:left}
-  #bf-cetak th{text-align:center;color:GrayText;font:600 7.4pt var(--font);text-transform:uppercase;letter-spacing:.06em;border-bottom:.8pt solid CanvasText}
+  #bf-cetak th{text-align:center;color:GrayText;font:600 7.4pt var(--font);letter-spacing:.01em;border-bottom:.8pt solid CanvasText}
   #bf-cetak .bf-li{margin:0;padding-left:15pt;display:grid;gap:4pt}
   #bf-cetak .bf-ket{font-size:7.8pt;color:GrayText}
   #bf-cetak .bf-kosong{color:GrayText;font-style:italic}

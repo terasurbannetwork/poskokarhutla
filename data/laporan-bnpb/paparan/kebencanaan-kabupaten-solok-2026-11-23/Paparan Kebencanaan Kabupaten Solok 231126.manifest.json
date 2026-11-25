@@ -1262,7 +1262,7 @@
      137,
      873.6,
      363,
-     "Status banjir dan hujan tiga hari per kecamatan, empat hari "
+     "Status banjir per tanggal; angka = hujan tiga hari, sehari s"
     ]
    ],
    "terisi": [],
@@ -3548,7 +3548,7 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/geo/kecamatan/13.json": "5f982ceb9c8c97c06312c66c8376e4b9852403ffbf4915f74e106104c37ee3af",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/geo/provinsi.json": "aeec8694cb5dc8991707bbdc9acc24682b5dbf4a8e27d84f4b98473e3a425344",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/peta/peta-1a67ddb71c73.png": "903f9c00b16f25cffe622d374fb6335130ad39b5feda877276ea46dcd25b04b3",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/solok.json": "dd140fa3cf69fb0b795d4704fcd3c0c07c2f5d44395b7480634f34b75cbecaff",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/solok.json": "586dd1ed5098ef91bbd31585e4ff4c96e61a518a6397386c7863bb1ce74bcb51",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/tema.json": "c5b788ed86843a4ed57fe347a9f7e3c4b8eb0b91898594eb2abee00b814c578c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
  }

@@ -122,3 +122,40 @@ main.peta .ex-leg{background:var(--card);border:1px solid var(--line);border-rad
 .sk-sisa[data-s="kedaluwarsa"]{color:var(--bad);font-weight:800}.sk-sisa[data-s="segera_habis"]{color:var(--warn);font-weight:800}
 @media (max-width:640px){.sk-pintu{grid-template-columns:1fr}}
 .dr-tabel .n{text-align:center;font-variant-numeric:tabular-nums}
+
+/* genangan radar di kaji banjir_gfm (GS-11): hanya token tema.css */
+.sk-detail[data-m="gfm"]{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
+.sk-abu{color:var(--ink2);font-size:.8125rem;text-align:center}
+.sk-wrap tr.klik{cursor:pointer}
+.sk-wrap tr.klik[aria-current="true"]{background:color-mix(in oklch,var(--brand2) 12%,transparent)}
+.sk-wrap tr.klik:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+.sk-peta{height:360px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.sk-wrap .ex-leg{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:.75rem}
+.sk-lahan{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--surface);margin-bottom:10px}
+.sk-lahan>i{display:block;flex-basis:0;min-width:2px}
+.sk-sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--kat-lain);vertical-align:baseline}
+.sk-lahan>i[data-kode="10"],.sk-sw[data-kode="10"]{background:var(--kat-longsor)}
+.sk-lahan>i[data-kode="20"],.sk-sw[data-kode="20"]{background:var(--ok)}
+.sk-lahan>i[data-kode="30"],.sk-sw[data-kode="30"]{background:var(--kat-kering)}
+.sk-lahan>i[data-kode="40"],.sk-sw[data-kode="40"]{background:var(--kat-gempa)}
+.sk-lahan>i[data-kode="50"],.sk-sw[data-kode="50"]{background:var(--kat-erupsi)}
+.sk-lahan>i[data-kode="60"],.sk-sw[data-kode="60"]{background:var(--kat-lain)}
+.sk-lahan>i[data-kode="80"],.sk-sw[data-kode="80"],.sk-sw[data-kode="air"]{background:var(--kat-banjir)}
+.sk-lahan>i[data-kode="90"],.sk-sw[data-kode="90"]{background:var(--kat-gelombang)}
+.sk-lahan>i[data-kode="95"],.sk-sw[data-kode="95"]{background:var(--kat-tsunami)}
+.sk-lahan>i[data-kode="100"],.sk-sw[data-kode="100"]{background:var(--kat-cuaca)}
+.sk-citra{display:grid;gap:10px}
+.sk-citra-dua{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sk-citra-dua img{width:100%;height:auto;border-radius:12px;border:1px solid var(--line);display:block}
+.sk-citra-dua figcaption{font-size:.75rem;color:var(--ink2);text-align:center;padding-top:4px}
+.sk-lipat>summary{cursor:pointer;font-weight:700;font-size:.875rem;padding:4px 0;margin-bottom:8px}
+.sk-lipat>summary:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.sk-lipat{display:grid;gap:10px}
+@media (max-width:900px){
+  .sk-detail[data-m="gfm"]{grid-template-columns:1fr}
+  .sk-detail[data-m="gfm"]>div{display:contents}
+  .sk-detail[data-m="gfm"] section{order:3}
+  .sk-detail[data-m="gfm"] #kj-gfm{order:1}
+  .sk-detail[data-m="gfm"] #kj-peta{order:2}
+  .sk-peta{height:220px}
+}

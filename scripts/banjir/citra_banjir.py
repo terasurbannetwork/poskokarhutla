@@ -68,12 +68,18 @@ def terbaik_s2(lat, lon, dari, sampai):
     return None, None
 
 
-def gambar_tci(item, lat, lon, berkas):
+def rgb_tci(item, lat, lon, km, px):
     c = C.COG(item["assets"]["visual"]["href"])
-    x0, y0, r0, kiri, atas = K.jendela(item, "visual", lat, lon, KM_S2)
-    tc = c.contoh(C.level_untuk(c, r0, KM_S2 * 1000 / PX_S2), x0, y0, r0, kiri, atas, KM_S2 * 1000, PX_S2)
-    tc = [array.array("B", (min(255, int(v * 1.15)) for v in b)) for b in tc]
-    open(berkas, "wb").write(C.png(tc, PX_S2, MAKS_PNG))
+    x0, y0, r0, kiri, atas = K.jendela(item, "visual", lat, lon, km)
+    tc = c.contoh(C.level_untuk(c, r0, km * 1000 / px), x0, y0, r0, kiri, atas, km * 1000, px)
+    return [array.array("B", (min(255, int(v * 1.15)) for v in b)) for b in tc]
+
+
+def gambar_tci(item, lat, lon, berkas, km=KM_S2, px=PX_S2, kecil=False):
+    tc = rgb_tci(item, lat, lon, km, px)
+    if kecil:   # mode kejadian: turunkan resolusi sampai muat MAKS_KEJADIAN
+        return tulis_png(tc, px, berkas)
+    open(berkas, "wb").write(C.png(tc, px, MAKS_PNG))
 
 
 def s2(d):
@@ -249,6 +255,212 @@ def kerjakan(d):
     return citra
 
 
+# ---------------------------------------------------------------- mode kejadian (GS-05)
+AKAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
+DIR_KJ = os.path.join(AKAR, "data/raw/banjir/gfm_nasional/kejadian")
+MAKS_KEJADIAN = 120_000
+KM_MAKS, PX_KJ, AWAN_TUTUP = 40, 360, 60
+WIB = dt.timezone(dt.timedelta(hours=7))
+ATRIBUSI = ["Contains modified Copernicus Sentinel data (Sentinel-1, Sentinel-2)", "Microsoft Planetary Computer (Sentinel-1 RTC)",
+            "Element84 Earth Search (Sentinel-2 L2A)"]
+
+
+def kotak_citra(titik, km_maks=KM_MAKS, min_km=4):
+    """titik = [[lon, lat, ha], ...] -> (lat, lon, sisi_km): bbox titik, atau area terpadat bila bbox > km_maks"""
+    if not titik:
+        return None
+    lat0 = sum(t[1] for t in titik) / len(titik)
+    kx, ky = 111.32 * math.cos(math.radians(lat0)), 110.574
+    xs, ys = [t[0] for t in titik], [t[1] for t in titik]
+    sx, sy = (max(xs) - min(xs)) * kx, (max(ys) - min(ys)) * ky
+    if max(sx, sy) <= km_maks:
+        return ((min(ys) + max(ys)) / 2, (min(xs) + max(xs)) / 2, round(min(km_maks, max(min_km, max(sx, sy) * 1.1)), 1))
+    sel = {}   # sel 2 km -> titik; jendela km_maks berpusat di tiap sel terisi, ambil yang paling banyak titik
+    for t in titik:
+        sel.setdefault((int(t[0] * kx / 2), int(t[1] * ky / 2)), []).append(t)
+    h = km_maks / 2 / 2
+    def isi(c):
+        return [t for (i, j), v in sel.items() if abs(i - c[0]) <= h and abs(j - c[1]) <= h for t in v]
+    # ponytail: O(sel^2); cukup untuk kab (ribuan titik), ganti ke kisi kumulatif bila lambat
+    best = max(sel, key=lambda c: len(isi(c)))
+    p = isi(best)
+    return (sum(t[1] for t in p) / len(p), sum(t[0] for t in p) / len(p), float(km_maks))
+
+
+def jendela_optik(mulai):
+    """(pra_dari, pra_sampai, pasca_dari, pasca_sampai) ISO UTC. Batas 'sebelum mulai' = 00.00 WIB tanggal mulai (D13)"""
+    t0 = dt.datetime.fromisoformat(mulai).replace(tzinfo=WIB)
+    z = lambda x: x.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return (z(t0 - dt.timedelta(days=45)), z(t0 - dt.timedelta(seconds=1)), z(t0), z(t0 + dt.timedelta(days=16) - dt.timedelta(seconds=1)))
+
+
+def waktu_utc(s):
+    return dt.datetime.fromisoformat(s.replace("Z", "+00:00"))
+
+
+def status_awan(aw):
+    return "tertutup awan" if aw > AWAN_TUTUP else "ok"
+
+
+def resampel(ch, n, m):
+    return array.array("B", (ch[(i * n // m) * n + j * n // m] for i in range(m) for j in range(m)))
+
+
+def png_muat(rgb, n, maks=MAKS_KEJADIAN):
+    """-> (bytes, n_akhir); resolusi diturunkan 20% per putaran sampai PNG <= maks"""
+    while True:
+        b = C.png(rgb, n, maks)
+        if len(b) <= maks or n < 64:
+            return b, n
+        m = int(n * 0.8)
+        rgb, n = [resampel(c, n, m) for c in rgb], m
+
+
+def tulis_png(rgb, n, berkas):
+    b, n = png_muat(rgb, n)
+    open(berkas, "wb").write(b)
+    return {"ukuran": len(b), "px": n}
+
+
+def optik_kej(lat, lon, km, dari, sampai):
+    """adegan S2 paling bersih di [dari, sampai] (UTC). Kotak 40 km melintas ubin, jadi ubin sehari digabung.
+    -> (daftar item, awan%, status)  atau ([], None, 'tidak ada adegan')"""
+    cand = stac(C.STAC, {"collections": ["sentinel-2-l2a"], "bbox": [lon - .15, lat - .15, lon + .15, lat + .15], "limit": 100,
+                         "datetime": f"{dari}/{sampai}", "sortby": [{"field": "properties.eo:cloud_cover", "direction": "asc"}]})
+    lo, hi = waktu_utc(dari), waktu_utc(sampai)
+    hari = {}
+    for it in cand:
+        if lo <= waktu_utc(it["properties"]["datetime"]) <= hi:
+            hari.setdefault(it["properties"]["datetime"][:10], []).append(it)
+    nilai = []
+    for tgl in list(hari)[:4]:   # urutan = ubin berawan terendah dulu
+        sah_total, aw_sum, ada = 0, 0, []
+        for it in hari[tgl]:
+            try:
+                aw, ko = awan_kotak(it, lat, lon, km)
+            except Exception as e:
+                print("   skor gagal", it["id"], e, file=sys.stderr)
+                continue
+            sah = 100 - ko
+            if sah > 1:
+                sah_total, aw_sum = sah_total + sah, aw_sum + aw * sah
+                ada.append(it)
+        # ponytail: tumpang tindih ubin menggembungkan sah_total; dibatasi 100
+        if ada and min(100, sah_total) >= 70:
+            nilai.append((aw_sum / sah_total, ada))
+    if not nilai:
+        return [], None, "tidak ada adegan"
+    aw, its = min(nilai, key=lambda x: x[0])
+    return its, round(aw), status_awan(aw)
+
+
+def gabung(ls):
+    """gabung rgb per ubin: piksel 0 diisi ubin berikutnya"""
+    h = ls[0]
+    for l in ls[1:]:
+        h = [array.array("B", (x if x else y for x, y in zip(a, b))) for a, b in zip(h, l)]
+    return h
+
+
+def asli_kej(items, lat, lon, km, px, berkas):
+    return tulis_png(gabung([rgb_tci(i, lat, lon, km, px) for i in items]), px, berkas)
+
+
+def swir_rgb(item, lat, lon, km, px):
+    A = item["assets"]
+
+    def kanal(k):
+        c = C.COG(A[k]["href"])
+        x0, y0, r0, kiri, atas = K.jendela(item, k, lat, lon, km)
+        sk, of = C.skala_offset(item, k)
+        v = c.contoh(C.level_untuk(c, r0, km * 1000 / px), x0, y0, r0, kiri, atas, km * 1000, px)[0]
+        return array.array("B", (0 if d == 0 else max(0, min(255, int((d * sk + of) * 2.5 * 255))) for d in v))
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(3) as ex:
+        return list(ex.map(kanal, ("swir22", "nir08", "red")))   # B12, B8A, B4
+
+
+def swir_kej(items, lat, lon, km, px, berkas):
+    return tulis_png(gabung([swir_rgb(i, lat, lon, km, px) for i in items]), px, berkas)
+
+
+def radar_kej(lat, lon, km, waktu, tok):
+    """adegan S1 RTC yang diambil dalam 10 menit dari `waktu` GFM: item atau None (tidak pernah diganti adegan lain)"""
+    t = waktu_utc(waktu)
+    f = lambda x: x.strftime("%Y-%m-%dT%H:%M:%SZ")
+    bb = C.kotak(lat, lon, km)
+    cand = stac(PC_STAC, {"collections": ["sentinel-1-rtc"], "bbox": [lon - .002, lat - .002, lon + .002, lat + .002], "limit": 20,
+                          "datetime": f"{f(t - dt.timedelta(hours=1))}/{f(t + dt.timedelta(hours=1))}"})
+    cand = [i for i in cand if abs((waktu_utc(i["properties"]["datetime"]) - t).total_seconds()) <= 600 and C.menutup(i["geometry"], bb)]
+    return min(cand, key=lambda i: abs((waktu_utc(i["properties"]["datetime"]) - t).total_seconds()), default=None)
+
+
+def citra_kab(k, mulai, dir_png, tok=None):
+    """satu kab -> {kab4, kab, citra: None | {...}, alasan}. Kab tak sah tidak disentuh jaringannya."""
+    r = {"kab4": k["kab4"], "kab": k["kab"], "sah": bool(k.get("sah"))}
+    if not k.get("sah"):
+        return {**r, "citra": None, "alasan": "tak sah di GS-01: " + str((k.get("tampil") or {}).get("alasan") or k.get("status"))}
+    kc = kotak_citra((k.get("mentah") or {}).get("titik_baru") or [])
+    if not kc:
+        return {**r, "citra": None, "alasan": "tanpa titik baru"}
+    lat, lon, km = kc
+    c = {"lat": round(lat, 5), "lon": round(lon, 5), "km": km, "bbox": C.kotak(lat, lon, km)}
+    tok = tok or token_sas()
+    px = PX_KJ
+    for nama, waktu in (("pra", k.get("pra")), ("pasca", k.get("lintasan"))):
+        e = {"status": "tidak ada adegan radar cocok"}
+        try:
+            it = radar_kej(lat, lon, km, waktu, tok) if waktu else None
+            if it:
+                db = [ke_db(v) for v in contoh_s1(it, tok, lat, lon, km, px)]
+                g = abu(db)
+                f = f"{k['kab4']}_radar_{nama}.png"
+                e = {"status": "ok", "tanggal": it["properties"]["datetime"], "id": it["id"], "orbit": it["properties"].get("sat:relative_orbit"),
+                     "berkas": f, **tulis_png([g, g, g], px, os.path.join(dir_png, f))}
+        except Exception as ex:
+            e = {"status": "gagal: " + str(ex)[:120]}
+        c["radar_" + nama] = e
+    pra_d, pra_s, pas_d, pas_s = jendela_optik(mulai)
+    for nama, (a, b) in (("pra", (pra_d, pra_s)), ("pasca", (pas_d, pas_s))):
+        try:
+            it, aw, st = optik_kej(lat, lon, km, a, b)
+        except Exception as ex:
+            it, aw, st = [], None, "gagal: " + str(ex)[:120]
+        for jenis in ("asli", "swir"):
+            e = {"status": st}
+            if it:
+                e.update({"tanggal": it[0]["properties"]["datetime"], "id": [i["id"] for i in it], "awan_pct": aw})
+                if st == "ok":
+                    f = f"{k['kab4']}_{jenis}_{nama}.png"
+                    try:
+                        if jenis == "asli":
+                            e.update({"berkas": f, **asli_kej(it, lat, lon, km, px, os.path.join(dir_png, f))})
+                        else:
+                            e.update({"berkas": f, **swir_kej(it, lat, lon, km, px, os.path.join(dir_png, f))})
+                    except Exception as ex:
+                        e["status"] = "gagal: " + str(ex)[:120]
+            c[f"{jenis}_{nama}"] = e
+    return {**r, "citra": c, "alasan": None}
+
+
+def kejadian(kj):
+    t0 = time.time()
+    d = json.load(open(os.path.join(DIR_KJ, kj + ".json")))
+    dir_png = os.path.join(DIR_KJ, kj + "_citra")
+    os.makedirs(dir_png, exist_ok=True)
+    tok = None
+    kab = []
+    for k in d["kab"]:
+        print("==", k["kab4"], k["kab"], file=sys.stderr)
+        if k.get("sah") and tok is None:
+            tok = token_sas()
+        kab.append(citra_kab(k, d["mulai"], dir_png, tok))
+    m = {"kj": kj, "mulai": d["mulai"], "dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "atribusi": ATRIBUSI, "kab": kab}
+    simpan(os.path.join(DIR_KJ, kj + "_citra.json"), m)
+    print(f"kejadian {kj}: {time.time() - t0:.0f} dtk", file=sys.stderr)
+    return m
+
+
 def uji():
     w = 3
     # prediktor 3: bangun ubin 3 x 3 float32 lalu enkode manual (susun bidang byte + selisih) dan harapkan nilai kembali
@@ -268,12 +480,33 @@ def uji():
     assert s1_sah(ok) and not s1_sah({**ok, "sesudah": {"tgl": "2025-02-26"}}), "sesudah harus >= tanggal kejadian"
     g = abu([-30, -25, 0, None])
     assert list(g) == [1, 1, 255, 0], f"abu {list(g)}"
+    # ---- mode kejadian, tanpa jaringan
+    pd_, ps, qd, qs = jendela_optik("2025-11-26")
+    assert ps == "2025-11-25T16:59:59Z" and qd == "2025-11-25T17:00:00Z", f"batas WIB {ps} {qd}"
+    assert pd_ == "2025-10-11T17:00:00Z" and qs == "2025-12-11T16:59:59Z", f"jendela {pd_} {qs}"
+    assert status_awan(60) == "ok" and status_awan(60.1) == "tertutup awan", "awan > 60 persen"
+    import random
+    random.seed(1)
+    n = 400
+    derau = [array.array("B", (random.randrange(256) for _ in range(n * n))) for _ in range(3)]
+    b, n2 = png_muat(derau, n)
+    assert len(b) <= MAKS_KEJADIAN and n2 < n, f"png harus turun resolusi: {len(b)} {n2}"
+    tak = citra_kab({"kab4": "1201", "kab": "X", "sah": False, "status": "ok", "tampil": {"alasan": "sinyal lemah"}}, "2025-11-26", "/tidak/dipakai")
+    assert tak["citra"] is None and "sinyal lemah" in tak["alasan"], f"tak sah {tak}"
+    kecil = [[98.0 + i * .001, 4.0 + i * .001, 1] for i in range(10)]
+    lat, lon, km = kotak_citra(kecil)
+    assert 4 <= km < 6 and abs(lat - 4.0045) < 1e-6, f"kotak kecil {lat} {lon} {km}"
+    lebar = [[98.0 + i * .0005, 4.0, 1] for i in range(200)] + [[99.0 + i * .0001, 5.0, 1] for i in range(50)] + [[98.05, 4.0, 1]]
+    lat, lon, km = kotak_citra(lebar)
+    assert km == 40 and abs(lon - 98.05) < .2 and abs(lat - 4.0) < .05, f"kotak 40 km {lat} {lon} {km}"
     print("uji citra_banjir: lolos", file=sys.stderr)
 
 
 def main(a):
     if a[:1] == ["uji"]:
         return uji()
+    if a[:1] == ["kejadian"]:
+        return kejadian(a[a.index("--kj") + 1])
     idx = json.load(open(os.path.join(B.KELUAR, "index.json")))
     for e in idx["daerah"]:
         if a and e["kunci"] not in a:

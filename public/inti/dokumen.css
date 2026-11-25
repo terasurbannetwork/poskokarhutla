@@ -4,6 +4,15 @@
 .pbd-bag h5{margin:0 0 6px;font-size:.9375rem;color:var(--pb-teks)}
 .pbd-bag textarea{width:100%;box-sizing:border-box;font:inherit;padding:8px 10px;border:1px solid var(--pb-garis);border-radius:10px;resize:vertical}
 .pbd-kal{margin:0;white-space:pre-wrap}
+/* blok QR segel (segel-dokumen SG-09, DESIGN-SYSTEM 3): hitam di atas putih lewat warna sistem dengan skema terang, tidak ikut tema gelap */
+.sg-blok{color-scheme:only light;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin:16px 0 0;padding-top:10px;border-top:1px solid var(--pb-garis);break-inside:avoid}
+.sg-kiri p{margin:0;font-size:9pt;line-height:1.4}
+.sg-kiri .sg-batas{font-size:8pt;opacity:.8}
+.sg-kanan{flex:none;width:22mm;text-align:center}
+.sg-kanan p{margin:2px 0 0;font:8pt/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap}
+.sg-qr{display:block;width:22mm;height:22mm}
+.sg-qr-latar{fill:Canvas}
+.sg-qr-modul{fill:CanvasText}
 @media print{
   body *{visibility:hidden}
   .pbd-cetak,.pbd-cetak *{visibility:visible}

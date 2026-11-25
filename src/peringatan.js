@@ -80,7 +80,7 @@ async function aturanGempa(env, kini) {
 }
 
 /* ---------------- cuaca BMKG (nowcast CAP dari aset statis) ---------------- */
-const TINGKAT_CAP = {Severe: "Siaga", Extreme: "Awas"};
+export const TINGKAT_CAP = {Severe: "Siaga", Extreme: "Awas"};
 async function aturanCuaca(env, kini) {
   const r = await env.ASSETS.fetch(new Request("https://aset.lokal/banjir/data/peringatan.json"));
   if (!r.ok) { r.body?.cancel(); return 0; }
@@ -197,6 +197,8 @@ export const CAP_PASTI = {gempa: "Observed", tsunami: "Likely", cuaca: "Likely",
 /* senderName jujur soal asal: sumber BMKG/InaTEWS/PVMBG/KLHK/Badan Geologi = diteruskan dari mereka; Deteksi = hitungan kita sendiri, tegas bukan BMKG dan bukan InaTEWS */
 const CAP_SITUS = "https://centurisk97.id/";
 const namaPengirim = sumber => /^(BMKG|InaTEWS|PVMBG|KLHK|Badan Geologi)$/.test(sumber) ? `Centurisk97, meneruskan ${sumber}` : `Centurisk97, ${sumber} (hitungan otomatis, bukan peringatan BMKG atau InaTEWS)`;
+/* KI-07: jenis yang benar-benar diterbitkan = tabel peringatan (lima lama) + peringatan_x (JENIS_PERINGATAN_X) */
+export const JENIS_CAP = [...["gempa", "tsunami", "cuaca", "karhutla", "banjir"].map(j => CAP_EVENT[j].toLowerCase()), ...JENIS_PERINGATAN_X.map(j => CAP_EVENT[j].toLowerCase())];
 export function bentukCap(daftar, kini) {
   const info = p => {
     const [sev, urg] = CAP_TINGKAT[p.tingkat] ?? ["Unknown", "Unknown"], lokasi = [p.kab, PROV[p.prov]?.[1]].filter(Boolean).join(", ") || "Indonesia";
@@ -228,7 +230,7 @@ export function bentukCap(daftar, kini) {
   <status>Actual</status>
   <msgType>Alert</msgType>
   <scope>Public</scope>
-  <note>Peringatan aktif Centurisk97 (gempa, tsunami, cuaca BMKG, karhutla, banjir). ${daftar.length} peringatan. Satu blok info per peringatan.</note>
+  <note>Peringatan aktif Centurisk97 (${JENIS_CAP.join(", ")}). ${daftar.length} peringatan. Satu blok info per peringatan.</note>
 ${daftar.map(info).join("\n")}
 </alert>
 `;

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow">
+<title>Periksa keaslian dokumen, Centurisk97</title>
+<meta name="description" content="Periksa apakah dokumen BNPB yang Anda pegang sama dengan yang tersimpan di sistem, lewat kode di bawah QR.">
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="/halaman_awal.js" data-tema></script>
+<link rel="stylesheet" href="/inti/tema.css">
+<link rel="stylesheet" href="/inti/kepala.css">
+<link rel="stylesheet" href="/inti/kartu.css">
+<link rel="stylesheet" href="/inti/halaman-polos.css">
+<link rel="stylesheet" href="/verifikasi.css">
+</head>
+<body>
+<header class="top">
+  <div class="mark">
+    <a class="logo" href="/" title="Centurisk97"><img src="/img/logo.svg?v=2" alt="Centurisk97" width="30" height="30"></a><details class="bencana" data-bencana="semua" data-tanpa-segera><summary><span>Semua bencana</span></summary><div class="menu"></div></details>
+  </div>
+</header>
+<main class="vf">
+  <div class="vf-judul">
+    <h1>Periksa keaslian dokumen</h1>
+    <p>Ketik kode yang tercetak di bawah QR pada lembar dokumen BNPB. Anda akan melihat apakah dokumen itu terdaftar dan isinya belum berubah.</p>
+  </div>
+  <form class="vf-cari" id="cari" novalidate>
+    <div class="vf-field">
+      <label for="kode">Kode di bawah QR</label>
+      <span class="vf-hint" id="kode-hint">Sepuluh huruf dan angka, misalnya ABCDE-FGHJK</span>
+      <div class="vf-baris">
+        <input id="kode" name="kode" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" spellcheck="false" required
+          pattern="\s*[0-9A-Za-z]{5}[\s\-]?[0-9A-Za-z]{5}\s*" maxlength="14" aria-describedby="kode-hint" data-error="kode-galat" aria-invalid="false">
+        <button type="submit">Periksa</button>
+      </div>
+      <p class="vf-galat" id="kode-galat"><span role="img" aria-label="Galat">!</span> Kode terdiri dari sepuluh huruf dan angka. Periksa lagi kode di bawah QR.</p>
+    </div>
+  </form>
+  <section class="vf-hasil" id="hasil" aria-live="polite" aria-busy="false"></section>
+  <p class="vf-batas">Segel keaslian sistem, bukan tanda tangan elektronik.</p>
+</main>
+<script src="/inti/format.js"></script>
+<script type="module" src="/inti/kepala.js"></script>
+<script type="module" src="/verifikasi.js"></script>
+</body>
+</html>

@@ -39,9 +39,10 @@ const akun = async ({status = "aktif", prov = "13", wajibGanti = 0} = {}) => {
 const ketik = (sel, v) => tab.eval(`(() => { const e = document.querySelector(${JSON.stringify(sel)}); e.value = ${JSON.stringify(v)}; e.dispatchEvent(new Event("input", {bubbles: true})); return true; })()`);
 const masuk = async a => {
   await tab.kirim("Network.clearBrowserCookies");
-  await tab.buka(base + "/instansi", {tunggu: "#fMasuk"});
-  await ketik("#mUser", a.username); await ketik("#mSandi", SANDI); await tab.klik("#mKirim");
-  try { await tab.tungguFungsi("document.querySelector('#vMasuk').hidden", 8000); }
+  /* satu pintu (KEPUTUSAN-MASUK K16): /instansi mengalihkan tamu ke /admin/masuk?ke=/instansi, form itu mengembalikan ke /instansi */
+  await tab.buka(base + "/instansi", {tunggu: "#email"});
+  await ketik("#email", a.username); await ketik("#sandi", SANDI); await tab.klik(".ad-tombol-masuk");
+  try { await tab.tungguFungsi("location.pathname === '/instansi' && ['vVerif', 'vUtama', 'vGanti', 'vProfil', 'vDaftarPic'].some(v => document.getElementById(v) && !document.getElementById(v).hidden)", 8000); }
   catch (e) { throw new Error(`login tidak berpindah layar: ${(await tab.teks()).slice(0, 300)} | galat: ${(await tab.galat()).join(" ; ")}`); }
 };
 

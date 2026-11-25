@@ -66,12 +66,6 @@
       ${top ? `<h3>Terluas di hulu</h3><div class="tw"><table class="kn-tb"><thead><tr><th>Konsesi</th><th>Jenis</th><th class="r">Luas di hulu (ha)</th><th class="r">Hilang (ha)</th></tr></thead><tbody>${top}</tbody></table></div>` : ""}`;
   }
 
-  function geserCitra(w) {
-    const s = w.querySelector("input"), a = w.querySelector(".bk-sebelum");
-    const pasang = () => { a.style.clipPath = `inset(0 ${100 - s.value}% 0 0)`; w.querySelector(".bk-garis").style.left = s.value + "%"; };
-    s.addEventListener("input", pasang); pasang();
-  }
-
   function citraHtml(d) {
     const c = d.citra || {}, ada = ["s2", "s1"].filter(k => c[k]);
     if (!ada.length) return `<p class="bk-ket">Belum ada citra yang memenuhi syarat untuk daerah ini.</p>`;
@@ -82,11 +76,7 @@
       ? `Sentinel-2, kotak 12 km di sel hutan hilang terbanyak sejak 2021 di DAS; geser untuk membandingkan.`
       : `Sentinel-1 VV, kotak 16 km di sekitar kecamatan ${nm(d.keluaran.kec)} pada banjir ${tgl(x.kejadian.tanggal)}: ${x.gelap_baru_persen > 0 ? `${r1(x.gelap_baru_persen)}% piksel menggelap (bisa air, sawah atau tambak berair)` : "tidak ada piksel yang menggelap jauh"}, ${fmt(x.sah_persen)}% kotak terbaca, dan ${fmt(x.kejadian.terdampak)} warga terdampak berlaku untuk seluruh kabupaten.`;
     const sum = tabCitra === "s2" ? d.sumber.citra : `${d.sumber.citra}; warga terdampak: DIBI/BNPB`;
-    return `${seg}<p class="bk-ket">${ket}</p><div class="bk-geser">
-      <img class="bk-sesudah" src="${DIR}${x.sesudah.berkas}" alt="Sesudah" decoding="async">
-      <img class="bk-sebelum" src="${DIR}${x.sebelum.berkas}" alt="Sebelum" decoding="async">
-      <i class="bk-garis"></i><span class="bk-lb bk-lb-a">Sebelum ${tgl(x.sebelum.tgl)}</span><span class="bk-lb bk-lb-b">Sesudah ${tgl(x.sesudah.tgl)}</span>
-      <input type="range" min="0" max="100" value="50" aria-label="Geser sebelum dan sesudah"></div>${sumber(sum)}`;
+    return `${seg}<p class="bk-ket">${ket}</p>${Geser.html({sebelum: {src: DIR + x.sebelum.berkas, tgl: tgl(x.sebelum.tgl)}, sesudah: {src: DIR + x.sesudah.berkas, tgl: tgl(x.sesudah.tgl)}})}${sumber(sum)}`;
   }
 
   const bagianCitra = d => `<span class="bk-pil">Citra satelit</span><h2>Sebelum dan sesudah</h2>${citraHtml(d)}`;
@@ -138,7 +128,7 @@
       const w = document.getElementById("bkDetail");
       w.innerHTML = detail(d);
       document.getElementById("bkPetaSlot").replaceWith(elPeta);
-      const g = w.querySelector(".bk-geser"); if (g) geserCitra(g);
+      const g = w.querySelector(".geser"); if (g) Geser.pasang(g);
       nanti(() => gambarPeta(d));
     }).catch(() => { document.getElementById("bkDetail").innerHTML = `<div class="kosong">Data daerah ini belum tersedia.</div>`; });
   }
@@ -170,7 +160,7 @@
         tabCitra = t.dataset.v;
         t.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === t)));   // umpan balik langsung
         muat(aktif).then(d => { const c = d.citra?.[tabCitra]; if (c) ["sebelum", "sesudah"].forEach(n => { new Image().src = DIR + c[n].berkas; });   // prapemuat
-          nanti(() => { const w = document.getElementById("bkCitra"); w.innerHTML = bagianCitra(d); const g = w.querySelector(".bk-geser"); if (g) geserCitra(g); }); });
+          nanti(() => { const w = document.getElementById("bkCitra"); w.innerHTML = bagianCitra(d); const g = w.querySelector(".geser"); if (g) Geser.pasang(g); }); });
       }
     });
     const awal = idx.daerah.find(e => e.slug === location.hash.slice(1)) || idx.daerah.find(e => e.citra) || idx.daerah[0];

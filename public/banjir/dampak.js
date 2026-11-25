@@ -10,12 +10,12 @@ const Dampak = (() => {
   const IKON = {pend: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8",
     sek: "M22 10 12 5 2 10l10 5 10-5ZM6 12v5c3 3 9 3 12 0v-5", kes: "M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7 7-7ZM3.5 12h5l1.5-3 2 6 1.5-3h7",
     jln: "M4 21 9 3M20 21 15 3M12 6v3M12 12v3M12 18v3",
-    hist: "M12 3 2 20h20zM12 10v4M12 17v.5"};
-  const BAG = {pend: ["Penduduk terdampak", W.merah], sek: ["Sekolah", W.ungu], kes: ["Kesehatan", W.teal], jln: ["Jalan", W.tua], hist: ["Korban dan kerugian", W.oranye]};
+    hist: "M12 3 2 20h20zM12 10v4M12 17v.5", rus: "M3 11 12 3l9 8M5 10v10h14V10M10 20v-5h4v5"};
+  const BAG = {pend: ["Penduduk terdampak", W.merah], sek: ["Sekolah", W.ungu], kes: ["Kesehatan", W.teal], jln: ["Jalan", W.tua], hist: ["Korban dan kerugian", W.oranye], rus: ["Rumah rusak (perkiraan)", W.merah]};
   const KUNCI = {kejadian: ["Kejadian", "kejadian", "kejadian banjir"], meninggal: ["Meninggal", "jiwa", "jiwa meninggal akibat banjir"], hilang: ["Hilang", "jiwa", "jiwa hilang akibat banjir"],
     luka: ["Luka-luka", "jiwa", "jiwa luka-luka akibat banjir"], mengungsi: ["Mengungsi", "jiwa", "jiwa mengungsi akibat banjir"], terdampak: ["Terdampak", "jiwa", "jiwa terdampak banjir"],
     rumah_rusak: ["Rumah rusak", "rumah", "rumah rusak akibat banjir"], rumah_terendam: ["Rumah terendam", "rumah", "rumah terendam banjir"]};
-  let D = null; const st = {k: "terdampak", h: null};
+  let D = null, K = null, G = {}; const st = {k: "terdampak", h: null};
   const jt = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta");
   const nmP = k => namaProv(k);
   const sumber = {BNPB: "<a href=\"https://data.bnpb.go.id/\" target=\"_blank\" rel=\"noopener\">BNPB</a>", dibi: "<a href=\"https://dibi.bnpb.go.id/\" target=\"_blank\" rel=\"noopener\">DIBI BNPB</a>"};
@@ -74,7 +74,16 @@ const Dampak = (() => {
     return (l.length < 2 ? "" : `<div class="seg" role="group" aria-label="Hari prakiraan" style="margin:0 0 12px">${l.map(t => `<button data-dks="h" data-v="${t}" aria-pressed="${t === st.h}">${lblH(t)}<span style="display:block;font-size:10.5px;opacity:.7" translate="no">${tglT(t)}</span></button>`).join("")}</div>`)
       + (basi ? `<p style="margin:0 0 12px;font-size:12.5px;opacity:.75">Data per <span translate="no">${tglT(D.hari)}</span>, belum diperbarui hari ini. Hari yang sudah lewat adalah prakiraan dari tanggal itu.</p>` : ""); };
   const tautan = () => `<section class="dk-bag" id="dk-tautan">${Kartu.ex("Baca bukti banjir per daerah aliran sungai atau laporan harian", "", "", `<p style="margin:0;padding:4px 2px"><a href="laporan-das.html">Bukti banjir per DAS</a> &nbsp;|&nbsp; <a href="laporan.html">Laporan harian banjir</a></p>`, "", "").replace('<span class="ex-ey"></span>', '<span class="ex-ey">Lanjut baca</span>')}</section>`;
-  const gambar = () => { const T = blokDi(st.h); const o = T ? terpapar(T) : D.hari_semua ? [bag("pend", `Tidak ada kecamatan siaga atau awas banjir pada ${tglH()}`, "", SM())] : []; const h = D.tahunan?.nasional ? hist() : ""; if (h) o.push(h); if (o.length) o.push(tautan()); return o.join(""); };
+  /* Perkiraan rumah rusak (KI-60, scripts/banjir/kerusakan.py): angka dan pita HANYA bila gerbang banjir "kerusakan" boleh_tampil; selain itu pil "belum lolos uji" (inti/gerbang.js, gagal-tertutup). */
+  const rusak = () => { if (!K) return "";
+    const pil = Gerbang.pil(G, "kerusakan"), lolos = Gerbang.boleh(G, "kerusakan") && K.tampil === true;
+    const baris = lolos ? (K.peristiwa || []).filter(p => p.perkiraan != null && p.p10 != null).sort((a, b) => b.perkiraan - a.perkiraan).slice(0, 10) : [];
+    const isi = lolos && baris.length ? `<table class="ex-tabel"><thead><tr><th>Kabupaten</th><th>Tanggal citra</th><th>Perkiraan</th><th>Rentang P10-P90</th><th>DIBI</th></tr></thead><tbody>${baris.map(p =>
+      `<tr><td>${esc(p.kab)}</td><td>${esc(p.acuan)}</td><td>${fmt(p.perkiraan)}</td><td>${fmt(p.p10)} sampai ${fmt(p.p90)}</td><td>${p.dibi_rumah_rusak == null ? "tidak tercatat" : fmt(p.dibi_rumah_rusak)}</td></tr>`).join("")}</tbody></table>`
+      : `<p style="margin:0;padding:4px 2px">${pil} belum tersedia (n sah ${fmt(K.n_peristiwa_sah)} dari minimal ${fmt(K.n_min)}; n luput ${fmt(K.n_miss ?? 0)})</p>`;
+    const tip = `${K.label}. Kedalaman memakai asumsi ${K.kedalaman_asumsi_m} m untuk semua bangunan tergenang (kedalaman per sel belum ada). n luput: model tidak menemukan bangunan tergenang padahal DIBI mencatat rumah rusak.`;
+    return bag("rus", "", isi, "").replace("<h2>", `<h2 title="${esc(tip)}">`); };
+  const gambar = () => { const T = blokDi(st.h); const o = T ? terpapar(T) : D.hari_semua ? [bag("pend", `Tidak ada kecamatan siaga atau awas banjir pada ${tglH()}`, "", SM())] : []; const h = D.tahunan?.nasional ? hist() : ""; if (h) o.push(h); const r = rusak(); if (r && o.length) o.push(r); if (o.length) o.push(tautan()); return o.join(""); };
   async function render() {
     const el = $("#dampak"); if (!el) return;
     if (!el._dk) { el._dk = 1;
@@ -88,7 +97,7 @@ const Dampak = (() => {
       let rf = 0; document.addEventListener("scroll", () => { if (rf) return; rf = requestAnimationFrame(() => { rf = 0; let a = ""; el.querySelectorAll(".dk-bag").forEach(b => { if (b.getBoundingClientRect().top <= 140) a = b.dataset.bag; });
         el.querySelectorAll(".dk-nav button").forEach(b => b.classList.toggle("on", b.dataset.ke === a)); }); }, {capture: true, passive: true}); }
     if (!D) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat dampak banjir…</div>`;
-      try { D = await muatJSON("data/dampak.json"); } catch (e) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; } }
+      try { [D, K, G] = await Promise.all([muatJSON("data/dampak.json"), muatJSON("data/kerusakan.json").catch(() => null), Gerbang.muat("banjir")]); } catch (e) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; } }
     if (!st.h) st.h = D.hari; const isi = gambar(); if (!isi) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; }
     const ada = Object.keys(BAG).filter(k => isi.includes(`id="dk-${k}"`));
     el.innerHTML = `<div class="dk-lay"><nav class="dk-nav" aria-label="Bagian dampak">${ada.map(k => `<button data-ke="${k}" style="--w:${BAG[k][1]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[k]}"/></svg>${BAG[k][0]}</button>`).join("")}</nav><div><div id="dkHari">${pilihHari()}</div><div id="dkIsi">${isi}</div></div></div>`; }

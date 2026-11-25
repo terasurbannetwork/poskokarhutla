@@ -8,6 +8,7 @@ import {laju} from "./bnpb.js";
 import {periksaToken} from "./pipa.js";
 import {PROV} from "./alun.js";
 import * as H from "./hak.js";
+import {usulanFaseTutup} from "./lapor_lanjut_spek.js";
 import {NAMA_KAB4, lingkupKab4, daftarKab4} from "./siklus_kab.js";
 import {FASE, RE_KJ, idKejadian, kunciPendiri, selisihDampak, resolusiAlias, faseSah, hariAntara} from "./siklus_hitung.js";
 
@@ -109,6 +110,14 @@ export const barisArsip = (a, id) => {
   return b ? Object.fromEntries(a.kolom.map((k, j) => [k, b[j] ?? null])) : null;
 };
 
+/* LJ-14 (hanya staf): usulan transisi dari berkas data lanjutan BPBD yang penutupannya sudah diterima. Hanya dibaca; fase berubah hanya lewat POST .../fase oleh staf. Tanpa nama, nomor, atau isi laporan. */
+async function usulanFaseLapor(c, r) {
+  if (!["terdeteksi", "terverifikasi", "tanggap"].includes(r.fase)) return null;
+  try {
+    const u = (await H.ljBerkasUsulan(c.env, H.pelakuLpStaf, r.id)).map(b => { const x = usulanFaseTutup(b); return x && {tiket: b.induk, kab: b.kab, ...x}; }).filter(Boolean);
+    return u.length ? u : null;
+  } catch (e) { if (/no such table/i.test(String(e?.message))) return null; throw e; }   // migrasi 0161 belum diterapkan
+}
 async function detailKejadian(c) {
   const id = c.p.id, p = c.h.pelaku, q = c.url.searchParams;
   let r = await H.skKejadianById(c.env, p, id);
@@ -132,7 +141,8 @@ async function detailKejadian(c) {
   const sumber = await H.skSumberDariKejadian(c.env, p, id), jejak = await H.skJejakObyek(c.env, p, "kejadian", id, 50, c.h.dummyOk);
   const per = {};   // sumber berdampingan, tidak dijumlah; dua kode dari satu nama sumber dibedakan oleh kode
   for (const s of sumber) per[sumber.filter(x => x.sumber === s.sumber).length > 1 ? `${s.sumber}:${s.kode}` : s.sumber] = parse(s.dampak) ?? {};
-  return json({kejadian: utkBP(c, r), wilayah: wilayahKab4(r.kab4), kab, sumber: sumber.map(({kandidat, ...s}) => ({...s, ...(c.h.tipe === "bp" ? {} : {kandidat: parse(kandidat)}), dampak: parse(s.dampak)})),
+  const usulanFase = c.h.tipe === "bp" ? undefined : await usulanFaseLapor(c, r);
+  return json({kejadian: utkBP(c, r), wilayah: wilayahKab4(r.kab4), ...(usulanFase ? {usulan_fase: usulanFase} : {}), kab, sumber: sumber.map(({kandidat, ...s}) => ({...s, ...(c.h.tipe === "bp" ? {} : {kandidat: parse(kandidat)}), dampak: parse(s.dampak)})),
     selisih: selisihDampak(per), kaji_ids: await H.skKajiIds(c.env, p, id, c.h.dummyOk), pulih_ids: await H.skJitupasnaIds(c.env, p, id, c.h.dummyOk), r3p: await H.skR3pDiusulkanAda(c.env, p, id), jejak: c.h.tipe === "bp" ? jejak.map(({oleh, catatan, ...x}) => x) : jejak});
 }
 

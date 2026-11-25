@@ -107,7 +107,13 @@ Bahan kajian, bukan tiket kode:
 - K4: PKH-31 video vertikal **dibatalkan** ("gausah").
 - K5: Animasi api 3D (PKH-12) disetujui.
 - K6: Kelompok G (PKH-33 sampai 45) ikut "semua gas" dengan urutan bawaan Q8 (pemilik 24 Nov 2026: "Gas semua"). Paket PKH-34 dan PKH-37 tetap lewat paket dokumen dulu.
-- Bawaan sementara Q7 (belum dijawab): PKH-42 tampil angka hari saja, tanpa "setara rokok".
+- K7: Kolom "pemegang saham" (`pemegang`) di laporan konsesi tetap tampil (pemilik 24 Nov 2026: "Tetap tampil"). Larangan PKH-45 hanya untuk tokoh politik dan pemilik manfaat.
+- K8: PKH-42 boleh menampilkan "setara batang rokok" (pemilik 24 Nov 2026: "Gas semua"), berlabel perkiraan kasar, rumus Berkeley Earth (22 µg/m³ PM2,5 selama 24 jam setara 1 batang).
+- K9: Penanda Himawari P-Tree boleh tampil ke publik (pemilik 24 Nov 2026: "Boleh tampil ke publik"). Berkas mentah P-Tree tetap tidak diterbitkan ulang; yang tampil hanya penanda olahan kita.
+- K10: Izin DOE Malaysia tidak diurus dulu (pemilik 24 Nov 2026: "Gausah dulu"). `stasiun_asing.json` tetap ditahan dari terbit.
+- K11: Kriteria insiden "kuat" di PKH-10 diterima apa adanya (pemilik 24 Nov 2026: "Gas").
+- K12: Kolom 7 hari ASEAN tidak dipindah ke NOAA-20 (pemilik 24 Nov 2026: "Gausah"); tetap "tidak ada data" sejak S-NPP berhenti 2 Nov 2026.
+- K13: Tabel rata tengah di 11 berkas CSS (gerbang perataan tabel) diterima (pemilik 24 Nov 2026: "Lanjut").
 
 ## Rincian kelompok F (disetujui pemilik 24 Nov 2026: "Gas")
 
@@ -157,5 +163,12 @@ Bahan kajian, bukan tiket kode:
 - Q4: Rincian kelompok F di atas sudah sesuai, atau ada yang diubah?
 - Q5: PKH-32: apakah istilah resmi "titik api" di laporan BNPB memang dibiarkan?
 - ~~Q6~~: terjawab K6.
-- Q7: PKH-42: hitungan "setara batang rokok" boleh tampil, atau angka hari saja?
+- ~~Q7~~: terjawab K8.
 - ~~Q8~~: terjawab K6. Urutan: PKH-41 dan PKH-40 dulu (bias luas Papua), lalu PKH-33, 35, 43, 44, 42, 38, lalu paket PKH-34 dan 37.
+
+## Status kelompok G (24 Nov 2026 malam)
+
+- PKH-33: lab ambang RBR jalan (`hasil_pkh33.md`): 30 insiden dNBR bersih, ambang **tidak tersetel** (Spearman lemah, `cukup: false`); `RBR_AMBANG_DB` tetap -1,5 hipotesis. `banding` kini menghitung radar 0 ha sebagai hasil ukur. Lanjutan bila dibuka: piksel RBR ≤ 100 m, insiden ≥ 50 ha.
+- PKH-34: lab InSAR vonis **tak terukur** (`data/kajian-bnpb/insar-gambut/hasil_lab.md`); `gambut_bara.py` tidak berubah.
+- PKH-39: parameter AFD-S2 per bioma dari Hu dkk. 2021 Tabel 3 (salinan OA Lirias); lab 9 kompleks (`hasil_pkh39.md`). Masih terbuka: cek visual 5 insiden pada citra; koefisien Penney tetap null.
+- PKH-41 menunggu akses MapBiomas; PKH-42 menunggu kunci OpenAQ.

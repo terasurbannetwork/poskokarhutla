@@ -136,6 +136,7 @@ uji("dummy: hanya Super Admin; satu hari penuh laporan 21 Okt dari data nyata; b
   assert.equal(await n("lk_kiriman", "dummy = 0 AND tanggal_laporan = '2026-10-21'"), 0, "semua baris dummy bertanda");
   assert.equal((await POST(V, P + "kunci", {tanggal: "2026-10-21"})).s, 409, "aktor nyata di hari dummy ditolak");
   const kunci = await POST(AD, P + "kunci", {tanggal: "2026-10-21"});   // Super Admin pemilik hari dummy assert.equal(kunci.s, 201, kunci.t);
+  assert.equal(kunci.j.segel, null, "T5 segel-dokumen: baris dummy tidak disegel"); assert.equal(await n("segel", "jenis = 'lk' AND dasar = '2026-10-21'"), 0);
   const s = (await snap("2026-10-21")).j; hampir(s.snapshot.nasional.fs_ha.target_ha, 983.34); assert.equal(s.snapshot.nasional.fs_ha.fs, 261); assert.equal(s.snapshot.nasional.hotspot.total, 4129);
   assert.equal(s.snapshot.nasional.hotspot.tinggi, 281); assert.equal(s.snapshot.nasional.hotspot.sedang, 3848); assert.equal(s.snapshot.nasional.personel.total, 71878);
   assert.equal(s.snapshot.udara.water_bombing.sortie, 0, "udara kosong jujur, tanpa angka karangan"); assert.match(s.snapshot.udara.alasan_kosong, /tidak ada di data sumber/);
@@ -183,6 +184,14 @@ uji("putar ulang laporan 21 Okt: snapshot target 983,34 ha, padam 502,08 ha, bel
   const kz = await kirim(SO, "2026-10-21", "koordalops", {kejadian: [{prov: "Sumatera Utara", kab: "Langkat", luas_ha: 3.2}], hotspot_nasional: {total: 4129, tinggi: 281, sedang: 3848}}); assert.equal(kz.s, 201, kz.t); assert.equal((await setuju("2026-10-21", "koordalops", 1, V)).s, 200);
   const hs = await hari("2026-10-21"); assert.equal(hs.status, "lengkap");
   const k = await POST(V, P + "kunci", {tanggal: "2026-10-21"}); assert.equal(k.s, 201, k.t); assert.equal(k.j.status, "dikunci");
+  /* T1 segel-dokumen: tepat satu segel lk, sidik = hash snapshot, jawaban kunci membawa kode, verifikasi publik Berlaku */
+  assert.match(k.j.segel, /^[0-9A-HJKMNP-TV-Z]{10}$/);
+  const sg = await DB.prepare("SELECT * FROM segel WHERE kode = ?").bind(k.j.segel).first();
+  assert.deepEqual([sg.jenis, sg.rujukan, sg.dasar, sg.versi, sg.sidik, sg.judul, sg.penerbit, sg.periode], ["lk", "2026-10-21#0", "2026-10-21", 0, k.j.hash, "Laporan Harian Karhutla", "BNPB", "2026-10-21"]);
+  assert.equal(await n("segel", "jenis = 'lk' AND dasar = '2026-10-21'"), 1);
+  assert.equal(sg.sidik, (await DB.prepare("SELECT hash FROM lk_snapshot WHERE tanggal_laporan = '2026-10-21' AND ralat = 0").first()).hash);
+  assert.equal((await api("GET", "/api/verifikasi/" + k.j.segel, undefined, ipBaru())).j.status, "berlaku");
+  const sn = (await snap("2026-10-21")).j; assert.deepEqual(sn.segel, {kode: k.j.segel, sidik12: k.j.hash.slice(0, 12)}, "K5: snapshot terkunci membawa kode segel untuk slide akhir");
   const r = await snap("2026-10-21"); assert.equal(r.s, 200, r.t); const s = r.j.snapshot;
   assert.equal(r.j.utuh, true); assert.equal(r.j.hash, k.j.hash); assert.equal(r.j.hash, sha256(JSON.stringify(s)));
   hampir(s.nasional.fs_ha.target_ha, 983.34); hampir(s.nasional.fs_ha.padam_ha, 502.08); hampir(s.nasional.fs_ha.sisa_ha, 481.26); assert.equal(s.nasional.fs_ha.fs, 261);
@@ -223,6 +232,12 @@ uji("ralat: snapshot baru, snapshot lama utuh dan bisa dibuka, daftar angka beru
   assert.equal((await POST(V, P + "ralat", {tanggal: "2026-10-21", alasan: "Koreksi tanpa perubahan angka", ganti: {"prov:63": DATA["63"]}})).s, 400, "tidak mengubah angka apa pun");
   assert.equal((await POST(PM, P + "ralat", {tanggal: "2026-10-21", alasan: "Koreksi padam Kalsel dari Pusdalops", ganti: {"prov:63": tinggi}})).s, 403, "pimpinan hanya membaca");
   const r = await POST(V, P + "ralat", {tanggal: "2026-10-21", alasan: "Koreksi padam Kalsel dari Pusdalops", ganti: {"prov:63": tinggi}}); assert.equal(r.s, 201, r.t); assert.equal(r.j.ralat, 1);
+  /* T2 segel-dokumen: ralat = segel kedua versi 1; kode pertama berstatus Ada versi lebih baru dengan terbaru = kode kedua */
+  const sgLama = (await DB.prepare("SELECT kode FROM segel WHERE jenis = 'lk' AND rujukan = '2026-10-21#0'").first()).kode;
+  assert.match(r.j.segel, /^[0-9A-HJKMNP-TV-Z]{10}$/); assert.notEqual(r.j.segel, sgLama);
+  assert.equal((await DB.prepare("SELECT versi FROM segel WHERE kode = ?").bind(r.j.segel).first()).versi, 1);
+  const vLama = (await api("GET", "/api/verifikasi/" + sgLama, undefined, ipBaru())).j; assert.equal(vLama.status, "lebih_baru"); assert.equal(vLama.terbaru, r.j.segel);
+  assert.equal((await api("GET", "/api/verifikasi/" + r.j.segel, undefined, ipBaru())).j.status, "berlaku");
   assert.ok(r.j.perubahan.some(p => p.jalur.includes("padam_ha") && p.baru === 58 && p.lama === 57.42), JSON.stringify(r.j.perubahan.slice(0, 5)));
   const nol = (await snap("2026-10-21", "?ralat=0")).j, baru = (await snap("2026-10-21")).j;
   assert.equal(nol.hash, lama.hash, "ralat 0 tidak berubah"); assert.deepEqual(nol.snapshot, lama.snapshot); assert.equal(nol.terbaru, false);

@@ -36,7 +36,8 @@
   }
   async function siapLain() {
     if (R.bahan) return R.bahan;
-    const [ens, par, ver] = await Promise.all([json(B + "hujan_ansambel.json"), json(B + "param_banjir.json"), json(B + "cuaca_verifikasi.json")]);
+    const [ens, par, ver, pred] = await Promise.all([json(B + "hujan_ansambel.json"), json(B + "param_banjir.json"), json(B + "cuaca_verifikasi.json"), json("/prediksi/data/prediksi.json")]);
+    if (pred?.sphere?.air_l) Object.assign(D.SPHERE, pred.sphere); /* satu sumber: aturan.json lewat prediksi.json; gagal = salinan di sim_dampak.js */
     const q = par?.param, uang = q?.stimulan_rumah_rr && q?.nilai_nyawa_statistik && q?.biaya_pengungsi_hari ? {rr: q.stimulan_rumah_rr[0], rrRendah: q.stimulan_rumah_rr[1], rrTinggi: q.stimulan_rumah_rr[2], nyawa: q.nilai_nyawa_statistik[0], nyawaRendah: q.nilai_nyawa_statistik[1], nyawaTinggi: q.nilai_nyawa_statistik[2], pengungsiHari: q.biaya_pengungsi_hari[0]} : null;
     return R.bahan = {ens: ens?.grid?.length ? ens : null, uang, ver};
   }
@@ -83,6 +84,11 @@
       <button type="button" class="sc-reset" id="mdGenting" style="width:100%;margin:0 0 10px">Ke jam paling berbahaya</button>`;
     html += kartu("naik", "Angin kencang", `${kataAtap} Kerapuhan atap dan pohon memakai kurva lognormal.`,
       `<table class="sc-tb">${kepala(ada)}<tbody>${baris("Rumah rusak atapnya", a.rumahAtap, s.rumahAtap, ada)}${baris("Jiwa di sel dengan peluang rusak atap 50% atau lebih", a.jiwaAtap, s.jiwaAtap, ada)}${baris("Jiwa di sel dengan peluang pohon tumbang 50% atau lebih", a.jiwaPohon, s.jiwaPohon, ada)}${baris("Sekolah di sel itu", a.sekolah.atap, s.sekolah.atap, ada, fmt, `dari ${fmt(s.sekolah.n)}`)}${baris("Faskes di sel itu", a.faskes.atap, s.faskes.atap, ada, fmt, `dari ${fmt(s.faskes.n)}`)}</tbody></table>`);
+    /* KI-66: kebutuhan minimum Sphere per hari bagi penghuni rumah yang rusak atapnya; jiwa per rumah = PARAM.jiwa_rumah (3,9, sama dengan public/gempa/kerusakan.js) */
+    const jr = D.PARAM.jiwa_rumah[0], ks = D.kebutuhanSphere(Math.round(s.rumahAtap * jr));
+    /* tabel Sphere masuk kartu "Angin kencang" (asalnya rumah rusak atap), bukan kartu baru */
+    if (ks.jiwa > 0) html = html.replace(/<\/section>$/, `<p>Kebutuhan minimum Sphere per hari untuk ${jt(ks.jiwa)} jiwa dari rumah yang rusak atapnya (${fmt(jr)} jiwa per rumah, asumsi).</p><table class="sc-tb"><thead><tr><th>Per hari</th><th class="n">Jumlah</th></tr></thead><tbody><tr><td>Air minum, mandi, masak<span class="m">${fmt(D.SPHERE.air_l)} L per orang</span></td><td class="n">${jt(ks.air_l)} L</td></tr><tr><td>Hunian tertutup<span class="m">${fmt(D.SPHERE.hunian_m2)} m² per orang</span></td><td class="n">${jt(ks.hunian_m2)} m²</td></tr><tr><td>Jamban<span class="m">1 per ${fmt(D.SPHERE.jamban_per)} orang</span></td><td class="n">${fmt(ks.jamban)}</td></tr><tr><td>Pangan<span class="m">${fmt(D.SPHERE.kkal)} kkal per orang</span></td><td class="n">${jt(ks.kkal)} kkal</td></tr></tbody></table>
+      <p class="sc-cat">Kebutuhan minimum Sphere, bukan stok. Tidak semua penghuni mengungsi dan rumah rusak atap belum tentu tak layak huni.</p></section>`);
     html += kartu("sel", "Hujan dan genangan", `Dataran rendah dengan limpasan di atas ambang: ${jt(s.genang[1])} jiwa (p10 sampai p90: ${jt(s.genang[0])} sampai ${jt(s.genang[2])}).`,
       `<table class="sc-tb"><thead><tr><th></th><th class="n">p10</th><th class="n">p50</th><th class="n">p90</th></tr></thead><tbody>
         <tr><td>Jiwa tergenang</td>${[0, 1, 2].map(i => `<td class="n">${jt(s.genang[i])}</td>`).join("")}</tr>

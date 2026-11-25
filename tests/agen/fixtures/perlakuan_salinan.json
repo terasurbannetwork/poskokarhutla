@@ -1,0 +1,8 @@
+{
+  "catatan": "KI-40: salinan mesin peringkat perlakuan di luar public/inti/perlakuan.js. HANYA BOLEH MENYUSUT: hapus entri saat berkasnya memakai Perlakuan (inti) atau dihapus. Salinan baru dengan pola dominasi pareto di luar inti ditolak oleh tests/layar/ki_perlakuan.test.mjs.",
+  "salinan": [
+    {"berkas": "public/sim_perlakuan.js", "pola": "karhutla: calon perlakuan dijalankan lewat sebar(), diurut menurut luas diselamatkan 72 jam (tanpa pareto)"},
+    {"berkas": "public/banjir/sim_tanggap.js", "pola": "banjir: peringkat(dasar, hasil) menurut jiwa terselamatkan, rpPerJiwa (tanpa pareto)"},
+    {"berkas": "public/kekeringan/sim_tanggap.js", "pola": "kekeringan: urut kandidat menurut padi/jiwa/biaya, perUnit (tanpa pareto)"}
+  ]
+}

@@ -178,3 +178,128 @@ Validasi ALGORITMA 6:
 - 6.3 (GNSS atau levelling) belum ada data (Q11).
 
 Karena 6.2 belum ada vonis, `subsiden.json` dan `proyeksi_tanah.json` hasil putaran ini TIDAK ditaruh di `public/` dan tidak tayang. Berkasnya disimpan di luar repo di mesin pemilik (`~/licsbas/keluaran/`), bersama skrip pengunduh `~/licsbas/ambil.py` dan `~/licsbas/gacos.py` serta `~/licsbas/jalan2.sh`. Semua angka di bagian ini berlabel hipotesis (D4).
+
+### 6.9 Uji tahan-waktu ALGORITMA 6.2, putaran kedua Jakarta (24 Nov 2026)
+
+Cara: deret `cum_filt.h5` tiap frame (filter bawaan langkah 16, sama dengan `vel.filt.mskd` putaran 6.8) dibelah di 1 Juni 2021. Laju tiap piksel dicocokkan garis lurus pada tiap separuh, piksel yang dimasker di putaran 6.8 tetap dimasker, lalu kedua laju separuh diolah dengan `subsiden.hitung` yang sama (acuan lintang -6,30, tanpa mengubah kode). Skrip di luar repo: `~/licsbas/tahan.py`. Swa-ujinya: laju seluruh deret dari rumus yang sama sama dengan `vel` LiCSBAS (median selisih 0,0 mm/tahun).
+
+| Separuh | Frame turun | Frame naik | Gerbang pola (Utara, Selatan, cm/tahun) | Galat acuan |
+| --- | --- | --- | --- | --- |
+| Awal | 10 Jan 2020 sampai 16 Mei 2021, 33 citra | 2 Jan 2020 sampai 20 Mei 2021, 39 citra | lolos (-1,05; +0,1) | 0,89 |
+| Akhir | 8 Agu 2021 sampai 31 Mar 2023, 40 citra | 13 Jun 2021 sampai 31 Agu 2022, 33 citra | lolos (-1,35; -0,05) | 0,45 |
+
+Galat prediksi pergeseran separuh akhir dari laju separuh awal sama dengan selisih laju dikali lama separuh akhir, jadi syarat "galat kurang dari 2 s" setara dengan selisih laju per kecamatan kurang dari 2 s (s dari putaran 6.8: akar galat piksel kuadrat ditambah galat acuan kuadrat). Hasil di 42 kecamatan bercakupan minimal 30%: median selisih 0,2 cm/tahun lawan median 2 s 1,1 cm/tahun. **Vonis 6.2: lolos**, 42 dari 42 kecamatan di bawah 2 s. Selisih terbesar 0,5 (Taman Sari), lalu 0,4 (Tambora, Grogol Petamburan, Pasar Minggu, Gambir, Tanjung Priok, Pademangan).
+
+Catatan jujur:
+- Uji ini menguji kestabilan laju di dalam deret yang sama, bukan ketepatannya terhadap kebenaran (ALGORITMA 6.2).
+- s didominasi galat acuan (0,55) yang masih batas bawah, karena piksel dianggap bebas (ALGORITMA 4, butir terbuka n_efektif). Dengan n_efektif yang lebih jujur, ambang 2 s melebar dan uji ini makin mudah lolos.
+- Di pesisir utara separuh akhir sedikit lebih dalam dari separuh awal (Koja -1,6 lalu -1,9; Tanjung Priok -1,0 lalu -1,4; Pademangan -0,4 lalu -0,8). Itu masih di dalam 2 s, jadi belum bisa disebut percepatan.
+
+Status tayang: 6.1 dan 6.2 lolos, 6.3 (GNSS atau levelling) belum ada data (Q11), jadi semua angka tetap hipotesis (D4). Sebelum tayang masih ada dua hal: (1) pilihan n_efektif (a) variogram atau (b) bootstrap blok, yang menurut ALGORITMA 4 dipilih pemilik atau pemeriksa sebelum angka tayang; (2) tinjauan `validasi-model` untuk PT-06. Sampai itu `subsiden.json` tetap di luar `public/`.
+
+### 6.10 Galat bootstrap blok (K3) dan tinjauan validasi-model (24 Nov 2026)
+
+Pemilik memilih bootstrap blok spasial untuk n_efektif (KEPUTUSAN K3). `subsiden.py` versi 3: galat median kecamatan dan galat acuan dihitung dengan 200 ulangan bootstrap blok, blok 0,01 derajat (D9, bawaan sementara), kecamatan dengan kurang dari 4 blok tidak diberi galat dan tidak diproyeksikan. Ini mengoreksi angka di 6.8 dan 6.9: galat acuan 0,58 cm/tahun (bukan 0,55), galat median kecamatan 0,04 sampai 0,29 (median 0,08; pesisir Koja 0,25, Penjaringan 0,29, Tanjung Priok 0,24, Cilincing 0,14), dan butir "n_efektif belum dipilih" di 6.9 sudah tidak berlaku. Uji 6.2 diulang dengan galat baru: median selisih 0,2 lawan median 2 s 1,17, 42 dari 42 kecamatan di bawah 2 s.
+
+Kepekaan ukuran blok (hasil yang sama, hanya blok diubah):
+
+| Blok | Galat acuan | Kecamatan bergalat | Median galat kecamatan | Median s |
+| --- | --- | --- | --- | --- |
+| 0,01 derajat (~1,1 km) | 0,58 | 42 dari 42 | 0,08 | 0,59 |
+| 0,03 derajat (~3,3 km) | 0,66 | 33 dari 42 (Koja hilang) | 0,12 | 0,67 |
+| 0,05 derajat (~5,5 km) | 0,72 | 18 dari 42 (Koja, Tanjung Priok hilang) | 0,18 | 0,75 |
+
+Tinjauan `validasi-model` (konteks bersih), vonis **BELUM layak tayang**. Temuan yang diterima:
+1. Uji 6.2 hanya uji konsistensi di dalam satu pengolahan, bukan uji independen: `cum_filt.h5` berasal dari satu inversi SBAS seluruh deret (langkah 13) dan filter waktu seluruh deret (langkah 16), interferogram yang melintasi 1 Juni 2021 ikut kedua separuh, dan masker diambil dari deret penuh. Dayanya juga hampir nol: 38 dari 42 kecamatan lajunya lebih kecil dari 2 s, jadi laju yang berubah separuhnya pun tetap lolos. Ambang yang lebih tepat 2·akar(s_awal² + s_akhir²) (median sekitar 2,1) juga lolos 42 dari 42, dan sama tidak diskriminatifnya.
+2. Blok 0,01 derajat kemungkinan terlalu kecil: derau atmosfer sisa dan galat orbit berkorelasi 5 sampai 20 km, jadi galat kecamatan masih terlalu sempit. Blok yang lebih besar membuat banyak kecamatan pesisir kehilangan galat (tabel di atas). Belum ada variogram residu.
+3. Validasi 6.1 lolos tipis: p90 terdalam 3,9 di bawah "lebih dari 5" Sidiq 2021 dan sekitar 2,5 kali lebih dangkal dari titik ukur Muara Baru. Gerbang pola lolos dengan margin 0,4 dari ambang 1,0, dan baru lolos sesudah putaran 2 mengubah GACOS, jendela, deramp, dan acuan, jadi gerbang itu sempat dipakai sebagai umpan balik penyetelan dan bukan bukti independen.
+4. Periode dua geometri berbeda (naik berakhir 31 Agustus 2022, turun 31 Maret 2023); dekomposisi vertikal mencampur periode itu.
+
+Status: angka Jakarta tetap tidak tayang dan tetap hipotesis (D4); kata "terukur" tidak dipakai sampai validasi GNSS atau levelling (6.3, Q11). Swa-uji `~/licsbas/tahan.py` diperketat ke selisih di bawah 0,5 mm/tahun (nilai sebenarnya 0,0). Langkah yang tersisa: variogram residu untuk menentukan ukuran blok (mengganti bawaan D9), uji tahan-waktu independen dengan dua inversi LiCSBAS terpisah per separuh, dan menyamakan periode kedua geometri.
+
+### 6.11 Variogram derau laju Jakarta untuk ukuran blok D9 (24 Nov 2026)
+
+Skrip lab di luar repo: `~/licsbas/variogram.py`. Variogram empiris (selang 1 km sampai 20 km, 4.000 piksel acak, model eksponensial) pada dua medan derau per frame, dalam laju searah pandang (LOS, mm/tahun):
+- **acuan**: `vel.filt.mskd` putaran 6.8 di area acuan (lintang di bawah -6,30), dianggap tanpa deformasi;
+- **selisih**: laju separuh akhir dikurangi separuh awal (bagian 6.9), sehingga laju yang tetap hilang dan yang tersisa derau.
+
+Swa-uji skrip: medan acak bebas memberi jarak korelasi 0 km, medan halus buatan memberi sekitar 15 km.
+
+| Medan | γ 1,5 km | γ 5,5 km | γ 10,5 km | γ 15,5 km | γ 19,5 km | Plafon (sill) sampai 20 km |
+| --- | --- | --- | --- | --- | --- | --- |
+| Turun, acuan | 1,8 | 4,3 | 6,6 | 9,7 | 11,4 | tidak ada |
+| Turun, selisih | 0,2 | 0,7 | 1,1 | 1,4 | 1,4 | hampir rata sesudah 15 km |
+| Naik, acuan | 30,9 | 88,5 | 146,0 | 169,6 | 213,3 | tidak ada |
+| Naik, selisih | 1,1 | 5,4 | 11,4 | 14,3 | 14,5 | hampir rata sesudah 15 km |
+
+(γ dalam (mm/tahun)², semivarians.)
+
+Bacaan:
+1. Derau tidak punya jarak korelasi pendek. γ terus naik sampai 15 sampai 20 km, artinya derau didominasi komponen panjang gelombang besar (sisa atmosfer atau orbit berbentuk kemiringan bidang) yang selebar kota. Tidak ada ukuran blok di dalam satu kecamatan yang bisa menangkapnya. Bootstrap blok di `subsiden.py` (K3, D9) tetap benar untuk derau pendek, tetapi galat kecamatannya tetap batas bawah untuk galat antar-kecamatan yang berjauhan.
+2. Besarnya untuk perbandingan Jakarta Utara lawan Selatan (pusat berjarak sekitar 15 km): simpangan baku beda dua titik = akar(2γ). Frame turun 4,4 mm/tahun LOS, kira-kira 0,5 cm/tahun vertikal (U 0,81). Frame naik 18,4 mm/tahun LOS, kira-kira 2,4 cm/tahun vertikal (U 0,78). Selisih Utara lawan Selatan di 6.8 hanya 1,4 cm/tahun. Kalau variogram acuan frame naik memang derau, selisih itu **tidak bermakna secara statistik**, dan lolosnya gerbang pola bisa kebetulan.
+3. Catatan batas: area acuan (Jagakarsa sampai Depok utara) mungkin tidak benar-benar diam, jadi variogram acuan bisa memuat sinyal asli dan menjadi batas atas derau. Medan selisih lebih bersih tetapi hanya mengukur derau yang berubah antarseparuh, bukan kemiringan tetap yang sama di kedua separuh, jadi medan itu batas bawah. Derau sesungguhnya ada di antara keduanya. Frame naik jauh lebih berderau daripada frame turun di kedua ukuran.
+
+Akibat: D9 (blok 0,01 derajat) tidak bisa diganti dengan angka dari variogram, karena variogram tidak punya plafon di dalam jendela. Yang dibutuhkan bukan blok lebih besar, melainkan suku galat jarak: galat beda laju antara kecamatan dan area acuan = akar(2γ(h)) pada jarak h, ditambahkan ke s. Itu perubahan rumus yang perlu keputusan pemilik. Sebelum itu angka Jakarta tetap tidak tayang.
+
+### 6.12 Galat jarak dari variogram (K4), Jakarta (24 Nov 2026)
+
+`subsiden.py` versi 4: variogram empiris laju vertikal piksel area acuan (sesudah dikurangi median, selang 1 km sampai 40 km, 1.500 piksel acak, benih tetap) dihitung di dalam `hitung` dan ditulis di berkas (`variogram_acuan`). Tiap kecamatan mendapat `galat_jarak` = akar(2γ(h)), h = jarak pusat piksel kecamatan ke pusat piksel acuan, dan `tak_beda_nol` bila |laju| < 2 s dengan s = akar(galat² + galat acuan² + galat jarak²). `proyeksi_tanah.py` memakai s tiga suku, dan menahan tayang bila `galat_jarak` tidak ada. Swa-uji: medan tetap memberi γ 0, medan v = x memberi γ(h) mendekati h²/4, interpolasi dan ekstrapolasi γ benar.
+
+Variogram vertikal acuan (cm/tahun)²: 0,09 di 0,5 km; 0,37 di 4,5 km; 0,59 di 9,5 km; 0,74 di 14,5 km; 0,95 di 19,5 km; 1,16 di 24,5 km; 1,06 di 29,5 km. Tidak ada kecamatan di luar selang terjauh (tanpa ekstrapolasi).
+
+Hasil putaran 6.8 dengan galat baru (gerbang pola tetap lolos, -1,3 lawan +0,1; galat acuan 0,58):
+
+| Kecamatan | Laju median | Galat jarak | s | Status |
+| --- | --- | --- | --- | --- |
+| Koja | -1,9 | 1,45 | 1,58 | belum beda dari nol |
+| Penjaringan | -1,7 | 1,47 | 1,61 | belum beda dari nol |
+| Tanjung Priok | -1,3 | 1,53 | 1,65 | belum beda dari nol |
+| Cilincing | -1,3 | 1,44 | 1,56 | belum beda dari nol |
+| Pademangan | -0,7 | 1,53 | 1,64 | belum beda dari nol |
+
+**42 dari 42 kecamatan belum beda dari nol** pada 2 s. Median galat jarak Jakarta Utara 1,5 dan Jakarta Selatan 1,2 cm/tahun. Galat jarak sekarang suku terbesar s.
+
+Batas yang tetap berlaku: variogram acuan mungkin memuat sinyal asli (6.11), jadi s ini konservatif, dan derau sebenarnya bisa lebih kecil. Yang paling mungkin mengecilkan galat adalah deret yang lebih panjang: derau atmosfer yang tak berkorelasi antartanggal mengecil kira-kira sebanding 1/T^1,5 terhadap lama deret T, dan deret sekarang hanya sekitar 3 tahun (frame naik 2,7 tahun). LiCSAR punya interferogram kedua frame sejak sekitar 2016 (belum diunduh, putaran 6.7 dibatasi sejak 2020). Kesimpulan saat ini: data putaran 2 cukup untuk pola (pesisir barat laut paling dalam), tetapi belum cukup untuk angka per kecamatan yang bermakna. Tidak tayang.
+
+### 6.13 Putaran LiCSBAS ketiga Jakarta: deret 2016 sampai 2023 dan uji tahan-waktu independen (24 Nov 2026)
+
+Pemilik meminta deret diperpanjang ke 2016 supaya galat mengecil. Pasangan baru diunduh dengan `~/licsbas/ambil.py` (pasangan sejak 1 Januari 2016, Dt paling lama 48 hari untuk frame turun dan 24 hari untuk frame naik): frame turun menjadi 608 pasangan, frame naik 471. GACOS LiCSAR ditambahkan per tanggal, lalu dijalankan langkah 02, 03, 05 (jendela Jakarta yang sama), 11 sampai 16 tanpa deramp (`~/licsbas/jalan3.sh`). LiCSBAS lama perlu satu tambalan lagi untuk matplotlib baru: `set_major_locator` tidak lagi mengembalikan locator (`LiCSBAS_plot_lib.py`, di luar repo).
+
+| | Frame turun 047D | Frame naik 098A |
+| --- | --- | --- |
+| Citra | 167 (12 Apr 2016 sampai 31 Mar 2023) | 159 (23 Jan 2016 sampai 31 Agu 2022) |
+| Interferogram buruk | 43 | 70 |
+| Piksel dipertahankan | 96,1% | 86,9% |
+| Celah jaringan | 6, terpanjang Des 2016 sampai Okt 2019 tersambung | 11 |
+
+**Hasil deret penuh** (`subsiden.py` v4, acuan -6,30):
+- **Gerbang pola GAGAL**: Jakarta Utara -0,95 lawan Jakarta Selatan -0,25 cm/tahun, selisih 0,7, di bawah syarat 1,0.
+- Galat mengecil: galat acuan 0,10 (putaran 2: 0,58), galat jarak sekitar 0,9 (putaran 2: sekitar 1,5). Variogram vertikal acuan 0,14 (cm/tahun)² di 4,5 km dan 0,33 di 19,5 km, kira-kira separuh putaran 2.
+- 2 dari 42 kecamatan beda dari nol pada 2 s: Penjaringan -2,2 (p90 -3,5) dan Kembangan -2,1 (p90 -3,0). Sesudahnya Kalideres -1,6, Cengkareng -1,3, Kebon Jeruk -1,2, Koja -1,2, Pesanggrahan -1,1, Cilincing -1,0; semuanya belum beda dari nol.
+- 6.1: p90 terdalam 3,5 masih di dalam 2,5 sampai 28, tetapi gerbang pola sudah gagal.
+
+**Uji tahan-waktu versi 6.9 tidak berlaku untuk deret ini**: belah dari satu inversi menghasilkan selisih median 0,0, karena inversi dengan celah jaringan memaksa laju lurus melewati celah. Ini kebocoran yang disebut tinjauan 6.10.
+
+**Uji tahan-waktu independen** (`~/licsbas/belah.sh`): interferogram dibelah di 1 Juli 2019 (separuh awal hanya pasangan yang berakhir sebelum tanggal itu, separuh akhir hanya yang mulai sesudahnya), lalu langkah 11 sampai 16 dijalankan terpisah untuk tiap separuh. Frame turun 285 dan 294 interferogram, frame naik 133 dan 191.
+- Gerbang pola: separuh awal gagal (-0,9 lawan -0,15), separuh akhir lolos (-1,5 lawan +0,4).
+- Laju kecamatan kedua separuh hanya berkorelasi 0,44.
+- Median selisih 0,4 cm/tahun di bawah ambang 2·akar(s_awal² + s_akhir²) yang mediannya 3,4. Semua 42 kecamatan di bawah ambang, tetapi ambang selebar itu tidak diskriminatif.
+
+| Kecamatan | Separuh awal 2016-2019 | Separuh akhir 2019-2023 | Deret penuh |
+| --- | --- | --- | --- |
+| Penjaringan | -2,0 | -2,2 | -2,2 |
+| Kembangan | -2,1 | -0,7 | -2,1 |
+| Kalideres | -1,6 | -0,6 | -1,6 |
+| Cengkareng | -1,3 | -0,5 | -1,3 |
+| Koja | -1,0 | -2,1 | -1,2 |
+| Cilincing | -0,9 | -1,5 | -1,0 |
+| Tanjung Priok | -0,7 | -1,5 | -0,8 |
+| Pesanggrahan | -1,3 | +0,6 | -1,1 |
+| Jagakarsa | +0,3 | +0,4 | +0,3 |
+
+Bacaan:
+1. Satu-satunya sinyal yang tahan di semua ukuran adalah **Penjaringan sekitar -2 cm/tahun**: sama di kedua separuh independen, beda dari nol di deret penuh, dan cocok dengan literatur yang menunjuk pesisir barat laut (Muara Baru, Pluit).
+2. Barat (Kembangan, Kalideres, Cengkareng) dalam di separuh awal tetapi dangkal di separuh akhir; timur laut (Koja, Cilincing, Tanjung Priok) sebaliknya. Ini bisa perubahan laju sungguhan atau derau, dan data ini belum bisa membedakannya.
+3. Deret penuh mengikuti separuh awal untuk kecamatan barat, padahal separuh akhir berisi lebih banyak citra. Dugaan: celah jaringan frame naik 2017 sampai 2019 dan batasan laju lurus inversi. Belum diperiksa.
+
+Status: gerbang pola gagal di deret terpanjang, jadi menurut ALGORITMA 5 `subsiden.py` tidak menulis berkas. Angka Jakarta **tidak tayang**. Keluaran lab disimpan di luar repo: `~/licsbas/keluaran/subsiden_16.json`. Data mentah kedua frame memakan sekitar 4,7 GB di `~/licsbas` (frame turun 2,7 GB, frame naik 2,0 GB).

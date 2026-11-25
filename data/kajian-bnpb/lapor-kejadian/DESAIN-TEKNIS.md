@@ -53,7 +53,7 @@ Tabel `lapor_periksa`, `lapor_versi`, `lapor_sesi`, `lapor_tiket` TIDAK diubah. 
 | Rute | Hak | Isi | Catatan |
 | --- | --- | --- | --- |
 | `GET /api/lapor/hari-ini` | publik | `{baris:[kartu], jumlah, dibuat, jendela_jam}` dengan `?prov=` dan `?jenis=` (saring seperti `alunBuat`) | cache tepi 60 detik (`cacheTepi`), batas laju per IP 120 per jam (pola `lapor.alun`), `Cache-Control: public, max-age=60`; nonaktif bila saklar mati: menjawab 404 JSON |
-| `POST /api/lapor/meja/tarik` | staf BNPB dan BPBD wilayah (D95, Q18) | `{kode, aktif, alasan?}` | menulis `lk_tarik`; catat di log akses; batas laju |
+| `POST /api/lapor/meja/<LA-nomor>/tarik` (LK-07; semula `/meja/tarik {kode}`) | staf BNPB dan BPBD wilayah (D95, Q18) | `{aktif, alasan?}` | menulis `lk_tarik` satu baris per anggota kejadian laporan di wilayah akun; log profil hakMeja; batas laju aksi meja |
 | `POST /api/lapor/meja/usulkan` | staf berhak (Q11) | `{kejadian_laporan}` | memeriksa syarat A6; menulis `lk_usulan`; 409 bila sudah ada; 422 bila jenis tak terpetakan atau kab lintas |
 | `GET /api/siklus/ingest/modul` (Bearer `PIPA_TOKEN`) | sistem | rekaman modul termasuk `lapor_ai` dengan `usulan_staf` | kontrak dari `keterpaduan` D3; dibuat di sini hanya bila belum ada |
 | `GET /api/lapor/meja` dan rincian | sudah ada | tambah status halaman publik dan status usulan | tidak membuka kolom baru bagi publik |

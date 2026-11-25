@@ -16,6 +16,29 @@ export async function muatHimawari(env) {
   try { const o = await env.MEDIA?.get("data/himawari.json"); return o ? JSON.parse(await new Response(o.body).text()) : null; } catch (e) { return null; }
 }
 
+/* status_sumber (ST-01, KEPUTUSAN-SATELIT D16): satu-satunya pintu. Tanpa kunci = berkas lama (hidup). Ada tapi bukan objek sah = terputus/galat (gagal tertutup).
+   Hanya enum `kelas_galat` dan waktu ISO yang lolos; teks dirakit di sini dari keduanya, tak pernah dari string server. null baris BUKAN "tidak ada api". */
+const KELAS = new Set(["ditolak", "reset", "timeout", "auth", "kosong", "parse", "galat"]), ISO = /^\d{4}-\d\d-\d\dT\d\d:\d\d(:\d\d(\.\d+)?)?Z$/;
+export function statusSumber(hw) {
+  if (hw == null) return {status: "tidak_diketahui", terputus_sejak: null, kelas_galat: null, alarm_tersedia: false, teks: null};   // berkas hilang/tak terbaca: bukan "hidup"
+  if (!("status_sumber" in hw)) return {status: "hidup", terputus_sejak: null, kelas_galat: null, alarm_tersedia: true, teks: null};
+  const s = hw.status_sumber;
+  if (!s || typeof s !== "object" || Array.isArray(s) || (s.status !== "hidup" && s.status !== "terputus")) return terputus(null, "galat");
+  if (s.status === "terputus" || s.alarm_tersedia !== true || !Array.isArray(hw.baris)) return terputus(s.terputus_sejak, KELAS.has(s.kelas_galat) ? s.kelas_galat : "galat");
+  return {status: "hidup", terputus_sejak: null, kelas_galat: null, alarm_tersedia: true, teks: null};
+}
+function terputus(sejak, kelas) {
+  const t = typeof sejak === "string" && ISO.test(sejak) && !Number.isNaN(Date.parse(sejak)) ? sejak : null;
+  return {status: "terputus", terputus_sejak: t, kelas_galat: kelas, alarm_tersedia: false, teks: t ? `sumber terputus sejak ${t}` : "sumber terputus"};
+}
+
+/* /api/status: status_sumber dipakai ulang 60 dtk per isolat (per objek MEDIA), supaya status tidak GET + parse seluruh berkas tiap panggilan. ponytail: salinan stale <= 60 dtk; pindahkan status_sumber ke awal berkas bila perlu baca berentang. */
+const CACHE_STATUS = new WeakMap();
+export async function statusHimawari(env, kini = Date.now()) {
+  const c = CACHE_STATUS.get(env.MEDIA); if (c && kini - c.t < 60e3) return c.s;
+  const s = statusSumber(await muatHimawari(env)); CACHE_STATUS.set(env.MEDIA, {t: kini, s}); return s;
+}
+
 /* waktu data (kunci `acuan`, selalu kunci pertama) tanpa mengurai berkas: baca 300 byte awal dari R2. null = objek/kunci tidak ada. Dipakai /api/status. */
 export async function himawariDibuat(env) {
   try { const o = await env.MEDIA?.get("data/himawari.json", {range: {offset: 0, length: 300}}); const t = o ? await new Response(o.body).text() : "", w = Date.parse(t.match(/"acuan"\s*:\s*"([^"]+)"/)?.[1]); return Number.isNaN(w) ? null : w; } catch (e) { return null; }
@@ -25,6 +48,7 @@ export async function himawariDibuat(env) {
    [lat, lon, u, frp, level, rel, qf, n, u0, baru]; baris lama 7 kolom: n = 1, u0 = u. diIndonesia(lat, lon): FIRMS di D1 membuang titik negara tetangga,
    jadi tanpa saringan ini api di Malaysia/Timor Leste/PNG selalu tampak "baru". */
 export function tandaiBaru(hw, firms, kini, diIndonesia = () => true) {
+  if (!statusSumber(hw).alarm_tersedia) return [];   // terputus: tak ada alarm, null bukan "tanpa api"
   const segar = hw?.acuan && kini - Date.parse(hw.acuan) <= BARU_ACUAN_MAKS;
   let g = null;
   if (segar && firms?.baris) {
@@ -61,6 +85,8 @@ export async function saringIndonesia(env) {
 export async function himawariRespons(env, kini = Date.now()) {
   const hw = await muatHimawari(env);
   if (!hw) return {acuan: null, baris: [], n_baru: 0};
+  const ss = statusSumber(hw);
+  if (!ss.alarm_tersedia) return {acuan: typeof hw.acuan === "string" ? hw.acuan : null, baris: [], n_baru: 0, status_sumber: ss};
   let firms = null;
   try { const r = await env.DB?.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first(); firms = r && JSON.parse(r.isi); } catch (e) {}
   /* kolom w = indeks ke `wilayah` (kunci "prov|kab|kec"), untuk indikator Api baru per wilayah di panel layar; wilayah gagal dimuat = kosong */
@@ -68,5 +94,5 @@ export async function himawariRespons(env, kini = Date.now()) {
   const kunci = (lat, lon) => W ? cariWilayah(W, lat, lon) : null, daftar = [], idx = new Map();
   const baris = tandaiBaru(hw, firms, kini, (lat, lon) => !!kunci(lat, lon)).flatMap(r => { const k = kunci(r[0], r[1]); if (!k) return [];
     if (!idx.has(k)) { idx.set(k, daftar.length); daftar.push(k); } return [[...r, idx.get(k)]]; });
-  return {...hw, kolom: [...(hw.kolom || ["lat", "lon", "u", "frp_mw", "level", "rel", "qf"]).slice(0, 7), "n", "u0", "baru", "w"], wilayah: daftar, baris, n_baru: baris.reduce((s, r) => s + r[9], 0)};
+  return {...hw, kolom: [...(hw.kolom || ["lat", "lon", "u", "frp_mw", "level", "rel", "qf"]).slice(0, 7), "n", "u0", "baru", "w"], wilayah: daftar, baris, status_sumber: ss, n_baru: baris.reduce((s, r) => s + r[9], 0)};
 }

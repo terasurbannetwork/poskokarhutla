@@ -2,7 +2,7 @@
 .dlg svg text,#tren svg text{fill:currentColor}
 .dlg ul.aksi{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:12.5px}
 .dlg ul.aksi li{display:flex;gap:8px;align-items:baseline}
-.dlg ul.aksi .tg{flex:none;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:6px;background:var(--surface);color:var(--ink2)}
+.dlg ul.aksi .tg{flex:none;font-size:10px;font-weight:800;letter-spacing:.01em;padding:2px 6px;border-radius:6px;background:var(--surface);color:var(--ink2)}
 #tren select.btn{max-width:100%}
 .kal .nm{position:sticky;left:0;background:var(--card);z-index:1}
 @media (max-width:600px){.kal{grid-template-columns:110px repeat(36,minmax(22px,1fr)) 150px;min-width:1060px}}
@@ -20,7 +20,7 @@
 #tren .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
 #tren .ex-ft em{font-style:italic;opacity:.9}
 #tren .ex-ft .ex-leg{flex:1 1 100%;justify-content:center}
-#tren .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+#tren .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.01em;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
 #tren .ex-ey:empty{display:none}
 #tren .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
 #tren .ex .ctl{margin:12px 0 0}

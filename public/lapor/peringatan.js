@@ -31,25 +31,42 @@ function gambar() {
   w.replaceChildren(kisi);
 }
 
-/* ---- kartu pasang aplikasi ---- */
+/* ---- kartu pasang aplikasi: satu baris per perangkat, QR untuk membuka di HP (pemilik 24 Nov 2026, pola halaman unduh) ---- */
+const ANDROID = /Android/.test(navigator.userAgent), HP = iPhone || ANDROID;
+function barisPasang(nama, ket, aksi) {
+  const li = el("li", "lp-pw-baris"), t = el("span"); t.append(el("b", null, nama)); if (ket) t.append(el("small", null, ket));
+  li.append(t, aksi); return li;
+}
+function tombolPasang(teks) {
+  const b = el("button", "lp-pw-tbl"); b.type = "button"; b.append(ikon("i-unduh"), teks);
+  b.addEventListener("click", async () => { const e = pasangTunda; if (!e) return; pasangTunda = null; await e.prompt(); await e.userChoice.catch(() => null); gambar(); });
+  return b;
+}
+function tombolLangkah(judul, langkah) {
+  const d = el("details", "lp-pw-lipat"), s = el("summary", "lp-pw-tbl", "Lihat langkah"), ol = el("ol", "lp-pw-langkah");
+  s.setAttribute("aria-label", `Lihat langkah ${judul}`);
+  for (const x of langkah) ol.append(el("li", null, x));
+  d.append(s, ol); return d;
+}
 function kartuPasang() {
-  const k = el("section", "lp-pw-kartu"), kep = el("div", "lp-pw-kep"), ik = el("span", "lp-pw-ik"); ik.append(ikon("i-unduh"));
-  const t = el("div"); t.append(el("b", null, "Pasang di HP"), el("small", null, "Buka lebih cepat dari layar utama, bisa dibuka tanpa sinyal, dan menerima peringatan."));
+  const k = el("section", "lp-pw-kartu lp-pw-pasang"), kep = el("div", "lp-pw-kep"), ik = el("span", "lp-pw-ik"); ik.append(ikon("i-unduh"));
+  const t = el("div"); t.append(el("b", null, "Pasang aplikasi"), el("small", null, "Buka lebih cepat dari layar utama, tetap bisa dibuka tanpa sinyal, dan menerima peringatan."));
   kep.append(ik, t); k.append(kep);
-  const os = el("p", "lp-pw-os"); os.append("Tersedia di", el("span", "lp-pil", "iOS"), el("span", "lp-pil", "Android")); k.append(os);
   if (terpasang()) { const ok = el("p", "lp-pw-ok"); ok.append(ikon("i-centang"), "Aplikasi sudah terpasang di perangkat ini."); k.append(ok); return k; }
-  if (pasangTunda) {
-    const b = el("button", "lp-utama"); b.type = "button"; b.append(ikon("i-unduh"), "Pasang aplikasi");
-    b.addEventListener("click", async () => { const e = pasangTunda; pasangTunda = null; await e.prompt(); await e.userChoice.catch(() => null); gambar(); });
-    k.append(b); return k;
+  const badan = el("div", "lp-pw-pbadan"), ul = el("ul", "lp-pw-daftar");
+  const pasangAndroid = pasangTunda && !iPhone ? tombolPasang("Pasang") : tombolLangkah("Android", ["Buka halaman ini di Chrome.", "Ketuk menu titik tiga di kanan atas.", "Pilih Instal aplikasi atau Tambahkan ke layar utama."]);
+  ul.append(
+    barisPasang("Android", "Chrome", ANDROID ? pasangAndroid : tombolLangkah("Android", ["Buka halaman ini di Chrome di HP Android.", "Ketuk menu titik tiga di kanan atas.", "Pilih Instal aplikasi atau Tambahkan ke layar utama."])),
+    barisPasang("iPhone dan iPad", "Safari", tombolLangkah("iPhone", ["Buka halaman ini di Safari.", "Ketuk tombol Bagikan (kotak dengan panah ke atas).", "Pilih Tambah ke Layar Utama, lalu Tambah.", "Buka Pantau Bencana dari ikon di layar utama untuk menyalakan peringatan."])),
+    barisPasang("Komputer", "Chrome atau Edge", !HP && pasangTunda ? tombolPasang("Pasang") : tombolLangkah("komputer", ["Buka halaman ini di Chrome atau Edge.", "Klik ikon pasang di ujung kanan kolom alamat.", "Pilih Instal."])));
+  badan.append(ul);
+  const qr = !HP && window.Bagi?.QR ? (() => { try { return window.Bagi.QR.kanvas(location.origin + "/lapor/", 4); } catch { return null; } })() : null;
+  if (qr) {
+    const f = el("figure", "lp-pw-qr"); qr.setAttribute("role", "img"); qr.setAttribute("aria-label", "Kode QR ke halaman Pantau Bencana");
+    const c = el("figcaption"); c.append(el("b", null, "Pindai dengan HP"), el("small", null, location.host + "/lapor"));
+    f.append(qr, c); badan.append(f);
   }
-  if (iPhone) {
-    const ol = el("ol", "lp-pw-langkah");
-    for (const x of ["Buka halaman ini di Safari.", "Ketuk tombol Bagikan (kotak dengan panah ke atas).", "Pilih Tambah ke Layar Utama, lalu Tambah.", "Buka Pantau Bencana dari ikon di layar utama untuk menyalakan peringatan."]) ol.append(el("li", null, x));
-    k.append(ol); return k;
-  }
-  k.append(el("p", "lp-redup lp-kecil", "Buka menu peramban (titik tiga), lalu pilih Instal aplikasi atau Tambahkan ke layar utama."));
-  return k;
+  k.append(badan); return k;
 }
 
 /* ---- kartu peringatan dini ---- */
@@ -97,7 +114,7 @@ function formulir(lama = null) {
       if (!j.hasil?.length) hasil.append(el("p", "lp-redup lp-kecil", "Kecamatan tidak ditemukan."));
     }, 250); });
   // jenis dan ambang
-  const jg = el("fieldset", "lp-pw-jenis"); jg.append(el("legend", null, "Jenis ancaman"));
+  const jg = el("fieldset", "lp-pw-jenis lp-pw-pil"); jg.append(el("legend", null, "Jenis ancaman"));
   const jenisAwal = lama?.jenis ?? 15;
   for (const [, bit, nama] of JENIS) { const l = el("label"), c = el("input"); c.type = "checkbox"; c.value = String(bit); c.checked = !!(jenisAwal & bit); l.append(c, nama); jg.append(l); }
   const ag = el("label", "lp-pw-label", "Kirim mulai tingkat"), sel = el("select");
@@ -125,7 +142,7 @@ function formulir(lama = null) {
         : n === "AbortError" || n === "InvalidStateError" ? "Pendaftaran ke layanan notifikasi peramban gagal. Coba lagi beberapa saat lagi." : /fetch|network|Failed/i.test(m) ? "Tidak ada sambungan. Coba lagi saat ada sinyal." : m;
       nyala.disabled = false; }
   });
-  const catatan = el("p", "lp-redup lp-kecil", "Tingkat dihitung per kabupaten/kota dari prakiraan Pantau Bencana, bukan peringatan resmi BMKG atau BNPB. Yang disimpan hanya alamat notifikasi perangkat dan kode kecamatan.");
+  const catatan = el("p", "lp-redup lp-kecil lp-pw-catatan", "Tingkat dihitung per kabupaten/kota dari prakiraan Pantau Bencana, bukan peringatan resmi BMKG atau BNPB. Yang disimpan hanya alamat notifikasi perangkat dan kode kecamatan.");
   f.append(lb, chip, cari, hasil, jg, ag, nyala, status, catatan); segarChip(); return f;
 }
 

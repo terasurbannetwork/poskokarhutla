@@ -16,7 +16,7 @@ test("dua laporan dari satu nomor tidak mendirikan gugus", () => {
 });
 test("di luar radius atau jendela: bukan gugus; kekeringan tidak dihitung; tidak valid dibuang", () => {
   assert.equal(hitungGugus([L("A"), L("B", {wa: "2", lat: -6.3, desa: "Lain"})]).gugus.length, 0);   // ~11 km
-  assert.equal(hitungGugus([L("A"), L("B", {wa: "2", t: T0 + 7 * J})]).gugus.length, 0);
+  assert.equal(hitungGugus([L("A"), L("B", {wa: "2", t: T0 + 7 * J, desa: "Lain"})]).gugus.length, 0);   // desa sama dalam 24 jam kini tersambung (lapor-kejadian A1, tests/lapor/gugus_desa.test.mjs)
   assert.equal(hitungGugus([L("A", {jenis: "kekeringan"}), L("B", {wa: "2", jenis: "kekeringan"})]).gugus.length, 0);
   assert.equal(hitungGugus([L("A"), L("B", {wa: "2", status: "tidak_valid"})]).gugus.length, 0);
 });

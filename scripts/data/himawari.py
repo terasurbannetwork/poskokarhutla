@@ -15,12 +15,18 @@ Pantau Karhutla (MIT, Copyright (c) 2026 Pantau Karhutla; pipeline/src/haze/hima
 (HIMAWARI_JAM_PENANDA, bawaan 13 jam) HANYA untuk penanda; `baris` tetap jendela HIMAWARI_JAM. Sumber VIIRS: FIRMS NRT (env FIRMS_MAP_KEY) atau hotspot72.json
 yang segar (<= 6 jam dari acuan; lokal atau situs). Tanpa keduanya `penanda.status` = "viirs_tak_ada" dan daftarnya kosong (tidak mengira "tak ada VIIRS" = baru).
 Kredit wajib JAXA ada di `penanda.kredit`.
+
+`status_sumber` (ST-01, KEPUTUSAN-SATELIT D3/D16) SELALU ada di himawari.json: {sumber, status hidup|terputus, terakhir_ok, terputus_sejak, kelas_galat
+(ditolak|reset|timeout|auth|kosong|parse|galat), percobaan, rincian[{mode, kelas}], alarm_tersedia}. Sambungan gagal = exit 0 + himawari.json bersetatus terputus
+(berkas lama tidak ditimpa datanya; tanpa berkas lama `baris` = null, BUKAN daftar kosong). Urutan sambung: FTPS eksplisit 21, FTPS implisit 990, FTP polos 21.
 """
-import csv, datetime as dt, ftplib, io, json, math, os, re, sys, time, urllib.request
+import csv, datetime as dt, ftplib, io, json, math, os, re, socket, ssl, sys, time, urllib.request
 
 HOST = "ftp.ptree.jaxa.jp"
 KELUAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../public/data/himawari.json")
 SUMBER = "Himawari-9 L2 WLF v010 · P-Tree System, JAXA"
+SUMBER_ID = "ptree_wlf"
+SAMBUNG_DETIK = 10   # per percobaan sambung; tiga percobaan <= 30 dtk, jauh di bawah BATAS_DETIK
 BATAS_DETIK = 240  # total waktu run; FTP JAXA kadang macet dan job dipotong di 8 menit. Lewat -> berhenti tanpa menulis, putaran berikutnya mengulang
 AKAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
 ALARM_PALSU = os.path.join(os.path.dirname(os.path.abspath(__file__)), "himawari_alarm_palsu.csv")
@@ -253,7 +259,73 @@ def uji_penanda():
         pass
 
 
+def uji_status():
+    """ST-01 T1: sambungan ditolak/reset/timeout -> status_sumber terputus, alarm TIDAK tersedia (null, bukan []), data lama utuh; sukses = hidup."""
+    import tempfile
+    d = tempfile.mkdtemp()
+    k = d + "/h.json"
+    for exc, kelas in ((ConnectionRefusedError(111, "refused"), "ditolak"), (ConnectionResetError(104, "reset"), "reset"), (socket.timeout("t"), "timeout")):
+        def rusak(m, u, p, exc=exc):
+            raise exc
+        if os.path.exists(k):
+            os.remove(k)
+        doc = jalankan(rusak, k, "u", "SANDI-RAHASIA", "2026-11-25T05:00Z")
+        st = doc["status_sumber"]
+        assert st["status"] == "terputus" and st["kelas_galat"] == kelas and st["percobaan"] == 3 and st["alarm_tersedia"] is False, st
+        assert doc["baris"] is None and doc["penanda"] is None, "tanpa berkas lama: null, bukan []"
+        assert st["terputus_sejak"] == "2026-11-25T05:00Z" and st["teks"].startswith("sumber terputus sejak"), st
+        assert [r["mode"] for r in st["rincian"]] == ["ftps21", "ftps990", "ftp21"] and "SANDI" not in json.dumps(doc), "FTPS dicoba sebelum FTP polos; tanpa sandi"
+        assert json.load(open(k))["status_sumber"] == st
+    # galat berikutnya: terputus_sejak tetap awal; data lama utuh
+    lama = {"acuan": "2026-11-18T01:10:00Z", "baris": [[1.0, 2.0]], "penanda": {"status": "ok"}}
+    json.dump(lama, open(k, "w"))
+    def tolak(m, u, p):
+        raise ConnectionRefusedError()
+    d1 = jalankan(tolak, k, "u", "p", "2026-11-25T05:00Z")
+    assert d1["baris"] == [[1.0, 2.0]] and d1["status_sumber"]["terputus_sejak"] == "2026-11-18T01:10:00Z" == d1["status_sumber"]["terakhir_ok"], d1["status_sumber"]
+    d2 = jalankan(tolak, k, "u", "p", "2026-11-25T08:00Z")
+    assert d2["status_sumber"]["terputus_sejak"] == "2026-11-18T01:10:00Z", "awal terputus tak bergeser"
+    # tanpa kredensial = auth; FTPS ditolak tapi FTP polos hidup tetap jalan (jatuh ke mode berikut); login 530 = auth
+    assert jalankan(tolak, k, None, None, "2026-11-25T08:00Z")["status_sumber"]["kelas_galat"] == "auth"
+    def v530(m, u, p):
+        raise ftplib.error_perm("530 Login incorrect")
+    assert jalankan(v530, k, "u", "p", "2026-11-25T08:00Z")["status_sumber"]["kelas_galat"] == "auth"
+    # folder kosong = 'kosong', bukan daftar kosong sukses
+    class Kosong:
+        def nlst(self, d): return []
+        def quit(self): pass
+    assert jalankan(lambda m, u, p: Kosong(), k, "u", "p", "2026-11-25T09:00Z")["status_sumber"]["kelas_galat"] == "kosong"
+    # jalur WLF lama pulih otomatis: FTPS ditolak, FTP polos menjawab
+    now = dt.datetime.now(dt.timezone.utc).replace(minute=0, second=0, microsecond=0)
+    nama = f"/pub/himawari/L2/WLF/010/{now:%Y%m}/{now:%d}/{now:%H}/H09_{now:%Y%m%d}_{now:%H}00_L2WLF010_FLDK.06001_06001.csv"
+    class Hidup:
+        def nlst(self, d): return [nama] if d == nama.rsplit("/", 1)[0] else []
+        def retrbinary(self, c, cb): cb(b"1,%d,%d,%d,600,-2.0,110.0,4.0,0,3,5,10.0,0\n" % (now.year, now.month, now.day))
+        def quit(self): pass
+    def pulih(m, u, p):
+        if m != "ftp21":
+            raise ConnectionRefusedError()
+        return Hidup()
+    os.remove(k)
+    ok = jalankan(pulih, k, "u", "p", "2026-11-25T10:00Z")
+    st = ok["status_sumber"]
+    assert st["status"] == "hidup" and st["terputus_sejak"] is None and st["alarm_tersedia"] and len(ok["baris"]) == 1 and st["percobaan"] == 3, st
+    # downgrade dicegah: TLS gagal selain "ditolak" (mis. sertifikat palsu, reset disuntik) tidak pernah turun ke FTP polos
+    dipakai = []
+    def serang(m, u, p):
+        dipakai.append(m)
+        if m == "ftps21":
+            raise ssl.SSLCertVerificationError("sertifikat palsu")
+        if m == "ftps990":
+            raise ConnectionRefusedError()
+        return Hidup()
+    tolak = jalankan(serang, k, "u", "p", "2026-11-25T11:00Z")["status_sumber"]
+    assert "ftp21" not in dipakai and tolak["status"] == "terputus", (dipakai, tolak)
+    assert ssl.create_default_context().verify_mode == ssl.CERT_REQUIRED
+
+
 def uji():
+    uji_status()
     s = ("# a\n# b\n"
          "1,2026,10,19,600,-2.0,110.0,4.0,0,3,3,10.0,0\n"      # frp 40.0
          "2,2026,10,19,610,-2.0,110.0,4.0,0,2,5,12.5,1\n"      # grid sama, lebih baru -> menang, 50.0
@@ -278,60 +350,182 @@ def uji():
     print("uji OK")
 
 
-def main():
-    t0 = time.monotonic()
-    jam = int(os.environ.get("HIMAWARI_JAM", "3"))
-    jam_p = max(jam, int(os.environ.get("HIMAWARI_JAM_PENANDA", "13")))
-    f = ftplib.FTP(HOST, timeout=30)
-    f.login(os.environ["PTREE_USER"], os.environ["PTREE_PASS"])  # gagal -> exception -> exit != 0
+class Galat(Exception):
+    """Sumber tak terjangkau/tak terbaca; `kelas` salah satu ditolak|reset|timeout|auth|kosong|parse|galat."""
+    def __init__(self, kelas, rincian=()):
+        super().__init__(kelas)
+        self.kelas, self.rincian = kelas, list(rincian)
+
+
+def kelas_galat(e):
+    if isinstance(e, ConnectionRefusedError):
+        return "ditolak"
+    if isinstance(e, (socket.timeout, TimeoutError)):
+        return "timeout"
+    if isinstance(e, (ConnectionResetError, ConnectionAbortedError, EOFError, ssl.SSLError, BrokenPipeError)):
+        return "reset"
+    if isinstance(e, ftplib.error_perm) and str(e).startswith("530"):
+        return "auth"
+    if isinstance(e, (ValueError, UnicodeError, KeyError, IndexError)):
+        return "parse"
+    return "galat"
+
+
+class FTPSImplisit(ftplib.FTP_TLS):
+    """FTPS implisit (port 990): TLS sebelum salam server."""
+    def connect(self, host="", port=990, timeout=-999, source_address=None):
+        self.host, self.port = host, port
+        if timeout != -999:
+            self.timeout = timeout
+        self.sock = self.context.wrap_socket(socket.create_connection((host, port), self.timeout, source_address), server_hostname=host)
+        self.af = self.sock.family
+        self.file = self.sock.makefile("r", encoding=self.encoding)
+        self.welcome = self.getresp()
+        return self.welcome
+
+
+def sambung_nyata(mode, user, sandi):
+    """mode: ftps21 | ftps990 | ftp21 -> objek FTP yang sudah login. Sandi tak pernah masuk pesan galat."""
+    if mode == "ftps21":
+        f = ftplib.FTP_TLS(context=ssl.create_default_context(), timeout=SAMBUNG_DETIK)   # verifikasi sertifikat + nama host
+        f.connect(HOST, 21)
+    elif mode == "ftps990":
+        f = FTPSImplisit(context=ssl.create_default_context(), timeout=SAMBUNG_DETIK)
+        f.connect(HOST, 990)
+    else:
+        f = ftplib.FTP(timeout=SAMBUNG_DETIK)
+        f.connect(HOST, 21)
+    f.login(user, sandi)
+    if isinstance(f, ftplib.FTP_TLS):
+        f.prot_p()
     f.set_pasv(True)
-    now = dt.datetime.now(dt.timezone.utc).replace(tzinfo=None, minute=0, second=0, microsecond=0)
-    berkas = []  # (waktu_pindai, path)
-    for i in range(jam_p + 4):  # mundur dari sekarang; latensi ~1 jam jadi beri kelonggaran
-        if habis(t0):
-            return print(f"himawari: lewat batas {BATAS_DETIK} dtk saat mendaftar folder (FTP JAXA lambat); keluaran lama dibiarkan, putaran berikutnya mengulang")
-        h = now - dt.timedelta(hours=i)
-        d = f"/pub/himawari/L2/WLF/010/{h:%Y%m}/{h:%d}/{h:%H}"
+    f.timeout = 30
+    if f.sock:
+        f.sock.settimeout(30)
+    return f
+
+
+MODE_SAMBUNG = ("ftps21", "ftps990", "ftp21")
+
+
+def sambung(sambung_fn, user, sandi):
+    """Coba tiap mode; -> (ftp, rincian). Semua gagal = Galat dengan kelas percobaan TERAKHIR dan rincian lengkap."""
+    rincian = []
+    for m in MODE_SAMBUNG:
+        # FTP polos (sandi tak terenkripsi, perilaku lama) hanya bila SEMUA percobaan TLS ditolak di tingkat TCP (server tak punya
+        # FTPS). Kegagalan TLS lain (sertifikat salah, reset, timeout di tengah jabat tangan) bisa disuntik penyerang: tidak turun ke polos.
+        if m == "ftp21" and any(r["kelas"] != "ditolak" for r in rincian):
+            rincian.append({"mode": m, "kelas": "dilewati"})
+            continue
         try:
-            for n in f.nlst(d):
-                m = NAMA.search(n)
-                if m and n.endswith(".csv"):
-                    berkas.append((dt.datetime.strptime(m[1] + m[2], "%Y%m%d%H%M"), n if n.startswith("/") else d + "/" + n))
-        except (ftplib.error_perm, ftplib.error_temp):
-            pass  # folder belum ada
-    if not berkas:
-        sys.exit("tidak ada CSV Himawari ditemukan")
-    acuan = max(w for w, _ in berkas)
-    pilih = sorted(b for b in berkas if b[0] > acuan - dt.timedelta(hours=jam))
-    lama = sorted((b for b in berkas if acuan - dt.timedelta(hours=jam_p) < b[0] <= acuan - dt.timedelta(hours=jam)), reverse=True)   # hanya untuk penanda, terbaru dulu
-    hasil, semua = [], []
-    for _, p in pilih:
-        if habis(t0):
-            return print(f"himawari: lewat batas {BATAS_DETIK} dtk saat mengunduh {len(hasil)}/{len(pilih)} CSV (FTP JAXA lambat); data parsial tidak ditulis, keluaran lama dibiarkan, putaran berikutnya mengulang")
-        buf = io.BytesIO()
-        f.retrbinary("RETR " + p, buf.write)
-        teks = buf.getvalue().decode("utf-8", "replace")
-        hasil.append(parse(teks))
-        semua += deteksi(teks)
-    n_lama, terpotong = 0, False
-    for _, p in lama:
-        if time.monotonic() - t0 > BATAS_DETIK * 0.8:   # sisakan waktu: penanda boleh parsial, `baris` wajib selesai
-            terpotong = True
-            break
-        buf = io.BytesIO()
-        f.retrbinary("RETR " + p, buf.write)
-        semua += deteksi(buf.getvalue().decode("utf-8", "replace"))
-        n_lama += 1
-    f.quit()
+            return sambung_fn(m, user, sandi), rincian + [{"mode": m, "kelas": None}]
+        except Exception as e:
+            rincian.append({"mode": m, "kelas": kelas_galat(e)})
+    kelas = next((r["kelas"] for r in reversed(rincian) if r["kelas"] not in ("galat", "dilewati")), rincian[-1]["kelas"])   # kelas paling informatif (bukan 'galat' umum)
+    raise Galat(kelas, rincian)
+
+
+def tarik(sambung_fn, user, sandi, jam, jam_p, t0):
+    """-> dict himawari.json (tanpa status_sumber), atau None bila lewat batas waktu. Galat sumber = Galat."""
+    f, rincian = sambung(sambung_fn, user, sandi)
+    try:
+        now = dt.datetime.now(dt.timezone.utc).replace(tzinfo=None, minute=0, second=0, microsecond=0)
+        berkas = []  # (waktu_pindai, path)
+        for i in range(jam_p + 4):  # mundur dari sekarang; latensi ~1 jam jadi beri kelonggaran
+            if habis(t0):
+                return print(f"himawari: lewat batas {BATAS_DETIK} dtk saat mendaftar folder (FTP JAXA lambat); keluaran lama dibiarkan, putaran berikutnya mengulang")
+            h = now - dt.timedelta(hours=i)
+            d = f"/pub/himawari/L2/WLF/010/{h:%Y%m}/{h:%d}/{h:%H}"
+            try:
+                for n in f.nlst(d):
+                    m = NAMA.search(n)
+                    if m and n.endswith(".csv"):
+                        berkas.append((dt.datetime.strptime(m[1] + m[2], "%Y%m%d%H%M"), n if n.startswith("/") else d + "/" + n))
+            except (ftplib.error_perm, ftplib.error_temp):
+                pass  # folder belum ada
+        if not berkas:
+            raise Galat("kosong", rincian)
+        acuan = max(w for w, _ in berkas)
+        pilih = sorted(b for b in berkas if b[0] > acuan - dt.timedelta(hours=jam))
+        lama = sorted((b for b in berkas if acuan - dt.timedelta(hours=jam_p) < b[0] <= acuan - dt.timedelta(hours=jam)), reverse=True)   # hanya untuk penanda, terbaru dulu
+        hasil, semua = [], []
+        for _, p in pilih:
+            if habis(t0):
+                return print(f"himawari: lewat batas {BATAS_DETIK} dtk saat mengunduh {len(hasil)}/{len(pilih)} CSV (FTP JAXA lambat); data parsial tidak ditulis, keluaran lama dibiarkan, putaran berikutnya mengulang")
+            buf = io.BytesIO()
+            f.retrbinary("RETR " + p, buf.write)
+            teks = buf.getvalue().decode("utf-8", "replace")
+            hasil.append(parse(teks))
+            semua += deteksi(teks)
+        n_lama, terpotong = 0, False
+        for _, p in lama:
+            if time.monotonic() - t0 > BATAS_DETIK * 0.8:   # sisakan waktu: penanda boleh parsial, `baris` wajib selesai
+                terpotong = True
+                break
+            buf = io.BytesIO()
+            f.retrbinary("RETR " + p, buf.write)
+            semua += deteksi(buf.getvalue().decode("utf-8", "replace"))
+            n_lama += 1
+    except Galat:
+        raise
+    except Exception as e:
+        raise Galat(kelas_galat(e), rincian) from None
+    finally:
+        try:
+            f.quit()
+        except Exception:
+            pass
     mnt = lambda w: max(0, int((acuan - w).total_seconds() // 60))
     baris = [[lat, lon, mnt(w), frp, lv, rel, qf, n, mnt(w0)]
              for (lat, lon), (w, frp, lv, rel, qf, n, w0) in sorted(gabung(hasil).items())]
     out = {"acuan": acuan.strftime("%Y-%m-%dT%H:%M:00Z"), "jam": jam, "sumber": SUMBER,
            "kolom": ["lat", "lon", "u", "frp", "level", "rel", "qf", "n", "u0"], "baris": baris}
     out["penanda"] = susun_penanda(semua, acuan, jam_p, len(lama), n_lama, terpotong)
-    with open(KELUAR, "w") as fh:
+    out["_rincian"] = rincian
+    return out
+
+
+def status_terputus(lama, kelas, rincian, kini):
+    """status_sumber untuk sambungan gagal. `terputus_sejak` = acuan sah terakhir (dari berkas lama), atau awal terputus yang sudah tercatat, atau saat gagal pertama diamati."""
+    ls = (lama or {}).get("status_sumber") or {}
+    ok = ls.get("terakhir_ok") or (None if ls.get("status") == "terputus" else (lama or {}).get("acuan"))
+    sejak = ls.get("terputus_sejak") if ls.get("status") == "terputus" else (ok or kini)
+    return {"sumber": SUMBER_ID, "status": "terputus", "terakhir_ok": ok, "terputus_sejak": sejak, "kelas_galat": kelas,
+            "percobaan": len(rincian), "rincian": rincian, "diamati": kini, "alarm_tersedia": False,
+            "teks": f"sumber terputus sejak {sejak}"}
+
+
+def jalankan(sambung_fn, keluar=KELUAR, user=None, sandi=None, kini=None):
+    t0 = time.monotonic()
+    kini = kini or dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+    jam = int(os.environ.get("HIMAWARI_JAM", "3"))
+    jam_p = max(jam, int(os.environ.get("HIMAWARI_JAM_PENANDA", "13")))
+    lama = json.load(open(keluar)) if os.path.exists(keluar) else None
+    try:
+        if not user or not sandi:
+            raise Galat("auth", [{"mode": "-", "kelas": "auth"}])   # PTREE_USER/PTREE_PASS kosong
+        out = tarik(sambung_fn, user, sandi, jam, jam_p, t0)
+    except Galat as g:
+        st = status_terputus(lama, g.kelas, g.rincian, kini)
+        doc = dict(lama) if lama else {"acuan": None, "sumber": SUMBER, "baris": None, "penanda": None}   # tanpa berkas lama: null, BUKAN []
+        doc["status_sumber"] = st
+        with open(keluar, "w") as fh:
+            json.dump(doc, fh, separators=(",", ":"), ensure_ascii=False)
+        print(f"::warning::himawari: {st['teks']} (galat {g.kelas}, {st['percobaan']} percobaan)")
+        return doc
+    if out is None:
+        return None
+    rincian = out.pop("_rincian")
+    out["status_sumber"] = {"sumber": SUMBER_ID, "status": "hidup", "terakhir_ok": out["acuan"], "terputus_sejak": None, "kelas_galat": None,
+                            "percobaan": len(rincian), "rincian": rincian, "diamati": kini, "alarm_tersedia": True}
+    with open(keluar, "w") as fh:
         json.dump(out, fh, separators=(",", ":"), ensure_ascii=False)
-    print(f"himawari: {len(pilih)} CSV, {len(baris)} baris, acuan {out['acuan']}; penanda {out['penanda']['status']}: {len(out['penanda']['baris'])}")
+    print(f"himawari: {len(out['baris'])} baris, acuan {out['acuan']}; penanda {out['penanda']['status']}: {len(out['penanda']['baris'])}; sambung {rincian[-1]['mode']}")
+    return out
+
+
+def main():
+    jalankan(sambung_nyata, user=os.environ.get("PTREE_USER"), sandi=os.environ.get("PTREE_PASS"))
 
 
 def susun_penanda(semua, acuan, jam_p, n_rencana, n_ambil, terpotong):
@@ -375,4 +569,4 @@ if __name__ == "__main__":
         a = sys.argv[sys.argv.index("--presisi") + 1:]
         print(json.dumps(uji_presisi(a[0], a[1], os.path.join(os.path.dirname(os.path.abspath(__file__)), "himawari_presisi.json")), ensure_ascii=False, indent=1))
     else:
-        uji() if "--uji" in sys.argv else main()
+        uji() if ("--uji" in sys.argv or "uji" in sys.argv[1:]) else main()

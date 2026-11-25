@@ -10,6 +10,8 @@ ke luar kotak (batas atas); jaringan jalan OSM tidak lengkap di daerah terpencil
 Pakai: python3 scripts/prediksi/jalan.py <id kab> [<id kab> ...]   (id Kepmendagri 4 digit; hasil digabung ke jalan.json)
        python3 scripts/prediksi/jalan.py giliran [--maks N]   (N kab, bawaan 15, yang belum ada / `dihitung`-nya paling lama; gagal diulang
          di giliran berikut; exit 1 hanya bila ada yang dicoba dan nol berhasil; giliran lebih dulu memanggil tangga.py (Tangga Peringatan, gagal-lunak))
+       python3 scripts/prediksi/jalan.py bencana <gempa|gunungapi|rob|cuaca> [<id kab> ...]   (KI-64: ruas putus di dalam zona bahaya bencana itu
+         -> public/prediksi/data/jalan_<bencana>.json; hanya dari cache OSM, tanpa jaringan; masukan zona hilang = dilewati dan dicatat)
        python3 scripts/prediksi/jalan.py uji     (tanpa jaringan)
 Lari penuh 514 kab = giliran berputar oleh workflow terjadwal, jeda 5 detik per kueri.
 """
@@ -44,7 +46,7 @@ def graf(ways, b=None):
                 continue
             adj.setdefault(u, []).append((v, len(sisi)))
             adj.setdefault(v, []).append((u, len(sisi)))
-            sisi.append((u, v, km(w["geom"][i], w["geom"][i + 1]), w["id"]))
+            sisi.append((u, v, km(w["geom"][i], w["geom"][i + 1]), w["id"], w["geom"][i], w["geom"][i + 1]))
     return adj, sisi
 
 
@@ -208,6 +210,117 @@ def giliran(maks=15):
     return 1 if n and not ok else 0
 
 
+# ---------- KI-64: zona bahaya bencana lain ----------
+# zona = daftar bentuk: ("lingkar", lat, lon, km) | ("kotak", s, w, n, e) | ("poligon", geometri GeoJSON Polygon/MultiPolygon).
+ROB_KM = 2.0   # ASUMSI: jari-jari zona rob di sekitar titik pantau; rob.json hanya menyimpan titik, bukan poligon genangan
+LABEL_Z = ("Batas atas: ruas yang bagiannya masuk zona bahaya dianggap putus seluruhnya; kotak persegi dan OSM tak lengkap. "
+           "Bukan peluang jalan putus dan bukan ramalan.")
+
+
+def _cincin(c, p):
+    """even-odd: titik (lat, lon) di dalam cincin/poligon GeoJSON (koordinat [lon, lat])."""
+    if c and isinstance(c[0][0], (int, float)):
+        d, n = False, len(c)
+        for i in range(n):
+            (x1, y1), (x2, y2) = c[i], c[(i + 1) % n]
+            if (y1 > p[0]) != (y2 > p[0]) and p[1] < (x2 - x1) * (p[0] - y1) / (y2 - y1) + x1:
+                d = not d
+        return d
+    return sum(_cincin(x, p) for x in c) % 2 == 1
+
+
+def dalam(p, zona):
+    for z in zona:
+        if z[0] == "lingkar" and km(p, (z[1], z[2])) <= z[3]:
+            return True
+        if z[0] == "kotak" and z[1] <= p[0] <= z[3] and z[2] <= p[1] <= z[4]:
+            return True
+        if z[0] == "poligon" and _cincin(z[1]["coordinates"], p):
+            return True
+    return False
+
+
+def terputus(ways, b, zona, desa=()):
+    """Ruas yang menyentuh zona (salah satu ujung atau titik tengah) dibuang; yang terpisah dari komponen terbesar = terisolir.
+    desa = [(nama, lat, lon)] (pusat kecamatan) -> terisolir bila simpul jalan terdekat (<= 3 km) tak lagi tersambung ke komponen terbesar.
+    -> {"jembatan_putus": jembatan graf (Tarjan) di zona, "jembatan_fisik": way bridge OSM di zona, "km_terisolir", "km_dalam_zona", "desa_terisolir": [nama]}"""
+    adj, sisi = graf(ways, b)
+    pos = {}
+    for w in ways:
+        for n, q in zip(w["nodes"], w["geom"]):
+            pos.setdefault(n, q)
+    tag = {w["id"]: w["tags"] for w in ways}
+    kena = {e for e, (u, v, _, _, a, c) in enumerate(sisi) if dalam(a, zona) or dalam(c, zona) or dalam(((a[0] + c[0]) / 2, (a[1] + c[1]) / 2), zona)}
+    jb, _ = jembatan_graf(adj, sisi)
+    putus = {sisi[e][3] for e, _ in jb if e in kena}
+    fisik = {sisi[e][3] for e in kena if tag[sisi[e][3]].get("bridge", "no") != "no"}
+    komp, nomor = {}, 0
+    for s in adj:   # komponen sesudah ruas kena dibuang
+        if s in komp:
+            continue
+        komp[s], st = nomor, [s]
+        while st:
+            for v, e in adj[st.pop()]:
+                if e not in kena and v not in komp:
+                    komp[v] = nomor; st.append(v)
+        nomor += 1
+    km_k = {}
+    for e, x in enumerate(sisi):
+        if e not in kena:
+            km_k[komp[x[0]]] = km_k.get(komp[x[0]], 0) + x[2]
+    utama = max(km_k, key=km_k.get) if km_k else None
+    node = [(q[0], q[1], n) for n, q in pos.items() if n in komp]
+    iso = sorted(nm for nm, la, lo in desa if (n := D.terdekat(la, lo, node, 0.03)) is not None and komp[n] != utama)
+    return {"jembatan_putus": len(putus), "jembatan_fisik": len(fisik), "km_dalam_zona": round(sum(sisi[e][2] for e in kena), 1),
+            "km_terisolir": round(sum(v for k, v in km_k.items() if k != utama), 2), "desa_terisolir": iso}
+
+
+def zona_bencana(nama):
+    """-> (zona, catatan) dari berkas keluaran bencana itu; None bila masukan hilang (dilewati, tidak dikarang)."""
+    j = lambda *a: D.baca(os.path.join(D.AKAR, "public", *a), None)
+    if nama == "gunungapi":   # KRB III semua gunung; zona lahar belum ada sebagai poligon di paparan_geo.json (hanya rute)
+        g = j("gunungapi", "data", "paparan_geo.json")
+        z = [("poligon", v["zona"]["III"]) for v in (g or {}).values() if (v.get("zona") or {}).get("III")]
+        return (z, "KRB III (pedoman_krb); zona lahar tak tersedia sebagai poligon") if z else None
+    if nama == "rob":         # titik pantau rob berstatus >= Waspada (lv >= 1) pada hari mana pun
+        r = j("banjir", "data", "rob.json")
+        z = [("lingkar", t["lat"], t["lon"], ROB_KM) for t in (r or {}).get("titik", []) if max([x or 0 for x in t.get("lv", [])] or [0]) >= 1]
+        return (z, f"titik rob >= Waspada, jari-jari {ROB_KM:g} km (ASUMSI)") if z else None
+    if nama == "cuaca":       # sel 0,25 derajat dengan hujan prakiraan >= 100 mm/hari (ambang hujan di cuaca_meta.json)
+        c = j("banjir", "data", "cuaca_prakiraan.json")
+        z = [("kotak", s[0] - .125, s[1] - .125, s[0] + .125, s[1] + .125) for s in (c or {}).get("sel", []) if max([x or 0 for x in s[3]] or [0]) >= 100]
+        return (z, "sel 0,25 derajat hujan prakiraan >= 100 mm/hari") if z else None
+    if nama == "gempa":      # MMI >= VII: tak ada keluaran medan guncangan tersimpan (model_guncangan.json hanya parameter GMPE; skenario dihitung di peramban)
+        z = j("gempa", "data", "guncangan_vii.json")
+        return ([("poligon", g) for g in z["poligon"]], "MMI >= VII") if z and z.get("poligon") else None
+    raise SystemExit("bencana: gempa|gunungapi|rob|cuaca")
+
+
+def bencana(nama, ids=None):
+    zc = zona_bencana(nama)
+    if not zc:
+        print(f"jalan: zona {nama} tak ada masukannya; dilewati", file=sys.stderr)
+        return 0
+    zona, cat = zc
+    pusat = D.baca(os.path.join(D.AKAR, "public", "banjir", "data", "pusat_kec.json"), {})
+    out, n = {}, 0
+    for k in D.kab():
+        berkas = os.path.join(MENTAH, k["id"] + ".json")
+        b = (not ids or k["id"] in ids) and os.path.exists(berkas) and kotak(k["geo"])
+        if not b:
+            continue
+        n += 1
+        pk = k["geo"].split("|")[0] + "|" + k["geo"].split("|", 1)[1] + "|"
+        desa = [(kc.split("|")[2], ll[0], ll[1]) for kc, ll in pusat.items() if kc.startswith(pk)]
+        r = terputus(baca_ways(json.load(open(berkas))), b, zona, desa)
+        if r["km_dalam_zona"] or r["jembatan_fisik"]:
+            out[k["id"]] = r
+    D.simpan(os.path.join(D.DATA, f"jalan_{nama}.json"), {"bencana": nama, "dibuat": D.hari_ini(), "label": LABEL_Z, "zona": cat, "sumber": "OpenStreetMap via Overpass (ODbL), cache jalan.py",
+                                                          "kab_diperiksa": n, "kab": out})
+    print(f"jalan: {nama}: {n} kab bercache OSM diperiksa, {len(out)} kena zona")
+    return 0
+
+
 def uji():
     kd = {"1101": {"dihitung": "2026-10-01", "way_rawan": 0}, "1102": {"dihitung": "2026-09-01", "way_rawan": 0}, "1104": {}}
     assert pilih(["1101", "1106"], {"1101": {"dihitung": "2026-10-01", "way_rawan": 0}, "1106": {"dihitung": "2026-11-01"}}, 1) == ["1106"], "entri lama tanpa way_rawan dihitung ulang dulu"
@@ -236,6 +349,14 @@ def uji():
     # rantai panjang tidak memicu batas rekursi
     assert ringkas([W(1, list(range(1, 20001)), highway="primary")])["ruas_tunggal"] == 19999
     assert baca_ways({"elements": [{"type": "way", "id": 1, "geometry": [{"lat": 0, "lon": 0}, None]}]}) == []
+    # KI-64: zona bahaya. Garis 1-2-3-4-5 + cabang 3-6 (bujur = nomor x 0,01 derajat); ruas 3-4 di zona memutus 4,5 dari komponen utama
+    ring = [W(1, [1, 2, 3], highway="primary"), W(2, [3, 4, 5], highway="primary", bridge="yes"), W(3, [3, 6], highway="primary")]
+    z = [("lingkar", 0.0, 0.035, 0.2)]   # titik tengah ruas 3-4 saja
+    t = terputus(ring, None, z, [("D5", 0.0, 0.05), ("D2", 0.0, 0.02)])
+    assert t["desa_terisolir"] == ["D5"] and t["jembatan_fisik"] == 1 and t["km_terisolir"] > 0, t
+    assert terputus(ring, None, [("lingkar", 50.0, 50.0, 1)], [("D5", 0.0, 0.05)])["desa_terisolir"] == [], "zona di luar jaringan: tak ada yang terisolir"
+    assert dalam((0.5, 0.5), [("poligon", {"coordinates": [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]]})]) and not dalam((2, 2), [("kotak", 0, 0, 1, 1)])
+    assert zona_bencana("gempa") is None or zona_bencana("gempa")[0], "masukan gempa hilang = None, bukan karangan"
     print("jalan: uji lulus")
 
 
@@ -243,6 +364,8 @@ if __name__ == "__main__":
     a = sys.argv[1:]
     if a == ["uji"]:
         uji()
+    elif a[:1] == ["bencana"] and len(a) > 1:
+        sys.exit(bencana(a[1], a[2:]))
     elif a[:1] == ["giliran"]:
         try:   # Tangga Peringatan dirantai di sini, lebih dulu: cepat, dan Overpass di bawah sering lambat; kegagalannya tidak menggagalkan jalan.py
             import tangga

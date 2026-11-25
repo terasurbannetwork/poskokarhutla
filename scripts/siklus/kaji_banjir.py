@@ -8,7 +8,7 @@ Tanpa kedalaman: "kedalaman belum tersedia", JRC tidak jalan. Kerusakan hanya hu
 Karhutla (radius km1/km3/km5 kumulatif, titik panas dan luas hanya dari sistem kita) dan gunung api (KRB I, II, III): hanya paparan. Jenis lain: belum ada perkiraan otomatis.
 Label selalu `estimasi-model`. Pakai: python3 -I scripts/siklus/kaji_banjir.py uji
 """
-import datetime as dt, importlib.util, json, math, os, sys, tempfile
+import datetime as dt, importlib.util, json, math, os, re, sys, tempfile
 
 AB = os.path.dirname(os.path.abspath(__file__))
 YAKIN = "estimasi-model"
@@ -110,10 +110,10 @@ def kaji(bahaya, paparan=None, **kw):
     return {"bahaya": bahaya, "yakin": YAKIN, "status": BELUM}
 
 
-def tulis(root, kj, isi):
-    """kaji/<KJ>.json lewat batas 100 KB dan kunci terlarang (saji.periksa_berkas); -> daftar masalah."""
+def tulis(root, kj, isi, kunci=None):
+    """kaji/<KJ>.json (atau `kunci` bila diberi, mis. versi banjir_gfm) lewat batas 100 KB dan kunci terlarang (saji.periksa_berkas); -> daftar masalah."""
     G, S = _muat("gudang"), _muat("saji")
-    kunci = f"siklus/saji/kaji/{kj}.json"
+    kunci = kunci or f"siklus/saji/kaji/{kj}.json"
     data = json.dumps(G.selubung("kaji", {"kejadian": kj, **isi}), ensure_ascii=False, sort_keys=True).encode()
     m = S.periksa_berkas(kunci, data)
     if not m:
@@ -137,10 +137,114 @@ def muatan_banjir(kj, r):
     return {"kejadian_id": kj, "model": "banjir_jam1", "status": r["status"], "yakin": YAKIN, "masukan": r["masukan"], "ringkas": r["ringkas"], "hasil_r2": None}
 
 
-def rencana(kejadian, baris, paparan_dir, keluar=None):
-    """kejadian = kejadian_aktif_awal.json['kejadian'] (kec = Siaga/Awas), paparan_dir/<kode>.json = keluaran paparan.hitung_kab. -> (muatan, lewati)."""
+MAKS_RINGKAS = 1500
+
+
+def _penduduk(pap, alasan):
+    """hitung_kab dengan dua zona sel (gfm_bawah, gfm_atas) -> {sumber: {tersedia, bawah, atas} | {tersedia False, alasan}}. Tanpa paparan: alasan, bukan 0."""
+    if not pap:
+        return {s: {"tersedia": False, "alasan": alasan or "data bangunan belum tersedia"} for s in SUMBER_JIWA}
+    pz = pap["zona"]["banjir"]["per_zona"]
+    out = {}
+    for s in SUMBER_JIWA:
+        b, a = pz["gfm_bawah"]["jiwa"].get(s), pz["gfm_atas"]["jiwa"].get(s)
+        if b is not None and a is not None and b > a:
+            raise ValueError(f"zona terbalik untuk {s}: bawah {b} > atas {a}")
+        out[s] = ({"tersedia": True, "bawah": b, "atas": a} if b is not None and a is not None
+                  else {"tersedia": False, "alasan": "tidak ada padanan GHSL untuk zona sel" if s == "ghsl" else "sumber tidak punya angka untuk kabupaten ini"})
+    return out
+
+
+PIL = {"hipotesis": "Hipotesis: belum lulus uji balik", "teruji": "Teruji: lulus uji balik"}
+
+
+def status_model(vonis):
+    """Pil Q3: hipotesis selama vonis uji balik bukan lulus."""
+    return "teruji" if vonis == "lulus" else "hipotesis"
+
+
+def banjir_gfm(kabs, vonis="menunggu"):
+    """Genangan satelit per kejadian (GS-07). kabs = [{"gfm": entri GS-01, "lahan": entri GS-04|None, "paparan": hitung_kab(zona gfm_bawah, gfm_atas)|None,
+    "alasan_paparan": str|None, "citra": entri GS-05|None}]. -> {"kab": [...], "jiwa_kab_sah": {sumber: ...}, "ringkas": {...}}.
+    Kab tak sah: alasan saja, tanpa angka. Penjumlahan hanya sumber yang sama dan hanya kab sah; kab yang dikeluarkan tercatat. Tanpa kunci total."""
+    out, ikut, keluar = [], {s: [] for s in SUMBER_JIWA}, {s: [] for s in SUMBER_JIWA}
+    for k in kabs:
+        g = k["gfm"]
+        e = {"kab4": g["kab4"], "kab": g.get("kab"), "status": g["status"], "sah": bool(g["sah"]), "lintasan": g.get("lintasan"), "pra": g.get("pra")}
+        if not g["sah"]:
+            e["alasan"] = (g.get("tampil") or {}).get("alasan") or g["status"]
+            for s in SUMBER_JIWA:
+                keluar[s].append({"kab4": g["kab4"], "alasan": "tak sah: " + e["alasan"]})
+            out.append(e)
+            continue
+        m, ba = g["mentah"], g["mentah"]["baru_ha"]
+        e["luas"] = {"baru_ha": ba, "teramati_ha": m["teramati_ha"], "luas_kab_ha": m["luas_ha"], "persen_teramati": g["tampil"]["persen_teramati"],
+                     "persen_kab": round(ba / m["luas_ha"] * 100, 1)}
+        e["cakupan_pct"], e["kisi_kasar"], e["langkah"] = m["cakupan_pct"], bool(g.get("kisi_kasar")), g.get("langkah")
+        e["kec"] = {n: {"luas_ha": v["luas_ha"], "mask_ha": v["mask_ha"]} for n, v in sorted(m.get("kec", {}).items())}
+        e["penduduk"] = _penduduk(k.get("paparan"), k.get("alasan_paparan"))
+        e["lahan"] = (k.get("lahan") or {}).get("lahan")
+        e["citra"] = (k.get("citra") or {}).get("citra")
+        for s in SUMBER_JIWA:
+            p = e["penduduk"][s]
+            (ikut if p["tersedia"] else keluar)[s].append(p if p["tersedia"] else {"kab4": g["kab4"], "alasan": p["alasan"]})
+        out.append(e)
+    jiwa = {s: ({"bawah": sum(p["bawah"] for p in ikut[s]), "atas": sum(p["atas"] for p in ikut[s]), "kab_ikut": len(ikut[s]), "kab_dikeluarkan": keluar[s]}
+                if ikut[s] else {"tersedia": False, "alasan": "tidak ada kab sah dengan angka sumber ini", "kab_dikeluarkan": keluar[s]}) for s in SUMBER_JIWA}
+    sah = [e for e in out if e["sah"]]
+    wp = jiwa["worldpop"]
+    lt = sorted(e["lintasan"][:10] for e in out if e.get("lintasan"))
+    r = {"rentang": [wp["bawah"], wp["atas"]] if "bawah" in wp else None, "sumber_rentang": "worldpop", "satuan": "jiwa", "metrik": "penduduk di area genangan",
+         "luas_baru_ha": round(sum(e["luas"]["baru_ha"] for e in sah), 1) if sah else None, "kab_sah": len(sah), "kab_semua": len(out),
+         "kab_tanpa_angka_penduduk": len(wp["kab_dikeluarkan"]), "lintasan_terakhir": lt[-1] if lt else None, "vonis": vonis,
+         "status_model": status_model(vonis), "pil": PIL[status_model(vonis)], "sumber": "Copernicus GFM"}
+    if r["rentang"] is None:
+        r["alasan_rentang"] = "tidak ada kab sah dengan data bangunan"
+    if len(json.dumps(r, ensure_ascii=False)) > MAKS_RINGKAS:
+        raise ValueError(f"ringkas melebihi {MAKS_RINGKAS} karakter")
+    return {"yakin": YAKIN, "bahaya": "banjir", "model": "banjir_gfm", "status_model": r["status_model"], "pil": r["pil"], "kab": out, "jiwa_kab_sah": jiwa, "ringkas": r,
+            "catatan": "Penduduk di area genangan, bukan korban atau terdampak. Radar satu lintasan, buta di permukiman padat: angka bisa jauh di bawah kenyataan."}
+
+
+def periksa_gfm(b):
+    """Cermin ringkas ingestKaji untuk banjir_gfm (GS-08 menambah sisi Worker): -> daftar masalah."""
+    m = []
+    if not re.match(r"^KJ-[A-Z0-9-]+$", str(b.get("kejadian_id"))):
+        m.append("kejadian_id bukan KJ-")
+    if b.get("model") != "banjir_gfm" or not isinstance(b.get("versi"), int) or b["versi"] < 1:
+        m.append("model atau versi tidak sah")
+    r = (b.get("ringkas") or {}).get("rentang")
+    if not (isinstance(r, list) and len(r) == 2 and all(isinstance(x, (int, float)) and not isinstance(x, bool) and 0 <= x <= 1e9 for x in r) and r[0] <= r[1]):
+        m.append("ringkas.rentang bukan [bawah, atas]")
+    if b.get("yakin") != YAKIN:
+        m.append("yakin harus estimasi-model")
+    rg = b.get("ringkas") or {}
+    if rg.get("status_model") != status_model(rg.get("vonis")) or rg.get("pil") != PIL.get(rg.get("status_model")):
+        m.append("status_model harus diturunkan dari vonis (hipotesis kecuali lulus) beserta pil")
+    for k, mk in (("ringkas", MAKS_RINGKAS), ("masukan", 800)):
+        if len(json.dumps(b.get(k), ensure_ascii=False)) > mk:
+            m.append(f"{k} melebihi {mk} karakter")
+    if b.get("hasil_r2") != f"siklus/saji/kaji/{b.get('kejadian_id')}_banjir_gfm_v{b.get('versi')}.json":
+        m.append("hasil_r2 salah")
+    return m
+
+
+def muatan_gfm(kj, versi, r, masukan):
+    """r = keluaran banjir_gfm. None bila rentang tak ada (menunggu_data tidak dikirim)."""
+    if r["ringkas"]["rentang"] is None:
+        return None
+    return {"kejadian_id": kj, "model": "banjir_gfm", "versi": versi, "status": "dihitung", "yakin": YAKIN, "masukan": masukan, "ringkas": r["ringkas"],
+            "hasil_r2": f"siklus/saji/kaji/{kj}_banjir_gfm_v{versi}.json"}
+
+
+def rencana(kejadian, baris, paparan_dir, keluar=None, gfm=None):
+    """gfm = [{"kj", "versi", "hasil": keluaran banjir_gfm, "masukan"}] menambah muatan model banjir_gfm. kejadian = kejadian_aktif_awal.json['kejadian'] (kec = Siaga/Awas), paparan_dir/<kode>.json = keluaran paparan.hitung_kab. -> (muatan, lewati)."""
     G = _muat("kaji_gempa")
     muatan, lewati = [], []
+    for x in gfm or []:   # banjir_gfm: x = {"kj", "versi", "hasil", "masukan"} dari genangan_kaji
+        m = muatan_gfm(x["kj"], x["versi"], x["hasil"], x["masukan"])
+        why = "rentang tak ada (menunggu_data)" if m is None else "; ".join(periksa_gfm(m))
+        (lewati.append((x["kj"], why)) if why else muatan.append(m))
     for e in kejadian:
         kode = e["kode"]
         kj = G.peta_kj(baris, ("banjir",), kode)
@@ -261,6 +365,50 @@ def _uji():
             assert m2[0]["hasil_r2"] == "siklus/saji/kaji/KJ-2026-9A2WGN3G.json" and d["model"] == "banjir_jam1" and d["rentang_jiwa"] == [600, 1400] and G.periksa(m2[0]) == []
     pernah = []
     assert G.kirim(mu, "https://x", lambda *a: pernah.append(a))[0][1].startswith("dry-run") and not pernah
+    # GS-07 T4: banjir_jam1 tidak berubah (golden direkam sebelum banjir_gfm ditambah)
+    gold = json.load(open(os.path.join(AB, "../../tests/siklus/fixtures/banjir_jam1_golden.json"), encoding="utf-8"))
+    assert json.loads(json.dumps(kaji("banjir", gold["masukan_paparan"], kec_siaga=gold["kec_siaga"]))) == gold["kaji_banjir"]
+    assert json.loads(json.dumps(banjir_jam1(gold["masukan_paparan"], ["A", "B"], "2026-10-18", "B0007"))) == gold["banjir_jam1"]
+    # GS-07 T4: banjir_gfm
+    def pz(wb, wa, db, da):
+        return {"zona": {"banjir": {"per_zona": {"gfm_bawah": {"jiwa": {"worldpop": wb, "dukcapil": db, "ghsl": None}},
+                                                "gfm_atas": {"jiwa": {"worldpop": wa, "dukcapil": da, "ghsl": None}}}}}}
+    def gf(k4, sah, baru=100.0, **kw):
+        m = {"luas_ha": 1000.0, "teramati_ha": 400.0, "cakupan_pct": 40.0, "baru_ha": baru, "kec": {"K": {"luas_ha": 1000.0, "mask_ha": 600.0}}}
+        e = {"kab4": k4, "kab": "Kab " + k4, "status": "ok", "sah": sah, "lintasan": "2025-11-28T23:11:47Z", "pra": "2025-11-10T23:11:03Z", "langkah": 0.0006,
+             "kisi_kasar": False, "tampil": {"baru_ha": baru, "persen_teramati": 25.0} if sah else {"baru_ha": None, "alasan": "sinyal lemah"}, "mentah": m}
+        return {**e, **kw}
+    kabs = [{"gfm": gf("0001", True), "paparan": pz(100, 400, 120, 380)}, {"gfm": gf("0002", True, 50.0), "paparan": pz(50, 150, 60, 140)},
+            {"gfm": gf("0003", False)}, {"gfm": gf("0004", True), "paparan": None, "alasan_paparan": "data bangunan belum tersedia"}]
+    r = banjir_gfm(kabs)
+    assert r["ringkas"]["rentang"] == [150, 550] and r["ringkas"]["kab_sah"] == 3 and r["ringkas"]["kab_semua"] == 4 and r["ringkas"]["kab_tanpa_angka_penduduk"] == 2 and r["ringkas"]["luas_baru_ha"] == 250.0
+    w = r["jiwa_kab_sah"]["worldpop"]
+    assert [x["kab4"] for x in w["kab_dikeluarkan"]] == ["0003", "0004"] and w["kab_ikut"] == 2 and r["jiwa_kab_sah"]["dukcapil"]["atas"] == 520
+    assert r["jiwa_kab_sah"]["ghsl"]["tersedia"] is False, "GHSL tak ada = tidak tersedia, bukan 0"
+    tak = r["kab"][2]
+    assert "penduduk" not in tak and "luas" not in tak and tak["alasan"] == "sinyal lemah", "kab tak sah: alasan saja, tanpa angka"
+    assert r["kab"][3]["penduduk"]["worldpop"] == {"tersedia": False, "alasan": "data bangunan belum tersedia"}
+    assert "total" not in json.dumps(r) and "rata" not in json.dumps(r) and not list(_muat("saji").kunci_terlarang(r)) and len(json.dumps(r["ringkas"])) <= MAKS_RINGKAS
+    mu = muatan_gfm("KJ-UJI-X", 1, r, {"kj": "KJ-UJI-X"})
+    assert periksa_gfm(mu) == [] and periksa_gfm({**mu, "hasil_r2": "siklus/saji/kaji/KJ-UJI-X.json"}) and periksa_gfm({**mu, "versi": 2})
+    assert periksa_gfm({**mu, "ringkas": {**mu["ringkas"], "rentang": [5, 1]}})
+    assert rencana([], [], None, None, gfm=[{"kj": "KJ-UJI-X", "versi": 1, "hasil": r, "masukan": {}}])[0][0]["model"] == "banjir_gfm"
+    # Q3: pil hipotesis diturunkan dari vonis, bukan tetap
+    assert r["ringkas"]["status_model"] == "hipotesis" and r["status_model"] == "hipotesis" and r["ringkas"]["pil"].startswith("Hipotesis")
+    for v, sm in (("menunggu", "hipotesis"), ("gagal", "hipotesis"), ("tak_dapat_dinilai", "hipotesis"), ("lulus", "teruji")):
+        assert banjir_gfm(kabs, v)["ringkas"]["status_model"] == sm
+    assert periksa_gfm({**mu, "ringkas": {**mu["ringkas"], "status_model": "teruji"}}), "teruji tanpa vonis lulus harus ditolak"
+    assert periksa_gfm({**mu, "ringkas": {k: v for k, v in mu["ringkas"].items() if k != "status_model"}})
+    assert periksa_gfm(muatan_gfm("KJ-UJI-X", 1, banjir_gfm(kabs, "lulus"), {})) == []
+    try:
+        banjir_gfm([{"gfm": gf("0005", True), "paparan": pz(400, 100, 1, 2)}])
+        raise AssertionError("zona terbalik harus gagal keras")
+    except ValueError:
+        pass
+    kosong = banjir_gfm([kabs[3]])
+    assert kosong["ringkas"]["rentang"] is None and kosong["ringkas"]["alasan_rentang"] and muatan_gfm("KJ-UJI-X", 1, kosong, {}) is None, "tanpa data bangunan: menunggu, bukan 0"
+    with tempfile.TemporaryDirectory() as t:
+        assert tulis(t, "KJ-UJI-X", r, "siklus/saji/kaji/KJ-UJI-X_banjir_gfm_v1.json") == [] and os.path.exists(os.path.join(t, "siklus/saji/kaji/KJ-UJI-X_banjir_gfm_v1.json"))
     print("kaji_banjir: uji hijau")
 
 

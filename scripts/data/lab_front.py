@@ -5,9 +5,7 @@ RUJUKAN
   Hu, X., Ban, Y., Nascetti, A. (2021). Sentinel-2 MSI data for active fire detection in major fire-prone biomes: A multi-criteria approach.
   Int. J. Appl. Earth Obs. Geoinf. 101:102347, doi 10.1016/j.jag.2021.102347. Abstrak (DIBACA): kriteria berganda pada pantulan B4, B11, B12,
   20 m, ambang ADAPTIF per biom (dari 11 juta amatan Jun-Sep 2019, 14 wilayah); CE 0,14, OE 0,04 pada pemeriksaan visual.
-  KOEFISIEN TIDAK TERVERIFIKASI: teks lengkap tidak terjangkau dari sini (403). Persamaan yang dipakai di bawah, Red <= 0,677 x SWIR2 - 0,052 dan
-  SWIR2/SWIR1 >= 1, berasal dari brief tiket, BUKAN dari teks makalah, dan makalah memakai ambang per biom, bukan satu pasangan tetap. Cocokkan
-  dengan tabel parameter makalah sebelum angka lab dipercaya (A_RED, B_RED di bawah).
+  Koefisien DICEK ke teks lengkap (24 Nov 2026, salinan akses terbuka di Lirias KU Leuven; ScienceDirect 403): lihat tabel LEMBAP/SAVANA di bawah. Makalah memakai TOA, kita L2A.
   Penney, G. dkk. (2019), CF = a x I^b (L/m2/s): a dan b TIDAK DIISI di sini (tidak bersumber di repo); tanpa keduanya `penney` = null.
   Dipakai hanya sebagai pembanding berlabel hipotesis untuk `air_front_l_per_m` (taktik.py: 80, asumsi platform), dikali ZONA NYALA
   (panjang front x kedalaman nyala dari FBP), bukan luas wilayah. Yang dihitung di sini: L/s per m front = CF x kedalaman_nyala_m (m2 per m front);
@@ -27,7 +25,11 @@ from wilayah import AKAR  # noqa: E402
 
 KELUAR = os.path.join(AKAR, "public/data/lab/front.json")
 OPERASI = os.path.join(AKAR, "public/data/operasi.json")
-A_RED, B_RED, RASIO_MIN = 0.677, 0.052, 1.0   # Red <= A_RED x SWIR2 - B_RED dan SWIR2/SWIR1 >= RASIO_MIN (brief; belum dicek ke makalah)
+# Tabel 3 Hu dkk. 2021 (DICEK ke teks lengkap, Lirias KU Leuven; data makalah = reflektansi TOA, kita L2A permukaan: selisih belum diukur):
+#   Tropical & Subtropical Moist Broadleaf: C1 Red <= 1,045 x SWIR2 - 0,071 DAN C2 SWIR2/SWIR1 >= 1;  Grasslands, Savannas & Shrublands: C1 Red <= 0,677 x SWIR2 - 0,052 saja (tanpa C2).
+# (a, b, rasio): Red <= a x SWIR2 - b dan SWIR2/SWIR1 >= rasio (rasio 0 = C2 tak dipakai). Bioma per kompleks dari `jenis` operasi.json: savana -> SAVANA, selain itu LEMBAP (pendekatan kasar).
+LEMBAP, SAVANA = (1.045, 0.071, 1.0), (0.677, 0.052, 0.0)
+A_RED, B_RED, RASIO_MIN = LEMBAP
 N = 80                  # piksel per sisi (sama dengan konsesi_citra_jelas.pita)
 KM = 1.6                # sisi jendela: 1600 m / 80 = 20 m per piksel, resolusi asli SWIR S2
 KASAR_M = 40
@@ -78,8 +80,8 @@ def banding(panjang_km, front_taktik):
     return [round(panjang_km / f, 3) if f else None for f in front_taktik]
 
 
-def hitung(red, s1, s2, n=N, km=KM):
-    api = [afds2(r, a, b) for r, a, b in zip(red, s1, s2)]
+def hitung(red, s1, s2, n=N, km=KM, par=LEMBAP):
+    api = [afds2(r, a, b, *par) for r, a, b in zip(red, s1, s2)]
     pm = km * 1000 / n
     return {**panjang_front(api, n, pm), "piksel_m": round(pm, 1), "resolusi_kasar": pm > KASAR_M,
             "n_sah": sum(v is not None for v in api)}
@@ -98,7 +100,7 @@ def satu(c, kini):
         except Exception as e:  # noqa: BLE001  satu adegan rusak tidak menghentikan jalan
             print(f"{c['id']}: {type(e).__name__} {e}", file=sys.stderr)
             continue
-        h = hitung(r, s1, s2)
+        h = hitung(r, s1, s2, par=SAVANA if c.get("jenis") == "savana" else LEMBAP)
         return {"id": c["id"], "adegan": it["id"], "tgl": it["properties"]["datetime"][:10], "awan_pct": it["properties"].get("eo:cloud_cover"),
                 **h, "front_taktik_km": c.get("front"), "rasio_lab_per_taktik": banding(h["panjang_km"], c.get("front")),
                 "penney": None, "status_nilai": "hipotesis"}

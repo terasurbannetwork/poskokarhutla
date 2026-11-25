@@ -18,18 +18,21 @@ Pakai: python3 scripts/banjir/subsiden.py uji
        python3 scripts/banjir/subsiden.py hitung <kota> <prov> <dir_naik> <dir_turun> <frame_naik> <frame_turun> <periode> [ref_lat [tgl_awal tgl_akhir]]
 Atribusi: Contains modified Copernicus Sentinel data; COMET LiCSAR (Lazecky dkk. 2020); LiCSBAS (Morishita dkk. 2020).
 """
-import array, json, math, os, statistics, sys
+import array, json, math, os, random, statistics, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 from umum import KELUAR, simpan
 from wilayah import AKAR, _cincin
 
 ATRIBUSI = "Contains modified Copernicus Sentinel data; COMET LiCSAR (Lazecky dkk. 2020); LiCSBAS (Morishita dkk. 2020)"
-VERSI = 2           # 2 = tambah p10, galat, tgl_awal/tgl_akhir (PT-03)
+VERSI = 4           # 2 = p10, galat, tanggal (PT-03); 3 = galat bootstrap blok (K3); 4 = galat jarak variogram (K4)
 MIN_PIKSEL = 10     # kecamatan dengan piksel valid lebih sedikit tidak dilaporkan
 SAH_MM = 400.0      # |laju LOS| lebih besar = pencilan, dibuang
 U_MIN = 0.3
 DET_MIN = 0.35      # |E_a/U_a - E_t/U_t| minimum agar dua geometri stabil
+BLOK_DERAJAT = 0.01  # D9 [BAWAAN SEMENTARA]: sisi blok bootstrap (~1,1 km), belum diukur dari variogram
+BOOT_N = 200
+BLOK_MIN = 4        # kurang dari ini: galat tidak dihitung (None), tidak diproyeksikan
 
 
 def baca_par(jalur):
@@ -88,6 +91,59 @@ def kuantil(xs, q):
     return xs[lo] + (xs[min(lo + 1, len(xs) - 1)] - xs[lo]) * (i - lo)
 
 
+def blok_kunci(p, i, j):
+    """Kunci blok bootstrap untuk piksel kolom i, baris j."""
+    return int(i * abs(p["dlon"]) / BLOK_DERAJAT), int(j * abs(p["dlat"]) / BLOK_DERAJAT)
+
+
+def sb_median_blok(blok, benih):
+    """blok = {kunci: [nilai]} -> simpangan baku median dari BOOT_N ulangan bootstrap blok spasial (K3), satuan nilai.
+    Blok diambil ulang dengan pengembalian, jadi piksel berkorelasi di dalam satu blok ikut bersama. None bila < BLOK_MIN blok."""
+    isi = [v for v in blok.values() if v]
+    if len(isi) < BLOK_MIN:
+        return None
+    r = random.Random(benih)
+    return statistics.pstdev([statistics.median([x for b in r.choices(isi, k=len(isi)) for x in b]) for _ in range(BOOT_N)])
+
+
+VG_LEBAR_KM = 1.0
+VG_MAKS_KM = 40.0
+VG_N = 1500
+
+
+def variogram(titik, benih="vg"):
+    """titik = [(x_km, y_km, nilai)] -> [(pusat selang km, gamma)] semivarians empiris (K4), selang VG_LEBAR_KM,
+    paling banyak VG_N titik acak (benih tetap); selang dengan < 30 pasangan dibuang."""
+    if len(titik) > VG_N:
+        titik = random.Random(benih).sample(titik, VG_N)
+    nb = int(VG_MAKS_KM / VG_LEBAR_KM)
+    jum, cacah = [0.0] * nb, [0] * nb
+    for a in range(len(titik)):
+        xa, ya, va = titik[a]
+        for b in range(a + 1, len(titik)):
+            xb, yb, vb = titik[b]
+            k = int(math.hypot(xa - xb, ya - yb) / VG_LEBAR_KM)
+            if k < nb:
+                jum[k] += 0.5 * (va - vb) ** 2
+                cacah[k] += 1
+    return [((k + .5) * VG_LEBAR_KM, jum[k] / cacah[k]) for k in range(nb) if cacah[k] >= 30]
+
+
+def gamma_di(vg, h):
+    """gamma pada jarak h km: interpolasi linear; < selang pertama = selang pertama; > selang terakhir = selang terakhir.
+    -> (gamma, ekstrapolasi)"""
+    if h <= vg[0][0]:
+        return vg[0][1], False
+    for (h0, g0), (h1, g1) in zip(vg, vg[1:]):
+        if h <= h1:
+            return g0 + (g1 - g0) * (h - h0) / (h1 - h0), False
+    return vg[-1][1], True
+
+
+def km(lon, lat, lat0):
+    return lon * 111.32 * math.cos(math.radians(lat0)), lat * 111.32
+
+
 def sapu(cincin, lat, lon0, dlon, n):
     """Rentang kolom [i0,i1) yang pusatnya di dalam cincin pada garis `lat` (pengisian garis pindai)."""
     xs = []
@@ -103,11 +159,11 @@ def sapu(cincin, lat, lon0, dlon, n):
 def agregasi(fitur, g, min_piksel=MIN_PIKSEL, vstd=None, tgl=(None, None)):
     """g = Kisi vertikal (mm/thn) -> baris per kecamatan; cm/thn, negatif = turun.
     vstd = Kisi galat piksel VERTIKAL (vstd LiCSBAS dibagi U, mm/thn, grid sama) atau None; tgl = (awal, akhir) deret.
-    galat = galat baku median (cm/thn) = 1,2533*akar((var antarpiksel + rerata vstd^2)/n). BATAS BAWAH: menganggap piksel
-    bebas (galat_jenis); n_eff belum dipilih (butir terbuka ALGORITMA). galat_sumber = "vstd" atau "antarpiksel_saja"."""
+    galat (cm/thn) = akar(sb_median_blok^2 + 1,2533^2 * rerata vstd^2 / jumlah blok) (K3, ALGORITMA 4); None bila
+    kurang dari BLOK_MIN blok. galat_sumber = "vstd" atau "antarpiksel_saja"."""
     p, hasil = g.p, []
     for f in fitur:
-        nilai, ses, total = [], [], 0
+        nilai, ses, total, blok, pl = [], [], 0, {}, [0.0, 0.0]
         for r in _cincin(f["geometry"]):
             ys = [c[1] for c in r]
             j0 = max(0, math.ceil((max(ys) - p["lat0"]) / p["dlat"] - .5))
@@ -116,17 +172,25 @@ def agregasi(fitur, g, min_piksel=MIN_PIKSEL, vstd=None, tgl=(None, None)):
                 lat = p["lat0"] + (j + .5) * p["dlat"]
                 for i0, i1 in sapu(r, lat, p["lon0"], p["dlon"], p["w"]):
                     total += i1 - i0
-                    nilai += [v for v in g.v[j][i0:i1] if v == v]
+                    for i in range(i0, i1):
+                        if g.v[j][i] == g.v[j][i]:
+                            nilai.append(g.v[j][i])
+                            blok.setdefault(blok_kunci(p, i, j), []).append(g.v[j][i])
+                            lo, la = g.pusat(i, j)
+                            pl[0] += lo
+                            pl[1] += la
                     if vstd:
                         ses += [e for v, e in zip(g.v[j][i0:i1], vstd.v[j][i0:i1]) if v == v and e == e]
         if len(nilai) >= min_piksel:
-            var = statistics.pvariance(nilai) + (sum(e * e for e in ses) / len(ses) if ses else 0)
+            sb, nb = sb_median_blok(blok, f["properties"]["kec"]), len(blok)
+            ev = 1.2533 ** 2 * sum(e * e for e in ses) / len(ses) / nb if ses else 0.0
+            galat = None if sb is None else round(math.sqrt(sb * sb + ev) / 10, 2)
             hasil.append(dict(kec=f["properties"]["kec"], kab=f["properties"]["kab"], n=len(nilai),
                               cakupan=round(100 * len(nilai) / max(total, 1)),
                               med=round(statistics.median(nilai) / 10, 1),
                               p90=round(kuantil(nilai, .10) / 10, 1),  # P90 sisi turun: 90% piksel tidak lebih dalam dari ini
                               p10=round(kuantil(nilai, .90) / 10, 1),  # sisi naik/dangkal
-                              galat=round(1.2533 * math.sqrt(var / len(nilai)) / 10, 2),
+                              galat=galat, blok=nb, pusat=(pl[0] / len(nilai), pl[1] / len(nilai)),
                               galat_sumber="vstd" if ses else "antarpiksel_saja",
                               tgl_awal=tgl[0], tgl_akhir=tgl[1]))
     return hasil
@@ -141,12 +205,13 @@ def gerbang_pola(hasil):
     return (u is not None and s is not None and u <= s - 1.0), u, s
 
 
-def galat_acuan(ref, va, vt):
-    """e_ref cm/thn = simpangan piksel acuan/akar(n) + |selisih median acuan naik vs turun|; None bila tak bisa dihitung.
-    ref, va, vt = nilai vertikal (mm/thn) piksel acuan: gabungan, hanya-naik, hanya-turun. n = piksel acuan (bukan n_eff)."""
-    if len(ref) < 2 or not va or not vt:
+def galat_acuan(blok, va, vt):
+    """e_ref cm/thn = sb bootstrap blok median piksel acuan + |selisih median acuan naik vs turun| (K3); None bila tak bisa.
+    blok = {kunci: [vertikal mm/thn]} piksel acuan gabungan; va, vt = vertikal acuan hanya-naik, hanya-turun."""
+    sb = sb_median_blok(blok, "acuan")
+    if sb is None or not va or not vt:
         return None
-    return round((statistics.pstdev(ref) / math.sqrt(len(ref)) + abs(statistics.median(va) - statistics.median(vt))) / 10, 3)
+    return round((sb + abs(statistics.median(va) - statistics.median(vt))) / 10, 3)
 
 
 def hitung(kota, prov, dn, dt, fn, ft, periode, ref_lat=None, tgl=(None, None)):
@@ -174,19 +239,41 @@ def hitung(kota, prov, dn, dt, fn, ft, periode, ref_lat=None, tgl=(None, None)):
         V.append(baris)
     g = Kisi(pt, V)
     # referensi: median piksel dengan lintang <= ref_lat (area stabil di selatan; dipilih manual dan dilaporkan)
-    ref = [v for j, b in enumerate(V) for v in b if v == v and (ref_lat is None or g.pusat(0, j)[1] <= ref_lat)]
+    ref, rblok = [], {}
+    for j, b in enumerate(V):
+        if ref_lat is None or g.pusat(0, j)[1] <= ref_lat:
+            for i, v in enumerate(b):
+                if v == v:
+                    ref.append(v)
+                    rblok.setdefault(blok_kunci(pt, i, j), []).append(v)
     med_ref = statistics.median(ref)
     for b in V:
         for i in range(len(b)):
             b[i] -= med_ref
     fitur = json.load(open(os.path.join(AKAR, "public/geo/kecamatan", f"{prov}.json")))["features"]
-    e_ref = galat_acuan(ref, ra, rt)  # ref = nilai sebelum dikurangi median; simpangan tak terpengaruh
+    e_ref = galat_acuan(rblok, ra, rt)  # nilai sebelum dikurangi median; simpangan tak terpengaruh
     vs = os.path.join(dt, "vstd")  # opsional: galat piksel LiCSBAS geometri turun; dibagi U -> galat vertikal
     gv = None
     if os.path.exists(vs):
         sv = baca_raw(vs, pt["w"], pt["h"])
         gv = Kisi(pt, [array.array("f", [(e / u if u > U_MIN else nan) for e, u in zip(sv[j], T[2].v[j])]) for j in range(pt["h"])])
     hasil = agregasi(fitur, g, vstd=gv, tgl=tgl)
+    # galat jarak (K4): variogram laju vertikal piksel acuan (sesudah dikurangi median), h = pusat kecamatan ke pusat acuan
+    lat0 = pt["lat0"]
+    tit = [(*km(*g.pusat(i, j), lat0), v) for j, b in enumerate(V) for i, v in enumerate(b)
+           if v == v and (ref_lat is None or g.pusat(0, j)[1] <= ref_lat)]
+    vg = variogram(tit) if len(tit) >= 50 else []
+    pa_ = (statistics.fmean(t[0] for t in tit), statistics.fmean(t[1] for t in tit)) if tit else None
+    for k in hasil:
+        x, y = km(*k.pop("pusat"), lat0)
+        if vg:
+            gm, eks = gamma_di(vg, math.hypot(x - pa_[0], y - pa_[1]))
+            k["galat_jarak"] = round(math.sqrt(2 * gm) / 10, 2)
+            k["galat_jarak_ekstrapolasi"] = eks
+            if k["galat"] is not None and e_ref is not None:
+                k["tak_beda_nol"] = abs(k["med"]) < 2 * math.sqrt(k["galat"] ** 2 + e_ref ** 2 + k["galat_jarak"] ** 2)
+        else:
+            k["galat_jarak"] = None
     if e_ref is None:
         for h in hasil:
             h["acuan_belum_dihitung"] = True
@@ -195,7 +282,8 @@ def hitung(kota, prov, dn, dt, fn, ft, periode, ref_lat=None, tgl=(None, None)):
                 referensi=dict(median_dikurangkan_cm_thn=round(med_ref / 10, 2), lintang_maks=ref_lat,
                                galat_cm_thn=e_ref, acuan_belum_dihitung=e_ref is None,
                                catatan="median piksel area stabil (selatan, dataran tinggi) dikurangkan"),
-                galat_jenis="batas_bawah_piksel_bebas",
+                galat_jenis="bootstrap_blok+jarak_variogram",
+                variogram_acuan=[(round(h, 1), round(gm / 100, 3)) for h, gm in vg],  # (km, gamma cm^2/thn^2)
                 gerbang=dict(lolos=ok, utara=u, selatan=s), kecamatan=hasil), ok
 
 
@@ -227,11 +315,30 @@ def uji():
     # suku pvariance tak nol: nilai bervariasi -> galat > 0 tanpa vstd
     vv = [array.array("f", [-100.0, -200.0, -100.0, -200.0] + [nan] * 4) for _ in range(8)]
     h3 = agregasi(fit, Kisi(g.p, vv), 1)[0]
-    assert abs(h3["galat"] - round(1.2533 * 50 / math.sqrt(32) / 10, 2)) < 1e-9 and h3["galat"] > 0, h3
-    # e_ref: 4 piksel acuan sd 0 + selisih median 20 mm -> 2 cm; tak bisa dihitung -> None
-    assert galat_acuan([5.0] * 4, [10.0], [-10.0]) == 2.0
-    assert abs(galat_acuan([0.0, 10.0], [0.0], [0.0]) - round(5 / math.sqrt(2) / 10, 3)) < 1e-9
-    assert galat_acuan([1.0], [1.0], [1.0]) is None and galat_acuan([1.0, 2.0], [], [1.0]) is None
+    assert h3["galat"] > 0 and h3["blok"] == 32, h3
+    # bootstrap blok: < BLOK_MIN blok -> None; blok seragam -> 0; benih tetap -> sama; blok berkorelasi -> lebih lebar dari rumus bebas
+    assert sb_median_blok({k: [1.0] for k in range(3)}, "x") is None and sb_median_blok({k: [2.0] for k in range(5)}, "x") == 0.0
+    bk = {k: [float(k % 3)] * 10 for k in range(12)}
+    assert sb_median_blok(bk, "x") == sb_median_blok(bk, "x")
+    datar = [x for b in bk.values() for x in b]
+    assert sb_median_blok(bk, "x") > 1.2533 * statistics.pstdev(datar) / math.sqrt(len(datar)), "blok harus melebarkan galat"
+    # kecamatan kecil di dalam satu blok 0,01 derajat -> galat None
+    v1 = [array.array("f", [-100.0] * 8) for _ in range(8)]
+    kecil = Kisi(dict(w=8, h=8, lat0=.8, lon0=0.0, dlat=-.001, dlon=.001), v1)
+    kot2 = {"type": "Polygon", "coordinates": [[[0.0, .792], [.008, .792], [.008, .8], [0.0, .8], [0.0, .792]]]}
+    hk = agregasi([dict(properties=dict(kec="K", kab="X"), geometry=kot2)], kecil, 1)[0]
+    assert hk["blok"] == 1 and hk["galat"] is None, hk
+    # variogram: medan tetap -> gamma 0; medan v = x (km) -> gamma(h) ~ h^2/4 (arah acak); gamma_di interpolasi dan ekstrapolasi
+    rr = random.Random(3)
+    acak = [(rr.uniform(0, 30), rr.uniform(0, 30)) for _ in range(800)]
+    assert all(gm == 0 for _, gm in variogram([(x, y, 7.0) for x, y in acak]))
+    vgx = dict(variogram([(x, y, x) for x, y in acak]))
+    assert abs(vgx[10.5] - 10.5 ** 2 / 4) / (10.5 ** 2 / 4) < 0.15, vgx[10.5]
+    tg = [(0.5, 1.0), (1.5, 3.0), (2.5, 5.0)]
+    assert gamma_di(tg, 1.0) == (2.0, False) and gamma_di(tg, 0.1) == (1.0, False) and gamma_di(tg, 9.0) == (5.0, True)
+    # e_ref: blok seragam (sb 0) + selisih median 20 mm -> 2 cm; tak bisa dihitung -> None
+    assert galat_acuan({k: [5.0] for k in range(4)}, [10.0], [-10.0]) == 2.0
+    assert galat_acuan({0: [1.0]}, [1.0], [1.0]) is None and galat_acuan({k: [1.0] for k in range(4)}, [], [1.0]) is None
     # gerbang pola
     assert gerbang_pola([dict(kab="Jakarta Utara", med=-6), dict(kab="Jakarta Selatan", med=-1)])[0]
     assert not gerbang_pola([dict(kab="Jakarta Utara", med=-1), dict(kab="Jakarta Selatan", med=-1)])[0]

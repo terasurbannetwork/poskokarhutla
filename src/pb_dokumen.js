@@ -9,6 +9,12 @@ import {tolak, teks} from "./operasi_isian.js";
 import REGISTRY from "./bencana.generated.js";
 import {rute, badan, lajuOK, lambat, bersih, RE_PRIBADI, wilayah, idBody} from "./pb_isian.js";
 import {KODE_BENCANA} from "./logbook.js";
+import {batchBersegel} from "./segel.js";
+import {PROV} from "./lapor_wilayah.js";
+/* sampul segel dokumen PB (paket segel-dokumen SG-07): label jenis sama dengan public/inti/dokumen.js; penerbit = lembaga; pb_dokumen tanpa baris dummy */
+const LABEL_JENIS = {sitrep: "Laporan situasi", renops: "Rencana operasi", laporan_kib: "Laporan kejadian", renkon_peta: "Penunjuk renkon"};
+const sampulPb = (d, sidik, kini) => ({jenis: "pb", rujukan: d.id, versi: d.versi, sidik, judul: `${LABEL_JENIS[d.jenis]} ${REGISTRY.bencana.find(x => x.id === d.bencana)?.nama ?? d.bencana}`.slice(0, 160),
+  wilayah: PROV[d.prov] ?? null, periode: d.periode, penerbit: "BNPB", terbit: kini});
 import {indukLogbook, pelakuPbTulis, pelakuPbBaca, pbDokById, pbDokDaftar, pbStmtDokRakit, pbDokBeku, pbStmtLog, pbKepatuhan, tanpaTabelPb, batchTulis} from "./hak.js";
 
 const JENIS = ["sitrep", "renops", "laporan_kib", "renkon_peta"], FMT = {json: "application/json; charset=utf-8", pdf: "application/pdf"};
@@ -17,7 +23,7 @@ const RE_PERIODE = /^\d{4}(?:-\d{2}(?:-\d{2})?|-W\d{2})?$/, RE_HARI = /^\d{4}-\d
 const TOLAK = "dokumen hanya untuk staf Pusdalops, koordalops, pimpinan, atau moderator";
 const MIGRASI = "fitur dokumen belum diaktifkan (migrasi 0131_paritas_dokumen belum diterapkan)";
 const kunciDraf = id => `dokumen/draf/${id}.json`;
-const kunciBeku = (d, fmt) => `dokumen/${d.jenis}/${d.bencana}/${d.periode}/${d.prov}${d.kab ? "-" + d.kab : ""}/v${d.versi}.${fmt}`;
+export const kunciBeku = (d, fmt) => `dokumen/${d.jenis}/${d.bencana}/${d.periode}/${d.prov}${d.kab ? "-" + d.kab : ""}/v${d.versi}.${fmt}`;
 const str = (v, n = 300) => typeof v === "string" ? v.slice(0, n) : null;
 const pilih = (v, daftar, nama) => typeof v === "string" && daftar.includes(v) ? v : tolak(`${nama} harus salah satu dari: ${daftar.join(", ")}`);
 
@@ -148,9 +154,11 @@ const bekukan = rute(async (env, req, url, kini) => {
   const isi = JSON.stringify(dok), ukuran = new TextEncoder().encode(isi).length;
   // tulis sekali: pemenang dua bekukan bersamaan ditentukan R2 (put kedua null = 409). ponytail: bila UPDATE D1 gagal sesudah put, berkas yatim menahan versi itu; rakit ulang (versi + 1).
   if (!await env.MEDIA.put(kunciBeku(d, "json"), isi, {onlyIf: {etagDoesNotMatch: "*"}, httpMetadata: {contentType: FMT.json}, customMetadata: {dibuat: String(kini)}})) return gagal(409, "versi ini sudah beku dan tidak ditimpa");
-  if (!await pbDokBeku(env, pelakuPbTulis, id, ukuran, await sha(isi), kini)) return gagal(409, "dokumen sudah dibekukan");
-  await batchTulis(env, [pbStmtLog(env, pelakuPbTulis, kini, p.oleh, "pb_dokumen", id, "terbit", {status: "draf"}, {status: "beku", versi: d.versi, ukuran})]);
-  return json({id, versi: d.versi, status: "beku", ukuran});
+  const sidik = await sha(isi);
+  if (!await pbDokBeku(env, pelakuPbTulis, id, ukuran, sidik, kini)) return gagal(409, "dokumen sudah dibekukan");
+  // segel menyusul pbDokBeku dalam batch log terbit (KEPUTUSAN-SEGEL D3): gagal di antara keduanya menyisakan dokumen beku tanpa segel
+  const {kode: segel} = await batchBersegel(env, [pbStmtLog(env, pelakuPbTulis, kini, p.oleh, "pb_dokumen", id, "terbit", {status: "draf"}, {status: "beku", versi: d.versi, ukuran})], sampulPb(d, sidik, kini));
+  return json({id, versi: d.versi, status: "beku", ukuran, segel, sidik12: segel ? sidik.slice(0, 12) : null});
 });
 
 const daftar = rute(async (env, req, url) => {

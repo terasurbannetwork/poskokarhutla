@@ -42,6 +42,7 @@ import {RUTE_PENGINGAT, buatPengingat, buatPengingatPrioritas} from "./pengingat
 import {RUTE_OPS, nilaiDropTertunda} from "./operasi_lapangan.js";
 import {RUTE_INSTANSI, catatKerja, tugasBaruDariBerkas, bersihkanInstansi} from "./instansi.js";
 import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
+import {RUTE_SEGEL} from "./segel.js";
 import {RUTE_UJI_PILOT} from "./uji_pilot.js";
 import {RUTE_BANTU} from "./tiga_w.js";
 import {RUTE_PUSH, kirimPushDaerah} from "./push.js";
@@ -100,7 +101,7 @@ import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.j
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
 import {perbaruiGunungapi, layaniGunungapi} from "./gunungapi.js";
 import {perbaruiSihka, perbaruiSungaiResmi, perbaruiHujan, dasarSihka, ruteSihka} from "./sihka.js";
-import {himawariDibuat} from "./himawari.js";
+import {himawariDibuat, statusHimawari} from "./himawari.js";
 import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
 import {layaniUbin} from "./ubin.js";
 import {panenAdsb, bersihkanAdsb} from "./adsb.js";
@@ -538,7 +539,9 @@ async function dibuatAset(env, asal, jalur, kunci = "dibuat") {
 async function umurSumber(env, url, kini, [jalur, ambang]) {
   if (jalur === "/api/himawari" && !env.MEDIA) return {dibuat: null, umur_jam: null, ambang_jam: ambang, basi: false};   // R2 tidak terpasang (uji/dev): tidak dinilai
   const w = jalur === "/api/himawari" ? await himawariDibuat(env) : jalur.startsWith("/api/gempa/") ? await gempaDibuat(env) : jalur === "/api/cuaca/nowcast" ? await nowcastDibuat(env) : await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
-  return {dibuat: w == null ? null : new Date(w).toISOString(), umur_jam: jam, ambang_jam: ambang, basi: ambang != null && (jam == null || jam > ambang)};
+  const o = {dibuat: w == null ? null : new Date(w).toISOString(), umur_jam: jam, ambang_jam: ambang, basi: ambang != null && (jam == null || jam > ambang)};
+  if (jalur === "/api/himawari") { const {status, terputus_sejak, kelas_galat} = await statusHimawari(env, kini); if (status === "terputus") Object.assign(o, {status, terputus_sejak, kelas_galat}); else o.status = status; }   // alasan, bukan hanya "basi" (ST-01 D16)
+  return o;
 }
 export async function periksaStatus(env, url, kini) {   // diekspor untuk uji dengan jam buatan (tests/warga/jeda_sensor.test.mjs)
   const sumber = {}, uji = {}, basi = [];
@@ -662,6 +665,7 @@ const RUTE = {
   ...RUTE_SEMAI,   // peluang semai awan: berkas R2 + target renlap OMC (src/operasi_semai.js, migrasi 0129)
   ...RUTE_ISIAN,   // isian manual operasi udara (src/operasi_isian.js, migrasi 0126)
   ...RUTE_PB_RINGKAS,   // paritas bencana: papan status darurat dari logbook_sk (src/pb_ringkas.js)
+  ...RUTE_SEGEL,   // segel dokumen: GET /api/verifikasi/<kode> publik (src/segel.js, migrasi 0171-0172)
   ...RUTE_PB_DOK,   // paritas bencana: dokumen sitrep, renops, laporan KIB (src/pb_dokumen.js, migrasi 0131)
   ...RUTE_PB,   // paritas bencana: sarana dan fasilitas sasaran (src/pb_isian.js, migrasi 0130)
   ...RUTE_LAPORAN_KARHUTLA,   // Laporan Karhutla otomatis: draf, kirim, verifikasi, kunci, ralat, snapshot (src/laporan_karhutla.js)
@@ -693,12 +697,12 @@ export const tolakOrigin = (req, url) => {
 async function rute(env, req, url, ctx) {
   /* /lacak (halaman statis; token di fragmen #<36 hex>, dibaca peramban); API-nya (/api/lacak/*) membawa token di header x-lacak */
   if (url.pathname === "/lacak" || url.pathname === "/lacak/") { const h = await halamanLacak(env, req, url); if (h) return h; }
-  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/) || jalur.match(/^(\/api\/operasi\/foto)\/(\d{1,12})$/), sm = jalur.match(/^(\/api\/operasi\/semai\/berkas)\/((?:arsip\/)?[^/]{1,40})$/), tn = jalur.match(/^(\/api\/logbook\/turunan)\/([a-z0-9_]{1,20})$/), ir = jalur.match(/^(\/api\/inarisk\/(?:kegiatan|ubin))\/[^/]/), sh = jalur.match(/^(\/api\/saham)\/[^/]{1,60}\/(info|transaksi|grafik)$/), lb = jalur.match(/^(\/api\/logbook\/kejadian)\/([0-9a-f]{16})\/(entri|tutup|sk)$/) || jalur.match(/^(\/api\/ai\/(?:agen|percakapan))\/([0-9a-f]{16})\/(hapus)$/) || jalur.match(/^(\/api\/ai\/agen)\/([0-9a-f]{16})\/(sumber)$/) || jalur.match(/^(\/api\/ai\/pengetahuan)\/([0-9a-f]{16})\/(hapus|indeks-ulang)$/) || jalur.match(/^(\/api\/orang)\/([0-9a-f]{16})\/(jejak)$/), lp = jalur.match(/^(\/api\/lapor\/(?:meja|unduh|kabar|unggah))\/([^/]+(?:\/[^/]+)?)$/) || jalur.match(/^(\/api\/lapor\/foto)\/([0-9a-f]{16}\.(?:mp4|mov|webm))$/) || jalur.match(/^(\/api\/lapor\/pdf)\/(?!antre$)([^/]+\/\d{1,3})$/), id = lp ? lp[2] : sm ? sm[2] : tgl ? tgl[2] : tn ? tn[2] : nama ? nama[2] : rl ? rl[2] : lb ? lb[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
-  const kunci = ir ? ir[1] + "/:x" : lp ? lp[1] + "/:x" : sm ? sm[1] + "/:nama" : sh ? `${sh[1]}/:kode/${sh[2]}` : tgl ? tgl[1] + "/:tanggal" : tn ? tn[1] + "/:nama" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : lb ? `${lb[1]}/:id/${lb[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
+  const jalur = url.pathname.replace(/\/+$/, "") || "/", vf = jalur.match(/^(\/api\/verifikasi)\/([^/]{1,40})$/), tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/) || jalur.match(/^(\/api\/operasi\/foto)\/(\d{1,12})$/), sm = jalur.match(/^(\/api\/operasi\/semai\/berkas)\/((?:arsip\/)?[^/]{1,40})$/), tn = jalur.match(/^(\/api\/logbook\/turunan)\/([a-z0-9_]{1,20})$/), ir = jalur.match(/^(\/api\/inarisk\/(?:kegiatan|ubin))\/[^/]/), sh = jalur.match(/^(\/api\/saham)\/[^/]{1,60}\/(info|transaksi|grafik)$/), lb = jalur.match(/^(\/api\/logbook\/kejadian)\/([0-9a-f]{16})\/(entri|tutup|sk)$/) || jalur.match(/^(\/api\/ai\/(?:agen|percakapan))\/([0-9a-f]{16})\/(hapus)$/) || jalur.match(/^(\/api\/ai\/agen)\/([0-9a-f]{16})\/(sumber)$/) || jalur.match(/^(\/api\/ai\/pengetahuan)\/([0-9a-f]{16})\/(hapus|indeks-ulang)$/) || jalur.match(/^(\/api\/orang)\/([0-9a-f]{16})\/(jejak)$/), lp = jalur.match(/^(\/api\/lapor\/meja)\/(cari\/[0-9a-f]{16}\/status)$/) || jalur.match(/^(\/api\/lapor\/s)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/lapor\/(?:meja|unduh|kabar|unggah|data\/video))\/([^/]+(?:\/[^/]+)?)$/) || jalur.match(/^(\/api\/lapor\/foto)\/([0-9a-f]{16}\.(?:mp4|mov|webm))$/) || jalur.match(/^(\/api\/lapor\/pdf)\/(?!antre$)([^/]+\/\d{1,3})$/), id = lp ? lp[2] : sm ? sm[2] : tgl ? tgl[2] : tn ? tn[2] : nama ? nama[2] : rl ? rl[2] : lb ? lb[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
+  const kunci = vf ? vf[1] + "/:kode" : ir ? ir[1] + "/:x" : lp ? lp[1] + "/:x" : sm ? sm[1] + "/:nama" : sh ? `${sh[1]}/:kode/${sh[2]}` : tgl ? tgl[1] + "/:tanggal" : tn ? tn[1] + "/:nama" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : lb ? `${lb[1]}/:id/${lb[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
   const f = tabel[req.method + " " + kunci];
   if (!f) {   // jalur ada tapi metode lain: 405, bukan jatuh ke aset statis (HEAD/OPTIONS tetap lewat seperti semula)
-    const ok = ["GET", "POST", "PUT"].filter(m => tabel[m + " " + kunci]);
-    return ok.length && req.method !== "HEAD" && req.method !== "OPTIONS" ? gagal(405, "metode tidak diizinkan", {allow: ok.join(", ")}) : null;
+    const ok = ["GET", "POST", "PUT", "DELETE"].filter(m => tabel[m + " " + kunci]);
+    return ok.length && req.method !== "HEAD" && req.method !== "OPTIONS" ? gagal(405, "metode tidak diizinkan", {allow: ok.join(", "), "x-robots-tag": "noindex, nofollow"}) : null;
   }
   if (req.method === "POST" || req.method === "PUT" || req.method === "PATCH" || req.method === "DELETE") {   // CSRF: tulis dari origin lain ditolak (cookie sesi SameSite=Lax)
     const x = tolakOrigin(req, url); if (x) return x;
@@ -750,7 +754,11 @@ export const HTML_RUTE = [
   [/^\/prediksi\/ringkas\/?$/, "/prediksi/ringkas.html", "/prediksi/ringkas"],   // Siaga 3 hari: halaman ringkas tanpa tab untuk staf (KEPUTUSAN-BESOK K18); terkunci seperti /prediksi
   [/^\/lapor\/?$/, "/lapor/index.html", "/lapor"],   // Lapor Bencana BNPB, pintu warga (public/lapor/, src/lapor_ai.js); publik (KEPUTUSAN-MASUK K14)
   [/^\/lapor\/lacak\/?$/, "/lapor/lacak.html", "/lapor/lacak"],   // halaman lacak bertoken ?t=, publik (K14)
+  [/^\/lapor\/s\/[^/]+\/?$/, "/lapor/s/index.html", "/lapor/s"],   // tautan kabar selamat bertoken (LA-80/81, K91 D128): tamu, noindex; token tidak masuk statistik hit (kunci jalur "/lapor/s")
+  [/^\/lapor\/hari-ini\/?$/, "/lapor/hari-ini.html", "/lapor/hari-ini"],   // kejadian hari ini dari laporan terverifikasi BPBD (lapor-kejadian K86, LK-06); publik, data dari /api/lapor/hari-ini di balik saklar LAPOR_HARI_INI
+  [/^\/lapor\/data\/?$/, "/lapor/data/index.html", "/lapor/data"],   // data lanjutan BPBD (LJ-16): token tim di URL ditukar kuki; halaman tidak memuat data, API menjaga kuki tim atau sesi staf
   [/^\/lapor\/meja\/?$/, "/lapor/meja.html", "/lapor/meja"],   // meja laporan staf; tertutup di centurisk97.id, /api/lapor/meja* menjaga sesi staf
+  [/^\/verifikasi(?:\/[^/]{1,40})?\/?$/, "/verifikasi.html", "/verifikasi"],   // segel dokumen (segel-dokumen SG-08, K3 Q2): publik tanpa akun, kode di jalur; data hanya dari /api/verifikasi/<kode>
   ...ruteDocs(),   // /docs, /docs/<modul>[/<halaman>], /docs/pengembang/...: pola tertutup, dokumentasi publik Centurisk97 (public/docs/, src/docs_rute.js); terbuka di PUBLIK_TANPA_SESI, tanpa D1/API
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
@@ -771,12 +779,17 @@ export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk den
   ["/pendataan", "pendataan Satu Data BNPB: staf direktorat membuat akun sendiri tanpa akun situs (keputusan pemilik 26 Okt 2026); akun baru menunggu persetujuan Super Admin, sesi dan status aktif dicek di tiap panggilan API"],
   ["/lapor", "Lapor Bencana BNPB: warga melapor kejadian (KEPUTUSAN-MASUK K14, pemilik 19 Nov 2026); halaman tidak memuat data, pelapor masuk lewat /masuk dan nomor dari sesi dicek di tiap /api/lapor/*"],
   ["/lapor/lacak", "lacak laporan dengan tautan bertoken ?t= yang dikirim ke pelapor, tanpa akun (KEPUTUSAN-MASUK K14); halaman tanpa token kosong, token dicek di /api/lapor/lacak"],
+  ["/lapor/s", "tautan kabar selamat yang dibagikan penanda sendiri kepada keluarga, tanpa akun (KEPUTUSAN-LAPOR-AI K91, D128); halaman tidak memuat data, token di jalur dicek di /api/lapor/s/:token"],
+  ["/lapor/data", "layar tim pendataan BPBD dari tautan WA (lapor-lanjutan LJ-15, KEPUTUSAN-MASUK K17); halaman tidak memuat data, token ?t= ditukar kuki tim lewat /api/lapor/data/masuk dan tiap API menjaga kuki tim atau sesi staf"],
+  ["/lapor/hari-ini", "kejadian hari ini dari laporan warga terverifikasi BPBD untuk wartawan dan warga (lapor-kejadian K86, KEPUTUSAN-MASUK K15); halaman tidak memuat data, kartu dari /api/lapor/hari-ini berdaftar putih kolom dan di balik saklar LAPOR_HARI_INI"],
+  ["/verifikasi", "pemeriksaan keaslian dokumen bersegel lewat kode di bawah QR, terbuka tanpa akun (KEPUTUSAN-SEGEL K3, Q2); halaman tidak memuat data, sampul dokumen dari /api/verifikasi/<kode> yang berlaju dan tanpa angka isi"],
   ["/masuk", "pintu masuk satu nomor WhatsApp dan kode sekali pakai harus bisa dibuka tamu (keputusan pemilik 15 Nov 2026, K8); halaman tidak memuat data, kode dan sesi dicek di tiap panggilan /api/masuk/*"],
   ["/docs", "dokumentasi Centurisk97 (cara kerja, metode, referensi) terbuka tanpa login (KEPUTUSAN-DOCS Q1 bawaan); hanya HTML statis hasil scripts/docs/bangun.py, tanpa data pribadi, tanpa API, tanpa tulis; jalur dikunci ke pola tertutup (segmen [a-z0-9-], paling dalam 3 segmen)"],
   ["/alun-alun", "forum alun-alun dibuka tamu tanpa login (keputusan pemilik 15 Nov 2026, K8: \"alun alun\"); tulis dan baca lewat /api/alun* yang berlaju dan ber-Turnstile, daftar relawan dan peta utama tetap terkunci"]]);
 function halamanTerkunci(url) {
   const jalur = url.pathname.replace(/\/+$/, "") || "/";
-  if (/^\/lapor\/(index|lacak)\.html$/.test(url.pathname)) return false;   // alamat langsung pintu Lapor dan tautan lacak lama (/lapor/lacak.html?t=), sama dengan K14
+  if (/^\/lapor\/(index|lacak|s\/index|data\/index)\.html$/.test(url.pathname) || /^\/lapor\/s\/[^/]+$/.test(jalur)) return false;
+  if (url.pathname === "/verifikasi.html" || /^\/verifikasi\/[^/]{1,40}$/.test(jalur)) return false;   // halaman segel publik: kode di jalur (KEPUTUSAN-SEGEL K3)   // alamat langsung pintu Lapor dan tautan lacak lama (/lapor/lacak.html?t=), sama dengan K14
   if (DOCS_HTML_LANGSUNG.test(url.pathname)) return false;   // alamat langsung berkas Docs (keluaran generator), publik seperti /docs (DC-03)
   if (/\.html$/i.test(url.pathname)) return true;   // berkas HTML statis dibuka langsung lewat nama (Worker dipanggil hanya untuk pola ini)
   if (PUBLIK_TANPA_SESI.has(jalur) || jalurDocs(jalur)) return false;
@@ -844,6 +857,9 @@ async function layaniHTML(req, env, ctx, url) {
   /* HTML per orang (pemirsa) dan di balik login (host terkunci): jangan disimpan cache bersama */
   if (pmTab || (hostTerkunci(url.hostname) && !docs) || jalur === "/uji-lapangan") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.append("vary", "cookie"); }
   /* /petugas dan /petugas/panel memuat data pribadi: CSP ketat (tanpa skrip/gaya inline; aset sendiri + Google Fonts) dan tanpa referrer; kode pribadi ada di fragmen #k= */
+  if (jalur === "/lapor/s") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.set("x-robots-tag", "noindex, nofollow"); keluaran.headers.set("referrer-policy", "no-referrer"); }   // token kabar selamat ada di jalur
+  if (jalur === "/verifikasi") { keluaran.headers.set("cache-control", "no-store"); keluaran.headers.set("x-robots-tag", "noindex, nofollow"); keluaran.headers.set("referrer-policy", "no-referrer"); }   // segel: status dicabut harus langsung terbaca (D15)
+  if (jalur === "/lapor/data") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.set("x-robots-tag", "noindex"); keluaran.headers.set("referrer-policy", "no-referrer"); }   // token tim ada di ?t= saat dibuka
   if (jalur === "/bantu") { keluaran.headers.set("content-security-policy", CSP_PETUGAS.replace(" 'wasm-unsafe-eval'", "")); keluaran.headers.set("referrer-policy", "no-referrer"); keluaran.headers.set("cache-control", "no-store"); }
   if (jalur === "/petugas" || jalur === "/petugas/panel") {
     keluaran.headers.set("content-security-policy", jalur === "/petugas" ? CSP_PETUGAS : CSP_PETUGAS_PANEL); keluaran.headers.set("referrer-policy", "no-referrer");

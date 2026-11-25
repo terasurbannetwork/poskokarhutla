@@ -20,7 +20,7 @@ const kepala = judul => `<!doctype html>
 <script src="/inti/dasbor_admin.js?v=1" defer></script>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
-const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
+const HAL = {segel: ["🔏", "Segel dokumen"], statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
   relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], aktivasi: ["🗺️", "Aktivasi daerah"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Bencana"], omc: ["🌧️", "Sortie OMC"], laporan: ["📋", "Ruang Laporan"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], "biaya-bot": ["💵", "Biaya bot WA"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"], "command-center": ["🎛️", "Command center"], ai: ["🤖", "Asisten AI"]};
 /* halaman Ruang Koordinasi BNPB: SATU entri di nav atas, lalu sub-nav di bawahnya (nav atas tetap muat di 1440) */
 const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc", "laporan", "kinerja", "pendataan"];
@@ -96,7 +96,7 @@ export const halamanMasuk = (galat, ke = "", merek = "Centurisk97") => `${kepala
   <div class="ad-kepala-masuk">
     <img src="/img/logo.svg?v=2" alt="${esc(merek)}" width="44" height="44">
     <h1>Pemantauan kondisi bencana di Indonesia secara <em>real time</em></h1>
-    <p>Masuk staf dan admin</p>
+    <p>Staf BNPB, BPBD, dan instansi masuk di sini</p>
   </div>
   <div class="ad-isi-masuk">
     <form method="post" action="/admin/masuk${ke ? "?ke=" + encodeURIComponent(ke) : ""}">
@@ -198,7 +198,8 @@ export const RUANG_LAPORAN = [
     ["logbook", "Logbook Pusdalops", "/bnpb/logbook", IK('<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6"/>')],
     ["dalops", "Pantau Banjir Dalops", "/bnpb/dalops", IK('<path d="M3 15c2 0 2-1.5 4.5-1.5S9.5 15 12 15s2.5-1.5 4.5-1.5S19 15 21 15M3 19c2 0 2-1.5 4.5-1.5S9.5 19 12 19s2.5-1.5 4.5-1.5S19 19 21 19"/><path d="M12 3v8M9 8l3 3 3-3"/>')]]},
   {kel: "Keluaran", item: [["pelaporan", "Laporan dan arsip", "/pelaporan", IK('<path d="M4 4h16v5H4zM5 9v11h14V9M10 13h4"/>')],
-    ["koordalops", "Laporan Koordalops", "/laporan-bnpb", IK('<path d="M12 3v12m0 0l-4-4m4 4l4-4M5 20h14"/>')]]},
+    ["koordalops", "Laporan Koordalops", "/laporan-bnpb", IK('<path d="M12 3v12m0 0l-4-4m4 4l4-4M5 20h14"/>')],
+    ["segel", "Segel dokumen", "/admin/segel", IK('<path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>')]]},
   {kel: "Pantauan", item: [["udara", "Kualitas udara", "/udara", IK('<path d="M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3M3 12h7"/>')],
     ["gunungapi", "Gunung api", "/gunungapi", IK('<path d="M3 20l6-10 3 4 2-3 7 9zM12 3v3M7 5l1.5 2M17 5l-1.5 2"/>')]]}];
 export const halamanRuangLaporan = ctx => `${kepala("Ruang Laporan · Centurisk97")}
@@ -211,6 +212,12 @@ ${atas("laporan", ctx)}
 </div>
 <script src="/admin/ruang_laporan.js?v=1"></script>
 </body></html>`;
+
+/* Segel dokumen (/admin/segel, segel-dokumen SG-10, DESIGN-SYSTEM 4): daftar 100 segel terbaru dan cabut. Data: GET /api/segel, POST /api/segel/cabut (src/segel.js). */
+export const halamanSegel = ctx => halaman("segel", "Memuat daftar segel…", `<link href="/admin/akun.css?v=5" rel="stylesheet">
+<link href="/admin/segel.css?v=1" rel="stylesheet">
+<script src="/admin/bersama.js?v=5"></script>
+<script src="/admin/segel.js?v=1"></script>`, ctx);
 
 /* Akun (/admin/akun): buat akun staf, daftar semua akun dan halaman yang dibukanya. Data dari /api/staf/admin/daftar (Super Admin). */
 export const halamanAkun = () => halaman("akun", "Memuat daftar akun…", `<link href="/admin/akun.css?v=5" rel="stylesheet">

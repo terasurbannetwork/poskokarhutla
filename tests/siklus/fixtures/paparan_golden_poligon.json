@@ -1,0 +1,44 @@
+{
+ "kec": {
+  "A": {
+   "jiwa_worldpop": 1000,
+   "luas_m2": 15000,
+   "n": 300
+  },
+  "B": {
+   "jiwa_worldpop": 400,
+   "luas_m2": 2500,
+   "n": 50
+  }
+ },
+ "luas_m2": 17500,
+ "n": 350,
+ "zona": {
+  "banjir": {
+   "galat_km": 0.08,
+   "per_zona": {
+    "poligon": {
+     "desa": {
+      "d1": 200
+     },
+     "jiwa": {
+      "dukcapil": 600,
+      "ghsl": null,
+      "worldpop": 667
+     },
+     "jiwa_selisih": 67,
+     "kec": {
+      "A": 200
+     },
+     "luas_m2": 10000,
+     "n": 200
+    }
+   },
+   "tersedia": true
+  },
+  "rob": {
+   "alasan": "x",
+   "tersedia": false
+  }
+ }
+}

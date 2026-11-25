@@ -1,0 +1,207 @@
+{
+ "n_kab": 521,
+ "n_hari_uji": 1096,
+ "n_unit_hari": 571016,
+ "positif": 17345,
+ "laju_label": 0.03038,
+ "tingkat": {
+  "Waspada": {
+   "ambang_level": 1,
+   "n_alarm": 79512,
+   "tp": 14930,
+   "fp": 64582,
+   "fn": 2415,
+   "tn": 489089,
+   "pod": 0.8607667915825886,
+   "far": 0.812229600563437,
+   "csi": 0.1822354046895407,
+   "ets": 0.1573951757929967,
+   "pss": 0.7441235142572455,
+   "pembanding_ets": {
+    "persistensi_asli": 0.35485828851886925,
+    "persistensi_disamakan": 0.09318845329385847,
+    "klimatologi_disamakan": 0.13002282583157002
+   },
+   "pembanding_terbaik": "persistensi_asli",
+   "selisih_ets": {
+    "est": -0.19746311272587255,
+    "lo": -0.20647922849720504,
+    "hi": -0.18667157257301706,
+    "B": 300,
+    "n_blok": 5966
+   },
+   "vonis": "TIDAK LULUS"
+  },
+  "Siaga": {
+   "ambang_level": 2,
+   "n_alarm": 18981,
+   "tp": 7411,
+   "fp": 11570,
+   "fn": 9934,
+   "tn": 542101,
+   "pod": 0.4272701066589795,
+   "far": 0.609556925346399,
+   "csi": 0.2563029569427633,
+   "ets": 0.24117204012108567,
+   "pss": 0.406373220240872,
+   "pembanding_ets": {
+    "persistensi_asli": 0.35485828851886925,
+    "persistensi_disamakan": 0.3334455300813601,
+    "klimatologi_disamakan": 0.20033960843370932
+   },
+   "pembanding_terbaik": "persistensi_asli",
+   "selisih_ets": {
+    "est": -0.11368624839778357,
+    "lo": -0.12275048630880872,
+    "hi": -0.10164420073436678,
+    "B": 300,
+    "n_blok": 5966
+   },
+   "vonis": "TIDAK LULUS"
+  },
+  "Awas": {
+   "ambang_level": 3,
+   "n_alarm": 605,
+   "tp": 577,
+   "fp": 28,
+   "fn": 16768,
+   "tn": 553643,
+   "pod": 0.03326607091380802,
+   "far": 0.04628099173553719,
+   "csi": 0.033212456110055834,
+   "ets": 0.032188698198267064,
+   "pss": 0.03321549936500015,
+   "pembanding_ets": {
+    "persistensi_asli": 0.35485828851886925,
+    "persistensi_disamakan": 0.017993379639689933,
+    "klimatologi_disamakan": 0.027629252926273894
+   },
+   "pembanding_terbaik": "persistensi_asli",
+   "selisih_ets": {
+    "est": -0.32266959032060216,
+    "lo": -0.33505862653453317,
+    "hi": -0.30975854086061305,
+    "B": 300,
+    "n_blok": 5966
+   },
+   "vonis": "TIDAK LULUS"
+  }
+ },
+ "sidik": "d494819f6e163d99",
+ "kriteria": {
+  "unit": "kab-hari; semua kab/kota 38 provinsi (public/geo/kecamatan)",
+  "ramalan": "level status taktis kab pada hari d = maksimum level kluster aktif (aturan.py + gerbang firespot harian.py) di kab itu",
+  "label": "y(d+1) = ada >= 1 kluster berpola firespot 'ya' dengan deteksi terakhir tepat di hari d+1 pada kab itu (FIRMS saja)",
+  "tingkat": {
+   "Waspada": 1,
+   "Siaga": 2,
+   "Awas": 3
+  },
+  "sensor": [
+   "S-NPP",
+   "NOAA-20"
+  ],
+  "latih": [
+   "2019-01-01",
+   "2022-12-31"
+  ],
+  "uji": [
+   "2023-01-01",
+   "2025-12-31"
+  ],
+  "cuaca": "FWI harian MERRA-2 (risiko_mingguan.deret_cuaca, sel 0,5 derajat) sebagai pengganti FWI Open-Meteo operasional; tanpa cuaca -> None seperti produksi",
+  "pembanding": [
+   "persistensi asli",
+   "persistensi alarm disamakan",
+   "klimatologi kab x bulan alarm disamakan"
+  ],
+  "pembanding_terbaik": "ETS tertinggi di himpunan uji",
+  "imbang_skor": "jitter berbenih tetap 1e-9",
+  "bootstrap": {
+   "B": 300,
+   "seed": 7,
+   "blok": "provinsi x minggu ISO hari target"
+  },
+  "min_alarm": 20,
+  "min_positif": 20,
+  "vonis": "TAK TERUKUR bila alarm model < min_alarm atau positif < min_positif; TIDAK LULUS bila ETS(status)-ETS(pembanding terbaik) <= 0; LULUS bila batas bawah CI95 > 0; selain itu TIDAK MEYAKINKAN"
+ },
+ "kluster_hari_uji": 1059069,
+ "kluster_hari_uji_tanpa_cuaca": 0,
+ "dibuat": "2026-11-24T18:33:10Z",
+ "deskriptif": {
+  "label": "deskriptif, bukan vonis (vonis terkunci membandingkan dengan persistensi asli)",
+  "catatan_vonis": "Vonis terkunci membandingkan tiap tingkat dengan persistensi asli (jumlah alarm bebas, ~17 ribu) sehingga Awas (~600 alarm) tidak sebanding; angka di sini membandingkan dengan pembanding berjumlah alarm sama, deskriptif, bukan vonis.",
+  "tingkat": {
+   "Waspada": {
+    "n_alarm": 79512,
+    "persistensi_disamakan": {
+     "ets_pembanding": 0.09318845329385847,
+     "selisih_ets": {
+      "est": 0.06420672249913822,
+      "lo": 0.059273453133895426,
+      "hi": 0.06938545544025612,
+      "B": 300,
+      "n_blok": 5966
+     }
+    },
+    "klimatologi_disamakan": {
+     "ets_pembanding": 0.13002282583157002,
+     "selisih_ets": {
+      "est": 0.02737234996142668,
+      "lo": 0.02217949755046092,
+      "hi": 0.033162724762991425,
+      "B": 300,
+      "n_blok": 5966
+     }
+    }
+   },
+   "Siaga": {
+    "n_alarm": 18981,
+    "persistensi_disamakan": {
+     "ets_pembanding": 0.3334455300813601,
+     "selisih_ets": {
+      "est": -0.0922734899602744,
+      "lo": -0.10164831799097773,
+      "hi": -0.08059234423608375,
+      "B": 300,
+      "n_blok": 5966
+     }
+    },
+    "klimatologi_disamakan": {
+     "ets_pembanding": 0.20033960843370932,
+     "selisih_ets": {
+      "est": 0.04083243168737635,
+      "lo": 0.027637146983501032,
+      "hi": 0.05346765793462624,
+      "B": 300,
+      "n_blok": 5966
+     }
+    }
+   },
+   "Awas": {
+    "n_alarm": 605,
+    "persistensi_disamakan": {
+     "ets_pembanding": 0.017993379639689933,
+     "selisih_ets": {
+      "est": 0.014195318558577131,
+      "lo": 0.007207672155125119,
+      "hi": 0.02268186252832776,
+      "B": 300,
+      "n_blok": 5966
+     }
+    },
+    "klimatologi_disamakan": {
+     "ets_pembanding": 0.027629252926273894,
+     "selisih_ets": {
+      "est": 0.00455944527199317,
+      "lo": -0.005305345256793589,
+      "hi": 0.016058261431916302,
+      "B": 300,
+      "n_blok": 5966
+     }
+    }
+   }
+  }
+ }
+}

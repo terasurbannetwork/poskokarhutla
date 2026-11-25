@@ -13,6 +13,7 @@
 const SEBAR_PDC = 0.2;                    /* setengah-lebar lidah awan panas di lereng terbuka = 0,2 x jarak dari kawah di tiap sisi (~11 derajat). ILUSTRASI tanpa kalibrasi: kerucut energi (Malin & Sheridan 1982) + pengungkungan lembah */
 const G = 9.81;
 const N_MANNING = 0.06;                   /* kekasaran Manning aliran lahar (s/m^(1/3)): ASUMSI tipikal aliran debris di alur gunung api, belum dikalibrasi ke kejadian */
+const N_MANNING_AMAN = 0.04;              /* ujung bawah rentang kekasaran debris flow (0,04-0,08) = kecepatan ujung ATAS: dipakai hanya untuk waktu tiba "sisi aman" keputusan evakuasi (KI-43; pola tsunami.js 0,61 keputusan vs 0,85 tampilan). ASUMSI */
 const V_LAHAR_MAKS = 25, V_LAHAR_MIN = 0.5, V_PDC_MAKS = 50, V_PDC_MIN = 3;   /* batas fisik kecepatan (m/dtk) */
 const EPS = 5e-4;                         /* kemiringan minimal buatan di dataran hasil isi sink (m per sel) */
 const TETANGGA = [[1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1], [1, 1, Math.SQRT2], [-1, 1, Math.SQRT2], [1, -1, Math.SQRT2], [-1, -1, Math.SQRT2]];
@@ -95,8 +96,8 @@ function tampang(pts, h, dx) {
 /* A = 0,05 Vp^(2/3) memakai volume jalur ini; B (luas planimetrik) diberikan pemanggil: B(V total) x bobot, jadi luas semua jalur = B(V)
    (volume terjaga; V^(2/3) sublinear, membagi V lalu menghitung B per jalur akan menggelembungkan total jadi ~1,6 x B(V)).
    Luas planimetrik = lebar basah x panjang langkah (menerus); sel raster ditandai untuk gambar. Penyebab berhenti dicatat: "B", "laut", "tepi", "sink". */
-function laharAlur(z, n, m, P, S, Vp, Bp, dx, stamp, mulai, W, stT) {
-  const A = laharz(Vp).A, B = Bp; let luas = 0, s1 = 0, tinggi = 0, sumA = 0, nA = 0, berhenti = "", tc = 0, vMaks = 0;
+function laharAlur(z, n, m, P, S, Vp, Bp, dx, stamp, mulai, W, stT, stTA) {
+  const A = laharz(Vp).A, B = Bp; let luas = 0, s1 = 0, tinggi = 0, sumA = 0, nA = 0, berhenti = "", tc = 0, tcA = 0, vMaks = 0;
   for (let i = mulai; i < P.length; i++) {
     if (luas >= B) { berhenti = "B"; break; }
     if (z[P[i]] <= 0.5) { berhenti = "laut"; break; }
@@ -111,12 +112,13 @@ function laharAlur(z, n, m, P, S, Vp, Bp, dx, stamp, mulai, W, stT) {
     const ds = i > mulai ? S[i] - S[i - 1] : dx; luas = Math.min(B, luas + T.lebar * ds); /* langkah terakhir dipotong di B: total tak melampaui B */
     /* kecepatan Manning v = R^(2/3) S^(1/2) / n; R = kedalaman rata-rata penampang basah (alur lebar), S = kemiringan dasar alur dirata-rata +-3 sel */
     if (i > mulai) { const a = Math.max(0, i - 3), b = Math.min(P.length - 1, i + 3), sl = Math.max(0.005, (z[P[a]] - z[P[b]]) / Math.max(1, S[b] - S[a])), R = Math.max(0.3, T.lebar > 0 ? T.area / T.lebar : 0);   /* penampang kosong (lebar 0) = 0/0 NaN: jatuh ke kedalaman minimal */
-      const v = Math.min(V_LAHAR_MAKS, Math.max(V_LAHAR_MIN, R ** (2 / 3) * Math.sqrt(sl) / N_MANNING)); tc += ds / v; vMaks = Math.max(vMaks, v); }
-    for (let k = T.a; k <= T.b; k++) if (pts[k][1] < h || pts[k][0] === 0) { const idx = pts[k][2]; if (stamp[idx] < 0) { stamp[idx] = S[i]; stT[idx] = tc; } }
+      const v = Math.min(V_LAHAR_MAKS, Math.max(V_LAHAR_MIN, R ** (2 / 3) * Math.sqrt(sl) / N_MANNING)); tc += ds / v; vMaks = Math.max(vMaks, v);
+      const vA = Math.min(V_LAHAR_MAKS, Math.max(V_LAHAR_MIN, R ** (2 / 3) * Math.sqrt(sl) / N_MANNING_AMAN)); tcA += ds / vA; }   /* n lebih kecil, batas sama: vA >= v, jadi tcA <= tc di tiap sel */
+    for (let k = T.a; k <= T.b; k++) if (pts[k][1] < h || pts[k][0] === 0) { const idx = pts[k][2]; if (stamp[idx] < 0) { stamp[idx] = S[i]; stT[idx] = tc; stTA[idx] = tcA; } }
     s1 = S[i];
   }
   if (!berhenti) berhenti = luas >= B ? "B" : (() => { const e = P[P.length - 1]; return z[e] <= 0.5 ? "laut" : (e % n === 0 || e % n === n - 1 || ((e / n) | 0) === 0 || ((e / n) | 0) === m - 1) ? "tepi" : "sink"; })();
-  return {luas, panjang: s1, tinggi, A, B, A_ukur: nA ? sumA / nA : 0, berhenti, waktu: tc, v_maks: vMaks};
+  return {luas, panjang: s1, tinggi, A, B, A_ukur: nA ? sumA / nA : 0, berhenti, waktu: tc, waktu_aman: tcA, v_maks: vMaks};
 }
 
 /* awan panas: sel masuk bila di dalam kerucut energi (z0 - z)/jarak >= HL dan di lembah (sampai `tebal` m di atas dasar jalur) */
@@ -164,7 +166,7 @@ function simulasi(o) {
     if (jalur.length >= (o.maxJalur || 5)) break;
   }
   const bobot = jalur.map((j, i) => jalur.length === 1 ? 1 : i === 0 ? 0.5 : 0.5 / (jalur.length - 1));
-  const stL = new Float32Array(N).fill(-1), stP = new Float32Array(N).fill(-1), tL = new Float32Array(N), tP = new Float32Array(N), infoJ = [];
+  const stL = new Float32Array(N).fill(-1), stP = new Float32Array(N).fill(-1), tL = new Float32Array(N), tLA = new Float32Array(N), tP = new Float32Array(N), infoJ = [];
   jalur.forEach((j, k) => {
     /* awal lahar = titik alur mulai terkonsentrasi: sel pertama jalur dengan akumulasi aliran >= o.ambangHulu km2 (bawaan 0,5: ASUMSI umum inisiasi alur, belum
        dicocokkan ke hulu sungai bernama). Opsi o.proksimal (bawaan null = mati) menyalakan mode LAHARZ klasik: mulai = max(awal_alur, sesudah sel TERAKHIR dengan H/L
@@ -173,14 +175,14 @@ function simulasi(o) {
     for (let q = 0; q < j.P.length; q++) { const d = Math.hypot(j.P[q] % n - px0, ((j.P[q] / n) | 0) - py0) * dx; if (hp != null && d > dx && (z0 - zf[j.P[q]]) / d > hp) prox = q + 1; }
     if (ambang > 0) for (let q = 0; q < j.P.length; q++) if (akum[j.P[q]] >= ambang) { hulu = q; break; }
     const mulai = Math.max(prox, hulu), ada = mulai < j.P.length - 1;
-    const Vp = o.V * bobot[k], lz = ada && Vp > 0 ? laharAlur(zf, n, m, j.P, j.S, Vp, laharz(o.V).B * bobot[k], dx, stL, mulai, W, tL) : {luas: 0, panjang: 0, tinggi: 0, A: 0, B: 0, A_ukur: 0, berhenti: "tak ada zona lahar"};
+    const Vp = o.V * bobot[k], lz = ada && Vp > 0 ? laharAlur(zf, n, m, j.P, j.S, Vp, laharz(o.V).B * bobot[k], dx, stL, mulai, W, tL, tLA) : {luas: 0, panjang: 0, tinggi: 0, A: 0, B: 0, A_ukur: 0, berhenti: "tak ada zona lahar"};
     const alasan = ada ? "" : (hulu >= j.P.length - 1 ? "hulu" : "proksimal"); /* hulu = lembah tak pernah mengumpulkan >= ambang sel hulu; proksimal = seluruh jalur di zona proksimal */
     const pd = awanPanasAlur(zf, n, m, j.P, j.S, z0, px0, py0, o.hl, dx, stP, o.tebalPdc || 15, W, tP);
-    infoJ.push({utama: j.utama, bobot: bobot[k], V: Vp, A_m2: lz.A, A_ukur_m2: lz.A_ukur, B_m2: lz.B, berhenti: lz.berhenti, alasan_tak_ada: alasan, awal_km: ada ? j.S[mulai] / 1000 : null, awal_lurus_km: ada ? Math.hypot(j.P[mulai] % n - px0, ((j.P[mulai] / n) | 0) - py0) * dx / 1000 : null, hulu_km: hulu < j.P.length ? j.S[hulu] / 1000 : null, proksimal_km: prox ? j.S[Math.min(prox, j.P.length - 1)] / 1000 : 0, lahar_km: lz.panjang / 1000, lahar_km2: lz.luas / 1e6, tinggi_m: lz.tinggi, pdc_km: pd.panjang / 1000, pdc_km2: pd.luas / 1e6, lahar_menit: lz.waktu / 60, lahar_v_maks: lz.v_maks || 0, pdc_menit: pd.waktu / 60, pdc_v_maks: pd.v_maks});
+    infoJ.push({utama: j.utama, bobot: bobot[k], V: Vp, A_m2: lz.A, A_ukur_m2: lz.A_ukur, B_m2: lz.B, berhenti: lz.berhenti, alasan_tak_ada: alasan, awal_km: ada ? j.S[mulai] / 1000 : null, awal_lurus_km: ada ? Math.hypot(j.P[mulai] % n - px0, ((j.P[mulai] / n) | 0) - py0) * dx / 1000 : null, hulu_km: hulu < j.P.length ? j.S[hulu] / 1000 : null, proksimal_km: prox ? j.S[Math.min(prox, j.P.length - 1)] / 1000 : 0, lahar_km: lz.panjang / 1000, lahar_km2: lz.luas / 1e6, tinggi_m: lz.tinggi, pdc_km: pd.panjang / 1000, pdc_km2: pd.luas / 1e6, lahar_menit: lz.waktu / 60, lahar_menit_aman: (lz.waktu_aman ?? 0) / 60, lahar_v_maks: lz.v_maks || 0, pdc_menit: pd.waktu / 60, pdc_v_maks: pd.v_maks});
   });
   /* sel diurut menurut WAKTU tiba (animasi maju); s = jarak sepanjang alur (m), t = waktu tiba sejak pemicu (dtk) */
-  const rakit = (st, tt) => { const id = []; for (let i = 0; i < N; i++) if (st[i] >= 0) id.push(i); id.sort((a, b) => tt[a] - tt[b]); const idx = Uint32Array.from(id), s = new Float32Array(id.length), t = new Float32Array(id.length); id.forEach((v, q) => { s[q] = st[v]; t[q] = tt[v]; }); return {idx, s, t}; };
-  const lahar = rakit(stL, tL), pdc = rakit(stP, tP);
+  const rakit = (st, tt, ta = tt) => { const id = []; for (let i = 0; i < N; i++) if (st[i] >= 0) id.push(i); id.sort((a, b) => tt[a] - tt[b]); const idx = Uint32Array.from(id), s = new Float32Array(id.length), t = new Float32Array(id.length), tA = new Float32Array(id.length); id.forEach((v, q) => { s[q] = st[v]; t[q] = tt[v]; tA[q] = ta[v]; }); return {idx, s, t, ta: tA}; };   /* ta = waktu tiba sisi aman (<= t) */
+  const lahar = rakit(stL, tL, tLA), pdc = rakit(stP, tP);
   let x0 = n, y0 = m, x1 = 0, y1 = 0; for (const t of [lahar, pdc]) for (const i of t.idx) { const x = i % n, y = (i / n) | 0; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
   const bbox = lahar.idx.length + pdc.idx.length ? [Math.max(0, x0 - 4), Math.max(0, y0 - 4), Math.min(n - 1, x1 + 4), Math.min(m - 1, y1 + 4)] : [px0 - 5, py0 - 5, px0 + 5, py0 + 5];
   return {dx, puncak: [px0, py0], z0, lahar, pdc, bbox, jalur: jalur.map(j => ({utama: j.utama, titik: Array.from(j.P.filter((_, q) => q % 3 === 0), i => [i % n, (i / n) | 0]), S: Array.from(j.S.filter((_, q) => q % 3 === 0))})), info: infoJ,
