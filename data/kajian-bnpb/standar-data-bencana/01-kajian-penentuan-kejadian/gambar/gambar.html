@@ -114,10 +114,13 @@ b{font-weight:700}
 .kls{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .kc{border:1.5px solid var(--garis);border-left:5px solid var(--oranye);border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center}
 .kc .bn{font-size:28px;font-weight:700;color:var(--oranye);line-height:1;min-width:92px}
-.kc .bn small{display:block;font-size:12.5px;color:var(--teks2);font-weight:500;margin-top:3px}
+.kc .bn small{display:block;font-size:12.5px;line-height:1.25;color:var(--teks2);font-weight:500;margin-top:5px}
 .kc b{display:block;color:var(--navy);font-size:15.5px}
 .kc span{font-size:13.5px;color:var(--teks2)}
 .atau{grid-column:1/4;text-align:center;font-size:13px;font-weight:700;color:var(--teks3);letter-spacing:.1em;margin:-4px 0}
+.kls-kep{font-size:15px;color:var(--teks2);margin-bottom:12px}.kls-kep b{color:var(--navy)}
+.kc .tg{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--oranye);background:var(--tint);border-radius:999px;padding:2px 9px;margin-bottom:4px}
+.kc .tg.um{color:var(--navy)}
 .hasilkls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
 .hasilkls div{border-radius:14px;padding:14px 18px;font-size:15px;color:#fff}
 .hasilkls b{display:block;font-size:19px}
@@ -242,12 +245,13 @@ b{font-weight:700}
 .rumus{background:var(--navy);color:var(--putih);border-radius:12px;padding:12px 16px;font-size:17px;text-align:center;margin-bottom:10px}
 .rumus b{color:#FFC48A}
 .bobot{font-size:28px;font-weight:700;color:var(--oranye);line-height:1}
-.tlv{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding-top:30px}
+.tlv{position:relative;display:grid;grid-template-columns:repeat(7,1fr);gap:10px;padding-top:30px}
+.tlv-cat{margin-top:14px;font-size:13.5px;color:var(--teks2);border-top:1px dashed var(--garis);padding-top:8px}
 .tlv:before{content:"";position:absolute;left:4%;right:4%;top:12px;height:4px;background:var(--garis);border-radius:2px}
 .tlv .ttv{position:relative;text-align:center;font-size:13px;color:var(--teks2)}
 .tlv .ttv:before{content:"";position:absolute;top:-24px;left:50%;margin-left:-9px;width:18px;height:18px;border-radius:50%;background:var(--oranye);border:3px solid var(--putih);box-shadow:0 0 0 2px var(--oranye)}
-.tlv .ttv b{display:block;font-size:19px;color:var(--navy)}
-.tlv .ttv span{display:block;font-weight:700;color:var(--navy);font-size:13.5px;margin-bottom:3px}
+.tlv .ttv b{display:block;font-size:17px;line-height:1.2;color:var(--navy);margin:2px 0}
+.tlv .ttv span{display:block;font-weight:700;color:var(--navy);font-size:13.5px;line-height:1.25;min-height:34px;margin-bottom:3px}
 .cek li{display:grid;grid-template-columns:20px 1fr;gap:6px;align-items:start}
 .cek li:before{content:"";width:13px;height:13px;border:2px solid var(--navy2);border-radius:3px;margin-top:3px}
 .cek em{display:block;font-style:normal;font-size:11.5px;color:var(--teks3)}
@@ -531,11 +535,13 @@ b{font-weight:700}
   <div class="ttv"><span>Hasil awal <i>rapid assessment</i></span><b>72 jam</b>sejak kejadian diketahui</div>
   <div class="ttv"><span>Nomor induk kejadian</span><b>72 jam</b>sejak kejadian diketahui</div>
   <div class="ttv"><span>Pemutakhiran</span><b>harian</b>selama kejadian berlangsung</div>
-  <div class="ttv"><span>Penutupan</span><b>bulanan</b>paling lambat verifikasi bulan berikutnya; bila tidak dinyatakan selesai, ditutup walidata</div>
-  <div class="ttv"><span>Verifikasi, pembekuan, rilis</span><b>bulan, triwulan, tahun</b>sesudah kejadian</div>
-</div></div>
+  <div class="ttv"><span>Penutupan</span><b>bulanan</b>paling lambat verifikasi bulan berikutnya</div>
+  <div class="ttv"><span>Verifikasi, pembekuan, rilis</span><b>bulanan, triwulanan, tahunan</b>sesudah kejadian</div>
+</div><div class="tlv-cat">Kejadian yang tidak dinyatakan selesai oleh BPBD, tanpa pemutakhiran selama sebulan, dan dampak fisiknya sudah berhenti ditutup oleh walidata dengan tanda <b>ditutup walidata</b>.</div></div>
 
 <div class="fig" id="pk-periksa"><div class="gv c4"><div class="kv"><h4>Laporan pertama</h4><ul class="cek"><li><div>Tentukan jenis dan subjenis<em>Gambar 2.1; Juklak Tabel 1</em></div></li><li><div>Periksa dampak; menunggu data bila belum pasti<em>Gambar 1.2</em></div></li><li><div>Bagian kejadian berlangsung atau kejadian baru<em>Gambar 1.5 dan 2.1</em></div></li><li><div>KIB baru dengan kode wilayah sendiri, atau KIB yang ada<em>Gambar 3.1</em></div></li><li><div>Isi identitas, waktu, lokasi, angka sementara<em>Gambar 5.3</em></div></li><li><div>Kirim paling lambat 24 jam<em>Gambar 5.5</em></div></li></ul></div><div class="kv"><h4>Pemeriksaan kriteria</h4><ul class="cek"><li><div>Periksa kriteria a sampai f dan syarat jenis; satu saja cukup<em>Gambar 1.3 dan 2.1</em></div></li><li><div>Belum memenuhi: tetap simpan<em>Gambar 1.4</em></div></li><li><div>Beberapa kab/kota: periksa jumlah nasional<em>Gambar 1.4</em></div></li><li><div>Setiap orang dihitung sekali<em>Gambar 3.2</em></div></li></ul></div><div class="kv"><h4>Pemutakhiran harian</h4><ul class="cek"><li><div>Pakai KIB yang sama untuk kab/kota yang sama<em>Gambar 1.5 nomor 5</em></div></li><li><div>Angka terakhir atau terbanyak; jangan dijumlahkan antarhari<em>Gambar 3.2</em></div></li><li><div>Bedakan nilai, nihil, belum didata<em>Gambar 5.1</em></div></li><li><div>Isi lembar data khusus<em>Gambar 5.4</em></div></li><li><div>Periksa ulang kriteria dan kelas, tulis penentunya<em>Gambar 1.3, 4.1 sampai 4.3</em></div></li></ul></div><div class="kv"><h4>Penutupan</h4><ul class="cek"><li><div>Nyatakan selesai sesuai jenis bencana<em>Gambar 2.1</em></div></li><li><div>Serahkan ke walidata paling lambat verifikasi bulan berikutnya<em>Gambar 4.3 nomor 4 dan 5.5</em></div></li></ul></div></div></div>
+
+<div class="fig" id="pk-periksa-v1"><div class="gv c4"><div class="kv"><h4>Laporan pertama</h4><ul class="cek"><li><div>Tentukan jenis bencana dan subjenisnya<em>Tabel 2.1; Rancangan Juklak Tabel 1</em></div></li><li><div>Periksa ada atau tidaknya dampak; tulis menunggu data apabila belum pasti<em>Tabel 1.1 dan Tabel 1.2</em></div></li><li><div>Tentukan apakah laporan ini bagian dari kejadian yang sedang berlangsung atau kejadian baru<em>Tabel 1.5, Tabel 2.1, dan Tabel 2.2</em></div></li><li><div>Kejadian baru: berikan KIB dengan kode wilayah sendiri. Kejadian berlangsung: pakai KIB yang ada<em>Tabel 3.1</em></div></li><li><div>Isi identitas, waktu, lokasi, dan angka dampak sementara<em>Tabel 5.2</em></div></li><li><div>Kirim paling lambat 24 jam setelah kejadian diketahui<em>Tabel 5.4</em></div></li></ul></div><div class="kv"><h4>Pemeriksaan kriteria</h4><ul class="cek"><li><div>Periksa enam kriteria dan syarat jenis bencananya; satu kriteria saja cukup<em>Tabel 1.3 dan Tabel 2.1</em></div></li><li><div>Belum memenuhi kriteria: tetap simpan dengan keterangan<em>Tabel 1.4</em></div></li><li><div>Mengenai beberapa kabupaten/kota: periksa juga jumlah nasional<em>Tabel 1.4</em></div></li><li><div>Setiap orang dihitung satu kali pada satu kategori<em>Tabel 3.2 dan Tabel 3.3</em></div></li></ul></div><div class="kv"><h4>Pemutakhiran harian</h4><ul class="cek"><li><div>Pakai KIB yang sama untuk kabupaten/kota yang sama<em>Tabel 1.5 nomor 5</em></div></li><li><div>Angka terakhir untuk meninggal, hilang, kerusakan; angka terbanyak terverifikasi untuk luka, terdampak, pengungsi; jangan dijumlahkan antarhari<em>Tabel 3.2</em></div></li><li><div>Bedakan nilai, nihil, dan belum didata<em>Tabel 5.1 nomor 2</em></div></li><li><div>Isi lembar data khusus<em>Tabel 5.3</em></div></li><li><div>Periksa ulang kriteria dan kelas setiap kali angka berubah, lalu tulis indikator penentunya<em>Tabel 1.3, Tabel 4.1, Tabel 4.2, dan Tabel 4.3</em></div></li></ul></div><div class="kv"><h4>Penutupan</h4><ul class="cek"><li><div>Nyatakan selesai sesuai ketentuan jenis bencananya<em>Tabel 2.1</em></div></li><li><div>Serahkan ke walidata bencana untuk verifikasi dan kelas akhir paling lambat pada verifikasi bulanan berikutnya<em>Tabel 4.3 nomor 4 dan Tabel 5.4</em></div></li></ul></div></div></div>
 
 <div class="fig" id="pk-tangga">
   <div class="tg" id="tgw">
@@ -553,17 +559,19 @@ b{font-weight:700}
 
 <!-- 6. kelas -->
 <div class="fig" id="pk-kelas">
+  <div class="kls-kep">Kejadian tergolong <b>intensif</b> apabila <b>paling sedikit satu</b> batas di bawah tercapai.</div>
   <div class="kls">
-    <div class="kc"><div class="bn">30<small>orang</small></div><div><b>Korban meninggal dan hilang</b><span>Indikator umum untuk semua jenis bencana; angka GAR 2015, hilang ikut dihitung seperti Sendai A-1</span></div></div>
-    <div class="kc"><div class="bn">600<small>unit</small></div><div><b>Rumah rusak berat terbobot</b><span>Rusak berat + setengah rusak sedang + sepertiga rumah tidak dapat dihuni sementara</span></div></div>
-    <div class="kc"><div class="bn">1.000<small>orang</small></div><div><b>Pengungsi karena longsor</b><span>Khusus tanah longsor; termasuk relokasi, tanpa evakuasi pencegahan</span></div></div>
-    <div class="atau">ATAU</div>
-    <div class="kc"><div class="bn">15%<small>penduduk</small></div><div><b>Kesulitan air minum</b><span>Khusus kekeringan; lebih dari 15 hari</span></div></div>
-    <div class="kc"><div class="bn">50%<small>luas tanam</small></div><div><b>Tanaman pangan puso atau rusak berat</b><span>Khusus kekeringan; lebih dari 50 persen</span></div></div>
-    <div class="kc"><div class="bn">1.000<small>hektare</small></div><div><b>Hutan dan lahan terbakar</b><span>Khusus karhutla, satu kejadian; savana, semak, dan padang rumput 8.000 hektare</span></div></div>
+    <div class="kc"><div class="bn">30<small>orang</small></div><div><span class="tg um">Semua jenis</span><b>Korban meninggal dan hilang</b><span>Kedua angka dijumlahkan</span></div></div>
+    <div class="kc"><div class="bn">600<small>unit</small></div><div><span class="tg um">Semua jenis</span><b>Rumah rusak berat terbobot</b><span>Rusak berat + ½ rusak sedang + ⅓ tidak dapat dihuni sementara</span></div></div>
+    <div class="kc"><div class="bn">1.000<small>orang</small></div><div><span class="tg">Tanah longsor</span><b>Pengungsi karena longsor</b><span>Termasuk relokasi; evakuasi pencegahan tidak dihitung</span></div></div>
+    <div class="kc"><div class="bn">15%<small>penduduk kab/kota</small></div><div><span class="tg">Kekeringan</span><b>Kesulitan air minum</b><span>Kurang dari 20 liter per orang per hari, lebih dari 15 hari</span></div></div>
+    <div class="kc"><div class="bn">&gt;50%<small>luas tanam</small></div><div><span class="tg">Kekeringan</span><b>Tanaman pangan puso atau rusak berat</b><span>Dibandingkan luas tanam musim itu di kab/kota</span></div></div>
+    <div class="kc"><div class="bn">1.000<small>hektare</small></div><div><span class="tg">Karhutla</span><b>Hutan dan lahan terbakar</b><span>Satu kejadian; savana, semak, dan padang rumput dinilai terpisah dengan batas 8.000 hektare</span></div></div>
   </div>
-  <div class="hasilkls"><div style="background:var(--oranye)"><b>Satu batas tercapai: intensif</b>Contoh penulisan: intensif (rumah rusak berat terbobot 690 unit)</div><div style="background:var(--navy2)"><b>Tidak satu pun tercapai: ekstensif</b>Kejadian tetap dihitung karena sudah memenuhi kriteria Juklak</div></div>
+  <div class="hasilkls"><div style="background:var(--oranye)"><b>Satu batas tercapai: intensif</b>Tulis penentunya, misalnya intensif (rumah rusak berat terbobot 690 unit)</div><div style="background:var(--navy2)"><b>Tidak satu pun tercapai: ekstensif</b>Tetap dihitung sebagai kejadian bencana; kelas bukan dasar dana atau bantuan</div></div>
 </div>
+
+
 
 <!-- 7. status -->
 <div class="fig" id="pk-status">

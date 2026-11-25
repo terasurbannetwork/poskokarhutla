@@ -23,3 +23,7 @@ Tabel 6.1. Daftar periksa petugas
 | Penutupan | 17 | Serahkan ke walidata bencana untuk verifikasi dan kelas akhir paling lambat pada verifikasi bulanan berikutnya | Tabel 4.3 nomor 4 dan Tabel 5.4 |
 
 Sumber: disusun dari Bab 1 sampai Bab 5.
+
+![Gambar 6.1. Daftar periksa petugas pada Tabel 6.1 untuk dicetak](gbr/pk-periksa-v1.png)
+
+Sumber: sama dengan Tabel 6.1.

@@ -18,6 +18,10 @@ Tabel 4.1. Batas kelas intensif
 
 Sumber: Rancangan Juklak Tabel 3. Batas ini akan ditinjau paling lambat satu tahun setelah petunjuk pelaksanaan berlaku.
 
+![Gambar 4.1. Ringkasan batas kelas intensif pada Tabel 4.1](gbr/pk-kelas.png)
+
+Sumber: Rancangan Juklak Tabel 3 dan Bab II huruf F.
+
 Batas nomor 1 memakai angka GAR 2015, yaitu 30 orang, dengan korban hilang ikut dihitung seperti indikator A-1 Kerangka Sendai dan EM-DAT. Dengan cara ini, kriteria a pada Tabel 1.3 dan batas nomor 1 memakai angka korban jiwa yang sama. Korban hilang yang kemudian ditemukan selamat dikeluarkan dari hitungan (Tabel 3.2).
 
 ## 4.2 Menghitung rumah rusak berat terbobot
@@ -36,11 +40,11 @@ Tabel 4.2. Tingkat kerusakan rumah dan bobotnya
 
 Sumber: Rancangan Juklak Bab I huruf D dan Lampiran I; Perka BNPB 15/2011.
 
+![Gambar 4.2. Rumah rusak berat terbobot dan tingkat kerusakan rumah pada Tabel 4.2](gbr/pk-rumah.png)
+
+Sumber: sama dengan Tabel 4.2.
+
 Tingkat kerusakan fisik dihitung dengan menjumlahkan persentase kerusakan setiap komponen bangunan yang dikalikan dengan bobot komponennya, misalnya kolom, balok, dan ring balok 25 persen, penutup lantai 12 persen, dan rangka atap 10 persen. Daftar lengkap bobot komponen tercantum dalam Rancangan Juklak Lampiran I Tabel I.6.
-
-![Gambar 4.1. Pohon keputusan kelas intensif dan ekstensif](gbr/pk-kelas.png)
-
-Sumber: Rancangan Juklak Bab II huruf F.
 
 ## 4.3 Aturan menetapkan kelas
 
