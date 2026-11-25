@@ -3,7 +3,8 @@
 Pakai:  python3 scripts/banjir/genangan_nasional.py katalog [--dari 2015-01] [--sampai 2026-10]
         python3 scripts/banjir/genangan_nasional.py luas [--aktif] [--riwayat] [--prov 63] [--dari TGL] [--sampai TGL]
                                                         [--maks N] [--pilih prov|kab|tanggal ...] [--anggaran N]
-                                                        [--pra-sebelum-acuan]  (pra wajib sebelum tanggal acuan; hasil di berkas terpisah, tanpa terbit)
+                                                        [--pra-sebelum-acuan]  (pra wajib sebelum tanggal acuan; riwayat DIBI: paling lambat
+                                                         tanggal DIBI - margin_pra_hari dari genangan_kriteria.json (K6); hasil di berkas terpisah, tanpa terbit)
         python3 scripts/banjir/genangan_nasional.py kejadian --kj KJ-... --mulai YYYY-MM-DD --kab 1112 ...
                                                         (jendela 12 hari, pra selalu sebelum `mulai`, ambang sah dari scripts/siklus/genangan_kriteria.json
                                                          -> data/raw/banjir/gfm_nasional/kejadian/<KJ>.json, bukan public/)
@@ -580,6 +581,23 @@ def batas_acuan(d):
     return dt.datetime.combine(d, dt.time(), WIB)
 
 
+def batas_margin(acuan, margin):
+    """Riwayat DIBI bermargin (K6, kriteria v2): pra paling lambat tanggal acuan - margin, inklusif, tanggal UTC lintasan.
+    Sama persis dengan genangan_kriteria.pra_sebelum_acuan (t[:10] <= acuan - margin) supaya layak dan hitungan sepakat."""
+    return dt.datetime.combine(acuan - dt.timedelta(days=margin - 1), dt.time(), dt.timezone.utc)
+
+
+def margin_pra():
+    """margin_pra_hari dari kriteria terkunci (v1 tanpa kunci = 0); satu sumber, tidak ditulis ulang di sini."""
+    return int(json.load(builtins.open(KRITERIA)).get("margin_pra_hari", 0))
+
+
+def pra_batas(ps, margin):
+    """-> batas pra untuk pasangan (opsi --pra-sebelum-acuan): DIBI pakai margin, aktif tetap tanggal acuan."""
+    t = tgl(ps["acuan"])
+    return batas_margin(t, margin) if ps["sumber"] == "dibi" and margin else t
+
+
 def hitung_pasangan(pt, kat, awal, jendela, buka=Raster, prov=None, pra_sebelum=None, titik=False):
     """-> dict hasil kabupaten untuk satu pasangan, atau {'status': 'tanpa_lintasan'}. `buka` = pembuat Raster (disuntik saat uji).
     pra_sebelum (date): pra wajib sebelum tanggal itu; tanpa pra sah -> status 'tanpa_pra' (tanpa nilai baru). titik: sertakan titik_baru."""
@@ -601,7 +619,8 @@ def hitung_pasangan(pt, kat, awal, jendela, buka=Raster, prov=None, pra_sebelum=
     for n, l in cand:
         tot = rangkum(hitung(pt, n, lintas(l), ambil(l["r"])))
         hs.append((cakupan(tot), tot[1], n, l, tot))
-    sebelum = batas_acuan(pra_sebelum) if pra_sebelum else None
+    # date = tengah malam WIB tanggal itu (kejadian, aktif); datetime = batas apa adanya (riwayat bermargin, batas_margin)
+    sebelum = (pra_sebelum if isinstance(pra_sebelum, dt.datetime) else batas_acuan(pra_sebelum)) if pra_sebelum else None
     pra = None
     if sebelum is None:
         baik = max(hs, key=lambda x: x[:2])   # perilaku lama: terbaik dari semua kandidat; pra dipilih di bawah
@@ -720,7 +739,10 @@ def luas(a):
     kat = Katalog(muat_item())
     if not kat.ub:
         sys.exit("katalog kosong: jalankan `katalog` dulu")
+    m = margin_pra() if a.pra_sebelum_acuan else None
     sudah = muat_hasil()
+    if m is not None:   # cache yang dihitung dengan margin lain tidak dipakai ulang
+        sudah = {k: v for k, v in sudah.items() if v.get("margin_pra_hari") == (m if v.get("sumber") == "dibi" else 0)}
     pas = (pasangan_aktif() if a.aktif else []) + (pasangan_dibi(a) if a.riwayat else [])
     todo = [ps for ps in pas if ps["kunci"] not in sudah or (ps["sumber"] == "aktif" and sudah[ps["kunci"]].get("status") == "tanpa_lintasan")]
     if len(todo) > a.anggaran:
@@ -735,11 +757,13 @@ def luas(a):
         try:
             kec = kec_kab(ps["prov"], ps["kab"], set(ps["kec"]) if ps["kec"] else None)
             rec = {"status": "tanpa_poligon"} if not kec else hitung_pasangan(Titik(kec), kat, tgl(ps["acuan"]), JENDELA[ps["sumber"]], prov=ps["prov"],
-                                                                                              pra_sebelum=tgl(ps["acuan"]) if a.pra_sebelum_acuan else None)
+                                                                                              pra_sebelum=pra_batas(ps, m) if m is not None else None)
         except Exception as e:   # satu pasangan gagal tidak mematikan sisanya; tidak di-cache, diulang jalan berikut
             print(f"  GAGAL {ps['kunci']}: {type(e).__name__} {e}", file=sys.stderr)
             return
         rec.update({k: v for k, v in ps.items() if k != "kec"})
+        if m is not None:
+            rec["margin_pra_hari"] = m if ps["sumber"] == "dibi" else 0
         with kunci:
             tambah_hasil(rec)
             sudah[ps["kunci"]] = rec
@@ -1074,6 +1098,22 @@ def uji():
     _, h2 = jalan(100, ("2024-01-20T22:00:00Z", kol, 255), (PRA_SESUDAH, {}, 0), dibi_, JENDELA["dibi"], dibi_)
     _, h2b = jalan(100, ("2024-01-20T22:00:00Z", kol, 255), (PRA_SESUDAH, {}, 0), dibi_, JENDELA["dibi"])
     assert h2["status"] == "ok" and h2 == h2b
+    # margin K6 (kriteria v2): pra paling lambat tanggal DIBI - margin, inklusif, tanggal UTC (sama dengan genangan_kriteria.pra_sebelum_acuan)
+    assert margin_pra() == 7, "kriteria v2 memuat margin_pra_hari 7"
+    assert batas_margin(dibi_, 7) == dt.datetime(2024, 1, 11, tzinfo=dt.timezone.utc)
+    ps_ = {"sumber": "dibi", "acuan": "2024-01-17"}
+    assert pra_batas(ps_, 7) == batas_margin(dibi_, 7) and pra_batas(ps_, 0) == dibi_
+    assert pra_batas({"sumber": "aktif", "acuan": "2024-01-17"}, 7) == dibi_, "pasangan aktif tanpa margin"
+    for t_, p_, ok_ in (("2024-01-10T22:00:00Z", "2024-01-20T22:00:00Z", True), ("2024-01-10T23:59:00Z", "2024-01-20T23:59:00Z", True),
+                        ("2024-01-11T00:00:00Z", "2024-01-21T00:00:00Z", False), ("2024-01-11T22:00:00Z", "2024-01-20T22:00:00Z", False)):   # DIBI-7 diterima, DIBI-6 ditolak
+        assert (pilih_pra([{"t": t_}], {"t": p_}, batas_margin(dibi_, 7)) is not None) == ok_, t_
+    # jalur riwayat: pra 12 Jan (DIBI-5, 8 hari sebelum lintasan) lolos tanpa margin, ditolak dengan margin -> tanpa_pra
+    _, h3 = jalan(100, ("2024-01-20T22:00:00Z", kol, 255), (PRA_SESUDAH, {}, 0), dibi_, JENDELA["dibi"], pra_batas(ps_, 7))
+    assert h3["status"] == "tanpa_pra" and "tergenang_baru_ha" not in h3, h3
+    # pra 10 Jan (DIBI-7) tetap dipakai dengan margin; hasil sama dengan tanpa margin
+    _, h4 = jalan(100, ("2024-01-20T22:00:00Z", kol, 255), (PRA_OK, {}, 0), dibi_, JENDELA["dibi"], pra_batas(ps_, 7))
+    _, h4b = jalan(100, ("2024-01-20T22:00:00Z", kol, 255), (PRA_OK, {}, 0), dibi_, JENDELA["dibi"])
+    assert h4["status"] == "ok" and h4["pra"] == "pra" and h4 == h4b, h4
     # batas acuan = tengah malam WIB: pra 14 Jan 22:00 UTC (= 15 Jan 05:00 WIB) tak boleh dipakai untuk mulai 15 Jan; 14 Jan 16:00 UTC (23:00 WIB) boleh
     assert batas_acuan(dt.date(2024, 1, 15)) == dt.datetime(2024, 1, 14, 17, tzinfo=dt.timezone.utc)
     ks = [{"t": "2024-01-14T22:00:00Z"}]
