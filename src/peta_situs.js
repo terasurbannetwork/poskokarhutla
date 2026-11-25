@@ -3,7 +3,7 @@
    akses: "tamu" = sama persis dengan kunci PUBLIK_TANPA_SESI (src/worker.js); "sesi" = butuh sesi di host terkunci; "token" = tautan bertoken (D9);
    "kode" = masuk dengan kode WA (modul Kemitraan). hak = kunci HALAMAN_STAF (src/admin_halaman.js) hanya bila ada. Menu hanya alat tunjuk, hak akses tetap di Worker.
    Berkas ini TIDAK mengimpor admin_halaman.js (PS-04 akan membalik arah impornya): predikat bolehStaf dilewatkan ke menuUntuk. Ikon = kunci IKON menu_pusdalops.js. */
-import {bolehHalaman} from "./worker.js";   // keputusan halaman terbuka atau tertutup di Worker (satu sumber); worker.js tidak mengimpor berkas ini, jadi tidak ada lingkaran
+import {bolehHalaman} from "./worker.js";   // keputusan halaman terbuka atau tertutup di Worker (satu sumber); worker.js mengimpor menuUntuk (impor melingkar aman: keduanya hanya dipakai di dalam fungsi, bukan saat modul dievaluasi)
 
 export const PINTU = {
   publik: {nama: "Publik", beranda: "/"},

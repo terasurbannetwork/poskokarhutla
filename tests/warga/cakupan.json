@@ -1542,7 +1542,9 @@
     "table pw_status": "cron: peristiwa naik tingkat tercatat sekali per terbitan",
     "table pw_peristiwa": "cron: peristiwa naik tingkat tercatat sekali per terbitan",
     "table pw_kendali": "cron: peristiwa naik tingkat tercatat sekali per terbitan",
-    "table lapor_tindakan": "pengecekan lapangan dan tindakan"
+    "table lapor_tindakan": "pengecekan lapangan dan tindakan",
+    "GET /api/peta-situs": "peta situs API: tiap sesi (tamu, admin, staf pusdalops",
+    "HEAD /api/peta-situs": "peta situs API: HEAD tanpa badan, POST 405"
   },
   "dikecualikan": {
     "table lj_tanya": "16.00 WIB: satu pesan bernomor per ketua",

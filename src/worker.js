@@ -12,7 +12,8 @@ import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
 import {ruteBencana, sumberStatus, sumberUji, sitemap} from "./bencana.js";
-import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanLabelFoto, halamanSosmed, halamanKunciApi, halamanKontak, halamanBiayaBot} from "./admin_halaman.js";
+import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanLabelFoto, halamanSosmed, halamanKunciApi, halamanKontak, halamanBiayaBot, bolehStaf} from "./admin_halaman.js";
+import {menuUntuk} from "./peta_situs.js";   // impor melingkar aman: peta_situs.js memakai bolehHalaman hanya di dalam fungsi
 import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
@@ -23,9 +24,9 @@ import {RUTE_HUKUM} from "./hukum.js";
 import {RUTE_KONTAK} from "./kontak.js";
 import {RUTE_SITREP, arsipkanSitrep, bersihkanArsipSitrep} from "./sitrep.js";
 import {RUTE_RELAWAN, bersihkanRelawan} from "./relawan.js";
-import {RUTE_LAPANGAN, bersihkanLapangan} from "./lapangan.js";
+import {RUTE_LAPANGAN, bersihkanLapangan, petugas as petugasSesi} from "./lapangan.js";
 import {tanyaKondisi} from "./lapangan_wa.js";
-import {layaniKm} from "./kemitraan.js";
+import {layaniKm, hakKm} from "./kemitraan.js";
 import {RUTE_LAPORAN_BNPB} from "./laporan_bnpb.js";
 import {RUTE_RUMAH_RUSAK} from "./rumah_rusak.js";
 import {RUTE_BANGUNAN} from "./bangunan.js";
@@ -40,7 +41,7 @@ import {RUTE_PENGUNGSIAN_TITIK} from "./pengungsian_titik.js";
 import {RUTE_ORANG_TINJAU} from "./orang_tinjau.js";
 import {RUTE_PENGINGAT, buatPengingat, buatPengingatPrioritas} from "./pengingat.js";
 import {RUTE_OPS, nilaiDropTertunda} from "./operasi_lapangan.js";
-import {RUTE_INSTANSI, catatKerja, tugasBaruDariBerkas, bersihkanInstansi} from "./instansi.js";
+import {RUTE_INSTANSI, catatKerja, tugasBaruDariBerkas, bersihkanInstansi, akunAktif} from "./instansi.js";
 import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
 import {RUTE_SEGEL} from "./segel.js";
 import {RUTE_UJI_PILOT} from "./uji_pilot.js";
@@ -583,6 +584,7 @@ export async function bersihkan(env, kini = Date.now()) {
 
 /* rute statistik, sesi admin, dan kotak pesan: "METODE /jalur" (":id" = 16 hex). Gerbang uji membaca kunci tabel ini. */
 const RUTE = {
+  "GET /api/peta-situs": petaSitus, "HEAD /api/peta-situs": petaSitus,   // menu per sesi (paket peta-situs D3, D8); tanpa D1 selain pembaca sesi
   "POST /api/jejak": (env, req, url, kini) => St.jejak(env, req, kini),
   "GET /api/statistik": (env, req, url, kini) => St.statistik(env, req, url, kini),
   "POST /api/pesan": (env, req, url, kini, ctx) => St.kirimPesan(env, req, ctx, kini),
@@ -817,6 +819,27 @@ export function bolehHalaman(rute, sesi, terkunci = true) {
   if (jenis === "staf" && peran.some(p => perananGerbang(jalur).includes(p))) return true;
   if (jenis === "pemirsa") return arahPemirsa({tab: sesi.tab || []}, jalur, sisa.length ? "?" + sisa.join("?") : "") === null;
   return false;
+}
+/* GET /api/peta-situs (PS-03): menu untuk sesi peramban ini, disaring menuUntuk (src/peta_situs.js). Urutan sesi = gerbang halaman di fetch(): admin, staf (stafSesiSemua,
+   termasuk akun direktori saja), pemirsa; lalu instansi aktif, petugas lewat sesi akun umum, kampus lewat cookie sesi_kemitraan. Tanpa sesi = tamu (pintu Publik).
+   Pembaca sesi modul dipanggil hanya bila cookie atau header miliknya ada, jadi tamu tanpa cookie tidak menyentuh D1. Jalur kode (x-kode, x-kode-regu) tidak dibaca:
+   menebak kode di sini akan menambah hitungan gagal pemegangKode. ponytail: pemegang kode petugas atau kampus melihat menu tamu; tambah bila PS-07 membutuhkannya. */
+async function sesiMenu(env, req, kini) {
+  if (await adminOK(env, req, kini)) return {jenis: "admin", peran: []};
+  const s = await stafSesiSemua(env, req, kini); if (s) return {jenis: "staf", peran: s.peran};
+  const p = await pemirsaSesi(env, req, kini); if (p) return {jenis: "pemirsa", peran: [], tab: p.tab};
+  const kuki = req.headers.get("cookie") || "", kode = req.headers.has("x-kode") || req.headers.has("x-kode-regu");
+  if (/(?:^|;\s*)sesi_instansi=/.test(kuki) && !((await akunAktif(env, req, kini)) instanceof Response)) return {jenis: "instansi", peran: []};
+  if (!kode && /(?:^|;\s*)sesi_masuk=/.test(kuki) && !((await petugasSesi(env, req, kini)) instanceof Response)) return {jenis: "petugas", peran: []};
+  if (!kode && /(?:^|;\s*)sesi_kemitraan=/.test(kuki) && (await hakKm(env, req, kini)).peran === "KK") return {jenis: "kemitraan", peran: []};
+  return null;
+}
+async function petaSitus(env, req, url, kini) {
+  /* hanya yang dibutuhkan peramban untuk menggambar menu: hak, peran, akses, admin, token, juga tetap di server */
+  const menu = menuUntuk(await sesiMenu(env, req, kini), bolehStaf, hostTerkunci(url.hostname))
+    .map(p => ({pintu: p.pintu, nama: p.nama, beranda: p.beranda, grup: p.grup.map(g => ({id: g.id, nama: g.nama, butir: g.butir.map(({rute, nama, ikon, grup, induk}) => ({rute, nama, ikon, grup, induk}))}))}));
+  const r = json(menu, 200, {"cache-control": "private, no-store", vary: "cookie"});
+  return req.method === "HEAD" ? new Response(null, {status: r.status, headers: r.headers}) : r;
 }
 function catatHTML(env, req, jalur, ctx) {
   if (env.DB) ctx?.waitUntil?.(Pub.catatHit(env, req, jalur).catch(e => console.error("hit", e)));
