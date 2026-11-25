@@ -799,6 +799,21 @@ function halamanTerkunci(url) {
   if (jalur === "/instansi/logpal" || jalur === "/logpal/index.html") return false;   // LogPal menjaga dirinya sendiri (src/logpal.js halaman): tanpa sesi sah 303 ke /instansi; BUKAN daftar putih (keputusan pemilik 9 Nov 2026: wajib login)   // meja menjaga dirinya sendiri (src/command_center.js): tamu 303 ke /admin/masuk?ke=
   return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur);   // /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/masuk?ke= (satu pintu)
 }
+/* Peran staf yang membuka halaman terkunci di centurisk97.id (selain admin): operator command center melihat semuanya, staf berperan Direktori membuka /direktori, peran Dalops membuka menu Pusdalops. Satu sumber untuk gerbang di fetch() DAN bolehHalaman. */
+export const perananGerbang = jalur => /^\/direktori\/?$/.test(jalur) ? ["operator_cc", ...P_AKADEMISI] : MENU_PUSDALOPS.test(jalur) ? ["operator_cc", ...PERAN_DALOPS] : ["operator_cc"];
+/* Murni: apakah satu halaman (rute, boleh berbuntut ?query atau #fragmen) dibuka Worker untuk sesi ini? Cermin gerbang fetch(): /uji-lapangan (admin atau pemirsa, semua host),
+   /kemitraan* dan /siklus* (modul menjaga dirinya, sebelum gerbang host), lalu gerbang centurisk97.id (halamanTerkunci, admin, perananGerbang, tab pemirsa).
+   sesi = {jenis: "admin"|"staf"|"pemirsa"|..., peran: [], tab: []}. Hak per halaman (HALAMAN_STAF, gerbang modul) tidak dihitung di sini. */
+export function bolehHalaman(rute, sesi, terkunci = true) {
+  const [depan, ...sisa] = String(rute).split("#")[0].split("?"), jalur = depan || "/", jenis = sesi?.jenis, peran = sesi?.peran || [];
+  if (/^\/uji-lapangan\/?$/.test(jalur)) return jenis === "admin" || jenis === "pemirsa";
+  if (jalur === "/kemitraan" || jalur.startsWith("/kemitraan/") || jalur === "/siklus" || jalur.startsWith("/siklus/")) return true;
+  if (!terkunci || !halamanTerkunci(new URL(jalur, "https://x.invalid"))) return true;
+  if (jenis === "admin") return true;
+  if (jenis === "staf" && peran.some(p => perananGerbang(jalur).includes(p))) return true;
+  if (jenis === "pemirsa") return arahPemirsa({tab: sesi.tab || []}, jalur, sisa.length ? "?" + sisa.join("?") : "") === null;
+  return false;
+}
 function catatHTML(env, req, jalur, ctx) {
   if (env.DB) ctx?.waitUntil?.(Pub.catatHit(env, req, jalur).catch(e => console.error("hit", e)));
 }
@@ -984,7 +999,7 @@ const W = {
       ujiOK = true;
     }
     if (!ujiOK && hostTerkunci(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)
-      && !await stafPeran(env, req, /^\/direktori\/?$/.test(url.pathname) ? ["operator_cc", ...P_AKADEMISI] : MENU_PUSDALOPS.test(url.pathname) ? ["operator_cc", ...PERAN_DALOPS] : ["operator_cc"])) {   // operator command center (sesi staf) melihat semua halaman terkunci, GET/HEAD saja; staf berperan Direktori (P_AKADEMISI) membuka /direktori saja
+      && !await stafPeran(env, req, perananGerbang(url.pathname))) {   // operator command center (sesi staf) melihat semua halaman terkunci, GET/HEAD saja; staf berperan Direktori (P_AKADEMISI) membuka /direktori saja
       /* akun pemirsa (src/pemirsa.js): hanya tab miliknya; halaman lain dialihkan ke tab pertamanya */
       const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname, url.search) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
       if (ke) return new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store"}});
