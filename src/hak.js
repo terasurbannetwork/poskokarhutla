@@ -473,6 +473,14 @@ export const dlNamaStaf = async (env, ids) => ids.length ? new Map((await env.DB
 /* ======================================================================================================================================================
    Target semai awan (migrasi 0129_semai_target; src/operasi_semai.js; data/kajian-bnpb/semai-awan/DESAIN-TEKNIS.md §4). Hak dicek di rute. */
 export const smTargetHari = async (env, t) => (await env.DB.prepare("SELECT id, zona_id, putaran, base_id, base_icao, base_nama, tanggal, lat, lon, mulai, selesai, skor, alasan_json, catatan, dibuat FROM op_semai_target WHERE tanggal = ? AND terhapus IS NULL ORDER BY base_id, mulai LIMIT 200").bind(t).all()).results;
+export const smTargetRentang = async (env, lo, hi) => (await env.DB.prepare("SELECT id, zona_id, putaran, base_id, base_icao, base_nama, tanggal, lat, lon, mulai, selesai, skor, alasan_json, catatan, dibuat FROM op_semai_target WHERE tanggal >= ? AND tanggal <= ? AND terhapus IS NULL ORDER BY tanggal, base_id, mulai LIMIT 2000").bind(lo, hi).all()).results;
+/* Sasaran manual semai banjir (migrasi 0176_semai_sasaran; DESAIN-TEKNIS semai-banjir §4). oleh = id akun. */
+export const ssHari = async (env, t) => (await env.DB.prepare("SELECT id, kab, tanggal, catatan, dibuat FROM op_semai_sasaran WHERE tanggal = ? AND terhapus IS NULL ORDER BY kab LIMIT 200").bind(t).all()).results;
+export const ssAktif = async (env, kab, t) => !!await env.DB.prepare("SELECT 1 FROM op_semai_sasaran WHERE kab = ? AND tanggal = ? AND terhapus IS NULL").bind(kab, t).first();
+export const ssLajuBuat = async (env, oleh, awal) => (await env.DB.prepare("SELECT count(*) n FROM op_semai_sasaran WHERE oleh = ? AND dibuat >= ?").bind(oleh, awal).first()).n;
+export const ssLajuHapus = async (env, oleh, awal) => (await env.DB.prepare("SELECT count(*) n FROM op_semai_sasaran WHERE dihapus_oleh = ? AND terhapus >= ?").bind(oleh, awal).first()).n;
+export const ssSisip = (env, ...v) => env.DB.prepare("INSERT INTO op_semai_sasaran (id, kab, tanggal, catatan, oleh, dibuat) VALUES (?,?,?,?,?,?)").bind(...v).run();
+export const ssHapus = async (env, waktu, alasan, oleh, id) => !!(await env.DB.prepare("UPDATE op_semai_sasaran SET terhapus = ?, alasan_hapus = ?, dihapus_oleh = ? WHERE id = ? AND terhapus IS NULL").bind(waktu, alasan, oleh, id).run()).meta.changes;
 export const smBase = (env, id) => env.DB.prepare("SELECT icao, nama FROM op_base WHERE id = ?").bind(id).first();
 export const smTargetAktif = async (env, zona, base) => !!await env.DB.prepare("SELECT 1 FROM op_semai_target WHERE zona_id = ? AND base_id = ? AND terhapus IS NULL").bind(zona, base).first();
 export const smLajuBuat = async (env, oleh, awal) => (await env.DB.prepare("SELECT count(*) n FROM op_semai_target WHERE oleh = ? AND dibuat >= ?").bind(oleh, awal).first()).n;
