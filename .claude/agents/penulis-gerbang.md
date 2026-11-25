@@ -45,6 +45,7 @@ Berkas milikmu (glob paling spesifik menang):
 
 - `tests/agen/**`
 - `tests/beban/**`
+- `tests/e2e/**`
 - `tests/desa-waspada/**`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya

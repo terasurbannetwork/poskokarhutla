@@ -1,0 +1,15 @@
+{
+  "_catatan": "Registri uji integrasi ujung ke ujung (~/.claude/TEST.md: alur lintas-tabel dan lintas proses diuji sungguhan, tanpa mock). Tiap tests/e2e/*.test.mjs dan tiap berkas tests/e2e/ yang dijanjikan RENCANA-UJI.md wajib ada di diuji atau antre. diuji: {alur: {berkas, uji: potongan nama uji yang ADA di berkas}}. dikecualikan: {alur: alasan >= 15 karakter}. antre: {alur: berkas} utang yang hanya boleh menyusut. Gerbang: tests/agen/gerbang-test-integrasi.test.mjs. Tidak jalan tiap push (Miniflare + python3); jalankan node --test <berkas> saat alurnya berubah.",
+  "diuji": {
+    "lapor-kejadian U7: usul staf ke Buku Besar lewat pasang.py masuk": {
+      "berkas": "tests/e2e/lapor_kejadian.test.mjs",
+      "uji": [
+        "negatif: tiket LA- otomatis saja tidak pernah mendirikan KJ-",
+        "pasang.py masuk sungguhan: LU- mendirikan satu KJ- (baru)",
+        "jalan ulang: tiket LA- otomatis menempel ke KJ- yang sama"
+      ]
+    }
+  },
+  "dikecualikan": {},
+  "antre": {}
+}

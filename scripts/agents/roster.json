@@ -19,6 +19,9 @@
       "tidak": "model ML sebaran; tampilan layar; worker Cloudflare",
       "milik": [
         "scripts/data/**",
+        "scripts/berkala/**",
+        "tests/berkala/kontrak.test.mjs",
+        "tests/berkala/fixtures/**",
         "scripts/panen/**",
         "scripts/scrape/**",
         "scripts/geo/**",
@@ -219,6 +222,7 @@
         "public/*.js",
         "tests/layar/**",
         "tests/gambar/**",
+        "tests/berkala/**",
         "tests/prioritas.test.mjs",
         "public/*.css",
         "public/design-system-*.json",
@@ -390,6 +394,7 @@
       "milik": [
         "tests/agen/**",
         "tests/beban/**",
+        "tests/e2e/**",
         "tests/desa-waspada/**"
       ]
     },

@@ -44,6 +44,9 @@ Kamu **hanya** mengurus: Pengerja pipeline data karhutla: FIRMS, cuaca Open-Mete
 Berkas milikmu (glob paling spesifik menang):
 
 - `scripts/data/**`
+- `scripts/berkala/**`
+- `tests/berkala/kontrak.test.mjs`
+- `tests/berkala/fixtures/**`
 - `scripts/panen/**`
 - `scripts/scrape/**`
 - `scripts/geo/**`
