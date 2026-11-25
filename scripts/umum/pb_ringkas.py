@@ -60,7 +60,7 @@ def _stempel(d):
 
 # Ambang umur bacaan (jam) untuk sumber di luar sumber_status. Status ALGORITMA paritas-bencana 7.1:
 # segar <= ambang, basi <= 3 x ambang, mati lebih dari itu. Angka dari sumber mati ditulis null.
-# ponytail: nilai awal kerja (logbook harian, nowcast BMKG); orkestrator memasukkannya ke ALGORITMA 7.2.
+# Batas logbook dan peringatan: ALGORITMA 7.2 [BAWAAN SEMENTARA] (logbook 3 hari, peringatan lantai per jam 6 jam).
 LOGBOOK_AMBANG_JAM = 72
 PERINGATAN_AMBANG_JAM = 6
 # registri menunjuk berkas yang tak ditulis ulang workflow-nya: ganti jalur (ambang tetap) atau tambah sumber statis-baca
@@ -73,6 +73,7 @@ URUT = ("segar", "basi", "mati")
 
 
 def _status(umur, ambang_jam):
+    """umur menit -> segar (<= 1x batas), basi (<= 3x), mati (> 3x atau tak ada stempel). ALGORITMA 7.1."""
     if umur is None:
         return "mati"
     if ambang_jam is None:
@@ -90,6 +91,13 @@ ARTI = {
 }
 
 
+def _tanpa_data(t):
+    # ALGORITMA 7.1: sumber mati tidak pernah diam dan tidak pernah 0; tanggal = stempel data terakhir (WIB)
+    if not t:
+        return "data tidak tersedia"
+    return "data tidak tersedia sejak " + t.astimezone(timezone(timedelta(hours=7))).strftime("%d-%m-%Y %H.%M WIB")
+
+
 def rakit(b, akar=AKAR, kini=None):
     kini = kini or datetime.now(timezone.utc)
     sumber, berkas, terburuk, terbaru = [], {}, 0, None
@@ -99,7 +107,10 @@ def rakit(b, akar=AKAR, kini=None):
         t = _stempel(d)
         umur = round((kini - t).total_seconds() / 60) if t else None
         st = _status(umur, ambang_jam)
-        sumber.append({"id": id_, "umur_menit": umur, "status_sumber": st})
+        x = {"id": id_, "waktu": _iso(t) if t else None, "umur_menit": umur, "batas_jam": ambang_jam, "status_sumber": st}
+        if st == "mati":
+            x["keterangan"] = _tanpa_data(t)
+        sumber.append(x)
         berkas[id_] = (d, t, st)
         if hitung and st in URUT:  # "basi" bencana = status terburuk sumber berambang yang dipakainya
             terburuk = max(terburuk, URUT.index(st))
@@ -135,7 +146,9 @@ def rakit(b, akar=AKAR, kini=None):
         sid, satuan, arti = ARTI[k]
         _, t, st = berkas.get(sid, (None, None, "mati"))
         angka[k] = None if st == "mati" else v  # sumber mati: angka tidak ditampilkan
-        meta[k] = {"sumber": sid, "waktu": _iso(t) if t else None, "satuan": satuan, "arti": arti}
+        meta[k] = {"sumber": sid, "waktu": _iso(t) if t else None, "satuan": satuan, "arti": arti, "status_sumber": st}
+        if st == "mati":
+            meta[k]["keterangan"] = _tanpa_data(t)
     # dibuat = waktu rakit berkas ini; data_sampai = waktu data terbaru dari sumber yang dipakai (bisa jauh lebih tua)
     return {"versi": 1, "bencana": b["id"], "dibuat": _iso(kini), "data_sampai": _iso(terbaru) if terbaru else None,
             "sumber": sumber, "tingkat": {"nasional": None, "wilayah": []}, "angka": angka, "angka_meta": meta,
@@ -183,6 +196,16 @@ def uji():
         o = rakit(reg[0], AKAR, kini + timedelta(days=400))
         assert o["basi"] and o["status"] == "mati" and all(v is None for v in o["angka"].values())
         assert o["angka_meta"]["titik_meta"]["sumber"] == "titik" and o["angka_meta"]["titik_meta"]["waktu"]
+    # batas ALGORITMA 7.1: tepat 1x segar, tepat 3x basi, lewat 3x mati; tanpa stempel mati
+    assert [_status(m, 2) for m in (0, 120, 121, 360, 361, None)] == ["segar", "segar", "basi", "basi", "mati", "mati"]
+    assert _status(5, None) == "tanpa_ambang"
+    o = rakit(reg[0], AKAR, kini + timedelta(days=400))
+    m = o["angka_meta"]["titik_meta"]
+    assert m["status_sumber"] == "mati" and m["keterangan"].startswith("data tidak tersedia sejak "), m
+    assert all(x.get("keterangan", "").startswith("data tidak tersedia") for x in o["sumber"] if x["status_sumber"] == "mati")
+    with tempfile.TemporaryDirectory() as tmp:
+        o = rakit(reg[0], tmp, kini)  # berkas hilang: mati, tanpa tanggal karangan
+        assert all(x["keterangan"] == "data tidak tersedia" and x["waktu"] is None for x in o["sumber"]), o["sumber"]
     print("pb_ringkas uji: ok,", len(reg), "bencana")
 
 

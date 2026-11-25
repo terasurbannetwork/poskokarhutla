@@ -7,6 +7,8 @@ Batas umur (jam) = jeda terpanjang antar-run sumbernya + ruang telat cron GitHub
   harian (banjir, lintas, gempa, prediksi) -> 30  (jaga_jadwal.mjs memicu pengganti setelah 25 jam)
   jarak_pandang.yml jam 22-10 UTC (jeda malam 12 jam) -> 15
   udara.yml 06 dan 18 UTC (jeda 12 jam) -> 18
+Tingkat (ALGORITMA paritas-bencana 7.1, kunci `kesegaran`): segar <= batas, basi <= 3 x batas, mati > 3 x batas atau hilang atau tanpa
+stempel. `status` lama (segar/telat/hilang/tanpa_stempel) tetap untuk /admin/kinerja.
 Ubah batas bersama jadwal workflow-nya; gerbang tests/agen/kesegaran.test.mjs mencocokkan tabel dengan cron.
 
 Pakai:  python3 scripts/agents/kesegaran.py                       # berkas lokal (di CI: sesaat sebelum deploy = yang akan tayang)
@@ -80,9 +82,19 @@ def periksa(akar=AKAR, kini=None, live=None, tabel=TABEL):
                 b["stempel"] = t.astimezone(WIB).isoformat(timespec="minutes")
                 b["umur_jam"] = round((kini - t).total_seconds() / 3600, 1)
                 b["status"] = "telat" if b["umur_jam"] > batas else "segar"
+        b["kesegaran"] = tingkat(b["umur_jam"], batas)
         baris.append(b)
     hitung = {s: sum(1 for b in baris if b["status"] == s) for s in ("segar", "telat", "hilang", "tanpa_stempel")}
-    return {"dibuat": kini.astimezone(WIB).isoformat(timespec="minutes"), "sumber": live or "berkas lokal", "ringkas": hitung, "berkas": baris}
+    per = {s: sum(1 for b in baris if b["kesegaran"] == s) for s in ("segar", "basi", "mati")}
+    return {"dibuat": kini.astimezone(WIB).isoformat(timespec="minutes"), "sumber": live or "berkas lokal", "ringkas": hitung,
+            "ringkas_kesegaran": per, "berkas": baris}
+
+
+def tingkat(umur_jam, batas):
+    """ALGORITMA 7.1; umur None (hilang, tanpa stempel) = mati, tidak pernah dianggap segar."""
+    if umur_jam is None:
+        return "mati"
+    return "segar" if umur_jam <= batas else "basi" if umur_jam <= 3 * batas else "mati"
 
 
 def lapor(hasil):
@@ -107,6 +119,9 @@ def uji():
         tulis("public/d.json", {"sumber": "tanpa stempel"})
         tulis("public/e.json", {"acuan": "2026-11-10"})                   # tanggal saja = 00.00 WIB = 09 Nov 17:00Z
         tulis("public/f.json", {"dibuat": "bukan tanggal"})
+        tulis("public/g.json", {"dibuat": "2026-11-09T12:00Z"})           # 24 jam = 3 x 8: basi
+        tulis("public/h.json", {"dibuat": "2026-11-09T11:00Z"})           # 25 jam > 3 x 8: mati
+        tabel += [("g", "public/g.json", "dibuat", 8, "x"), ("h", "public/h.json", "dibuat", 8, "x")]
         h = periksa(tmp, kini, tabel=tabel)
         s = {b["modul"]: b for b in h["berkas"]}
         assert s["a"]["status"] == "segar" and s["a"]["umur_jam"] == 2.0, s["a"]
@@ -114,6 +129,9 @@ def uji():
         assert s["c"]["status"] == "hilang", s["c"]
         assert s["d"]["status"] == "tanpa_stempel" and s["f"]["status"] == "tanpa_stempel"
         assert s["e"]["status"] == "segar" and s["e"]["umur_jam"] == 19.0, s["e"]
+        assert [s[k]["kesegaran"] for k in "abcdefgh"] == ["segar", "basi", "mati", "mati", "segar", "mati", "basi", "mati"]
+        assert h["ringkas_kesegaran"] == {"segar": 2, "basi": 2, "mati": 4}, h["ringkas_kesegaran"]
+        assert tingkat(8, 8) == "segar" and tingkat(24, 8) == "basi" and tingkat(24.1, 8) == "mati"
     print("kesegaran: uji lulus")
 
 
