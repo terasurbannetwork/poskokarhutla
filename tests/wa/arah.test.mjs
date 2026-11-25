@@ -191,7 +191,7 @@ test('pratinjau PNG dikirim sebagai gambar berketerangan, PDF sebagai dokumen (D
 // Gateway butuh WhatsApp sungguhan: penjaga sumber untuk sambungan arah.cjs dan limiter di index.js.
 const src = fs.readFileSync(new URL('../../scripts/wa/gateway/index.js', import.meta.url), 'utf8')
 test('gateway: arah, antrean, susulan, dan batas percakapan tersambung', () => {
-  assert.match(src, /const BL = process\.env\.BL_PROYEK === '1'/)
+  assert.match(src, /const BL = PERAN\.laporan && process\.env\.BL_PROYEK === '1'/)
   assert.match(src, /cegat\(\{ dari, teks, pemilik: process\.env\.PEMILIK, proyek: BL && pribadi \}\)/)
   assert.match(src, /ARAH\.arah\(\{ proyek: BL, pribadi, terdaftar: true, grupOps, lama,/)
   assert.match(src, /PENUNGGU\.selesai\(e\.id, r\.json\)/)
