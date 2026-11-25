@@ -4,7 +4,8 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import "../../src/worker.js";                                  // urutan impor modul rute (sensor.js melingkar ke worker.js)
 import {tingkatAmbang as tingkatServer} from "../../src/sensor.js";
-import {tingkatAmbang, tingkat, basi, ringkasan, urut, seri, BATAS, INTERVAL} from "../../public/inti/pantau_alat.js";
+import {tingkatAmbang, tingkat, basi, ringkasan, urut, seri, BATAS, INTERVAL, langkahHtml} from "../../public/inti/pantau_alat.js";
+import {tindakanUntuk} from "../../public/ews_tindakan.js";
 
 const KINI = Date.UTC(2026, 10, 25, 3, 0);
 const AMB = {tinggi_cm: {waspada: 150, siaga: 200, awas: 250}};
@@ -87,4 +88,16 @@ test("U11 dini: tidak ada kata aman di modul", () => {
   const teks = readFileSync(new URL("../../public/inti/pantau_alat.js", import.meta.url), "utf8")
     .split("\n").filter(b => !/kata "aman" tidak pernah dipakai/.test(b)).join("\n");
   assert.doesNotMatch(teks, /\baman\b/i);
+});
+
+test("EW-09: langkahHtml memakai tingkat tertinggi, butir persis tangga; tanpa tingkat atau hanya status resmi SIHKA kosong", () => {
+  const li = h => [...h.matchAll(/<li[^>]*>([^<]*)<\/li>/g)].map(m => m[1].replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&"));
+  const awas = langkahHtml("banjir", [pos({nilai: {tinggi_cm: 160}}), pos({nilai: {tinggi_cm: 260}}), pos({waktu: KINI - 3600e3, nilai: {tinggi_cm: 999}})], KINI);
+  assert.match(awas, /data-w="awas"/); assert.deepEqual(li(awas), tindakanUntuk("banjir", 3));
+  const gsiaga = langkahHtml("gunungapi", [{id: "pvmbg:x", sumber: "pvmbg", nama: "G", waktu: KINI - 60e3, status_resmi: "Siaga", nilai: {level: 3}}], KINI);
+  assert.deepEqual(li(gsiaga), tindakanUntuk("gunungapi", 2));
+  assert.equal(langkahHtml("banjir", [pos({})], KINI), "", "normal: tanpa kotak");
+  assert.equal(langkahHtml("banjir", [], KINI), "");
+  assert.equal(langkahHtml("banjir", [{id: "sihka:1", sumber: "sihka", jenis: "tma", nama: "K", waktu: KINI - 60e3, status_resmi: "Siaga 1", nilai: {tinggi: 300}}], KINI), "", "Q7: SIHKA tidak dipetakan");
+  assert.equal(langkahHtml("karhutla", [pos({waktu: KINI - 3600e3})], KINI), "", "pos basi tidak memicu");
 });

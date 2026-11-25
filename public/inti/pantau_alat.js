@@ -1,6 +1,7 @@
 /* Panel pemantauan alat (EWS) banjir dan gunung api: bagian murni (EW-01).
    Paket data/kajian-bnpb/ews: ALGORITMA G1 tingkat, G2 basi, G3 ringkasan, G4 seri, G5 urutan.
    Uji: tests/inti/pantau_alat.test.mjs (U1, U12). Tanpa DOM; komponen layar menyusul di EW-05. */
+import {tindakanUntuk, BENCANA as TANGGA} from "../ews_tindakan.js";
 
 const MENIT = 6e4;
 /* KEPUTUSAN Q4 (bawaan diterima pemilik 25 Nov 2026). Jenis tanpa batas: basi hanya dari sumber (pos.basi) atau waktu kosong */
@@ -200,6 +201,17 @@ export function grafikSvg(d, nama, lebarPx = 640) {
   return `<svg class="al-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(`Grafik ${besaran.toLowerCase()} ${nama}, 24 jam terakhir, terakhir ${ANGKA.format(akhir[1])} ${sat} pada ${waktuTeks(akhir[0])}`)}">`
     + sumbuY + sumbuX + garisAmb + garis + `<circle class="al-gt al-gt-akhir" cx="${f(X(akhir[0]))}" cy="${f(Y(akhir[1]))}" r="3.5"/>` + kolom + `</svg>`;
 }
+/* EW-09 (F-7, Q5): kotak Langkah cepat untuk tingkat tertinggi pos (Waspada 1, Siaga 2, Awas 3; sama dengan ews_tindakan.js).
+   Teks butir PERSIS tangga tindakan, tanpa teks baru; rujukan di title (tanpa kaki Sumber). Status resmi SIHKA tidak dipetakan (Q7).
+   Tanpa pos bertingkat: kosong. */
+export function langkahHtml(bencana, daftar, kini) {
+  const n = Math.max(0, ...daftar.map(p => TINGKAT.indexOf(tingkat(p, kini)?.kode) + 1));
+  const butir = n ? tindakanUntuk(bencana, n) : [];
+  if (!butir?.length) return "";
+  const e = TANGGA[bencana], k = Object.keys(e.tindakan).find(x => e.tindakan[x] === butir), ruj = e.rujukan?.[k] || [], T = TINGKAT[n - 1];
+  return `<aside class="al-langkah" data-w="${T}" aria-label="Langkah cepat ${LABEL[T]}"><header><h4>Langkah cepat</h4>${pilHtml({kode: T, label: LABEL[T]})}</header>`
+    + `<ol>${butir.map((x, i) => `<li${ruj[i] ? ` title="${esc(ruj[i])}"` : ""}>${esc(x)}</li>`).join("")}</ol></aside>`;
+}
 const ringHtml = r => r && r.jumlah_pos != null ? `<p class="al-ring"><span><b>${ANGKA.format(r.jumlah_pos)}</b> pos</span><span${r.di_atas_ambang ? ' class="al-atas"' : ""}><b>${ANGKA.format(r.di_atas_ambang)}</b> di atas ambang</span><span><b>${ANGKA.format(r.terputus)}</b> tanpa data terkini</span>${r.kamera != null ? `<span><b>${ANGKA.format(r.kamera)}</b> kamera</span>` : ""}</p>` : "";
 const gagalHtml = g => g.length ? `<p class="al-gagal">${g.map(s => `Sumber ${esc(SUMBER[s] ?? s)} gagal dimuat.`).join(" ")}</p>` : "";
 
@@ -240,7 +252,7 @@ async function muat(ref, bencana, ambil) {
   const w = document.createElement("div"); w.className = "wrap al-wrap";
   w.innerHTML = `<section class="ex ex-std al" aria-labelledby="al-jd-${esc(bencana)}"><header class="ex-hd"><span class="ex-ey">${IK.sensor}Peringatan dini</span>`
     + `<div class="ex-jd"><h3 id="al-jd-${esc(bencana)}">${IK.alat} Pemantauan alat</h3></div></header><div class="ex-bd">`
-    + (sudahDitutup ? "" : putusHtml(putus, kini)) + ringHtml(r) + gagalHtml(gagalS)
+    + (sudahDitutup ? "" : putusHtml(putus, kini)) + ringHtml(r) + gagalHtml(gagalS) + langkahHtml(bencana, daftar, kini)
     + (daftar.length ? `<div class="al-kisi">${daftar.slice(0, PER_HALAMAN).map(p => kartuHtml(p, kini)).join("")}</div>` : "")
     + (daftar.length > PER_HALAMAN ? `<button type="button" class="al-lagi" data-lagi>Tampilkan ${Math.min(PER_HALAMAN, daftar.length - PER_HALAMAN)} pos lagi</button>` : "")
     + `</div></section>`;

@@ -11,6 +11,7 @@ import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {bukaPeramban, cariChrome} from "../bnpb/_peramban.mjs";
 import {tingkat, basi, ringkasan, urut, grafikSvg} from "../../public/inti/pantau_alat.js";
+import {tindakanUntuk, BENCANA} from "../../public/ews_tindakan.js";
 
 const AKAR = path.join(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PUB = path.join(AKAR, "public");
@@ -79,7 +80,9 @@ else {
     const t = await tab.teks();
     assert.match(t, /15\s*pos/); assert.match(t, /2\s*di atas ambang/); assert.match(t, /2\s*tanpa data terkini/);
     assert.match(t, /2 alat tanpa data terkini/); assert.match(t, /Pos putus bernilai nol \(3 jam lalu\)/); assert.match(t, /belum pernah mengirim/);
-    assert.deepEqual([...new Set(t.match(TERLARANG) || [])], []);
+    /* Langkah cepat mengutip naskah tangga (ews_tindakan.js) apa adanya, jadi tidak ikut saringan kata kita */
+    const tKita = await tab.eval("(() => { const c = document.body.cloneNode(true); c.querySelectorAll('.al-langkah').forEach(e => e.remove()); return c.innerText; })()");
+    assert.deepEqual([...new Set(tKita.match(TERLARANG) || [])], []);
     assert.ok((await tab.lebihLebar()).sw <= w + 1, "scroll horizontal");
     /* kartu sebaris rata (tinggi sama) dan berjarak, tidak menempel */
     const baris = await tab.eval(`(() => { const k = [...document.querySelectorAll('.al-kartu')].map(e => e.getBoundingClientRect()); const g = {}; k.forEach(r => (g[Math.round(r.top)] ||= []).push(r)); return Object.values(g).map(r => ({h: [...new Set(r.map(x => Math.round(x.height)))], n: r.length, celah: r.length > 1 ? Math.round(r[1].left - r[0].right) : null})); })()`);
@@ -149,6 +152,20 @@ else {
     mode = "ok"; await tab.ukuran(1280, 900); await tab.buka(`${base}/uji?b=banjir&pasang`, {tunggu: ".al-kartu"});
     assert.equal(await tab.eval("document.querySelector('.al-wrap').nextElementSibling.id"), "insight");
     for (const b of ["banjir", "gunungapi"]) assert.match(readFileSync(path.join(PUB, b, "index.html"), "utf8"), new RegExp(`<script type="module" src="../inti/pantau_alat_pasang.js" data-bencana="${b}"></script>`));
+  });
+
+  test("EW-09: Langkah cepat untuk tingkat tertinggi, teks butir sama persis dengan tangga tindakan", async () => {
+    mode = "ok";
+    for (const b of ["banjir", "gunungapi"]) {
+      await buka(b);
+      const d = await tab.eval(`(() => { const e = document.querySelector('.al-langkah'); return e && {w: e.dataset.w, jd: e.querySelector('h4').textContent, pil: e.querySelector('.al-pil').textContent, li: [...e.querySelectorAll('li')].map(x => x.textContent), t: [...e.querySelectorAll('li')].map(x => x.title)}; })()`);
+      assert.ok(d, b + ": kotak Langkah cepat ada");
+      assert.equal(d.jd, "Langkah cepat"); assert.equal(d.pil, "Waspada"); assert.equal(d.w, "waspada");
+      assert.deepEqual(d.li, tindakanUntuk(b, 1), b + ": teks sama persis");
+      assert.deepEqual(d.t, BENCANA[b].rujukan[1], b + ": rujukan di title");
+      assert.equal(await tab.eval("document.querySelector('.al-langkah').nextElementSibling.classList.contains('al-kisi')"), true, "kotak sebelum kisi kartu");
+    }
+    assert.deepEqual(tab.galat().filter(bukanFavicon), []);
   });
 
   test("pemberitahuan ditutup tersimpan per hari di perangkat", async () => {
