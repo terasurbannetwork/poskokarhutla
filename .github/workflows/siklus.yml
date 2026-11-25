@@ -162,6 +162,12 @@ jobs:
       - name: Unggah ke R2 (hanya yang berubah)
         if: always()
         run: python3 -I scripts/siklus/gudang.py sinkron "$S" --wrangler "$W"
+      # GS-14 versi publik (K4), Q13 "R2 aja": hanya kejadian yang versinya dibuat jalan ini (folder berkasnya ada) ke R2 banjir/genangan/, dibaca /api/banjir/genangan
+      - name: Terbitkan genangan publik ke R2
+        run: |
+          python3 -I scripts/banjir/genangan_terbit.py uji
+          python3 -I scripts/banjir/genangan_terbit.py terbit --sumber "$S/siklus/saji" --keluar "$RUNNER_TEMP/genangan_terbit"
+          python3 -I scripts/banjir/genangan_terbit.py unggah --keluar "$RUNNER_TEMP/genangan_terbit" --wrangler "$W"
       - name: Simpan cache GFM
         if: always()
         uses: actions/cache/save@v4

@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {spawnSync} from "node:child_process";
-import {existsSync, readFileSync, statSync} from "node:fs";
+import {existsSync, readdirSync, readFileSync, statSync} from "node:fs";
 import {fmtAngka, fmtPersen, rentangTulis, urutKab, kabAwal, lahanGabung, urlAset, citraKab, kartuRingkas, kartuTabel, kartuLahan, kartuMetode} from "../../public/banjir/genangan_kejadian.js";
 
 test("genangan_terbit.py uji lulus (tanpa jaringan)", () => {
@@ -42,7 +42,7 @@ test("lahan hanya dari kab sah; kelas 0 ha tidak ada", () => {
 });
 
 test("url aset: nama berkas dan id kejadian dari daftar izin saja", () => {
-  assert.equal(urlAset(KEJ, "1103_sel.geojson"), "/banjir/data/genangan_kejadian/KJ-UJI-X/v3/1103_sel.geojson");
+  assert.equal(urlAset(KEJ, "1103_sel.geojson"), "/api/banjir/genangan/KJ-UJI-X/v3/1103_sel.geojson");
   for (const n of ["../x.png", "1103_radar_pra.png/../a", "abcd_sel.geojson", "1103_foo.png", undefined]) assert.equal(urlAset(KEJ, n), null, String(n));
   assert.equal(urlAset({...KEJ, kj: "../x"}, "1103_sel.geojson"), null);
 });
@@ -90,9 +90,11 @@ test("rentang terbalik atau satu ujung tidak jadi sel kosong", () => {
   assert.ok(!kartuRingkas({...KEJ, ringkas: {...KEJ.ringkas, rentang: [9, 3]}}).includes("9 sampai 3"));
 });
 
-const J = "public/banjir/data/genangan_kejadian.json";
-test("genangan_kejadian.json publik: invarian bila ada", {skip: !existsSync(J)}, () => {
-  const d = JSON.parse(readFileSync(J, "utf8")), terlarang = new Set(["kec", "sidik_masukan", "jiwa_kab_sah", "total", "jumlah_gabungan", "rata", "bangunan", "nik", "hp", "email", "akun"]);
+/* Q13 ("R2 aja"): keluaran terbit tidak di git; diperiksa bila ada di folder lokal scripts/banjir/genangan_terbit.py (satu JSON per kejadian) */
+const J = "data/raw/banjir/genangan_terbit";
+const KJS = existsSync(J) ? readdirSync(J).filter(n => /^KJ-[A-Z0-9-]+\.json$/.test(n)) : [];
+test("keluaran terbit genangan: invarian bila ada", {skip: !KJS.length}, () => {
+  const d = {yakin: "estimasi-model", kejadian: KJS.map(n => JSON.parse(readFileSync(`${J}/${n}`, "utf8")))}, terlarang = new Set(["kec", "sidik_masukan", "jiwa_kab_sah", "total", "jumlah_gabungan", "rata", "bangunan", "nik", "hp", "email", "akun"]);
   const jalan = (x, f) => { if (Array.isArray(x)) x.forEach(v => jalan(v, f)); else if (x && typeof x === "object") for (const [k, v] of Object.entries(x)) { f(k, v); jalan(v, f); } };
   jalan(d, k => assert.ok(!terlarang.has(k), `kunci terlarang ${k}`));
   assert.equal(d.yakin, "estimasi-model");
@@ -105,10 +107,10 @@ test("genangan_kejadian.json publik: invarian bila ada", {skip: !existsSync(J)},
       for (const r of Object.values(x.penduduk ?? {})) assert.ok(Number.isFinite(r.bawah) && Number.isFinite(r.atas) && r.bawah <= r.atas, `${x.kab4}: rentang bukan dua ujung`);
     }
     if (k.ringkas.rentang) assert.ok(k.ringkas.rentang[0] <= k.ringkas.rentang[1]);
-    if (!k.kab.some(x => x.penduduk)) assert.ok(!k.atribusi.some(a => /Open Buildings/.test(a)), "atribusi Open Buildings hanya bila penduduk tampil");
+    if (!k.kab.some(x => x.penduduk)) assert.ok(!k.atribusi.some(a => /Open Buildings|Overture/.test(a)), "atribusi bangunan hanya bila penduduk tampil");
     let total = 0;
     for (const x of k.kab) for (const n of [x.sel, ...Object.values(x.citra ?? {}).map(c => c.berkas)].filter(Boolean)) {
-      const p = `public/banjir/data/genangan_kejadian/${k.kj}/v${k.versi}/${n}`, b = statSync(p).size;
+      const p = `${J}/${k.kj}/v${k.versi}/${n}`, b = statSync(p).size;
       assert.ok(b <= (n.endsWith(".png") ? 120_000 : 300_000), `${n}: ${b} byte melebihi anggaran K5`);
       total += b;
     }

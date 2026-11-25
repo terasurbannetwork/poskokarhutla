@@ -267,6 +267,8 @@
     "table hujan_baca": "hujan-ukur: belum terisi 503",
     "GET /api/banjir/hujan-ukur": "hujan: bacaan per interval dijumlah",
     "table sungai_meta": "migrasi 0016 sihka idempoten",
+    "GET /api/banjir/genangan": "daftar dirangkai dari banjir/genangan/<KJ>.json, terbaru dulu; berkas hanya yang dirujuk versi yang sama",
+    "GET /api/banjir/genangan/:kj/v:n/:nama": "daftar dirangkai dari banjir/genangan/<KJ>.json, terbaru dulu; berkas hanya yang dirujuk versi yang sama",
     "GET /api/banjir/sungai-ukur": "rute 200 sesudah terisi",
     "GET /api/banjir/sungai-ukur/pos/:id": "GET /api/banjir/sungai-ukur/pos/<id>: 24 jam",
     "cron sihka": "cron sihka tiap jam",

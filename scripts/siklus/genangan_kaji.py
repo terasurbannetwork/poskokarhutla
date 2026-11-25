@@ -120,6 +120,18 @@ def versi(keluar, kj, sidik):
     return (n, False) if json.load(open(ada[-1])).get("sidik_masukan") == sidik else (n + 1, True)
 
 
+def atribusi_bangunan(provs, sumber_fn=None):
+    """Sumber bangunan untuk pembagian penduduk per provinsi yang benar-benar dipakai (K9: Aceh dari Overture, lain Open Buildings v3)."""
+    fn = sumber_fn or _muat("scripts/umum/bangunan.py").sumber_prov
+    teks = []
+    for p in sorted({p for p in provs if p}):
+        t = fn(p) or "Google Open Buildings v3"
+        t = "Overture Maps Foundation, kontributor OpenStreetMap, ODbL 1.0" if t.startswith("Overture") else "Google Open Buildings v3, CC BY 4.0"
+        if t + " (bangunan untuk pembagian penduduk)" not in teks:
+            teks.append(t + " (bangunan untuk pembagian penduduk)")
+    return teks
+
+
 def rakit(kj, kab, keluar=KELUAR, kej=KEJ, paparan_fn=None, sidik=None):
     """Menyusun satu versi. -> (n, baru, hasil, masalah[], berkas[(kunci, byte)])."""
     KB, S = _muat("scripts/siklus/kaji_banjir.py"), _muat("scripts/siklus/saji.py")
@@ -140,7 +152,7 @@ def rakit(kj, kab, keluar=KELUAR, kej=KEJ, paparan_fn=None, sidik=None):
     kunci = f"siklus/saji/kaji/{kj}_banjir_gfm_v{n}.json"
     if not baru:
         return n, False, json.load(open(os.path.join(keluar, *kunci.split("/")))), [], []
-    atr = [gf.get("sumber"), (la or {}).get("sumber"), *((ci or {}).get("atribusi") or []), "Google Open Buildings v3, CC BY 4.0 (bangunan untuk pembagian penduduk)"]
+    atr = [gf.get("sumber"), (la or {}).get("sumber"), *((ci or {}).get("atribusi") or []), *atribusi_bangunan(k["gfm"].get("prov") for k in kabs if k["paparan"])]
     isi = {"versi": n, "mulai": gf["mulai"], "kriteria_sidik": sid, "sidik_masukan": sm, "ambang": gf["ambang"], "atribusi": [a for a in atr if a],
            "keterbatasan_paparan": _P().KETERBATASAN, **hasil}
     masalah, berkas = KB.tulis(keluar, kj, isi, kunci), []
@@ -329,6 +341,11 @@ def _uji():
     # tak muat di tingkat terkasar: alasan tertulis, bukan diam
     d, sm = sel_geojson([(94.0 + k * 0.011, -12.0, 0.1) for k in range(8000)])
     assert sm == 1100 and len(d) > MAKS_GEOJSON and "catatan" in json.loads(d)
+    # atribusi bangunan per provinsi terpakai (K9): Aceh Overture, lain Open Buildings, provinsi tanpa paparan tidak disebut
+    sf = {"11": "Overture Maps buildings rilis x", "12": "Google Open Buildings v3 (Sirko)"}.get
+    assert atribusi_bangunan(["11", "12", "12", None], sf) == ["Overture Maps Foundation, kontributor OpenStreetMap, ODbL 1.0 (bangunan untuk pembagian penduduk)",
+                                                              "Google Open Buildings v3, CC BY 4.0 (bangunan untuk pembagian penduduk)"]
+    assert atribusi_bangunan(["12"], sf) == ["Google Open Buildings v3, CC BY 4.0 (bangunan untuk pembagian penduduk)"] and atribusi_bangunan([], sf) == []
     # kasus ALGORITMA 4 lewat hitung_kab asli: WorldPop bawah 100, atas 400, GHSL tidak tersedia
     hs = P._ha_sel(P.BG.LAT0 + 500.5 / P.BG.HALUS)
     ctr = lambda i, j: (P.BG.LON0 + (j + .5) / P.BG.HALUS, P.BG.LAT0 + (i + .5) / P.BG.HALUS)

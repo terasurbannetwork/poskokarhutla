@@ -104,6 +104,7 @@ import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.j
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
 import {perbaruiGunungapi, layaniGunungapi} from "./gunungapi.js";
 import {perbaruiSihka, perbaruiSungaiResmi, perbaruiHujan, dasarSihka, ruteSihka} from "./sihka.js";
+import {ruteGenangan} from "./banjir_genangan.js";
 import {himawariDibuat, statusHimawari} from "./himawari.js";
 import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
 import {layaniUbin} from "./ubin.js";
@@ -915,7 +916,7 @@ const W = {
     });
     if (url.pathname.startsWith("/api/cuaca/")) { const c = await layaniNowcast(req, env, ctx, url); if (c) return c; }   // nowcast BMKG D1 (src/nowcast.js)
     if (url.pathname.startsWith("/api/gunungapi/")) { const g = await layaniGunungapi(req, env, ctx, url); if (g) return g; }   // level gunung api MAGMA D1 (src/gunungapi.js)
-    if (url.pathname.startsWith("/api/banjir/")) { const b = await ruteSihka(req, env, ctx, url); if (b) return b; }   // sungai terukur SIHKA D1 (src/sihka.js)
+    if (url.pathname.startsWith("/api/banjir/")) { const b = (await ruteGenangan(req, env, ctx, url)) || (await ruteSihka(req, env, ctx, url)); if (b) return b; }   // genangan radar R2 (src/banjir_genangan.js), sungai SIHKA D1 (src/sihka.js)
     if (url.pathname.startsWith("/api/gempa/")) { const g = await layaniGempa(req, env, ctx, url); if (g) return g; }   // katalog gempa D1 (src/gempa.js)
     if (url.pathname.startsWith("/api/peringatan/") || url.pathname.startsWith("/api/admin/peringatan/")) { const p = await layaniPeringatan(req, env, ctx, url); if (p) return p; }   // peringatan dini (src/peringatan.js)
     if (url.pathname === "/api/status" && req.method === "GET") return cacheTepi(req, ctx, 60, () => status(env, url, Date.now()), true);

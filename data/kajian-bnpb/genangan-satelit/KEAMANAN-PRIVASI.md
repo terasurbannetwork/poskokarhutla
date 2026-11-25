@@ -53,6 +53,8 @@ Bagian ini menggantikan "tanpa versi publik (Q1)" di bagian 3 dan "tidak pernah 
 | Data orang, akun, ringkas akun BPBD, sidik, id adegan | tidak | tidak ada di daftar putih |
 | Alasan kab tak sah | ya, satu kalimat pendek | bukan data orang |
 
+Tempat (K8): R2 `banjir/genangan/`, tidak di git dan tidak di `public/`. Rute publik `src/banjir_genangan.js` hanya GET dan HEAD, tanpa sesi; jalur dibatasi pola nomor kejadian resmi dan daftar izin nama berkas, kunci R2 disusun dari pola itu, dan berkas hanya disajikan bila dirujuk JSON kejadian versi yang sama, jadi kab tak sah dan versi lama tidak terjangkau walau tersimpan. Uji `tests/warga/banjir_genangan.test.mjs`.
+
 Penjaga mesin: daftar putih di `scripts/banjir/genangan_terbit.py`, `kunci_terlarang`, daftar izin nama berkas, anggaran ukuran, uji `tests/banjir/genangan_kejadian.test.mjs` (invarian JSON publik, tanpa kunci terlarang, kab tak sah tanpa angka). Layar menulis teks lewat `esc`, jadi isi JSON tidak dieksekusi sebagai HTML.
 
-Atribusi wajib tampil: Copernicus Emergency Management Service GFM, ESA WorldCover (CC BY 4.0), "Contains modified Copernicus Sentinel data", dan Google Open Buildings (CC BY 4.0) hanya bila penduduk tampil. Berkas kejadian uji (`KJ-UJI-*`) tidak pernah di-commit atau diterbitkan; di mesin pengembang keluarannya dikecualikan lewat `.git/info/exclude`.
+Atribusi wajib tampil: Copernicus Emergency Management Service GFM, ESA WorldCover (CC BY 4.0), "Contains modified Copernicus Sentinel data", dan sumber bangunan provinsi yang dipakai (Google Open Buildings CC BY 4.0; Aceh: Overture Maps Foundation dan kontributor OpenStreetMap, ODbL, K9) hanya bila penduduk tampil. Berkas kejadian uji (`KJ-UJI-*`) tidak pernah diterbitkan: pembuatnya menolak tanpa `--izinkan-uji` dan rute hanya menerima pola nomor kejadian resmi.

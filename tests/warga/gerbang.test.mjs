@@ -44,6 +44,9 @@ function temukan() {
   if (/perbaruiGempa\(env/.test(w)) out.add("cron gempa");
   for (const [, x] of readFileSync(path.join(AKAR, "src/sihka.js"), "utf8").matchAll(/"(\/api\/banjir\/[\w-]+)"/g)) out.add("GET " + x);   // SIHKA: semua rute baca
   if (/"\/api\/banjir\/sungai-ukur\/pos\/"/.test(readFileSync(path.join(AKAR, "src/sihka.js"), "utf8"))) out.add("GET /api/banjir/sungai-ukur/pos/:id");
+  const bg = readFileSync(path.join(AKAR, "src/banjir_genangan.js"), "utf8");   // genangan radar publik dari R2 (GS-14, Q13)
+  if (/jalur !== "\/api\/banjir\/genangan"/.test(bg)) out.add("GET /api/banjir/genangan");
+  if (/RE_BERKAS = new RegExp\(`\^\/api\/banjir\/genangan\//.test(bg)) out.add("GET /api/banjir/genangan/:kj/v:n/:nama");
   if (/dasarSihka\(env/.test(w)) out.add("cron dasar sihka");
   if (/perbaruiSihka\(env/.test(w)) out.add("cron sihka");
   const pr = readFileSync(path.join(AKAR, "src/peringatan.js"), "utf8");   // peringatan dini: rute baca, rute admin, cron

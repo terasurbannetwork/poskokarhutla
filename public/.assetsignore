@@ -10,5 +10,3 @@ data/grup_perusahaan.json
 data/progresi/arsip/
 udara/data/stasiun_asing.json
 
-# contoh uji genangan radar tidak pernah tayang (GS-14); pembuatnya juga menolak KJ-UJI-* tanpa --izinkan-uji
-banjir/data/genangan_kejadian/KJ-UJI-*

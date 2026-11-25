@@ -29,7 +29,7 @@ BG = _muat("sk_bangunan", "scripts/umum/bangunan.py")
 HK = _muat("sk_bahaya_kelas", "scripts/siklus/bahaya_kelas.py")
 assert K.AMBANG_BANGUNAN == BG.AMBANG_KEYAKINAN, "ambang bangunan harus satu nilai dengan bangunan.py"
 
-KETERBATASAN = ("Bangunan terdeteksi Google Open Buildings v3 dengan keyakinan >= 0,70 (U11); komisi dan omisi tidak dikoreksi. "
+KETERBATASAN = ("Bangunan terdeteksi Google Open Buildings v3 dengan keyakinan >= 0,70 (U11); Aceh memakai Overture Maps tanpa ambang keyakinan (genangan-satelit K9), tidak dijumlah dengan Open Buildings; komisi dan omisi tidak dikoreksi. "
                 "Bangunan dianggap di zona bila pusat sel 110 m (galat +-0,08 km; sel kasar 0,01 derajat +-0,8 km) berada di zona; sel di batas tidak dibagi. "
                 "Desa tanpa poligon: sel ditetapkan ke titik pusat desa Dukcapil terdekat dalam kecamatan yang sama (estimasi-model). "
                 "Pembagian jiwa sebanding jumlah bangunan (asumsi-kebijakan); tiga sumber jiwa berdampingan, tahun dan definisinya berbeda. "
