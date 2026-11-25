@@ -2652,8 +2652,15 @@ export const ewsAwalTandai = (env, kini) => env.DB.prepare("INSERT OR IGNORE INT
 export const ewsCatatSenyap = (env, id, kunci, kini) => env.DB.batch(kunci.map(k => env.DB.prepare("INSERT OR IGNORE INTO ews_terkirim (langganan_id, kunci, waktu) VALUES (?1, ?2, ?3)").bind(id, k, kini)));
 
 /* ---------- alat: panel EWS banjir dan gunung api (EW-04, src/alat.js) ---------- */
-/* Baca saja, jalur publik dan staf sama (pembulatan koordinat dan desa diatur alat.js). SIHKA memakai SQL_RIWAYAT sihka.js, satu definisi. */
-import {SQL_RIWAYAT as ALAT_SQL_RIWAYAT_SIHKA} from "./sihka.js";
+/* Baca saja, jalur publik dan staf sama (pembulatan koordinat dan desa diatur alat.js). SQL_RIWAYAT satu definisi untuk sihka.js dan alat.js
+   (di sini, bukan di sihka.js: hak.js mengimpor sihka.js menyeret worker.js dan memutar impor). */
+/* riwayat satu pos 24 jam terakhir, JSON disusun SQL (Worker tidak mengurai). ?1 = id pos, ?2 = kini (detik), ?3 = kini (ms). Diturunkan rata ke <= 300 titik (sisa (n - rn) % k = 0
+   menjaga bacaan terbaru), urut naik. Tak terdaftar = tanpa baris. */
+export const SQL_RIWAYAT = `WITH s AS (SELECT t, v, row_number() OVER (ORDER BY t) rn, count(*) OVER () n FROM sihka_baca WHERE pos = ?1 AND t > ?2 - 86400 AND t <= ?2 + 600),
+  k AS (SELECT t, v FROM s WHERE (n - rn) % ((n + 299) / 300) = 0 ORDER BY t)
+  SELECT json_object('id', p.pos, 'nama', p.nama, 'satuan', p.satuan, 'dibuat', ?3,
+    't', json((SELECT coalesce(json_group_array(t), '[]') FROM k)), 'v', json((SELECT coalesce(json_group_array(v), '[]') FROM k))) isi
+  FROM sihka_pos p WHERE p.pos = ?1`;
 export const ALAT_MAKS = 500, ALAT_MAKS_TITIK = 1500;
 const ALAT_SQL_POS = `SELECT a.id, a.jenis, a.kab, a.desa, a.lat, a.lon, a.ambang, b.waktu, b.nilai, b.baterai FROM sensor_alat a
   LEFT JOIN sensor_baca b ON b.alat_id = a.id AND b.waktu = (SELECT max(waktu) FROM sensor_baca WHERE alat_id = a.id)
@@ -2663,4 +2670,4 @@ export const alatSensorSatu = (env, id) => env.DB.prepare("SELECT id, jenis, amb
 /* terbaru menang bila > ALAT_MAKS_TITIK: ambil DESC lalu dibalik ke urutan waktu naik */
 export const alatSensorSeri = async (env, id, dari, sampai) => (await env.DB.prepare(`SELECT waktu, nilai FROM sensor_baca WHERE alat_id = ? AND waktu > ? AND waktu <= ? ORDER BY waktu DESC LIMIT ${ALAT_MAKS_TITIK}`).bind(id, dari, sampai).all()).results.reverse();
 export const alatSihkaStatus = async env => (await env.DB.prepare("SELECT isi FROM cuaca_sumber WHERE kunci = 'sihka_status'").first())?.isi;
-export const alatSihkaRiwayat = async (env, pos, kini) => (await env.DB.prepare(ALAT_SQL_RIWAYAT_SIHKA).bind(pos, Math.floor(kini / 1000), kini).first())?.isi;
+export const alatSihkaRiwayat = async (env, pos, kini) => (await env.DB.prepare(SQL_RIWAYAT).bind(pos, Math.floor(kini / 1000), kini).first())?.isi;

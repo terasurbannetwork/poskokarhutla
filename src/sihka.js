@@ -10,6 +10,8 @@
 import {gagal, cacheTepi} from "./worker.js";
 import {tarikTeks, perbaruiResmi, BUAT_META} from "./sungai_resmi.js";
 import {panenHujan, ruteHujan} from "./hujan.js";
+import {SQL_RIWAYAT} from "./hak.js";
+export {SQL_RIWAYAT};
 
 const SUMBER = "https://sihka.sda.pu.go.id/api/v1s/telemetry-list", CADANGAN = "https://sihka.dev-tunnels.id/api/v1s/telemetry-list", TAHAN_HARI = 180, DASAR_HARI = 90, DASAR_SIKLUS = 14;   // bacaan mentah 180 hari (uji balik satu musim hujan); jendela dasar 90 hari
 const UA = "pantaubencana-sihka/1.0 (+https://centurisk97.id; pemantauan banjir nonkomersial)";
@@ -193,13 +195,7 @@ export async function dasarSihka(env, kini = Date.now()) {
   return {buang, pos};
 }
 
-/* riwayat satu pos 24 jam terakhir, JSON disusun SQL (Worker tidak mengurai). ?1 = id pos, ?2 = kini (detik), ?3 = kini (ms). Diturunkan rata ke <= 300 titik (sisa (n - rn) % k = 0
-   menjaga bacaan terbaru), urut naik. Tak terdaftar = tanpa baris. */
-export const SQL_RIWAYAT = `WITH s AS (SELECT t, v, row_number() OVER (ORDER BY t) rn, count(*) OVER () n FROM sihka_baca WHERE pos = ?1 AND t > ?2 - 86400 AND t <= ?2 + 600),
-  k AS (SELECT t, v FROM s WHERE (n - rn) % ((n + 299) / 300) = 0 ORDER BY t)
-  SELECT json_object('id', p.pos, 'nama', p.nama, 'satuan', p.satuan, 'dibuat', ?3,
-    't', json((SELECT coalesce(json_group_array(t), '[]') FROM k)), 'v', json((SELECT coalesce(json_group_array(v), '[]') FROM k))) isi
-  FROM sihka_pos p WHERE p.pos = ?1`;
+/* SQL_RIWAYAT (riwayat satu pos 24 jam) tinggal di hak.js, dipakai juga /api/alat/seri */
 const JALUR_POS = "/api/banjir/sungai-ukur/pos/";
 
 /* untuk /api/status: kapan tarikan sehat terakhir */

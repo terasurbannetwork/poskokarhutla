@@ -9,11 +9,11 @@
 import {json, gagal, cacheTepi} from "./worker.js";
 import {lajuIP} from "./bnpb.js";
 import {stafPeran} from "./staf.js";
-import {SQL_RIWAYAT} from "./sihka.js";
+import {alatSensorPos, alatSensorSatu, alatSensorSeri, alatSihkaStatus, alatSihkaRiwayat} from "./hak.js";
 import REGISTRY from "./bencana.generated.js";
 import {tingkat, basi, ringkasan, urut, INTERVAL} from "../public/inti/pantau_alat.js";
 
-const PERAN = ["pusdalops", "koordalops", "pimpinan"], JAM = 3600e3, CACHE_DETIK = 60, MAKS_ALAT = 500, MAKS_TITIK = 1500;
+const PERAN = ["pusdalops", "koordalops", "pimpinan"], JAM = 3600e3, CACHE_DETIK = 60;   // batas baris (500 alat, 1500 titik) di hak.js
 const RE_POS = /^(sensor|sihka|pvmbg):([A-Za-z0-9_.-]{1,40})$/, RE_KUNCI = /^[a-z][a-z0-9_]{0,23}$/;
 /* satuan hanya dibaca dari akhiran kunci nilai alat (tinggi_cm, getar_mms); akhiran lain = null, tanpa tebakan */
 const AKHIRAN = {cm: "cm", mm: "mm", m: "m", mms: "mm/s", hz: "Hz", c: "°C", pct: "%"};
@@ -30,13 +30,9 @@ const alatBencana = id => REGISTRY.bencana.find(b => b.id === id && b.status !==
 /* besaran utama: kunci berambang pertama yang terukur, lalu kunci nilai pertama */
 const utamaDari = (ambang, nilai) => Object.keys(ambang || {}).find(k => typeof nilai?.[k] === "number") ?? Object.keys(nilai || {})[0] ?? Object.keys(ambang || {})[0] ?? null;
 
-const SQL_SENSOR = `SELECT a.id, a.jenis, a.kab, a.desa, a.lat, a.lon, a.ambang, b.waktu, b.nilai, b.baterai FROM sensor_alat a
-  LEFT JOIN sensor_baca b ON b.alat_id = a.id AND b.waktu = (SELECT max(waktu) FROM sensor_baca WHERE alat_id = a.id)
-  WHERE a.aktif = 1 AND a.jenis <> 'gateway' AND a.jenis IN (SELECT value FROM json_each(?1)) ORDER BY a.id LIMIT ${MAKS_ALAT}`;
-
 const ADAPTER = {
   async sensor(env, {jenis, publik}) {
-    const rows = (await env.DB.prepare(SQL_SENSOR).bind(JSON.stringify(jenis)).all()).results;
+    const rows = await alatSensorPos(env, jenis);
     return rows.map(r => {
       const ambang = urai(r.ambang, {}), nilai = r.waktu == null ? null : urai(r.nilai, null), utama = utamaDari(ambang, nilai);
       return {id: "sensor:" + r.id, sumber: "sensor", jenis: r.jenis, nama: r.id, lat: bulat(r.lat, publik), lon: bulat(r.lon, publik), kab: r.kab ?? null,
@@ -45,7 +41,7 @@ const ADAPTER = {
     });
   },
   async sihka(env) {
-    const isi = (await env.DB.prepare("SELECT isi FROM cuaca_sumber WHERE kunci = 'sihka_status'").first())?.isi;
+    const isi = await alatSihkaStatus(env);
     if (!isi) throw new Error("sihka_status belum terisi");
     const d = JSON.parse(isi);
     if (!Array.isArray(d?.pos)) throw new Error("sihka_status tanpa daftar pos");
@@ -94,15 +90,15 @@ async function seri(env, req, url, kini, ctx) {
   return bagi(env, req, ctx, `${url.origin}/api/alat/seri?jam=${+jamT}${kunci != null ? "&kunci=" + kunci : ""}&pos=${m[1]}:${encodeURIComponent(m[2])}`, async () => {
     const lj = await lajuIP(env, req, "alat_seri", LAJU, kini); if (lj) return lj;
     if (m[1] === "sensor") {
-      const a = await env.DB.prepare("SELECT id, jenis, ambang FROM sensor_alat WHERE id = ? AND aktif = 1 AND jenis <> 'gateway'").bind(m[2]).first();
+      const a = await alatSensorSatu(env, m[2]);
       if (!a) return gagal(404, "pos tidak dikenal");
-      const rows = (await env.DB.prepare(`SELECT waktu, nilai FROM sensor_baca WHERE alat_id = ? AND waktu > ? AND waktu <= ? ORDER BY waktu DESC LIMIT ${MAKS_TITIK}`).bind(a.id, dari, kini + 10 * 6e4).all()).results.reverse();   // terbaru menang bila > MAKS_TITIK
+      const rows = await alatSensorSeri(env, a.id, dari, kini + 10 * 6e4);   // terbaru menang bila > 1500 titik
       const ambang = urai(a.ambang, {}), nilai = rows.map(r => urai(r.nilai, {})), k = kunci ?? utamaDari(ambang, nilai.at(-1));
       return json({pos: "sensor:" + a.id, sumber: "sensor", jenis: a.jenis, kunci: k, satuan: k ? satuanKunci(k) : null, interval: INTERVAL[a.jenis] ?? null,
         ambang: k && Object.hasOwn(ambang, k) ? ambang[k] : null, titik: rows.map((r, i) => [r.waktu, angka(nilai[i][k])]), dibuat: kini});
     }
     if (kunci != null && kunci !== "tinggi") return gagal(400, "pos SIHKA hanya punya besaran tinggi");
-    const isi = (await env.DB.prepare(SQL_RIWAYAT).bind(m[2], Math.floor(kini / 1000), kini).first())?.isi;
+    const isi = await alatSihkaRiwayat(env, m[2], kini);
     if (!isi) return gagal(404, "pos tidak dikenal");
     const d = JSON.parse(isi), titik = (d.t || []).map((t, i) => [t * 1000, angka(d.v?.[i])]).filter(t => t[0] > dari);
     return json({pos: "sihka:" + d.id, sumber: "sihka", jenis: "tma", kunci: "tinggi", satuan: d.satuan === "centimeter" ? "cm" : d.satuan ?? null, interval: INTERVAL_SIHKA, ambang: null, titik, dibuat: kini});
