@@ -1796,7 +1796,7 @@ Object.assign(MATRIKS, {
   lk_tarik:            {lp_staf: ["baca", "tambah"], lp_hari: ["baca"]},   // migrasi 0170: tarikan dari halaman publik, append-only (LK-03, D8); lp_hari membaca untuk menyaring kartu
   lk_usulan:           {lp_staf: ["baca", "tambah"]},   // migrasi 0170: usulan ke Buku Besar, append-only (LK-03, D9); status dari sk_kejadian_sumber (A7)
   lapor_selamat:       {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_cron: ["hapus"]},   // migrasi 0173: kabar selamat (K91, D126-D130); publik hanya lewat token
-  lapor_cari:          {lp_pelapor: ["tambah"], lp_staf: ["baca", "ubah"], lp_cron: ["ubah"]},   // migrasi 0173: orang dicari, tidak pernah publik (D129)
+  lapor_cari:          {lp_pelapor: ["baca", "tambah"], lp_staf: ["baca", "ubah"], lp_cron: ["ubah"]},   // migrasi 0173: orang dicari, tidak pernah publik (D129); pelapor baca hanya miliknya (crMilik)
   lapor_cari_riwayat:  {lp_staf: ["baca", "tambah"]},   // migrasi 0173: append-only
 });
 /* peringatan dini warga Pantau Bencana (migrasi 0163, paket pwa-peringatan PW-01). pw_publik = rute langganan tanpa akun (endpoint push = rahasia pemegangnya);
@@ -1877,6 +1877,9 @@ export const CARI_SIMPAN_HARI = 730, CARI_NOMOR_ANONIM = "62000000000", CARI_NAM
 export const crAnonimkan = (env, p, batas) => sedia(env, p, "lapor_cari", "ubah",
   "UPDATE lapor_cari SET nomor_pencari = ?2, nama_dicari = ?3, ciri = NULL, lokasi_terakhir = NULL, nomor_dicari = NULL, hubungan = NULL WHERE status <> 'buka' AND ditutup < ?1 AND nomor_pencari <> ?2")
   .bind(batas, CARI_NOMOR_ANONIM, CARI_NAMA_ANONIM).run();
+/* laporan orang dicari milik satu pencari untuk daftar Laporan saya (pemilik 25 Nov 2026): tanpa nomor siapa pun, tanpa ciri */
+export const crMilik = async (env, p, nomor) => (await sedia(env, p, "lapor_cari", "baca",
+  "SELECT id, nama_dicari, kab, status, dibuat FROM lapor_cari WHERE nomor_pencari = ?1 ORDER BY dibuat DESC LIMIT 20").bind(nomor).all()).results;
 export const crById = (env, p, id) => sedia(env, p, "lapor_cari", "baca", "SELECT id, kab, status FROM lapor_cari WHERE id = ?1").bind(id).first();
 /* status baru + baris riwayat dalam satu batch; status selain buka mengisi ditutup dan ditutup_oleh */
 export const crStatus = (env, p, id, status, catatan, oleh, kini) => { izin(p, "lapor_cari", "ubah"); izin(p, "lapor_cari_riwayat", "tambah");

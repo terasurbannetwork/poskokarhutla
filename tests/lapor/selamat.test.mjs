@@ -95,6 +95,13 @@ uji("orang dicari: validasi, nomor dinormalkan, tidak tampil publik", async () =
   assert.equal((await cari(H1)).s, 429, "batas 5 per nomor per hari");
 });
 
+uji("Laporan saya: pencari melihat laporan orang dicari miliknya saja, tanpa nomor dan ciri", async () => {
+  const s1 = await api("GET", "/api/lapor/selamat/saya", undefined, H1); assert.equal(s1.s, 200, s1.t);
+  assert.ok(s1.j.cari.length >= 5); assert.ok(s1.j.cari.every(r => r.status === "buka" && r.id && r.kab_nama));
+  assert.equal(s1.t.includes(WA_DICARI) || s1.t.includes("kerudung") || s1.t.includes("nomor"), false, "tanpa nomor siapa pun dan tanpa ciri");
+  const s2 = await api("GET", "/api/lapor/selamat/saya", undefined, H2); assert.equal(s2.s, 200); assert.deepEqual(s2.j.cari, [], "nomor lain tidak melihat milik H1");
+});
+
 uji("meja: BNPB melihat semua; cocok hanya bila nomor sama persis dengan tanda aktif (bukan nama)", async () => {
   const dicari = await sesi(WA_DICARI, 3);
   const a = await api("GET", "/api/lapor/meja/cari", undefined, ADMIN); assert.equal(a.s, 200, a.t);

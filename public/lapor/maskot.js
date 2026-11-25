@@ -57,8 +57,8 @@ const LENGAN = {
       <path d="M170 92q-6 8 0 16M218 92q6 8 0 16" class="sg-gelombang mk-denyar" stroke-width="3" stroke-linecap="round" fill="none"/></g>${TANGAN(194, 134, k)}</g>`,
   // darurat: HT diangkat, lampu sirene berkedip di tangan
   darurat: k => `<g class="mk-aksi"><path d="M162 178c18-4 30-22 32-46" class="sg-lengan" stroke-width="20" stroke-linecap="round" fill="none"/>
-      <path d="M180 120h28v10h-28Z" class="sg-sirene-alas"/><path d="M184 120c0-14 20-14 20 0Z" class="sg-sirene mk-kedip"/>
-      <path d="M176 104l-6-6M194 96v-8M212 104l6-6" class="sg-sirene-sinar mk-kedip" stroke-width="3" stroke-linecap="round"/>${TANGAN(194, 134, k)}</g>`,
+      <path d="M180 120h28v10h-28Z" class="sg-sirene-alas"/><path d="M184 120c0-14 20-14 20 0Z" class="sg-sirene mk-kelip"/>
+      <path d="M176 104l-6-6M194 96v-8M212 104l6-6" class="sg-sirene-sinar mk-kelip" stroke-width="3" stroke-linecap="round"/>${TANGAN(194, 134, k)}</g>`,
   // bahasa: gelembung bicara bergantian
   bahasa: k => `<g class="mk-aksi"><path d="M162 178c18-4 28-20 30-40" class="sg-lengan" stroke-width="20" stroke-linecap="round" fill="none"/>${TANGAN(192, 136, k)}
       <g class="mk-ucap1"><rect x="176" y="70" width="40" height="26" rx="10" class="sg-gelembung"/><path d="M184 80h24M184 87h14" class="sg-hp-teks" stroke-width="2.4" stroke-linecap="round"/></g>

@@ -56,8 +56,10 @@ export function buatSelamat(wilayahDari) {
   }
   async function selamatSaya(env, req, url, kini) {
     const m = await pemilik(env, req, kini, false); if (m.tolak) return m.tolak;
-    const t = await H.slAktif(env, P, m.wa, kini);
-    return kirim(200, {tanda: t ? {...await tampil(env, {...t}), kedaluwarsa: t.kedaluwarsa} : null});
+    const [t, cari] = await Promise.all([H.slAktif(env, P, m.wa, kini), H.crMilik(env, P, m.wa)]);
+    // laporan orang dicari milik nomor ini ikut di Laporan saya (pemilik 25 Nov 2026)
+    const daftarCari = await Promise.all(cari.map(async r => ({id: r.id, nama_dicari: r.nama_dicari, status: r.status, dibuat: r.dibuat, kab_nama: (await kabNama(env, r.kab)) || r.kab})));
+    return kirim(200, {tanda: t ? {...await tampil(env, {...t}), kedaluwarsa: t.kedaluwarsa} : null, cari: daftarCari});
   }
   /* publik bertoken: nama panggilan, status, waktu, kab/kota. Tidak pernah nomor, titik, atau desa. Tidak dikenal, dicabut, kedaluwarsa: jawaban sama. */
   async function selamatToken(env, req, url, kini, ctx, x) {
