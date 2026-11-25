@@ -1,0 +1,57 @@
+{
+  "versi": 1,
+  "detektor": "api_himawari: kontekstual B07 (3,9 um) dan B14 (11,2 um), awan dari B13/B14/B15, kotak segmen S05-S07 (ALGORITMA 1; tiket ST-04)",
+  "cuplikan": {
+    "sumber": "bucket NOAA noaa-himawari9, AHI-L1b-FLDK, R20, pita B07 B13 B14 B15, segmen S05 S06 S07",
+    "hari": "Rabu dan Sabtu (hari ISO 3 dan 6) pada minggu ISO 32 sampai 41 tahun 2026 (3 Agu sampai 11 Okt), dipilih menurut kalender sebelum data dilihat",
+    "pindaian": "06.00 UTC (siang; lintas VIIRS ~13.30 waktu surya lokal di 105-115 BT) dan 18.00 UTC (malam; ~01.30)",
+    "jumlah": "10 minggu x 2 hari x 2 pindaian = 40 pindaian (sekitar 36 MB tiap pindaian)",
+    "alasan_kecil": "kanal jaringan ~0,3 MB/s dan satu musim penuh tidak muat; cuplikan ini batas bawah kemampuan, bukan menit-dahulu sebenarnya"
+  },
+  "pembagian": {
+    "kalibrasi": "minggu ISO genap: 32 34 36 38 40",
+    "uji": "minggu ISO ganjil: 33 35 37 39 41",
+    "aturan": "berselang menurut minggu, bukan acak per titik; kode kalibrasi hanya membuka label peran kalibrasi (muat_label menolak 'uji' sebelum vonis membuka api_himawari.buka); fitur dan label minggu uji tidak dibuat sebelum sidik ditulis"
+  },
+  "label": {
+    "utama": "VIIRS 375 m dari data/raw/firms (viirs.csv S-NPP, viirs_noaa20.csv, viirs_noaa21.csv), kepercayaan nominal atau tinggi (n/h), type 0 atau kosong (bukan gunung api, bukan statis), semua tiga satelit",
+    "sensitivitas": "label semua kepercayaan tidak dipakai di angka utama; radius cocok 5 km dilaporkan terpisah dari 3 km",
+    "label_kedua": "tugas api terverifikasi D1 dan Dalops (label_dalops.py) dilaporkan terpisah dan tidak dijumlah; tidak dihitung di ST-04"
+  },
+  "menit_segmen": 5,
+  "jendela_menit": 30,
+  "r_cocok_km": 3.0,
+  "r_cocok_sens_km": 5.0,
+  "r_tercakup_km": 300.0,
+  "metrik": {
+    "presisi_piksel": "alarm mentah yang tercakup (ada rekaman VIIRS apa pun, semua kepercayaan, dalam 300 km dan +-30 menit dari pindaian + 5 menit) yang punya VIIRS n/h dalam 3 km dan +-30 menit; per siang, malam, kelas kuat, kelas sedang",
+    "recall_gugus": "gugus tautan-tunggal VIIRS n/h pada 3 km di jendela +-30 menit yang punya alarm Himawari dalam 3 km + 1,5 km tepi piksel; per kelas FRP gugus (<10, 10-50, >=50 MW)",
+    "menit_dahulu": "median (menit VIIRS pertama di gugus - waktu pindaian + 5) untuk gugus yang cocok; positif = Himawari lebih dahulu; n dilaporkan",
+    "gerbang": "satuan sel 0,1 derajat per pindaian; presisi sel model = sel beralarm tercakup yang berisi VIIRS n/h dalam jendela / jumlah sel beralarm; dua pembanding memilih tepat jumlah sel yang sama dari himpunan sel darat tercakup (+ sel beralarm + sel positif), seri diputus crc32 deterministik"
+  },
+  "pembanding": {
+    "persistensi": "skor sel = jumlah rekaman VIIRS n/h (semua satelit) di sel itu dalam [t-24 jam, t-31 menit) dari waktu pindaian",
+    "klimatologi": "skor sel = jumlah hari berbeda dengan VIIRS n/h S-NPP di sel itu pada bulan kalender yang sama tahun 2019 sampai 2025"
+  },
+  "kemandirian_label": {
+    "angka_utama": "keluaran detektor MENTAH: tanpa penanda() dan tanpa saringan VIIRS 72 jam; sumber statis hanya yang asalnya bukan VIIRS: kawah GVP (aturan.GUNUNG_API, 5 km) dan PLTU WRI (1 km)",
+    "baris_tambahan_berlabel_memakai_VIIRS": "ditambah titik_palsu.json sumber_statis (lahir dari persistensi VIIRS, 2 km), himawari_alarm_palsu.csv (tidak pernah dilihat VIIRS, 1,5 km) dan suar gas GGFR (VIIRS Nightfire, 2 km); dilaporkan terpisah, tidak masuk angka utama",
+    "baris_tambahan_tanpa_saringan": "tanpa sumber statis apa pun",
+    "gugus_kalibrasi": "gugus VIIRS pada minggu kalibrasi tidak dipakai lagi di minggu uji (minggu terpisah)"
+  },
+  "grid": {
+    "siang": {"t7": [310, 315, 320], "k": [3, 4, 5], "bg": [6, 8, 10], "tepi": [0, 1]},
+    "malam": {"t7": [300, 305, 310], "k": [3, 4, 5], "bg": [4, 6, 8]},
+    "aturan_pilih": "CSI sel 0,1 derajat (hit / (alarm + positif - hit)) tertinggi pada minggu kalibrasi, siang pada pindaian 06.00 dan malam pada 18.00; seri jatuh ke indeks grid terkecil",
+    "tetap": "dT siang > 10 K, dT malam > 6 K, sd dT = k + 0,5, lantai sd 2 K, jendela 11 lalu 21, latar >= 25 persen dan >= 8 piksel, api tegas T07 > 360 K siang atau > 320 K malam, kilau < 12 derajat, awan B14 < 265 K atau B13-B15 > 2,5 K pada B14 < 290 K"
+  },
+  "lulus": {
+    "n_minimum": "min_label",
+    "aturan": "gerbang.py: selisih presisi sel (model - pembanding) > 0 dan batas bawah selang 95 persen (bootstrap blok per minggu, 2000 ulangan, biji 7) > 0 untuk KEDUA pembanding",
+    "n_kurang": "tak_dapat_dinilai",
+    "catatan": "vonis ini retrospektif; vonis_prospektif tetap diperlukan sebelum alarm ke luar (ST-05, ST-06)"
+  },
+  "min_label": 20,
+  "bootstrap": {"B": 2000, "seed": 7},
+  "batas_klaim": "Angka ini mengukur kesepakatan dengan VIIRS pada jam lintas VIIRS, bukan kebenaran lapangan; api kecil di bawah ambang VIIRS dan api di antara lintasan tidak terukur. Cakupan sapuan VIIRS didekati dengan 'ada rekaman VIIRS dalam 300 km' (condong menaikkan presisi karena wilayah tanpa api sama sekali tidak tercakup). Waktu dahulu hanya untuk gugus yang akhirnya dilihat VIIRS dan hanya dari cuplikan dua pindaian per hari."
+}

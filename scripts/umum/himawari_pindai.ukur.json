@@ -13,75 +13,79 @@
   14,
   15
  ],
- "catatan": "waktu di mesin pengukur, bukan runner; detektor = proksi ukuran (api: batas atas tanpa uji latar)",
+ "catatan": "detik_hitung = api nyata + 1 s taksiran proksi awan/abu; api = keluaran detektor kontekstual api_himawari.py (ST-04, parameter BAWAAN); awan dan abu masih proksi ukuran",
  "pindaian": [
   {
    "pindai": "202611230000",
    "mb": 35.4,
    "detik_unduh": 226.7,
-   "detik_hitung": 7.6,
+   "detik_hitung": 4.0,
    "json_kb": {
-    "api": 124.8,
+    "api": 2.1,
     "awan": 71.2,
     "abu": 1.4
    },
    "gz_kb": {
-    "api": 11.9,
+    "api": 0.5,
     "awan": 9.0,
     "abu": 0.3
    },
-   "n_titik_api": 1602
+   "n_titik_api": 23,
+   "detik_hitung_api": 3.0
   },
   {
    "pindai": "202611230600",
    "mb": 36.1,
    "detik_unduh": 170.0,
-   "detik_hitung": 7.8,
+   "detik_hitung": 5.1,
    "json_kb": {
-    "api": 7865.7,
+    "api": 9.1,
     "awan": 71.5,
     "abu": 1.4
    },
    "gz_kb": {
-    "api": 698.7,
+    "api": 1.4,
     "awan": 9.5,
     "abu": 0.3
    },
-   "n_titik_api": 100848
+   "n_titik_api": 108,
+   "detik_hitung_api": 4.1
   },
   {
    "pindai": "202611231200",
    "mb": 35.9,
    "detik_unduh": 156.0,
-   "detik_hitung": 7.9,
+   "detik_hitung": 4.3,
    "json_kb": {
-    "api": 668.8,
+    "api": 0.6,
     "awan": 71.7,
     "abu": 1.4
    },
    "gz_kb": {
-    "api": 45.9,
+    "api": 0.3,
     "awan": 9.7,
     "abu": 0.3
    },
-   "n_titik_api": 8704
+   "n_titik_api": 5,
+   "detik_hitung_api": 3.3
   },
   {
    "pindai": "202611231800",
    "mb": 36.1,
    "detik_unduh": 120.8,
-   "detik_hitung": 3.8,
+   "detik_hitung": 4.3,
    "json_kb": {
-    "api": 235.9,
+    "api": 0.2,
     "awan": 71.6,
     "abu": 1.4
    },
    "gz_kb": {
-    "api": 16.2,
+    "api": 0.2,
     "awan": 9.6,
     "abu": 0.3
    },
-   "n_titik_api": 3056
+   "n_titik_api": 0,
+   "detik_hitung_api": 3.3
   }
  ]
 }

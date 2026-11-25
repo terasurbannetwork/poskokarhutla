@@ -1,0 +1,267 @@
+{
+ "peran": "uji",
+ "n_pindaian": 20,
+ "parameter": {
+  "siang": {
+   "t7": 310.0,
+   "k": 3.0,
+   "bg": 6.0,
+   "tepi": 0
+  },
+  "malam": {
+   "t7": 300.0,
+   "k": 3.0,
+   "bg": 4.0
+  }
+ },
+ "vonis": "tidak_lolos",
+ "alasan": "tidak memenuhi: persistensi selisih -0.1407254952405454 selang [-0.20708582834331338, -0.06427539720751084]; klimatologi selisih 0.17185490095189093 selang [0.0753493013972056, 0.2756068679692126]",
+ "angka_utama": {
+  "presisi_piksel": {
+   "kelas_kuat": {
+    "n_alarm": 2828,
+    "presisi_3km": 0.5389,
+    "presisi_5km": 0.5704
+   },
+   "kelas_sedang": {
+    "n_alarm": 9594,
+    "presisi_3km": 0.3968,
+    "presisi_5km": 0.4321
+   },
+   "malam": {
+    "n_alarm": 953,
+    "presisi_3km": 0.9916,
+    "presisi_5km": 0.9927
+   },
+   "semua": {
+    "n_alarm": 12422,
+    "presisi_3km": 0.4292,
+    "presisi_5km": 0.4636
+   },
+   "siang": {
+    "n_alarm": 11469,
+    "presisi_3km": 0.3824,
+    "presisi_5km": 0.4197
+   }
+  },
+  "recall_gugus": {
+   "n_gugus": 20761,
+   "recall_3km": 0.1071,
+   "recall_5km": 0.1375,
+   "per_frp": {
+    "10-50 MW": {
+     "n": 5922,
+     "recall_3km": 0.0984
+    },
+    "<10 MW": {
+     "n": 12358,
+     "recall_3km": 0.0252
+    },
+    ">=50 MW": {
+     "n": 2481,
+     "recall_3km": 0.5353
+    }
+   }
+  },
+  "menit_dahulu": {
+   "n": 2223,
+   "median": -12,
+   "catatan": "Himawari lebih dahulu = positif; hanya gugus yang cocok pada jendela +-30 menit, cuplikan 2 pindaian/hari: batas bawah kemampuan, bukan menit-dahulu sebenarnya"
+  },
+  "sel": {
+   "n": 3887,
+   "hit": 2197,
+   "pos": 18622,
+   "pers": 2744,
+   "klim": 1529
+  },
+  "lawan_pembanding": {
+   "persistensi": {
+    "presisi_model": 0.5652,
+    "presisi_pembanding": 0.7059,
+    "selisih": -0.1407254952405454,
+    "selang95": [
+     -0.20708582834331338,
+     -0.06427539720751084
+    ],
+    "n_minggu": 5
+   },
+   "klimatologi": {
+    "presisi_model": 0.5652,
+    "presisi_pembanding": 0.3934,
+    "selisih": 0.17185490095189093,
+    "selang95": [
+     0.0753493013972056,
+     0.2756068679692126
+    ],
+    "n_minggu": 5
+   }
+  }
+ },
+ "tanpa_saringan": {
+  "presisi_piksel": {
+   "kelas_kuat": {
+    "n_alarm": 2835,
+    "presisi_3km": 0.5393,
+    "presisi_5km": 0.5707
+   },
+   "kelas_sedang": {
+    "n_alarm": 9621,
+    "presisi_3km": 0.3968,
+    "presisi_5km": 0.4323
+   },
+   "malam": {
+    "n_alarm": 962,
+    "presisi_3km": 0.9906,
+    "presisi_5km": 0.9927
+   },
+   "semua": {
+    "n_alarm": 12456,
+    "presisi_3km": 0.4293,
+    "presisi_5km": 0.4638
+   },
+   "siang": {
+    "n_alarm": 11494,
+    "presisi_3km": 0.3823,
+    "presisi_5km": 0.4195
+   }
+  },
+  "recall_gugus": {
+   "n_gugus": 20761,
+   "recall_3km": 0.1075,
+   "recall_5km": 0.138,
+   "per_frp": {
+    "10-50 MW": {
+     "n": 5922,
+     "recall_3km": 0.0991
+    },
+    "<10 MW": {
+     "n": 12358,
+     "recall_3km": 0.0253
+    },
+    ">=50 MW": {
+     "n": 2481,
+     "recall_3km": 0.5369
+    }
+   }
+  },
+  "menit_dahulu": {
+   "n": 2232,
+   "median": -12.0,
+   "catatan": "Himawari lebih dahulu = positif; hanya gugus yang cocok pada jendela +-30 menit, cuplikan 2 pindaian/hari: batas bawah kemampuan, bukan menit-dahulu sebenarnya"
+  },
+  "sel": {
+   "n": 3904,
+   "hit": 2207,
+   "pos": 18622,
+   "pers": 2755,
+   "klim": 1531
+  },
+  "lawan_pembanding": {
+   "persistensi": {
+    "presisi_model": 0.5653,
+    "presisi_pembanding": 0.7057,
+    "selisih": -0.1403688524590164,
+    "selang95": [
+     -0.20694789081885856,
+     -0.06359491240700745
+    ],
+    "n_minggu": 5
+   },
+   "klimatologi": {
+    "presisi_model": 0.5653,
+    "presisi_pembanding": 0.3922,
+    "selisih": 0.17315573770491804,
+    "selang95": [
+     0.07692307692307693,
+     0.2770728828562998
+    ],
+    "n_minggu": 5
+   }
+  }
+ },
+ "memakai_viirs_BUKAN_ANGKA_UTAMA": {
+  "presisi_piksel": {
+   "kelas_kuat": {
+    "n_alarm": 2812,
+    "presisi_3km": 0.5395,
+    "presisi_5km": 0.5711
+   },
+   "kelas_sedang": {
+    "n_alarm": 9476,
+    "presisi_3km": 0.3996,
+    "presisi_5km": 0.4354
+   },
+   "malam": {
+    "n_alarm": 945,
+    "presisi_3km": 0.9915,
+    "presisi_5km": 0.9926
+   },
+   "semua": {
+    "n_alarm": 12288,
+    "presisi_3km": 0.4316,
+    "presisi_5km": 0.4665
+   },
+   "siang": {
+    "n_alarm": 11343,
+    "presisi_3km": 0.385,
+    "presisi_5km": 0.4226
+   }
+  },
+  "recall_gugus": {
+   "n_gugus": 20761,
+   "recall_3km": 0.1061,
+   "recall_5km": 0.1366,
+   "per_frp": {
+    "10-50 MW": {
+     "n": 5922,
+     "recall_3km": 0.0973
+    },
+    "<10 MW": {
+     "n": 12358,
+     "recall_3km": 0.0249
+    },
+    ">=50 MW": {
+     "n": 2481,
+     "recall_3km": 0.5312
+    }
+   }
+  },
+  "menit_dahulu": {
+   "n": 2202,
+   "median": -12.0,
+   "catatan": "Himawari lebih dahulu = positif; hanya gugus yang cocok pada jendela +-30 menit, cuplikan 2 pindaian/hari: batas bawah kemampuan, bukan menit-dahulu sebenarnya"
+  },
+  "sel": {
+   "n": 3841,
+   "hit": 2180,
+   "pos": 18622,
+   "pers": 2721,
+   "klim": 1512
+  },
+  "lawan_pembanding": {
+   "persistensi": {
+    "presisi_model": 0.5676,
+    "presisi_pembanding": 0.7084,
+    "selisih": -0.14084873730799272,
+    "selang95": [
+     -0.20800608056751962,
+     -0.064
+    ],
+    "n_minggu": 5
+   },
+   "klimatologi": {
+    "presisi_model": 0.5676,
+    "presisi_pembanding": 0.3936,
+    "selisih": 0.17391304347826086,
+    "selang95": [
+     0.07600709399543958,
+     0.28044391121775647
+    ],
+    "n_minggu": 5
+   }
+  }
+ },
+ "batas_klaim": "Angka ini mengukur kesepakatan dengan VIIRS pada jam lintas VIIRS, bukan kebenaran lapangan; api kecil di bawah ambang VIIRS dan api di antara lintasan tidak terukur. Cakupan sapuan VIIRS didekati dengan 'ada rekaman VIIRS dalam 300 km' (condong menaikkan presisi karena wilayah tanpa api sama sekali tidak tercakup). Waktu dahulu hanya untuk gugus yang akhirnya dilihat VIIRS dan hanya dari cuplikan dua pindaian per hari.",
+ "sidik": "d735acbfc4995bf7"
+}
