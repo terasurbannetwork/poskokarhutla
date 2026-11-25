@@ -1770,6 +1770,10 @@ const TUR = [
   ["#bDarurat", "Lapor darurat", "Laporkan bencana yang sedang berlangsung dan butuh penanganan cepat. Cukup isi lokasi, jenis kejadian, dan ada korban atau tidak. Petugas BNPB dan BPBD langsung menerimanya dan menindaklanjuti."],
   ["#bLaporBaru", "Lapor kejadian", "Ceritakan lewat obrolan. Saya bertanya satu per satu, Anda cukup memilih jawaban dan memotret dari kamera."],
   ["#bCekStatus", "Cek status laporan", "Simpan nomor laporan Anda. Dari sini Anda bisa melihat tindak lanjut BPBD dan BNPB."],
+  // tiga pintu tambahan di hero ikut dijelaskan (pemilik 25 Nov 2026: "ini kenapa ga ada di tur?")
+  [".lp-kaca-pasang", "Pasang aplikasi", "Pasang Pantau Bencana di layar utama HP Anda. Bisa dibuka cepat tanpa mengetik alamat."],
+  [".lp-kaca-peringatan", "Peringatan dini", "Pilih kecamatan Anda, lalu terima notifikasi saat prakiraan banjir, longsor, asap, atau angin naik ke Waspada, Siaga, atau Awas."],
+  [".lp-kaca-hilang", "Lapor orang hilang", "Laporkan keluarga atau kerabat yang belum ditemukan. Isi nama, ciri, dan tempat terakhir terlihat, lalu kirim ke petugas."],
   ['#lBeranda [data-aksi="info"]', "Info dan prediksi", "Kejadian hari ini serta prakiraan hujan, banjir, longsor, asap, dan angin 3 hari ke depan di daerah Anda."],
   ['#lBeranda [data-aksi="edukasi"]', "Edukasi siaga bencana", "Yang perlu dilakukan sebelum, saat, dan sesudah bencana."],
   ['#lBeranda [data-aksi="penting"]', "Nomor penting", "BPBD, rumah sakit, polisi, dan pemadam kebakaran terdekat dari lokasi Anda."],

@@ -2752,3 +2752,19 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
   #isian>details:not([open])>summary{flex:1;display:flex;align-items:center}
   #isian>details[open]{flex-grow:0}
 }
+/* pilih bahasa (pemilik 25 Nov 2026: "bagusin"): nama wilayah jadi judul kecil di atas deretannya, garis tipis menyambung ke kanan;
+   tombol memakai lebar penuh dialog sehingga nama bahasa tidak patah dua baris dan tidak ada blok label tinggi di kiri */
+.lp-db-isi{gap:18px!important;padding:18px 24px 20px!important}
+.lp-db-grup{display:block!important;padding:0!important;border-top:0!important}
+.lp-db-grup h3{display:flex!important;align-items:center;gap:10px;align-self:auto!important;margin:0 0 8px!important;padding:0!important;background:none!important;border-radius:0!important;color:var(--brand2)!important;font:800 .8125rem/1.3 var(--font)!important}
+.lp-db-grup h3::after{content:"";flex:1;height:1px;background:var(--line)}
+.lp-db-kisi button{min-height:44px!important;white-space:nowrap}
+.lp-db-kisi button b{overflow:hidden;text-overflow:ellipsis}
+@media (max-width:560px){.lp-db-isi{gap:14px!important;padding:14px 16px 16px!important}.lp-db-kisi button{white-space:normal}}
+/* tombol putih di hero berwarna sendiri-sendiri (pemilik 25 Nov 2026: "warnanya agar beda-beda"): warna ikon dan garis bawah dari token status, teks tetap gelap */
+.lp-tombol-kaca{--kc:var(--brand2);box-shadow:inset 0 -3px 0 var(--kc)!important}
+.lp-tombol-kaca svg{background:color-mix(in oklab,var(--kc) 16%,var(--card))!important;color:var(--kc)!important}
+.lp-tombol-kaca:hover{background:color-mix(in oklab,var(--kc) 8%,var(--card))!important}
+.lp-kaca-pasang{--kc:var(--ok-tx)}
+.lp-kaca-peringatan{--kc:var(--warn-tx)}
+.lp-kaca-hilang{--kc:var(--info-tx)}

@@ -59,14 +59,18 @@ async function lewatSesi(lanjut, pemicu) {
 }
 function viewNomor(lanjut) {
   const f = el("form", "sl-form"), i = el("input"), b = el("button", "sl-utama", "Kirim kode lewat WhatsApp"), p = pesanEl();
-  i.type = "tel"; i.inputMode = "tel"; i.autocomplete = "tel"; i.placeholder = "0812 3456 7890"; i.required = true; b.type = "submit";
-  f.append(kolom("Nomor WhatsApp Anda", i, "Kode enam angka dikirim ke nomor ini. Nomor tidak ditampilkan ke siapa pun."), b, p);
+  // awalan +62 tetap di depan, sama dengan kartu identitas chat (pemilik 25 Nov 2026: "harusnya kan ada +62 nya"); 0 atau 62 yang diketik dibuang
+  i.type = "tel"; i.inputMode = "numeric"; i.autocomplete = "tel-national"; i.maxLength = 13; i.placeholder = "812 3456 7890"; i.required = true; b.type = "submit";
+  i.addEventListener("input", () => { let v = i.value.replace(/\D/g, ""); if (v.startsWith("62")) v = v.slice(2); if (v.startsWith("0")) v = v.slice(1); i.value = v.slice(0, 13); });
+  const wadah = el("span", "sl-nomor"); wadah.append(el("span", "sl-awalan", "+62"), i);
+  f.append(kolom("Nomor WhatsApp Anda", wadah, "Kode enam angka dikirim ke nomor ini. Nomor tidak ditampilkan ke siapa pun."), b, p);
   f.addEventListener("submit", async e => {
-    e.preventDefault(); if (!nomorSah(i.value)) return set(p, "Nomor WhatsApp tidak sah. Contoh 0812 3456 7890.");
+    e.preventDefault(); const wa = "62" + i.value.replace(/\D/g, "");
+    if (!nomorSah(wa)) return set(p, "Nomor WhatsApp tidak sah. Contoh +62 812 3456 7890.");
     sibuk(b, true, "Mengirim..."); set(p, "");
-    const t = await window.tokenTurnstile?.(), r = await api("POST", "/api/masuk/kode", {wa: nomor62(i.value), turnstile: t || undefined});
+    const t = await window.tokenTurnstile?.(), r = await api("POST", "/api/masuk/kode", {wa: nomor62(wa), turnstile: t || undefined});
     sibuk(b, false);
-    if (r.s === 200) return viewKode(nomor62(i.value), lanjut);
+    if (r.s === 200) return viewKode(nomor62(wa), lanjut);
     set(p, teksGalat(r.s, r.j.galat, r.tunggu));
   });
   tampil("Buktikan nomor Anda", f);
