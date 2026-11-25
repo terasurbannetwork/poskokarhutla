@@ -1,9 +1,9 @@
 /* Server tinjau lokal (pemilik 11 Nov 2026: "ke depan gw mau review di lokal", tanpa menunggu push dan terbit GitHub).
    http://localhost:8800 = KODE layar dari folder kerja ini (HTML, JS, CSS, gambar, JSON non-data) + DATA, API, dan LOGIN dari produksi
    (centurisk97.id). Jadi perubahan layar terlihat dengan data asli begitu berkas disimpan; cukup muat ulang peramban.
-   - Halaman HTML (HTML_RUTE worker atau *.html): produksi tetap ditanya dulu (gerbang login, alih ke /admin/masuk, atribut <html>
+   - Halaman HTML (HTML_RUTE worker atau *.html): produksi tetap ditanya dulu (gerbang login, alih ke /masuk, atribut <html>
      per sesi), lalu isinya diganti berkas lokal dengan tag <html> dari produksi.
-   - /api/*, /admin/masuk, /data/** dan semua yang tidak ada di folder kerja: diteruskan ke produksi. Cookie dibuang atribut
+   - /api/*, POST /masuk dan /admin/masuk, /data/** dan semua yang tidak ada di folder kerja: diteruskan ke produksi. Cookie dibuang atribut
      Secure/Domain-nya supaya menempel di localhost; Location produksi ditulis ulang ke localhost.
    PERHATIAN: tulisan (POST/PUT/DELETE) mengenai PRODUKSI, sama seperti memakai situsnya langsung.
    Jalan terus lewat launchd id.centurisk97.tinjau-lokal (scripts/agents/tinjau_lokal.plist; pasang: npm run tinjau:pasang).
@@ -36,7 +36,7 @@ async function biayaBotLokal(req, res, jalur, H, akar) {
   const adm = await fetch(new URL("/admin/kunci-api", H), {headers: {cookie: req.headers.cookie || ""}, redirect: "manual"});
   if (adm.status !== 200) {
     if (jalur.startsWith("/api/")) { res.writeHead(401, {"content-type": JENIS[".json"]}); res.end(JSON.stringify({galat: "hanya admin; masuk lagi"})); return true; }
-    res.writeHead(303, {location: "/admin/masuk?ke=" + encodeURIComponent(jalur)}); res.end(); return true;
+    res.writeHead(303, {location: "/masuk?ke=" + encodeURIComponent(jalur)}); res.end(); return true;
   }
   if (jalur === "/admin/biaya-bot") {
     const {halamanBiayaBot} = await import(pathToFileURL(path.join(akar, "src/admin_halaman.js")).href);
@@ -57,7 +57,7 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
   if (!rute) { try { const w = await import(pathToFileURL(path.join(akar, "src/worker.js")).href);
     /* halaman Ruang Koordinasi dilayani lewat jalur bersih BNPB_BERSIH (/sitrep, /bnpb/logbook, ...), bukan HTML_RUTE */
     /* halaman modul yang dilayani Worker modulnya sendiri (layaniKm, layaniSk, LogPal, SIPPA) */
-    const MODUL = [["/kemitraan", "/kemitraan.html"], ["/siklus", "/siklus/index.html"], ["/instansi", "/instansi.html"], ["/instansi/logpal", "/logpal/index.html"], ["/instansi/data-bencana", "/bnpb/data-bencana.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"], ["/lapor", "/lapor/index.html"]];
+    const MODUL = [["/kemitraan", "/kemitraan.html"], ["/kemitraan/masuk", "/kemitraan/masuk.html"], ["/kemitraan/daftar", "/kemitraan/daftar.html"], ["/kemitraan/buku", "/kemitraan/buku.html"], ["/kemitraan/panduan", "/kemitraan/panduan.html"], ["/siklus", "/siklus/index.html"], ["/instansi", "/instansi.html"], ["/instansi/logpal", "/logpal/index.html"], ["/instansi/data-bencana", "/bnpb/data-bencana.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"], ["/lapor", "/lapor/index.html"]];
     rute = [...w.HTML_RUTE, ...Object.entries(w.BNPB_BERSIH || {}).map(([k, j]) => [{test: p => p === j || p === j + "/"}, `/bnpb/${k}.html`]),
       ...MODUL.map(([j, f]) => [{test: p => p === j || p === j + "/"}, f])]; } catch { rute = []; } }
   const H = new URL(hulu);

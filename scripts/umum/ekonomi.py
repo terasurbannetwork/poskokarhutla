@@ -124,7 +124,7 @@ def hitung(akar=AKAR, koef=None, hp=None, kini=None, rupiah=None):
                         "catatan": "Hanya jiwa terpapar per kab/kota; tidak dijumlah antarsumber. Bukan perkiraan mengungsi.",
                         "kolom": KOLOM_PAPARAN, "baris": rows}
             continue
-        f, nas = T.laju_ungsi(akar, cari, set(a["mengungsi"]["jenis_dibi"]))
+        f, nas, *_ = T.laju_ungsi(akar, cari, set(a["mengungsi"]["jenis_dibi"]))
         rows = []
         for k in daftar:
             jiwa = (pap[k["id"]].get(bid) or {}).get("jiwa")

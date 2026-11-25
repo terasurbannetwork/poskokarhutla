@@ -137,6 +137,26 @@ jobs:
           python3 scripts/cuaca/peluang_cuaca.py uji && python3 scripts/cuaca/peluang_cuaca.py || echo "::warning title=peluang_cuaca::gagal; berkas lamanya dibiarkan"
           python3 scripts/cuaca/bmkg_kab10.py uji && python3 scripts/cuaca/bmkg_kab10.py || echo "::warning title=bmkg_kab10::gagal; berkas lamanya dibiarkan"
 
+      # PB-50: uji balik hujan >= 50 mm lawan persistensi dan klimatologi, dari cuaca_verifikasi.json (verifikasi dirantai cuaca.py di atas).
+      # Mingguan (Senin UTC) atau dispatch; tanpa jaringan. Vonis public/data/gerbang/cuaca.json di-commit ke main seperti gerbang udara.
+      - name: Uji balik hujan 50 mm, mingguan (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          [ "$(date -u +%u)" = 1 ] || [ "${{ github.event_name }}" = workflow_dispatch ] || { echo "bukan Senin, dilewati"; exit 0; }
+          python3 -I scripts/cuaca/uji_balik_hujan.py uji && python3 -I scripts/cuaca/uji_balik_hujan.py || { echo "::warning title=uji_balik_hujan::gagal; vonis lama dibiarkan"; exit 0; }
+          B=public/data/gerbang/cuaca.json
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add $B
+          git diff --cached --quiet -- $B && { echo "vonis hujan tidak berubah"; exit 0; }
+          git commit -q -m "data: uji balik hujan 50 mm $(TZ=Asia/Jakarta date +%F)" -- $B
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::warning title=Push uji balik hujan gagal::git push ke main gagal 3x"
+
       # Commit arsip prospektif cuaca (prospektif_cuaca.py dirantai cuaca.py). Hanya berkas bulanan; tidak ada perubahan = keluar bersih.
       - name: Commit arsip prospektif cuaca (boleh gagal)
         continue-on-error: true
