@@ -69,6 +69,14 @@ jobs:
           python3 scripts/udara/lintasan.py semai --putaran "$P" --sekarang "$S" --keluar "$K" --kluster public/data/kluster.json
           python3 scripts/operasi/semai.py jalan --putaran "$P" --sekarang "$S" --keluar "$K"
 
+      # semai banjir (semai-banjir SB-05): putaran dan folder keluar yang sama; gagal tidak menjatuhkan semai karhutla
+      - name: Semai banjir
+        continue-on-error: true
+        run: |
+          S=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          rm -f data/raw/semai/keluar/semai_banjir.json
+          python3 scripts/operasi/semai.py jalan --tujuan banjir --putaran "${{ steps.hitung.outputs.putaran }}" --sekarang "$S" --keluar data/raw/semai/keluar
+
       # batas DESAIN-TEKNIS §3: semai.json 300 KB, PNG per langkah 120 KB
       - name: Batas ukuran
         run: |
@@ -93,6 +101,8 @@ jobs:
           [ -e "$K/angin_asap.json" ] && $W "$R/angin_asap.json" --file "$K/angin_asap.json" --content-type application/json --remote
           # semai.json terakhir: layar baru melihat putaran baru sesudah rasternya ada
           $W "$R/semai.json" --file "$K/semai.json" --content-type application/json --remote
+          [ -e "$K/semai_banjir.json" ] && $W "$R/semai_banjir.json" --file "$K/semai_banjir.json" --content-type application/json --remote
+          true
 
       # append-only: putaran yang sudah diarsip tidak ditimpa (target renlap merujuk zona di arsip itu)
       - name: Arsip putaran
@@ -100,14 +110,28 @@ jobs:
           set -e
           P=${{ steps.hitung.outputs.putaran }}
           R=poskokarhutla-foto/operasi/semai/arsip/$P.json
+          RB=poskokarhutla-foto/operasi/semai/arsip/${P}_banjir.json
           if npx --yes wrangler@4.42.0 r2 object get "$R" --pipe --remote > /dev/null 2>&1; then
-            echo "arsip $P sudah ada, tidak ditimpa"; exit 0
-          fi
-          python3 - "$P" <<'PY'
+            echo "arsip $P sudah ada, tidak ditimpa"
+          else
+            python3 - "$P" <<'PY'
           import json, sys
           d = json.load(open("data/raw/semai/keluar/semai.json", encoding="utf-8"))
           for k in ("kandidat", "kandidat_kolom", "angin"):
               d.pop(k, None)
           json.dump(d, open("arsip.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
           PY
-          npx --yes wrangler@4.42.0 r2 object put "$R" --file arsip.json --content-type application/json --remote
+            npx --yes wrangler@4.42.0 r2 object put "$R" --file arsip.json --content-type application/json --remote
+          fi
+          # arsip banjir: tanpa kandidat_sasaran, append-only; dilewati bila langkah Semai banjir gagal
+          [ -e data/raw/semai/keluar/semai_banjir.json ] || { echo "tanpa semai_banjir.json, arsip banjir dilewati"; exit 0; }
+          if npx --yes wrangler@4.42.0 r2 object get "$RB" --pipe --remote > /dev/null 2>&1; then
+            echo "arsip ${P}_banjir sudah ada, tidak ditimpa"; exit 0
+          fi
+          python3 - <<'PY'
+          import json
+          d = json.load(open("data/raw/semai/keluar/semai_banjir.json", encoding="utf-8"))
+          d.pop("kandidat_sasaran", None)
+          json.dump(d, open("arsip_banjir.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+          PY
+          npx --yes wrangler@4.42.0 r2 object put "$RB" --file arsip_banjir.json --content-type application/json --remote
