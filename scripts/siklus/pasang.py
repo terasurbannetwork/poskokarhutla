@@ -406,8 +406,9 @@ def tarik_modul(http, basis, dari, sampai, cari=None):
 def masuk(http, basis, rekaman, dari, sampai, kering=False, diambil=None, putaran=3, batch=200):
     """Putar sampai tidak ada yang ditunda. -> jumlah keputusan per aksi. Jalan dua kali = nol baris baru (rute menolak (sumber, kode) yang sudah ada)."""
     diambil = diambil or int(dt.datetime.now(dt.timezone.utc).timestamp() * 1000)
-    a = (dt.date.fromisoformat(dari) - dt.timedelta(days=JENDELA)).isoformat()
-    b = (dt.date.fromisoformat(sampai) + dt.timedelta(days=JENDELA)).isoformat()
+    tg = [r["tgl"] for r in rekaman]   # LK-10: tgl rekaman (usulan LU- = tanggal tiket) bisa di luar --dari/--sampai; kandidat ditarik sekitar rekaman, kalau tidak 0 kandidat = KJ- kembar
+    a = (dt.date.fromisoformat(min([dari] + tg)) - dt.timedelta(days=JENDELA)).isoformat()
+    b = (dt.date.fromisoformat(max([sampai] + tg)) + dt.timedelta(days=JENDELA)).isoformat()
     total, sisa = collections.Counter(), rekaman
     for _ in range(putaran):
         kep, tunda, h = bertahap(sisa, _tarik(http, basis, "jendela", a, b), _tarik(http, basis, "sumber", a, b), diambil)
@@ -633,6 +634,19 @@ def _uji():
                               {"sumber": "lapor_ai", "kode": "LA-030326-01", "jenis": "banjir", "prov": "32", "kab": "Bogor", "mulai": "2026-03-03", "usulan_staf": True}]}
     rk = tarik_modul(_H(), "http://x", "2026-03-01", "2026-03-05")
     assert [r.get("usulan_staf") for r in rk] == [True, None] and rk[0]["kab"] == ["3201"], "tanda usulan hanya untuk kode LU-"
+    class _J:   # rute palsu: KJ- hanya terlihat bila jendela tarikan mencakup tanggal mulainya
+        def __init__(self):
+            self.kirim = []
+        def __call__(self, m, u, isi=None):
+            if m == "POST":
+                self.kirim += isi["keputusan"]
+                return {}
+            q = urllib.parse.parse_qs(urllib.parse.urlparse(u).query)
+            dalam = q["dari"][0] <= kjA["mulai"] <= q["sampai"][0]
+            return {"baris": [kjA] if "/jendela?" in u and dalam else []}
+    j = _J()
+    h = masuk(j, "http://x", [LU("2026-03-03")], "2026-03-20", "2026-03-25", diambil=1)
+    assert h == {"tambah": 1} and [(k["aksi"], k["kejadian_id"]) for k in j.kirim] == [("tambah", kjA["id"])], "usulan bertanggal tiket di luar --dari/--sampai tetap menemukan KJ-"
     assert usulan_fase_tutup({"status": "terbuka", "ditutup": None, "tgl_selesai": "2026-03-10"}) is None
     assert usulan_fase_tutup({"status": "usul_tutup", "ditutup": None, "tgl_selesai": "2026-03-10"}) is None
     u = usulan_fase_tutup({"status": "selesai", "ditutup": 1, "tgl_selesai": "2026-03-10"})
