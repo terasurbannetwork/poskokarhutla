@@ -172,8 +172,8 @@ button.dt-hb-baris{cursor:pointer}
 .dt-tabel thead th[aria-sort] button::after{content:"";display:inline-block;margin-inline-start:6px;border:5px solid transparent;vertical-align:middle}
 .dt-tabel thead th[aria-sort="descending"] button::after{border-top-color:currentColor;margin-block-start:5px}
 .dt-tabel thead th[aria-sort="ascending"] button::after{border-bottom-color:currentColor;margin-block-end:5px}
-.dt-tabel tbody th,.dt-tabel tfoot th{font-weight:600;white-space:nowrap;text-align:start}
-.dt-tabel td[data-value],.dt-tabel tfoot td{text-align:end}   /* angka rata kanan supaya digit sejajar */
+.dt-tabel tbody th,.dt-tabel tfoot th{font-weight:600;white-space:nowrap}
+.dt-tabel td[data-value],.dt-tabel tfoot td{text-align:center}
 .dt-tabel td,.dt-tabel tbody th,.dt-tabel tfoot th{padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
 .dt-tabel tbody tr:hover{background:var(--surface)}
 .dt-tabel tfoot{font-weight:700;background:var(--surface)}
@@ -195,8 +195,7 @@ button.dt-hb-baris{cursor:pointer}
 .dt-tabel thead .dt-kol-awal{border-inline-start-color:color-mix(in oklab,var(--on-head) 22%,transparent)}
 .dt-tabel tbody th,.dt-tabel tfoot th,.dt-tabel thead th[data-col="0"]{position:sticky;left:0;z-index:1}
 .dt-tabel:not(.dt-tabel-grup) thead th:first-child{position:sticky;left:0;z-index:3}
-.dt-tabel thead th[data-col="0"]{z-index:3;text-align:start}
-.dt-tabel thead th[data-col="0"] button{text-align:start}
+.dt-tabel thead th[data-col="0"]{z-index:3}
 .dt-tabel tbody th{background:var(--card)}
 .dt-tabel tbody tr:nth-child(even) td,.dt-tabel tbody tr:nth-child(even) th{background:color-mix(in oklab,var(--surface) 45%,var(--card))}
 .dt-tabel tbody tr:hover td,.dt-tabel tbody tr:hover th{background:var(--surface)}
