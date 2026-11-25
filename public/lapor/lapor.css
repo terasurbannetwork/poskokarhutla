@@ -2854,3 +2854,24 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-langkah-nama{font-weight:700}
 .lp-langkah-label b{font-variant-numeric:tabular-nums;padding-inline-start:10px;border-inline-start:1px solid color-mix(in oklab,var(--brand2) 30%,transparent)}
 .lp-langkah-rantai i{width:10px}
+/* Laporan saya (pemilik 25 Nov 2026: "bagusin"): kepala lebih pendek, ringkasan jadi tiga ubin angka sejajar berwarna status */
+@media (min-width:900px){
+  .lp-pita:has(.lp-ringkas-laporan){padding-block:40px 36px!important;grid-template-columns:minmax(0,1fr) minmax(420px,520px)!important}
+}
+.lp-ringkas-laporan{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
+.lp-ringkas-laporan > b{grid-column:1 / -1}
+.lp-ringkas-laporan .lp-pita-ubin{display:grid!important;justify-items:start;gap:10px!important;padding:14px!important;min-height:0!important}
+.lp-ringkas-laporan .lp-pita-ubin > span:last-child{display:grid!important;gap:2px!important}
+.lp-ringkas-laporan .lp-pita-ubin b{font:800 1.75rem/1 var(--display)!important}
+.lp-ringkas-laporan .lp-pita-ubin small{font-size:.75rem;color:var(--ink2)}
+.lp-ringkas-laporan .lp-pita-ubin:nth-of-type(2) > span:first-child{background:color-mix(in oklab,var(--warn-tx) 14%,var(--card));color:var(--warn-tx)}
+.lp-ringkas-laporan .lp-pita-ubin:nth-of-type(3) > span:first-child{background:color-mix(in oklab,var(--ok-tx) 14%,var(--card));color:var(--ok-tx)}
+.lp-ringkas-laporan .lp-pita-ubin:nth-of-type(2) b{color:var(--warn-tx)}
+.lp-ringkas-laporan .lp-pita-ubin:nth-of-type(3) b{color:var(--ok-tx)}
+/* kartu laporan (pemilik 25 Nov 2026: "bagusin"): foto berlapis gelap di bawah supaya pil status terbaca, tombol lacak pekat, kartu naik saat disorot */
+.lp-lap-gambar.asli::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,color-mix(in oklab,var(--head-bg) 75%,transparent));pointer-events:none}
+.lp-lap-gambar > *{position:relative;z-index:1}
+.lp-lap-kartu:not(.draf):hover{transform:translateY(-2px)}
+.lp-lap-kartu{transition:border-color .15s,box-shadow .15s,transform .15s!important}
+.lp-lap-kep .lp-lap-aksi,.lp-lap-kaki .lp-lap-aksi{background:var(--brand2)!important;color:var(--on-pekat)!important;font-weight:700}
+.lp-lap-kartu:hover .lp-lap-aksi{background:color-mix(in oklab,var(--brand2) 85%,var(--head-bg))!important}

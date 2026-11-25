@@ -93,3 +93,11 @@ body{display:block;padding:0;background:var(--surface)}
 .lk-bukti figure{margin:0;display:grid;gap:4px}
 .lk-bukti img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px}
 .lk-bukti figcaption{font-size:.75rem;color:var(--ink2)}
+/* ruang kosong dipangkas (pemilik 25 Nov 2026: "terlalu banyak white space"): halaman lebih lebar, kepala lebih pendek,
+   kotak rincian kejadian tumbuh mengisi tinggi kartu, tidak menyisakan sela di bawah */
+@media (min-width:901px){
+  .lk{max-width:1560px;padding:16px 28px 32px;gap:14px}
+  .lk-pita{padding-block:18px!important}
+  .lk-dua > .lk-kartu{display:flex;flex-direction:column}
+  .lk-dua > .lk-kartu > .lk-rinci{flex:1;grid-auto-rows:1fr;align-content:stretch}
+}
