@@ -12,6 +12,7 @@
    - CPU: tanpa hash kriptografi, tanpa urai JSON besar; penggabungan JSON dikerjakan SQLite di D1. */
 import {json, gagal, sha, hex, acak, cekLaju, ipHash, gagalSudahBanyak, catatGagal, turnstileOK, adminOK, bacaBody, bacaBytes} from "./worker.js";
 import {CSP_ADMIN} from "./admin_halaman.js";
+import {hostTerkunci} from "./gerbang_halaman.js";
 import {modOK} from "./posko.js";
 import {stafSesi, cobaMasukStaf, hanyaDirektori} from "./staf.js";
 import {masukPemirsa, arahPemirsa, cookiePemirsa} from "./pemirsa.js";
@@ -323,7 +324,7 @@ export async function keluar(env, req, kini = Date.now()) {
 export async function kerangka(env, req, kini = Date.now()) {
   if (await adminOK(env, req, kini)) return undefined;
   const s = await stafSesi(env, req, kini);
-  return {nama: s?.nama ?? null, peran: s?.peran ?? []};
+  return {nama: s?.nama ?? null, peran: s?.peran ?? [], terkunci: hostTerkunci(new URL(req.url).hostname)};   // terkunci: nav staf mengikuti gerbang host ini (PS-04)
 }
 /* isi = HTML, atau fungsi (kerangka) => HTML. bolehStaf = peran staf yang boleh membuka halaman ini (null = admin saja).
    Admin: halaman penuh. Staf berperan: halaman dengan kerangka staf. Staf tanpa peran yang cocok: ke Meja Pantau (bukan login admin). Belum masuk: /admin/masuk?ke=<halaman ini>. */
@@ -332,7 +333,7 @@ export async function halamanAdmin(env, req, kini, isi, bolehStaf = null) {
   if (await adminOK(env, req, kini)) return buat(undefined);
   if (bolehStaf) {
     const s = await stafSesi(env, req, kini);
-    if (s) return s.peran.some(p => bolehStaf.includes(p)) ? buat({nama: s.nama, peran: s.peran}) : alihkan("/admin/pantau");
+    if (s) return s.peran.some(p => bolehStaf.includes(p)) ? buat({nama: s.nama, peran: s.peran, terkunci: hostTerkunci(new URL(req.url).hostname)}) : alihkan("/admin/pantau");
   }
   const u = new URL(req.url); return alihkan("/admin/masuk?ke=" + encodeURIComponent(u.pathname + u.search));
 }

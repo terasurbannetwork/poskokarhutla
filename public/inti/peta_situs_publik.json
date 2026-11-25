@@ -86,7 +86,7 @@
   },
   {
    "rute": "/banjir/replay",
-   "nama": "Putar ulang banjir",
+   "nama": "Replay banjir Jabodetabek",
    "ikon": "grafik",
    "pintu": "publik",
    "grup": "bencana",
@@ -94,7 +94,7 @@
   },
   {
    "rute": "/banjir/laporan.html",
-   "nama": "Laporan banjir",
+   "nama": "Laporan harian banjir & longsor serta rob",
    "ikon": "simpan",
    "pintu": "publik",
    "grup": "bencana",
@@ -102,7 +102,7 @@
   },
   {
    "rute": "/banjir/laporan-das.html",
-   "nama": "Laporan banjir per DAS",
+   "nama": "Bukti DAS hulu",
    "ikon": "simpan",
    "pintu": "publik",
    "grup": "bencana",
@@ -118,7 +118,7 @@
   },
   {
    "rute": "/cuaca/simulasi",
-   "nama": "Simulasi cuaca",
+   "nama": "Simulasi cuaca 72 jam",
    "ikon": "grafik",
    "pintu": "publik",
    "grup": "bencana",
@@ -126,7 +126,7 @@
   },
   {
    "rute": "/cuaca/laporan.html",
-   "nama": "Laporan cuaca",
+   "nama": "Laporan harian cuaca ekstrem",
    "ikon": "simpan",
    "pintu": "publik",
    "grup": "bencana",
@@ -150,7 +150,7 @@
   },
   {
    "rute": "/gempa/laporan.html",
-   "nama": "Laporan gempa",
+   "nama": "Laporan harian gempa & tsunami",
    "ikon": "simpan",
    "pintu": "publik",
    "grup": "bencana",
@@ -166,7 +166,7 @@
   },
   {
    "rute": "/gunungapi/simulasi.html",
-   "nama": "Simulasi gunung api",
+   "nama": "Simulasi erupsi gunung api",
    "ikon": "grafik",
    "pintu": "publik",
    "grup": "bencana",
@@ -174,7 +174,7 @@
   },
   {
    "rute": "/gunungapi/laporan.html",
-   "nama": "Laporan gunung api",
+   "nama": "Laporan harian gunung api",
    "ikon": "simpan",
    "pintu": "publik",
    "grup": "bencana",
@@ -198,7 +198,7 @@
   },
   {
    "rute": "/kekeringan/laporan.html",
-   "nama": "Laporan kekeringan",
+   "nama": "Laporan harian kekeringan",
    "ikon": "simpan",
    "pintu": "publik",
    "grup": "bencana",
@@ -214,7 +214,7 @@
   },
   {
    "rute": "/udara/laporan.html",
-   "nama": "Laporan udara",
+   "nama": "Laporan harian kualitas udara",
    "ikon": "simpan",
    "pintu": "publik",
    "grup": "bencana",
@@ -230,7 +230,7 @@
   },
   {
    "rute": "/prediksi/ringkas",
-   "nama": "Prediksi ringkas",
+   "nama": "Siaga 3 hari",
    "ikon": "daftar",
    "pintu": "publik",
    "grup": "prediksi",
@@ -238,7 +238,7 @@
   },
   {
    "rute": "/peringatan",
-   "nama": "Peringatan",
+   "nama": "Peringatan dini untuk lokasimu",
    "ikon": "peringatan",
    "pintu": "publik",
    "grup": "peringatan",
@@ -246,7 +246,7 @@
   },
   {
    "rute": "/monitor",
-   "nama": "Monitor peringatan",
+   "nama": "Monitor bencana",
    "ikon": "sinyal",
    "pintu": "publik",
    "grup": "peringatan",
@@ -270,7 +270,7 @@
   },
   {
    "rute": "/kabar",
-   "nama": "Kabar selamat",
+   "nama": "Kabar api per kabupaten",
    "ikon": "sinyal",
    "pintu": "publik",
    "grup": "lapor",
@@ -286,7 +286,7 @@
   },
   {
    "rute": "/lapor/poster.html",
-   "nama": "Poster desa",
+   "nama": "Poster QR desa",
    "ikon": "simpan",
    "pintu": "publik",
    "grup": "lapor",
@@ -318,7 +318,7 @@
   },
   {
    "rute": "/docs",
-   "nama": "Dokumentasi",
+   "nama": "Panduan",
    "ikon": "daftar",
    "pintu": "publik",
    "grup": "kaki",
@@ -326,7 +326,7 @@
   },
   {
    "rute": "/privasi",
-   "nama": "Privasi",
+   "nama": "Pemberitahuan privasi",
    "ikon": "daftar",
    "pintu": "publik",
    "grup": "kaki",
@@ -334,7 +334,7 @@
   },
   {
    "rute": "/syarat",
-   "nama": "Syarat penggunaan",
+   "nama": "Syarat dan ketentuan",
    "ikon": "daftar",
    "pintu": "publik",
    "grup": "kaki",
@@ -342,7 +342,7 @@
   },
   {
    "rute": "/statistik",
-   "nama": "Statistik",
+   "nama": "Statistik pengunjung",
    "ikon": "grafik",
    "pintu": "publik",
    "grup": "kaki",
@@ -350,7 +350,7 @@
   },
   {
    "rute": "/api",
-   "nama": "API",
+   "nama": "API data",
    "ikon": "daftar",
    "pintu": "publik",
    "grup": "kaki",
@@ -358,7 +358,7 @@
   },
   {
    "rute": "/verifikasi",
-   "nama": "Verifikasi dokumen",
+   "nama": "Periksa keaslian dokumen",
    "ikon": "simpan",
    "pintu": "publik",
    "grup": "kaki",
@@ -366,7 +366,7 @@
   },
   {
    "rute": "/daftar-kontak",
-   "nama": "Daftar kontak darurat",
+   "nama": "Registrasi kontak pemangku kepentingan",
    "ikon": "sinyal",
    "pintu": "publik",
    "grup": "kaki",
@@ -374,7 +374,7 @@
   },
   {
    "rute": "/laporan",
-   "nama": "Laporan",
+   "nama": "Laporan harian karhutla",
    "ikon": "simpan",
    "pintu": "publik",
    "grup": "kaki",
@@ -382,7 +382,7 @@
   },
   {
    "rute": "/paparan",
-   "nama": "Paparan",
+   "nama": "Paparan rakor karhutla",
    "ikon": "kalender",
    "pintu": "publik",
    "grup": "kaki",
@@ -390,7 +390,7 @@
   },
   {
    "rute": "/kemitraan",
-   "nama": "Kemitraan",
+   "nama": "Kemitraan kampus",
    "ikon": "personel",
    "pintu": "kampus",
    "grup": "kemitraan",
@@ -398,7 +398,7 @@
   },
   {
    "rute": "/kemitraan/masuk",
-   "nama": "Masuk mitra",
+   "nama": "Masuk koordinator kemitraan kampus",
    "ikon": "personel",
    "pintu": "kampus",
    "grup": "kemitraan",
@@ -406,7 +406,7 @@
   },
   {
    "rute": "/kemitraan/buku",
-   "nama": "Buku",
+   "nama": "Buku profil daerah",
    "ikon": "daftar",
    "pintu": "kampus",
    "grup": "kemitraan",
@@ -414,7 +414,7 @@
   },
   {
    "rute": "/kemitraan/panduan",
-   "nama": "Panduan",
+   "nama": "Panduan wawancara",
    "ikon": "daftar",
    "pintu": "kampus",
    "grup": "kemitraan",
@@ -422,7 +422,7 @@
   },
   {
    "rute": "/kemitraan/daftar",
-   "nama": "Daftar mitra",
+   "nama": "Daftar kemitraan kampus",
    "ikon": "daftar",
    "pintu": "kampus",
    "grup": "kemitraan",

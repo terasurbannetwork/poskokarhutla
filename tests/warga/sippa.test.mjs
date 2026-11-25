@@ -99,7 +99,7 @@ uji("GET /pipa/lapangan: tamu 200 dengan CSP_LAPANGAN dan no-referrer; /admin/pi
   const p = await man("/pipa", h, lk); assert.equal(p.s, 303); assert.equal(p.h.get("location"), "/admin/masuk?ke=%2Fpipa", "satu pintu: /admin/masuk");
   assert.equal((await man("/pipa/lapangan", h, lk)).s, 200); assert.equal((await man("/pipa", {...h, ...pus.g}, lk)).s, 200, "staf bersesi lolos gerbang host");
   assert.equal((await man("/pipa/tidakada", h, lk)).s, 404, "bukan dialihkan: jatuh ke aset");
-  assert.match(teks("src/worker.js"), /\/\^\\\/\(api\|admin\|ews\|ubin\|pipa\)\(\\\/\|\$\)\//, "regex pengecualian halamanTerkunci memuat pipa");
+  assert.match(teks("src/gerbang_halaman.js"), /\/\^\\\/\(api\|admin\|ews\|ubin\|pipa\)\(\\\/\|\$\)\//, "regex pengecualian halamanTerkunci memuat pipa");
   assert.match(teks("tests/warga/posko.test.mjs"), /\(api\|admin\|ews\|ubin\|pipa\)/, "pemindai posko.test memakai regex yang sama");
 });
 uji("public/admin/pantau.js: sesudah masuk staf hanya ke yang cocok ^/pipa(/|$) dialihkan; URL luar tidak", () => {

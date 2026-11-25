@@ -78,10 +78,9 @@ test("U2: pemirsa dan jenis tak dikenal seperti tamu", () => {
 });
 
 test("tanpa akses hilang: butir menuUntuk menutup GRUP_STAF (disaring bolehStaf); yang ditolak gerbang Worker dicatat sebagai tautan mati lama", () => {
-  const src = readFileSync(join(AKAR, "src/admin_halaman.js"), "utf8");
-  const bnpb = JSON.parse(src.match(/const BNPB = (\[[^\]]*\])/)[1]);
-  const sub = bnpb.flatMap(k => k === "pantau" ? [k, "instansi", "aktivasi"] : [k]);
-  const kerja = JSON.parse(src.match(/\["Ruang kerja", "🧰", (\[[^\]]*\])\]/)[1]);
+  /* daftar tulisan tangan terakhir di src/admin_halaman.js sebelum PS-04 (BNPB/SUB dan GRUP_STAF "Ruang kerja"), dibekukan di sini sebagai acuan "tanpa akses hilang" */
+  const sub = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "instansi", "aktivasi", "inventaris", "korban", "laporan-karhutla", "omc", "laporan", "kinerja", "pendataan"];
+  const kerja = ["posko", "pipa", "command-center", "ai"];
   const RUTE_LAMA = {pipa: "/pipa", "command-center": "/command-center", ai: "/ai"};
   const mati = {};
   for (const peran of SEMUA_PERAN) {

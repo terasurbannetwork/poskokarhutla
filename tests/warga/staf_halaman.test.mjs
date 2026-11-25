@@ -11,11 +11,13 @@ import {PROV, durasi} from "../../src/instansi.js";
 import {P_VALIDASI, P_KONSESI} from "../../src/staf.js";
 import {PERAN_BACA} from "../../src/omc.js";
 import {P_SIPPA_BACA} from "../../src/sippa.js";
-import {HALAMAN_STAF} from "../../src/admin_halaman.js";
+import {HALAMAN_STAF, SEMUA_PERAN, bolehStaf, grupNav, RUANG_LAPORAN} from "../../src/admin_halaman.js";
+import {menuUntuk} from "../../src/peta_situs.js";
 import * as S from "../../public/laporan_karhutla_spek.js";
 import {cariChrome, bukaPeramban} from "../bnpb/_peramban.mjs";
 import {buatDunia} from "../bnpb/_dunia.mjs";
 
+const hrefs = t => [...t.matchAll(/href="([^"]+)"/g)].map(m => m[1]);
 const uji = berantai(), PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, teks = (...p) => readFileSync(path.join(AKAR, ...p), "utf8");
 const U = await siapkan("uji-staf-halaman", {r2: true}), {api} = U;
 let ip = 0;
@@ -37,7 +39,8 @@ uji("T1: /admin/instansi untuk staf berperan memakai kerangka staf; peran lain k
   const t = await man("/admin/instansi", tmc); assert.equal(t.s, 303); assert.equal(t.h.get("location"), "/admin/pantau", "staf tanpa peran cocok tidak dilempar ke login admin");
   const an = await man("/admin/instansi"); assert.equal(an.s, 303); assert.match(an.h.get("location"), /\/admin\/masuk/);
   const ad = await api("GET", "/admin/instansi", undefined, ADMIN); assert.equal(ad.s, 200); assert.match(ad.t, /<span class="ad-sep">Admin<\/span>/);
-  for (const k2 of ["laporan-karhutla", "omc", "inventaris", "pantau"]) assert.match(ad.t.match(/<nav class="ad-sub"[\s\S]*?<\/nav>/)[0], new RegExp(`href="/admin/${k2}"`), `sub-nav Akun Instansi memuat ${k2}`);
+  /* PS-04: sub-nav admin = grup registri halaman ini (Akun instansi di grup Jejaring), dihitung dari src/peta_situs.js */
+  assert.deepEqual(hrefs(ad.t.match(/<nav class="ad-sub"[\s\S]*?<\/nav>/)[0]), grupNav().find(g => g.id === "jejaring").butir.map(e => e.rute), "sub-nav Akun Instansi = grup Jejaring");
   const pa = await api("GET", "/admin/pantau", undefined, ver); assert.match(pa.t, /ad-sep staf/); assert.match(pa.t, /\/inti\/format\.js/);
   const omc = await api("GET", "/admin/omc", undefined, tmc); assert.equal(omc.s, 200); assert.match(omc.t, /data-masuk="1"/);
   /* halaman Ruang Koordinasi lain: staf tanpa peran yang cocok ke Meja Pantau, anonim ke login admin (bukan kerangka kosong) */
@@ -49,8 +52,16 @@ uji("Ruang Laporan: /admin/laporan memuat sidebar + iframe; halaman terbingkai b
   const tmc = await bikin(["tmc"]), man = async (j, h = {}) => { const r = await U.mf.dispatchFetch("http://bnpb.lokal" + j, {headers: h, redirect: "manual"}); await r.text(); return {s: r.status, csp: r.headers.get("content-security-policy") || "", h: r.headers}; };
   for (const h of [ADMIN, tmc]) {
     const r = await api("GET", "/admin/laporan", undefined, h); assert.equal(r.s, 200); assert.match(r.t, /<iframe id="rlBingkai"/); assert.match(r.t, /\/admin\/ruang_laporan\.js/); assert.doesNotMatch(r.t, /<script>/);
-    for (const ke of ["/admin/pantau", "/admin/laporan-karhutla", "/admin/omc", "/bnpb/logbook", "/pelaporan", "/laporan-bnpb", "/udara", "/gunungapi"]) assert.match(r.t, new RegExp(`data-ke="${ke}"`), ke);
+    const ke = [...r.t.matchAll(/data-ke="([^"]+)"/g)].map(m => m[1]), semua = RUANG_LAPORAN.flatMap(g => g.item.map(i => i[2]));
+    /* admin: semua butir; staf: hanya yang lolos menuUntuk (gerbang centurisk97.id, PS-04), tmc tetap melihat Meja Pantau, Laporan karhutla, OMC */
+    const ok = new Set(menuUntuk(h === ADMIN ? {jenis: "admin"} : {jenis: "staf", peran: ["tmc"]}, bolehStaf, false).flatMap(p => p.grup.flatMap(g => g.butir.map(e => e.rute))));   // bnpb.lokal tak terkunci
+    assert.deepEqual(ke, semua.filter(j => ok.has(j)), h === ADMIN ? "admin" : "tmc");
+    if (h === ADMIN) assert.deepEqual(ke, semua); else for (const j of ["/admin/pantau", "/admin/laporan-karhutla", "/admin/omc", "/bnpb/logbook", "/udara"]) assert.ok(ke.includes(j), j);
   }
+  /* centurisk97.id (terkunci): tmc hanya melihat butir yang dibuka gerbang host itu */
+  const tk = await U.mf.dispatchFetch("https://centurisk97.id/admin/laporan", {headers: tmc, redirect: "manual"}), tt = await tk.text(); assert.equal(tk.status, 200);
+  const keT = [...tt.matchAll(/data-ke="([^"]+)"/g)].map(m => m[1]), okT = new Set(menuUntuk({jenis: "staf", peran: ["tmc"]}, bolehStaf, true).flatMap(p => p.grup.flatMap(g => g.butir.map(e => e.rute))));
+  assert.deepEqual(keT, RUANG_LAPORAN.flatMap(g => g.item.map(i => i[2])).filter(j => okT.has(j))); assert.ok(!keT.includes("/udara"), "/udara terkunci untuk tmc di centurisk97.id");
   assert.equal((await man("/admin/laporan")).s, 303, "anonim ke login admin");
   assert.deepEqual(HALAMAN_STAF.laporan, null);
   for (const [j, h] of [["/admin/laporan", ADMIN], ["/admin/omc", tmc], ["/admin/pantau", tmc], ["/admin/laporan-karhutla", tmc], ["/bnpb/logbook", {}]]) {
@@ -61,6 +72,26 @@ uji("Ruang Laporan: /admin/laporan memuat sidebar + iframe; halaman terbingkai b
   assert.equal(lg.headers.get("x-frame-options"), "DENY"); assert.match(lg.headers.get("content-security-policy"), /frame-ancestors 'none'/);
   for (const j of ["/bnpb", "/meja"]) { const r = await man(j); assert.equal(r.s, 200, j); assert.match(r.csp, /frame-ancestors 'none'/, j); }
 });
+/* U3 (PS-04): nav atas Worker = menuUntuk pintu Staf untuk sesi yang sama; admin melihat semua grup, tiap peran di SEMUA_PERAN disaring bolehStaf dan gerbang host */
+uji("U3: nav atas admin dan staf per peran = rute menuUntuk pintu Staf (src/peta_situs.js)", async () => {
+  const navAtas = t => hrefs(t.match(/<nav aria-label="Halaman (?:admin|staf)">[\s\S]*?<\/nav>/)[0]);
+  const harap = (sesi, terkunci = false) => menuUntuk(sesi, bolehStaf, terkunci).find(p => p.pintu === "staf").grup.flatMap(g => g.butir.map(e => e.rute));   // bnpb.lokal tak terkunci
+  const ad = await api("GET", "/admin/laporan-karhutla", undefined, ADMIN); assert.equal(ad.s, 200);
+  const semua = harap({jenis: "admin", peran: []}); assert.deepEqual(navAtas(ad.t), semua, "admin");
+  for (const j of ["/admin/statistik", "/admin/pesan", "/admin/foto", "/admin/sosmed", "/admin/pimpinan", "/bnpb/dalops", "/direktori", "/admin/posko", "/admin/instansi", "/pipa", "/command-center", "/ai", "/admin/akun", "/admin/kunci-api", "/admin/biaya-bot", "/admin/kontak"])
+    assert.ok(semua.includes(j), "admin tidak kehilangan " + j);
+  assert.match(ad.t, /id="badgePesan"/, "lencana kotak pesan tetap"); assert.doesNotMatch(ad.t, /style=/, "tanpa gaya sebaris (CSP)");
+  for (const peran of SEMUA_PERAN) {
+    const st = await bikin([peran]), r = await api("GET", "/admin/laporan-karhutla", undefined, st); assert.equal(r.s, 200, peran);
+    const kini = navAtas(r.t), mau = harap({jenis: "staf", peran: [peran]});
+    assert.deepEqual(kini, mau, peran); assert.ok(kini.includes("/admin/laporan-karhutla"), peran + ": halaman ini ada di menunya");
+    for (const k of Object.keys(HALAMAN_STAF)) if (!bolehStaf(k, [peran])) assert.ok(!kini.includes("/admin/" + k), `${peran}: /admin/${k} tak boleh tampil`);
+    /* host terkunci: nav = menuUntuk dengan terkunci (ctx.terkunci dari hostTerkunci, src/statistik.js) */
+    const t = await U.mf.dispatchFetch("https://centurisk97.id/admin/laporan-karhutla", {headers: st, redirect: "manual"}), tt = await t.text(); assert.equal(t.status, 200, peran);
+    assert.deepEqual(navAtas(tt), harap({jenis: "staf", peran: [peran]}, true), peran + " di centurisk97.id");
+  }
+});
+
 uji("GET /bnpb/dokumen: kerangka publik tanpa cache, tak boleh dibingkai, .html dialihkan; di centurisk97.id anonim ke login", async () => {
   const man = async (asal, j) => { const r = await U.mf.dispatchFetch(asal + j, {redirect: "manual"}); await r.text(); return r; };
   const r = await man("http://bnpb.lokal", "/bnpb/dokumen"); assert.equal(r.status, 200);

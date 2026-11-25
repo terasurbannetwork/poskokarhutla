@@ -7,6 +7,7 @@ import {readFileSync, existsSync} from "node:fs";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {bukaPeramban, cariChrome} from "../bnpb/_peramban.mjs";
+import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
 import {halamanBnpb} from "../../src/admin_halaman.js";
 import {fixture} from "./_kinerja_fixture.mjs";
 

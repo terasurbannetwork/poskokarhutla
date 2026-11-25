@@ -3,6 +3,7 @@
 import REGISTRY from "./bencana.generated.js";
 import {hidup} from "./bencana.js";
 import {PERAN_AKTIVASI} from "./masuk_konst.js";   // peran staf papan aktivasi (satu sumber)
+import {HALAMAN, menuUntuk} from "./peta_situs.js";   // nav admin dan staf dihitung dari registri Peta Situs (PS-04, KEPUTUSAN D4, D8); peta_situs.js hanya mengimpor modul daun gerbang_halaman.js, tanpa siklus
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
 const kepala = judul => `<!doctype html>
 <html lang="id">
@@ -22,10 +23,6 @@ const kepala = judul => `<!doctype html>
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {segel: ["🔏", "Segel dokumen"], statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
   relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], aktivasi: ["🗺️", "Aktivasi daerah"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Bencana"], omc: ["🌧️", "Sortie OMC"], laporan: ["📋", "Ruang Laporan"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], "biaya-bot": ["💵", "Biaya bot WA"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"], "command-center": ["🎛️", "Command center"], ai: ["🤖", "Asisten AI"]};
-/* halaman Ruang Koordinasi BNPB: SATU entri di nav atas, lalu sub-nav di bawahnya (nav atas tetap muat di 1440) */
-const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc", "laporan", "kinerja", "pendataan"];
-/* sub-nav yang sama juga tampil di Akun Instansi (kerja harian staf: Laporan Karhutla, OMC, Inventaris, Meja Pantau) */
-const SUB = BNPB.flatMap(k => k === "pantau" ? [k, "instansi", "aktivasi"] : [k]);
 /* Halaman yang boleh dibuka SESI STAF per peran (null = semua staf). Sama dengan hak API-nya: instansi = P_VALIDASI + P_KONSESI (src/staf.js), inventaris = PERAN_LIHAT (src/inventaris.js),
    omc = PERAN_BACA (src/omc.js), posko = P_KONSESI. Dijaga tests/warga/staf_halaman.test.mjs. */
 /* semua peran staf (sama dengan Object.keys(PERAN) di src/staf.js; dijaga tests/warga/sla.test.mjs): hak baca Kinerja pemantauan = adminOK ATAU sesi staf dengan peran apa pun, dipakai halaman /admin/kinerja DAN GET /api/sla */
@@ -39,26 +36,34 @@ export const aksesStaf = peran => [...Object.keys(HALAMAN_STAF).filter(k => bole
   ...(peran.includes("direktori") ? [{k: "direktori", ikon: "📇", label: "Direktori", href: "/direktori"}] : [])];
 /* null = semua peran KECUALI 'direktori' (peran itu hanya membuka Direktori, src/staf.js hanyaDirektori) */
 export const bolehStaf = (k, peran) => Object.hasOwn(HALAMAN_STAF, k) && (HALAMAN_STAF[k] === null ? peran.some(p => p !== "direktori") : peran.some(p => HALAMAN_STAF[k].includes(p)));
-const subNav = (aktif, ctx) => SUB.includes(aktif) && !ctx ? `<nav class="ad-sub" aria-label="Ruang Koordinasi">${SUB.map(k => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${HAL[k][0]} ${HAL[k][1]}</a>`).join("")}</nav>` : "";
+/* Nav atas dan sub-nav dari registri src/peta_situs.js (PS-04): grup = GRUP.staf, butir = HALAMAN pintu Staf yang lolos menuUntuk untuk sesi ini (admin semua,
+   staf lewat bolehStaf dan gerbang Worker bolehHalaman), jadi nav tidak pernah menawarkan tautan yang ditolak Worker. Ikon butir = emoji HAL bila halamannya kerangka ini, selain itu
+   emoji dari kunci ikon registri. ctx.terkunci = hostTerkunci(host) diisi pembuat ctx (halamanAdmin dan kerangka di src/statistik.js, src/command_center.js);
+   tanpa nilai = true, gerbang centurisk97.id (paling ketat). */
+const EMOJI = {daftar: "📋", pin: "📍", peringatan: "⚠️", banjir: "🌊", grafik: "📈", simpan: "📑", awan: "🌧️", sinyal: "📡", kalender: "📅", meja: "🗂️", personel: "👥"};
+const IKON_GRUP = {pantau: "📋", kejadian: "📅", operasi: "🧰", laporan: "📑", risiko: "⚠️", pimpinan: "🧭", jejaring: "🏛️", pengaturan: "⚙️"};
+const kunciHal = e => e.rute.startsWith("/admin/") && HAL[e.rute.slice(7)] ? e.rute.slice(7) : e.hak && HAL[e.hak] ? e.hak : null;
+const MENU = new Map();   // per (peran, terkunci): menuUntuk menyapu seluruh registri, cukup sekali per isolat
+const menuSesi = ctx => { const sesi = ctx ? {jenis: "staf", peran: ctx.peran} : {jenis: "admin", peran: []}, t = ctx?.terkunci ?? true, kunci = `${sesi.jenis}|${sesi.peran.join(",")}|${t}`;
+  if (!MENU.has(kunci)) MENU.set(kunci, menuUntuk(sesi, bolehStaf, t)); return MENU.get(kunci); };
+export const grupNav = ctx => menuSesi(ctx).find(p => p.pintu === "staf")?.grup || [];
+const butirReg = e => { const k = kunciHal(e); return [k || e.rute, k ? HAL[k][0] : EMOJI[e.ikon] || "📋", e.nama, e.rute]; };
+const navReg = ctx => grupNav(ctx).map(g => [g.nama, IKON_GRUP[g.id] || "📋", g.butir.map(butirReg)]);
+/* sub-nav (admin saja): deretan halaman satu grup dengan halaman ini; public/inti/dasbor_admin.js menyusunnya jadi panel kiri */
+const subNav = (aktif, ctx) => { const g = !ctx && grupNav().find(g => g.butir.some(e => kunciHal(e) === aktif));
+  return g && g.butir.length > 1 ? `<nav class="ad-sub" aria-label="${esc(g.nama)}">${g.butir.map(butirReg).map(([k, ik, l, href]) => `<a href="${href}" ${aktif === k ? 'aria-current="page"' : ""}>${ik} ${esc(l)}</a>`).join("")}</nav>` : ""; };
 /* Nav atas berkelompok (pemilik, 3 Nov 2026): tautan sejenis disatukan dalam satu menu tarik-turun seperti Direktori dan Dalops.
    Butir: [k, ikon, label, href]. Kelompok berisi satu butir tampil sebagai tautan biasa. <details name> = hanya satu menu terbuka, tanpa JS (CSP). */
-const butirAdmin = k => [k, ...HAL[k], "/admin/" + k];
-const GRUP_ADMIN = [
-  ["Publik", "🌐", ["statistik", "pesan", "foto", "sosmed"].map(butirAdmin)],
-  ["Ruang kerja", "🏛️", [["koordinasi", "🏛️", "Ruang Koordinasi", "/admin/" + BNPB[0]], ["dalops", "🌊", "Ruang Pusdalops", "/bnpb/dalops"], ["direktori", "📚", "Direktori", "/direktori"],
-    ...["posko", "instansi", "pipa", "command-center", "ai"].map(butirAdmin)]],
-  ["Pengaturan", "⚙️", ["akun", "kunci-api", "biaya-bot", "kontak"].map(butirAdmin)]];
-const GRUP_STAF = [["Ruang Koordinasi", "🏛️", SUB], ["Ruang kerja", "🧰", ["posko", "pipa", "command-center", "ai"]]];
-const butirNav = ([k, ik, l, href], kini) => `<a href="${href}" ${kini(k) ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`;
+const butirNav = ([k, ik, l, href], kini) => `<a href="${href}" ${kini(k) ? 'aria-current="page"' : ""}>${ik} ${esc(l)}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`;
 const navGrup = (grup, kini) => grup.filter(g => g[2].length).map(([judul, ik, isi]) => isi.length === 1 ? butirNav(isi[0], kini)
-  : `<details class="ad-grup" name="ad-grup"><summary ${isi.some(b => kini(b[0])) ? 'aria-current="page"' : ""}>${ik} ${judul}</summary><div class="ad-grup-isi">${isi.map(b => butirNav(b, kini)).join("")}</div></details>`).join("");
+  : `<details class="ad-grup" name="ad-grup"><summary ${isi.some(b => kini(b[0])) ? 'aria-current="page"' : ""}>${ik} ${esc(judul)}</summary><div class="ad-grup-isi">${isi.map(b => butirNav(b, kini)).join("")}</div></details>`).join("");
 const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep staf">Staf</span>
-  <nav aria-label="Halaman staf">${navGrup(GRUP_STAF.map(([j, ik, ks]) => [j, ik, ks.filter(k => bolehStaf(k, ctx.peran)).map(butirAdmin)]), k => k === aktif)}</nav>
+  <nav aria-label="Halaman staf">${navGrup(navReg(ctx), k => k === aktif)}</nav>
   ${ctx.nama ? `<span class="ad-staf-nama">${esc(ctx.nama)}</span><button class="ad-keluar" type="button" data-staf-keluar>Keluar</button>` : ""}
 </header>` : `<header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep">Admin</span>
-  <nav aria-label="Halaman admin">${navGrup(GRUP_ADMIN, k => k === aktif || (k === "foto" && aktif === "labelfoto") || (k === "koordinasi" && (BNPB.includes(aktif) || aktif === "instansi" || aktif === "aktivasi")))}</nav>
+  <nav aria-label="Halaman admin">${navGrup(navReg(), k => k === aktif)}</nav>
   <form method="post" action="/admin/keluar"><button class="ad-keluar" type="submit">Keluar</button></form>
 </header>`;
 /* halaman admin yang ada di menu Pusdalops: kepalanya memakai menu Pusdalops (public/bnpb/menu_pusdalops.js), tanpa sub-menu Ruang Koordinasi,
@@ -191,23 +196,29 @@ export const halamanOmc = ctx => halaman("omc", "Memuat sortie OMC…", `<link h
 /* Ruang Laporan (/admin/laporan): sidebar kiri + halaman pantau yang sudah ada dalam iframe sesama asal (CSP_ADMIN: frame-ancestors 'self', default-src 'self' sudah mencakup frame-src).
    Tanpa judul besar supaya bingkai memakai sisa tinggi layar. Perilaku (hash, sinkron aktif, kelas .sematan di dokumen bingkai) di public/admin/ruang_laporan.js. */
 const IK = d => `<svg class="rl-ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+/* butir = rute registri (daftar pendek eksplisit: hanya halaman yang tahan dibingkai, bukan seluruh grup laporan); label dari registri; disaring per sesi saat dirender */
+const RL = rute => { const e = HALAMAN.find(e => e.rute === rute); if (!e) throw new Error(`RUANG_LAPORAN: ${rute} tak tercatat di src/peta_situs.js`); return e.nama; };
+const rlb = (k, rute, d) => [k, RL(rute), rute, IK(d)];
 export const RUANG_LAPORAN = [
-  {item: [["pantau", "Meja Pantau", "/admin/pantau", IK('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 14h3"/>')]]},
-  {kel: "Bahan laporan", item: [["karhutla", "Laporan Bencana", "/admin/laporan-karhutla", IK('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>')],
-    ["omc", "Sortie OMC", "/admin/omc", IK('<path d="M7 18a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 8.5a4.5 4.5 0 0 1 0 9.5z"/><path d="M9 21l1-2M13 21l1-2"/>')],
-    ["logbook", "Logbook Pusdalops", "/bnpb/logbook", IK('<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6"/>')],
-    ["dalops", "Pantau Banjir Dalops", "/bnpb/dalops", IK('<path d="M3 15c2 0 2-1.5 4.5-1.5S9.5 15 12 15s2.5-1.5 4.5-1.5S19 15 21 15M3 19c2 0 2-1.5 4.5-1.5S9.5 19 12 19s2.5-1.5 4.5-1.5S19 19 21 19"/><path d="M12 3v8M9 8l3 3 3-3"/>')]]},
-  {kel: "Keluaran", item: [["pelaporan", "Laporan dan arsip", "/pelaporan", IK('<path d="M4 4h16v5H4zM5 9v11h14V9M10 13h4"/>')],
-    ["koordalops", "Laporan Koordalops", "/laporan-bnpb", IK('<path d="M12 3v12m0 0l-4-4m4 4l4-4M5 20h14"/>')],
-    ["segel", "Segel dokumen", "/admin/segel", IK('<path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>')]]},
-  {kel: "Pantauan", item: [["udara", "Kualitas udara", "/udara", IK('<path d="M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3M3 12h7"/>')],
-    ["gunungapi", "Gunung api", "/gunungapi", IK('<path d="M3 20l6-10 3 4 2-3 7 9zM12 3v3M7 5l1.5 2M17 5l-1.5 2"/>')]]}];
+  {item: [rlb("pantau", "/admin/pantau", '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 14h3"/>')]},
+  {kel: "Bahan laporan", item: [rlb("karhutla", "/admin/laporan-karhutla", '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>'),
+    rlb("omc", "/admin/omc", '<path d="M7 18a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 8.5a4.5 4.5 0 0 1 0 9.5z"/><path d="M9 21l1-2M13 21l1-2"/>'),
+    rlb("logbook", "/bnpb/logbook", '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6"/>'),
+    rlb("dalops", "/bnpb/dalops", '<path d="M3 15c2 0 2-1.5 4.5-1.5S9.5 15 12 15s2.5-1.5 4.5-1.5S19 15 21 15M3 19c2 0 2-1.5 4.5-1.5S9.5 19 12 19s2.5-1.5 4.5-1.5S19 19 21 19"/><path d="M12 3v8M9 8l3 3 3-3"/>')]},
+  {kel: "Keluaran", item: [rlb("pelaporan", "/pelaporan", '<path d="M4 4h16v5H4zM5 9v11h14V9M10 13h4"/>'),
+    rlb("koordalops", "/laporan-bnpb", '<path d="M12 3v12m0 0l-4-4m4 4l4-4M5 20h14"/>'),
+    rlb("segel", "/admin/segel", '<path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>')]},
+  {kel: "Pantauan", item: [rlb("udara", "/udara", '<path d="M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3M3 12h7"/>'),
+    rlb("gunungapi", "/gunungapi", '<path d="M3 20l6-10 3 4 2-3 7 9zM12 3v3M7 5l1.5 2M17 5l-1.5 2"/>')]}];
+/* Ruang Laporan untuk satu sesi: butir yang tak lolos menuUntuk (pintu mana pun) dibuang, kelompok kosong ikut dibuang */
+export const ruangLaporan = ctx => { const ok = new Set(menuSesi(ctx).flatMap(p => p.grup.flatMap(g => g.butir.map(e => e.rute))));
+  return RUANG_LAPORAN.map(g => ({...g, item: g.item.filter(i => ok.has(i[2]))})).filter(g => g.item.length); };
 export const halamanRuangLaporan = ctx => `${kepala("Ruang Laporan · Centurisk97")}
 <body class="rl-badan" data-staf="${ctx ? "1" : "0"}"${ctx ? ` data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
 ${atas("laporan", ctx)}
 <link href="/admin/ruang_laporan.css?v=1" rel="stylesheet">
 <div class="rl-tubuh">
-  <nav class="rl-rel" aria-label="Menu Ruang Laporan">${RUANG_LAPORAN.map((g, i) => `${g.kel ? `<h2 class="ad-ey rl-kel" id="rl-kel-${i}">${g.kel}</h2>` : ""}<ul${g.kel ? ` aria-labelledby="rl-kel-${i}"` : ""}>${g.item.map(([k, l, ke, ik]) => `<li><a href="#${k}" data-ke="${ke}">${ik}<span>${l}</span></a></li>`).join("")}</ul>`).join("")}</nav>
+  <nav class="rl-rel" aria-label="Menu Ruang Laporan">${ruangLaporan(ctx).map((g, i) => `${g.kel ? `<h2 class="ad-ey rl-kel" id="rl-kel-${i}">${g.kel}</h2>` : ""}<ul${g.kel ? ` aria-labelledby="rl-kel-${i}"` : ""}>${g.item.map(([k, l, ke, ik]) => `<li><a href="#${k}" data-ke="${ke}">${ik}<span>${l}</span></a></li>`).join("")}</ul>`).join("")}</nav>
   <iframe id="rlBingkai" class="rl-bingkai rl-muat" title="Isi Ruang Laporan" src="about:blank"></iframe>
 </div>
 <script src="/admin/ruang_laporan.js?v=1"></script>
