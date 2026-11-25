@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 330">
+<defs><marker id="p" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" class="dg-garis"/></marker></defs>
+<text x="10" y="24" class="dg-teks" font-size="16">Tujuh skala tangga, dari terjauh ke terdekat</text>
+<rect x="10" y="40" width="88" height="44" rx="6" class="dg-kotak"/><text x="54" y="67" text-anchor="middle" class="dg-teks" font-size="14">Musim</text>
+<rect x="107" y="40" width="88" height="44" rx="6" class="dg-kotak"/><text x="151" y="67" text-anchor="middle" class="dg-teks" font-size="14">Bulan</text>
+<rect x="204" y="40" width="88" height="44" rx="6" class="dg-kotak"/><text x="248" y="67" text-anchor="middle" class="dg-teks" font-size="14">Dasarian</text>
+<rect x="301" y="40" width="88" height="44" rx="6" class="dg-kotak"/><text x="345" y="67" text-anchor="middle" class="dg-teks" font-size="14">10 hari</text>
+<rect x="398" y="40" width="88" height="44" rx="6" class="dg-kotak"/><text x="442" y="67" text-anchor="middle" class="dg-teks" font-size="14">Sepekan</text>
+<rect x="495" y="40" width="88" height="44" rx="6" class="dg-kotak"/><text x="539" y="67" text-anchor="middle" class="dg-teks" font-size="14">3 hari</text>
+<rect x="592" y="40" width="88" height="44" rx="6" class="dg-kotak"/><text x="636" y="67" text-anchor="middle" class="dg-teks" font-size="14">Jam</text>
+<line x1="10" y1="104" x2="690" y2="104" class="dg-garis" marker-end="url(#p)"/>
+<text x="10" y="124" class="dg-teks-lemah" font-size="13">Peringkat resmi BMKG per skala (0 sampai 3, kosong bila tanpa tingkat)</text>
+<text x="10" y="160" class="dg-teks" font-size="16">Tiga tanda sinyal, dibaca dari peringkat resmi saja</text>
+<rect x="10" y="172" width="220" height="140" rx="8" class="dg-kotak"/>
+<text x="120" y="196" text-anchor="middle" class="dg-teks" font-size="15">Searah</text>
+<text x="120" y="222" text-anchor="middle" class="dg-teks-lemah" font-size="13">sedikitnya dua skala</text>
+<text x="120" y="240" text-anchor="middle" class="dg-teks-lemah" font-size="13">bernilai 1 ke atas,</text>
+<text x="120" y="258" text-anchor="middle" class="dg-teks-lemah" font-size="13">tidak menurun ke arah</text>
+<text x="120" y="276" text-anchor="middle" class="dg-teks-lemah" font-size="13">skala terdekat</text>
+<rect x="250" y="172" width="220" height="140" rx="8" class="dg-kotak-aksen"/>
+<text x="360" y="196" text-anchor="middle" class="dg-teks" font-size="15">Menguat</text>
+<text x="360" y="222" text-anchor="middle" class="dg-teks-lemah" font-size="13">searah, naik tegas,</text>
+<text x="360" y="240" text-anchor="middle" class="dg-teks-lemah" font-size="13">dan semua skala</text>
+<text x="360" y="258" text-anchor="middle" class="dg-teks-lemah" font-size="13">bercakupan sama</text>
+<rect x="490" y="172" width="220" height="140" rx="8" class="dg-kotak"/>
+<text x="600" y="196" text-anchor="middle" class="dg-teks" font-size="15">Belum selaras</text>
+<text x="600" y="222" text-anchor="middle" class="dg-teks-lemah" font-size="13">dua skala bercakupan</text>
+<text x="600" y="240" text-anchor="middle" class="dg-teks-lemah" font-size="13">sama berselisih</text>
+<text x="600" y="258" text-anchor="middle" class="dg-teks-lemah" font-size="13">peringkat 2 atau lebih</text>
+<text x="600" y="282" text-anchor="middle" class="dg-teks-lemah" font-size="13">(tanda bebas)</text>
+</svg>

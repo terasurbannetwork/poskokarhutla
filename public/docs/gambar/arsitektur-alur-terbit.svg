@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380">
+<title>Langkah dari hitung data sampai situs tayang</title>
+<defs><marker id="p" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path class="dg-garis" d="M1 1 L8 5 L1 9" fill="none" stroke-width="2"/></marker></defs>
+<rect class="dg-kotak" x="20" y="15" width="330" height="52" rx="8"/>
+<text class="dg-teks" font-size="15" font-weight="bold" x="35" y="35.0">1. Workflow data menghitung</text>
+<text class="dg-teks-lemah" font-size="13" x="35" y="56.0">titik.yml, data.yml, banjir.yml, gempa.yml</text>
+<rect class="dg-kotak" x="20" y="90" width="330" height="52" rx="8"/>
+<text class="dg-teks" font-size="15" font-weight="bold" x="35" y="110.0">2. Tulis dan commit JSON</text>
+<text class="dg-teks-lemah" font-size="13" x="35" y="131.0">ke public/data, cache Actions bernama data-</text>
+<line class="dg-garis" x1="185" y1="67" x2="185" y2="88" stroke-width="2" marker-end="url(#p)"/>
+<rect class="dg-kotak" x="20" y="165" width="330" height="52" rx="8"/>
+<text class="dg-teks" font-size="15" font-weight="bold" x="35" y="185.0">3. terbit.yml memeriksa</text>
+<text class="dg-teks-lemah" font-size="13" x="35" y="206.0">data tidak lebih tua dari yang tayang, uji node</text>
+<line class="dg-garis" x1="185" y1="142" x2="185" y2="163" stroke-width="2" marker-end="url(#p)"/>
+<rect class="dg-kotak-aksen" x="20" y="240" width="330" height="52" rx="8"/>
+<text class="dg-teks" font-size="15" font-weight="bold" x="35" y="260.0">4. wrangler deploy</text>
+<text class="dg-teks-lemah" font-size="13" x="35" y="281.0">hanya bila semua uji hijau</text>
+<line class="dg-garis" x1="185" y1="217" x2="185" y2="238" stroke-width="2" marker-end="url(#p)"/>
+<rect class="dg-kotak" x="20" y="315" width="330" height="52" rx="8"/>
+<text class="dg-teks" font-size="15" font-weight="bold" x="35" y="335.0">5. Worker menyajikan</text>
+<text class="dg-teks-lemah" font-size="13" x="35" y="356.0">aset statis dan API ke pengguna</text>
+<line class="dg-garis" x1="185" y1="292" x2="185" y2="313" stroke-width="2" marker-end="url(#p)"/>
+<rect class="dg-kotak" x="420" y="165" width="280" height="52" rx="8"/>
+<text class="dg-teks" font-size="15" font-weight="bold" x="435" y="185.0">Uji merah: tidak ada deploy</text>
+<text class="dg-teks-lemah" font-size="13" x="435" y="206.0">data lama tetap tayang</text>
+<path class="dg-garis" d="M350 191 H418" fill="none" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#p)"/>
+<rect class="dg-kotak" x="420" y="40" width="280" height="80" rx="8"/>
+<text class="dg-teks" font-size="15" font-weight="bold" x="435" y="74.0">Perubahan kode tampilan</text>
+<text class="dg-teks-lemah" font-size="13" x="435" y="95.0">terbit_antre.yml menunggu slot bebas</text>
+<path class="dg-garis" d="M560 120 V150 H300 V163" fill="none" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#p)"/>
+</svg>

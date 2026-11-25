@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 290">
+<line x1="140" y1="40" x2="140" y2="270" class="dg-grid"/>
+<line x1="230" y1="40" x2="230" y2="270" class="dg-grid"/>
+<line x1="320" y1="40" x2="320" y2="270" class="dg-grid"/>
+<line x1="410" y1="40" x2="410" y2="270" class="dg-grid"/>
+<text x="140" y="30" text-anchor="middle" font-size="13" class="dg-teks-lemah">0</text>
+<text x="230" y="30" text-anchor="middle" font-size="13" class="dg-teks-lemah">30</text>
+<text x="320" y="30" text-anchor="middle" font-size="13" class="dg-teks-lemah">60</text>
+<text x="410" y="30" text-anchor="middle" font-size="13" class="dg-teks-lemah">90 mm</text>
+<text x="10" y="82" font-size="15" font-weight="bold" class="dg-teks">Waspada</text>
+<rect x="140" y="58" width="90" height="34" rx="4" class="dg-waspada"/>
+<text x="238" y="81" font-size="14" class="dg-teks">30 mm</text>
+<text x="140" y="112" font-size="13" class="dg-teks-lemah">H3 30 mm atau lebih dan bahaya 0,33 atau lebih</text>
+<text x="10" y="172" font-size="15" font-weight="bold" class="dg-teks">Siaga</text>
+<rect x="140" y="148" width="180" height="34" rx="4" class="dg-waspada"/>
+<text x="328" y="171" font-size="14" class="dg-teks">60 mm</text>
+<text x="140" y="202" font-size="13" class="dg-teks-lemah">H3 60 mm, tanah jenuh, bahaya 0,66 (jalur lain ada di teks)</text>
+<text x="10" y="262" font-size="15" font-weight="bold" class="dg-teks">Awas</text>
+<rect x="140" y="238" width="270" height="34" rx="4" class="dg-bahaya"/>
+<text x="418" y="261" font-size="14" class="dg-teks">90 mm</text>
+<text x="500" y="261" font-size="13" class="dg-teks-lemah">jenuh dan bahaya 0,66</text>
+</svg>

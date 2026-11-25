@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 260">
+<title>Tangga kelas siaga kaji cepat gempa</title><desc>Empat kelas dari perkiraan korban jiwa model PAGER.</desc>
+<text x="360" y="24" text-anchor="middle" font-size="16" font-weight="700" class="dg-teks">Kelas siaga menurut perkiraan korban jiwa model PAGER (estimasi-model)</text>
+<line x1="150" y1="44" x2="150" y2="224" class="dg-grid"/>
+<rect x="150" y="50" width="60" height="34" class="dg-ok"/>
+<text x="140" y="72" text-anchor="end" font-size="14" class="dg-teks">hijau</text>
+<text x="222" y="72" font-size="13" class="dg-teks-lemah">kurang dari 1 jiwa</text>
+<rect x="150" y="94" width="200" height="34" class="dg-waspada"/>
+<text x="140" y="116" text-anchor="end" font-size="14" class="dg-teks">kuning</text>
+<text x="362" y="116" font-size="13" class="dg-teks-lemah">1 sampai 99 jiwa</text>
+<rect x="150" y="138" width="340" height="34" class="dg-aksen"/>
+<text x="140" y="160" text-anchor="end" font-size="14" class="dg-teks">oranye</text>
+<text x="502" y="160" font-size="13" class="dg-teks-lemah">100 sampai 999 jiwa</text>
+<rect x="150" y="182" width="520" height="34" class="dg-bahaya"/>
+<text x="140" y="204" text-anchor="end" font-size="14" class="dg-teks">merah</text>
+<text x="660" y="204" text-anchor="end" font-size="13" class="dg-teks">1.000 jiwa atau lebih</text>
+<text x="360" y="246" text-anchor="middle" font-size="13" class="dg-teks-lemah">Panjang batang hanya urutan kelas, bukan skala.</text>
+</svg>

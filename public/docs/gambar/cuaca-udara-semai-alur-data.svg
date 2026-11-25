@@ -1,0 +1,48 @@
+<svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="p" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path class="dg-garis" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+<text class="dg-teks-lemah" x="90" y="22" font-size="13" text-anchor="middle">Sumber</text>
+<text class="dg-teks-lemah" x="360" y="22" font-size="13" text-anchor="middle">Pipeline dan jadwal</text>
+<text class="dg-teks-lemah" x="630" y="22" font-size="13" text-anchor="middle">Layar</text>
+<rect class="dg-kotak" x="10" y="36" width="160" height="62" rx="8"/>
+<text class="dg-teks" x="90" y="62" font-size="14" text-anchor="middle">Open-Meteo, ECMWF,</text>
+<text class="dg-teks" x="90" y="82" font-size="14" text-anchor="middle">BMKG, METAR</text>
+<rect class="dg-kotak-aksen" x="250" y="36" width="220" height="62" rx="8"/>
+<text class="dg-teks" x="360" y="62" font-size="14" text-anchor="middle">cuaca.py, harian</text>
+<text class="dg-teks-lemah" x="360" y="82" font-size="13" text-anchor="middle">lintas.yml 02.10 UTC</text>
+<rect class="dg-kotak" x="550" y="36" width="160" height="62" rx="8"/>
+<text class="dg-teks" x="630" y="72" font-size="14" text-anchor="middle">/cuaca/</text>
+<rect class="dg-kotak" x="10" y="124" width="160" height="62" rx="8"/>
+<text class="dg-teks" x="90" y="150" font-size="14" text-anchor="middle">CAMS, stasiun,</text>
+<text class="dg-teks" x="90" y="170" font-size="14" text-anchor="middle">TROPOMI, api</text>
+<rect class="dg-kotak-aksen" x="250" y="124" width="220" height="62" rx="8"/>
+<text class="dg-teks" x="360" y="150" font-size="14" text-anchor="middle">jalan.py, 2 kali sehari</text>
+<text class="dg-teks-lemah" x="360" y="170" font-size="13" text-anchor="middle">udara.yml 06.40 dan 18.40 UTC</text>
+<rect class="dg-kotak" x="550" y="124" width="160" height="62" rx="8"/>
+<text class="dg-teks" x="630" y="160" font-size="14" text-anchor="middle">/udara/</text>
+<rect class="dg-kotak" x="10" y="212" width="160" height="62" rx="8"/>
+<text class="dg-teks" x="90" y="238" font-size="14" text-anchor="middle">Jadwal BMKG, sortie</text>
+<text class="dg-teks" x="90" y="258" font-size="14" text-anchor="middle">TMC, PM2,5, hujan</text>
+<rect class="dg-kotak-aksen" x="250" y="212" width="220" height="62" rx="8"/>
+<text class="dg-teks" x="360" y="238" font-size="14" text-anchor="middle">scripts/omc, evaluasi DiD</text>
+<text class="dg-teks-lemah" x="360" y="258" font-size="13" text-anchor="middle">dirantai di udara.yml</text>
+<rect class="dg-kotak" x="550" y="212" width="160" height="62" rx="8"/>
+<text class="dg-teks" x="630" y="238" font-size="14" text-anchor="middle">/admin/omc</text>
+<text class="dg-teks-lemah" x="630" y="258" font-size="13" text-anchor="middle">kesesuaian saja</text>
+<rect class="dg-kotak" x="10" y="300" width="160" height="62" rx="8"/>
+<text class="dg-teks" x="90" y="326" font-size="14" text-anchor="middle">IFS 0,1 derajat,</text>
+<text class="dg-teks" x="90" y="346" font-size="14" text-anchor="middle">titik api, bandara</text>
+<rect class="dg-kotak-aksen" x="250" y="300" width="220" height="62" rx="8"/>
+<text class="dg-teks" x="360" y="326" font-size="14" text-anchor="middle">semai.py, lintasan.py</text>
+<text class="dg-teks-lemah" x="360" y="346" font-size="13" text-anchor="middle">semai.yml 10.00 dan 22.00 UTC</text>
+<rect class="dg-lemah" x="550" y="300" width="160" height="62" rx="8"/>
+<text class="dg-teks" x="630" y="326" font-size="14" text-anchor="middle">/operasi#semai</text>
+<text class="dg-teks-lemah" x="630" y="346" font-size="13" text-anchor="middle">hipotesis, staf</text>
+<line class="dg-garis" x1="170" y1="67" x2="248" y2="67" marker-end="url(#p)"/>
+<line class="dg-garis" x1="470" y1="67" x2="548" y2="67" marker-end="url(#p)"/>
+<line class="dg-garis" x1="170" y1="155" x2="248" y2="155" marker-end="url(#p)"/>
+<line class="dg-garis" x1="470" y1="155" x2="548" y2="155" marker-end="url(#p)"/>
+<line class="dg-garis" x1="170" y1="243" x2="248" y2="243" marker-end="url(#p)"/>
+<line class="dg-garis" x1="470" y1="243" x2="548" y2="243" marker-end="url(#p)"/>
+<line class="dg-garis" x1="170" y1="331" x2="248" y2="331" marker-end="url(#p)"/>
+<line class="dg-garis" x1="470" y1="331" x2="548" y2="331" marker-end="url(#p)"/>
+</svg>

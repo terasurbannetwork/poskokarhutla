@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 290">
+<title id="t2">AUC model membesar pada 123 kejadian lalu</title>
+<g font-size="14">
+<text class="dg-teks" x="20" y="26" font-size="15">AUC model akan membesar, 123 kejadian lalu (hipotesis)</text>
+<path class="dg-grid" d="M200 50V240M200 240H690M200 145H690M200 50H690"/>
+<text class="dg-teks-lemah" x="192" y="244" text-anchor="end" font-size="12">0,5</text>
+<text class="dg-teks-lemah" x="192" y="149" text-anchor="end" font-size="12">0,75</text>
+<text class="dg-teks-lemah" x="192" y="54" text-anchor="end" font-size="12">1,0</text>
+<text class="dg-teks" x="20" y="95">Model lama</text>
+<rect class="dg-lemah" x="200" y="76" width="216" height="30"/><text class="dg-teks" x="424" y="97">0,7206</text>
+<text class="dg-teks" x="20" y="150">Model baru</text>
+<rect class="dg-aksen" x="200" y="131" width="326" height="30"/><text class="dg-teks" x="534" y="152">0,8324</text>
+<text class="dg-teks" x="20" y="205">Baru, ramal ulang 14 jam</text>
+<rect class="dg-kotak-aksen" x="200" y="186" width="386" height="30"/><text class="dg-teks" x="594" y="207">0,8944</text>
+</g>
+<text class="dg-teks-lemah" x="20" y="272" font-size="12">Sumber: model_sebaran.json (kunci lolos dan lolos_ulang). Sumbu mulai dari 0,5. Belum lolos uji prospektif.</text>
+</svg>

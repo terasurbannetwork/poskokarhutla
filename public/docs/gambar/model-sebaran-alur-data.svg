@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+<title id="t1">Alur data model sebaran dari sumber ke layar</title>
+<defs><marker id="pa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="dg-garis" d="M0 0L10 5L0 10z"/></marker></defs>
+<g font-size="14">
+<rect class="dg-lemah" x="10" y="20" width="150" height="46" rx="8"/><text class="dg-teks" x="85" y="48" text-anchor="middle">Titik panas VIIRS</text>
+<rect class="dg-lemah" x="10" y="90" width="150" height="46" rx="8"/><text class="dg-teks" x="85" y="118" text-anchor="middle">Cuaca ERA5 per jam</text>
+<rect class="dg-lemah" x="10" y="160" width="150" height="62" rx="8"/><text class="dg-teks" x="85" y="187" text-anchor="middle">Lahan, kanal, jalan,</text><text class="dg-teks" x="85" y="206" text-anchor="middle">desa, ENSO</text>
+<rect class="dg-kotak" x="210" y="20" width="150" height="46" rx="8"/><text class="dg-teks" x="285" y="48" text-anchor="middle">Pelacak peristiwa</text>
+<rect class="dg-kotak" x="210" y="125" width="150" height="46" rx="8"/><text class="dg-teks" x="285" y="153" text-anchor="middle">40 fitur sel</text>
+<rect class="dg-kotak" x="410" y="60" width="140" height="46" rx="8"/><text class="dg-teks" x="480" y="88" text-anchor="middle">Model sel</text>
+<rect class="dg-kotak" x="410" y="140" width="140" height="46" rx="8"/><text class="dg-teks" x="480" y="162" text-anchor="middle">Model membesar</text><text class="dg-teks-lemah" x="480" y="179" text-anchor="middle" font-size="12">tanda WASPADA</text>
+<rect class="dg-kotak-aksen" x="260" y="240" width="200" height="46" rx="8"/><text class="dg-teks" x="360" y="268" text-anchor="middle">model_sebaran.json</text>
+<rect class="dg-kotak" x="500" y="240" width="200" height="46" rx="8"/><text class="dg-teks" x="600" y="262" text-anchor="middle">Gerbang pembanding</text><text class="dg-teks-lemah" x="600" y="279" text-anchor="middle" font-size="12">gerbang_model.json</text>
+<rect class="dg-lemah" x="590" y="20" width="120" height="62" rx="8"/><text class="dg-teks" x="650" y="46" text-anchor="middle">Uji prospektif</text><text class="dg-teks-lemah" x="650" y="66" text-anchor="middle" font-size="12">tiap 3 jam</text>
+<rect class="dg-kotak-aksen" x="60" y="335" width="200" height="46" rx="8"/><text class="dg-teks" x="160" y="363" text-anchor="middle">Tab Simulasi di peramban</text>
+<rect class="dg-kotak-aksen" x="290" y="335" width="180" height="46" rx="8"/><text class="dg-teks" x="380" y="363" text-anchor="middle">Jejak api</text>
+<rect class="dg-kotak-aksen" x="500" y="335" width="200" height="46" rx="8"/><text class="dg-teks" x="600" y="363" text-anchor="middle">Peringatan email</text>
+</g>
+<path class="dg-garis" d="M160 43H210" marker-end="url(#pa)"/>
+<path class="dg-garis" d="M160 113L210 140" marker-end="url(#pa)"/>
+<path class="dg-garis" d="M160 191L210 158" marker-end="url(#pa)"/>
+<path class="dg-garis" d="M285 66V125" marker-end="url(#pa)"/>
+<path class="dg-garis" d="M360 143L410 90" marker-end="url(#pa)"/>
+<path class="dg-garis" d="M360 155L410 163" marker-end="url(#pa)"/>
+<path class="dg-garis" d="M480 106L400 240" marker-end="url(#pa)"/>
+<path class="dg-garis" d="M480 186L420 240" marker-end="url(#pa)"/>
+<path class="dg-garis" d="M460 263H500" marker-end="url(#pa)"/>
+<path class="dg-garis" d="M650 82V240" marker-end="url(#pa)"/>
+<path class="dg-garis" d="M330 286L180 335" marker-end="url(#pa)"/>
+<path class="dg-garis" d="M360 286L370 335" marker-end="url(#pa)"/>
+<path class="dg-garis" d="M600 286V335" marker-end="url(#pa)"/>
+</svg>

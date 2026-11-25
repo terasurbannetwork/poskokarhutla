@@ -1,0 +1,14 @@
+# Pertanyaan pemilik yang terbuka
+
+Halaman ini mencatat pertanyaan pemilik yang masih terbuka beserta bawaan sementaranya.
+
+## Pertanyaan pemilik yang masih terbuka
+
+Semua ditulis "belum diputuskan (bawaan sementara: ...)".
+
+- Tsunami genangan: Q3 batimetri dekat pantai (bawaan sementara: GEBCO, BATNAS bila cocok); Q8 ambang lulus dan `n_min` (bawaan sementara: acuan JSCE 0,95 sampai 1,05 dan di bawah 1,45, `n_min` = 8); Q9 tsunami non-gempa (bawaan sementara: tidak di fase 1); Q10 sumber awal heterogen (bawaan sementara: slip seragam); Q11 geometri patahan (bawaan sementara: mekanisme fokal BMKG atau USGS, selain itu nilai bawaan jenis); Q12 anggaran animasi zoom; Q13 paparan bangunan di area genangan (bawaan sementara: tidak); Q16 tombol bagikan (bawaan sementara: tidak ada); Q17 kotak uji kelas A, Aceh Besar dan pesisir utara Flores (bawaan sementara: ya, tidak tampil di pemilih publik). Ketiga kotak pertama belum punya kejadian uji kelas A, sehingga label "teruji" tidak berlaku di sana. Q1, Q2, Q4 sampai Q7, Q14, Q15 sudah dijawab (K3 sampai K7).
+- Lereng bangunan: seluruh bawaan Q1 sampai Q18 diterima pemilik (K4), tetapi sumber ambang 40 persen sudah diperiksa di LT-02 (Keppres 32/1990 Pasal 8, lereng 40 persen atau lebih untuk hutan lindung; Permen PU 22/2007, lebih dari 40 persen untuk zona rawan longsor tipe A; keduanya bukan ambang kejadian longsor; PP 26/2008, SK Mentan 837/1980, dan lisensi DEMNAS tidak terverifikasi, `data/kajian-bnpb/lereng-bangunan/RISET.md:57-66`), tetapi keputusan K4 tetap memakai label "belum diverifikasi" sampai pemilik memutuskan (Q1); sebagian syarat "dikaji lagi sesudah uji" tetap berlaku, termasuk Q14 dan Q15 (peringkat nama desa publik hanya sesudah uji awal dan persetujuan pemilik) dan Q18 (lapisan tidak masuk skor nowcast).
+- EWS: Q1 izin data vendor dan MHEWS BNPB (bawaan sementara: tidak diambil); Q2 panel publik atau staf (bawaan sementara: SIHKA dan PVMBG publik, sensor milik sendiri hanya tiga peran staf); Q3 jenis sensor gunung api (bawaan sementara: tambah `geofon`); Q4 batas basi per jenis; Q5 kotak Langkah cepat (bawaan sementara: ya, dari tangga tindakan yang ada); Q6 grafik geofon (bawaan sementara: ringkasan per menit); Q7 penyejajaran status SIHKA dan Waspada, Siaga, Awas (bawaan sementara: tidak dipetakan); Q8 interval kirim alat (bawaan sementara hipotesis: 5 menit dan 1 menit).
+- Longsor: apakah `PRAREG-LHASA2` disetujui dan dibekukan, menunggu 948 sel hujan (keputusan pemilik 4 Nov 2026).
+- Gunung api: izin olah data MIROVA (`izin_olah = "belum"`); keputusan lapisan KRB BNPB (celah hanya Ruang KRB II dan Ili Boleng) belum dikerjakan.
+- Kekeringan: tidak ada uji baru boleh dijalankan pada periode uji yang sama; butuh protokol dan data baru (HTH harian panjang, DIBI sebelum 2023) agar ambang bisa dinaikkan dari hipotesis.

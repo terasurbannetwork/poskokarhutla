@@ -6,6 +6,7 @@ import {jagaTitik} from "./jaga_pipa.js";
 import {himawariRespons} from "./himawari.js";
 import {denyutJaga} from "./jaga_jadwal.js";
 import {JENIS, BAHAYA} from "../public/informasi_jenis.js";
+import {ruteDocs, jalurDocs, DOCS_HTML_LANGSUNG} from "./docs_rute.js";
 import {perbaruiTitik, titikTerbaru, wilayah, cariWilayah, jedaSensor} from "./titik.js";
 import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
@@ -750,6 +751,7 @@ export const HTML_RUTE = [
   [/^\/lapor\/?$/, "/lapor/index.html", "/lapor"],   // Lapor Bencana BNPB, pintu warga (public/lapor/, src/lapor_ai.js); publik (KEPUTUSAN-MASUK K14)
   [/^\/lapor\/lacak\/?$/, "/lapor/lacak.html", "/lapor/lacak"],   // halaman lacak bertoken ?t=, publik (K14)
   [/^\/lapor\/meja\/?$/, "/lapor/meja.html", "/lapor/meja"],   // meja laporan staf; tertutup di centurisk97.id, /api/lapor/meja* menjaga sesi staf
+  ...ruteDocs(),   // /docs, /docs/<modul>[/<halaman>], /docs/pengembang/...: pola tertutup, dokumentasi publik Centurisk97 (public/docs/, src/docs_rute.js); terbuka di PUBLIK_TANPA_SESI, tanpa D1/API
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
    dan /admin/masuk harus terbuka), /ews/ (tautan surel konfirmasi/berhenti) atau /ubin/. Halaman baru otomatis ikut terkunci; yang boleh terbuka HARUS tercatat di sini. */
@@ -770,12 +772,14 @@ export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk den
   ["/lapor", "Lapor Bencana BNPB: warga melapor kejadian (KEPUTUSAN-MASUK K14, pemilik 19 Nov 2026); halaman tidak memuat data, pelapor masuk lewat /masuk dan nomor dari sesi dicek di tiap /api/lapor/*"],
   ["/lapor/lacak", "lacak laporan dengan tautan bertoken ?t= yang dikirim ke pelapor, tanpa akun (KEPUTUSAN-MASUK K14); halaman tanpa token kosong, token dicek di /api/lapor/lacak"],
   ["/masuk", "pintu masuk satu nomor WhatsApp dan kode sekali pakai harus bisa dibuka tamu (keputusan pemilik 15 Nov 2026, K8); halaman tidak memuat data, kode dan sesi dicek di tiap panggilan /api/masuk/*"],
+  ["/docs", "dokumentasi Centurisk97 (cara kerja, metode, referensi) terbuka tanpa login (KEPUTUSAN-DOCS Q1 bawaan); hanya HTML statis hasil scripts/docs/bangun.py, tanpa data pribadi, tanpa API, tanpa tulis; jalur dikunci ke pola tertutup (segmen [a-z0-9-], paling dalam 3 segmen)"],
   ["/alun-alun", "forum alun-alun dibuka tamu tanpa login (keputusan pemilik 15 Nov 2026, K8: \"alun alun\"); tulis dan baca lewat /api/alun* yang berlaju dan ber-Turnstile, daftar relawan dan peta utama tetap terkunci"]]);
 function halamanTerkunci(url) {
   const jalur = url.pathname.replace(/\/+$/, "") || "/";
   if (/^\/lapor\/(index|lacak)\.html$/.test(url.pathname)) return false;   // alamat langsung pintu Lapor dan tautan lacak lama (/lapor/lacak.html?t=), sama dengan K14
+  if (DOCS_HTML_LANGSUNG.test(url.pathname)) return false;   // alamat langsung berkas Docs (keluaran generator), publik seperti /docs (DC-03)
   if (/\.html$/i.test(url.pathname)) return true;   // berkas HTML statis dibuka langsung lewat nama (Worker dipanggil hanya untuk pola ini)
-  if (PUBLIK_TANPA_SESI.has(jalur)) return false;
+  if (PUBLIK_TANPA_SESI.has(jalur) || jalurDocs(jalur)) return false;
   if (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) return true;
   const kunci = /\/[0-9a-f]{16}$/.test(jalur) ? jalur.slice(0, -16) + ":id" : jalur;
   if (/^\/command-center(\/|$)/.test(jalur)) return false;
@@ -802,7 +806,7 @@ const TANPA_KELUAR = /^\/(admin\/)?masuk$/;
 function pasangKeluar(req, url, res) {
   const ct = res.headers.get("content-type"); if (req.method !== "GET" || res.status !== 200 || ct && !/text\/html/.test(ct)) return res;
   const j = url.pathname.replace(/\/+$/, "") || "/";
-  if (PUBLIK_TANPA_SESI.has(j) || TANPA_KELUAR.test(j)) return res;
+  if (PUBLIK_TANPA_SESI.has(j) || jalurDocs(j) || TANPA_KELUAR.test(j)) return res;
   return new HTMLRewriter().on("body", {element: el => el.append('<script src="/inti/keluar.js?v=1" defer></script>', {html: true})}).transform(res);
 }
 async function layaniHTML(req, env, ctx, url) {
@@ -819,11 +823,12 @@ async function layaniHTML(req, env, ctx, url) {
   /* laporan konsesi hanya di alamat Centurisk97 (*.workers.dev), pemilik 18 Okt 2026 */
   if ((jalur === "/laporan-konsesi" || jalur === "/laporan-bnpb") && !situsCenturisk(url.hostname) && url.hostname !== "localhost") return new Response("Tidak ditemukan", {status: 404});
   // meta og/twitter/canonical per rute dari data/og/meta.json (src/og_meta.js); gagal = HTML apa adanya
-  const aset = await terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL(cocok[1], url), req)));
+  const aset = await terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL(cocok[3] ? cocok[3](url.pathname) : cocok[1], url), req)));
   if (!aset.ok || req.method === "HEAD") return aset;
-  catatHTML(env, req, jalur, ctx);
+  const docs = jalurDocs(jalur);   // Docs murni aset statis: tanpa tulis hit dan tanpa baca angka pil D1 (hemat kuota D1 Free), boleh di-cache bersama
+  if (!docs) catatHTML(env, req, jalur, ctx);
   /* pil header "N online · N tampilan": angka ditaruh di atribut <html>, digambar public/persetujuan.js (tanpa panggilan API tambahan) */
-  let a = null; try { a = await Pub.angkaPil(env); } catch (e) {}
+  let a = null; if (!docs) try { a = await Pub.angkaPil(env); } catch (e) {}
   if (a && !a.online && !a.tampilan) a = null;
   /* situs per alamat: *.workers.dev dan centurisk97.id = "w" (data perusahaan, tanpa Chat Admin & tab Tentang, lihat CSS html[data-situs=w]);
      pantau.terasurban.com tanpa atribut */
@@ -837,7 +842,7 @@ async function layaniHTML(req, env, ctx, url) {
     if (pmTab) el.setAttribute("data-pemirsa-tab", pmTab);
   }}).transform(aset);
   /* HTML per orang (pemirsa) dan di balik login (host terkunci): jangan disimpan cache bersama */
-  if (pmTab || hostTerkunci(url.hostname) || jalur === "/uji-lapangan") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.append("vary", "cookie"); }
+  if (pmTab || (hostTerkunci(url.hostname) && !docs) || jalur === "/uji-lapangan") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.append("vary", "cookie"); }
   /* /petugas dan /petugas/panel memuat data pribadi: CSP ketat (tanpa skrip/gaya inline; aset sendiri + Google Fonts) dan tanpa referrer; kode pribadi ada di fragmen #k= */
   if (jalur === "/bantu") { keluaran.headers.set("content-security-policy", CSP_PETUGAS.replace(" 'wasm-unsafe-eval'", "")); keluaran.headers.set("referrer-policy", "no-referrer"); keluaran.headers.set("cache-control", "no-store"); }
   if (jalur === "/petugas" || jalur === "/petugas/panel") {

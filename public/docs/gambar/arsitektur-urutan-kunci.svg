@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 410">
+<title>Urutan pemeriksaan kunci API berkunci</title>
+<defs><marker id="p" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path class="dg-garis" d="M1 1 L8 5 L1 9" fill="none" stroke-width="2"/></marker></defs>
+<text class="dg-teks-lemah" font-size="13" x="20" y="20" text-anchor="start">Pemeriksaan, berurutan</text>
+<text class="dg-teks-lemah" font-size="13" x="470" y="20" text-anchor="start">Bila gagal, jawaban</text>
+<rect class="dg-kotak" x="20" y="30" width="380" height="42" rx="8"/>
+<text class="dg-teks" font-size="14" x="35" y="56.0">1. Header X-API-Key ada dan garam terpasang</text>
+<line class="dg-garis" x1="400" y1="51" x2="468" y2="51" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#p)"/>
+<rect class="dg-lemah" x="470" y="35" width="230" height="32" rx="6"/>
+<text class="dg-teks" font-size="14" x="485" y="56">503 layanan belum siap</text>
+<line class="dg-garis" x1="210" y1="72" x2="210" y2="90" stroke-width="2" marker-end="url(#p)"/>
+<rect class="dg-kotak" x="20" y="92" width="380" height="42" rx="8"/>
+<text class="dg-teks" font-size="14" x="35" y="118.0">2. Jaringan belum melewati batas kunci salah</text>
+<line class="dg-garis" x1="400" y1="113" x2="468" y2="113" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#p)"/>
+<rect class="dg-lemah" x="470" y="97" width="230" height="32" rx="6"/>
+<text class="dg-teks" font-size="14" x="485" y="118">429 tunggu, jaringan ditutup</text>
+<line class="dg-garis" x1="210" y1="134" x2="210" y2="152" stroke-width="2" marker-end="url(#p)"/>
+<rect class="dg-kotak" x="20" y="154" width="380" height="42" rx="8"/>
+<text class="dg-teks" font-size="14" x="35" y="180.0">3. Format, hash, belum dicabut, belum 365 hari</text>
+<line class="dg-garis" x1="400" y1="175" x2="468" y2="175" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#p)"/>
+<rect class="dg-lemah" x="470" y="159" width="230" height="32" rx="6"/>
+<text class="dg-teks" font-size="14" x="485" y="180">401 kunci tidak sah</text>
+<line class="dg-garis" x1="210" y1="196" x2="210" y2="214" stroke-width="2" marker-end="url(#p)"/>
+<rect class="dg-kotak" x="20" y="216" width="380" height="42" rx="8"/>
+<text class="dg-teks" font-size="14" x="35" y="242.0">4. Kunci belum melewati batas per jam</text>
+<line class="dg-garis" x1="400" y1="237" x2="468" y2="237" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#p)"/>
+<rect class="dg-lemah" x="470" y="221" width="230" height="32" rx="6"/>
+<text class="dg-teks" font-size="14" x="485" y="242">429 tunggu Retry-After</text>
+<line class="dg-garis" x1="210" y1="258" x2="210" y2="276" stroke-width="2" marker-end="url(#p)"/>
+<rect class="dg-kotak" x="20" y="278" width="380" height="42" rx="8"/>
+<text class="dg-teks" font-size="14" x="35" y="304.0">5. Cakupan kunci termasuk endpoint ini</text>
+<line class="dg-garis" x1="400" y1="299" x2="468" y2="299" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#p)"/>
+<rect class="dg-lemah" x="470" y="283" width="230" height="32" rx="6"/>
+<text class="dg-teks" font-size="14" x="485" y="304">403 cakupan tidak cukup</text>
+<line class="dg-garis" x1="210" y1="320" x2="210" y2="338" stroke-width="2" marker-end="url(#p)"/>
+<rect class="dg-kotak-aksen" x="20" y="348" width="380" height="42" rx="8"/>
+<text class="dg-teks" font-size="14" x="35" y="374.0">Lolos: data dijawab, private no-store</text>
+</svg>

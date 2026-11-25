@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300">
+<text x="1" y="25" font-size="14" class="dg-teks">Tingkat naik hanya bila semua syarat anak tangga di bawahnya ikut terpenuhi.</text>
+<rect x="1" y="190" width="170" height="60" rx="8" class="dg-lemah"/>
+<text x="86" y="215" text-anchor="middle" font-size="16" class="dg-teks">NORMAL</text>
+<text x="86" y="236" text-anchor="middle" font-size="13" class="dg-teks-lemah">selain syarat di kanan</text>
+<rect x="184" y="145" width="170" height="105" rx="8" class="dg-kotak"/>
+<text x="269" y="172" text-anchor="middle" font-size="16" class="dg-teks">SIAGA</text>
+<text x="269" y="198" text-anchor="middle" font-size="13" class="dg-teks-lemah">anomali hujan</text>
+<text x="269" y="216" text-anchor="middle" font-size="13" class="dg-teks-lemah">-20 persen atau</text>
+<text x="269" y="234" text-anchor="middle" font-size="13" class="dg-teks-lemah">lebih rendah</text>
+<rect x="367" y="100" width="170" height="150" rx="8" class="dg-waspada"/>
+<text x="452" y="127" text-anchor="middle" font-size="16" class="dg-teks">PRA-POSISI</text>
+<text x="452" y="153" text-anchor="middle" font-size="13" class="dg-teks-lemah">syarat SIAGA, ansambel</text>
+<text x="452" y="171" text-anchor="middle" font-size="13" class="dg-teks-lemah">tidak basi, dan 3 hari atau</text>
+<text x="452" y="189" text-anchor="middle" font-size="13" class="dg-teks-lemah">lebih peluang ps50 tinggi</text>
+<rect x="550" y="55" width="169" height="195" rx="8" class="dg-bahaya"/>
+<text x="634" y="82" text-anchor="middle" font-size="16" class="dg-teks">GELAR</text>
+<text x="634" y="108" text-anchor="middle" font-size="13" class="dg-teks-lemah">syarat PRA-POSISI,</text>
+<text x="634" y="126" text-anchor="middle" font-size="13" class="dg-teks-lemah">titik panas tidak basi,</text>
+<text x="634" y="144" text-anchor="middle" font-size="13" class="dg-teks-lemah">sedikitnya 1 titik panas</text>
+<text x="1" y="280" font-size="13" class="dg-teks-lemah">Dihitung harian per kabupaten; ambang berstatus asumsi-kebijakan.</text>
+</svg>

@@ -1,0 +1,39 @@
+# Keluarga model kabupaten-hari dan lab
+
+Halaman ini menjelaskan keluarga model kabupaten-hari, nowcast, dan jalur lab beserta status ujinya.
+
+## 22. Keluarga model kabupaten-hari, nowcast, dan jalur lab (status uji, tanpa dipasang ke status resmi)
+
+Semua jalur di bagian ini berstatus HIPOTESIS atau lab. Tidak satu pun menggantikan `status.py`; mengganti status resmi adalah keputusan pemilik, dan model yang lulus uji prospektif hanya akan dipasang sebagai pelengkap berpil "teruji" (`docs/banjir/PETA-JALAN-MODEL-BANJIR.md` butir 2.8). Aturan mainnya: uji arsip hanya boleh menolak, uji prospektif yang memutus, protokol dibekukan (`PRAREG-*.md` atau `lab_kriteria/*.json` dengan sidik sha256 yang di-commit) sebelum data uji dibuka, dan label 2026 tidak dipakai menyetel apa pun (`PETA-JALAN-MODEL-BANJIR.md` bagian 2). Akar kegagalan umum menurut `scripts/banjir/AUDIT-MODEL-2026-11.md` bagian 1: label berupa "ada laporan DIBI atau logbook", sehingga hari banjir yang tidak dilaporkan dihitung negatif dan FAR terlihat buruk, serta tahun uji 2024 sampai 2025 sudah dibuka berkali-kali.
+
+Model peluang banjir kabupaten-hari (label DIBI banjir atau bandang; hujan ERA5 sebagai prakiraan sempurna pada uji arsip):
+
+- `model_kab.py` adalah dasar GBDT pohon dangkal dengan pembanding aturan `status.py`, klimatologi kabupaten-bulan, dan regresi logistik; latih 2016-2021, validasi 2022-2023, uji 2024-2025. Hasil: AUC 0,77, mengalahkan klimatologi tetapi tidak mengalahkan aturan pada jumlah alarm yang sama. Vonis TIDAK LULUS (`scripts/banjir/RISET-MODEL-KAB.md` bagian 10, dirangkum di `PETA-JALAN-MODEL-BANJIR.md` bagian 1).
+- `model_kab_debit.py` (debit GloFAS), `model_kab_hulu.py` (hujan hulu DAS dan CHIRPS), `model_kab_tanah.py` (kelembapan tanah ERA5-Land), dan `model_kab_grrr.py` (debit Google Runoff Reanalysis) adalah percobaan kontras: apakah satu kelompok fitur menambah keterampilan terhadap model dasar tanpa fitur itu. Protokol beku ada di `PRAREG-DEBIT.md`, `PRAREG-HULU.md`, `PRAREG-TANAH.md`, dan `PRAREG-GRRR.md`; hasil antarpercobaan tidak dibandingkan. Vonis tiap percobaan belum terdokumentasi di dokumen ini (jejaknya di berkas `.sidik` bersebelahan, keluaran mentah di `data/raw/banjir/model_kab_*` yang tidak dilacak git).
+- `model_kab2.py` (KAB2) adalah model operasional: fitur model dasar HULU, label bersatu v2 berbobot (TINGGI 1, SEDANG 0,5, RENDAH 0), latih 2016-2025, kalibrasi Platt leave-one-year-out (`PRAREG-KAB2.md`). Vonis uji 2026: TIDAK MEYAKINKAN (`model_kab2.sidik`). `model_kab2_ops.py` melatih ulang resep yang sama sampai 18 Oktober 2026 dan `prediksi_kab2.py` mengarsipkan prakiraannya ([catatan prospektif](/docs/pengembang/banjir/status-banjir)); BELUM TERUJI dan TIDAK TAYANG.
+- `model_kab_campur.py` (CAMPUR) adalah model campuran bertingkat: lantai klimatologi ditambah koreksi sinyal fisik, dengan klimatologi sebagai offset supaya tidak menjadi lawan. `PRAREG-CAMPUR.md` revisi 5 dan amandemennya berstatus DRAF, belum disetujui pemilik; awal uji prospektif di sidik adalah 7 November 2026. Fitur tambahan: porsi lahan terbangun WorldCover (`kedap_kab.py`) dan kerentanan HAND (`hand_kab.py`, status MENUNGGU KUNCI karena akun MERIT Hydro belum ada).
+- `model_bahaya.py` menilai bahaya banjir per kecamatan dari faktor fisik dan paparan dengan bobot yang dipelajari, lawan peta InaRISK dan kepadatan penduduk. Labelnya Groundsource per kecamatan (`label_kec.py`) dan faktor kecamatan dari `faktor_kec.py` (`RISET-FAKTOR-KEC.md`). Vonisnya belum terdokumentasi di dokumen ini.
+- `model_dampak.py` adalah model bertingkat hujan, kejadian, besaran (KK dan rumah) (`PRAREG-DAMPAK.md`, beku). Hasil uji 2024-2026: besaran KK skill 0,037 dan rumah 0,027, LULUS tetapi lemah; peluang kejadian 2026 TIDAK LULUS (`PETA-JALAN-MODEL-BANJIR.md` bagian 1). `fitur_banjir.py` dan `label_banjir.py` menyusun tabel fitur dan label 20 tahun untuknya.
+- `ambang_wilayah.py` dan `ambang_persentil.py` mencari ambang H3 per kabupaten. Keluaran publiknya berpenanda `"pakai": false` dan tidak dibaca layar maupun `status.py`. Vonis `ambang_persentil.py` TIDAK MEYAKINKAN (`ambang_persentil.sidik`). Pelacak prospektifnya, `siaga_persentil.py`, dibahas di [Status banjir, uji balik, prospektif](/docs/pengembang/banjir/status-banjir).
+- Faktor tambahan, semuanya dibekukan sebelum data uji dibuka dan kode ujinya menyusul: `faktor_orografi.py` (angin 850 hPa menabrak lereng, `PRAREG-OROGRAFI.md`), `faktor_surut.py` (faktor "banjir belum surut" dari laporan harian Koordalops, `PRAREG-SURUT.md`), dan fase MJO (`PRAREG-MJO.md`, kode di modul `cuaca-udara`). Ketiganya dibekukan 24 November 2026 dan belum ada skor yang dilaporkan.
+
+Label:
+
+- `label_bersatu.py`, `label_bersatu_v2.py`, dan `label_bersatu_v3.py` menggabungkan sumber (DIBI, logbook, Groundsource, berita) menjadi label kabupaten-hari berkeyakinan TINGGI, SEDANG, atau RENDAH. v1 dan v2 beku. v3 menambahkan bukti radar OPERA DSWx-S1 (dibekukan 11 November 2026); selama belum ada hari DSWx yang diproses, v3 sama dengan v2 baris demi baris dan konsumen model tetap memakai v2 sampai pemilik memutuskan (`PRAREG-LABEL-V3.md`).
+
+Sinyal sungai dan ansambel:
+
+- `ansambel_hujan.py` membaca `uji_aifs.json`: AIFS (ECMWF) hanya masuk ansambel yang dipakai status bila vonis uji ansambel independen LOLOS. Vonis deterministik terhadap ERA5 saat ini LOLOS, tetapi `vonis_independen` masih kosong, sehingga AIFS tetap anggota bayangan (`PRAREG-AIFS.md`, `public/banjir/data/uji_aifs.json`).
+- `geoglows.py` menarik debit ramalan 15 hari GEOGloWS v2 per ruas sungai dan menghitung periode ulang Gumbel sendiri dari simulasi ERA5. Uji retrospektifnya (`PRAREG-GEOGLOWS.md`, `uji_geoglows.json`) berhasil dijalankan dengan vonis utama TIDAK LULUS dan tidak dipasang ke `status.json`.
+- `grrr.py` memanen Google Runoff Reanalysis dan membandingkan ambangnya dengan ambang sungai kita; berjalan lokal saja karena butuh zarr dan numpy, bukan di workflow. `floodhub.py` dan `floodhub_nilai.py` membaca Google Flood Hub (`PRAREG-FLOODHUB.md`); vonisnya belum terdokumentasi di dokumen ini.
+- `sungai_pos.py` dan `pos_sungai.py` menyusun pos tinggi air beserta nama sungainya (`pos_sungai.py` dijalankan manual bila pos bertambah). `unit_respons.py` menyusun unit respons (Basarnas, pos SAR, BPBD) dari OpenStreetMap dan kantor BPBD BNPB, dijalankan `banjir.yml` tiap tanggal 1 WIB.
+
+Nowcast jam-jaman:
+
+- `nowcast_jkt.py` (Jakarta, tenggang 1 sampai 6 jam, 42 kecamatan daratan): fase 1 berisi inventaris dan fitur tanpa label; jalur A memakai IMERG Early yang diunduh `nowcast-jkt-imerg.yml`. Vonis utama TIDAK LULUS dengan batas andal 0 jam (`nowcast_jkt_vonis.json`); skor Brier terhadap klimatologi hanya 0,001 dan IMERG Early terlambat sekitar 4,4 sampai 4,9 jam (`AUDIT-MODEL-2026-11.md` bagian 2).
+- `nowcast_bandang.py` (bandang 0 sampai 6 jam, GSMaP NRT per kecamatan zona bahaya bandang): status level 0 sampai 3 menurut ambang hipotesis dari literatur dan kategori BMKG, tidak disetel dari data. `PRAREG-BANDANG.md` berstatus DRAF dan belum dibekukan. BELUM TERUJI dan TIDAK TAYANG; pengumpulan fiturnya dijadwalkan `nowcast-bandang.yml`.
+
+Genangan dan pengamatan satelit lab:
+
+- `lab_genangan_radar.py` membuat peta genangan dari radar Sentinel-1 (air baru: gelap sesudah dan tidak gelap sebelum) dan mengujinya terhadap laporan warga PetaBencana di DKI; keluaran di `public/banjir/data/lab/`, bukan produksi, tanpa layar. Keterbatasan: kunjungan ulang satelit 6 sampai 12 hari, genangan kota sering surut sebelum satelit lewat, bangunan menutupi air.
+- `s1_genangan.py` mencatat air tak biasa dari Sentinel-1 RTC per kabupaten (ambang VV dan frekuensi basah dari arsip latih), dijalankan `panen-s1-banjir.yml`. `opera_dswx.py` menyusun katalog OPERA DSWx-S1 dan `panen_lab.py` memanen IMERG dan GloFAS. Semuanya berstatus lab dan tidak tayang.

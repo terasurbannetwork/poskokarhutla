@@ -1,7 +1,7 @@
 # Katalog armada agent — pengetahuan orkestrator
 
 > DI-GENERATE dari `scripts/agents/roster.json` (`npm run agents:build`). Jangan disunting tangan.
-> Armada: **32 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
+> Armada: **33 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
 
 Cara memakai katalog ini:
 
@@ -13,7 +13,7 @@ Cara memakai katalog ini:
    muncul, panggil `general-purpose` dengan prompt "Kamu adalah <nama>: baca `.claude/agents/<nama>.md`
    dan jalankan `node scripts/agents/ilmu.mjs baca <nama>` dulu".
 
-## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (23)
+## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (24)
 
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
@@ -40,6 +40,7 @@ Cara memakai katalog ini:
 | `prediksi` | sonnet | membangun & membetulkan pembekuan prakiraan, penilaian, kalibrasi, aturan dampak, dan layar /prediksi | worker dan D1; modul udara/banjir; menyunting .github/workflows | `scripts/prediksi/**`, `public/prediksi/**`, `tests/prediksi/**` |
 | `sensor` | sonnet | menulis firmware, gateway, simulator, dan panduan pasang sensor lapangan | rute worker, migrasi D1, tampilan layar | `sensor/**`, `tests/sensor/**` |
 | `lapangan` | sonnet | membangun layar /petugas dan panel pimpinan, pembungkus wajah Human, stempel, antrean luring IndexedDB, Service Worker, dan uji fungsi murni tests/lapangan | worker, D1, migrasi; gateway WA; keputusan di KEPUTUSAN-LAPANGAN.md; memeriksa kerjanya sendiri | `public/petugas/**`, `tests/lapangan/**`, `scripts/lapangan/**` +1 |
+| `docs-situs` | sonnet | menulis dan memeriksa docs, membangun generator dan layar /docs, indeks cari | worker & D1; pipeline data; model | `docs/centurisk97/**`, `scripts/docs/**`, `public/docs/**` +1 |
 
 ## Pengerja platform — kerja menyeberang domain (layar, uji, gerbang, mesin, migrasi) (2)
 

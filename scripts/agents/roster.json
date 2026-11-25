@@ -761,6 +761,29 @@
         "scripts/lapangan/**",
         "data/kajian-bnpb/lapangan/**"
       ]
+    },
+    {
+      "nama": "docs-situs",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja Docs Centurisk97 di /docs: sumber Markdown docs/centurisk97, generator stdlib scripts/docs/bangun.py, layar public/docs, indeks cari, uji tests/docs.",
+      "kapan": "docs/centurisk97/**, scripts/docs/**, public/docs/**, atau tests/docs/** disentuh, isi docs basi terhadap kode, atau halaman /docs rusak",
+      "fokus": [
+        "Baca data/kajian-bnpb/docs-situs/ dulu (AGENTS.md 2.47)",
+        "Satu sumber isi: Markdown; HTML keluaran tidak disunting tangan dan harus segar (bangun.py --cek)",
+        "Angka, ambang, rute, dan hak akses hanya dari kode dengan rujukan berkas:baris; tidak ketemu ditulis 'belum terdokumentasi di kode'",
+        "Token tema.css, kepala situs bersama, tanpa skrip inline",
+        "Repo publik: tanpa nama orang, nomor, surel, rahasia"
+      ],
+      "larangan": "Jangan menyunting src/** (minta warga-api) atau workflow (minta mekanik-mesin). Jangan mengarang isi metode.",
+      "bisa": "menulis dan memeriksa docs, membangun generator dan layar /docs, indeks cari",
+      "tidak": "worker & D1; pipeline data; model",
+      "milik": [
+        "docs/centurisk97/**",
+        "scripts/docs/**",
+        "public/docs/**",
+        "tests/docs/**"
+      ]
     }
   ]
 }

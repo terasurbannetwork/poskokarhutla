@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14284b">
+<title>{{JUDUL}}</title>
+<meta name="description" content="{{DESKRIPSI}}">
+<link rel="canonical" href="{{KANONIK}}">
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="/halaman_statis.js"></script>
+<script src="/docs/sudut.js"></script>
+<link rel="stylesheet" href="/inti/tema.css">
+<link rel="stylesheet" href="/docs/docs.css">
+<link rel="stylesheet" href="/docs/gambar.css">
+<link rel="stylesheet" href="/docs/cetak.css" media="print">
+</head>
+<body data-tanpa-keluar class="docs {{KELAS}}">
+<a class="dk-lompat" href="#isi">Lompat ke isi</a>
+<header class="dk-atas">
+  <button type="button" class="dk-ikon dk-menu" id="bukaLaci" aria-label="Buka daftar topik" title="Daftar topik" aria-expanded="false" aria-controls="samping">{{IKON_MENU}}</button>
+  <a class="dk-merek" href="/docs" title="Beranda Docs Centurisk97"><img src="/img/logo.svg?v=2" alt="" width="28" height="28"><span>Centurisk97</span><b>Docs</b></a>
+  <div class="dk-atas-cari">{{CARI}}</div>
+  {{TAB}}
+  <button type="button" class="dk-ikon" id="tema" aria-label="Ganti tema terang atau gelap" title="Ganti tema">{{IKON_BULAN}}</button>
+  <a class="tb tb-sekunder dk-situs" href="/" aria-label="Ke situs Centurisk97" title="Ke situs"><span>Ke situs</span>{{IKON_KELUAR}}</a>
+</header>
+<div class="dk-grid">
+<aside class="dk-samping" id="samping" aria-label="Daftar topik">{{NAV}}</aside>
+<button type="button" class="dk-tutup" id="tutupLaci" aria-label="Tutup daftar topik" tabindex="-1" hidden></button>
+<div class="dk-isi" id="isi" role="main" aria-label="Isi dokumen">
+{{ISI}}
+</div>
+<div class="dk-toc-w" id="tocW">{{TOC}}</div>
+</div>
+<span class="sr" id="docsStatus" role="status" aria-live="polite"></span>
+<footer class="dk-kaki">{{KAKI}}<div class="dk-kaki-bawah"><span>Diperbarui {{TANGGAL}}</span><span>Angka model berlabel hipotesis sampai lulus uji balik. Status resmi tetap dari instansi berwenang.</span></div></footer>
+<script src="/docs/docs.js" defer></script>
+</body>
+</html>

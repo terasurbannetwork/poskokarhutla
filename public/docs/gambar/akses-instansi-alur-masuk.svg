@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300"><defs><marker id="p" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 Z" class="dg-garis dg-aksen"/></marker></defs>
+<rect x="10" y="20" width="160" height="60" rx="8" class="dg-kotak"/>
+<text x="90.0" y="45.9" text-anchor="middle" font-size="14" class="dg-teks">Ketik nomor</text>
+<text x="90.0" y="63.9" text-anchor="middle" font-size="14" class="dg-teks">WhatsApp</text>
+<line x1="172" y1="50" x2="188" y2="50" class="dg-garis" stroke-width="2" marker-end="url(#p)"/>
+<rect x="190" y="20" width="160" height="60" rx="8" class="dg-kotak"/>
+<text x="270.0" y="45.9" text-anchor="middle" font-size="14" class="dg-teks">Lolos Turnstile,</text>
+<text x="270.0" y="63.9" text-anchor="middle" font-size="14" class="dg-teks">tekan Kirim kode</text>
+<line x1="352" y1="50" x2="368" y2="50" class="dg-garis" stroke-width="2" marker-end="url(#p)"/>
+<rect x="370" y="20" width="160" height="60" rx="8" class="dg-kotak"/>
+<text x="450.0" y="45.9" text-anchor="middle" font-size="14" class="dg-teks">Kode sekali pakai</text>
+<text x="450.0" y="63.9" text-anchor="middle" font-size="14" class="dg-teks">dikirim lewat WhatsApp</text>
+<line x1="532" y1="50" x2="548" y2="50" class="dg-garis" stroke-width="2" marker-end="url(#p)"/>
+<rect x="550" y="20" width="160" height="60" rx="8" class="dg-kotak-aksen"/>
+<text x="630.0" y="45.9" text-anchor="middle" font-size="14" class="dg-teks">Ketik kode,</text>
+<text x="630.0" y="63.9" text-anchor="middle" font-size="14" class="dg-teks">tekan Masuk</text>
+<text x="360" y="112" text-anchor="middle" font-size="14" class="dg-teks-lemah">Hasil bergantung pada nomor yang baru dibuktikan</text>
+<line x1="90.0" y1="126" x2="90.0" y2="150" class="dg-garis" stroke-width="2" marker-end="url(#p)"/>
+<rect x="10" y="152" width="160" height="24" rx="8" class="dg-kotak"/>
+<text x="90.0" y="168.6" text-anchor="middle" font-size="13" class="dg-teks">Nomor belum dikenal</text>
+<rect x="10" y="180" width="160" height="62" rx="8" class="dg-lemah dg-kotak"/>
+<text x="90.0" y="205" text-anchor="middle" font-size="13" class="dg-teks">Akun umum otomatis,</text>
+<text x="90.0" y="223" text-anchor="middle" font-size="13" class="dg-teks">lengkapi profil</text>
+<rect x="10" y="248" width="160" height="6" rx="3" class="dg-ok"/>
+<line x1="270.0" y1="126" x2="270.0" y2="150" class="dg-garis" stroke-width="2" marker-end="url(#p)"/>
+<rect x="190" y="152" width="160" height="24" rx="8" class="dg-kotak"/>
+<text x="270.0" y="168.6" text-anchor="middle" font-size="13" class="dg-teks">Terikat ke akun lembaga</text>
+<rect x="190" y="180" width="160" height="62" rx="8" class="dg-lemah dg-kotak"/>
+<text x="270.0" y="205" text-anchor="middle" font-size="13" class="dg-teks">Pilih ruang,</text>
+<text x="270.0" y="223" text-anchor="middle" font-size="13" class="dg-teks">sesi modul lembaga</text>
+<rect x="190" y="248" width="160" height="6" rx="3" class="dg-ok"/>
+<line x1="450.0" y1="126" x2="450.0" y2="150" class="dg-garis" stroke-width="2" marker-end="url(#p)"/>
+<rect x="370" y="152" width="160" height="24" rx="8" class="dg-kotak"/>
+<text x="450.0" y="168.6" text-anchor="middle" font-size="13" class="dg-teks">Akun staf</text>
+<rect x="370" y="180" width="160" height="62" rx="8" class="dg-lemah dg-kotak"/>
+<text x="450.0" y="205" text-anchor="middle" font-size="13" class="dg-teks">Kode saja belum cukup:</text>
+<text x="450.0" y="223" text-anchor="middle" font-size="13" class="dg-teks">minta sandi staf</text>
+<rect x="370" y="248" width="160" height="6" rx="3" class="dg-waspada"/>
+<line x1="630.0" y1="126" x2="630.0" y2="150" class="dg-garis" stroke-width="2" marker-end="url(#p)"/>
+<rect x="550" y="152" width="160" height="24" rx="8" class="dg-kotak"/>
+<text x="630.0" y="168.6" text-anchor="middle" font-size="13" class="dg-teks">Akun BPBD</text>
+<rect x="550" y="180" width="160" height="62" rx="8" class="dg-lemah dg-kotak"/>
+<text x="630.0" y="205" text-anchor="middle" font-size="13" class="dg-teks">Tidak diberi sesi dari kode:</text>
+<text x="630.0" y="223" text-anchor="middle" font-size="13" class="dg-teks">masuk lewat /instansi</text>
+<rect x="550" y="248" width="160" height="6" rx="3" class="dg-bahaya"/>
+<text x="360" y="282" text-anchor="middle" font-size="13" class="dg-teks-lemah">Pesan galat sama untuk kode salah, kedaluwarsa, dan nomor tak dikenal</text>
+</svg>

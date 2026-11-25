@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 270">
+<title>Fase hidup satu kejadian</title><desc>Enam fase berurutan dan pembagian wewenang.</desc>
+<defs><marker id="p" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" class="dg-garis dg-lemah"/></marker></defs>
+<text x="360" y="26" text-anchor="middle" font-size="16" font-weight="700" class="dg-teks">Fase hidup satu kejadian (nomor KJ tidak berubah)</text>
+<rect x="10" y="60" width="104" height="52" rx="6" class="dg-kotak"/><text x="62" y="90" text-anchor="middle" font-size="14" class="dg-teks">terdeteksi</text>
+<rect x="132" y="60" width="104" height="52" rx="6" class="dg-kotak"/><text x="184" y="90" text-anchor="middle" font-size="14" class="dg-teks">terverifikasi</text>
+<rect x="254" y="60" width="104" height="52" rx="6" class="dg-kotak-aksen"/><text x="306" y="90" text-anchor="middle" font-size="14" class="dg-teks">tanggap</text>
+<rect x="376" y="60" width="104" height="52" rx="6" class="dg-kotak"/><text x="428" y="90" text-anchor="middle" font-size="14" class="dg-teks">transisi</text>
+<rect x="498" y="60" width="104" height="52" rx="6" class="dg-kotak"/><text x="550" y="90" text-anchor="middle" font-size="14" class="dg-teks">pemulihan</text>
+<rect x="620" y="60" width="90" height="52" rx="6" class="dg-kotak"/><text x="665" y="90" text-anchor="middle" font-size="14" class="dg-teks">selesai</text>
+<line x1="114" y1="86" x2="130" y2="86" class="dg-garis" marker-end="url(#p)"/>
+<line x1="236" y1="86" x2="252" y2="86" class="dg-garis" marker-end="url(#p)"/>
+<line x1="358" y1="86" x2="374" y2="86" class="dg-garis" marker-end="url(#p)"/>
+<line x1="480" y1="86" x2="496" y2="86" class="dg-garis" marker-end="url(#p)"/>
+<line x1="602" y1="86" x2="618" y2="86" class="dg-garis" marker-end="url(#p)"/>
+<text x="360" y="140" text-anchor="middle" font-size="13" class="dg-teks-lemah">Maju atau mundur hanya satu langkah. Mundur dan selesai wajib beralasan 3 sampai 200 karakter.</text>
+<rect x="10" y="165" width="215" height="84" rx="6" class="dg-lemah"/>
+<text x="20" y="188" font-size="14" font-weight="700" class="dg-teks">Pusdalops</text>
+<text x="20" y="208" font-size="13" class="dg-teks-lemah">hanya verifikasi atau batalkan</text>
+<text x="20" y="226" font-size="13" class="dg-teks-lemah">kejadian terdeteksi</text>
+<rect x="252" y="165" width="215" height="84" rx="6" class="dg-lemah"/>
+<text x="262" y="188" font-size="14" font-weight="700" class="dg-teks">Koordalops, Super Admin</text>
+<text x="262" y="208" font-size="13" class="dg-teks-lemah">semua perpindahan fase lain,</text>
+<text x="262" y="226" font-size="13" class="dg-teks-lemah">gabung kejadian, publikasi</text>
+<rect x="494" y="165" width="216" height="84" rx="6" class="dg-lemah"/>
+<text x="504" y="188" font-size="14" font-weight="700" class="dg-teks">Sistem</text>
+<text x="504" y="208" font-size="13" class="dg-teks-lemah">hanya membuat fase terdeteksi,</text>
+<text x="504" y="226" font-size="13" class="dg-teks-lemah">tidak pernah menaikkan fase</text>
+</svg>
