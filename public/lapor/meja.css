@@ -1152,7 +1152,7 @@ dialog.mj-ld-dlg h3{margin:0 0 6px}
 /* panel darurat: lonceng izin notifikasi = ikon polos sebaris kepala, bukan pil merah sebaris sendiri (pemilik 25 Nov 2026 "ini juga jelek") */
 .mj-darurat-kepala{flex-direction:row!important;align-items:center!important;gap:2px!important}
 .mj-darurat-kepala>.mj-darurat-buka{flex:1;min-width:0}
-.mj-darurat-izin{order:0!important;display:grid;place-items:center;width:32px;height:32px;min-height:0;margin:0!important;padding:0;border:0!important;border-radius:50%;background:none!important;color:var(--bad-tx);cursor:pointer;flex:none}
+.mj-darurat-izin{order:0!important;align-self:center!important;display:grid;place-items:center;width:32px;height:32px;min-height:0;margin:0!important;padding:0;border:0!important;border-radius:50%;background:none!important;color:var(--bad-tx);cursor:pointer;flex:none}
 .mj-darurat-izin:hover{background:color-mix(in oklab,var(--bad) 8%,transparent)!important}
 .mj-darurat-izin:focus-visible{outline:2px solid var(--bad);outline-offset:1px}
 .mj-darurat-izin svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
