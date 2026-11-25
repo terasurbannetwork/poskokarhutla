@@ -6,7 +6,9 @@ name: Panen data lab banjir (IMERG per kabupaten, GloFAS)
 # GloFAS: cron tiap 4 jam memanggil `jenis=glofas`; kuota Open-Meteo harian (keluar 75) = selesai bersih untuk run itu.
 # H90 panen ulang IMERG skema 2 (kolom j per jam): gh workflow run panen-lab-banjir.yml -f jenis=imerg -f bulan_awal=2015-01 -f bulan_akhir=2026-10 -f timpa=ya
 # (`timpa=ya` melewati langkah pulihkan dari R2, jadi panen_lab.py tidak melihat "sudah ada"; objek R2 lama baru ditimpa bila hasil baru TIDAK lebih kecil,
-# yang selalu benar untuk skema 2 yang selesai karena menambah j; hasil separuh karena timeout tidak menimpa; ulangi bulan itu saja dengan timpa=ya).
+# yang selalu benar untuk skema 2 yang selesai karena menambah j; hasil separuh karena timeout tidak menimpa).
+# Melengkapi bulan yang merah (NASA 401/habis waktu): dispatch ulang rentang yang sama TANPA timpa. Bulan skema 2 di R2 dilewati dalam detik,
+# bulan skema 1 dipanen ulang dan melanjutkan cache slot `_slot_<bulan>.jsonl.gz` di R2.
 # Sesudah semua bulan selesai: -f jenis=jam_hujan (dan tiap tgl 3 otomatis).
 # Berhenti sendiri: bila semua kab sudah ada di R2, penanda glofas/_LENGKAP ditulis dan run berikutnya keluar dalam detik.
 on:
