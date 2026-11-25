@@ -19,7 +19,8 @@
     "/lapor/data",
     "/lapor/hari-ini",
     "/verifikasi",
-    "/desa-waspada"
+    "/desa-waspada",
+    "/bnpb/data-bencana"
   ],
   "boleh_tambah_k8": [
     "/masuk",

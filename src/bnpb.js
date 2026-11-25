@@ -67,7 +67,7 @@ export const RUTE_BNPB = {
   "GET /bnpb/saham": (env, req, url) => halamanBnpbPublik(env, url, "saham", {pribadi: true, bingkai: true, gambar: "https://assets.stockbit.com"}),   // layar staf: data saham lewat proksi /api/saham/* (src/saham.js)
   "GET /bnpb/rapor-sumber": (env, req, url) => halamanBnpbPublik(env, url, "rapor-sumber", {pribadi: true}),   // layar staf
   "GET /bnpb/silang": (env, req, url) => halamanBnpbPublik(env, url, "silang", {pribadi: true}),   // layar staf
-  "GET /bnpb/data-bencana": (env, req, url) => halamanBnpbPublik(env, url, "data-bencana", {pribadi: true}),   // Data Bencana Indonesia untuk BPBD (?prov=, ?kab=); data publik dibi_kejadian.json, sama dengan tab pertama /bnpb/dalops
+  "GET /bnpb/data-bencana": (env, req, url) => halamanBnpbPublik(env, url, "data-bencana"),   // publik (KEPUTUSAN-MASUK K22); Data Bencana Indonesia untuk BPBD (?prov=, ?kab=); data publik dibi_kejadian.json, sama dengan tab pertama /bnpb/dalops
   "GET /bnpb/perencanaan": (env, req, url) => halamanBnpbPublik(env, url, "perencanaan", {pribadi: true}),   // layar staf: kab prioritas (beban laporan), kalender operasi, stok pra-musim
   "GET /bnpb": (env, req, url) => halamanBnpbPublik(env, url, "index"),
   "GET /risiko": (env, req, url) => halamanBnpbPublik(env, url, "risiko"),
