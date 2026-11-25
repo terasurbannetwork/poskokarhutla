@@ -613,11 +613,11 @@ Aturan berhentinya sama dengan §2.1. Satu mesin desa: tidak mengubah `preventif
 Sebelum menyentuh genangan Copernicus GFM per kejadian Buku Besar, zona sel di paparan, lahan tergenang WorldCover, citra radar dan optik sebelum dan sesudah per kejadian, atau model kaji `banjir_gfm`, baca dokumen di
 `data/kajian-bnpb/genangan-satelit/` dengan urutan otoritas ini (kode di `scripts/banjir/genangan_nasional.py`, `scripts/banjir/genangan_lahan.py`, `scripts/banjir/citra_banjir.py`, `public/banjir/bukti.*` milik `banjir`; `scripts/siklus/paparan.py`, `scripts/siklus/kaji_banjir.py`, `scripts/siklus/genangan_kaji.py`, `public/siklus/kaji.js` milik `siklus`; `src/siklus_kaji.js` dan migrasi `sk_kaji` milik `warga-api`; `public/inti/geser.*` milik `inti-layar`; langkah `siklus.yml` milik `mekanik-mesin`):
 
-1. `KEPUTUSAN-GENANGAN.md`: keputusan pemilik K1-K3, rancangan D1-D13, pertanyaan terbuka Q1-Q12 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-GENANGAN.md`: keputusan pemilik K1-K7, rancangan D1-D13, pertanyaan terbuka Q1-Q12 (Q1, Q7, Q11, Q12 dijawab K4-K7) dengan bawaan sementara; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md` (F-1..F-10), 4. `ALUR.md`, 5. `ALGORITMA.md` (pasangan, cakupan sah, zona sel, lahan, uji balik peringkat), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`GS-*`), `GLOSARIUM.md`.
 
-Aturan berhentinya sama dengan §2.1. Sumber genangan satu (GFM lewat `genangan_nasional.py`): tanpa ambang radar sendiri, tanpa penggeser ambang, tanpa hitung ulang di peramban; bangunan terendam tidak tampil (milik paket `kerusakan-satelit`); kab tanpa lintasan atau tanpa cakupan sah tidak pernah 0; angka radar berlabel `estimasi-model` dan berdampingan dengan DIBI dan petugas, tidak dijumlah; "penduduk di area genangan", tidak pernah "terdampak", "aman", atau "surut"; `banjir_jam1` tidak berubah; tanpa versi publik sebelum Q1; tinjau di `http://localhost:8800/siklus/kaji`.
+Aturan berhentinya sama dengan §2.1. Sumber genangan satu (GFM lewat `genangan_nasional.py`): tanpa ambang radar sendiri, tanpa penggeser ambang, tanpa hitung ulang di peramban; bangunan terendam tidak tampil (milik paket `kerusakan-satelit`); kab tanpa lintasan atau tanpa cakupan sah tidak pernah 0; angka radar berlabel `estimasi-model` dan berdampingan dengan DIBI dan petugas, tidak dijumlah; "penduduk di area genangan", tidak pernah "terdampak", "aman", atau "surut"; `banjir_jam1` tidak berubah; versi publik (K4) tetap berlabel perkiraan radar dan hipotesis; tinjau di `http://localhost:8800/siklus/kaji`.
 
 ### 2.45 Kedalaman gambut hilang dari InSAR (lab, mengganti D literatur di `gambut_bara.py`): baca dulu, baru bangun
 

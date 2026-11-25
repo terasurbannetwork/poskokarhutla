@@ -17,5 +17,5 @@ Kerjakan urut; ambil satu tiket, kerjakan hanya cakupannya. Tiket layar ditinjau
 | GS-10 | Pindah penggeser ke `public/inti/geser.*`, `bukti.js` memakainya | inti-layar, banjir | T9 | - |
 | GS-11 | Kartu dan peta di `public/siklus/kaji.js` | siklus (+ inp-reviewer, selera-angka) | T8, T12, T13 | GS-07, GS-10, Q1 |
 | GS-12 | Langkah di `siklus.yml` | mekanik-mesin | jalan manual `workflow_dispatch` hijau | GS-03, GS-09, Q2, Q7, Q9 |
-| GS-13 | Uji balik dan vonis; pil hipotesis dicabut hanya bila lulus; laporan memuat keterbatasan Q11 (opsi pra sebelum acuan tidak mengikat di jendela 6 hari) | siklus (+ validasi-model) | T11 | GS-02, GS-12 |
-| GS-14 | Versi publik di `/banjir` | layar-peta, banjir | - | Q1 dijawab "ya" |
+| GS-13 | Kunci ulang kriteria v2 dengan margin N hari (K6), lalu uji balik dan vonis; pil hipotesis dicabut hanya bila lulus; laporan memuat keterbatasan Q11 (opsi pra sebelum acuan tidak mengikat di jendela 6 hari) | siklus (+ validasi-model) | T11 | GS-02, GS-12 |
+| GS-14 | Versi publik di `/banjir` (K4) | layar-peta, banjir | - | GS-09, GS-12 |

@@ -68,9 +68,9 @@ GET /api/siklus/kaji/:sid/berkas/:nama          (:sid = id baris sk_kaji, nama p
 
 Kaji dibaca lewat rute kaji yang ada; ingest lewat `ingest/kaji` yang ada dengan model baru.
 
-## 6. Anggaran (Q7, HIPOTESIS)
+## 6. Anggaran (K5, 25 Nov 2026)
 
-GFM Range <= 400 MB per kejadian, WorldCover <= 300 MB, waktu jalan <= 40 menit di runner GitHub. Lebih dari itu: kab diproses urut menurut skor kejadian, sisanya `menunggu_data` dan dilanjutkan di jalan berikutnya (cache di `data/raw/banjir/gfm_nasional/`, gitignored). Angka dikunci sesudah GS-03 mengukurnya.
+Waktu jalan dingin <= 75 menit, total R2 <= 12 MB, WorldCover <= 20 MB (terukur 8,1 MB untuk 52 kab Sumatera), GFM Range dikunci sesudah byte dicatat. Lebih dari itu: kab diproses urut menurut skor kejadian, sisanya `menunggu_data` dan dilanjutkan di jalan berikutnya (cache di `data/raw/banjir/gfm_nasional/`, gitignored). Angka dikunci sesudah GS-03 mengukurnya.
 
 ## 7. ADR
 
