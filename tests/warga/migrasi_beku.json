@@ -176,5 +176,6 @@
   "0172_segel_terbit.sql": "f806629b9ea056814a4db68ac83c96431b87735947ef5498dddebba07cf446a9",
   "0173_lapor_selamat_cari.sql": "bbfcbdb3349809b052bccaeb4e908ecf2b57b29b54265355703e938349d13041",
   "0174_sk_kaji_gfm.sql": "11105f40d6baa7b15dd759a7c8155c985a598bc96fa6e45edb659f0e3f4a78f2",
-  "0175_lapor_selamat_kunci.sql": "08fe0d667fa609d576c60da1f4ce489dd9c46f37fcd8c0e9d71a59ee78c9a81e"
+  "0175_lapor_selamat_kunci.sql": "08fe0d667fa609d576c60da1f4ce489dd9c46f37fcd8c0e9d71a59ee78c9a81e",
+  "0176_sensor_geofon.sql": "0e75bbfd347cd3717f07877a7302ae0af2d8873171555ae4f71dd4feb4e69d92"
 }
