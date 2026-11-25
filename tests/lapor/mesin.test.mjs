@@ -153,8 +153,23 @@ test("daftar nama kurang dari jumlah: ditanya sisanya sekali, lalu diterima deng
   assert.match(h.balasan, /baru 3 nama/);
   assert.equal(h.sesi.isian.nama_faskes.nilai, "Klinik Lima; Klinik Pasta; Klinik Gas");
   assert.match(h.isiAwal, /4\. \n5\. /);
-  h = await putaran({sesi: h.sesi, pelapor, pesan: {teks: "1", saluran: "web"}, kini: Date.now() + 1});
+  const simpan = structuredClone(h.sesi);
+  h = await putaran({sesi: h.sesi, pelapor, pesan: {teks: "2", saluran: "web"}, kini: Date.now() + 1});   // Tidak tahu
   assert.match(h.balasan, /Tercatat 3 dari 5/);
+  // "Tulis 2 lagi" (pemilik 25 Nov 2026): kotak bernomor terbuka, nama baru ditambahkan ke yang sudah ada
+  h = await putaran({sesi: simpan, pelapor, pesan: {teks: "1", saluran: "web"}, kini: Date.now() + 2});
+  assert.match(h.balasan, /Tambahkan 2 nama lagi/); assert.equal(h.minta, "tempat:faskes"); assert.deepEqual(h.sudah, ["Klinik Lima", "Klinik Pasta", "Klinik Gas"]); assert.match(h.isiAwal, /4\. \n5\. /);
+  h = await putaran({sesi: h.sesi, pelapor, pesan: {teks: "Nama fasilitas kesehatan rusak:\n4. Klinik Enam\n5. Klinik Tujuh", saluran: "web"}, kini: Date.now() + 3});
+  assert.equal(h.sesi.isian.nama_faskes.nilai, "Klinik Lima; Klinik Pasta; Klinik Gas; Klinik Enam; Klinik Tujuh");
+});
+
+test("titik pengungsian tidak dihitung dari jumlah orang mengungsi (pemilik 25 Nov 2026)", async () => {
+  const {putaran} = await import("../../src/lapor_mesin.js");
+  const sesi = {status: "melengkapi", tanya: "titik_pengungsian", ditanya: [], transkrip: [], isian: {jenis: {nilai: "banjir"}, mengungsi_jiwa: {nilai: 5}}};
+  const h = await putaran({sesi, pelapor: {wa: "6280000000000", nama: "Budi", peran: "warga"}, pesan: {teks: "Titik pengungsian: SD Negeri 21, Tenda di Kantor Kepala Desa", saluran: "web"}, kini: Date.now()});
+  assert.doesNotMatch(h.balasan, /baru 2 nama/);
+  assert.equal(h.sesi.isian.mengungsi_jiwa.nilai, 5);
+  assert.equal(h.sesi.isian.titik_pengungsian.nilai, "SD Negeri 21; Tenda di Kantor Kepala Desa");
 });
 
 test("nama yang tidak sesuai jenisnya dikonfirmasi dulu", async () => {
@@ -290,7 +305,10 @@ test("lapor darurat (K68): identitas, lokasi, jenis, korban, foto boleh dilewati
   assert.equal(h2.sesi.isian.jenis.nilai, JENIS[0].id); assert.ok(h2.sesi.isian.waktu?.ms, "waktu kejadian = saat dilaporkan");
   assert.deepEqual(h2.pilihan, ["Ya, ada", "Tidak ada", "Belum tahu"]);
   const h3 = await obrol(["darurat", "1", "1", "Budi Santoso", L, "1", "ya ada yang terjebak"]);
-  assert.equal(h3.sesi.darurat.korban, "ya"); assert.equal(h3.sesi.status, "foto");
+  assert.equal(h3.sesi.darurat.korban, "ya"); assert.equal(h3.sesi.status, "darurat_isi");   // K97: ada korban, tanya terjebak lalu butuh medis
+  assert.match(h3.balasan, /Orang terjebak/); assert.equal(h3.pilihan[0], "Ya, ada yang terlihat atau terdengar");
+  const h3b = await obrol(["darurat", "1", "1", "Budi Santoso", L, "1", "ya ada yang terjebak", "1", "1"]);
+  assert.equal(h3b.sesi.status, "foto"); assert.equal(h3b.sesi.isian.butuh_penyelamatan.nilai, "Ya, ada yang terlihat atau terdengar"); assert.ok(h3b.sesi.isian.butuh_medis?.nilai);
   const h4 = await obrol(["darurat", "1", "1", "Budi Santoso", L, "1", "3", "1"]);
   assert.equal(h4.sesi.status, "ringkasan"); assert.equal(h4.sesi.darurat.korban, "belum_tahu"); assert.match(h4.balasan, /Ringkasan laporan darurat/);
   const h5 = await obrol(["darurat", "1", "1", "Budi Santoso", L, "1", "2", "1", "1"]);

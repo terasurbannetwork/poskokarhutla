@@ -198,11 +198,12 @@ function formCari() {
   tampil("Orang belum ditemukan", kembali, f);
 }
 
-export function bukaKabarSelamat() {
+export function bukaKabarSelamat(langsung) {   // langsung "cari": tombol hero Lapor orang hilang membuka formulir orang dicari (pemilik 25 Nov 2026)
   if (!dlg) bangun();
   pilih(); if (!dlg.open) dlg.showModal();
+  if (langsung === "cari") lewatSesi(formCari);
 }
-for (const b of document.querySelectorAll("[data-buka-selamat]")) b.addEventListener("click", bukaKabarSelamat);
+for (const b of document.querySelectorAll("[data-buka-selamat]")) b.addEventListener("click", () => bukaKabarSelamat(b.dataset.bukaSelamat));
 
 /* ---------- kartu ajakan (Q68): hanya bila lokasi sudah diketahui dan kab itu punya status darurat berlaku; tidak meminta izin lokasi baru ---------- */
 async function ajak() {

@@ -111,3 +111,16 @@ test("penerjemah tidak bisa dipakai menulis jawaban: hasil yang jauh lebih panja
   const keluar = await dariIndonesia(jawab, {teks: "Kapan kejadian mulai?"}, "jv");
   assert.equal(keluar.teks, "Kapan kejadian mulai?", "balasan tetap bahasa Indonesia, bukan karangan model");
 });
+
+test("keterangan tambahan yang tidak nyambung ditanya ulang, bukan dilewati (pemilik 25 Nov 2026)", async () => {
+  const kosong = async () => ({isian: [], jenis_tebak: [], darurat_jiwa: false, tanggapan: "", topik: "bukan_bencana"});
+  const h0 = await sampaiCerita(kosong);
+  assert.match(h0.balasan, /Keterangan tambahan/);
+  const h1 = await kirim(h0, "Keterangan: bla bla bla", kosong);
+  assert.match(h1.balasan, /Keterangan belum jelas/);
+  assert.equal(h1.sesi.status, "kronologi");
+  assert.ok(!/bla bla/.test(h1.sesi.isian.kronologi?.nilai || ""), "teks luar topik tidak masuk kronologi");
+  const h2 = await kirim(h1, "2", kosong);   // Lewati, lanjut
+  assert.notEqual(h2.sesi.status, "kronologi");
+  assert.ok(h2.sesi.krSelesai);
+});

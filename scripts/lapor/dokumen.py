@@ -31,6 +31,26 @@ NAVY = RGBColor(0x0B, 0x25, 0x45)
 ABU = RGBColor(0x5B, 0x67, 0x7A)
 JINGGA = RGBColor(0xB4, 0x53, 0x09)
 GARIS, MUDA = "D5DCE6", "F1F4F8"
+IKON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ikon")   # PNG dari sprite /lapor (pemilik 25 Nov 2026: "pakai icon biar bagus")
+
+
+def _ikon(run, nama, cm=0.42):
+    f = os.path.join(IKON, f"{nama}.png")
+    if os.path.exists(f):
+        run.add_picture(f, width=Cm(cm))
+        return True
+    return False
+
+
+def _tepi_sel(sel, **sisi):
+    """garis per sisi sel: _tepi_sel(sel, top=("single", 24, "C62828"))"""
+    b = OxmlElement("w:tcBorders")
+    for nama in ("top", "left", "bottom", "right"):
+        e = OxmlElement(f"w:{nama}")
+        val, sz, warna = sisi.get(nama, ("nil", 0, "auto"))
+        e.set(qn("w:val"), val), e.set(qn("w:sz"), str(sz)), e.set(qn("w:space"), "0"), e.set(qn("w:color"), warna)
+        b.append(e)
+    sel._tc.get_or_add_tcPr().append(b)
 
 
 def _rapat(p, sebelum=0, sesudah=0, baris=1.15):
@@ -169,40 +189,60 @@ def bangun(c, docx_keluar):
                 if label == nama and str(nilai)[:1].isdigit():
                     kunci.append((label, str(nilai)))
     if kunci:
+        # kartu angka berikon dengan garis warna di atas, dipisah celah (pemilik 25 Nov 2026: "jelek banget")
+        GAYA = {"Meninggal": ("korban", "C62828"), "Hilang": ("hilang", "C62828"), "Luka-luka": ("luka", "D97706"), "Mengungsi": ("mengungsi", "1F4F93"), "Rusak berat": ("rumah", "0B2545")}
         p = d.add_paragraph(); _rapat(p, 2, 0, 1.0)
-        t = d.add_table(rows=1, cols=len(kunci))
+        n = len(kunci); celah = Cm(0.3); lebar = Cm((17 - 0.3 * (n - 1)) / n)
+        t = d.add_table(rows=1, cols=2 * n - 1)
         t.alignment = WD_TABLE_ALIGNMENT.CENTER
-        for sel, (label, nilai) in zip(t.rows[0].cells, kunci):
-            _latar(sel, MUDA)
+        sel_all = t.rows[0].cells
+        for i, (label, nilai) in enumerate(kunci):
+            sel = sel_all[2 * i]; ik, warna = GAYA.get(label, ("dampak", "1F4F93"))
+            garis = ("single", 4, GARIS)
+            _tepi_sel(sel, top=("single", 24, warna), left=garis, right=garis, bottom=garis)
             angka, _, satuan = nilai.partition(" ")
-            q = sel.paragraphs[0]; q.alignment = WD_ALIGN_PARAGRAPH.CENTER; _rapat(q, 5, 0, 1.0)
-            _teks(q, angka, 18, True, NAVY); _teks(q, f" {satuan}" if satuan else "", 9, True, NAVY)
-            q = sel.add_paragraph(); q.alignment = WD_ALIGN_PARAGRAPH.CENTER; _rapat(q, 1, 5)
-            _teks(q, "Rumah rusak berat" if label == "Rusak berat" else label, 8.5, False, ABU)
-        _lebar(t, tuple(Cm(17 / len(kunci)) for _ in kunci))
+            q = sel.paragraphs[0]; q.alignment = WD_ALIGN_PARAGRAPH.CENTER; _rapat(q, 6, 0, 1.0)
+            _ikon(q.add_run(), ik, 0.5)
+            q = sel.add_paragraph(); q.alignment = WD_ALIGN_PARAGRAPH.CENTER; _rapat(q, 2, 0, 1.0)
+            _teks(q, angka, 20, True, RGBColor.from_string(warna)); _teks(q, f" {satuan}" if satuan else "", 9, True, ABU)
+            q = sel.add_paragraph(); q.alignment = WD_ALIGN_PARAGRAPH.CENTER; _rapat(q, 1, 6)
+            _teks(q, "Rumah rusak berat" if label == "Rusak berat" else label, 8.5, True, NAVY)
+            if i < n - 1:
+                _tepi_sel(sel_all[2 * i + 1])
+        _lebar(t, tuple(lebar if k % 2 == 0 else celah for k in range(2 * n - 1)))
 
     # 1. narasi gaya Koordalops
     n = c.get("narasi")
     if n:
-        p = d.add_paragraph()
-        _rapat(p, 4, 6)
-        _teks(p, n["judul"], 12.5, True, NAVY)
-        for i, (label, isi) in enumerate(n["butir"], 1):
-            p = d.add_paragraph()
-            f = _rapat(p, 3, 1)
-            f.left_indent, f.first_line_indent = Cm(0.7), Cm(-0.7)
-            _teks(p, f"{i}.\t", 10, True)
-            _teks(p, f"{label}: ", 10, True)
+        # judul di pita navy, butir jadi tabel ikon dan label di kiri, isi di kanan (pemilik 25 Nov 2026: "bagusin lagi")
+        p = d.add_paragraph(); _rapat(p, 8, 0, 1.0)
+        tj = d.add_table(rows=1, cols=1); tj.alignment = WD_TABLE_ALIGNMENT.CENTER
+        sj = tj.rows[0].cells[0]; _latar(sj, "0B2545")
+        q = sj.paragraphs[0]; _rapat(q, 5, 5, 1.1); _teks(q, n["judul"], 12, True, RGBColor(0xFF, 0xFF, 0xFF))
+        _lebar(tj, (Cm(17),))
+        IK = {"lokasi": "lokasi", "waktu": "waktu", "kronologis": "kronologi", "kronologi": "kronologi", "dampak": "dampak", "kebutuhan mendesak": "kebutuhan", "sumber": "sumber"}
+        t = d.add_table(rows=0, cols=2); t.alignment = WD_TABLE_ALIGNMENT.CENTER
+        for k, (label, isi) in enumerate(n["butir"]):
+            kiri, kanan = t.add_row().cells
+            _latar(kiri, MUDA)
+            q = kiri.paragraphs[0]; _rapat(q, 4, 4, 1.1)
+            if _ikon(q.add_run(), IK.get(label.lower(), "dampak"), 0.4):
+                _teks(q, "  ", 10)
+            _teks(q, label, 10, True, NAVY)
+            q = kanan.paragraphs[0]; _rapat(q, 4, 4 if not isinstance(isi, list) else 1, 1.15)
             if isinstance(isi, list):
-                for j, x in enumerate(isi):
-                    q = d.add_paragraph()
-                    g = _rapat(q, 1, 0)
-                    g.left_indent, g.first_line_indent = Cm(1.3), Cm(-0.5)
-                    _teks(q, f"{'abcdefghij'[j]}.  ", 10)
-                    _teks(q, x, 10)
+                for m, x in enumerate(isi):
+                    if m:
+                        q = kanan.add_paragraph(); _rapat(q, 1, 4 if m == len(isi) - 1 else 1, 1.15)
+                    f = q.paragraph_format; f.left_indent, f.first_line_indent = Cm(0.45), Cm(-0.45)
+                    _teks(q, "•  ", 10, True, NAVY); _teks(q, x, 10)
             else:
-                _teks(p, isi, 10)
-                p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+                _teks(q, isi, 10)
+        _garis_tabel(t)
+        _lebar(t, (Cm(5.4), Cm(11.6)))
+        from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT as VA2
+        for r in t.rows:
+            r.cells[0].vertical_alignment = VA2.TOP
 
     # 2. pelapor dan waktu
     pel = c["pelapor"]

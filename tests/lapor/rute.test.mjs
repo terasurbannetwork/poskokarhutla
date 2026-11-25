@@ -166,9 +166,9 @@ uji("pintu web: butuh sesi /masuk, x-pb, dan izin; nomor dari sesi", async () =>
   await api("POST", "/api/lapor/izin", {wa: WA3}, MESIN);
 });
 
-uji("kuota: 60 per jam per nomor berbalasan sopan 429 (pesan dan foto), laporan tersimpan", async () => {
+uji("kuota: 120 per jam per nomor (K104) berbalasan sopan 429 (pesan dan foto), laporan tersimpan", async () => {
   const kini = Date.now();
-  await DB.batch(Array.from({length: 60}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'lapor.pesan', ?)").bind(WA2, kini - 30 * 60e3)));
+  await DB.batch(Array.from({length: 120}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'lapor.pesan', ?)").bind(WA2, kini - 30 * 60e3)));
   const sebelum = await n("lapor_sesi", `wa = '${WA2}'`);
   const r = await pesan(WA2, {teks: "1"}); assert.equal(r.s, 429);
   assert.ok(r.j.sisaDetik > 1500 && r.j.sisaDetik <= 1801, `sisaDetik ${r.j.sisaDetik}`);
@@ -178,7 +178,7 @@ uji("kuota: 60 per jam per nomor berbalasan sopan 429 (pesan dan foto), laporan 
   const f = await api("POST", "/api/lapor/foto", {wa: WA2, data: B64}, MESIN); assert.equal(f.s, 429); assert.ok(f.j.sisaDetik > 0);
 });
 
-uji("kuota: 120 per hari dan 20 per menit tetap berlaku; web 300 per jam per IP", async () => {
+uji("kuota: 300 per hari dan 20 per menit tetap berlaku; web 300 per jam per IP", async () => {
   const kini = Date.now();
   await DB.batch(Array.from({length: 20}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'lapor.pesan', ?)").bind(WA3, kini - 1000)));
   const m = await pesan(WA3, {teks: "x"}); assert.equal(m.s, 429); assert.ok(m.j.sisaDetik <= 60, "jendela menit");
@@ -194,10 +194,15 @@ uji("kuota: 120 per hari dan 20 per menit tetap berlaku; web 300 per jam per IP"
 uji("info daerah: prakiraan, nomor penting, cari desa, tempat sekitar (data publik lewat ASSETS)", async () => {
   const d = await api("GET", `/api/lapor/daerah?lat=-6.6&lon=106.8&wa=${WA}`, undefined, MESIN); assert.equal(d.s, 200, d.t.slice(0, 200)); assert.match(d.j.info, /Prakiraan Centurisk97/);
   const p = await api("GET", `/api/lapor/penting?lat=-6.6&lon=106.8&wa=${WA}`, undefined, MESIN); assert.equal(p.s, 200); assert.equal(p.j.nasional[0].nomor, "112"); assert.ok(p.j.bpbd.length >= 1);
+  // nomor telepon fasilitas dari OSM (pemilik 25 Nov 2026): hanya bentuk sah yang diteruskan, fasilitas tanpa nomor = null, tidak dikarang
+  const dki = await api("GET", `/api/lapor/penting?lat=-6.2952&lon=106.7963&wa=${WA}`, undefined, MESIN); assert.equal(dki.s, 200);
+  const fas = [...dki.j.rs, ...dki.j.puskesmas, ...dki.j.polisi];
+  assert.ok(fas.some(x => x.nomor), "RS Fatmawati dan sekitarnya bernomor di OSM");
+  for (const x of fas) assert.ok(x.nomor === null || /^(\+62\d{7,13}|1[345]00\d{2,4})$/.test(x.nomor), x.nomor);
   const c = await api("GET", `/api/lapor/cari?q=paledang&wa=${WA}`, undefined, MESIN); assert.equal(c.s, 200); assert.ok(c.j.hasil.length >= 1);
   assert.equal((await api("GET", "/api/lapor/daerah?lat=-6.6&lon=106.8")).s, 401, "tanpa identitas");
   const r = await api("GET", `/api/lapor/rapor?kode=33.08&wa=${WA}`, undefined, MESIN); assert.equal(r.s, 200, r.t.slice(0, 200));   // K89: rapor daerah dari berkas publik
-  assert.equal(r.j.kab, "Magelang"); assert.ok(r.j.risiko?.kelas && r.j.kejadian?.total >= 0); assert.match(r.j.teks, /Rapor daerah: Magelang/);
+  assert.equal(r.j.kab, "Magelang"); assert.ok(r.j.risiko?.kelas && r.j.kejadian?.total >= 0); assert.ok(r.j.risiko.bahayaUtama?.length >= 1, "bahaya utama per kecamatan"); assert.equal((r.j.risiko.daftarTinggi || []).length, Math.min(30, r.j.risiko.kecTinggi), "semua kecamatan tinggi, bukan hanya tiga"); assert.match(r.j.teks, /Rapor daerah: Magelang/);
   assert.ok(r.j.titik === null || Number.isInteger(r.j.titik.n), "titik panas basi = null, bukan 0");
   assert.equal((await api("GET", "/api/lapor/rapor?kode=33.08")).s, 401, "rapor tanpa identitas");
   const s = await api("GET", `/api/lapor/sekitar?jenis=sekolah&wa=${WA}`, undefined, MESIN); assert.equal(s.s, 200, s.t.slice(0, 200)); assert.ok(Array.isArray(s.j.tempat));   // lokasi dari sesi terakhir; Overpass diblok di uji, data OSM lokal tetap jalan

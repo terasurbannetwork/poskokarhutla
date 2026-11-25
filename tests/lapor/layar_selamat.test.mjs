@@ -67,9 +67,9 @@ test("pesan galat polos: 401 menyuruh minta kode, 404 seragam", () => {
   assert.match(teksGalat(401), /kode/); assert.match(teksGalat(0), /sinyal/); assert.match(teksGalat(429, "", 30), /30 detik/);
   assert.equal(TIDAK_BERLAKU, "Tautan ini tidak ditemukan atau sudah tidak berlaku.");
 });
-test("pemasangan: kartu beranda memicu dialog, halaman tautan noindex, meja memuat meja_cari", () => {
+test("pemasangan: beranda tanpa kartu Kabar selamat, halaman tautan noindex, meja memuat meja_cari", () => {
   const idx = baca("index.html");
-  assert.match(idx, /data-buka-selamat/); assert.match(idx, /selamat\.js\?v=\d+/); assert.match(idx, /selamat\.css\?v=\d+/);
+  assert.doesNotMatch(idx, /sl-pita/, "kartu Kabar selamat dan ajakannya tidak di beranda (pemilik 25 Nov 2026)"); assert.match(idx, /data-buka-selamat="cari"/, "tombol hero Lapor orang hilang membuka formulir orang dicari"); assert.match(idx, /selamat\.js\?v=\d+/); assert.match(idx, /selamat\.css\?v=\d+/);
   const s = baca("s/index.html"); assert.match(s, /name="robots" content="noindex/); assert.match(s, /no-referrer/);
   assert.match(baca("meja.js"), /from "\.\/meja_cari\.js(\?v=\d+)?"/); assert.match(baca("meja.js"), /Orang dicari/);
   assert.ok(!/innerHTML/.test(baca("s/s.js")) && !/innerHTML/.test(baca("meja_cari.js")) && !/innerHTML/.test(baca("selamat.js")), "teks dari server lewat textContent");

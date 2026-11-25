@@ -56,7 +56,9 @@ uji("lengkapi lewat Tambah kabar: mulai di jenis, lalu korban dan foto; jenis da
   assert.equal(r.s, 200, r.t.slice(0, 300)); assert.match(r.j.balasan, /Lengkapi laporan darurat/); assert.equal(r.j.minta, "jenis");
   const banjir = r.j.pilihan.findIndex(x => /^banjir$/i.test(x)) + 1; assert.ok(banjir > 0);
   r = await pesan(WA, {teks: String(banjir)}); assert.match(r.j.balasan, /korban/i);
-  r = await pesan(WA, {teks: "1"}); assert.equal(r.j.minta, "foto");   // ya, ada korban
+  r = await pesan(WA, {teks: "1"}); assert.match(r.j.balasan, /Orang terjebak/);   // ya, ada korban: K97 tanya terjebak lalu butuh medis
+  r = await pesan(WA, {teks: "3"}); assert.match(r.j.balasan, /pertolongan medis/i);
+  r = await pesan(WA, {teks: "4"}); assert.equal(r.j.minta, "foto");
   r = await pesan(WA, {teks: "1"}); assert.equal(r.j.status, "ringkasan");   // lewati foto
   r = await pesan(WA, {teks: "1"}); assert.equal(r.s, 200, r.t.slice(0, 300)); assert.equal(r.j.nomor, nomor); assert.equal(r.j.susulan, 2);
   assert.match(r.j.balasan, /Ada korban: belum tahu menjadi ada/, "perubahan korban tercatat di versi");

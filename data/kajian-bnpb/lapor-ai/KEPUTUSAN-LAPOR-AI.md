@@ -575,7 +575,6 @@ Catatan pelaksanaan LA-78 dan LA-83 (23 Nov 2026), mengoreksi rancangan di atas:
 
 - D127 dijalankan tanpa "tujuan `selamat`" di kode `/masuk`: cukup sesi `sesi_masuk` yang hidup (nomor sudah terbukti lewat kode sekali pakai); tanpa sesi, rute menjawab 401 dan menyuruh minta kode, nomor ketikan dan kunci mesin tidak cukup. `DESAIN-TEKNIS.md` baris rute "kode sekali pakai tujuan `selamat`" dibaca sebagai sesi `/masuk`.
 - Migrasi nomor 0173. Kolom `lapor_cari_riwayat` hanya mencatat perubahan status oleh meja; laporan baru tidak punya baris riwayat awal (status `buka` ada di `lapor_cari`).
-<<<<<<< HEAD
 - Laporan orang dicari tidak ikut bersih-bersih 30 hari (Q67: mengikuti masa simpan laporan Lapor Bencana, ditutup petugas); sesudah ditutup petugas lebih dari 2 tahun (`CARI_SIMPAN_HARI` di `src/hak.js`, **[BAWAAN SEMENTARA]** Q67) cron menit 17 menganonimkannya lewat `bersihkanLapor`: nama, ciri, lokasi, nomor, dan hubungan dikosongkan, id, kab, status, dan waktu tetap; laporan "buka" tidak pernah dianonimkan otomatis dan riwayat status (append-only) tidak disentuh.
 
 
@@ -584,8 +583,6 @@ Catatan pelaksanaan LA-78 dan LA-83 (23 Nov 2026), mengoreksi rancangan di atas:
 Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
 
 - Q40: batas waktu respons per status **1 minggu**; lewat itu tampil terlambat.
-=======
-- Laporan orang dicari tidak ikut bersih-bersih 30 hari (Q67: mengikuti masa simpan laporan Lapor Bencana, ditutup petugas); batas simpannya belum dipasang dan menunggu keputusan pemilik.
 
 ## Keputusan pemilik (nomor WA sendiri, 24 Nov 2026)
 
@@ -604,4 +601,23 @@ Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya b
 | No | Pertanyaan | Bawaan sementara |
 | --- | --- | --- |
 | Q71 | Nomor yang belum berizin menulis ke nomor Lapor Bencana: dibalas (misalnya "layanan lapor belum dibuka untuk nomor ini, hubungi BPBD setempat") atau diam? | **[BAWAAN SEMENTARA]** Diam, sampai pintu publik F2 dibuka atau pemilik memberi kalimatnya. |
->>>>>>> origin/main
+
+## Keputusan pemilik 25 Nov 2026: pertanyaan lanjut dari riset
+
+Dasar: `riset/R-PERTANYAAN-LANJUT.md` (Perka 9/2008 Format-7 sampai 9, Lampiran I Juklak, MIRA). Pemilik: "oke gas sesuai yang lu riset, jadikan". Butir yang ditolak tidak dibangun.
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K94 | 25 Nov 2026 | `butuh_penyelamatan` (U-01): orang yang masih terjebak atau tertimbun ditanya terpisah dari "hilang". Semua jenis kecuali kekeringan dan abrasi; kalimat mengikuti jenis. |
+| K95 | 25 Nov 2026 | `situasi_sekarang` (U-02): masih berlangsung, bertahan, mereda, atau berakhir sebagai nilai terstruktur. Diturunkan dari langkah kronologi "... sekarang?" bila ada, ditanya terpisah hanya bila belum terisi. |
+| K96 | 25 Nov 2026 | `akses_ke_lokasi` (U-03): bagaimana orang luar dan kendaraan bisa menjangkau lokasi (mobil, motor, jalan kaki, lewat air atau udara). Semua jenis kecuali kekeringan. |
+| K97 | 25 Nov 2026 | Kedekatan pelapor (U-04) **tidak dibangun**. Pemilik: yang melapor adalah orang di lokasi kejadian. |
+| K98 | 25 Nov 2026 | `butuh_medis` (U-05): luka berat yang belum terjangkau layanan dan sakit mendadak massal. Laporan biasa: muncul bila ada korban luka atau jenis erupsi, karhutla, banjir, kekeringan. Lapor darurat (K68): ditanya sesudah "Ada korban? Ya", bersama `butuh_penyelamatan`. |
+| K99 | 25 Nov 2026 | Kebutuhan mendesak (U-07) ditambah "Toilet atau MCK darurat" dan "Lampu atau penerangan" (Lampiran I 9.1, Perka 9/2008 Format-9). |
+| K100 | 25 Nov 2026 | `petugas_datang` (U-06) ditambah "Sudah, pemadam kebakaran" (kebakaran gedung, karhutla) dan "Sudah, tim SAR" (banjir, longsor, gempa, tsunami, erupsi, abrasi). |
+| K101 | 25 Nov 2026 | Layanan terganggu (U-13) ditambah BBM atau gas, pasar atau toko tutup, pelabuhan, bandara, atau terminal tutup (Lampiran I 7.4, 7.5). Belum mengalir ke Lifeline (Q41 bawaan). |
+| K102 | 25 Nov 2026 | `warga_terancam` (U-12, pita bukan angka) dan `evakuasi_pencegahan` (U-11) dicatat terpisah dari terdampak dan pengungsi (Lampiran I 4.6 dan 5.2); hanya untuk jenis yang bahayanya bisa meluas. |
+| K103 | 25 Nov 2026 | `wilayah_terisolasi` (U-10): dusun atau kampung lain yang terputus total, untuk kesenjangan informasi kelompok tanpa pelapor. |
+| K104 | 25 Nov 2026 | Kuota pesan per nomor naik menjadi 120 per jam (pemilik: "kuotanya satu orang 120, pertanyaannya banyak"); harian 300 supaya tidak lebih ketat dari jam. Batas 20 per menit dan pintu web per IP tetap. |
+
+Catatan pelaksanaan: semua isian baru tipe pilihan, tidak pernah wajib, selalu punya "Tidak tahu". Pita jarak dan pita jumlah orang adalah kategori pilihan, bukan ambang resmi. Penanda merah di meja untuk "ada yang terjebak" (QP-2) belum dibangun di putaran ini.
