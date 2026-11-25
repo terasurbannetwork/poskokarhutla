@@ -83,3 +83,4 @@ Batas pemilik:
 =======
 - 2026-11-25 · ST-03A: bucket noaa-himawari9 dari mesin ini hanya ~0,1 MB/s total (12 utas); kotak Indonesia = segmen S05-S07 (bukan S04-S07), B07+B13+B14+B15 = 36 MB/pindaian; baca_segmen kini menerima pita=; proksi api tanpa uji latar meloloskan 100 rb piksel panas siang (700 KB gz), jadi detektor ST-04 wajib kontekstual sebelum arsip.
 >>>>>>> origin/main
+- 2026-11-25 · PB-53 (25 Nov 2026): data/raw/iklim/chirps.json lokal memuat deret CHIRPS tersambung dua kali (549 bulan lalu ulang dari Jan 1981, indeks sampai 2072). Fit iklim_outlook tidak kena karena hanya memakai tahun <= tahun lalu, tapi deret penuh (tren) jadi ngawur. Cara tahu: len(nilai) > bulan sejak 1981 atau 12 bulan pertama muncul lagi persis. Obat: buang_ulangan() saat muat dan tolak jawaban IRI yang lebih panjang dari jendela yang diminta. Selang regresi tren ada di selang.py (satu mesin selang), bukan di skrip pemakai.

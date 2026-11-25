@@ -7,12 +7,17 @@
   dalam_rentang(x, lo, hi)         -> gerbang lebar: pita tidak boleh tampil di luar rentang masukan kalibrasi
                                       (pola rentang_maks_mu, public/gempa/data/model_susulan.json)
 
+  tren_linear(nilai, minimum=60)   -> regresi garis lurus deret bulanan + selang 95% (F-27, PB-53); deskriptif, bukan prakiraan.
+                                      Galat berautokorelasi: n efektif = n(1-r1)/(1+r1) (Santer dkk. 2000), ragam dan derajat bebas
+                                      memakai n efektif. Deret < minimum bulan -> {"cukup": False, "alasan": "deret terlalu pendek"}.
+
 alfa 0,2 = pita 80% (P10-P90). Kuantil konformal butuh n >= ceil((n+1)(1-alfa)); bila tidak, q = None (tanpa pita, bukan pita tak hingga).
 Pakai:  python3 -I scripts/umum/selang.py uji
 """
 import math
 import random
 import sys
+from statistics import NormalDist
 
 
 def split(skor, alfa=0.2):
@@ -42,6 +47,45 @@ def dalam_rentang(x, lo, hi):
     return x is not None and lo is not None and hi is not None and lo <= x <= hi
 
 
+def kuantil_t(p, db):
+    """Kuantil distribusi t Student (ekspansi Cornish-Fisher dari normal; galat < 1e-3 untuk db >= 5)."""
+    z = NormalDist().inv_cdf(p)
+    return (z + (z ** 3 + z) / (4 * db) + (5 * z ** 5 + 16 * z ** 3 + 3 * z) / (96 * db ** 2)
+            + (3 * z ** 7 + 19 * z ** 5 + 17 * z ** 3 - 15 * z) / (384 * db ** 3))
+
+
+def tren_linear(nilai, minimum=60, alfa=0.05, langkah_pita=12):
+    """nilai: deret bulanan berurutan tanpa celah (None = bulan kosong, tidak dihitung). x = indeks bulan 0..n-1.
+    -> {cukup, n, n_efektif, r1, potong, lereng_bulan, lereng_dekade, selang_dekade [lo, hi], arah, pita [[i, garis, lo, hi]]}.
+    arah "naik"/"turun" hanya bila selang 95% lereng tidak memuat nol; selain itu "tidak jelas"."""
+    p = [(i, v) for i, v in enumerate(nilai) if v is not None and math.isfinite(v)]
+    n = len(p)
+    if n < minimum:
+        return {"cukup": False, "n": n, "minimum": minimum, "alasan": "deret terlalu pendek"}
+    xm = sum(i for i, _ in p) / n
+    ym = sum(v for _, v in p) / n
+    sxx = sum((i - xm) ** 2 for i, _ in p)
+    b = sum((i - xm) * (v - ym) for i, v in p) / sxx
+    a = ym - b * xm
+    res = [v - (a + b * i) for i, v in p]
+    sse = sum(e * e for e in res)
+    r1 = sum(res[k] * res[k - 1] for k in range(1, n)) / sse if sse > 0 else 0.0
+    ne = n * (1 - r1) / (1 + r1) if r1 > 0 else float(n)
+    if ne < 8:
+        return {"cukup": False, "n": n, "minimum": minimum, "n_efektif": round(ne, 1), "alasan": "deret terlalu bergantung antarbulan"}
+    s2 = sse / (ne - 2)
+    t = kuantil_t(1 - alfa / 2, ne - 2)
+    se = math.sqrt(s2 / sxx)
+    lo, hi = (b - t * se) * 120, (b + t * se) * 120
+    akhir = p[-1][0]
+    titik = sorted({*range(p[0][0], akhir + 1, langkah_pita), akhir})
+    lebar = lambda i: t * math.sqrt(s2 * (1 / n + (i - xm) ** 2 / sxx))
+    pita = [[i, round(a + b * i, 3), round(a + b * i - lebar(i), 3), round(a + b * i + lebar(i), 3)] for i in titik]
+    return {"cukup": True, "n": n, "n_efektif": round(ne, 1), "r1": round(r1, 3), "potong": round(a, 5), "lereng_bulan": round(b, 6),
+            "lereng_dekade": round(b * 120, 4), "selang_dekade": [round(lo, 4), round(hi, 4)], "tingkat_selang": 1 - alfa,
+            "arah": "naik" if lo > 0 else "turun" if hi < 0 else "tidak jelas", "pita": pita}
+
+
 def uji():
     assert split([1, 2, 3, 4, 5, 6, 7, 8, 9], 0.2) == 8          # ceil(10*0.8)=8 -> skor ke-8
     assert split([1, 2, 3], 0.2) is None and split([], 0.2) is None   # ceil(4*0.8)=4 > 3: tanpa pita
@@ -67,6 +111,26 @@ def uji():
     # penolakan: pita sempit tanpa koreksi bukan 80%
     c0, _ = cakupan([(-0.3, 0.3)] * 20000, [r.gauss(0, 1) for _ in range(20000)])
     assert c0 < 0.5, "kontrol negatif: pita tanpa koreksi harusnya jauh di bawah 80%"
+    # tren_linear: kuantil t, batas 60 bulan, cakupan 95% pada derau putih dan AR(1)
+    assert abs(kuantil_t(0.975, 10) - 2.228) < 2e-3 and abs(kuantil_t(0.975, 58) - 2.0017) < 1e-3
+    assert tren_linear([1.0] * 59)["cukup"] is False and tren_linear([1.0] * 59)["alasan"] == "deret terlalu pendek"
+    assert tren_linear([1.0] * 30 + [None] * 40)["cukup"] is False                     # bulan kosong tidak dihitung
+    for phi, minimal in ((0.0, 0.92), (0.6, 0.92)):
+        kena = 0
+        for biji in range(300):
+            r = random.Random(100 + biji)
+            e, d = 0.0, []
+            for i in range(240):
+                e = phi * e + r.gauss(0, 1)
+                d.append(0.01 * i + e)
+            h = tren_linear(d)
+            kena += h["selang_dekade"][0] <= 1.2 <= h["selang_dekade"][1]
+        assert kena / 300 >= minimal, f"cakupan selang 95% (phi {phi}) = {kena / 300:.3f}"
+    naik = tren_linear([0.5 * i for i in range(72)])
+    assert naik["arah"] == "naik" and abs(naik["lereng_dekade"] - 60) < 1e-9 and naik["pita"][-1][0] == 71
+    acak = [random.Random(b) for b in range(200)]
+    datar = sum(tren_linear([r.gauss(0, 1) for _ in range(120)])["arah"] != "tidak jelas" for r in acak)
+    assert datar <= 20, f"kontrol negatif: {datar}/200 deret acak terbaca bertren"
     print("ok")
 
 
