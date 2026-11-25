@@ -1,7 +1,7 @@
 /* Rute Lapor Bencana BNPB (src/lapor_ai.js, migrasi 0155, tiket LA-05/06/10) di workerd (Miniflare) dengan D1 dan R2 sungguhan, migrasi apa adanya.
    Jalankan: node --test tests/lapor/rute.test.mjs */
 import assert from "node:assert/strict";
-import {siapkan, berantai, ADMIN, sha256} from "../warga/_bnpb.mjs";
+import {siapkan, berantai, ADMIN, MOD2, sha256} from "../warga/_bnpb.mjs";
 import {JPEG_SAH} from "../warga/_bantu.mjs";
 import {profilAktif} from "../warga/_profil.mjs";
 import {langkahKronologi} from "../../src/lapor_spek.js";
@@ -9,7 +9,7 @@ import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
 
 const uji = berantai();
 const MESIN = {authorization: "Bearer mesin-rahasia"};
-const U = await siapkan("uji-lapor-rute", {r2: true, ikat: {WA_MESIN: "mesin-rahasia", LAPOR_HARI_INI: "1"}}), {api, DB, n, mf} = U;
+const U = await siapkan("uji-lapor-rute", {r2: true, ikat: {WA_MESIN: "mesin-rahasia", LAPOR_HARI_INI: "1", LAPOR_USUL: "1"}}), {api, DB, n, mf} = U;
 const WA = "6281200000001", WA2 = "6281200000002", WA3 = "6281200000003", TAK = "6281200000099";
 const LOK = {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"};
 const pesan = (wa, b, h = MESIN) => api("POST", "/api/lapor/pesan", {wa, ...b}, h);
@@ -645,6 +645,67 @@ uji("tarik: staf dan BPBD wilayah menarik dan menampilkan lagi, wilayah lain tid
   assert.equal(await longsor(), awal + 1, "BPBD wilayah menampilkan lagi");
   assert.equal((await tarik(false)).s, 409, "tidak sedang ditarik");
   assert.equal(await n("lk_tarik", "aktif NOT IN (0, 1)"), 0);
+});
+
+/* LK-09 (U5 bagian usulkan): laporan disisipkan langsung di Semarang (jauh dari laporan uji Bogor) supaya gugusnya hanya berisi laporan uji ini.
+   Nomor tiket bertanggal 1 Nov supaya tidak bentrok dengan nomor yang dibuat mesin hari ini; nomor WA uji 62812000008xx, bukan nomor nyata. */
+let nUsul = 80;
+async function sisipLaporan({wa, jenis = "banjir", kab = "33.74", lat = -7.0, lon = 110.4, menit = 30}) {
+  nUsul++; const nomor = `LA-011126-${nUsul}`, id = `usul${String(nUsul).padStart(12, "0")}`, t0 = Date.now() - menit * 60e3;
+  const wil = {kode: `${kab}.01.${1000 + nUsul}`, desa: "Desa Uji", kec: "Kec Uji", kab: kab === "33.74" ? "Kota Semarang" : "Kabupaten Semarang", kabKode: kab, prov: "Jawa Tengah", provKode: "33"};
+  const kerja = {id, wa, status: "terkirim", nomor, terkirim: t0, foto: [], transkrip: [], isian: {jenis: {nilai: jenis}, lokasi: {nilai: {lat, lon, wilayah: wil}}, waktu: {nilai: "1 November 2026", ms: t0}}};
+  const ringkas = {waktuMs: t0, wilayah: wil, lengkap: 30, foto: 0, dampakMeja: null, dampak: {}};
+  await DB.batch([
+    DB.prepare("INSERT INTO lapor_sesi (id, wa, status, tingkat, jenis, kab, lat, lon, nomor, token_sha, terkirim, kerja, ringkas, rev, dibuat, diubah) VALUES (?, ?, 'terkirim', 'warga', ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)")
+      .bind(id, wa, jenis, kab, lat, lon, nomor, sha256(nomor), t0, JSON.stringify(kerja), JSON.stringify(ringkas), t0, t0),
+    DB.prepare("INSERT INTO lapor_tiket (nomor, sesi, status, diubah) VALUES (?, ?, 'baru', ?)").bind(nomor, id, t0)]);
+  return nomor;
+}
+const validBpbd = async (nomor, kab = "33.74") => {   // pengecekan Valid oleh BPBD kab wilayah laporan, dengan penanda lk_periksa_akun (LK-02)
+  const r = await DB.prepare("INSERT INTO lapor_periksa (nomor, hasil, catatan, oleh, waktu) VALUES (?, 'valid', 'Dicek di lokasi', 'BPBD Kota Semarang, Petugas Uji', ?)").bind(nomor, Date.now()).run();
+  await DB.prepare("INSERT INTO lk_periksa_akun (periksa_id, jenis, tingkat, prov, kab, kab_nama) VALUES (?, 'bpbd', 'kab', '33', ?, 'Kota Semarang')").bind(r.meta.last_row_id, kab).run();
+};
+uji("usulkan: hanya staf PDKO, hanya bila ada laporan terverifikasi BPBD, satu baris per kejadian laporan, klik ganda 409, ulang hanya sesudah ditolak (LK-09)", async () => {
+  const a = await sisipLaporan({wa: "6281200000801", menit: 50}), b = await sisipLaporan({wa: "6281200000802", menit: 20});
+  const usul = (no, h = ADMIN) => api("POST", `/api/lapor/meja/${no}/usulkan`, {}, h), rinci = async no => (await api("GET", `/api/lapor/meja/${no}`, undefined, ADMIN)).j.usulan;
+  const smg = await lembaga({jenis: "pemkot", tingkat: "kab", prov: "33", kab: "Kota Semarang", waAkun: "628120009005"});
+  assert.equal((await usul(a, {})).s, 403, "tanpa sesi");
+  assert.equal((await usul(a, MOD2)).s, 403, "moderator tanpa peran antrean Siklus (Q11)");
+  assert.equal((await usul(a, smg.h)).s, 403, "akun BPBD wilayah tidak mengusulkan (Q11)");
+  assert.equal((await usul(a, bogor.h)).s, 404, "BPBD wilayah lain: laporan tidak ada baginya");
+  const n0 = await n("lk_usulan"), k0 = await n("sk_kejadian");
+  let r = await usul(a); assert.equal(r.s, 422, r.t.slice(0, 200)); assert.match(r.j.galat, /diverifikasi BPBD/);
+  let u = await rinci(a); assert.equal(u.siap, false); assert.match(u.alasan, /diverifikasi BPBD/);
+  assert.equal((await api("GET", `/api/lapor/meja/${a}`, undefined, smg.h)).j.usulan, null, "BPBD tidak melihat kartu Buku Besar");
+  await validBpbd(b);   // cukup satu anggota terverifikasi (A3)
+  u = await rinci(a); assert.equal(u.siap, true, JSON.stringify(u));
+  r = await usul(a); assert.equal(r.s, 200, r.t.slice(0, 200)); assert.match(r.j.usulan.kode, /^LU-\d{6}-\d{2}$/); assert.equal(r.j.usulan.putaran, 1); assert.equal(r.j.usulan.anggota, 2);
+  assert.equal(await n("lk_usulan"), n0 + 1);
+  const row = await DB.prepare("SELECT * FROM lk_usulan WHERE kode = ?").bind(r.j.usulan.kode).first();
+  assert.equal(row.kejadian_laporan, a, "dikunci ke nomor tiket anggota paling awal, bukan kode GL- yang bergeser");
+  assert.deepEqual(JSON.parse(row.anggota).sort(), [a, b].sort()); assert.equal(row.jenis, "banjir"); assert.equal(row.kab4, "3374"); assert.match(row.oleh, /^admin:/);
+  for (const x of ["6281200000801", "6281200000802", "Desa Uji", "Dicek"]) assert.ok(!JSON.stringify(row).includes(x), `data pribadi di usulan: ${x}`);
+  for (const no of [a, b]) { const d = await usul(no); assert.equal(d.s, 409, no); assert.equal(d.j.usulan.kode, r.j.usulan.kode); }
+  assert.equal(await n("lk_usulan"), n0 + 1, "klik kedua tanpa baris baru");
+  u = await rinci(b); assert.equal(u.siap, false); assert.equal(u.ada.kode, r.j.usulan.kode);
+  assert.equal(await n("sk_kejadian"), k0, "Worker tidak mendirikan kejadian resmi (D9)");
+  // dua staf menekan hampir bersamaan pada kejadian laporan tunggal: satu baris, satu 409
+  const c = await sisipLaporan({wa: "6281200000803", lat: -7.3, lon: 110.9}); await validBpbd(c);
+  const dua0 = await Promise.all([usul(c), usul(c)]), dua = dua0.map(x => x.s).sort(); assert.deepEqual(dua, [200, 409], dua0.map(x => x.t).join(" | "));
+  assert.equal(await n("lk_usulan", `kejadian_laporan = '${c}'`), 1);
+  // ditolak staf Siklus: putaran berikut pada kunci kejadian laporan yang sama
+  const kini = Date.now();
+  await DB.prepare("INSERT INTO sk_kejadian_sumber (id, sumber, kode, status, jenis, kab4, mulai, diambil, dibuat, diubah) VALUES ('00000000000000a9', 'lapor_ai', ?, 'ditolak', 'banjir', '3374', '2026-11-01', ?, ?, ?)").bind(r.j.usulan.kode, kini, kini, kini).run();
+  const ul = await usul(b); assert.equal(ul.s, 200, ul.t.slice(0, 200)); assert.equal(ul.j.usulan.putaran, 2);
+  assert.equal((await DB.prepare("SELECT kejadian_laporan FROM lk_usulan WHERE kode = ?").bind(ul.j.usulan.kode).first()).kejadian_laporan, a);
+  assert.equal((await usul(a)).s, 409, "putaran 2 belum ditolak");
+  // jenis tanpa padanan dan kab lintas: 422 tanpa baris
+  const n1 = await n("lk_usulan"), d = await sisipLaporan({wa: "6281200000804", jenis: "lainnya", lat: -7.8, lon: 110.2}); await validBpbd(d);
+  r = await usul(d); assert.equal(r.s, 422); assert.match(r.j.galat, /padanan/);
+  const e = await sisipLaporan({wa: "6281200000805", lat: -7.5, lon: 110.6, menit: 40}), f = await sisipLaporan({wa: "6281200000806", kab: "33.22", lat: -7.5, lon: 110.6, menit: 10}); await validBpbd(e);
+  r = await usul(f); assert.equal(r.s, 422, r.t.slice(0, 200)); assert.match(r.j.galat, /lebih dari satu kabupaten/);
+  assert.equal(await n("lk_usulan"), n1);
+  assert.equal(await n("lk_usulan", "kode NOT GLOB 'LU-[0-9][0-9][0-9][0-9][0-9][0-9]-[0-9][0-9]*'"), 0);
 });
 
 uji("video bersambung: tiga bagian, satu terpotong ditolak lalu dilanjutkan, status bagian, selesai masuk laporan sebagai video", async () => {

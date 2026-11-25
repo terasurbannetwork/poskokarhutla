@@ -8,6 +8,7 @@
    (migrasi 0169) dari cakupan sesi, dan pengecekan lama tanpa baris samping dihitung belum terverifikasi (aman: tidak pernah tayang). */
 import {dalamWilayah} from "./lapor_meja_hak.js";
 import {dasarPublik} from "./lapor_tampil.js";
+import {NAMA_KAB4} from "./siklus_kab.js";
 
 /* urutan "terakhir": waktu menurun, id menurun bila waktu sama (A3 butir 1) */
 const lebihBaru = (a, b) => a.waktu !== b.waktu ? a.waktu > b.waktu : a.id > b.id;
@@ -75,4 +76,26 @@ export function kartuPublik({id, anggota, pusat}) {
     ...(nWarga >= 2 ? {nWarga} : {}),
     verifikasi: {oleh: v.tingkat === "prov" ? (L.prov ? `BPBD Provinsi ${L.prov}` : "BPBD Provinsi") : (v.kab_nama || L.kab ? `BPBD ${v.kab_nama || L.kab}` : "BPBD"), waktu: v.waktu},
     dampak};
+}
+
+/* ---------- usulan ke Buku Besar (LK-09, ALGORITMA A6, D9, K87) ----------
+   jenis tiket Lapor -> jenis kejadian Buku Besar (JENIS_SAH src/siklus_kejadian.js); satu sumber dengan ingest modul lapor_ai (src/kejadian_tautan.js).
+   "lainnya" tidak punya padanan: tidak diusulkan, tidak dikirim. */
+export const JENIS_BUKU_BESAR = Object.freeze({banjir: "banjir", longsor: "longsor", cuaca: "cuaca", kekeringan: "kekeringan", karhutla: "karhutla", gempa: "gempa",
+  tsunami: "tsunami", abrasi: "gelombang", erupsi: "gunungapi", kebakaran_gedung: "kebakaran_permukiman"});
+/* penentu murni, dipakai rute Worker dan mesin lokal. anggota = semua anggota kejadian laporan, urut waktu (anggota[0] = paling awal):
+   [{nomor, jenis, laporan: {status, wilayah}, periksa, versi}]; lama = baris lk_usulan yang kejadian_laporan-nya salah satu anggota;
+   ditolak = Set kode usulan yang ditolak staf Siklus (sk_kejadian_sumber). Tarikan halaman publik tidak menahan usulan (A8).
+   Hasil {status, galat, ada?} atau {usulan: {kejadian_laporan, putaran, anggota, jenis, kab4}}. Tanpa data pribadi: hanya nomor tiket, jenis, kab. */
+export function usulanDari(anggota, lama = [], ditolak = new Set()) {
+  const xs = anggota || [], akhir = (lama || []).reduce((m, u) => !m || u.putaran > m.putaran ? u : m, null);
+  if (akhir && !ditolak.has(akhir.kode)) return {status: 409, galat: "Kejadian ini sudah diusulkan ke Buku Besar.", ada: {kode: akhir.kode, putaran: akhir.putaran, waktu: akhir.waktu}};
+  if (!xs.length || !kejadianTerverifikasi(xs).terverifikasi) return {status: 422, galat: "Belum ada laporan yang diverifikasi BPBD wilayahnya."};
+  const jenis = new Set(xs.map(a => JENIS_BUKU_BESAR[a.jenis] ?? null));
+  if (jenis.has(null) || jenis.size !== 1) return {status: 422, galat: "Jenis bencana laporan ini tidak ada padanannya di Buku Besar Kejadian."};
+  const kab = new Set(xs.map(a => String(a.laporan?.wilayah?.kabKode ?? "").replace(".", "")));
+  if (kab.size !== 1) return {status: 422, galat: "Laporan dalam kejadian ini berada di lebih dari satu kabupaten/kota. Pisahkan dulu."};
+  const [kab4] = kab;
+  if (!Object.hasOwn(NAMA_KAB4, kab4)) return {status: 422, galat: "Kabupaten/kota laporan tidak dikenal."};
+  return {usulan: {kejadian_laporan: akhir?.kejadian_laporan ?? xs[0].nomor, putaran: (akhir?.putaran || 0) + 1, anggota: xs.map(a => a.nomor).slice(0, 200), jenis: [...jenis][0], kab4}};
 }

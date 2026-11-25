@@ -117,7 +117,7 @@ export const MATRIKS_SK = {
   sk_kejadian:        {sistem: ["baca", "tambah"], sk_staf: ["baca", "tambah", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"]},
   sk_kejadian_kab:    {sistem: ["baca", "tambah"], sk_staf: ["baca", "tambah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "hapus"]},
   sk_kejadian_alias:  {sistem: ["baca"], sk_staf: ["baca", "tambah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "hapus"]},
-  sk_kejadian_sumber: {sistem: ["baca", "tambah"], sk_staf: ["baca", "tambah", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"]},
+  sk_kejadian_sumber: {sistem: ["baca", "tambah"], sk_staf: ["baca", "tambah", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"], lp_staf: ["baca"]},   // lp_staf: hanya lpUsulanDitolak (LK-09)
   sk_kaji:            {sistem: ["baca", "tambah"], sk_staf: ["baca", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"]},
   sk_harga:           {sk_staf: ["baca", "tambah"], admin: ["baca", "tambah", "hapus"]},
   sk_jitupasna:       {sk_staf: ["baca", "tambah", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"]},
@@ -2150,6 +2150,16 @@ export const lpUsulanKejadian = async (env, p, kejadian) => kejadian.length ? (a
 export const lpStmtUsulan = (env, p, u) => sedia(env, p, "lk_usulan", "tambah",
   "INSERT INTO lk_usulan (kode, kejadian_laporan, putaran, anggota, jenis, kab4, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)")
   .bind(u.kode, u.kejadian_laporan, u.putaran ?? 1, JSON.stringify(u.anggota), u.jenis, u.kab4, u.oleh, u.waktu);
+/* LK-09: kode usulan LU-ddmmyy-NN dihitung DI SQL (urut harian dari baris hari itu; tabel append-only, D1 menjalankan satu tulis sekaligus),
+   jadi galat UNIQUE hanya bisa datang dari (kejadian_laporan, putaran) = klik ganda, dan rute menjawab 409. hari = "ddmmyy" WIB. */
+export const lpStmtUsulanHari = (env, p, u, hari) => sedia(env, p, "lk_usulan", "tambah",
+  `INSERT INTO lk_usulan (kode, kejadian_laporan, putaran, anggota, jenis, kab4, oleh, waktu)
+   SELECT 'LU-' || ?1 || '-' || printf('%02d', count(*) + 1), ?2, ?3, ?4, ?5, ?6, ?7, ?8 FROM lk_usulan WHERE kode >= 'LU-' || ?1 || '-' AND kode < 'LU-' || ?1 || '.'
+   RETURNING kode, putaran`).bind(hari, u.kejadian_laporan, u.putaran, JSON.stringify(u.anggota), u.jenis, u.kab4, u.oleh, u.waktu);
+/* usulan yang ditolak staf Siklus (A7): satu-satunya bacaan lp_staf atas sk_kejadian_sumber; menentukan boleh tidaknya putaran berikut */
+export const lpUsulanDitolak = async (env, p, kode) => kode.length ? (await sedia(env, p, "sk_kejadian_sumber", "baca",
+  `SELECT kode FROM sk_kejadian_sumber WHERE sumber = 'lapor_ai' AND status = 'ditolak' AND dummy = 0 AND kode IN (${kode.map((_, i) => "?" + (i + 1)).join(", ")})`)
+  .bind(...kode).all()).results.map(r => r.kode) : [];
 export const lpTindakanDaftar = async (env, p, nomor) => (await sedia(env, p, "lapor_tindakan", "baca",
   "SELECT kode, label, oleh, waktu FROM lapor_tindakan WHERE nomor = ?1 ORDER BY waktu, id LIMIT 100").bind(nomor).all()).results;
 export const lpStmtTindakan = (env, p, nomor, kode, label, oleh, kini, g = false) => sedia(env, p, "lapor_tindakan", "tambah",
@@ -2640,3 +2650,17 @@ export const EWS_AWAL_ID = "0000000000000000";
 export const ewsAwalAda = async env => !!(await env.DB.prepare("SELECT 1 FROM ews_terkirim WHERE langganan_id = ?1 AND kunci = 'x|awal'").bind(EWS_AWAL_ID).first());
 export const ewsAwalTandai = (env, kini) => env.DB.prepare("INSERT OR IGNORE INTO ews_terkirim (langganan_id, kunci, waktu) VALUES (?1, 'x|awal', ?2)").bind(EWS_AWAL_ID, kini).run();
 export const ewsCatatSenyap = (env, id, kunci, kini) => env.DB.batch(kunci.map(k => env.DB.prepare("INSERT OR IGNORE INTO ews_terkirim (langganan_id, kunci, waktu) VALUES (?1, ?2, ?3)").bind(id, k, kini)));
+
+/* ---------- alat: panel EWS banjir dan gunung api (EW-04, src/alat.js) ---------- */
+/* Baca saja, jalur publik dan staf sama (pembulatan koordinat dan desa diatur alat.js). SIHKA memakai SQL_RIWAYAT sihka.js, satu definisi. */
+import {SQL_RIWAYAT as ALAT_SQL_RIWAYAT_SIHKA} from "./sihka.js";
+export const ALAT_MAKS = 500, ALAT_MAKS_TITIK = 1500;
+const ALAT_SQL_POS = `SELECT a.id, a.jenis, a.kab, a.desa, a.lat, a.lon, a.ambang, b.waktu, b.nilai, b.baterai FROM sensor_alat a
+  LEFT JOIN sensor_baca b ON b.alat_id = a.id AND b.waktu = (SELECT max(waktu) FROM sensor_baca WHERE alat_id = a.id)
+  WHERE a.aktif = 1 AND a.jenis <> 'gateway' AND a.jenis IN (SELECT value FROM json_each(?1)) ORDER BY a.id LIMIT ${ALAT_MAKS}`;
+export const alatSensorPos = async (env, jenis) => (await env.DB.prepare(ALAT_SQL_POS).bind(JSON.stringify(jenis)).all()).results;
+export const alatSensorSatu = (env, id) => env.DB.prepare("SELECT id, jenis, ambang FROM sensor_alat WHERE id = ? AND aktif = 1 AND jenis <> 'gateway'").bind(id).first();
+/* terbaru menang bila > ALAT_MAKS_TITIK: ambil DESC lalu dibalik ke urutan waktu naik */
+export const alatSensorSeri = async (env, id, dari, sampai) => (await env.DB.prepare(`SELECT waktu, nilai FROM sensor_baca WHERE alat_id = ? AND waktu > ? AND waktu <= ? ORDER BY waktu DESC LIMIT ${ALAT_MAKS_TITIK}`).bind(id, dari, sampai).all()).results.reverse();
+export const alatSihkaStatus = async env => (await env.DB.prepare("SELECT isi FROM cuaca_sumber WHERE kunci = 'sihka_status'").first())?.isi;
+export const alatSihkaRiwayat = async (env, pos, kini) => (await env.DB.prepare(ALAT_SQL_RIWAYAT_SIHKA).bind(pos, Math.floor(kini / 1000), kini).first())?.isi;

@@ -31,7 +31,8 @@ import * as H from "./hak.js";
 import {buatSelamat} from "./lapor_selamat.js";
 import {bukaBerkas, pesanTim, fotoTim, bersihSesiLanjut, sapuDrafYatim, hapusPribadiLama} from "./lapor_lanjut.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
-import {penandaPemeriksa, waktuVerifikasi, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik} from "./lapor_kejadian.js";
+import {penandaPemeriksa, waktuVerifikasi, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik, usulanDari} from "./lapor_kejadian.js";
+import {hakSk} from "./siklus.js";
 
 const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10, MAKS_BERKAS = 20;   // D79: foto dan video dihitung bersama, paling banyak 20, video paling banyak 3
 const BATAS_PESAN = [[MENIT, 20], [JAM, 120], [HARI, 300]],   // K104 (pemilik 25 Nov 2026): 120 per jam per orang karena pertanyaannya banyak; harian ikut naik supaya tidak lebih ketat dari jam
@@ -837,6 +838,10 @@ async function rincianObj(env, c, baris, identitas = c.jenis === "bnpb") {   // 
   o.ditangani = (await bacaTabel(() => H.lpAmbilNomor(env, nomor), null))?.label ?? null;   // PF-08: tidak pernah ke jawaban publik atau halaman lacak (N12)
   o.tindakanPilihan = reg ? tindakanUntuk(s.isian.jenis?.nilai, reg) : []; o.revisi = revisiTampil(s);
   o.publik = await bacaTabel(() => statusPublik(env, baris, s.tiket.status), null);   // LK-07: daftar centang lima syarat dan status tarikan; sebelum migrasi 0170 kosong
+  /* LK-09: kartu Buku Besar hanya untuk BNPB dan hanya bila saklar LAPOR_USUL menyala. ponytail: membaca laporan 30 hari (gugusDasar) per buka rincian BNPB,
+     sama dengan daftar meja; pindah ke tabel hasil cron bila laporan 30 hari mendekati ribuan */
+  o.usulan = c.jenis === "bnpb" && env.LAPOR_USUL === "1" ? await bacaTabel(async () => { const r = await kejadianUsulan(env, baris, s.tiket.status, Date.now());
+    return r.usulan ? {siap: true, ada: null, alasan: null} : {siap: false, ada: r.ada || null, alasan: r.ada ? null : r.galat}; }, null) : null;
   if (!identitas) { o.pelapor = {peran: o.pelapor?.peran ?? null, tersembunyi: true}; o.transkrip = []; }
   return {...o, akun: {jenis: c.jenis, label: c.label}, pindah: pindahUntuk(c, s.tiket.status, PINDAH[s.tiket.status])};
 }
@@ -865,6 +870,33 @@ async function tarikPublik(env, h, nomor, o, kini) {
   await H.lpBatch(env, STAF, anggota.map(n => H.lpStmtTarik(env, STAF, n, o.aktif, alasan, h.oleh, kini)));
   return kirim(200, {ok: true, ditarik: o.aktif, anggota: anggota.length});
 }
+/* usulan ke Buku Besar (lapor-kejadian LK-09; A6, D9, D12, K87; bawaan Q11 diterima pemilik 25 Nov 2026): satu klik menulis SATU baris lk_usulan, tidak pernah
+   mendirikan kejadian resmi; pemasangan tetap lewat pencocok scripts/siklus/pasang.py (LK-10). Kejadian laporan = gugus (anggota terkunci ke nomor tiket LA-)
+   atau laporan tunggal, dikunci ke nomor tiket anggota paling awal (kode GL- bergeser tiap muat, catatan LK-03). Mengusulkan ulang hanya sesudah staf Siklus
+   menolak usulan terakhir (putaran berikut). Tanpa data pribadi: nomor tiket, jenis, kab4, pelaku sesi. */
+const jenisBaris = baris => { try { return JSON.parse(baris.kerja)?.isian?.jenis?.nilai ?? null; } catch { return null; } };
+async function kejadianUsulan(env, baris, status, kini) {
+  const nomor = baris.nomor, {per, G, gk} = await gugusDasar(env, kini), daftar = gk.get(G.per[nomor])?.anggota || [nomor];
+  const dasar = daftar.map(n => { const r = per.get(n);
+    return r ? {nomor: n, jenis: r.jenis, laporan: {status: r.status, wilayah: ringkasDari(r).wilayah || null}} : {nomor: n, jenis: jenisBaris(baris), laporan: {status, wilayah: wilayahBaris(baris)}}; });
+  const semua = async f => (await Promise.all(potong(daftar).map(f))).flat();
+  const [periksa, versi, lama] = await Promise.all([semua(xs => H.lpPeriksaAkunNomor(env, STAF, xs)), semua(xs => H.lpVersiTerakhir(env, STAF, xs)), semua(xs => H.lpUsulanKejadian(env, STAF, xs))]);
+  const P = new Map(), V = new Map(versi.map(v => [v.nomor, v.waktu]));
+  for (const r of periksa) (P.get(r.nomor) || P.set(r.nomor, []).get(r.nomor)).push({id: r.id, hasil: r.hasil, waktu: r.waktu, akun: r.jenis ? {jenis: r.jenis, tingkat: r.tingkat, prov: r.prov, kab: r.kab, kab_nama: r.kab_nama} : null});
+  const ditolak = new Set(lama.length ? await bacaTabel(() => H.lpUsulanDitolak(env, STAF, lama.map(u => u.kode)), []) : []);   // sebelum migrasi 0120: tidak ada yang ditolak
+  return usulanDari(dasar.map(a => ({...a, periksa: P.get(a.nomor) || [], versi: V.get(a.nomor) ? [{waktu: V.get(a.nomor)}] : []})), lama, ditolak);
+}
+const TOLAK_USUL = "Mengusulkan ke Buku Besar hanya untuk staf Pusdalops atau Koordalops BNPB dan Super Admin.";
+async function usulkan(env, req, h, baris, t, kini) {
+  if (h.c.jenis !== "bnpb") return galat(403, TOLAK_USUL);
+  const sk = await hakSk(env, req, kini); if (sk instanceof Response || !(sk.sa || sk.pd || sk.ko)) return galat(403, TOLAK_USUL);   // peran PDKO antrean Siklus (Q11)
+  const r = await bacaTabel(() => kejadianUsulan(env, baris, t.status, kini), null); if (!r) return galat(503, "Fitur ini belum diaktifkan.");   // sebelum migrasi 0170
+  if (!r.usulan) return galat(r.status, r.galat, r.ada ? {usulan: r.ada} : {});
+  let x;
+  try { x = await H.lpStmtUsulanHari(env, STAF, {...r.usulan, oleh: h.oleh, waktu: kini}, tglKejadian(kini)).first(); }
+  catch (e) { if (/UNIQUE/i.test(String(e?.message))) return galat(409, "Kejadian ini sudah diusulkan ke Buku Besar."); throw e; }   // klik ganda pada putaran yang sama
+  return kirim(200, {ok: true, usulan: {kode: x.kode, putaran: x.putaran, anggota: r.usulan.anggota.length}});
+}
 async function mejaRinci(env, c, nomor) {
   const baris = await H.lpSesiNomor(env, STAF, nomor);
   if (!baris || !dalamWilayah(c, wilayahBaris(baris))) return galat(404, "Laporan tidak ditemukan.");   // di luar wilayah = tidak ada (D95)
@@ -886,6 +918,7 @@ async function mejaUbah(env, req, url, nomor, aksi, kini) {
   if (!bolehAksi(c, aksi, t.status, b.o.ke)) return galat(403, "Aksi ini hanya untuk BNPB (membuka kembali tiket, meneruskan ke BPBD).");   // D96
   if (aksi === "ambil") return ambilLaporan(env, h, nomor, t, kini);
   if (aksi === "tarik") return tarikPublik(env, h, nomor, b.o, kini);
+  if (aksi === "usulkan") return usulkan(env, req, h, baris, t, kini);
   const catatan = String(b.o.catatan || b.o.teks || "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 1000);
   let tambahan = {};
   if (aksi === "lihat") {   // petugas membuka laporan baru = "Sudah dilihat petugas" (POST, bukan GET); akun BPBD tiap kali tercatat di lapor_akses (D95)
@@ -1096,7 +1129,8 @@ async function mejaGet(env, req, url, kini, ctx, x) {
 async function mejaPost(env, req, url, kini, ctx, x) {
   if (x.startsWith("cari/")) { const h = await hakMeja(env, req, kini); if (!h) return tolakStaf(); if (h.tolak) return h.tolak; return SEL.cariStatus(env, req, h, x, kini); }
   const pc = /^(LA-\d{6}-\d{2,3})\/pic$/.exec(x); if (pc) return picPost(env, req, url, kini, pc[1]);
-  const m = /^(LA-\d{6}-\d{2,3})\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas|periksa|tindakan|ambil|tarik)$/.exec(x);
+  const m = /^(LA-\d{6}-\d{2,3})\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas|periksa|tindakan|ambil|tarik|usulkan)$/.exec(x);
+  if (m?.[2] === "usulkan" && env.LAPOR_USUL !== "1") return galat(404, "Usulan ke Buku Besar belum dibuka.");   // saklar dibaca di rute (D12)
   return m ? mejaUbah(env, req, url, m[1], m[2], kini) : galat(404, "rute lapor tidak ada");
 }
 
