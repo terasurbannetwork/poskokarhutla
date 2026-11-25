@@ -207,7 +207,11 @@ export const ISIAN = [
     ["Ada keduanya", "Luka berat dan banyak yang sakit"], ["Tidak ada, sudah tertangani", ""], ["Tidak tahu", ""]]},
   /* ----- K95, K96, K102, K103: situasi sekarang ----- */
   {nama: "situasi_sekarang", label: "Keadaan sekarang", kelompok: "situasi", tipe: "opsi", tanya: "Bagaimana keadaan kejadiannya sekarang?", opsi: [
-    ["Masih berlangsung atau membesar", "Misalnya air masih naik, api masih menjalar, tanah masih bergerak"], ["Masih ada, tidak bertambah", "Bertahan, belum turun"],
+    ["Masih berlangsung atau membesar", {   // keterangan mengikuti jenis kejadian (pemilik 25 Nov 2026: "sesuaikan lah bencananya apa")
+      banjir: "Air masih naik atau meluas", longsor: "Tanah masih bergerak atau retakan bertambah", abrasi: "Ombak masih tinggi, pantai masih terkikis",
+      cuaca: "Angin atau hujan masih kencang", kekeringan: "Sumber air makin kering", karhutla: "Api masih menjalar, asap masih tebal",
+      gempa: "Gempa susulan masih terasa", tsunami: "Air laut masih naik atau datang lagi", erupsi: "Gunung masih menyemburkan abu atau lava",
+      kebakaran_gedung: "Api masih menyala atau merambat", _: "Kejadiannya masih terjadi atau makin besar"}], ["Masih ada, tidak bertambah", "Bertahan, belum turun"],
     ["Mulai mereda", "Berkurang, belum selesai"], ["Sudah berakhir", "Tidak ada lagi tanda kejadian"], ["Tidak tahu", "Tidak melihat langsung"]]},
   {nama: "akses_ke_lokasi", label: "Akses ke lokasi", kelompok: "situasi", tipe: "opsi", kecuali: ["kekeringan"],
     tanya: "Bagaimana petugas dan kendaraan bisa sampai ke lokasi dari jalan besar terdekat?", opsi: [
@@ -227,7 +231,9 @@ export const ISIAN = [
 
 export const isianNama = Object.fromEntries(ISIAN.map(i => [i.nama, i]));
 /* pilihan yang berlaku untuk jenis kejadian ini: opsi berelemen ke-4 berisi daftar jenis hanya muncul untuk jenis itu (kebutuhan khas per bencana, logbook Pusdalops) */
-export const opsiBerlaku = (i, jenis) => (i.opsi || []).filter(o => !o[3] || (jenis && o[3].includes(jenis)));
+/* keterangan opsi (o[1]) boleh berupa peta per jenis {banjir: "...", _: bawaan}; diselesaikan di sini supaya pemanggil tetap menerima teks */
+export const opsiBerlaku = (i, jenis) => (i.opsi || []).filter(o => !o[3] || (jenis && o[3].includes(jenis)))
+  .map(o => o[1] && typeof o[1] === "object" ? [o[0], o[1][jenis] || o[1]._, ...o.slice(2)] : o);
 export const berlaku = (jenis) => ISIAN.filter(i => (!i.jenis || (jenis && i.jenis.includes(jenis))) && !(jenis && i.kecuali?.includes(jenis)));
 /* isian yang berlaku untuk sesi ini: pertanyaan lanjutan (bila) hanya bila isian induknya lebih dari 0 (pemilik 19 Nov 2026: "harusnya ada follow up questionnya") */
 export const berlakuSesi = (sesi) => berlaku(sesi.isian.jenis?.nilai).filter(i => !i.bila || Number(sesi.isian[i.bila]?.nilai) > 0 || i.bilaJenis?.includes(sesi.isian.jenis?.nilai));   // bilaJenis: tetap ditanya untuk jenis ini walau induknya kosong

@@ -2740,6 +2740,9 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
   .lp-tab .lp-sigap-maskot{width:min(170px,90%)!important}
   .lp-tab .lp-sigap-gelembung{padding:14px 16px!important;font-size:.9375rem!important;line-height:1.5}
   .lp-tab .lp-sigap-gelembung b{font-size:1.0625rem!important}
+  /* pemilik 25 Nov 2026: "orangnya agak di kanan, jangan tengah banget"; ekor gelembung ikut menunjuk maskot */
+  .lp-tab .lp-sigap-maskot{align-self:flex-end;margin-right:-4px}
+  .lp-tab .lp-sigap-gelembung::after{left:64%!important}
 }
 /* panel isian: kartu kelompok mengisi tinggi panel, tanpa ruang kosong di bawah (pemilik 25 Nov 2026) */
 @media (min-width:900px){
