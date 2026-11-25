@@ -192,6 +192,7 @@ def uji():
 
     uji_banjir_murni(b, ok, dekat)
     uji_fixture(b, ok)
+    uji_banjir_fixture(b, ok)
     print(f"semai uji: {n[0]} kasus lolos")
 
 
@@ -583,12 +584,28 @@ def tulis_png(path, kelas, palet, alfa):
 
 
 # ---- masukan ---------------------------------------------------------------------------------------------------------
-def tempat_np():
-    """Titik kota dan bandara untuk faktor T: (lat, lon) array."""
-    np = _np()
+def tempat_py():
+    """Titik kota dan bandara untuk faktor T: ([[lat, lon]], baris kota). Stdlib."""
     kota = muat_json("scripts/udara/kota.json")["baris"]
     band = muat_json("scripts/cuaca/data/bandara.json")["bandara"]
-    return np.array([[r[3], r[4]] for r in kota] + [[v[1], v[2]] for v in band.values()]), kota
+    return [[r[3], r[4]] for r in kota] + [[v[1], v[2]] for v in band.values()], kota
+
+
+def tempat_np():
+    """Titik kota dan bandara untuk faktor T: (lat, lon) array."""
+    t, kota = tempat_py()
+    return _np().array(t), kota
+
+
+def bandara_gabung(base):
+    """S10: base op_base aktif + 136 bandara BMKG yang belum jadi base -> {id: {nama, lat, lon, icao, terdaftar}}. Stdlib."""
+    icao_base = {bs.get("icao"): bid for bid, bs in base.items() if bs.get("aktif", 1)}
+    out = {bid: {"nama": bs["nama"], "lat": bs["lat"], "lon": bs["lon"], "icao": bs.get("icao"), "terdaftar": True}
+           for bid, bs in base.items() if bs.get("aktif", 1)}
+    for ic, (nm, la, lo, _pv) in muat_json("scripts/cuaca/data/bandara.json")["bandara"].items():
+        if ic not in icao_base:
+            out[ic] = {"nama": nm, "lat": la, "lon": lo, "icao": ic, "terdaftar": False}
+    return out
 
 
 def muat_cluster(jalur, prov_nm):
@@ -943,12 +960,7 @@ def siapkan(putaran, dibuat, b, jalur_kluster, P=None):
     c.base = renlap.muat_base()
     # S10 (pemilik 14 Nov 2026): OMC berangkat dari bandara terdekat, tanpa batas jelajah. Kandidat = base op_base + 136 bandara
     # BMKG (scripts/cuaca/data/bandara.json); bandara yang sudah jadi base memakai id base (renlap bisa menargetkannya).
-    icao_base = {bs.get("icao"): bid for bid, bs in c.base.items() if bs.get("aktif", 1)}
-    c.bandara = {bid: {"nama": bs["nama"], "lat": bs["lat"], "lon": bs["lon"], "icao": bs.get("icao"), "terdaftar": True}
-                 for bid, bs in c.base.items() if bs.get("aktif", 1)}
-    for ic, (nm, la, lo, _pv) in json.load(open(os.path.join(REPO, "scripts/cuaca/data/bandara.json"), encoding="utf-8"))["bandara"].items():
-        if ic not in icao_base:
-            c.bandara[ic] = {"nama": nm, "lat": la, "lon": lo, "icao": ic, "terdaftar": False}
+    c.bandara = bandara_gabung(c.base)
     c.awan_kab = {}
     fa = os.path.join(REPO, "public/udara/data/awan_himawari.json")
     if os.path.exists(fa):
@@ -983,6 +995,8 @@ def jalan(args):
     keluar = args.keluar or os.path.join(REPO, "data/raw/semai/keluar")
     os.makedirs(keluar, exist_ok=True)
     c = siapkan(putaran, dibuat, b, args.kluster or os.path.join(REPO, "public/data/kluster.json"))
+    if args.tujuan == "banjir":
+        return jalan_banjir(args, b, dibuat, keluar, c)
     pasang_asap(c, keluar)
     c.beban_asap = lambda s, i, j: (None if c.asap is None or c.tampil[s] not in c.asap else tingkat_asap(c, float(c.asap[c.tampil[s]][i, j]), b))
     out = {"dibuat": dibuat.strftime("%Y-%m-%dT%H:%M:%SZ"), "versi_bobot": b["versi"], "status_bobot": b["status"], "mode": "bawaan",
@@ -1200,10 +1214,494 @@ def uji_golden():
     print(f"semai uji golden: {len(G)} lokasi, {sum(v['sel_skor_positif'] for v in G.values())} sel skor>0, {sum(len(v['zona']) for v in G.values())} zona identik")
 
 
+# =====================================================================================================================
+# tujuan banjir (semai-banjir ALGORITMA §2 sampai §8). Inti stdlib: dipakai `uji` (fixture) dan `jalan --tujuan banjir` (numpy
+# hanya untuk menyiapkan medan). Jalur karhutla tidak menyentuh blok ini.
+# =====================================================================================================================
+MAKS_SASARAN_KAND, MAKS_KAND_PER_SASARAN, MAKS_BYTE_BANJIR = 60, 40, 300 * 1024
+KALIMAT_BANJIR = {
+    "tidak_ada_sasaran": "Tidak ada sasaran banjir untuk {d} dari prakiraan kita, BMKG, daftar tetap, atau Pusdalops.",
+    "angin_lemah": "Angin pengarah di sasaran terlalu lemah untuk mencegat awan dari hulu.",
+    "tidak_ada_awan_hulu": "Tidak ada awan layak semai di hulu sasaran dalam 24 jam ke depan. Hujan sasaran bisa tumbuh di tempat.",
+    "tanpa_prakiraan": "Prakiraan belum tersedia."}
+
+
+def _lintasan():
+    p = os.path.join(REPO, "scripts/udara")
+    if p not in sys.path:
+        sys.path.insert(0, p)
+    import lintasan
+    return lintasan
+
+
+def pip(poly, lon, lat):
+    """Aturan genap-ganjil lintas semua cincin satu poligon ([[lon, lat]...])."""
+    ins = False
+    for r in poly:
+        for (x1, y1), (x2, y2) in zip(r, r[1:] + r[:1]):
+            if (y1 > lat) != (y2 > lat) and lon < (x2 - x1) * (lat - y1) / (y2 - y1) + x1:
+                ins = not ins
+    return ins
+
+
+def dalam_kab(k, lat, lon):
+    x0, y0, x1, y1 = k["bbox"]
+    return x0 <= lon <= x1 and y0 <= lat <= y1 and any(pip(p, lon, lat) for p in k["polys"])
+
+
+def kab_di(kabs, lat, lon):
+    """Kode kab yang daratannya memuat titik; None = laut atau di luar data."""
+    return next((k["kode"] for k in kabs if dalam_kab(k, lat, lon)), None)
+
+
+def siapkan_kab(kode, nama, prov, lat, lon, geom):
+    polys = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
+    xs = [p[0] for pl in polys for r in pl for p in r]
+    ys = [p[1] for pl in polys for r in pl for p in r]
+    return dict(kode=kode, nama=nama, prov=prov, lat=lat, lon=lon, polys=polys, bbox=(min(xs), min(ys), max(xs), max(ys)))
+
+
+def tepi_titik(polys, spasi_km=5.0):
+    """Titik tepi (lat, lon) tiap sekitar spasi_km sepanjang semua cincin."""
+    out = []
+    for pl in polys:
+        for r in pl:
+            for (x1, y1), (x2, y2) in zip(r, r[1:] + r[:1]):
+                n = max(1, int(M.haversine(y1, x1, y2, x2) // spasi_km))
+                for t in range(n):
+                    q = (y1 + (y2 - y1) * t / n, x1 + (x2 - x1) * t / n)
+                    if not out or M.haversine(out[-1][0], out[-1][1], *q) >= spasi_km * 0.8:
+                        out.append(q)
+    return out
+
+
+def jarak_tepi(lat, lon, pts):
+    best = 1e9
+    for y, x in pts:
+        if abs(y - lat) * 111.0 < best:
+            best = min(best, M.haversine(lat, lon, y, x))
+    return best
+
+
+def kisi_pengarah(lat, lon, langkah, U, V):
+    """Adaptor u_pengarah, v_pengarah per langkah ke kisi bentuk lintasan.angin_di (D4): lat, lon daftar pusat sel; jam = langkah;
+    u[0][k][j][i] dalam m/s x 10 (bulat), None bila bukan angka. U, V: daftar per langkah dari matriks [lat][lon] (m/s)."""
+    def kemas(M_):
+        return [[[None if (x is None or x != x) else int(round(x * 10)) for x in row] for row in m] for m in M_]
+    return {"lat": list(lat), "lon": list(lon), "jam": list(langkah), "u": [kemas(U)], "v": [kemas(V)]}
+
+
+def maju_tiba(A, lat, lon, jam0, tujuan, b, langkah_menit=15):
+    """Lintasan maju (Heun) dari titik hujan sampai gb3_tiba_maks jam. tujuan = [(idx, kab, tepi)]. -> {idx: (tiba_jam, lat, lon)}
+    pada saat pertama titik di dalam poligon atau <= gb1_jarak_km dari tepi."""
+    L = _lintasan()
+    hasil, sisa = {}, list(tujuan)
+    mks, dts = n_(b, "banjir.gb3_tiba_maks_jam"), langkah_menit * 60
+    jarak = n_(b, "banjir.gb1_jarak_km")
+    jam = 0.0
+    while sisa:
+        for t in list(sisa):
+            i, k, tepi = t
+            x0, y0, x1, y1 = k["bbox"]
+            if x0 - 0.2 <= lon <= x1 + 0.2 and y0 - 0.2 <= lat <= y1 + 0.2 and (dalam_kab(k, lat, lon) or jarak_tepi(lat, lon, tepi) <= jarak):
+                hasil[i] = (jam, lat, lon)
+                sisa.remove(t)
+        if not sisa or jam + langkah_menit / 60 > mks + 1e-9:
+            break
+        a = L.angin_di(A, 0, lon, lat, jam0 + jam)
+        if a is None:
+            break
+        lo1, la1 = L.geser(lon, lat, *a, dts)
+        bb = L.angin_di(A, 0, lo1, la1, jam0 + jam + langkah_menit / 60)
+        if bb is None:
+            break
+        lon, lat = L.geser(lon, lat, (a[0] + bb[0]) / 2, (a[1] + bb[1]) / 2, dts)
+        jam += langkah_menit / 60
+    return hasil
+
+
+class Medan:
+    """Medan siap hitung: sel (i baris dari utara, j kolom dari barat) pada lat0 - 0.1 i, lon0 + 0.1 j. `sel(s, i, j)` mengembalikan
+    dict turunan_sel (plus jam_lokal); A = kisi_pengarah; langkah = semua langkah A; tampil = langkah yang dievaluasi."""
+    def __init__(self, lat0, lon0, nlat, nlon, langkah, tampil, init, A, sel):
+        self.lat0, self.lon0, self.nlat, self.nlon = lat0, lon0, nlat, nlon
+        self.langkah, self.tampil, self.init, self.A, self.sel = langkah, tampil, init, A, sel
+
+
+def _hari(init, jam, off):
+    return (init + dt.timedelta(hours=jam + off)).strftime("%Y-%m-%d")
+
+
+def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, putaran, prov_nama_zona=None):
+    """Inti §3 sampai §8. sasaran = hasil M.pilih_sasaran()['sasaran'] dengan kunci kab (kode) sudah punya geometri di `kabs`.
+    -> dict (zona, sasaran, kandidat_sasaran, alasan_kosong, ...). Tanpa IO; mengembalikan juga 'n_dievaluasi' untuk uji."""
+    L = _lintasan()
+    n = lambda j: n_(b, j)
+    kab_by = {k["kode"]: k for k in kabs}
+    krow = {r[0]: r for r in kota}
+    tau, A, l0 = n("d.tau_menit"), med.A, med.langkah[0]
+    off_z, pz = b["zona_waktu"]["offset_jam"], b["zona_waktu"]["provinsi"]
+    w = (n("banjir.skor.wq"), n("banjir.skor.wh"), n("banjir.skor.wp"))
+    sas = [dict(s, k=kab_by[s["kode"]], tepi=tepi_titik(kab_by[s["kode"]]["polys"])) for s in sasaran if s["kode"] in kab_by]
+    aktif = [i for i, s in enumerate(sas) if not s["pantau"]]
+    terlarang = {s["kode"] for s in sas}
+    lemah = {i: True for i in aktif}                         # i -> semua langkah angin lemah
+    cand = {}                                                # (s, i, j) -> {idx sasaran}
+    cache_e = {}
+    for si in aktif:
+        s_ = sas[si]
+        pusat = krow[s_["kode"]][3:5]
+        mulai = [(pusat[1], pusat[0])] + [(x, y) for y, x in s_["tepi"][::max(1, len(s_["tepi"]) // 24)]]   # ponytail: <= 24 titik tepi
+        for s in med.tampil:
+            a = L.angin_di(A, 0, pusat[1], pusat[0], s - l0)
+            if a is None or M.angin_lemah((a[0] ** 2 + a[1] ** 2) ** 0.5, b):
+                continue
+            lemah[si] = False
+            for lon, lat in mulai:
+                for p in L.mundur(A, 0, lon, lat, s - l0, 4.0, 15):
+                    ci, cj = int(round((med.lat0 - p[1]) / 0.1)), int(round((p[0] - med.lon0) / 0.1))
+                    for i in range(max(0, ci - 3), min(med.nlat, ci + 4)):
+                        for j in range(max(0, cj - 3), min(med.nlon, cj + 4)):
+                            cy, cx = med.lat0 - 0.1 * i, med.lon0 + 0.1 * j
+                            dl = M.haversine(cy, cx, p[1], p[0])
+                            if dl > n("banjir.koridor_lintasan_km"):
+                                continue
+                            e = cache_e.get((si, i, j))
+                            if e is None:
+                                e = cache_e[(si, i, j)] = jarak_tepi(cy, cx, s_["tepi"])
+                            if M.di_koridor(e, dl, b):
+                                cand.setdefault((s, i, j), set()).add(si)
+    hasil, n_gerbang = [], 0
+    for (s, i, j), ks in sorted(cand.items()):
+        sel = med.sel(s, i, j)
+        if not M.gerbang(sel, b)[0]:
+            continue
+        n_gerbang += 1
+        cy, cx = med.lat0 - 0.1 * i, med.lon0 + 0.1 * j
+        hy, hx = M.titik_hujan(cy, cx, sel["u_pengarah"], sel["v_pengarah"], tau)
+        di = any(dalam_kab(x["k"], hy, hx) for x in sas)
+        jt = min(jarak_tepi(hy, hx, x["tepi"]) for x in sas) if not di else 0.0
+        if not M.lolos_gb("GB1", b, dalam=di, jarak_km=jt):
+            continue
+        tk, sk = kab_di(kabs, hy, hx), kab_di(kabs, cy, cx)
+        if not M.lolos_gb("GB2", b, titik_kab=tk, sel_kab=sk, terlarang=terlarang):
+            continue
+        tj = maju_tiba(A, hy, hx, s - l0 + tau / 60.0, [(k, sas[k]["k"], sas[k]["tepi"]) for k in sorted(ks)], b)
+        cegat = []
+        for k, (tiba, ly, lx) in sorted(tj.items()):
+            zt = M.zona_waktu_prov(sas[k]["k"]["prov"], pz)
+            if M.lolos_gb("GB3", b, tiba=tiba) and M.lolos_gb("GB4", b, hari_tiba=_hari(med.init, s + tau / 60.0 + tiba, off_z[zt]), d=d):
+                cegat.append((k, tiba, ly, lx))
+        if not cegat:
+            continue
+        k, tiba, ly, lx = max(cegat, key=lambda c: M.faktor_h(c[1], b))
+        H = M.faktor_h(tiba, b)
+        komp = M.komponen_q(sel, b)
+        Q = M.faktor_q(komp)
+        if tk is None:                                      # titik hujan di luar semua daratan kab: laut
+            P, dm = 1.0, None
+        else:
+            dm = min(M.haversine(hy, hx, y, x) for y, x in tempat)
+            P = M.faktor_t(dm, n("t.dekat_km"), n("t.jauh_km"))
+        sk_ = M.skor(Q, H, P, w) if Q > 0 else 0.0
+        hasil.append(dict(s=s, i=i, j=j, lat=cy, lon=cx, hy=hy, hx=hx, Q=Q, H=H, P=P, skor=sk_, komp=komp, sel=sel, laut=tk is None,
+                          dm=dm, cegat=[(sas[k_]["kode"], t_, la_, lo_) for k_, t_, la_, lo_ in cegat], k=k))
+    # zona (§6): terbaik per sel, NMS 40 km, <= 5, skor >= 0,35
+    per_sel = {}
+    for r in hasil:
+        per_sel.setdefault((r["i"], r["j"]), {})[r["s"]] = r
+    cells = [dict(lat=v[max(v, key=lambda s: v[s]["skor"])]["lat"], lon=v[max(v, key=lambda s: v[s]["skor"])]["lon"],
+                  skor=max(x["skor"] for x in v.values()), ij=ij) for ij, v in per_sel.items()]
+    zn, zona = M.zona_nms(cells, n("zona.jarak_min_km"), n("zona.maks"), n("zona.skor_min")), []
+    lang = med.tampil
+    for c in zn:
+        v = per_sel[c["ij"]]
+        per = [v[s]["skor"] if s in v else 0.0 for s in lang]
+        ib = per.index(max(per))
+        r = v[lang[ib]]
+        kk = min(range(len(kota)), key=lambda q: M.haversine(r["hy"], r["hx"], kota[q][3], kota[q][4]))
+        zt = M.zona_waktu_prov(kota[kk][2], pz)
+        jr = M.jendela_rentang(per, ib, [med.init.hour + s for s in lang], zt, off_z, n("zona.jendela_persen"), n("gerbang.jam_mulai"), n("gerbang.jam_akhir"))
+        if jr is None:
+            continue
+        bid = min(bandara, key=lambda q: M.haversine(r["lat"], r["lon"], bandara[q]["lat"], bandara[q]["lon"]))
+        bd, km = bandara[bid], M.haversine(r["lat"], r["lon"], bandara[bid]["lat"], bandara[bid]["lon"])
+        menit = M.menit_terbang(km, n("terbang.jelajah_kmj"), n("terbang.menit_bulat"))
+        kaki = M.ketinggian_kaki(r["sel"]["lcl"], r["sel"]["elev"], n("ketinggian.lcl_min_m"), n("ketinggian.lcl_maks_m"), n("ketinggian.bulat_kaki"), n("ketinggian.m_ke_kaki"))
+        kd = [x[0] for x in r["cegat"]]
+        zid = M.zona_id_banjir(putaran, len(zona))
+        zona.append({
+            "id": zid, "huruf": zid[-1], "tujuan": "banjir", "lat": round(r["lat"], 1), "lon": round(r["lon"], 1), "skor": round(r["skor"], 2),
+            "langkah": int(lang[ib]), "jendela": [(med.init.replace(hour=0) + dt.timedelta(hours=x)).strftime("%Y-%m-%dT%H:%MZ") for x in (jr["utc_mulai"], jr["utc_akhir"])],
+            "jendela_teks": f"{jr['mulai_lokal']:02d}.00 sampai {jr['akhir_lokal']:02d}.00 {zt}", "zona_waktu": zt, "prov_kode": kota[kk][2],
+            "prov": (prov_nm or {}).get(kota[kk][2], kota[kk][2]), "kota": kota[kk][6] if not r["laut"] else f"lepas pantai dekat {kota[kk][6]}", "laut": r["laut"],
+            "hujan": {"lat": round(r["hy"], 2), "lon": round(r["hx"], 2), "tau_menit": tau},
+            "Q": round(r["Q"], 3), "H": round(r["H"], 3), "P": round(r["P"], 3), "komp": {a: round(x, 2) for a, x in r["komp"].items()},
+            "cegat": [{"kab": q[0], "tiba_jam": round(q[1], 2), "masuk": {"lat": round(q[2], 2), "lon": round(q[3], 2)}} for q in r["cegat"]],
+            "ketinggian": {"kaki": kaki, "teks": "dasar awan tidak terbaca model" if kaki is None else f"sekitar {kaki:,} kaki (dasar awan perkiraan)".replace(",", ".")},
+            "base": {"id": bid, "icao": bd["icao"], "nama": bd["nama"], "km": int(round(km)), "menit": menit, "perkiraan": True, "terdaftar": bd["terdaftar"]},
+            "alasan": {"sasaran": kd, "C": f"awan layak semai, kualitas {r['Q']:.2f}".replace(".", ","),
+                       "H": f"awan tiba di sasaran sekitar {r['cegat'][0][1]:.1f} jam sesudah semai".replace(".", ","),
+                       "P": "titik hujan di laut" if r["laut"] else f"titik hujan {r['dm']:.0f} km dari kota terdekat",
+                       "B": f"base {bd['nama']}, sekitar {menit} menit terbang"}})
+    # sasaran keluar
+    zs = {}
+    for z in zona:
+        for k_ in z["alasan"]["sasaran"]:
+            zs.setdefault(k_, []).append(z["id"])
+    sas_out = []
+    for si, s_ in enumerate(sas):
+        if s_["pantau"]:
+            ak = "pantau"
+        elif zs.get(s_["kode"]):
+            ak = None
+        else:
+            ak = "angin_lemah" if lemah.get(si) else "tidak_ada_awan_hulu"
+        sas_out.append(dict(kab=s_["kode"], nama=s_["k"]["nama"], prov=s_["k"]["prov"], asal=s_["asal"], pantau=s_["pantau"], belum_teruji=s_["belum_teruji"],
+                            cakupan="kab", zona=zs.get(s_["kode"], []), alasan_kosong=ak))
+    # kandidat_sasaran (§8): <= 40 terbaik per sasaran, <= 60 sasaran, urut tetap, manual, bmkg, prakiraan
+    urut = sorted(range(len(sas)), key=lambda q: (M._URUT_ASAL.index(sas[q]["asal"][0]), q))[:MAKS_SASARAN_KAND]
+    idx_out = {q: u for u, q in enumerate(urut)}
+    kand = []
+    per_k = {}
+    for r in sorted(hasil, key=lambda r: -r["skor"]):
+        if r["skor"] > 0 and r["k"] in idx_out and per_k.get(r["k"], 0) < MAKS_KAND_PER_SASARAN:
+            per_k[r["k"]] = per_k.get(r["k"], 0) + 1
+            c_ = r["komp"]
+            kand.append([round(r["lat"], 1), round(r["lon"], 1), r["s"], round(r["Q"], 3), round(r["H"], 3), round(r["P"], 3), idx_out[r["k"]],
+                         int(r["laut"]), round(c_["cape"], 2), round(c_["air"], 2), round(c_["rh"], 2), round(c_["geser"], 2), round(c_["naik"], 2)])
+    semua_lemah = bool(aktif) and all(lemah[q] for q in aktif)
+    alasan = M.alasan_kosong_banjir(len(aktif), semua_lemah, len(zona))
+    return dict(zona=zona, sasaran=sas_out, urut_sasaran=[sas[q]["kode"] for q in urut], kandidat_kolom=["lat", "lon", "langkah", "Q", "H", "P", "sasaran_idx", "laut", "cape", "air", "rh", "geser", "naik"],
+                kandidat_sasaran=kand, alasan_kosong=alasan, kalimat_kosong=KALIMAT_BANJIR[alasan].format(d=d) if alasan else None,
+                n_kandidat=len(cand), n_lolos_gerbang=n_gerbang, n_evaluasi=len(hasil), _hasil=hasil, _sas=sas)
+
+def muat_kab_repo():
+    """Semua kab/kota daratan: kota.json (kode, pusat) + public/geo/kabupaten/<prov>.json (nama -> geometri)."""
+    kabs, geo = [], {}
+    for r in muat_json("scripts/udara/kota.json")["baris"]:
+        if r[2] not in geo:
+            f = os.path.join(REPO, "public/geo/kabupaten", f"{r[2]}.json")
+            geo[r[2]] = {x["properties"]["kab"]: x["geometry"] for x in json.load(open(f, encoding="utf-8"))["features"]} if os.path.exists(f) else {}
+        if r[6] in geo[r[2]]:
+            kabs.append(siapkan_kab(r[0], r[6], r[2], r[3], r[4], geo[r[2]][r[6]]))
+    return kabs
+
+
+def jalan_banjir(args, b, dibuat, keluar, c):
+    """`jalan --tujuan banjir`: membaca putaran IFS yang sama dengan karhutla (c = siapkan()), menulis <keluar>/semai_banjir.json."""
+    np = _np()
+    t_mulai = time.time()
+    off = b["zona_waktu"]["offset_jam"]["WIB"]
+    siang = [s for s in c.tampil if b["gerbang"]["jam_mulai"]["nilai"] <= (c.init.hour + s + off) % 24 < b["gerbang"]["jam_akhir"]["nilai"]] or c.tampil[:1]
+    d = _hari(c.init, siang[0], off)
+    pred, bm = [json.load(open(os.path.join(REPO, p), encoding="utf-8")) if os.path.exists(os.path.join(REPO, p)) else None
+                for p in ("public/prediksi/data/prediksi.json", "public/banjir/data/cuaca_bmkg_kab10.json")]
+    umur = max(0.0, (dibuat - dt.datetime.fromisoformat(pred["dibuat"])).total_seconds() / 3600) if pred else 0.0
+    tercakup = d in {_hari(c.init, s, off) for s in c.tampil}
+    ps = M.pilih_sasaran(d, pred, bm, b, umur_prediksi_jam=umur, tercakup=tercakup)
+    kabs = muat_kab_repo()
+    ada = {k["kode"] for k in kabs}
+    sasaran = [s for s in ps["sasaran"] if s["kode"] in ada]
+    out = {"dibuat": dibuat.strftime("%Y-%m-%dT%H:%M:%SZ"), "tujuan": "banjir", "versi_bobot": b["versi"], "versi_banjir": b["banjir"]["versi_banjir"],
+           "status_bobot": b["banjir"]["status"],
+           "putaran": {"model": "ECMWF IFS", "res": 0.1, "init": c.init.strftime("%Y-%m-%dT%H:%M:%SZ"), "lisensi": "CC BY 4.0"},
+           "hari_sasaran": d,
+           "sumber": {"prediksi": {"dibuat": pred["dibuat"] if pred else None, "vonis_bnj": _vonis_bnj(pred)},
+                      "bmkg_kab10": {"dibuat": bm["dibuat"] if bm else None}, "manual": {"n": 0}, "catatan": ps["sumber"]},
+           "langkah": c.tampil, "raster": {"awan": "awan_{l}.png"}}
+    if not sasaran:
+        out.update(sasaran=[], zona=[], kandidat_kolom=[], kandidat_sasaran=[], alasan_kosong="tidak_ada_sasaran",
+                   kalimat_kosong=KALIMAT_BANJIR["tidak_ada_sasaran"].format(d=d))
+    else:
+        bb = [k["bbox"] for k in kabs if k["kode"] in {s["kode"] for s in sasaran}]
+        i0 = max(0, int((LAT0 - max(x[3] for x in bb) - 2.0) / RES)); i1 = min(NLAT, int((LAT0 - min(x[1] for x in bb) + 2.0) / RES) + 1)
+        j0 = max(0, int((min(x[0] for x in bb) - 2.0 - LON0) / RES)); j1 = min(NLON, int((max(x[2] for x in bb) + 2.0 - LON0) / RES) + 1)
+        sl = (slice(i0, i1), slice(j0, j1))
+        U = [((c.P[s]["pl_u_850"] + c.P[s]["pl_u_700"]) / 2)[sl].astype("float64").tolist() for s in sorted(c.P)]
+        V = [((c.P[s]["pl_v_850"] + c.P[s]["pl_v_700"]) / 2)[sl].astype("float64").tolist() for s in sorted(c.P)]
+        A = kisi_pengarah([LAT0 - RES * i for i in range(i0, i1)], [LON0 + RES * j for j in range(j0, j1)], sorted(c.P), U, V)
+
+        def sel(s, i, j):
+            d_, gi, gj = c.der[s], i0 + i, j0 + j
+            r = {k: float(d_[k][gi, gj]) for k in ("lcc", "mucape", "tclw", "geser", "rh850", "tdasar", "w", "lcl", "elev", "u_pengarah", "v_pengarah", "jam_lokal")}
+            for k in ("hujan", "hangat_m"):
+                x = float(d_[k][gi, gj])
+                r[k] = None if x != x else x
+            return r
+        med = Medan(LAT0 - RES * i0, LON0 + RES * j0, i1 - i0, j1 - j0, sorted(c.P), c.tampil, c.init, A, sel)
+        tempat, kota = tempat_py()
+        r = hitung_banjir(med, kabs, kota, c.bandara, tempat, c.prov_nm, b, sasaran, d, c.putaran)
+        for k in ("_hasil", "_sas", "n_kandidat", "n_lolos_gerbang", "n_evaluasi"):
+            r.pop(k)
+        urut = r.pop("urut_sasaran")
+        r["sasaran"] = sorted(r["sasaran"], key=lambda s: urut.index(s["kab"]) if s["kab"] in urut else len(urut))
+        out.update(r)
+    pred_k = {x["id"]: x for x in pred["kab"]} if pred else {}
+    t = out.get("hari_sasaran") and pred and d in pred["kode"]["BNJ"]["hari"] and pred["kode"]["BNJ"]["hari"].index(d)
+    for s in out["sasaran"]:
+        p = pred_k.get(s["kab"])
+        s["tenggang"] = None if not p or "prakiraan" not in s["asal"] else t + 1
+        s["bnj_lv"], s["hjn_p50"] = (p["BNJ"][t][0], p["HJN"][t][2]) if p and t is not False else (None, None)
+    s = json.dumps(out, ensure_ascii=False, separators=(",", ":"))
+    while len(s.encode()) > MAKS_BYTE_BANJIR and out.get("kandidat_sasaran"):
+        out["kandidat_sasaran"] = out["kandidat_sasaran"][:int(len(out["kandidat_sasaran"]) * 0.8)]
+        s = json.dumps(out, ensure_ascii=False, separators=(",", ":"))
+    with open(os.path.join(keluar, "semai_banjir.json"), "w", encoding="utf-8") as f:
+        f.write(s)
+    out["_lapor"] = dict(detik=round(time.time() - t_mulai, 1), json_kb=round(len(s.encode()) / 1024, 1))
+    return out
+
+
+def _vonis_bnj(pred):
+    v = ((pred or {}).get("kode", {}).get("BNJ", {}).get("vonis") or {}).values()
+    return "lulus" if any(x and x[0] == "lulus" for x in v) else "belum teruji"
+
+
+# ---- fixture banjir: dari fixture_semai.json (Kendari), turunan skalar dibekukan; uji murni stdlib --------------------------
+SEL_KUNCI = ("lcc", "mucape", "tclw", "geser", "rh850", "hujan", "tdasar", "hangat_m", "w", "lcl", "elev", "u_pengarah", "v_pengarah")
+SEL_DESIMAL = dict(lcc=2, mucape=0, tclw=3, geser=1, rh850=0, hujan=1, tdasar=1, hangat_m=0, w=2, lcl=0, elev=0, u_pengarah=1, v_pengarah=1)
+
+
+def buat_fixture_banjir():
+    with open(os.path.join(AKAR, "fixture_semai.json"), encoding="utf-8") as f:
+        F = json.load(f)
+    L = F["lokasi"]["kendari"]
+    b = muat_bobot()
+    off = b["zona_waktu"]["offset_jam"]["WITA"]
+    ih, langkah, n = int(F["putaran"][8:10]), F["langkah"], L["n"]
+    tampil = [s for s in langkah if s >= 18]
+    sel = {k: [] for k in SEL_KUNCI}
+    for s in tampil:
+        k = langkah.index(s)
+        mat = {x: [] for x in SEL_KUNCI}
+        for i in range(n):
+            baris = {x: [] for x in SEL_KUNCI}
+            for j in range(n):
+                c = {key: arr[k][i][j] for key, arr in L["medan"].items()}
+                tp_n = L["medan"]["sfc_tp"][k + 1][i][j] if k + 1 < len(langkah) else None
+                t = M.turunan_sel(c, tp_n, (ih + s + off) % 24)
+                for x in SEL_KUNCI:
+                    baris[x].append(None if t[x] is None else round(t[x], SEL_DESIMAL[x]) + 0 if SEL_DESIMAL[x] else int(round(t[x])))
+            for x in SEL_KUNCI:
+                mat[x].append(baris[x])
+        for x in SEL_KUNCI:
+            sel[x].append(mat[x])
+    la0, la1, lo0, lo1 = L["lat0"] - 0.1 * (n - 1), L["lat0"], L["lon0"], L["lon0"] + 0.1 * (n - 1)
+    kabs, geo = [], {x["properties"]["kab"]: x["geometry"] for x in json.load(open(os.path.join(REPO, "public/geo/kabupaten/74.json"), encoding="utf-8"))["features"]}
+    for r in muat_json("scripts/udara/kota.json")["baris"]:
+        if r[2] != "74":
+            continue
+        k = siapkan_kab(r[0], r[6], r[2], r[3], r[4], geo[r[6]])
+        if k["bbox"][0] > lo1 + 0.1 or k["bbox"][2] < lo0 - 0.1 or k["bbox"][1] > la1 + 0.1 or k["bbox"][3] < la0 - 0.1:
+            continue
+        polys = []
+        for pl in k["polys"]:
+            ring = []
+            for rg in pl:
+                st = max(1, len(rg) // 70)
+                rg2 = [[round(p[0], 3), round(p[1], 3)] for p in rg[::st]]
+                ring.append(rg2 if rg2[0] == rg2[-1] or len(rg2) < 3 else rg2)
+            polys.append(ring)
+        kabs.append(dict(kode=r[0], nama=r[6], prov="74", lat=r[3], lon=r[4], polys=polys))
+    d = "2026-11-15"
+    out = {"_catatan": "Potongan nyata ECMWF IFS 0,1 derajat (CC BY 4.0) sekitar Kendari, turunan skalar dibekukan dari fixture_semai.json; poligon kab "
+                       "disederhanakan; dibuat `semai.py fixture_banjir`. Dipakai `semai.py uji`.",
+           "putaran": F["putaran"], "langkah": tampil, "lat0": L["lat0"], "lon0": L["lon0"], "n": n, "zona_waktu": "WITA", "prov_kode": "74",
+           "hari": d, "sekarang": "2026-11-14T09:00:00+00:00", "bobot_timpa": {"sasaran_tetap": ["7471"]},
+           "prediksi": {"dibuat": "2026-11-14T07:00:00+00:00",
+                        "kode": {"BNJ": {"hari": [d, "2026-11-16", "2026-11-17"], "vonis": {"ps|1": ["belum teruji", 1, 0, False, 1]}}},
+                        "kab": [{"id": "7405", "BNJ": [[2, 0.5], [0, 0], [0, 0]], "HJN": [[0, 0, 0.1]] * 3}], "waspada": []},
+           "bmkg": {"dibuat": "2026-11-14T08:00:00+00:00", "kab": {"74.02": {"hari": [{"tgl": d, "kondisi": "Hujan Lebat"}]}}},
+           "kab": kabs, "sel": sel}
+    p = os.path.join(AKAR, "fixture_semai_banjir.json")
+    with open(p, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"fixture banjir {os.path.getsize(p) / 1024:.0f} KB; kab {[k['kode'] for k in kabs]}")
+
+
+def medan_fixture(F):
+    """Medan dari fixture_semai_banjir.json (stdlib)."""
+    n, langkah = F["n"], F["langkah"]
+    init = dt.datetime.strptime(F["putaran"], "%Y%m%d%H").replace(tzinfo=dt.timezone.utc)
+    sel_ = F["sel"]
+    A = kisi_pengarah([F["lat0"] - 0.1 * i for i in range(n)], [F["lon0"] + 0.1 * j for j in range(n)], langkah, sel_["u_pengarah"], sel_["v_pengarah"])
+    return init, A, lambda b: Medan(F["lat0"], F["lon0"], n, n, langkah, langkah, init, A, lambda s, i, j: _sel_fixture(F, b, s, i, j))
+
+
+def _sel_fixture(F, b, s, i, j):
+    k = F["langkah"].index(s)
+    r = {x: F["sel"][x][k][i][j] for x in SEL_KUNCI}
+    r["jam_lokal"] = (int(F["putaran"][8:10]) + s + b["zona_waktu"]["offset_jam"][F["zona_waktu"]]) % 24
+    return r
+
+
+def uji_banjir_fixture(b, ok):
+    """SB-04: ujung ke ujung stdlib pada potongan Kendari. Invarian: tak ada zona di daratan kab terlarang, tak ada titik hujan di
+    sasaran, tiap zona lolos GB1 sampai GB4, skor = Q^wQ H^wH P^wP, kalimat kosong cocok alasan."""
+    fx = os.path.join(AKAR, "fixture_semai_banjir.json")
+    if not os.path.exists(fx):
+        print("semai uji: fixture_semai_banjir.json tidak ada, kasus banjir ujung ke ujung dilewati (jalankan `semai.py fixture_banjir`)")
+        return
+    with open(fx, encoding="utf-8") as f:
+        F = json.load(f)
+    bb = json.loads(json.dumps(b))
+    bb["banjir"]["sasaran_tetap"]["nilai"] = F["bobot_timpa"]["sasaran_tetap"]
+    init, A, mk = medan_fixture(F)
+    med = mk(bb)
+    kota = muat_json("scripts/udara/kota.json")["baris"]
+    kabs = [siapkan_kab(k["kode"], k["nama"], k["prov"], k["lat"], k["lon"], {"type": "MultiPolygon", "coordinates": k["polys"]}) for k in F["kab"]]
+    d = F["hari"]
+    ps = M.pilih_sasaran(d, F["prediksi"], F["bmkg"], bb)
+    ok({s["kode"] for s in ps["sasaran"]} == {"7471", "7405", "7402"}, f"sasaran fixture {[s['kode'] for s in ps['sasaran']]}")
+    tempat, _ = tempat_py()
+    pn = prov_nama()
+    base = bandara_gabung(__import__("renlap").muat_base())
+    r = hitung_banjir(med, kabs, kota, base, tempat, pn, bb, ps["sasaran"], d, F["putaran"])
+    terlarang = {s["kode"] for s in ps["sasaran"]}
+    sasaran_k = {s["kode"]: s["k"] for s in r["_sas"]}
+    ok(r["n_kandidat"] > 0 and r["n_lolos_gerbang"] > 0, f"fixture memuat kandidat koridor ({r['n_kandidat']}) dan sel lolos G1-G9 ({r['n_lolos_gerbang']})")
+    ok(all(not dalam_kab(kab, h["lat"], h["lon"]) for kab in kabs if kab["kode"] in terlarang for h in r["_hasil"]), "GB2: sel hasil tidak di daratan kab terlarang")
+    for h in r["_hasil"]:
+        ok(all(not dalam_kab(k, h["hy"], h["hx"]) for k in sasaran_k.values()), "0 titik hujan di dalam sasaran")
+        ok(all(jarak_tepi(h["hy"], h["hx"], tepi_titik(k["polys"])) > 10 - 2.6 for k in sasaran_k.values()), "GB1 titik hujan > 10 km dari tepi (toleransi spasi tepi)")
+        ok(0 <= h["H"] <= 1 and 0 <= h["P"] <= 1 and 0 <= h["Q"] <= 1 and h["cegat"], "faktor 0..1 dan ada sasaran dicegat")
+        for kd, tiba, _, _ in h["cegat"]:
+            ok(1 <= tiba <= 4, f"GB3 tiba {tiba} jam di luar 1..4")
+    for z in r["zona"]:
+        ok(z["tujuan"] == "banjir" and re.fullmatch(r"\d{10}-B[A-E]", z["id"]) and z["skor"] >= 0.35, f"zona {z['id']}")
+        ok(all(not dalam_kab(k, z["lat"], z["lon"]) for k in kabs if k["kode"] in terlarang), f"zona {z['id']} tidak di daratan kab sasaran/terancam")
+        ok(all(not dalam_kab(k, z["hujan"]["lat"], z["hujan"]["lon"]) for k in sasaran_k.values()), f"titik hujan zona {z['id']} di luar sasaran")
+        ok(z["alasan"]["sasaran"] and set(z["alasan"]["sasaran"]) <= terlarang, "alasan.sasaran wajib dan berasal dari S(d)")
+        w = (M.nilai(bb, "banjir.skor.wq"), M.nilai(bb, "banjir.skor.wh"), M.nilai(bb, "banjir.skor.wp"))
+        dekat_e = abs(M.skor(z["Q"], z["H"], z["P"], w) - z["skor"])
+        ok(dekat_e < 0.01, f"zona {z['id']} skor {z['skor']} != Q^wQ H^wH P^wP ({dekat_e})")
+        ok(re.fullmatch(r"\d\d\.00 sampai \d\d\.00 WITA", z["jendela_teks"]), z["jendela_teks"])
+    for a in range(len(r["zona"])):
+        for c2 in range(a):
+            ok(M.haversine(r["zona"][a]["lat"], r["zona"][a]["lon"], r["zona"][c2]["lat"], r["zona"][c2]["lon"]) > 40, "zona berjarak > 40 km")
+    ok(len(r["zona"]) <= 5 and (r["alasan_kosong"] is None) == bool(r["zona"]), f"alasan_kosong {r['alasan_kosong']} cocok jumlah zona {len(r['zona'])}")
+    ok(all(s["alasan_kosong"] is None for s in r["sasaran"] if s["zona"]), "sasaran bernas zona tanpa alasan kosong")
+    ok(all(len([x for x in r["kandidat_sasaran"] if x[6] == u]) <= 40 for u in range(len(r["sasaran"]))), "kandidat <= 40 per sasaran")
+    ok(all(len(x) == len(r["kandidat_kolom"]) for x in r["kandidat_sasaran"]), "lebar baris kandidat sesuai kolom")
+    # label belum teruji dari vonis: asal prakiraan saja
+    ok(_vonis_bnj(F["prediksi"]) == "belum teruji" and _vonis_bnj(None) == "belum teruji", "vonis BNJ belum teruji")
+    # angin lemah: kisi diam -> tidak ada kandidat, alasan angin_lemah
+    mati = json.loads(json.dumps(F))
+    mati["sel"]["u_pengarah"] = [[[0.0] * F["n"] for _ in range(F["n"])] for _ in F["langkah"]]
+    mati["sel"]["v_pengarah"] = mati["sel"]["u_pengarah"]
+    _, _, mk2 = medan_fixture(mati)
+    r2 = hitung_banjir(mk2(bb), kabs, kota, base, tempat, pn, bb, ps["sasaran"], d, F["putaran"])
+    ok(r2["alasan_kosong"] == "angin_lemah" and not r2["zona"] and r2["n_kandidat"] == 0, f"angin 0 -> angin_lemah, bukan {r2['alasan_kosong']}")
+    sasaran_tanpa = hitung_banjir(med, kabs, kota, base, tempat, pn, bb, [], d, F["putaran"])
+    ok(sasaran_tanpa["alasan_kosong"] == "tidak_ada_sasaran" and "banjir" in (sasaran_tanpa["kalimat_kosong"] or ""), "tanpa sasaran")
+    print(f"semai uji banjir fixture: {len(r['zona'])} zona, {r['n_kandidat']} sel koridor, {r['n_lolos_gerbang']} lolos G1-G9, {r['n_evaluasi']} lolos GB1-GB4")
+
+
 def main():
     import argparse
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["uji", "jalan", "fixture", "ukurw"])
+    ap.add_argument("cmd", choices=["uji", "jalan", "fixture", "fixture_banjir", "ukurw"])
     ap.add_argument("sub", nargs="?")
     ap.add_argument("--tulis", action="store_true")
     ap.add_argument("--putaran", default="auto")
@@ -1211,6 +1709,7 @@ def main():
     ap.add_argument("--sekarang")
     ap.add_argument("--kluster")
     ap.add_argument("--hotspot24")
+    ap.add_argument("--tujuan", choices=["karhutla", "banjir"], default="karhutla")
     a = ap.parse_args()
     if a.cmd == "uji" and a.sub == "golden":
         uji_golden()
@@ -1219,11 +1718,17 @@ def main():
     elif a.cmd == "jalan":
         o = jalan(a)
         print(json.dumps(o["_lapor"]))
+        if a.tujuan == "banjir":
+            print("hari", o["hari_sasaran"], "| sasaran", len(o["sasaran"]), "| zona", [(z["id"], z["prov"], z["lat"], z["lon"], z["skor"], z["jendela_teks"]) for z in o["zona"]],
+                  "| alasan_kosong:", o["alasan_kosong"], "| kandidat", len(o["kandidat_sasaran"]))
+            return
         for z in o["zona"]:
             print(z["huruf"], z["prov_kode"], z["prov"], z["lat"], z["lon"], "skor", z["skor"], z["jendela_teks"], z["base"]["id"], z["base"]["menit"], "menit",
                   z["tanda"], z["cluster"], z["ketinggian"]["teks"], z["bahan"]["usul"], "sortie", z["jumlah"]["sortie"])
         print("alasan_kosong:", o["alasan_kosong"], "| hati_hati:", len(o["hati_hati"]), "| nimbus:", [(z["huruf"], z["prov"], z["lat"], z["lon"], z["skor"]) for z in o["nimbus"]["zona"]])
         print("langkah", o["langkah"], "| kandidat", len(o["kandidat"]), "| target", len(o["kandidat_target"].get("target", {})), "| api", o["api"], "| firms", o["sumber"]["firms"])
+    elif a.cmd == "fixture_banjir":
+        buat_fixture_banjir()
     elif a.cmd == "fixture":
         buat_fixture(pilih_putaran(a.putaran), a.kluster or os.path.join(REPO, "public/data/kluster.json"))
     else:
