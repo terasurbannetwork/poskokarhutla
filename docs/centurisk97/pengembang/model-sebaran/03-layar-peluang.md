@@ -32,7 +32,7 @@ Peringkat provinsi ("teratas N persen", dibulatkan ke atas) hanya keterangan dan
 
 Status khusus yang mungkin muncul: "Belum ada ramalan yang terbit" (Worker menjawab 503 `belum_ada`), "Terbit terlambat: dibuat sesudah minggunya mulai, jadi tidak ikut dinilai", dan "Masa berlaku sudah lewat dan ramalan minggu berikutnya belum terbit". Bila sesi habis, kotak dimatikan dan muncul toast "Sesi berakhir". Data diambil ulang bila halaman terbuka lebih dari enam jam.
 
-Hal yang sering disalahpahami: yang diramal adalah peluang satelit NOAA-20 menangkap sekurangnya satu titik api di sel sekitar 5,5 km, bukan peluang adanya api. Sensor kedua hanya mengonfirmasi sekitar 49 persen sel-minggu berapi pada uji, jadi sebagian target sebenarnya ditentukan lintasan satelit.
+Hal yang sering disalahpahami: yang diramal adalah peluang satelit NOAA-20 menangkap sekurangnya satu titik panas di sel sekitar 5,5 km, bukan peluang adanya api. Sensor kedua hanya mengonfirmasi sekitar 49 persen sel-minggu berapi pada uji, jadi sebagian target sebenarnya ditentukan lintasan satelit.
 
 ## Cerita musim dan pendorong (Insight dan Tren)
 

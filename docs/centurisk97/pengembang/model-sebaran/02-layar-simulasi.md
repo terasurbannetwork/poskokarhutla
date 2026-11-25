@@ -24,10 +24,10 @@ Ekspor atau unduhan: tidak ada tombol ekspor di panel Simulasi. Catatan bukti di
 
 ## Kartu "Model data (dilatih)" di tab Simulasi
 
-Kotak centang "Model data (dilatih) sebagai perkiraan utama" ditambahkan oleh `public/sim_data.js` tepat di bawah kotak kalibrasi dan menyala secara bawaan. Setelah skenario fisika selesai, peramban menjalankan `SebaranModel.ramal()` dari titik api 24 jam kompleks itu dengan cuaca Open-Meteo, lalu menampilkan satu kartu berisi:
+Kotak centang "Model data (dilatih) sebagai perkiraan utama" ditambahkan oleh `public/sim_data.js` tepat di bawah kotak kalibrasi dan menyala secara bawaan. Setelah skenario fisika selesai, peramban menjalankan `SebaranModel.ramal()` dari titik panas 24 jam kompleks itu dengan cuaca Open-Meteo, lalu menampilkan satu kartu berisi:
 
 1. Luas median dengan rentang 80 persen untuk 24, 48, dan 72 jam (angka dibulatkan dua angka bermakna). Rentang dilebarkan dengan kalibrasi konformal bila kunci `selang` ada.
-2. Peluang membesar: titik api baru (kurang dari 10 sel aktif) mendapat angka dari model khusus; api yang sudah 10 sel atau lebih ditandai "perlakukan sebagai kebakaran besar".
+2. Peluang membesar: titik panas baru (kurang dari 10 sel aktif) mendapat angka dari model khusus; api yang sudah 10 sel atau lebih ditandai "perlakukan sebagai kebakaran besar".
 3. Arah utama (delapan arah mata angin) dengan catatan bahwa arah tidak dapat diramal model mana pun pada uji.
 4. Lahan di sel yang diperkirakan terbakar: hektare gambut dan kawasan lindung.
 5. Paparan teramati, bukan perkiraan: jumlah desa dalam 2 km dan 5 km dari titik aktif 24 jam.
@@ -45,7 +45,7 @@ Label yang perlu dibaca sebelum memakai angka:
 
 Lima berkas tambahan menambal Simulasi tanpa mengubah mesin penjalaran (`public/sim_3d.js`, `sim_topo.js`, `sim_panel.js`, `sim_armada.js`, `sim_adegan.js`, `sim_perlakuan.js`):
 
-1. Tampilan 2D atau 3D (`sim_3d.js`): titik api pilihan sendiri di peta, medan 3D, garis depan api, jalur kepala api, dan mode forensik dengan bilah insiden, panel kanan, serta garis waktu dengan tiga grafik. Insiden pada titik pilihan sendiri adalah buatan: pertumbuhan teramatinya nol, tetapi cuaca prakiraan tetap nyata. Kode insidennya berbentuk `SIM-<lintang><bujur>`.
+1. Tampilan 2D atau 3D (`sim_3d.js`): titik panas pilihan sendiri di peta, medan 3D, garis depan api, jalur kepala api, dan mode forensik dengan bilah insiden, panel kanan, serta garis waktu dengan tiga grafik. Insiden pada titik pilihan sendiri adalah buatan: pertumbuhan teramatinya nol, tetapi cuaca prakiraan tetap nyata. Kode insidennya berbentuk `SIM-<lintang><bujur>`.
 2. Peta topografi krem berkontur (`sim_topo.js`) untuk mode forensik 2D. Pada tema gelap hanya kontur, kisi, dan puncak yang digambar.
 3. Panel kanan dengan empat tab "Lapisan, Analisis, Bukti, Catatan" (`sim_panel.js`). Titik panas satelit dihitung bila berjarak 5 km atau kurang dari titik penyulutan; arah kepala api dibandingkan dengan arah angin rata-rata enam jam terakhir (selisih kurang dari 30 derajat "Didorong angin", 120 derajat atau lebih "Melawan angin"). Catatan disimpan hanya di penyimpanan lokal peramban dan tidak dikirim ke server (batas 50 catatan per insiden).
 4. Tab "Drones" dan "Resources" (`sim_armada.js`): gerak drone dan regu adalah fungsi murni dari waktu putar; armadanya simulasi dan tidak mengubah luas api.

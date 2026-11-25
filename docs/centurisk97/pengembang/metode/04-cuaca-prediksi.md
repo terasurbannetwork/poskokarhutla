@@ -16,7 +16,7 @@ Status uji balik tiap metode pada modul ini. Arti status ada di [ringkasan statu
 | [M8. Lintasan asap 72 jam dan asap lintas batas](/docs/pengembang/cuaca-udara) | Hipotesis |  |
 | [M9. Tutupan asap kabupaten, musim asap, dan hari tinggi](/docs/pengembang/cuaca-udara) | Hipotesis | Belum diuji ke citra satelit. |
 | [M10. Pengukuran stasiun dan satelit pembanding](/docs/pengembang/cuaca-udara) | Bukan model | MOS PM2,5 berstatus gagal pada uji saat ini. |
-| [M11. Himawari: titik api, alarm, dan awan](/docs/pengembang/cuaca-udara) | Hipotesis | Belum diuji terhadap kejadian. |
+| [M11. Himawari: titik panas, alarm, dan awan](/docs/pengembang/cuaca-udara) | Hipotesis | Belum diuji terhadap kejadian. |
 | [M12. Modifikasi cuaca: jadwal resmi BMKG dan evaluasi sortie](/docs/pengembang/cuaca-udara) | Belum diuji | Evaluasi OMC belum terkalibrasi (n plasebo 0). |
 | [M13. Peluang semai awan: data masukan](/docs/pengembang/cuaca-udara) | Bukan model |  |
 | [M14. Peluang semai awan: turunan, gerbang, faktor, skor](/docs/pengembang/cuaca-udara) | Hipotesis | Bobot dan ambang zona semai berstatus HIPOTESIS. |

@@ -32,7 +32,7 @@ Kotak oranye bertuliskan Model, belum divalidasi selalu muncul. Pakai hasilnya u
 Tepat di bawah kotak kalibrasi ada kotak centang Model data (dilatih) sebagai perkiraan utama, yang menyala sejak awal. Setelah skenario selesai dihitung, muncul satu kartu berisi:
 
 1. Luas median untuk 24, 48, dan 72 jam beserta rentang 80 persen.
-2. Peluang membesar. Titik api baru (kurang dari 10 kotak aktif) mendapat angka peluang. Api yang sudah 10 kotak atau lebih ditandai sebagai kebakaran besar dan tidak diberi peluang.
+2. Peluang membesar. Titik panas baru (kurang dari 10 kotak aktif) mendapat angka peluang. Api yang sudah 10 kotak atau lebih ditandai sebagai kebakaran besar dan tidak diberi peluang.
 3. Arah utama penjalaran dalam delapan arah mata angin. Arah ini tidak dapat diramal dengan baik oleh model mana pun, jadi jangan dijadikan dasar evakuasi.
 4. Luas gambut dan kawasan lindung yang ada di kotak-kotak yang diperkirakan terbakar.
 5. Paparan yang teramati (bukan perkiraan): jumlah desa dalam jarak 2 km dan 5 km dari titik aktif 24 jam terakhir.
@@ -49,7 +49,7 @@ Cara membaca label kartu:
 
 Beberapa tambahan melengkapi Simulasi tanpa mengubah cara api dihitung:
 
-1. Tampilan 2D atau 3D, titik api pilihan sendiri, dan mode forensik dengan garis waktu. Insiden pada titik pilihan sendiri adalah buatan: pertumbuhan teramatinya nol, tetapi cuaca prakiraan tetap nyata.
+1. Tampilan 2D atau 3D, titik panas pilihan sendiri, dan mode forensik dengan garis waktu. Insiden pada titik pilihan sendiri adalah buatan: pertumbuhan teramatinya nol, tetapi cuaca prakiraan tetap nyata.
 2. Panel kanan dengan empat tab: Lapisan, Analisis, Bukti, Catatan. Arah kepala api (bagian api yang paling cepat maju) dibandingkan dengan arah angin rata-rata enam jam terakhir. Selisih kurang dari 30 derajat diberi label Didorong angin, selisih 120 derajat atau lebih diberi label Melawan angin. Catatan hanya tersimpan di perangkat Anda dan tidak dikirim ke mana pun (maksimal 50 catatan per insiden).
 3. Tab Drones dan Resources memperagakan gerak drone dan regu. Keduanya hanya peragaan dan tidak mengubah luas api.
 4. Mode Perlakuan menyusun calon tindakan dari sumber nyata (regu, pemadam desa, helikopter, sekat bakar, modifikasi cuaca, atau gabungannya), menjalankan tiap calon, lalu mengurutkannya menurut luas yang diselamatkan dalam 72 jam beserta biayanya. Asumsi seperti waktu mobilisasi ditampilkan di kartu Asumsi.

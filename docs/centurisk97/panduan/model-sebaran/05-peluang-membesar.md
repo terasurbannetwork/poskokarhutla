@@ -1,14 +1,14 @@
 # Peluang api membesar dan WASPADA
 
-Halaman ini menjelaskan perkiraan apakah titik api baru akan membesar dan jejak kompleks api yang aktif.
+Halaman ini menjelaskan perkiraan apakah titik panas baru akan membesar dan jejak kompleks api yang aktif.
 
-## Peluang titik api baru membesar (tanda WASPADA)
+## Peluang titik panas baru membesar (tanda WASPADA)
 
-Pertanyaan: dari sebuah titik api yang baru terdeteksi, seberapa besar kemungkinan ia mencapai 10 kotak satelit (sekitar 140 hektare) dalam 72 jam?
+Pertanyaan: dari sebuah titik panas yang baru terdeteksi, seberapa besar kemungkinan ia mencapai 10 kotak satelit (sekitar 140 hektare) dalam 72 jam?
 
 Langkah hitung:
 
-1. Sistem mengenali titik api baru sebagai kelompok deteksi yang jaraknya 750 meter atau kurang dan selisih waktunya 24 jam atau kurang. Api yang menyala berminggu-minggu tetap dihitung satu peristiwa selama tiap jedanya tidak lebih dari 24 jam.
+1. Sistem mengenali titik panas baru sebagai kelompok deteksi yang jaraknya 750 meter atau kurang dan selisih waktunya 24 jam atau kurang. Api yang menyala berminggu-minggu tetap dihitung satu peristiwa selama tiap jedanya tidak lebih dari 24 jam.
 2. Untuk tiap titik baru, sistem mengumpulkan sejumlah keterangan: cuaca dan tingkat kekeringan bahan bakar, jenis lahan (gambut atau bukan), ukuran dan kekuatan panas awal, serta kondisi titik-titik di sekitarnya dalam 3 hari terakhir.
 3. Sistem memberi skor berdasarkan kemiripan dengan kejadian lampau, lalu skor diubah menjadi peluang.
 4. Titik ditandai WASPADA bila peluangnya melewati batas yang sengaja dibuat rendah, sekitar 4,9 persen, supaya sedikit api besar yang terlewat. Harganya, banyak tanda yang meleset.

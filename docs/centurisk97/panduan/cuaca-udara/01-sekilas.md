@@ -34,7 +34,7 @@ Tips: tombol Bagikan membuat gambar kartu yang bisa dikirim lewat pesan. Tab Ins
 
 Alamat: centurisk97.id/udara. Terbuka untuk umum.
 
-1. Buka halaman. Peta menampilkan kadar PM2,5 per kabupaten/kota, titik bandara berwarna menurut jarak pandang, stasiun pengukur BMKG, kumpulan titik api, jalur asap, dan pembangkit listrik batu bara. Pilih hari (hari ini sampai tiga hari ke depan) dan jam.
+1. Buka halaman. Peta menampilkan kadar PM2,5 per kabupaten/kota, titik bandara berwarna menurut jarak pandang, stasiun pengukur BMKG, kumpulan titik panas, jalur asap, dan pembangkit listrik batu bara. Pilih hari (hari ini sampai tiga hari ke depan) dan jam.
 2. Klik kabupaten/kota. Panel kota memuat kadar PM2,5 per jam untuk 72 jam, kategori udara, jumlah jiwa terpapar, asal asap, dan saran per kategori.
 3. Tab Insight berisi jumlah jiwa per kategori, peluang kadar melewati batas, asal asap, jarak pandang bandara, dan rapor model.
 4. Tab Tren memuat riwayat dan kalender musim asap. Tab Dampak menghitung penduduk, balita, lansia, perkiraan tambahan kasus ISPA (infeksi saluran pernapasan akut), dan sekolah di wilayah yang berstatus Waspada atau lebih. Tab Simulasi mencoba skenario, hasilnya bukan prakiraan resmi.

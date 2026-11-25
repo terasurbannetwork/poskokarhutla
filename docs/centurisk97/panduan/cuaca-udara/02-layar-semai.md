@@ -6,8 +6,8 @@ Halaman ini menjelaskan dua layar khusus staf: halaman Peluang Semai dan catatan
 
 Alamat: centurisk97.id/operasi#semai. Hanya untuk akun staf yang berwenang: akun situs Centurisk97 yang berwenang (moderator), serta staf berperan udara, Pusdalops (Pusat Pengendalian Operasi), koordinator operasi, pimpinan, dan pelaksana modifikasi cuaca (OMC, yaitu operasi menaburkan bahan semai dari pesawat). Tanpa hak itu, layar menulis bahwa halaman hanya untuk akun staf berperan.
 
-1. Buka bagian Peluang semai. Bilah sumber menunjukkan berapa titik api dan satelit yang masuk, putaran prakiraan cuaca yang dipakai, dan umur data. Pita kuning muncul bila data titik api lebih tua dari 6 jam atau prakiraan lebih tua dari 13 jam.
-2. Geser bilah jam atau tekan putar. Bilah bergerak per 3 jam. Lapisan peta bisa dinyalakan satu per satu: titik api, awan layak semai, prakiraan asap, angin, zona, kota, dan pangkalan pesawat.
+1. Buka bagian Peluang semai. Bilah sumber menunjukkan berapa titik panas dan satelit yang masuk, putaran prakiraan cuaca yang dipakai, dan umur data. Pita kuning muncul bila data titik panas lebih tua dari 6 jam atau prakiraan lebih tua dari 13 jam.
+2. Geser bilah jam atau tekan putar. Bilah bergerak per 3 jam. Lapisan peta bisa dinyalakan satu per satu: titik panas, awan layak semai, prakiraan asap, angin, zona, kota, dan pangkalan pesawat.
 3. Kartu Rekomendasi menampilkan zona teratas: nama wilayah terdekat, skor 0 sampai 1, jendela waktu terbang, koordinat (klik untuk menyalin), alasan, ketinggian, bahan, dan perkiraan jumlah penerbangan.
 4. Kartu Zona usulan 24 jam memuat sampai lima zona berlabel A sampai E. Klik baris untuk memindahkan peta. Label "hati-hati" menandai awan yang terlalu bertenaga, yang berbahaya bagi pesawat. Label "sudah target" menandai zona yang sudah dijadikan target rencana lapangan (renlap, yaitu rencana kerja operasi di lapangan).
 5. Kartu Peringatan asap berwarna hijau bila asap tidak menyeberang ke negara lain dalam 24 jam, dan merah bila menyeberang. Kartu merah memuat kota yang tertutup asap, apakah sudah berasap atau akan tiba beberapa jam lagi, tingkatnya, dan arah datangnya.

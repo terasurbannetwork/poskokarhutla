@@ -1,6 +1,6 @@
 # Model akan membesar dan WASPADA
 
-Definisi: titik api baru (kurang dari 10 sel) membesar bila mencapai 10 sel VIIRS atau lebih dalam 72 jam sejak deteksi pertama (`LEPAS = 10`, `latih.py:26`, `lolos.py:42`). Satuan latih: 438.217 titik api baru di sembilan provinsi prioritas, Juli sampai November, yang punya berkas cuaca; 12.436 membesar (2,8 persen). Semua positif dan 5 persen negatif ikut latih (`NEG = .05`, bobot 20) karena mesin 8 GB dan pustaka standar.
+Definisi: titik panas baru (kurang dari 10 sel) membesar bila mencapai 10 sel VIIRS atau lebih dalam 72 jam sejak deteksi pertama (`LEPAS = 10`, `latih.py:26`, `lolos.py:42`). Satuan latih: 438.217 titik panas baru di sembilan provinsi prioritas, Juli sampai November, yang punya berkas cuaca; 12.436 membesar (2,8 persen). Semua positif dan 5 persen negatif ikut latih (`NEG = .05`, bobot 20) karena mesin 8 GB dan pustaka standar.
 
 Model terpasang adalah konfigurasi B (38 fitur): cuaca dan kode kekeringan, lahan, ukuran dan FRP lintasan pertama, ditambah konteks titik sekitar (titik S-NPP dalam 5 dan 10 km selama 3 hari, jarak ke titik aktif 24 jam, hari aktif 7 hari). Hiperparameter: kedalaman 5, 150 pohon, laju belajar 0,06 (terpilih dari `KISI`, `lolos.py:301`). Penyetelan hanya dengan validasi silang tinggal-satu-tahun pada 2015 sampai 2023 (`TAHUN_CV`, sembilan lipatan, `lolos.py:48`); El Niño 2015, 2019, 2023 masing-masing pernah menjadi tahun uji.
 
