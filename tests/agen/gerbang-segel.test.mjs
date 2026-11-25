@@ -8,7 +8,7 @@ import assert from 'node:assert/strict'
 import { berkas, baca, buangKomentarJs } from './fixtures/ratchet.mjs'
 
 const hitung = (kode, re) => (kode.match(re) || []).length
-const RE_BEKU = [/INSERT\s+INTO\s+lkb?_snapshot\b/g, /\bpbDokBeku\s*\(/g]
+const RE_BEKU = [/INSERT\s+INTO\s+lkb?_snapshot\b/g, /\bpbDokBeku\s*\(/g, /\bljStmtBekuBaru\s*\(/g]
 const RE_SEGEL = /\bbatchBersegel\s*\(/g
 const RE_UBAH = /\b(?:UPDATE|DELETE\s+FROM|REPLACE\s+INTO|INSERT\s+OR\s+REPLACE\s+INTO)\s+segel(?:_cabut)?\b/gi
 
