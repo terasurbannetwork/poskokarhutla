@@ -1796,7 +1796,7 @@ Object.assign(MATRIKS, {
   lapor_cari_riwayat:  {lp_staf: ["baca", "tambah"]},   // migrasi 0173: append-only
   lp_komen:            {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"]},   // migrasi 0175: komentar kartu Alun-alun (K95, D136); publik hanya kolom id, teks, dibuat
   lp_komen_aduan:      {lp_pelapor: ["baca", "tambah"], lp_staf: ["baca"]},
-  lp_komen_usul:       {lp_mesin: ["tambah"], lp_pelapor: ["tambah"], lp_staf: ["baca", "ubah"]},   // LA-86 menulis, LA-88 memutus
+  lp_komen_usul:       {lp_mesin: ["tambah"], lp_staf: ["baca", "ubah"]},   // LA-86 menulis, LA-88 memutus
 });
 /* peringatan dini warga Pantau Bencana (migrasi 0163, paket pwa-peringatan PW-01). pw_publik = rute langganan tanpa akun (endpoint push = rahasia pemegangnya);
    pw_cron = pemicu dan pengirim tiap menit plus bersih-bersih; lp_staf = ringkasan staf. Tidak ada data orang selain endpoint push dan kode kecamatan. */
@@ -1874,6 +1874,9 @@ export const kmDaftarPublik = async (env, p, kartu) => (await sedia(env, p, "lp_
   "SELECT id, teks, dibuat FROM lp_komen WHERE kartu = ?1 AND status = 'tampil' ORDER BY dibuat LIMIT 200").bind(kartu).all()).results;
 export const kmTambah = (env, p, b) => sedia(env, p, "lp_komen", "tambah",
   "INSERT INTO lp_komen (id, kartu, sesi, wa, teks, dibuat) VALUES (?1, ?2, ?3, ?4, ?5, ?6)").bind(b.id, b.kartu, b.sesi, b.wa, b.teks, b.dibuat).run();
+/* usulan angka dari komentar (LA-86): satu baris per kolom, status usul; tidak menyentuh laporan atau kartu */
+export const kmUsulTambah = (env, p, komen, angka, kini) => { izin(p, "lp_komen_usul", "tambah");
+  return env.DB.batch(angka.map(a => env.DB.prepare("INSERT INTO lp_komen_usul (komen, kolom, nilai, kutipan, dibuat) VALUES (?1, ?2, ?3, ?4, ?5)").bind(komen, a.kolom, a.nilai, a.kutipan, kini))); };
 export const kmById = (env, p, id) => sedia(env, p, "lp_komen", "baca", "SELECT id, kartu, wa, status, aduan FROM lp_komen WHERE id = ?1").bind(id).first();
 /* aduan: satu per pengadu (PK; sidik nomor atau IP, src/lapor_komen.js); hitungan naik hanya bila aduan baru tersimpan, dan aduan ke-ambang mengubah tampil -> dilaporkan, dalam satu batch */
 export const kmAdu = async (env, p, id, pengadu, kini, ambang) => { izin(p, "lp_komen_aduan", "tambah"); izin(p, "lp_komen", "ubah");

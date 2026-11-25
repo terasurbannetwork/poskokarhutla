@@ -180,7 +180,7 @@ let WIL, INFO, REG;
 const muatAset = env => async jalur => { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + jalur)); if (!r.ok) { r.body?.cancel(); throw new Error(`aset ${jalur} ${r.status}`); } return r.json(); };
 const wilayahDari = env => WIL ||= buatWilayah(muatAset(env));
 const SEL = buatSelamat(wilayahDari);
-const KOMEN = buatKomen({pelapor: (...a) => pelapor(...a), kartuTampil: (...a) => kartuTampil(...a)});   // komentar kartu Alun-alun (LA-85); fungsi dibungkus karena didefinisikan di bawah   // kabar selamat dan orang dicari (LA-80)
+const KOMEN = buatKomen({pelapor: (...a) => pelapor(...a), kartuTampil: (...a) => kartuTampil(...a), model: env => modelDari(env)});   // komentar kartu Alun-alun (LA-85); fungsi dibungkus karena didefinisikan di bawah   // kabar selamat dan orang dicari (LA-80)
 const registriDari = env => REG ||= muatAset(env)("/bencana.json").catch(e => { REG = null; throw e; });   // katalog tindakan (AGENTS 2.28, D112)
 // nomor BPBD dari panen situs resmi (K88); gagal muat = 117, laporan tetap tersimpan
 let KONTAK;

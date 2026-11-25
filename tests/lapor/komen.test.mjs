@@ -81,3 +81,64 @@ uji("komentar Alun-alun: saringan murni", () => {
   const panjang = "RT 1 ".repeat(100); assert.equal(panjang.length, 500);
   assert.match(bersihKomen(panjang).galat || "", /terlalu panjang/, "teks yang memanjang sesudah penggantian ditolak, bukan dibiarkan gagal di CHECK D1");
 });
+
+/* LA-86 (D138): model tiruan lewat jaringan luar workerd; kode yang memutuskan angka mana yang lolos */
+const keModel = [];
+const luarModel = async req => {
+  if (new URL(req.url).hostname !== "api.anthropic.com") return new Response("diblok di uji", {status: 599});
+  const b = await req.json(), isi = b.messages?.[0]?.content || ""; keModel.push({isi, skema: b.output_config?.format?.schema});
+  if (/gagal/.test(isi)) return new Response("galat model", {status: 500});
+  const angka = [
+    {kolom: "mengungsi", nilai: 40, kutipan: "40 warga mengungsi"},   // berkutipan, angka ada: lolos
+    {kolom: "rumah", nilai: 12, kutipan: "12 rumah rusak"},           // kutipan tidak ada di komentar: dibuang
+    {kolom: "luka", nilai: 7, kutipan: "luka ringan"},                // angka tidak ada di kutipan: dibuang
+    {kolom: "harta", nilai: 3, kutipan: "40 warga mengungsi"},        // kolom di luar daftar: dibuang
+    {kolom: "meninggal", nilai: 0, kutipan: "tidak ada korban jiwa"}, // nol dengan kata ingkar: lolos
+    {kolom: "mengungsi", nilai: 41, kutipan: "40 warga mengungsi"}];  // kolom kedua kali: dibuang
+  return new Response(JSON.stringify({model: "palsu", stop_reason: "end_turn", usage: {}, content: [{type: "text", text: JSON.stringify({angka})}]}), {headers: {"content-type": "application/json"}});
+};
+
+uji("komentar Alun-alun: angka dari model jadi usulan berkutipan, kartu tidak berubah", async () => {
+  const M = await siapkan("uji-lapor-komen-model", {ikat: {ANTHROPIC_API_KEY: "kunci-uji"}, luar: luarModel});
+  const ringkas = JSON.stringify({wilayah: {desa: "Cibeber", kec: "Cibeber", kab: "Kab. Cianjur", prov: "Jawa Barat", provKode: "32"}, dampak: {rumah: 2}});
+  await M.DB.batch([
+    M.DB.prepare("INSERT INTO lapor_sesi (id, wa, status, tingkat, jenis, kab, nomor, terkirim, kerja, ringkas, dibuat, diubah) VALUES ('sesi-model-01', '6281299999999', 'terkirim', 'warga', 'longsor', '32.03', 'LA-251125-09', ?1, '{}', ?2, ?1, ?1)").bind(KINI - 3600e3, ringkas),
+    M.DB.prepare("INSERT INTO lapor_tiket (nomor, sesi, status, diubah) VALUES ('LA-251125-09', 'sesi-model-01', 'ditindaklanjuti', ?1)").bind(KINI)]);
+  const k = sha256("sesi-model-01").slice(0, 10), sebelum = (await M.api("GET", "/api/lapor/alun")).t;
+  const tulisM = teks => M.api("POST", `/api/lapor/komen/${k}`, {wa: WA, teks}, PB);
+  const tunggu = async (id, n) => { for (let i = 0; i < 40; i++) { const r = (await M.DB.prepare("SELECT kolom, nilai, kutipan, status FROM lp_komen_usul WHERE komen = ? ORDER BY kolom DESC").bind(id).all()).results; if (r.length >= n) return r; await new Promise(s => setTimeout(s, 50)); } return []; };
+
+  assert.equal((await tulisM("Jalan desa masih tertutup lumpur")).s, 200); assert.equal(keModel.length, 0, "komentar tanpa angka tidak memanggil model");
+  const r = await tulisM("Sekarang 40 warga mengungsi ke balai desa, luka ringan beberapa, tidak ada korban jiwa. Hubungi 0812 3456 7890");
+  assert.equal(r.s, 200, r.t);
+  assert.deepEqual((await tunggu(r.j.komen.id, 2)).map(x => ({...x})), [
+    {kolom: "meninggal", nilai: 0, kutipan: "tidak ada korban jiwa", status: "usul"},
+    {kolom: "mengungsi", nilai: 40, kutipan: "40 warga mengungsi", status: "usul"}], "hanya angka berkutipan yang angkanya ada di kutipan");
+  assert.equal(keModel.length, 1); assert.match(keModel[0].isi, /^<komentar_warga>\n/); assert.ok(!keModel[0].isi.includes("0812"), "ke model hanya teks yang sudah disaring");
+  assert.deepEqual(keModel[0].skema.properties.angka.items.properties.kolom.enum, ["meninggal", "hilang", "luka", "mengungsi", "rumah", "terendam"]);
+  assert.equal((await M.api("GET", "/api/lapor/alun")).t, sebelum, "usulan tidak mengubah kartu Alun-alun");
+  assert.equal((await M.DB.prepare("SELECT ringkas FROM lapor_sesi WHERE id = 'sesi-model-01'").first()).ringkas, ringkas, "laporan jangkar tidak berubah");
+
+  const g = await tulisM("model gagal, 5 rumah terendam"); assert.equal(g.s, 200, "galat model tidak menggagalkan komentar");
+  await new Promise(s => setTimeout(s, 300));
+  assert.equal(await M.n("lp_komen_usul"), 2, "galat model tidak menulis usulan");
+  assert.ok(await M.DB.prepare("SELECT 1 FROM lp_komen WHERE id = ?").bind(g.j.komen.id).first(), "komentar tetap tersimpan");
+  const H = await import("../../src/hak.js");
+  assert.throws(() => H.kmUsulTambah({DB: M.DB}, H.pelakuLpPublik, "x", [], KINI), "jalur publik tidak bisa menulis usulan");
+});
+
+uji("komentar Alun-alun: validasi angka murni", async () => {
+  const {validasiKomen, uraiKomen} = await import("../../src/lapor_komen.js");
+  const teks = "Air setinggi 1 meter, 3 rumah terendam dan dua orang hilang";
+  assert.deepEqual(validasiKomen({angka: [{kolom: "terendam", nilai: 3, kutipan: "3 rumah terendam"}, {kolom: "hilang", nilai: 2, kutipan: "dua orang hilang"},
+    {kolom: "rumah", nilai: -3, kutipan: "3 rumah"}, {kolom: "rumah", nilai: 3.5, kutipan: "3 rumah"}, {kolom: "rumah", nilai: 4, kutipan: "3 rumah"}]}, teks).map(x => `${x.kolom}=${x.nilai}`),
+    ["terendam=3", "hilang=2"], "negatif, pecahan, dan angka yang tidak ada di kutipan dibuang");
+  /* ulasan keamanan LA-86: angka sah di kolom yang salah, dan nol dari kata ingkar milik kolom lain, ditolak */
+  const t2 = "12 rumah rusak berat, tidak ada yang meninggal. 40 orang mengungsi";
+  assert.deepEqual(validasiKomen({angka: [{kolom: "hilang", nilai: 0, kutipan: "12 rumah rusak berat, tidak ada yang meninggal"}, {kolom: "meninggal", nilai: 12, kutipan: "12 rumah rusak berat"},
+    {kolom: "luka", nilai: 40, kutipan: "40 orang mengungsi"}, {kolom: "rumah", nilai: 12, kutipan: "12 rumah rusak berat"}, {kolom: "meninggal", nilai: 0, kutipan: "tidak ada yang meninggal"}]}, t2)
+    .map(x => `${x.kolom}=${x.nilai}`), ["rumah=12", "meninggal=0"]);
+  assert.deepEqual(validasiKomen(null, teks), []); assert.deepEqual(validasiKomen({angka: "bukan daftar"}, teks), []);
+  assert.deepEqual(await uraiKomen(null, teks), [], "tanpa kunci model: tanpa usulan");
+  let dipanggil = 0; assert.deepEqual(await uraiKomen(async () => { dipanggil++; return {angka: []}; }, "jalan tertutup"), []); assert.equal(dipanggil, 0, "tanpa angka model tidak dipanggil");
+});

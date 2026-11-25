@@ -648,6 +648,14 @@ Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya b
 - Ulasan `inp-reviewer`: bagian kabar dibuat sekali per kartu dan dipakai ulang saat daftar digambar ulang (draf dan keadaan buka tidak hilang), form dibuat saat pertama dibuka, Laporkan memakai satu pendengar per daftar, warna titik peta dihitung sekali per gambar. Sisa yang belum: Ikuti kejadian masih menggambar ulang seluruh daftar (perilaku lama).
 - Server tinjau `scripts/lapor/lokal.mjs` ikut melayani `/api/lapor/komen/*` dengan saringan yang sama, supaya bisa ditinjau di `http://localhost:8800/lapor/?alun` (server perlu dimulai ulang untuk memuat rute ini).
 
+### Catatan pelaksanaan LA-86 (25 Nov 2026)
+
+- Sesudah komentar tersimpan, model (`src/lapor_model.js`, kunci yang sama dengan pengurai laporan) membaca teks yang sudah disaring di latar; jawaban komentar tidak menunggu model. Model hanya dipanggil bila komentar memuat angka (digit atau kata bilangan) atau kata "tidak ada", "nihil", "nol".
+- Kode yang memutuskan (`validasiKomen` di `src/lapor_komen.js`): kolom dari daftar enam, kutipan ada persis di komentar, angkanya ada di kutipan itu, bilangan bulat 0 sampai 100.000, 0 hanya bila kutipan memuat kata ingkar, satu angka per kolom per komentar. Selebihnya dibuang. Hasilnya baris `lp_komen_usul` berstatus `usul`; kartu dan laporan tidak berubah.
+- Tanpa kunci model, atau model galat: komentar tetap tersimpan, tanpa usulan. Pengurai tanpa AI untuk komentar tidak dibuat; meja tetap bisa membaca teksnya (LA-88).
+- Ulasan `security-reviewer`: kutipan wajib memuat kata kunci kolomnya (angka rumah tidak bisa masuk kolom meninggal), nol hanya bila kata ingkar paling jauh tiga kata sebelum kata kunci kolom itu, tutup global panggilan model 200 per jam dan 2.000 per hari di atas batas per nomor dan IP (lewat tutup: komentar tersimpan tanpa usulan), dan hak tambah usulan hanya untuk mesin.
+- Batasnya: kutipan yang memuat dua kolom ("3 rumah rusak, 2 orang luka" untuk luka 3) masih bisa lolos kode bila model salah; itu sebabnya angka hanya usulan dan petugas yang menerima (D139).
+
 > Catatan gabung 25 Nov 2026: dua sesi memakai nomor K94-K95 bersamaan. Di bawah ini K94-K104 bagian pertanyaan lanjut; K94-K95 di atas adalah bagian Alun-alun.
 
 ## Keputusan pemilik 25 Nov 2026: pertanyaan lanjut dari riset
