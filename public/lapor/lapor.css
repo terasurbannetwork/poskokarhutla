@@ -2767,10 +2767,11 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-tombol-kaca svg{background:var(--kc)!important;color:var(--on-pekat)!important}
 .lp-tombol-kaca:hover{background:color-mix(in oklab,var(--kc) 7%,var(--card))!important}
 /* baris atas berwarna semua, baris bawah putih semua (pemilik 25 Nov 2026): Cek status ikut pekat seperti dua tombol lapor */
-.lp-tombol-kaca.lp-kaca-status{--kc:var(--info-tx);background:var(--kc)!important;color:var(--on-pekat)!important}
-.lp-tombol-kaca.lp-kaca-status:hover{background:color-mix(in oklab,var(--kc) 86%,var(--head-bg))!important}
-.lp-tombol-kaca.lp-kaca-status svg{background:color-mix(in oklab,var(--head-bg) 18%,transparent)!important;color:var(--on-pekat)!important}
-.lp-kaca-pasang,.lp-kaca-peringatan,.lp-kaca-hilang{--kc:var(--brand2)}
+.lp-tombol-kaca.lp-kaca-pekat{--kc:var(--info-tx);background:var(--kc)!important;color:var(--on-pekat)!important}
+.lp-tombol-kaca.lp-kaca-pekat:hover{background:color-mix(in oklab,var(--kc) 86%,var(--head-bg))!important}
+.lp-tombol-kaca.lp-kaca-pekat svg{background:color-mix(in oklab,var(--head-bg) 18%,transparent)!important;color:var(--on-pekat)!important}
+.lp-kaca-pasang,.lp-kaca-peringatan,.lp-kaca-status{--kc:var(--brand2)}
+/* Lapor orang hilang naik ke baris atas berwarna, Cek status turun ke baris putih (pemilik 25 Nov 2026) */
 /* label Sigap satu baris, tidak patah dua */
 .lp-hg-tip .lp-hg-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lp-hg-tip .lp-hg-label i{flex:none}
 /* FAQ (pemilik 25 Nov 2026: "bagusin"): tanda buka navy senada ikon, baris naik saat disorot, yang terbuka diberi garis kiri */
@@ -2875,3 +2876,52 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-lap-kartu{transition:border-color .15s,box-shadow .15s,transform .15s!important}
 .lp-lap-kep .lp-lap-aksi,.lp-lap-kaki .lp-lap-aksi{background:var(--brand2)!important;color:var(--on-pekat)!important;font-weight:700}
 .lp-lap-kartu:hover .lp-lap-aksi{background:color-mix(in oklab,var(--brand2) 85%,var(--head-bg))!important}
+
+/* tiga pintu lapor di bawah menu samping (pemilik 25 Nov 2026) */
+.lp-tab-aksi{display:none}
+@media (min-width:900px){
+  .lp-tab-aksi{display:grid;gap:8px;margin-top:auto;align-self:stretch;padding-top:8px}
+  .lp-tab .lp-sigap ~ .lp-tab-aksi{margin-top:0}
+  .lp-tab-aksi .lp-tab-lapor{margin:0!important}
+  .lp-tab-aksi,.lp-tab-aksi .lp-tab-lapor{width:100%;box-sizing:border-box}
+  .lp-tab-aksi .lp-tab-lapor{justify-content:flex-start!important;padding-inline:16px!important}
+  .lp-app.di-lapor .lp-tab-aksi{display:none}
+}
+
+/* maskot beraksi (pemilik 25 Nov 2026: "ngapain kek dia"): benda yang dipegang dan geraknya per aksi */
+.sg-hp{fill:var(--head-bg)}.sg-hp-layar{fill:color-mix(in oklab,var(--info) 35%,var(--card))}.sg-hp-teks{stroke:var(--brand2)}
+.sg-pesawat{fill:var(--card);stroke:var(--brand2);stroke-width:2;stroke-linejoin:round}
+.sg-klip{fill:color-mix(in oklab,var(--brand-accent) 55%,var(--head-bg))}.sg-kertas{fill:var(--card)}.sg-klip-jepit{fill:var(--brand2)}.sg-centang{stroke:var(--ok-tx)}
+.sg-buku{fill:var(--card);stroke:var(--brand2);stroke-width:2}.sg-buku-tengah{stroke:var(--brand2)}.sg-buku-halaman{fill:color-mix(in oklab,var(--brand2) 8%,var(--card));stroke:var(--brand2);stroke-width:1.5;transform-box:view-box;transform-origin:144px 198px}
+.sg-unduh{stroke:var(--ok-tx)}.sg-gelombang{stroke:var(--brand-accent)}
+.sg-gagang{stroke:var(--head-bg)}.sg-lensa{fill:color-mix(in oklab,var(--info) 25%,transparent)}.sg-lensa-tepi{stroke:var(--head-bg)}
+.sg-pin{fill:var(--bad)}.sg-lonceng{fill:var(--warn)}
+.sg-sirene{fill:var(--bad)}.sg-sirene-alas{fill:var(--head-bg)}.sg-sirene-sinar{stroke:var(--bad)}
+.sg-gelembung{fill:var(--card);stroke:var(--brand2);stroke-width:2}.sg-gelembung.dua{fill:color-mix(in oklab,var(--brand-accent) 20%,var(--card));stroke:var(--brand-accent)}
+.mk[data-aksi] .mk-aksi,.mk[data-aksi] .mk-aksi *{transform-box:view-box}
+.mk[data-aksi="lapor"] .mk-mata,.mk[data-aksi="status"] .mk-mata,.mk[data-aksi="edukasi"] .mk-mata,.mk[data-aksi="pasang"] .mk-mata,.mk[data-aksi="laporan"] .mk-mata{transform:translate(3px,3px)}
+.mk[data-aksi="info"] .mk-mata,.mk[data-aksi="peringatan"] .mk-mata,.mk[data-aksi="bahasa"] .mk-mata{transform:translate(4px,-2px)}
+@media (prefers-reduced-motion:no-preference){
+  .mk[data-aksi="lapor"] .mk-benda,.mk[data-aksi="pasang"] .mk-benda{animation:mk-ketik .5s ease-in-out infinite;transform-origin:143px 214px}
+  .mk-terbang{animation:mk-terbang 2s ease-in infinite}
+  .mk[data-aksi="status"] .mk-kepala,.mk[data-aksi="laporan"] .mk-kepala,.mk[data-aksi="edukasi"] .mk-kepala{animation:mk-angguk 1.6s ease-in-out infinite;transform-origin:center bottom}
+  .mk-gores{stroke-dasharray:20;animation:mk-gores 1.6s ease-in-out infinite}
+  .mk-balik{animation:mk-balik 2.4s ease-in-out infinite}
+  .mk-turun{animation:mk-unduh 1s ease-in-out infinite}
+  .mk-denyar{animation:mk-denyar 1s ease-in-out infinite}
+  .mk-sapu{animation:mk-sapu 2.4s ease-in-out infinite;transform-origin:162px 178px}
+  .mk[data-aksi="hilang"] .mk-mata{animation:mk-lirik 2.4s ease-in-out infinite}
+  .mk-pantul{animation:mk-angkat 1s ease-in-out infinite}
+  .mk-goyang{animation:mk-lonceng 1.1s ease-in-out infinite;transform-origin:194px 92px}
+  .mk-kedip{animation:mk-kedip .6s steps(2) infinite}
+  .mk[data-aksi="darurat"] .mk-tubuh{animation:mk-sigap .5s ease-in-out infinite}
+  .mk-ucap1{animation:mk-ucap 2s ease-in-out infinite}.mk-ucap2{animation:mk-ucap 2s ease-in-out 1s infinite;opacity:0}
+}
+@keyframes mk-ketik{0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}}
+@keyframes mk-terbang{0%{transform:translate(-20px,30px) scale(.6);opacity:0}30%{opacity:1}100%{transform:translate(14px,-30px) scale(1);opacity:0}}
+@keyframes mk-gores{0%{stroke-dashoffset:20}50%,100%{stroke-dashoffset:0}}
+@keyframes mk-balik{0%,40%{transform:scaleX(1)}60%,100%{transform:scaleX(-1)}}
+@keyframes mk-denyar{0%,100%{opacity:.2}50%{opacity:1}}
+@keyframes mk-sapu{0%,100%{transform:rotate(0)}30%{transform:rotate(-12deg)}70%{transform:rotate(6deg)}}
+@keyframes mk-kedip{0%{opacity:1}100%{opacity:.25}}
+@keyframes mk-ucap{0%,100%{opacity:0;transform:translateY(4px)}20%,60%{opacity:1;transform:translateY(0)}}

@@ -4,7 +4,7 @@
    - Kartu langkah mengikuti keadaan mesin: minta (setuju, identitas, lokasi, jenis, sub, foto), form (angka, waktu, RT/RW), pilihan, banyak.
    - Cache: percakapan dan daftar laporan disimpan di localStorage per nomor supaya muat ulang langsung tampil.
    - Suara (id-ID) bila peramban mendukung; foto dikecilkan di peramban (foto_kecil.js), EXIF dibaca dulu (exif.js). */
-import {maskot} from "/lapor/maskot.js?v=21"; // bervesi: berkas .js disajikan immutable
+import {maskot} from "/lapor/maskot.js?v=22"; // bervesi: berkas .js disajikan immutable
 import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
 /* Pelapor mengetik nomor WhatsApp tanpa kode (KEPUTUSAN-LAPOR-AI K65, D99-D102); di situs, nomor ketikan diikat ke perangkat lewat kuki HttpOnly
    dari Worker. Sesi /masuk yang sudah ada tetap dipakai bila ada. Kiriman POST wajib x-pb: 1. */
@@ -1894,7 +1894,8 @@ function mulaiTur() {
     if (sasaran) sasaran.style.scrollMarginTop = "16px";   // HP: sasaran di atas agar kartu muat di bawahnya, tidak menutupinya
     const blok = innerWidth <= 560 ? "start" : "center";
     sasaran?.scrollIntoView({block: blok, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth"});
-    tata(); requestAnimationFrame(tata); setTimeout(tata, 400); maju.focus();
+    // sasaran bisa masih bergerak (animasi masuk hero, gulir halus): ukur ulang sampai diam (pemilik 25 Nov 2026: "kenapa ga tepat highlightnya")
+    tata(); requestAnimationFrame(tata); for (const t of [150, 400, 800, 1300]) setTimeout(tata, t); maju.focus();
     // gulir halus kadang tertahan dan sasaran tetap di luar layar; pastikan sampai lalu tata ulang
     const s0 = sasaran; setTimeout(() => { if (s0 !== sasaran || !s0) return; const r = s0.getBoundingClientRect(); if (r.top < 0 || r.bottom > innerHeight) { s0.scrollIntoView({block: blok, behavior: "instant"}); tata(); } }, 500);
   };
