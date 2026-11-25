@@ -3,9 +3,9 @@
 ## 1. Jalur 10 menit (Himawari)
 
 1. Cron Worker `* * * * *` (yang sudah ada) membaca R2 `data/satelit/picu.json` (pindaian 6 jam terakhir yang sudah dipicu, kunci idempoten = jam pindai). Tiap tik, untuk paling banyak 6 pindaian calon (belum `selesai`, belum dipicu atau pemicunya kedaluwarsa), satu permintaan daftar objek ke `noaa-himawari9` per pindaian.
-2. Susul: semua pindaian dalam 6 jam terakhir yang keenam kanalnya (S04 sampai S07) sudah ada di S3 tetapi belum `selesai` dipicu, terbaru dulu, paling banyak 3 dispatch per tik (DESAIN-TEKNIS 3). Jadi objek S3 yang telat, cron Worker yang terlewat, atau dispatch yang gagal disusul pada tik berikutnya. Pindaian yang lebih tua dari 6 jam tidak disusul otomatis; bila ada, `/api/status` menghitungnya sebagai `pindaian_hilang` (Q2, Q15).
+2. Susul: semua pindaian dalam 6 jam terakhir yang keenam kanalnya (S05 sampai S07) sudah ada di S3 tetapi belum `selesai` dipicu, terbaru dulu, paling banyak 3 dispatch per tik (DESAIN-TEKNIS 3). Jadi objek S3 yang telat, cron Worker yang terlewat, atau dispatch yang gagal disusul pada tik berikutnya. Pindaian yang lebih tua dari 6 jam tidak disusul otomatis; bila ada, `/api/status` menghitungnya sebagai `pindaian_hilang` (Q2, Q15).
 3. `satelit.yml` menjalankan `scripts/umum/himawari_pindai.py jalan --pindai ...`:
-   - unduh B07, B08, B11, B13, B14, B15, segmen S04 sampai S07, sekali;
+   - unduh B07, B08, B11, B13, B14, B15, segmen S05 sampai S07, sekali;
    - detektor api, abu, konveksi (dan kabut malam bila ST-15 jadi) dipanggil dengan kisi yang sama;
    - tiap keluaran membawa `acuan` (jam pindai UTC), `status_sumber`, `versi_kriteria`, `vonis`.
 4. Unggah ke R2: `data/satelit/<jenis>.json` (ditimpa, satu tulis per jenis per pindaian, hanya bila isinya berubah) dan potongan arsip per jam (DESAIN-TEKNIS 4). Tanpa commit (Q4).

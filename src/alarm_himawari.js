@@ -3,7 +3,7 @@
    aturan yang sama dengan peta dan email EWS). Siaga menjadi terkunci saat tugas api dari VIIRS dibuat dalam 4 km (jam Himawari masuk ke tugas_api.himawari_awal), dan hilang
    bila 6 jam tanpa pindaian baru. Migrasi 0043/0041 belum ada, atau R2/MEDIA tak terpasang = dilewati rapi.
    ponytail: satu alarm per piksel ~2 km (pindaian berikutnya dalam 2 km menyatu); tanpa pengelompokan lintas piksel. */
-import {muatHimawari, tandaiBaru, saringIndonesia} from "./himawari.js";
+import {muatHimawari, statusSumber, tandaiBaru, saringIndonesia} from "./himawari.js";
 import {km, wilayah, cariWilayah} from "./titik.js";
 import {kabarkan, penerimaPosko} from "./kabar.js";
 import {acak} from "./worker.js";
@@ -20,6 +20,7 @@ export async function alarmHimawari(env, kini = Date.now()) {
     const tanda = String(kepala.etag || kepala.uploaded?.getTime?.() || ""), lama = (await env.DB.prepare("SELECT nilai FROM tugas_meta WHERE kunci = ?").bind(META).first())?.nilai;
     if (lama === tanda) return {lewat: "berkas sama", hilang: hilang.meta.changes};
     const hw = await muatHimawari(env); if (!hw?.acuan) return {lewat: "himawari.json tidak terbaca"};
+    if (!statusSumber(hw).alarm_tersedia) return {lewat: "sumber terputus", hilang: hilang.meta.changes};   // tanpa baris alarm; etag tak disimpan, jadi pulih = langsung dinilai
     let firms = null; try { const r = await env.DB.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first(); firms = r && JSON.parse(r.isi); } catch (e) {}
     const acuan = Date.parse(hw.acuan), baru = tandaiBaru(hw, firms, kini, await saringIndonesia(env)).filter(r => r[9]);
     const ada = (await env.DB.prepare("SELECT id, lat, lon, status, terakhir, n_pindai, frp FROM alarm_himawari WHERE status != 'hilang' AND id NOT LIKE 'dummy%' ORDER BY terakhir DESC LIMIT 500").all()).results;

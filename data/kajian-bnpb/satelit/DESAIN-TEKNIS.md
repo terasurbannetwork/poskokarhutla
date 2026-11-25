@@ -57,7 +57,7 @@ src/satelit_picu.js, dipanggil dari cron * * * * * yang ada:
           dan (belum dipicu, atau dipicu > 20 menit lalu dengan coba < 3)
   urut terbaru dulu ; periksa paling banyak 6 calon per tik:
      GET https://noaa-himawari9.s3.amazonaws.com/?list-type=2&prefix=AHI-L1b-FLDK/YYYY/MM/DD/HHMM/  (host tetap, satu halaman)
-     bila 6 kanal x S04-S07 ada: dispatch satelit.yml {pindai} dengan GITHUB_TOKEN (sudah dipakai jaga_jadwal.js) ; paling banyak 3 dispatch per tik
+     bila 6 kanal x S05-S07 ada: dispatch satelit.yml {pindai} dengan GITHUB_TOKEN (sudah dipakai jaga_jadwal.js) ; paling banyak 3 dispatch per tik
   tulis picu.json sekali per tik bila berubah ; buang entri > 6 jam ; calon coba = 3 yang tetap gagal -> gagal_tetap (dihitung di /api/status)
 ```
 

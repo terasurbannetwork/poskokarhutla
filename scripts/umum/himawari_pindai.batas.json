@@ -1,0 +1,18 @@
+{
+  "sumber": "KEPUTUSAN-SATELIT Q5 (bawaan sementara, HIPOTESIS) dan DESAIN-TEKNIS 4.1; dikunci di ST-03A",
+  "gb_bulan": 1.0,
+  "simpan_bulan": 13,
+  "kelas_a_bulan": 100000,
+  "kelas_b_bulan": 1000000,
+  "potongan_rerata_kb": 50,
+  "potongan_maks_kb": 200,
+  "terbaru_maks_kb": 500,
+  "detik_run_maks": 480,
+  "detik_kadens": 600,
+  "run_per_hari": 144,
+  "hari_bulan": 30,
+  "overhead_run_detik": 45,
+  "kelas_a_tetap": {"picu_tulis": 4500, "pemadatan": 270},
+  "kelas_b_tetap": {"picu_baca": 43200, "etag": 129600, "cek_selesai_calon": 20000},
+  "catatan": "menit Actions tidak ditagih (repo publik, Q8): batasnya waktu job 8 menit dan kadens 10 menit. overhead_run_detik = checkout + setup Python + unggah, ASUMSI sampai ST-03 mengukurnya di runner."
+}

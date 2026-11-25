@@ -6,7 +6,7 @@ Semua ambang bertanda HIPOTESIS dikunci di `<nama>.kriteria.json` beserta sidikn
 
 ```
 pindaian = jam mulai FLDK, kelipatan 10 menit
-kanal    = B07 3,9 | B08 6,2 | B11 8,6 | B13 10,4 | B14 11,2 | B15 12,4 um ; segmen S04-S07 ; 2 km di titik subsatelit
+kanal    = B07 3,9 | B08 6,2 | B11 8,6 | B13 10,4 | B14 11,2 | B15 12,4 um ; segmen S05-S07 (terukur ST-03A) ; 2 km di titik subsatelit
 Tb       = awan_himawari.tb(count)           (kalibrasi count -> radiansi -> suhu kecerahan, sudah teruji)
 lokasi   = awan_himawari.proyeksi(lon, lat)  (CGMS maju) ; piksel di luar kotak Indonesia dibuang
 geometri : zenit satelit dari lon/lat dan sub-satelit 140,7 BT ; zenit dan azimut matahari dihitung stdlib (rumus NOAA)

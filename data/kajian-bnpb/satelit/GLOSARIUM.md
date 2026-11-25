@@ -5,7 +5,7 @@
 | Himawari-9 | Satelit cuaca geostasioner Jepang (JMA) di sekitar 140,7 BT; memotret seluruh piringan bumi tiap 10 menit. |
 | AHI | Advanced Himawari Imager, kamera Himawari dengan 16 kanal. |
 | L1b, HSD | Data tingkat 1b (radiansi terkalibrasi) dalam format Himawari Standard Data; dibaca stdlib oleh `awan_himawari.py`. |
-| FLDK, segmen | Pindaian piringan penuh, dibagi 10 segmen utara ke selatan; Indonesia ada di S04 sampai S07. |
+| FLDK, segmen | Pindaian piringan penuh, dibagi 10 segmen utara ke selatan; Indonesia ada di S05 sampai S07 (diukur ST-03A, 25 Nov 2026). |
 | Pindaian | Satu potret FLDK, diberi nama jam mulainya (kelipatan 10 menit, UTC). |
 | Kanal B07, B08, B11, B13, B14, B15 | Inframerah 3,9; 6,2; 8,6; 10,4; 11,2; 12,4 mikrometer. |
 | Tb | Suhu kecerahan (K) yang dihitung dari radiansi satu kanal. |
