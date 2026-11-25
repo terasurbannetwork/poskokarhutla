@@ -7,9 +7,9 @@
 // `! Cache-Control`), jadi jumlahnya ~40; lebih dari 80 = peringatan dini. Kalau merah: kurangi aturan tulisan tangan di
 // public/_headers atau minta mekanik-mesin menggabung lebih jauh di versi.py.
 
-import { test } from 'node:test'
+import { test, after } from 'node:test'
 import assert from 'node:assert/strict'
-import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, appendFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync, appendFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { tmpdir } from 'node:os'
 import { dirname, join, relative, sep } from 'node:path'
@@ -32,6 +32,12 @@ const PYTHON = ['python3', 'python'].find((p) => {
 // salin public/ lalu terbitkan seperti CI; `ubah(akar)` menyuntik keadaan salah untuk bukti merah.
 // Salinan (~1,7 GB) dihapus bila langkah apa pun gagal: 29 Okt-11 Nov 2026 di Windows tanpa `python3`,
 // tiap uji melempar sebelum try/finally pemanggil dan meninggalkan 51 salinan (76 GB) di Temp.
+// sisa salinan dari uji yang dibunuh paksa (batas waktu agen) tidak sempat lewat finally: sapu yang lebih tua dari 2 jam (disk penuh 25 Nov 2026)
+for (const n of readdirSync(tmpdir())) {
+  if (!n.startsWith('headers-')) continue
+  try { const p = join(tmpdir(), n); if (Date.now() - statSync(p).mtimeMs > 2 * 3600e3) rmSync(p, { recursive: true, force: true }) } catch {}
+}
+
 function terbit(ubah) {
   const akar = mkdtempSync(join(tmpdir(), 'headers-'))
   try {
@@ -45,6 +51,12 @@ function terbit(ubah) {
     throw e
   }
 }
+
+// Satu salinan hasil terbit dipakai bersama oleh uji yang tidak mengubah masukan versi.py (25 Nov 2026: lima salinan
+// public/ membuat langkah Uji agen di terbit.yml lewat batas 12 menit). Uji yang menyunting salinan memulihkannya sendiri.
+let dasar
+const terbitDasar = () => (dasar ??= terbit())
+after(() => { if (dasar) rmSync(dasar, { recursive: true, force: true }) })
 
 // _headers -> [{ pola, header, lepas, urut }]; aturan = baris yang diawali "/"; "! Nama" = lepas header (Cloudflare)
 function urai(teks) {
@@ -100,20 +112,18 @@ function periksa(akar) {
 }
 
 test('_headers hasil versi.py lolos batas Cloudflare dan tak bentrok', () => {
-  const akar = terbit()
-  try {
+  const akar = terbitDasar()
+  {
     assert.deepEqual(periksa(akar), [],
       'SEBAB: _headers hasil terbit melanggar batas/aturan Cloudflare. AKIBAT: wrangler deploy ditolak di CI ' +
       '(insiden 16 Okt 2026, 136 aturan). PERBAIKAN: kurangi aturan di public/_headers atau halaman HTML, ' +
       'atau minta mekanik-mesin menggabung aturan per folder di scripts/terbit/versi.py.')
-  } finally { rmSync(akar, { recursive: true, force: true }) }
+  }
 })
 
 test('gerbang _headers bisa merah: aturan >80, baris panjang, no-cache hilang, Cache-Control bentrok', () => {
   // aturan tulisan tangan menggemuk sampai >80 tapi <=100: versi.py masih lolos, gerbang memperingatkan
-  const a0 = terbit()
-  const n0 = urai(readFileSync(join(a0, '_headers'), 'utf8')).length
-  rmSync(a0, { recursive: true, force: true })
+  const n0 = urai(readFileSync(join(terbitDasar(), '_headers'), 'utf8')).length
   let akar = terbit((a) => {
     const hp = join(a, '_headers')
     let tambah = ''
@@ -123,10 +133,12 @@ test('gerbang _headers bisa merah: aturan >80, baris panjang, no-cache hilang, C
   try { assert.ok(periksa(akar).some((s) => /aturan > 80/.test(s)), 'peringatan dini >80 harus terdeteksi') }
   finally { rmSync(akar, { recursive: true, force: true }) }
 
-  akar = terbit()
+  akar = terbitDasar()
+  const hp = join(akar, '_headers')
+  const asli = readFileSync(hp, 'utf8')
+  const x = join(akar, 'banjir/data/x.json')
+  const xAda = existsSync(x)
   try {
-    const hp = join(akar, '_headers')
-    const asli = readFileSync(hp, 'utf8')
     appendFileSync(hp, `\n/panjang\n  X-Uji: ${'a'.repeat(2100)}\n`)
     assert.ok(periksa(akar).some((s) => /karakter > 2000/.test(s)), 'baris >2000 harus terdeteksi')
 
@@ -138,15 +150,15 @@ test('gerbang _headers bisa merah: aturan >80, baris panjang, no-cache hilang, C
     writeFileSync(join(akar, 'banjir/data/x.json'), '{}')
     writeFileSync(hp, asli + '\n/banjir/*\n  Cache-Control: public, max-age=31536000, immutable\n')
     assert.ok(periksa(akar).some((s) => /banjir\/data\/x\.json kena Cache-Control bentrok/.test(s)), 'bentrok harus terdeteksi')
-  } finally { rmSync(akar, { recursive: true, force: true }) }
+  } finally { writeFileSync(hp, asli); if (!xAda) rmSync(x, { force: true }) }
 })
 
 // Kelas bug (2 Nov 2026): berkas ber-Cache-Control immutable (setahun) yang masih dimuat TANPA ?v dari tempat lain
 // (impor relatif "./x.js", string "/x.js", HTML tanpa ?v) -> pengguna terjebak versi lama setahun.
 // Menghitung jalur persis tiap rujukan .js/.css di public/ (kecuali data/geo/img/citra/lambang) pada hasil terbit.
 test('berkas immutable tak pernah dimuat tanpa ?v', () => {
-  const akar = terbit()
-  try {
+  const akar = terbitDasar()
+  {
     const aturan = urai(readFileSync(join(akar, '_headers'), 'utf8'))
     const abadi = (w) => efektif(aturan, w).some((v) => /immutable/.test(v))
     const lewati = new Set(['data', 'geo', 'img', 'citra', 'lambang'])
@@ -169,5 +181,5 @@ test('berkas immutable tak pernah dimuat tanpa ?v', () => {
       'SEBAB: berkas ini immutable (max-age setahun) tetapi dimuat tanpa ?v. AKIBAT: setelah diubah, pengguna tetap memakai versi lama ' +
       'sampai setahun. PERBAIKAN: tambahkan ?v ke rujukannya, atau ubah scripts/terbit/versi.py agar berkas itu tak jadi immutable ' +
       '(impor statis relatif terikat ke jalur persis; lipatan folder ada di LIPAT).')
-  } finally { rmSync(akar, { recursive: true, force: true }) }
+  }
 })

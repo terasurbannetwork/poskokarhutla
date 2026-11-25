@@ -38,7 +38,10 @@ function itemTg(t, e, sk, a) {
   const jenis = s.jenis === "kita" ? '<span class="pr-pil abu" data-tip="Prediksi model Centurisk97, terpisah dari BMKG">kita</span>'
     : s.jenis === "analisis" ? '<span class="pr-pil abu" data-tip="Analisis atau pengamatan, bukan peringatan resmi">analisis</span>' : "";
   const uji = e.u ? `<span class="pr-pil abu" data-tip="Rapor prediksi ini di tab Rapor">${esc(e.u)}</span>` : "";
-  return `<div class="tg-it"><div class="tg-pil"><span class="pr-pil ${kelasTk(e, a)}" data-tip="${esc(ketTk(t, e, sk))}">${esc(e.t)}</span>${cak ? `<span class="pr-pil abu">${esc(cak)}</span>` : ""}${jenis}${uji}</div>
+  /* PB-60: ambang prediksi kita; tanpa naskah penerbit di repo tertulis "belum ada ambang bersumber" (Q9) */
+  const am = s.jenis === "kita" ? (t.ambang?.[e.s]?.[e.j] || t.ambang?.[e.s]?.["*"]) : null;
+  const amb = am ? `<span class="pr-pil abu" data-tip="${esc(`Ambang kode: ${am.kode}.` + (am.rujukan ? ` Rujukan: ${am.rujukan}.` : " Naskah penerbit belum dibaca, perlu cek."))}">${esc(am.rujukan ? "ambang bersumber" : am.status)}</span>` : "";
+  return `<div class="tg-it"><div class="tg-pil"><span class="pr-pil ${kelasTk(e, a)}" data-tip="${esc(ketTk(t, e, sk))}">${esc(e.t)}</span>${cak ? `<span class="pr-pil abu">${esc(cak)}</span>` : ""}${jenis}${uji}${amb}</div>
     <p>${esc(e.x)}</p><small class="pr-kecil">${esc(Tangga.jejak(t, e))}${e.p ? `, periode ${esc(e.p)}` : ""}</small></div>`;
 }
 

@@ -188,7 +188,7 @@ uji("kabel worker.js: RUTE_RUMAH_RUSAK digabung ke RUTE; /rumah-rusak TIDAK beba
   const w = readFileSync(path.join(AKAR, "src/worker.js"), "utf8");
   assert.match(w, /import \{RUTE_RUMAH_RUSAK\} from "\.\/rumah_rusak\.js"/, "import hilang");
   assert.match(w, /\.\.\.RUTE_RUMAH_RUSAK/, "spread ke RUTE hilang");
-  const wl = w.match(/PUBLIK_TANPA_SESI = new Map\(\[[^\n]*/)[0];
+  const wl = readFileSync(path.join(AKAR, "src/gerbang_halaman.js"), "utf8").match(/PUBLIK_TANPA_SESI = new Map\(\[[^\n]*/)[0];   // daftar putih di modul daun gerbang (PS-04)
   assert.doesNotMatch(wl, /rumah-rusak/, "keputusan pemilik 20 Okt 2026: whitelist tetap persis /lapangan, /rumah-rusak butuh sesi");
   const h = readFileSync(path.join(AKAR, "public/lapangan.html"), "utf8"), j = readFileSync(path.join(AKAR, "public/lapangan.js"), "utf8");
   assert.match(h, /id="bukaRR"/, "tombol Lapor rumah rusak hilang dari lapangan.html");

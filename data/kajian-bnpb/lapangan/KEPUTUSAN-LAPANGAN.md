@@ -74,3 +74,9 @@ Overlay Foto di peta utama memuat juga foto laporan lapangan dari dua sumber: fo
 2. Hanya baris dummy = 0 yang punya koordinat, 90 hari terakhir, paling banyak 500 per sumber. Kolom keluar: id, sumber, lat, lon, waktu, prov, kab, kec, keterangan (kegiatan atau tahap). Tidak pernah nama, orang_id, regu, HP, email, ip, kunci R2, sha256, token.
 3. Foto absen (`lp_absen`) dan foto acuan wajah TIDAK ikut dan tidak berubah. Orang yang dianonimkan atau mencabut diri: barisnya hilang lewat cascade, jadi foto tidak tampil lagi di overlay.
 4. Rute: `GET /api/foto/lapangan` dan `GET /api/foto/lapangan/media/{logbook|uji_pilot}/:id` (`src/foto_lapangan.js`). Foto contoh/dummy sudah dicabut dari publik (`FOTO_DUMMY_PUBLIK` "0").
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

@@ -13,6 +13,7 @@
   const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
   const KOSONG = "belum tersedia";
   const SUMBER = "ik-src", LAPIS = ["ik-iso", "ik-awal", "ik-awal-garis", "ik-lompat"];
+  const SUMBER_B = "ik-bgn-src", LAPIS_B = ["ik-bgn", "ik-bgn-garis"];   /* lingkaran 500 m mengitari petak segar (K9), bukan bangunan */
 
   const ambil = u => fetch(u, {cache: "no-cache"}).then(r => r.ok ? r.json() : null).catch(() => null);
   let PBGN = null;   /* satu unduhan berkas bangunan; gagal tidak disimpan */
@@ -40,7 +41,7 @@
   }
   function bersih() {
     if (typeof peta === "undefined" || !peta) return;
-    try { for (const l of LAPIS) if (peta.getLayer(l)) peta.removeLayer(l); if (peta.getSource(SUMBER)) peta.removeSource(SUMBER); } catch (e) { /* gaya sedang berganti */ }
+    try { for (const l of [...LAPIS, ...LAPIS_B]) if (peta.getLayer(l)) peta.removeLayer(l); for (const u of [SUMBER, SUMBER_B]) if (peta.getSource(u)) peta.removeSource(u); } catch (e) { /* gaya sedang berganti */ }
   }
   function gambarPeta(p, k0) {
     if (typeof peta === "undefined" || !peta) return;
@@ -58,6 +59,30 @@
     peta.addLayer({id: "ik-awal", type: "fill", source: SUMBER, filter: ["==", ["get", "j"], "awal"], paint: {"fill-color": tinta, "fill-opacity": .15}});
     peta.addLayer({id: "ik-awal-garis", type: "line", source: SUMBER, filter: ["==", ["get", "j"], "awal"], paint: {"line-color": tinta, "line-width": 2}});
     peta.addLayer({id: "ik-lompat", type: "line", source: SUMBER, filter: ["==", ["get", "j"], "lompat"], paint: {"line-color": baru, "line-width": 2, "line-dasharray": [2, 2]}});
+  }
+  /* K9/D11: petak segar = titik VIIRS nominal+ <= 12 jam (S.titik: [lat, lon, jam relatif S.acuan, sensor, frp, keyakinan]) dalam ~1 km dari titik insiden; satu petak per sel 0,003 derajat */
+  const SEGAR_JAM = 12, SEL = 0.01;
+  const CACHE_SEGAR = new Map();   /* per kid cluster; titik live baru ikut terhitung saat halaman dimuat ulang */
+  function petakSegar(r, kid0) {
+    if (CACHE_SEGAR.has(kid0)) return CACHE_SEGAR.get(kid0);
+    const kunci = (la, lo) => Math.floor(la / SEL) + "," + Math.floor(lo / SEL), kolam = new Set(), kid = new Set(r.kompleks || []);
+    if (r.pusat) kolam.add(kunci(r.pusat[0], r.pusat[1]));
+    for (const f of S.kluster?.features || []) { const p = f.properties; if (!kid.has(p.id)) continue; kolam.add(kunci(p.lat, p.lon)); for (const a of p.api24 || []) kolam.add(kunci(a[1], a[0])); }
+    const unik = new Map();
+    for (const b of S.titik || []) {
+      if (b[2] < -SEGAR_JAM || !/^N/.test(b[3]) || b[5] < 1) continue;
+      const la = Math.floor(b[0] / SEL), lo = Math.floor(b[1] / SEL); let dekat = false;
+      for (let i = -1; i <= 1 && !dekat; i++) for (let j = -1; j <= 1; j++) if (kolam.has((la + i) + "," + (lo + j))) { dekat = true; break; }
+      if (dekat) unik.set(Math.round(b[0] / 0.003) + "," + Math.round(b[1] / 0.003), [b[0], b[1]]);
+    }
+    const hasil = [...unik.values()]; CACHE_SEGAR.set(kid0, hasil); return hasil;
+  }
+  function gambarBangunan(pts, m) {
+    if (typeof peta === "undefined" || !peta || !pts.length) return;
+    const w = warna("--bad");
+    peta.addSource(SUMBER_B, {type: "geojson", data: {type: "FeatureCollection", features: pts.map(([la, lo]) => ({type: "Feature", properties: {}, geometry: {type: "Polygon", coordinates: [lingkaran(la, lo, m)]}}))}});
+    peta.addLayer({id: "ik-bgn", type: "fill", source: SUMBER_B, paint: {"fill-color": w, "fill-opacity": .06}});
+    peta.addLayer({id: "ik-bgn-garis", type: "line", source: SUMBER_B, paint: {"line-color": w, "line-width": 1.5}});
   }
   const pilihHari = k => { if (typeof peta !== "undefined" && peta?.getLayer("ik-iso")) peta.setPaintProperty("ik-iso", "line-width", ["case", ["==", ["get", "k"], k], 4, 1.5]); };
 
@@ -106,6 +131,15 @@
       ${e.luas_atap_m2 == null || e.kumulatif == null ? "" : `<p class="ik-info">${IK_BGN}<span>luas atap sekitar ${angka(e.luas_atap_m2)} m²</span></p>`}`, `<span class="pk-lemah" title="${esc(tip)}">perkiraan</span>`);
   }
 
+  /* ---------- lompatan (K8, IK-13): jarak, bukan sebab ---------- */
+  function lompatan(r, d) {
+    const l = r.lompat_dari; if (!l || !l.id) return "";
+    const asal = d?.insiden?.[l.id], kid = (asal?.kompleks || []).find(k => (S.kluster?.features || []).some(f => f.properties.id === k));   /* tombol hanya bila laci asal bisa dibuka */
+    const nama = asal?.nama ? esc(asal.nama) : "aktif lain";   /* id internal tidak pernah tampil */
+    const isi = `kemungkinan lompatan dari insiden ${nama} (berjarak sekitar ${angka(l.km, 1)} km)`;
+    return `<p class="ik-info ik-lompat-baris" title="${esc("Insiden baru muncul dekat insiden aktif lain. Ini jarak, bukan penentu sebab.")}">${IK_PIN}${kid ? `<button type="button" class="ik-lompat-btn" data-kid="${esc(kid)}">${isi}</button>` : `<span>${isi}</span>`}</p>`;
+  }
+
   /* ---------- pemasangan di laci ---------- */
   const _buka = Laci.buka.bind(Laci);
   Laci.buka = function (id) { _buka(id); bersih(); nanti(() => pasang(id)); };
@@ -115,12 +149,14 @@
 
   async function pasang(kid) {
     const r = await window.PKH_INSIDEN?.cari(kid); if (!r) return;
-    const [p, d] = await Promise.all([ambil(`data/progresi/${encodeURIComponent(r.id)}.json`), bangunan()]);
+    const [p, d, ins] = await Promise.all([ambil(`data/progresi/${encodeURIComponent(r.id)}.json`), bangunan(), window.PKH_INSIDEN.data()]);
+    await window.lengkapiKluster?.();   /* api24 kompleks untuk mengaitkan titik segar */
     if (S.pilihK !== kid || $("#laci .ik-wadah")) return;
     const a = perkembangan(p, r);
     const wadah = document.createElement("div"); wadah.className = "ik-wadah";
-    wadah.innerHTML = a.html + bangunanKartu(d, r.id);
+    wadah.innerHTML = lompatan(r, ins) + a.html + bangunanKartu(d, r.id);
     wadah.addEventListener("click", e => {
+      const lb = e.target.closest(".ik-lompat-btn"); if (lb) { lb.setAttribute("aria-busy", "true"); return void nanti(() => Laci.buka(lb.dataset.kid)); }
       const b = e.target.closest(".ik-hari button"); if (!b) return;
       const k = +b.dataset.k;
       wadah.querySelectorAll(".ik-hari button").forEach(x => x.setAttribute("aria-pressed", x === b));   /* chrome kontrol urgent */
@@ -134,6 +170,13 @@
       if (!jangkar && ++coba < 12) return void setTimeout(taruh, 150);   /* pembanding.js menyisipkan "Insiden api" lebih dulu */
       jangkar ? jangkar.insertAdjacentElement("afterend", wadah) : $("#laci .bd")?.insertAdjacentElement("afterbegin", wadah);
       if (a.k0 != null) nanti(() => { if (S.pilihK === kid) gambarPeta(p, a.k0); });
+      nanti(() => {   /* K9: tidak digambar bila teks "kurang dari 5" atau petak segar < 5 (KEAMANAN-PRIVASI butir 5) */
+        if (S.pilihK !== kid) return;
+        const e = d?.insiden?.[r.id], teks = e?.tampil?.kini;
+        if (!teks || /kurang dari 5/i.test(teks)) return;
+        /* hampiran klien (kedekatan ~1 km); angka bangunan tetap dari server. Digambar hanya bila KEDUA syarat lolos: teks server bukan "kurang dari 5" DAN petak segar klien >= 5 */
+        const pts = petakSegar(r, kid); if (pts.length >= 5) gambarBangunan(pts, d.radius_m || 500);
+      });
     };
     taruh();
   }

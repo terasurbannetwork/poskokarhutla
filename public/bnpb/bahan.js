@@ -204,7 +204,7 @@ const el = {};
 function kartuMasuk(s) {
   app.replaceChildren(h("div", {class: "bn-blok"}, h("h2", {teks: "Masuk staf"}),
     h("p", {class: "bh-p", teks: s === 403 ? "Akunmu belum berhak mengisi bahan laporan. Hanya peran Pusdalops, Koordinator Pusdalops, dan Pimpinan yang boleh. Minta Super Admin menambah perannya." : "Bahan laporan hanya untuk staf Pusdalops BNPB. Masuk dulu dengan akun staf, lalu buka halaman ini lagi."}),
-    h("a", {class: "bn-tombol", href: "/admin/masuk?ke=" + encodeURIComponent(location.pathname), teks: "Masuk staf"})));
+    h("a", {class: "bn-tombol", href: "/masuk?ke=" + encodeURIComponent(location.pathname), teks: "Masuk staf"})));
 }
 const pesan = (t, ok) => { el.pesan.textContent = t; el.pesan.className = "bn-pesan " + (ok ? "ok" : "galat"); };
 function pratinjau() {

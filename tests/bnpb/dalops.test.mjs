@@ -407,13 +407,21 @@ test("layar Laporan Masuk: kartu standar, tanpa teks dampak, tanpa titik tengah,
   assert.match(readFileSync("public/bnpb/dalops.html", "utf8"), /dalops_laporan_masuk\.js/);
 });
 
-test("menu Pusdalops: 6 grup di navbar, 13 halaman lama tetap terjangkau lewat deretan sub-halaman, tanpa daftar turun (pemilik 11 Nov 2026)", () => {
+test("menu Pusdalops: delapan grup pintu Staf dari /api/peta-situs (PS-06, D4 D7), tanpa cadangan tulisan tangan (PS-09), tanpa daftar turun", async () => {
   const js = readFileSync("public/bnpb/menu_pusdalops.js", "utf8");
-  const grup = js.match(/const GRUP = \[([\s\S]*?)\]\]\];/)[1];
-  assert.deepEqual([...grup.matchAll(/^\s*\["(\w+)", "\w+", \[/gm)].map(m => m[1]), ["Pantau", "Logbook", "Laporan", "Operasi", "Perencanaan", "Kontak"]);
-  const rute = [...grup.matchAll(/\["(\/[^"]*)", "/g)].map(m => m[1]);
-  for (const r of ["/bnpb/dalops", "/admin/pantau", "/bnpb/logbook", "/bnpb/bahan", "/admin/laporan-karhutla", "/admin/omc", "/laporan-bnpb", "/bnpb/dokumen",
-    "/bnpb/operasi", "/?operasi", "/bnpb/perencanaan", "/bnpb/siaga", "/daftar-kontak"]) assert.ok(rute.includes(r), r + " hilang dari menu");
+  assert.equal(js.match(/fetch\("\/api\/peta-situs"/g)?.length, 1, "peta situs diminta sekali per muat halaman");
+  assert.match(js, /p\.pintu === "staf"/, "menu memakai pintu Staf dari jawaban API");
+  const {GRUP} = await import("../../src/peta_situs.js");
+  const ikonGrup = Object.keys(Function(`return ${js.match(/const IKON_GRUP = (\{[^}]*\})/)[1]}`)());
+  assert.deepEqual(ikonGrup, GRUP.staf.map(g => g.id), "tiap grup staf registri punya ikon, urutan sama");
+  assert.doesNotMatch(js, /CADANGAN|\["\/bnpb\/dalops", "/, "tanpa menu cadangan tulisan tangan (PS-09)");
+  assert.match(js, /bacaSesi\("mp-peta"/, "sebelum API menjawab, menu digambar dari jawaban peta situs terakhir di tab ini");
+  const ruteAman = Function(`return ${js.match(/const ruteAman = (r => [^;]+);/)[1]}`)();
+  for (const r of ["/bnpb", "/bnpb/dalops", "/?operasi"]) assert.ok(ruteAman(r), r);
+  for (const r of ["//x", "/\\evil.com", "javascript:x", "/a:b", "/a b", 5, null]) assert.ok(!ruteAman(r), String(r));
+  assert.match(js, /saring\(bacaSesi\("mp-peta"/, "simpanan disaring sama dengan jawaban API");
+  assert.match(js, /const dariPeta = m => saring\(/, "jawaban API disaring sebelum gambar");
+  assert.match(js, /buangKeluar[\s\S]*#keluar/, "tombol Keluar membuang simpanan");
   assert.doesNotMatch(js, /<details|<select|dropdown/i, "tanpa daftar turun");
 });
 

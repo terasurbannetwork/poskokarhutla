@@ -34,7 +34,7 @@ export function isianTampil(sesi) {
   });
 }
 export const keluaran = (h, sesi) => ({balasan: h.inti, pilihan: h.pilihan, ket: h.pilihanKet || null, minta: h.minta || null, isiAwal: h.isiAwal || null, form: h.form || null,
-  banyak: !!h.banyak, grup: h.grup || null, kunci: h.kunci || null, saran: h.saran || 0, status: sesi.status, lengkap: lengkap(sesi), isian: isianTampil(sesi), foto: (sesi.foto || []).length, bisaKembali: !!sesi.jejak?.length, kembali: !!h.kembali});
+  banyak: !!h.banyak, grup: h.grup || null, kunci: h.kunci || null, saran: h.saran || 0, sudah: h.sudah || null, status: sesi.status, lengkap: lengkap(sesi), isian: isianTampil(sesi), foto: (sesi.foto || []).length, bisaKembali: !!sesi.jejak?.length, kembali: !!h.kembali});
 /* bagian jawaban yang sama untuk sesi yang sedang berjalan (cek status, GET /sesi) */
 export const lanjutan = lanjut => ({pilihan: lanjut.pilihan, ket: lanjut.pilihanKet, minta: lanjut.minta, form: lanjut.form, banyak: lanjut.banyak, grup: lanjut.grup, kunci: lanjut.kunci, saran: lanjut.saran, isiAwal: lanjut.isiAwal,
   lengkap: lengkap(lanjut), isian: isianTampil(lanjut)});
@@ -158,6 +158,22 @@ export const pelakuLabel = k => String(k || "").startsWith("staf:") ? "Staf BNPB
 
 /* PDF dibuat mesin di Mac mini, biasanya dalam 3 menit (antrean diambil tiap menit); halaman ini memuat ulang tiap 10 detik sampai berkasnya ada */
 export const HALAMAN_TUNGGU_DOK = `<!doctype html><html lang="id"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="10"><title>Dokumen sedang dibuat</title>
-<body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#eef2f8;color:#0b1f3a;font:16px/1.5 system-ui,sans-serif"><main style="max-width:420px;margin:16px;padding:24px;background:#fff;border-radius:16px;text-align:center">
-<h1 style="font-size:20px;margin:0 0 8px">Dokumen laporan sedang dibuat</h1><p style="margin:0 0 8px">Biasanya selesai dalam 3 menit. Halaman ini memuat ulang sendiri dan mengunduh berkasnya begitu siap.</p>
-<p style="margin:0;color:#4a5b75;font-size:14px">PDF juga dikirim ke nomor WhatsApp pelapor begitu jadi.</p></main>`;
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(70% 60% at 50% 35%,#1f4f93,#0b1f3a 78%);color:#0b1f3a;font:16px/1.55 Inter,system-ui,sans-serif}
+main{width:min(460px,calc(100vw - 32px));padding:32px 28px 26px;background:#fff;border-radius:24px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.merek{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;font:800 15px system-ui;letter-spacing:.12em}.merek img{width:40px;height:40px}
+.ikon{width:72px;height:72px;margin:0 auto 16px;display:grid;place-items:center;border-radius:20px;background:#e8eef8;color:#1f4f93}
+.ikon svg{width:36px;height:36px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+h1{font-size:22px;margin:0 0 6px;letter-spacing:-.01em}p{margin:0}
+.muat{height:6px;margin:20px 0 18px;border-radius:99px;background:#e8eef8;overflow:hidden}.muat i{display:block;width:35%;height:100%;border-radius:inherit;background:#e2803b;animation:jalan 1.6s ease-in-out infinite}
+@keyframes jalan{0%{translate:-100% 0}100%{translate:300% 0}}@media (prefers-reduced-motion:reduce){.muat i{animation:none;width:100%;opacity:.5}}
+ol{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:8px;text-align:left}
+li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#f3f6fb;font-size:14px}li b{display:grid;place-items:center;width:24px;height:24px;flex:none;border-radius:50%;background:#1f4f93;color:#fff;font-size:12px}
+.kecil{color:#4a5b75;font-size:13px}
+</style>
+<body><main><div class="merek"><img src="/lapor/lambang-bnpb.png" alt="">BNPB</div>
+<div class="ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></div>
+<h1>Dokumen laporan sedang dibuat</h1><p>Biasanya selesai dalam 3 menit.</p>
+<div class="muat" role="progressbar" aria-label="Sedang membuat dokumen"><i></i></div>
+<ol><li><b>1</b>Laporan Anda sudah diterima.</li><li><b>2</b>Dokumen disusun dari isian laporan.</li><li><b>3</b>Halaman ini mengunduh berkasnya sendiri begitu siap.</li></ol>
+<p class="kecil">Boleh ditutup. PDF juga dikirim ke nomor WhatsApp pelapor begitu jadi.</p></main>`;

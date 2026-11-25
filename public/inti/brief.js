@@ -48,7 +48,7 @@ const kpi = K => `<div class="bf-kpi">${(K || []).slice(0, 4).map(q => `<div><sp
 /* dua halaman A4 dari data adaptor */
 const html = d => {
   d = d || {};
-  const kop = `<header class="bf-kop"><div><b>${esc((d.nama || "").toUpperCase())}</b><span>${esc(d.subjudul || "Brief pimpinan")}</span></div><div class="bf-kr">${esc(d.tanggal || "")}<br>Data per ${nilai(d.cutoff)}</div></header>`;
+  const kop = `<header class="bf-kop"><div><b>${esc(d.nama || "")}</b><span>${esc(d.subjudul || "Brief pimpinan")}</span></div><div class="bf-kr">${esc(d.tanggal || "")}<br>Data per ${nilai(d.cutoff)}</div></header>`;
   const p1 = `<section class="bf-hal">${kop}<h2>I. Angka utama</h2>${kpi(d.kpi)}${tabel(d.tabel1, MAKS.tabel1)}</section>`;
   const p2 = `<section class="bf-hal">${tabel(d.tabel2, MAKS.tabel2)}${daftar(d.daftar, MAKS.daftar)}<h2>Sumber dan catatan</h2><p class="bf-ket">${nilai(d.sumber)}${d.catatan ? " " + esc(d.catatan) : ""}</p><p class="bf-ket">Waktu cut-off data: ${nilai(d.cutoff)}. Angka diambil dari data yang tampil di halaman saat dicetak.</p></section>`;
   return p1 + p2;

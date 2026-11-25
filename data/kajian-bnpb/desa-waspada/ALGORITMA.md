@@ -14,7 +14,7 @@ Semua fungsi murni, stdlib saja. Letak: `scripts/data/desa_waspada.py` (fungsi `
 | `YAKIN_MIN` | 1 | kelas `kelas_yakin` 1 (nominal) dan 2 (tinggi); 0 (rendah) dibuang |
 | `MAKS_A` | 2000 | baris daftar A |
 | `MAKS_B_PER_PROV` | 300 | baris daftar B per provinsi [SEMENTARA, Q5] |
-| `UKURAN_MAKS_KB` | 450 | `desa_waspada.json` |
+| `UKURAN_MAKS_KB` | 450 | `desa_waspada/<pulau>.json`, per berkas pulau |
 | `MUSIM_HINDCAST` | 2023, bulan 7..10 | seperti pembanding |
 | `Z_WILSON` | 1,96 | |
 | `PETAK` | 0,0034 | derajat, sama dengan `riwayat_petak.DERAJAT` |
@@ -92,7 +92,7 @@ Tiap kelompok: `n_desa_minggu`, `n_ya`, `laju = n_ya / n`, selang Wilson 95%. Pe
 
 ### D4. Vonis
 
-`lulus` bila (Q2 [SEMENTARA]): `laju_A >= 3 * laju_lain`, `laju_B >= 2 * laju_lain`, `n_A >= 200`, `n_B >= 200`, dan `wilson_bawah_A > laju_lain`, `wilson_bawah_B > laju_lain`. `gagal` bila ukuran dihitung tetapi tidak terpenuhi, `belum` bila berkas belum ada. Ambang dikunci di RENCANA-UJI §2 sebelum angka dihitung. Angka ambang masih bawaan sementara (Q2): `lulus` dari ambang sementara ditulis `lulus_sementara` di berkas, dan layar tetap memakai pil hipotesis sampai pemilik menjawab Q2; `laju.status` yang diterbitkan: `belum`, `lulus_sementara`, `lulus` (hanya sesudah Q2), atau `gagal`.
+`lulus` bila (Q2 disahkan K7, 25 Nov 2026): `laju_A >= 3 * laju_lain`, `laju_B >= 2 * laju_lain`, `n_A >= 200`, `n_B >= 200`, dan `wilson_bawah_A > laju_lain`, `wilson_bawah_B > laju_lain`. `gagal` bila ukuran dihitung tetapi tidak terpenuhi, `belum` bila berkas belum ada. Ambang dikunci di RENCANA-UJI §2 sebelum angka dihitung. Angka ambang masih bawaan sementara (Q2): `lulus` dari ambang sementara ditulis `lulus_sementara` di berkas, dan layar tetap memakai pil hipotesis sampai pemilik menjawab Q2; `laju.status` yang diterbitkan: `belum`, `lulus_sementara`, `lulus` (hanya sesudah Q2), atau `gagal`.
 
 ### D5. Periksa kepekaan
 
@@ -104,7 +104,7 @@ Persen titik dalam `JARAK_BATAS_M` dari batas poligon desa yang ditempatinya (ga
 
 ## E. Keluaran
 
-`public/data/desa_waspada.json` (kontrak di DESAIN-TEKNIS §3). Urut kunci tetap, tanpa `lat`/`lon` per titik, koordinat desa dibulatkan 0,001 derajat.
+`public/data/desa_waspada/<pulau>.json` dan `indeks.json` (kontrak di DESAIN-TEKNIS §3; pembagian pulau K8). Urut kunci tetap, tanpa `lat`/`lon` per titik, koordinat desa dibulatkan 0,001 derajat.
 
 ## F. Jangan campur
 

@@ -81,6 +81,15 @@ export function validasiUraian(keluaran, teks, jenis) {
    tidak pernah menulis kalimat ke pelapor (tanggapan = id, isian teks = kata pelapor sendiri), dan tidak dipanggil untuk pesan yang jelas di luar laporan.
    Pesan luar topik tidak masuk laporan; sesudah BATAS_LUAR kali dalam satu sesi, sesi itu jalan tanpa model (biaya nol), alurnya tetap templat. */
 export const TANGGAPAN = {simpati: "Kami ikut prihatin atas kejadian ini.", terima_kasih: "Terima kasih sudah melapor.", tenang: "Tetap tenang, laporan Anda sedang kami catat.", tidak_ada: ""};
+// web: pemilih tempat di sekitar lokasi untuk isian daftar nama
+const PILIH_TEMPAT = {titik_pengungsian: "tempat", nama_sekolah: "tempat:sekolah", nama_faskes: "tempat:faskes", nama_ibadah: "tempat:ibadah", nama_jalan: "tempat:jalan"};
+// K95: pilihan langkah kronologi "Bagaimana ... sekarang?" ke nilai situasi_sekarang; urutan penting (mulai surut sebelum surut)
+export const situasiDari = t => [[/tidak tahu/i, "Tidak tahu"], [/surut lagi|asap tebal|api kecil/i, "Masih berlangsung atau membesar"],   // air laut surut lagi = tanda gelombang susulan
+  [/^bertahan|belum bergerak/i, "Masih ada, tidak bertambah"], [/^mulai|mereda|terkendali|masih berasap|berbara|masih mendung|belum ada pernyataan|tampak tenang/i, "Mulai mereda"],
+  [/^sudah|berhenti|padam|^reda|tenang/i, "Sudah berakhir"], [/^masih|naik|bergerak|melebar|membesar|menjalar|berlangsung|tinggi/i, "Masih berlangsung atau membesar"]]
+  .find(([r]) => r.test(String(t)))?.[1] || null;
+/* hanya langkah yang menanyakan keadaan bahayanya sendiri (bukan "di mana warga" atau "cara mendapat air") */
+const TANYA_KEADAAN = /^Bagaimana (air|lereng|gelombang|cuaca|apinya|laut|gunung)\b.*sekarang\?/i;
 export const TOPIK = ["bencana", "bukan_bencana", "minta_data"];
 export const BATAS_LUAR = 3, BATAS_MODEL_SESI = 30;
 export const TOLAK = {
@@ -442,7 +451,7 @@ export async function putaran(arg) {
   const h = await putaranInti(arg);
   if (h.sesi && !SELESAI.has(h.sesi.status)) {
     h.sesi.jejak = potret && sesi === h.sesi ? [...(sesi.jejak || []), potret].slice(-12) : (h.sesi.jejak || []);
-    h.sesi.akhir = {balasan: h.balasan, inti: h.inti, pilihan: h.pilihan, pilihanKet: h.pilihanKet, minta: h.minta, isiAwal: h.isiAwal, form: h.form, banyak: h.banyak, grup: h.grup, kunci: h.kunci, saran: h.saran};
+    h.sesi.akhir = {balasan: h.balasan, inti: h.inti, pilihan: h.pilihan, pilihanKet: h.pilihanKet, minta: h.minta, isiAwal: h.isiAwal, form: h.form, banyak: h.banyak, grup: h.grup, kunci: h.kunci, saran: h.saran, sudah: h.sudah};
   } else if (h.sesi) { delete h.sesi.jejak; delete h.sesi.akhir; }
   return h;
 }
@@ -482,6 +491,10 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     const h = jawab(`${kepalaTeks ? `${kepalaTeks}\n\n` : ""}*Kejadian apa yang sedang terjadi?*\nPilih yang paling mirip.`, JENIS_DARURAT.map(j => j.label), false, "jenis", JENIS_DARURAT.map(j => j.ket));
     h.kunci = opsi; h.saran = 0; sesi.kunci = opsi; return h;
   };
+  const keFotoDarurat = () => { sesi.status = "foto"; sesi.foto ||= []; delete sesi.daruratIsi;
+    return jawab(`*Foto atau video kejadian*\nKirim kalau aman diambil. Keselamatan Anda lebih penting; lewati saja kalau tidak sempat.`, ["Lewati, langsung ke kirim"], false, "foto", ["Laporan darurat tetap terkirim tanpa foto"]); };
+  const tanyaDaruratIsi = (kepala = "") => { const i = isianNama[sesi.daruratIsi[0]], jn = sesi.isian.jenis?.nilai, ob = opsiBerlaku(i, jn);
+    return jawab(`${kepala}*${i.label}*\n${i.tanyaJenis?.[jn] || i.tanya}`, ob.map(o => o[0]), false, null, ob.map(o => o[1])); };
   const tanyaKorban = (kepala = "") => jawab(`${kepala}*Ada korban?*\nAda orang terluka, hilang, atau terjebak?`, ["Ya, ada", "Tidak ada", "Belum tahu"]);
   /* kejadian yang sama (K66, D103-D105): sesudah lokasi (dan RT/RW) terkonfirmasi, pemanggil menyuntik kandidat laporan sekecamatan lewat `kandidat`;
      tanpa fungsi itu atau tanpa kandidat, jalur lama tidak berubah. Teks tanpa nama, nomor, atau isi laporan lain (D104). */
@@ -570,8 +583,15 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     let p = pilih(); if (p < 0) p = /^(ya|ada|iya)\b/i.test(teks) ? 0 : /^tidak/i.test(teks) ? 1 : /belum|tidak tahu/i.test(teks) ? 2 : -1;
     if (p < 0) return tanyaKorban("Pilih salah satu.\n\n");
     sesi.darurat.korban = ["ya", "tidak", "belum_tahu"][p];
-    sesi.status = "foto"; sesi.foto ||= [];
-    return jawab(`*Foto atau video kejadian*\nKirim kalau aman diambil. Keselamatan Anda lebih penting; lewati saja kalau tidak sempat.`, ["Lewati, langsung ke kirim"], false, "foto", ["Laporan darurat tetap terkirim tanpa foto"]);
+    if (sesi.darurat.korban === "ya") { sesi.status = "darurat_isi"; sesi.daruratIsi = ["butuh_penyelamatan", "butuh_medis"]; return tanyaDaruratIsi(); }   // K98: terjebak dan butuh medis
+    return keFotoDarurat();
+  }
+  if (sesi.status === "darurat_isi") {
+    const nama = sesi.daruratIsi[0], i = isianNama[nama], ob = opsiBerlaku(i, sesi.isian.jenis?.nilai), p = pilih();
+    if (p < 0) return tanyaDaruratIsi("Pilih salah satu.\n\n");
+    setIsian(sesi, nama, {nilai: ob[p][0]}, {sumber: "pilihan", waktu: kini});
+    sesi.daruratIsi.shift();
+    return sesi.daruratIsi.length ? tanyaDaruratIsi() : keFotoDarurat();
   }
 
   /* ----- lokasi wajib sebelum cerita ----- */
@@ -665,7 +685,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     sesi.status = "melengkapi"; sesi.tanya = null;
   }
 
-  let tambahKr = "";   // keterangan tambahan kronologi berpandu yang menunggu gerbang topik (K72)
+  let tambahKr = "", krLama = null;   // keterangan tambahan kronologi berpandu yang menunggu gerbang topik (K72)
   /* ----- kronologi berpandu: satu pilihan per langkah, langkah fenomena boleh lebih dari satu, lalu keterangan tambahan ----- */
   if (sesi.status === "kronologi") {
     const langkah = langkahKronologi(sesi.isian.jenis?.nilai), kr = sesi.kr ||= {i: 0, frasa: []}, p = pilih(); let waspada = null;
@@ -676,7 +696,9 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
         const lain = samarkan(String(pesan?.lain || "")).trim().slice(0, 120).replace(/\.$/, ""); // "Lainnya" diganti teks pelapor
         if (idx.length) { const f = idx.map(n => l.opsi[n][0] === "Lainnya" ? (lain ? lain.charAt(0).toLowerCase() + lain.slice(1) : null) : l.opsi[n][1]).filter(Boolean); if (f.length) kr.frasa.push(`${l.awalan || "Selain itu terlihat"} ${f.join(", ")}.`); kr.i++;
           if (l.bahaya && idx.some(n => l.opsi[n][2])) waspada = l.bahaya; }
-      } else if (p >= 0) { if (l.opsi[p][1]) kr.frasa.push(l.opsi[p][1]); kr.i++; if (l.bahaya && l.opsi[p][2]) waspada = l.bahaya; }
+      } else if (p >= 0) { if (l.opsi[p][1]) kr.frasa.push(l.opsi[p][1]); kr.i++; if (l.bahaya && l.opsi[p][2]) waspada = l.bahaya;
+        // K95: langkah "... sekarang?" mengisi situasi_sekarang, supaya tidak ditanya dua kali
+        if (TANYA_KEADAAN.test(l.tanya) && !terjawab(sesi, "situasi_sekarang")) { const sit = situasiDari(l.opsi[p][0]); if (sit) setIsian(sesi, "situasi_sekarang", {nilai: sit}, {sumber: "pilihan", waktu: kini}); } }
       // pilihan bertanda bahaya: peringatan keselamatan langsung di atas pertanyaan berikutnya (riset 19 Nov 2026: air laut surut, retakan melebar, gemuruh, banjir bandang)
       // peringatan di bawah pertanyaan: judul kartu pilihan tetap pertanyaannya (pemilik 19 Nov 2026: "kenapa Peringatan keselamatan?")
       const awal = t => waspada ? `${t}\n\n⚠️ Peringatan keselamatan: ${waspada}` : t;
@@ -688,6 +710,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     // K72: keterangan tambahan baru ditempel sesudah lolos gerbang topik di bawah (bukan di sini), supaya pesan luar topik tidak masuk laporan
     setIsian(sesi, "kronologi", {nilai: [rangkaiKronologi(kr.frasa), krDariCerita(sesi) ? sesi.isian.kronologi.nilai : null].filter(Boolean).join(" ")}, {sumber: "pilihan", waktu: kini});
     tambahKr = tambah;
+    krLama = {kr: {...sesi.kr, tulis: false}, status: sesi.status, tanya: sesi.tanya};   // dipulihkan bila keterangan tambahan ternyata luar topik
     sesi.status = "melengkapi"; sesi.tanya = null; delete sesi.kr; sesi.krSelesai = true;   // panduan sekali per sesi, juga bila semua dijawab Tidak tahu
     if (!tambah) return putaranInti({sesi, pelapor, pesan: {saluran: pesan?.saluran}, model, wilayah, kini}); // langsung ke pertanyaan berikutnya
     // keterangan tambahan ikut diurai di bawah (angka korban dan lain-lain yang disebut tertangkap berkutipan)
@@ -748,8 +771,14 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
   } else if (ditanya && (ditanya === "titik_pengungsian" || ditanya.startsWith("nama_")) && (masukan || sesi.kurangNama)) {
     // isian daftar nama: dibaca langsung per nomor; bila nama lebih sedikit dari jumlah yang dilaporkan, tanya sisanya sekali,
     // lalu terima dengan konfirmasi (pemilik 19 Nov 2026: "kalau 5 ya tanya lagi 2 lagi; kalau tidak tahu, terima tapi konfirmasi")
-    const sn = isianNama[ditanya], target = Number(sesi.isian[sn.bila]?.nilai) || 0, lama = sesi.kurangNama?.nama === ditanya ? sesi.kurangNama.daftar : [];
-    const tidakTahu = (sesi.kurangNama && p === 0) || /^(tidak tahu|gak tahu|ga tahu|nggak tahu|belum tahu)$/i.test(masukan);
+    // titik pengungsian tidak dihitung dari jumlah orang mengungsi (pemilik 25 Nov 2026: "mengungsinya 5, bukan tempatnya 5")
+    const sn = isianNama[ditanya], target = ditanya === "titik_pengungsian" ? 0 : Number(sesi.isian[sn.bila]?.nilai) || 0, lama = sesi.kurangNama?.nama === ditanya ? sesi.kurangNama.daftar : [];
+    // "Tulis N lagi" membuka kotak isian bernomor; "Tidak tahu" mencatat yang sudah ada (pemilik 25 Nov 2026: "kenapa hanya tidak tahu")
+    if (sesi.kurangNama && p === 0) { const k = sesi.kurangNama, sisa = Math.max(1, target - k.daftar.length);
+      const h = jawab(`*${sn.label}*\nTambahkan ${sisa} nama lagi. Yang sudah Anda pilih tetap tercatat.`, null, false, PILIH_TEMPAT[ditanya] || null);
+      h.sudah = k.daftar;   // web: pemilih tempat terbuka dengan pilihan lama sudah tercentang (pemilik 25 Nov 2026: "cukup nambah bukan ulang dari awal")
+      sesi.isiAwal = h.isiAwal = `${sn.label}:\n${Array.from({length: Math.min(sisa, 10)}, (_, i) => `${k.daftar.length + i + 1}. `).join("\n")}`; return h; }
+    const tidakTahu = (sesi.kurangNama && p === 1) || /^(tidak tahu|gak tahu|ga tahu|nggak tahu|belum tahu)$/i.test(masukan);
     const baru = tidakTahu ? [] : String(masukan).replace(/^[^:]{2,60}:\s*/, "").split(/\s*(?:^|\s)\d{1,2}\.\s*|\n|;|,\s+/).map(t => t.trim()).filter(t => t.length > 1);
     const daftar = [...new Set([...lama, ...baru.map(t => samarkan(t).slice(0, 80))])];
     delete sesi.kurangNama;
@@ -765,13 +794,13 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     }
     if (daftar.length) setIsian(sesi, ditanya, {nilai: daftar.join("; ")}, {sumber: "pesan", waktu: kini});
     // nama lebih banyak dari jumlah yang dilaporkan: jumlahnya ikut naik (pemilik 20 Nov 2026: "gw bilang satu sekolah tapi pilih dua kenapa ga revisi")
-    if (daftar.length > target && sn.bila) {
+    if (daftar.length > target && sn.bila && ditanya !== "titik_pengungsian") {
       setIsian(sesi, sn.bila, {nilai: daftar.length}, {sumber: "pesan", waktu: kini});
       tanggapan = `Jumlah ${sn.label.toLowerCase().replace(/^nama /, "").replace(/ rusak$/, "")} yang rusak diperbarui dari ${target} menjadi ${daftar.length}, sesuai nama yang Anda sebutkan.`;
     }
     if (daftar.length && target > daftar.length && !tidakTahu && !lama.length) {
       sesi.kurangNama = {nama: ditanya, daftar}; const sisa = target - daftar.length;
-      const h = jawab(`*${sn.label}*\nAnda melaporkan ${target}, baru ${daftar.length} nama yang tertulis. Sebutkan ${sisa} lainnya, atau pilih *Tidak tahu*.`, ["Tidak tahu"], false, null, [`Catat ${daftar.length} dari ${target} saja`]);
+      const h = jawab(`*${sn.label}*\nAnda melaporkan ${target}, baru ${daftar.length} nama yang tertulis. Sebutkan ${sisa} lainnya, atau pilih *Tidak tahu*.`, [`Tulis ${sisa} lagi`, "Tidak tahu"], false, null, ["Lengkapi nama yang belum tertulis", `Catat ${daftar.length} dari ${target} saja`]);
       sesi.isiAwal = h.isiAwal = `${sn.label}:\n${Array.from({length: Math.min(sisa, 10)}, (_, i) => `${daftar.length + i + 1}. `).join("\n")}`; return h;
     }
     if (daftar.length && target > daftar.length) tanggapan = `Tercatat ${daftar.length} dari ${target} nama ${sn.label.toLowerCase().replace(/^nama /, "")}. Sisanya dicatat belum diketahui.`;
@@ -795,6 +824,11 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       if (sesi.luar >= BATAS_LUAR) sesi.tanpaModel = true;
       if (luar === "bukan_bencana" || !Object.keys(hasil.isian).length) hasil = {isian: {}, jenisTebak: [], darurat: false, tanggapan: "", topik: luar};
       hasil.tanggapan = sesi.tanpaModel && sesi.luar > BATAS_LUAR ? TOLAK.tanpa_model : TOLAK[luar];
+      // keterangan tambahan yang tidak nyambung ditanya ulang, tidak dilewati diam-diam (pemilik 25 Nov 2026: "harusnya ada klarifikasi")
+      if (tambahKr && krLama) {
+        Object.assign(sesi, {kr: krLama.kr, status: krLama.status, tanya: krLama.tanya, krSelesai: false});
+        return jawab((luar === "bukan_bencana" ? "" : `${hasil.tanggapan}\n\n`) + "*Keterangan belum jelas*\nSaya belum menangkap hubungannya dengan kejadian ini. Tulis lagi yang Anda lihat, misalnya nama sungai, jalan yang tertutup, atau warga yang perlu ditolong.", ["Tulis lagi", "Lewati, lanjut"], false, null, ["Tulis di kotak pesan", "Kronologi sudah cukup"]);
+      }
     }
     for (const [nama, x] of Object.entries(hasil.isian)) {
       if (nama === "lokasi" && sesi.isian.lokasi?.nilai?.lat != null) continue; // titik GPS/WA tidak ditimpa nama tempat
@@ -876,7 +910,6 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
   if (sn?.tipe === "opsi") return jawab(sambung(`*${sn.label}*\n${sn.tanya}`), ob.map(o => o[0]), false, null, ob.map(o => o[1]));
   if (sn?.tipe === "opsi_banyak") { const h = jawab(sambung(`*${sn.label}*\n${sn.tanya}\nDi WhatsApp balas angka dipisah koma, misalnya *1, 2, 5*.`), ob.map(o => o[0]), false, null, ob.map(o => o[1])); h.banyak = true; sesi.banyak = true; h.grup = sesi.grup = ob.map(o => o[4] || null); return h; }
   // web: pilih dari tempat di sekitar lokasi (OpenStreetMap), juga untuk nama fasilitas yang rusak (pemilik 19 Nov 2026)
-  const PILIH_TEMPAT = {titik_pengungsian: "tempat", nama_sekolah: "tempat:sekolah", nama_faskes: "tempat:faskes", nama_ibadah: "tempat:ibadah", nama_jalan: "tempat:jalan"};
   if (PILIH_TEMPAT[next]) return jawab(sambung(teksTanya(next, sesi)), null, false, PILIH_TEMPAT[next]);
   return jawab(sambung(teksTanya(next, sesi)));
 }

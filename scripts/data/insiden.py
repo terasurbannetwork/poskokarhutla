@@ -70,6 +70,7 @@ BUKA_HARI = 3        # api menyala lagi dalam jendela ini membuka insiden tak_te
 BUKA_GAMBUT_HARI = 10  # gambut: bara bisa tak terdeteksi berhari-hari di bawah awan/asap (harian.py mempertahankan kompleks gambut kering 7 hari)
 RIWAYAT_MAKS = 40    # putaran per insiden (RANCANGAN bagian 7)
 MAKS_BYTES = 4_500_000  # batas insiden.json; kelebihan: riwayat insiden level 2 dipangkas dulu
+LOMPAT_ANTAR_KM = 10.0  # IK-13 / K8: insiden baru sedekat ini dari insiden aktif lain diberi lompat_dari
 SEGAR_JAM = 12       # piksel "aktif" (butir 1.4)
 TETAP_KM = 1.0       # titik panas dianggap milik kompleks bila <= segini dari titiknya (di luar garis luar)
 CARI_MASUK_KM = 25.0  # = kendala.AMBANG cari_maks_km
@@ -449,6 +450,13 @@ def muat_status(path):
     return {}
 
 
+def jarak_km(a, b):
+    """Haversine km antar (lat, lon)."""
+    la, lb = math.radians(a[0]), math.radians(b[0])
+    h = math.sin((lb - la) / 2) ** 2 + math.cos(la) * math.cos(lb) * math.sin(math.radians(b[1] - a[1]) / 2) ** 2
+    return 12742 * math.asin(math.sqrt(h))
+
+
 def pts_ins(r):
     return [(p[1], p[0]) for g in r.get("garis", []) for p in g] + [(p[1], p[0]) for p in r.get("api", [])] + [(round(r["pusat"][0], 3), round(r["pusat"][1], 3))]
 
@@ -539,6 +547,7 @@ def terapkan(r, cs, uk, kini, fk=None):
 def langkah(ins, ks, baris, acuan, kini, fk=None, masuk=None, ctx=None):
     """Satu putaran. ins diubah di tempat. Hasil {id kompleks: kunci untuk tugas_kompleks.json (termasuk 'insiden')}."""
     ks = sorted(ks, key=lambda c: c["id"])
+    lama0 = set(ins)
     per = tetapkan(ks, baris)
     uk = {c["id"]: ukur_k(c, per.get(c["id"], []), acuan, masuk) for c in ks}
     kand = {i: r for i, r in ins.items() if r["status"] == "aktif" or (r["status"] == "tak_terdeteksi" and kini - baca_t(r["tak_terdeteksi"]) <= dt.timedelta(days=BUKA_GAMBUT_HARI if r.get("gambut") else BUKA_HARI))}
@@ -599,6 +608,13 @@ def langkah(ins, ks, baris, acuan, kini, fk=None, masuk=None, ctx=None):
             hasil[c["id"]] = dict(uk[c["id"]], insiden=menang, insiden_awal=r["awal"], insiden_awal_ms=int(baca_t(r["awal"]).timestamp() * 1000))   # deteksi pertama insiden (stabil lintas putaran) -> tugas_api.terdeteksi_awal
             if r.get("luas_koreksi"):
                 hasil[c["id"]]["luas_koreksi"] = r["luas_koreksi"]
+    for i in sorted(disentuh - lama0):    # IK-13 (K8): insiden baru <= LOMPAT_ANTAR_KM dari insiden aktif lain = kemungkinan lompatan; hanya penanda jarak, bukan sebab
+        if ins[i].get("status") != "aktif":
+            continue
+        pi = pts_ins(ins[i])
+        t = min(((jarak_km(a, b), j) for j in lama0 if ins.get(j, {}).get("status") == "aktif" and j != i for a in pi for b in pts_ins(ins[j])), default=None)
+        if t and t[0] <= LOMPAT_ANTAR_KM:
+            ins[i]["lompat_dari"] = {"id": t[1], "km": round(t[0], 1)}
     for i, r in list(ins.items()):    # peluruhan: padam, rapikan, buang yang kedaluwarsa
         if r["status"] == "aktif" and i not in disentuh and kini - baca_t(r["terakhir"]) > dt.timedelta(days=PADAM_HARI):
             r.update(status="tak_terdeteksi", tak_terdeteksi=fmt(kini), kompleks=[])
@@ -769,6 +785,15 @@ def uji():
     besar["api"] = [(-3.0, 112.0), (-3.0, 112.05)]
     h = langkah(ins, [besar], [], jam(3), jam(3))
     assert h["K9"]["insiden"] == a and ins[b] == {"status": "gabung", "ke": a, "tgl": fmt(jam(3)), "prov": "62"} and ins[a]["gabung"] == [b], ins
+    # 3b. IK-13: insiden baru <= 10 km dari insiden aktif lain diberi lompat_dari; di atas 10 km atau sesama baru tidak
+    ins = {}
+    langkah(ins, [_kotak("K1", -3.0, 112.0)], [], t0, t0)
+    h = langkah(ins, [_kotak("K1", -3.0, 112.0), _kotak("K2", -3.0, 112.06), _kotak("K3", -3.0, 112.2)], [], jam(3), jam(3))
+    i1, i2, i3 = (h[k]["insiden"] for k in ("K1", "K2", "K3"))
+    assert "lompat_dari" not in ins[i1] and "lompat_dari" not in ins[i3], ins
+    assert ins[i2]["lompat_dari"]["id"] == i1 and 5.0 <= ins[i2]["lompat_dari"]["km"] <= 7.5, ins[i2]
+    h = langkah(ins, [_kotak("K1", -3.0, 112.0), _kotak("K2", -3.0, 112.06), _kotak("K3", -3.0, 112.2)], [], jam(6), jam(6))
+    assert ins[i2]["lompat_dari"]["id"] == i1 and "lompat_dari" not in ins[i3]
     # 4. tak_terdeteksi setelah PADAM_HARI tanpa kompleks, disimpan SIMPAN_HARI, lalu hilang; buka kembali dalam BUKA_HARI (gambut BUKA_GAMBUT_HARI)
     ins = {}
     h = langkah(ins, [_kotak("K1", -3.0, 112.0)], [], t0, t0)

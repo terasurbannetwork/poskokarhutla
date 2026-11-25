@@ -1,6 +1,6 @@
 # Cuaca 72 jam dan pantauan Himawari
 
-Halaman ini menjelaskan cara status cuaca tiga hari per kecamatan dihitung, apa arti peringatan dini BMKG di layar, serta pantauan titik api dan awan dari satelit Himawari.
+Halaman ini menjelaskan cara status cuaca tiga hari per kecamatan dihitung, apa arti peringatan dini BMKG di layar, serta pantauan titik panas dan awan dari satelit Himawari.
 
 ## Status cuaca 72 jam per kecamatan
 
@@ -26,7 +26,7 @@ Seberapa bisa dipercaya: status ini masih hipotesis. Uji balik, yaitu mencocokka
 
 Peringatan jangka sangat pendek ini diambil dari BMKG tiap 10 menit, ditampilkan apa adanya beserta wilayah dan tingkat keparahannya. Peringatan hanya berlaku sekitar 2 sampai 3 jam, jadi panel kosong bukan berarti wilayah itu bebas bahaya. Bila BMKG tidak bisa dihubungi, data lama tetap tampil dengan jam terbit aslinya dan Centurisk97 tidak mengarang peringatan.
 
-## Titik api Himawari dan peringatan api baru
+## Titik panas Himawari dan peringatan api baru
 
 Satelit Himawari-9 memindai (memotret) wilayah Indonesia tiap 10 menit. Centurisk97 menarik datanya tiap 30 menit, dengan keterlambatan sekitar 1 jam. Ini jauh lebih sering daripada satelit titik panas lain. Sebuah titik ditandai "api baru" bila memenuhi semua syarat berikut:
 
@@ -38,7 +38,7 @@ Satelit Himawari-9 memindai (memotret) wilayah Indonesia tiap 10 menit. Centuris
 
 Contoh: sebuah titik muncul di dua pindaian berturut-turut, tidak ada titik panas satelit lain dalam 4 km sejak kemarin, maka titik itu ditandai api baru.
 
-Tiap penanda memberi alarm berjari-jari 2 km dan satu kabar ringkas ke Posko pusat: "perkiraan lokasi dalam radius 2 km, bukan titik api; tunggu VIIRS atau konfirmasi lapangan". Alarm berubah menjadi terkunci bila tugas api dibuat di dekatnya, dan hilang bila 6 jam tanpa pindaian baru. Lokasi bisa meleset sekitar 2 km.
+Tiap penanda memberi alarm berjari-jari 2 km dan satu kabar ringkas ke Posko pusat. Kabar itu menyebut lokasinya masih perkiraan dalam radius 2 km dan meminta penerima menunggu deteksi VIIRS atau konfirmasi lapangan. Alarm berubah menjadi terkunci bila tugas api dibuat di dekatnya, dan hilang bila 6 jam tanpa pindaian baru. Lokasi bisa meleset sekitar 2 km.
 
 ## Awan dingin dan awan tumbuh cepat
 

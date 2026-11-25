@@ -1,0 +1,5 @@
+{
+ "_catatan": "Utang ratchet gerbang-uji-skrip (PB-62, 25 Nov 2026): hanya boleh MENYUSUT. 'tanpa-uji' = skrip scripts/umum/*.py tanpa subperintah `uji` (tidak dijalankan gerbang, sebab argumen asing bisa memicu kerja sungguhan). 'gagal' = punya `uji` tetapi `python3 -I <skrip> uji` belum lulus. Skrip yang sudah beres wajib dihapus dari sini; pemiliknya pipa-umum.",
+ "tanpa-uji": {},
+ "gagal": {}
+}

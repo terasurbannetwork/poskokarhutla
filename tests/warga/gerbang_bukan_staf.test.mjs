@@ -46,16 +46,16 @@ test("staf berperan salah (udara) ditolak 403 di /api/sensor/status", async () =
 });
 
 /* tombol "Masuk staf" di layar 403: akun gerbang dulu dialihkan balik ke ?ke= dan layar berputar tanpa bisa ganti akun (9 Nov 2026).
-   Tanpa ?ke= tetap 303: Admin.keMasuk (public/admin/bersama.js) memakai itu untuk membedakan "tak berhak" dari "belum masuk". */
+   Tanpa ?ke= sesi sah 303 ke halaman admin, tamu 303 ke /masuk (K21): Admin.keMasuk (public/admin/bersama.js) membedakan "tak berhak" dari "belum masuk" lewat alamat akhir. */
 const masuk = (j, token) => mf.dispatchFetch("http://t.lokal" + j, {redirect: "manual", headers: {"x-admin-token": token}});
 test("GET /admin/masuk?ke=: akun gerbang dapat form, ADMIN_TOKEN dialihkan", async () => {
-  const g = await masuk("/admin/masuk?ke=%2Fbnpb%2Fbahan", "gerbang@x:sandi"), teks = await g.text();
-  assert.equal(g.status, 200, "akun gerbang harus melihat form masuk, bukan dipantulkan");
-  assert.match(teks, /action="\/admin\/masuk\?ke=%2Fbnpb%2Fbahan"/);
+  const g = await masuk("/admin/masuk?ke=%2Fbnpb%2Fbahan", "gerbang@x:sandi"); await g.text();
+  assert.equal(g.status, 303); assert.equal(g.headers.get("location"), "/masuk?ke=%2Fbnpb%2Fbahan#sandi", "akun gerbang harus melihat form masuk, bukan dipantulkan");
   const a = await masuk("/admin/masuk?ke=%2Fbnpb%2Fbahan", "rahasia-admin"); await a.text();
   assert.equal(a.status, 303); assert.equal(a.headers.get("location"), "/bnpb/bahan");
 });
 test("GET /admin/masuk tanpa ?ke=: akun gerbang tetap 303 (kontrak Admin.keMasuk)", async () => {
   const g = await masuk("/admin/masuk", "gerbang@x:sandi"); await g.text();
-  assert.equal(g.status, 303);
+  assert.equal(g.status, 303); assert.equal(g.headers.get("location"), "/admin/statistik", "sesi sah: bukan /masuk");
+  const t = await mf.dispatchFetch("http://t.lokal/admin/masuk", {redirect: "manual"}); await t.text(); assert.equal(t.headers.get("location"), "/masuk#sandi", "tamu: /masuk");
 });

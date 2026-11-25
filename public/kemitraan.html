@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="/inti/gaya.css">
 <link rel="stylesheet" href="/inti/kepala.css">
 <link rel="stylesheet" href="/akademisi.css?v=48">
-<link rel="stylesheet" href="/kemitraan.css?v=5">
+<link rel="stylesheet" href="/kemitraan.css?v=6">
 <script type="module" src="/inti/kepala.js"></script>
 <script src="/kemitraan/inti.js?v=2"></script>
 <script src="/kemitraan/konst.js?v=1" defer></script>
@@ -30,6 +30,7 @@
 <script src="/kemitraan/data.js?v=1" defer></script>
 <link href="/inti/dasbor.css?v=28" rel="stylesheet">
 <script src="/inti/dasbor.js?v=4" defer data-oto data-nama="Kemitraan Kampus" data-isi=".ak" data-tab="#kmTampil" data-tab-wadah=".ak-tabwrap" data-kepala=".ak-kepala" data-ringkas="#kmAngka" data-grup="Tampilan"></script>
+<script src="/kemitraan/menu.js?v=2" defer></script>
 </head>
 <body>
 <header class="top">
@@ -52,12 +53,13 @@
 </section>
 
 <div class="ak">
+  <nav id="kmMenu" class="km-menu" aria-label="Halaman Kemitraan"></nav>
   <div class="ak-tabwrap"><button type="button" class="ak-tabpanah" data-d="-1" aria-label="Geser tab ke kiri"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><nav id="kmTampil" class="ak-seg ak-tampil" role="group" aria-label="Tampilan" hidden></nav><button type="button" class="ak-tabpanah" data-d="1" aria-label="Geser tab ke kanan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></div>
 
   <section id="kmMasuk" class="ak-panel ak-kosong" hidden>
     <h2>Masuk untuk membuka Kemitraan Kampus</h2>
     <p>Halaman ini untuk staf BNPB, pimpinan, koordinator kampus, dan petugas BPBD yang sudah punya akses.</p>
-    <p><a class="ak-tbl" href="/admin/masuk?ke=%2Fkemitraan">Masuk sebagai staf BNPB</a> <a class="ak-tbl alt" href="/kemitraan/masuk">Masuk koordinator kampus</a></p>
+    <p><a class="ak-tbl" href="/masuk?ke=%2Fkemitraan#sandi">Masuk sebagai staf BNPB</a> <a class="ak-tbl alt" href="/kemitraan/masuk">Masuk koordinator kampus</a></p>
   </section>
   <p id="kmGalat" class="ak-panel" role="alert" hidden></p>
   <div id="kmMuat" class="ak-daftar" aria-hidden="true" hidden></div>

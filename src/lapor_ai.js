@@ -35,7 +35,8 @@ import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriks
 import {penandaPemeriksa, waktuVerifikasi, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik} from "./lapor_kejadian.js";
 
 const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10, MAKS_BERKAS = 20;   // D79: foto dan video dihitung bersama, paling banyak 20, video paling banyak 3
-const BATAS_PESAN = [[MENIT, 20], [JAM, 60], [HARI, 120]], BATAS_IP_JAM = [[JAM, 300]], BATAS_PERANGKAT_JAM = [[JAM, 120]];   // per nomor; per alamat IP /64 hanya pintu web
+const BATAS_PESAN = [[MENIT, 20], [JAM, 120], [HARI, 300]],   // K104 (pemilik 25 Nov 2026): 120 per jam per orang karena pertanyaannya banyak; harian ikut naik supaya tidak lebih ketat dari jam
+  BATAS_IP_JAM = [[JAM, 300]], BATAS_PERANGKAT_JAM = [[JAM, 120]];   // per nomor; per alamat IP /64 hanya pintu web
 const SELESAI = new Set(["terkirim", "batal", "kedaluwarsa"]);
 const HDR = {"cache-control": "private, no-store", "x-robots-tag": "noindex", "referrer-policy": "no-referrer"};
 const kirim = (kode, isi) => json(isi, kode, HDR);
@@ -701,6 +702,7 @@ async function unggahSelesai(env, req, url, kini, uid) {
 /* D90: dipanggil cron bersih-bersih menit 17. Unggahan 24 jam tanpa bagian baru: multipart di-abort, baris dibuang; paling banyak 20 per putaran. */
 export async function bersihkanLapor(env, kini = Date.now()) {
   await H.slBersih(env, H.pelakuLpCron, kini - 30 * HARI).catch(e => tabelBelum(e) || console.error("lapor_selamat", e?.message));   // tanda selamat 30 hari (Q67)
+  await H.crAnonimkan(env, H.pelakuLpCron, kini - H.CARI_SIMPAN_HARI * HARI).catch(e => tabelBelum(e) || console.error("lapor_cari", e?.message));   // orang dicari ditutup >2 tahun dianonimkan (Q67 bawaan sementara)
   await H.ljKabarBersih(env, H.pelakuLpCron, kini - 864e5, kini - 30 * 864e5, kini - 7 * 864e5).catch(e => tabelBelum(e) || console.error("lj_kabar", e?.message));   // LJ-11: pembuka dan tim belum terkirim >1 hari (token mentah), lain belum terkirim >7 hari, terkirim >30 hari
   await bersihSesiLanjut(env, kini).catch(e => console.error("lj_sesi", e?.message));   // draf WA tahap 2 lebih dari 24 jam (LJ-05)
   await sapuDrafYatim(env, kini).catch(e => console.error("lj_draf", e?.message));   // foto draf R2 yatim lebih dari 2 hari (LJ-19)

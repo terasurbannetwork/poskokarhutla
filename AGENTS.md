@@ -615,11 +615,11 @@ Aturan berhentinya sama dengan §2.1. Satu mesin desa: tidak mengubah `preventif
 Sebelum menyentuh genangan Copernicus GFM per kejadian Buku Besar, zona sel di paparan, lahan tergenang WorldCover, citra radar dan optik sebelum dan sesudah per kejadian, atau model kaji `banjir_gfm`, baca dokumen di
 `data/kajian-bnpb/genangan-satelit/` dengan urutan otoritas ini (kode di `scripts/banjir/genangan_nasional.py`, `scripts/banjir/genangan_lahan.py`, `scripts/banjir/citra_banjir.py`, `public/banjir/bukti.*` milik `banjir`; `scripts/siklus/paparan.py`, `scripts/siklus/kaji_banjir.py`, `scripts/siklus/genangan_kaji.py`, `public/siklus/kaji.js` milik `siklus`; `src/siklus_kaji.js` dan migrasi `sk_kaji` milik `warga-api`; `public/inti/geser.*` milik `inti-layar`; langkah `siklus.yml` milik `mekanik-mesin`):
 
-1. `KEPUTUSAN-GENANGAN.md`: keputusan pemilik K1-K3, rancangan D1-D13, pertanyaan terbuka Q1-Q12 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-GENANGAN.md`: keputusan pemilik K1-K7, rancangan D1-D13, pertanyaan terbuka Q1-Q12 (Q1, Q7, Q11, Q12 dijawab K4-K7) dengan bawaan sementara; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md` (F-1..F-10), 4. `ALUR.md`, 5. `ALGORITMA.md` (pasangan, cakupan sah, zona sel, lahan, uji balik peringkat), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`GS-*`), `GLOSARIUM.md`.
 
-Aturan berhentinya sama dengan §2.1. Sumber genangan satu (GFM lewat `genangan_nasional.py`): tanpa ambang radar sendiri, tanpa penggeser ambang, tanpa hitung ulang di peramban; bangunan terendam tidak tampil (milik paket `kerusakan-satelit`); kab tanpa lintasan atau tanpa cakupan sah tidak pernah 0; angka radar berlabel `estimasi-model` dan berdampingan dengan DIBI dan petugas, tidak dijumlah; "penduduk di area genangan", tidak pernah "terdampak", "aman", atau "surut"; `banjir_jam1` tidak berubah; tanpa versi publik sebelum Q1; tinjau di `http://localhost:8800/siklus/kaji`.
+Aturan berhentinya sama dengan §2.1. Sumber genangan satu (GFM lewat `genangan_nasional.py`): tanpa ambang radar sendiri, tanpa penggeser ambang, tanpa hitung ulang di peramban; bangunan terendam tidak tampil (milik paket `kerusakan-satelit`); kab tanpa lintasan atau tanpa cakupan sah tidak pernah 0; angka radar berlabel `estimasi-model` dan berdampingan dengan DIBI dan petugas, tidak dijumlah; "penduduk di area genangan", tidak pernah "terdampak", "aman", atau "surut"; `banjir_jam1` tidak berubah; versi publik (K4) tetap berlabel perkiraan radar dan hipotesis; tinjau di `http://localhost:8800/siklus/kaji`.
 
 ### 2.45 Kedalaman gambut hilang dari InSAR (lab, mengganti D literatur di `gambut_bara.py`): baca dulu, baru bangun
 
@@ -665,7 +665,18 @@ Sebelum menyentuh mesin bersama pemodelan (`scripts/umum/pembanding.py`, `sidik.
 
 Aturan berhentinya sama dengan §2.1. Tiket hanya dikerjakan bila berguna menurut D1; model baru tanpa lolos gerbang tampil sebagai hipotesis dan tidak dikirim keluar; pembanding wajib persistensi dan klimatologi pada jumlah alarm sama; satu mesin inti per kemampuan; tiket paket Paritas, LS, KS, PT tidak digandakan.
 
-### 2.49 Pemantauan Satelit (Himawari 10 menit: titik panas, abu, konveksi; panas kawah, SO2, genangan harian, VHI, asap): baca dulu, baru bangun
+### 2.49 Peta Situs (satu alur: registri halaman, lima pintu, menu dari satu sumber, `/masuk` satu pintu, tanpa halaman yatim): baca dulu, baru bangun
+
+Sebelum menambah halaman baru, menyentuh menu atau kepala halaman mana pun, atau mengubah arah sesudah masuk, baca dokumen di
+`data/kajian-bnpb/peta-situs/` dengan urutan otoritas ini (registri `src/peta_situs.js` dan rute `/api/peta-situs` milik `warga-api`; hasil generator `public/inti/peta_situs_publik.json` dan `public/inti/kepala.js` milik `inti-layar`; `public/bnpb/menu_pusdalops.js`, `public/bnpb/pintu.js` milik `ruang-bnpb`; `src/admin_halaman.js`, `src/masuk.js` juga milik `warga-api`; gerbang `tests/agen/gerbang-peta-situs.test.mjs` milik `penulis-gerbang`):
+
+1. `KEPUTUSAN-PETA-SITUS.md`: keputusan pemilik K1-K5 (25 Nov 2026), rancangan D1-D11, pertanyaan terbuka Q1-Q5 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md` (inventaris 150 rute, 24 yatim), 3. `PRD.md` (peta pintu dan grup), 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PS-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Tiap halaman baru wajib punya entri registri di commit yang sama; menu tidak ditulis tangan lagi, semuanya dari registri; peta halaman staf tidak pernah jadi berkas statis publik; menu bukan penjaga hak (hak tetap di Worker); alamat lama tidak dipindah; tautan bertoken tidak tampil di menu.
+
+### 2.51 Pemantauan Satelit (Himawari 10 menit: titik panas, abu, konveksi; panas kawah, SO2, genangan harian, VHI, asap): baca dulu, baru bangun
 
 Sebelum menyentuh pemindai Himawari L1b, detektor api, abu, konveksi, status sumber satelit, atau pemicu 10 menit, baca dokumen di
 `data/kajian-bnpb/satelit/` dengan urutan otoritas ini (`scripts/umum/himawari_pindai.py` milik `pipa-umum`; `scripts/data/himawari.py`, `api_himawari.py` milik `pipa-data`; `abu_satelit.py`, `kawah.py`, `so2.py`, `vhi.py` milik `gunungapi-kering`; `awan_tumbuh.py`, `asap_aod.py` milik `cuaca-udara`; `genangan_harian.py` milik `banjir`; `src/satelit_picu.js`, `src/alarm_himawari.js` milik `warga-api`; `public/inti/satelit.*` milik `inti-layar`; `satelit.yml` milik `mekanik-mesin`):

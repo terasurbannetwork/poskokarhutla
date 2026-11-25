@@ -17,6 +17,8 @@ Nomor K mengikuti `data/kajian-bnpb/pembanding-pantaukarhutla/TIKET.md` (bagian 
 | K5 | 24 Nov 2026 | Animasi api 3D (PKH-12) disetujui. | tidak, tapi pop-up insiden dan peta tidak boleh bertabrakan dengan lapisannya (lihat DESIGN-SYSTEM §6) | – |
 | K6 | 24 Nov 2026 | Q1 dijawab: deteksi musim ini ditarik mundur untuk insiden aktif. Arsip negara FIRMS 2026 belum terbit (404 untuk viirs-snpp, noaa20, noaa21, modis pada 24 Nov 2026), jadi sumbernya `public/data/titik_hari/*.json` sejak 1 Jul 2026 ditambah `hotspot24.json`, tanpa kunci FIRMS. Akibat di D18. | ya | (jawaban pemilik atas Q1 di paket ini; kalimat asli belum disalin ke berkas) |
 | K7 | 24 Nov 2026 | Q5 dijawab: Open Buildings diunduh untuk semua provinsi. Akibat di D13 dan IK-08. | ya | (jawaban pemilik atas Q5 di paket ini; kalimat asli belum disalin ke berkas) |
+| K8 | 25 Nov 2026 | Q4 dijawab: insiden baru ≤ 10 km dari insiden aktif ditandai "kemungkinan lompatan dari insiden lain" (IK-13 jalan). | ya | "Ga apa" |
+| K9 | 25 Nov 2026 | Lingkaran 500 m di kartu bangunan dikerjakan sesuai DESIGN-SYSTEM §bangunan: lingkaran mengitari petak api segar (petak api sudah publik), bukan bangunan; aturan KEAMANAN-PRIVASI butir 5 berlaku (tidak digambar bila angka "kurang dari 5" atau petak segar < 5). | ya | "Lanjut" |
 
 K6 dan K7 bernomor lokal paket ini; K1 sampai K5 mengikuti TIKET pembanding.
 
@@ -68,7 +70,7 @@ Aturan turunan dari TIKET pembanding yang mengikat paket ini:
 | Q1 [DIJAWAB 24 Nov 2026: tarik mundur deteksi musim ini] | Deteksi per insiden sejak awal belum diarsipkan: `hotspot24.json` hanya 48 jam. Arsip dimulai dari sekarang, atau ditarik mundur untuk insiden yang sedang aktif? | Dijawab K6. Arsip negara FIRMS 2026 belum terbit, jadi tarik mundur dari `titik_hari` sejak 1 Jul 2026 (D18); tanpa kunci FIRMS. Insiden yang arsipnya < 2 hari tetap tampil "belum cukup riwayat". Kode sudah ada (`arsip_insiden.py`, langkah di `titik.yml`). Akibat: uji tahan A10 tetap pada FIRMS 2019 dan 2023 lokal, tetapi masukan produksi berbeda (D18 butir a), lihat Q11 |
 | Q2 | Kriteria lulus uji tahan perkembangan api (D9)? | [SEMENTARA] di data 10 insiden 2019 dan 2023 kita: ≥ 60% sel tahan-uji dalam ±24 jam, dan MAE tidak lebih buruk dari tetangga terdekat; dikunci tertulis sebelum angka dihitung |
 | Q3 | Perkiraan titik awal boleh tampil publik? Titik itu bisa jatuh di lahan konsesi atau lahan warga. | [SEMENTARA] tampil sebagai lingkaran berjari-jari galat (minimal 375 m), tanpa nama lahan, konsesi, desa pemilik, atau kata sebab; pilihan lain: hanya di balik sesi |
-| Q4 | Insiden baru ≤ 10 km dari insiden aktif ditandai "kemungkinan lompatan dari insiden lain"? (Aturan pencocokan 0,6 km membuat lompatan 2 sampai 10 km di dalam satu insiden jarang terjadi; RISET §4.) | [SEMENTARA] tidak, hanya lompatan di dalam satu insiden; tiket IK-13 menunggu |
+| Q4 [DIJAWAB K8: ditandai] | Insiden baru ≤ 10 km dari insiden aktif ditandai "kemungkinan lompatan dari insiden lain"? (Aturan pencocokan 0,6 km membuat lompatan 2 sampai 10 km di dalam satu insiden jarang terjadi; RISET §4.) | [SEMENTARA] tidak, hanya lompatan di dalam satu insiden; tiket IK-13 menunggu |
 | Q5 [DIJAWAB 24 Nov 2026: unduh untuk semua provinsi] | Izin mengunduh Open Buildings untuk provinsi yang belum bergrid (Riau, Jambi, Sumatera Selatan, Kalimantan Barat, Kalimantan Tengah, dan lainnya)? Unduhan penuh nasional ±12,7 GB dan jalan berjam-jam di Actions. | Dijawab K7: diunduh untuk semua provinsi. IK-08 tidak lagi menunggu izin. Provinsi yang belum selesai tetap tampil "belum tercakup" (D13) |
 | Q6 | Pembulatan dan ambang angka bangunan publik (anti-identifikasi rumah tunggal dan anti-selisih antarhari)? | [SEMENTARA] di bawah 5 tampil "kurang dari 5"; 5 ke atas dibulatkan ke kelipatan 5 dan ditulis "sekitar"; luas atap dibulatkan ke 100 m² |
 | Q7 | Tempat menghitung bangunan insiden: `bangunan.yml` harian atau `titik.yml` 3 jam (grid halus harus ditarik dari R2 tiap putaran)? Catatan kode: job harian hanya memulihkan `grid_*.json` dan `kec.json` dari cache; `halus_<prov>.json` (3,6 sampai 19,7 MB per provinsi) hanya dibuat bulanan dan diunggah ke R2 `poskokarhutla-foto/bangunan/`. | [SEMENTARA] `bangunan.yml` harian membaca daftar petak yang diterbitkan putaran 3 jam; angka bangunan diperbarui sehari sekali dan berlabel jamnya. Syaratnya `halus_*.json` ditambahkan ke cache grid job harian (IK-07, ukur ukuran cache dulu) |
@@ -76,3 +78,10 @@ Aturan turunan dari TIKET pembanding yang mengikat paket ini:
 | Q9 | Insiden dengan < 20 piksel unik tidak punya isokron (pembanding juga begitu, `MIN_DETECTIONS = 20`). Ambang 20 dipakai juga di kita? | [SEMENTARA] 20 piksel unik VIIRS nominal/tinggi, tampil "terlalu kecil untuk dilacak" |
 | Q10 | Bila uji tahan gagal (Q2), perkembangan api tetap tampil berpil hipotesis, atau disembunyikan? | [SEMENTARA] tampil berpil hipotesis dan keterangan hasil uji di `title`; garis depan tanpa angka laju |
 | Q11 | Uji tahan memakai FIRMS lengkap 2019 dan 2023, sedangkan produksi memakai `titik_hari` yang hanya menyimpan deteksi pertama per lokasi per hari (D18 butir a). Vonis dari uji historis boleh berlaku untuk angka produksi? | [SEMENTARA] tidak otomatis: uji dijalankan juga pada 3 insiden musim ini dari arsip `titik_hari` dan hasilnya dicatat berdampingan; pil hipotesis dilepas hanya bila keduanya melewati ambang Q2 (ambang yang sama) |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q3: perkiraan titik awal api **boleh publik** (lingkaran galat ≥375 m, tanpa nama lahan).

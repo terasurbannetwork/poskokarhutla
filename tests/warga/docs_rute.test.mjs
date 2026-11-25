@@ -35,7 +35,8 @@ test("DOCS_HTML_LANGSUNG: berkas keluaran generator, tanpa titik ganda atau segm
 });
 
 test("kabel: worker.js menyisipkan ruteDocs, entri PUBLIK_TANPA_SESI beralasan, _headers CSP ketat tanpa unsafe-inline", () => {
-  const w = readFileSync(path.join(AKAR, "src/worker.js"), "utf8");
+  /* HTML_RUTE dan PUBLIK_TANPA_SESI tinggal di modul daun src/gerbang_halaman.js (PS-04), diekspor ulang worker.js */
+  const w = readFileSync(path.join(AKAR, "src/worker.js"), "utf8") + readFileSync(path.join(AKAR, "src/gerbang_halaman.js"), "utf8");
   assert.match(w, /import \{ruteDocs, jalurDocs, DOCS_HTML_LANGSUNG\} from "\.\/docs_rute\.js"/);
   assert.match(w, /\.\.\.ruteDocs\(\)/);
   assert.match(w, /\["\/docs", "[^"]{40,}"\]/, "entri /docs beralasan di PUBLIK_TANPA_SESI");

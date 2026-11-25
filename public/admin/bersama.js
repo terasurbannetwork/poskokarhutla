@@ -17,12 +17,14 @@ document.addEventListener("click", async e => {
 });
 
 /* 403 dari API = sesi habis ATAU akun ini tak berhak (mis. akun gerbang situs ke rute moderator). Hanya sesi habis yang dikirim ke halaman masuk:
-   GET /admin/masuk dengan sesi sah membalas 303 ke ?ke=, jadi akun yang tak berhak dipantulkan balik ke halaman ini dan halaman memuat ulang tanpa henti. Selalu melempar. */
+   GET /admin/masuk dengan sesi sah membalas 303 ke ?ke=, jadi akun yang tak berhak dipantulkan balik ke halaman ini dan halaman memuat ulang tanpa henti. Selalu melempar.
+   Sejak K21 tamu pun dialihkan (ke /masuk), jadi pembedanya alamat akhir: berakhir di /masuk = belum masuk, alamat lain = sesi sah tapi tak berhak. */
 async function keMasuk() {
   if (BODY.staf === "1") { location.href = "/admin/pantau"; throw new Error("perlu masuk"); }
-  const r = await fetch("/admin/masuk", {redirect: "manual", cache: "no-store"}).catch(() => null);
-  if (r?.type === "opaqueredirect") throw new Error("akunmu tidak berhak membuka data ini");
-  location.href = "/admin/masuk?ke=" + encodeURIComponent(location.pathname);
+  const r = await fetch("/admin/masuk", {cache: "no-store"}).catch(() => null);
+  r?.body?.cancel();
+  if (r && new URL(r.url).pathname !== "/masuk") throw new Error("akunmu tidak berhak membuka data ini");
+  location.href = "/masuk?ke=" + encodeURIComponent(location.pathname);
   throw new Error("perlu masuk");
 }
 

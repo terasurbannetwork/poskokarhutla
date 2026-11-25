@@ -111,7 +111,7 @@ async function layaniHalaman(env, req, url, jalur, kini) {
   if (!RE_HAL.test(jalur)) return gagal(404, "halaman tidak ada");
   const h = await hakSk(env, req, kini, false);
   if (/^\/siklus\/kejadian\/KJ-/.test(jalur) && h instanceof Response) return sajiHalaman(env, req, url, "/siklus/publik.html");   // tamu atau sesi tanpa hak: ringkasan publik saja
-  if (h instanceof Response) return h.status === 401 ? new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=" + encodeURIComponent(jalur), "cache-control": "no-store"}}) : h;
+  if (h instanceof Response) return h.status === 401 ? new Response(null, {status: 303, headers: {location: "/masuk?ke=" + encodeURIComponent(jalur), "cache-control": "no-store"}}) : h;
   return sajiHalaman(env, req, url, "/siklus/index.html");
 }
 async function layaniAset(env, req, url, jalur, kini) {

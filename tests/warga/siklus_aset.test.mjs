@@ -35,7 +35,7 @@ uji("aset staf dengan sesi sah: private, max-age=600, tipe benar, HEAD tanpa bad
 });
 uji("halaman staf: tanpa sesi 303 ke /admin/masuk?ke=, sesi sah menerima index.html ber-CSP, no-store, noindex", async () => {
   for (const j of ["/siklus", "/siklus/kejadian", "/siklus/paparan", "/siklus/kaji", "/siklus/pulih", "/siklus/renkon", "/siklus/gladi", "/siklus/masa-depan", "/siklus/index.html", `/siklus/pulih/${"a".repeat(16)}`]) {
-    const t = await buka(j); assert.equal(t.s, 303, j); assert.equal(t.h.get("location"), "/admin/masuk?ke=" + encodeURIComponent(j));
+    const t = await buka(j); assert.equal(t.s, 303, j); assert.equal(t.h.get("location"), "/masuk?ke=" + encodeURIComponent(j));
     const s = await buka(j, PD.h); assert.equal(s.s, 200, j); assert.equal(s.t, ASET["/siklus/index.html"]);
     assert.equal(s.h.get("cache-control"), "no-store"); assert.match(s.h.get("x-robots-tag"), /noindex/); assert.match(s.h.get("content-security-policy"), /script-src 'self'(?!.*unsafe-inline)/);
   }

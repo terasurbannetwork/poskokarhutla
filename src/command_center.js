@@ -22,6 +22,7 @@
      Tamu: meja 303 ke /admin/masuk?ke= (masuk staf). Layar meja SENYAP total (tanpa Audio/suara). Sesi sah tanpa hak: 403 polos tanpa pengalihan (cegah pantulan, pola SIPPA).
      Berkas klien public/admin/command_*.{js,css} (vanilla; CSP tanpa skrip/gaya sebaris; teks dari API tidak pernah lewat innerHTML). Gerbang centurisk97.id tidak ikut: halamanTerkunci (src/worker.js) mengecualikan /command-center. */
 import {json, gagal, bacaBody, adminOK} from "./worker.js";
+import {hostTerkunci} from "./gerbang_halaman.js";
 import {modOK, tx, tglSah} from "./posko.js";
 import {PROV, kecualiLain, tanpaTabel} from "./instansi.js";
 import {stafSesi, stafTertahan, dalamWilayahStaf} from "./staf.js";
@@ -375,8 +376,8 @@ const alihkan = ke => new Response(null, {status: 303, headers: {location: ke, "
 /* pelaku() memutuskan: Response 401 = tamu (dialihkan ke layar masuk), Response lain = sesi sah tanpa hak (403 polos) */
 async function halamanMeja(env, req, url, kini) {
   const a = await pelaku(env, req, kini);
-  if (a instanceof Response) return a.status === 401 ? alihkan("/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search)) : polos403();
-  return new Response(halamanCc(a.staf ? {nama: a.staf.nama, peran: a.staf.peran} : undefined), {headers: {...H_HAL, "content-security-policy": CSP_ADMIN}});
+  if (a instanceof Response) return a.status === 401 ? alihkan("/masuk?ke=" + encodeURIComponent(url.pathname + url.search)) : polos403();
+  return new Response(halamanCc(a.staf ? {nama: a.staf.nama, peran: a.staf.peran, terkunci: hostTerkunci(url.hostname)} : undefined), {headers: {...H_HAL, "content-security-policy": CSP_ADMIN}});
 }
 
 /* ================================================================ rute (digabung ke RUTE di src/worker.js) */

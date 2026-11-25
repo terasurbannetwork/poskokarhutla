@@ -136,10 +136,10 @@ const Insight = {
   exKinerja() {
     const a = this.abu?.uji_balik, b = this.abu?.uji_balik_tipis; if (!a?.n) return "";
     const R = [[`Berambang (n = ${fmt(a.n)})`, a, "#c9503a"], ...(b?.n ? [[`Tanpa ambang (n = ${fmt(b.n)})`, b, "#e58a45"]] : [])], U = this.uk(), M = U.W < 600, L = U.L + 30, X = v => v / 100 * (U.W - L - (M ? 40 : 520)), pw = t => t.length * 7.2 + 22, rowH = M ? U.rh * 2 + 8 : U.rh + 8;
-    const cocok = d => Math.round(d.persen_dalam_45deg * d.n / 100), acak = d => d.acak_persen ?? 25, kecil = d => (d.p_binomial ?? 1) >= .05;
+    const cocok = d => Math.round(d.persen_dalam_45deg * d.n / 100), acak = d => d.acak_persen, kecil = d => !(d.p_binomial < .05);
     const rel = (v, ref) => v > ref + 1 ? "di atas" : v < ref - 1 ? "di bawah" : "setara";
     /* pembanding bahasa awam: tebakan acak dan arah angin musiman (klimatologi); bila belum ada, hanya acak */
-    const ket = d => { const kl = d.klimatologi_persen, v = d.persen_dalam_45deg, t = `${rel(v, acak(d))} tebakan acak (${fmt(acak(d))}%${kecil(d) ? `, peluang kebetulan sekitar ${dariB(d.p_binomial ?? 1)}` : ""})`;
+    const ket = d => { const kl = d.klimatologi_persen, v = d.persen_dalam_45deg, t = `${acak(d) != null ? rel(v, acak(d)) + " " : ""}tebakan acak (${fmt(acak(d))}%${kecil(d) ? `, peluang kebetulan ${d.p_binomial != null ? "sekitar " + dariB(d.p_binomial) : "belum dihitung"}` : ""})`;
       return kl != null ? `${t} dan ${rel(v, kl)} arah angin musiman (${fmt(kl)}%)` : t; };
     const g = R.map(([nm, d, w], i) => { const y = i * rowH, x = Math.max(3, X(d.persen_dalam_45deg)), kl = d.klimatologi_persen,
         P = [`${fmt(cocok(d))} dari ${fmt(d.n)} cocok`, "median " + fmt(d.median_selisih_deg) + "°", "acak " + fmt(acak(d)) + "%", ...(kl != null ? ["angin musiman " + fmt(kl) + "%"] : [])], W4 = [w, "#6b7a90", "#8a6d1f", "#2f7d4f"],

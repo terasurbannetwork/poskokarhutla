@@ -422,7 +422,7 @@ uji("halaman /meja dan /admin/meja: 200 dengan CSP ketat; admin tanpa token 403;
   assert.ok(!/<script(?![^>]*\ssrc=)/i.test(h.t) && !/\son\w+=/i.test(h.t) && !/\sstyle=/i.test(h.t), "html bersih inline");
   assert.ok(h.t.includes("/bnpb/meja.js") && h.t.includes("/bnpb/meja.css"));
   const a = await api("GET", "/admin/meja", undefined, ADMIN); assert.equal(a.s, 200, a.t.slice(0, 200)); assert.ok(a.t.includes("/admin/meja.js") && a.t.includes("/admin/meja.css"));
-  const tanpa = await U.mf.dispatchFetch("http://bnpb.lokal/admin/meja", {redirect: "manual"}); assert.equal(tanpa.status, 303); assert.match(tanpa.headers.get("location"), /\/admin\/masuk/); await tanpa.arrayBuffer();
+  const tanpa = await U.mf.dispatchFetch("http://bnpb.lokal/admin/meja", {redirect: "manual"}); assert.equal(tanpa.status, 303); assert.match(tanpa.headers.get("location"), /\/masuk/); await tanpa.arrayBuffer();
   for (const [m, j, b] of [["GET", "/api/meja/petugas"], ["POST", "/api/meja/petugas", {nama: "X", prov: "71", kab: "Y", meja: ["dsp"]}], ["POST", "/api/meja/petugas/" + hex(), {aksi: "cabut"}], ["GET", "/api/meja/rekap"], ["GET", "/api/meja/rapor"],
     ["GET", "/api/meja/catatan?meja=dsp"], ["POST", "/api/meja/catatan", {meja: "dsp", prov: "71", kab: "Y", data: {}}], ["GET", "/api/meja/catatan/" + hex()], ["POST", "/api/meja/catatan/" + hex(), {aksi: "ubah"}], ["GET", "/api/meja/saya"], ["POST", "/api/meja/dummy", {aksi: "isi"}]]) {
     assert.equal((await api(m, j, b)).s, 403, `${m} ${j} tanpa token`);

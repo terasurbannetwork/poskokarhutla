@@ -66,3 +66,11 @@ Tidak ditemukan: angka "Hari" untuk rumus Perka 23/2014 (hanya definisi 72 jam),
 - Q15. Perka 20/2011 hal. 12 menyebut "first-in/expired first-out", sedangkan stok sekarang satu tanggal kedaluwarsa per baris barang, bukan per batch. FEFO per batch (LG-10) disetujui dulu, atau kartu persediaan v1 tanpa batch? (LG-16)
 - Q16. Interval pemeliharaan Perka 7/2013 berbeda per jenis alat (hal. 70-91). Jenis alat mana yang masuk tahap awal, dan siapa menyalin tabel intervalnya dari lampiran? (LG-20)
 - Q17. Kartu persediaan bertumpu pada riwayat mutasi, sedangkan Ubah barang mengubah jumlah tanpa mutasi (Q6). Q6 dijawab sebelum kartu dianggap bukti audit, atau kartu tampil dengan penanda "koreksi tanpa jejak" saja? (LG-16)
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+
+Masih terbuka karena tidak punya bawaan: Q2, Q4, Q5, Q6, Q7, Q8, Q9, Q11, Q12, Q13, Q14, Q15, Q16, Q17. Jangan dijawab dengan karangan.

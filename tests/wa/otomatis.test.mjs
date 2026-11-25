@@ -4,7 +4,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { jalankan, pilihTerbaru, cekSiap, LAPORAN, hashBahan } from '../../scripts/wa/otomatis.mjs'
+import { jalankan, pilihTerbaru, cekSiap, LAPORAN, LAPORAN_PB, hashBahan } from '../../scripts/wa/otomatis.mjs'
 
 const kenali = (teks) => (teks.match(/^\[(\w+)\]/) || [])[1] || null // stub: "[kunci] isi"
 const wibKe = (jam, tgl = '2026-10-29') => new Date(Date.parse(`${tgl}T00:00:00Z`) + (jam - 7) * 3600e3)
@@ -147,7 +147,7 @@ test('proses anak generator: PATH diawali WA_PY_BIN dan python3 dari sana', asyn
   await d.jalan({ env: { PENERIMA: '6281', PEMILIK: '6299', WORKER_URL: 'http://w', WA_PY_BIN: '/opt/py/bin' } })
   assert.ok(d.kirim.opsi.env.PATH.startsWith('/opt/py/bin' + path.delimiter))
   assert.equal(d.kirim.cmd, '/opt/py/bin/python3')
-  assert.equal(d.kirim.opsi.timeout, 600000)
+  assert.equal(d.kirim.opsi.timeout, LAPORAN.at(-1).waktu || 600000) // exec terakhir = penanganan (waktu 25 menit sejak 16 Nov); bawaan 10 menit
 })
 
 test('unggah /pelaporan: sebelum WA, bidang benar, revisi 0 lalu 1, sekali per bahan', async () => {
@@ -266,6 +266,45 @@ test('laporan banjir: butuh tanpa bahan WA, jalan sesudah 17.00, tidak diunggah 
   assert.deepEqual(d.kirim.exec.map((a) => a[0]), ['penanganan_banjir.py']); assert.equal(d.kirim.file.length, 2); assert.equal(d.kirim.unggah.length, 0)
   await jalankan({ ...o, now: wibKe(19) })
   assert.equal(d.kirim.file.length, 2)
+})
+
+test('PB-59 gempa dan kekeringan: mati bawaan, saklar per bencana, deck dari Revisi N terbaru, tidak diunggah, sekali sehari', async () => {
+  assert.deepEqual(LAPORAN_PB.map((l) => [l.id, l.saklar, l.args(TGL, {}, 'o')[0]]),
+    [['penanganan_gempa', 'LAPORAN_GEMPA', 'penanganan_gempa.py'], ['penanganan_kekeringan', 'LAPORAN_KEKERINGAN', 'penanganan_kekeringan.py']])
+  const d = dunia([])
+  // generator palsu meniru serah_revisi: <out>/Revisi 1 lama (isi 'lama') dan Revisi 2 terbaru
+  const exec = async (cmd, args) => {
+    d.kirim.exec.push(args)
+    const lap = LAPORAN_PB.find((l) => l.args(TGL, {}, 'o')[0] === args[0])
+    const out = args[args.indexOf('--out') + 1]
+    for (const [n, isi] of [[1, 'lama'], [2, 'baru']]) {
+      fs.mkdirSync(path.join(out, `Revisi ${n}`), { recursive: true })
+      for (const x of ['pdf', 'pptx']) fs.writeFileSync(path.join(out, `Revisi ${n}`, `${lap.berkas(TGL)}.${x}`), isi)
+    }
+  }
+  const dep = { ...d.dep, exec }
+  const env = (x) => ({ PENERIMA: '6281', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k', LAPORAN_BANJIR: '0', ...x })
+  const o = { dep, kenali, rumah: d.rumah, log: () => {}, tanggalIsi: () => TGL, tanggal: TGL }
+  // mati bawaan: jalur terjadwal sama seperti sebelum PB-59
+  const h0 = await jalankan({ ...o, env: env({}), now: wibKe(18) })
+  assert.ok(!h0.some((x) => x.id.startsWith('penanganan_gempa') || x.id.startsWith('penanganan_kekeringan'))); assert.equal(d.kirim.exec.length, 0)
+  // hanya gempa dinyalakan; sebelum 17.00 menunggu
+  assert.equal((await jalankan({ ...o, env: env({ LAPORAN_GEMPA: '1' }), now: wibKe(16) })).find((x) => x.id === 'penanganan_gempa').status, 'tunggu')
+  const h = await jalankan({ ...o, env: env({ LAPORAN_GEMPA: '1' }), now: wibKe(18) })
+  assert.equal(h.find((x) => x.id === 'penanganan_gempa').status, 'terkirim'); assert.ok(!h.some((x) => x.id === 'penanganan_kekeringan'))
+  assert.deepEqual(d.kirim.exec.map((a) => a[0]), ['penanganan_gempa.py'])
+  assert.deepEqual(d.kirim.file.map((f) => f.n), ['Laporan Penanganan Gempa Bumi 291026.pdf', 'Laporan Penanganan Gempa Bumi 291026.pptx'])
+  assert.equal(fs.readFileSync(path.join(d.rumah, 'keluaran', TGL, 'Laporan Penanganan Gempa Bumi 291026.pptx'), 'utf8'), 'baru')
+  assert.ok(d.kirim.file.every((f) => f.t === '6281' && f.c.startsWith('Laporan Penanganan Gempa Bumi ' + TGL)))
+  assert.equal(d.kirim.unggah.length, 0)
+  await jalankan({ ...o, env: env({ LAPORAN_GEMPA: '1' }), now: wibKe(19) })
+  assert.equal(d.kirim.file.length, 2); assert.equal(d.kirim.exec.length, 1)
+  // kekeringan: generator tanpa keluaran (hari belum ada di laporan tayang) = galat ke PEMILIK saja, sekali
+  const kosong = { ...d.dep, exec: async (cmd, args) => { d.kirim.exec.push(args) } }
+  const hk = await jalankan({ ...o, dep: kosong, env: env({ LAPORAN_KEKERINGAN: '1' }), now: wibKe(18) })
+  assert.equal(hk.find((x) => x.id === 'penanganan_kekeringan').status, 'galat')
+  await jalankan({ ...o, dep: kosong, env: env({ LAPORAN_KEKERINGAN: '1' }), now: wibKe(19) })
+  assert.equal(d.kirim.teks.filter((t) => /kekeringan/i.test(t.m)).length, 1); assert.ok(d.kirim.teks.every((t) => t.t === '6299'))
 })
 
 test('--cutoff: penanganan dibangun tanpa bahan WA, harian menunggu dan PEMILIK dikabari sekali', async () => {

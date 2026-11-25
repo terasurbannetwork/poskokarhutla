@@ -27,6 +27,6 @@
 | `tanpa_desa` | Titik panas yang tidak jatuh di poligon desa mana pun (laut, atau di luar batas yang disederhanakan) |
 | `kd` | Kode desa Kemendagri `PP.KK.CC.DDDD`; 4 digit pertama tanpa titik = kode kab di `prediksi.json` |
 | Desa sasaran (`preventif.json`) | Hitungan lain milik `preventif.py`: titik desa OSM dalam 3 km dari petak 1 km yang terbakar ≥ 3 tahun berbeda (MODIS sejak 2002), per kecamatan. Bukan daftar B; tidak dijumlah atau disamakan |
-| `lulus_sementara` | Vonis hindcast terhadap ambang bawaan sementara (Q2); tetap berpil hipotesis |
+| `lulus_sementara` | Pensiun sejak K7 (25 Nov 2026): ambang Q2 disahkan, vonis kini `lulus` |
 | KHG | Kesatuan Hidrologis Gambut; dipakai `khg_prioritas.py`, bukan di paket ini |
 | Pembanding | pantaukarhutla.com dan repositori MIT-nya |

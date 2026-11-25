@@ -243,6 +243,17 @@ def _rata(xs):
     return round(sum(v) / len(v), 3) if v else None
 
 
+SUMBER_TANPA = {"GNA": "gunung api: PVMBG hanya menerbitkan level terkini, bukan prakiraan harian +1..+3",
+                "KEK": "kekeringan: prakiraan bersumber berskala dasarian/bulan, bukan +1..+3 hari"}
+
+
+def entri_tanpa_sumber(k):
+    """GNA/KEK (PB-51, F-25): dibekukan HANYA bila ada prakiraan harian +1..+3 bersumber. Sekarang tidak ada, jadi None
+    (tidak dikarang, tidak ada baris arsip, nilai.py menulis 'menunggu' + alasan). Sambungkan sumber di sini bila sudah ada."""
+    log(k, "dilewati:", SUMBER_TANPA[k])
+    return None
+
+
 def entri_hjn(t, daftar, hujan, ens):
     """hujan = {id: {tanggal: (jam24, sm)}}, ens = hujan_ansambel.json atau None."""
     hari = [D.geser(t, i) for i in (1, 2, 3)]
@@ -510,6 +521,8 @@ def catat(t, akar=D.AKAR, folder=None, hujan=None, daftar=None, data=None, emb=N
                 e = entri_asp(t, daftar, akar)
             elif k == "ROB":
                 e = entri_rob(t, akar, cari)
+            elif k in SUMBER_TANPA:
+                e = entri_tanpa_sumber(k)
             elif k == "CEX":
                 if not emb and unduh_emb:
                     emb.update(ambil_embusan(daftar))
@@ -556,6 +569,7 @@ def uji():
     assert embusan_harian(w, [None] * 5 + [50.0] * 19) == {}, "< 20 jam terisi = tak ada"
     assert [lv_ambang(x, CEX_LV) for x in (45.9, 46, 62.9, 63, 88.9, 89)] == [0, 1, 1, 2, 2, 3]
     assert [lv_ambang(x, GEL_LV) for x in (1.24, 1.25, 2.4, 2.5, 3.9, 4.0)] == [0, 1, 1, 2, 2, 3]
+    assert entri_tanpa_sumber("GNA") is None and entri_tanpa_sumber("KEK") is None
     ce = entri_cex("2026-10-29", daftar, {daftar[0]["id"]: {"2026-10-30": 50, "2026-10-31": 70}})
     assert ce["kab"] == {daftar[0]["id"]: [[50, 1], [70, 2], None]} and D.periksa_entri({"t": "2026-10-29", "k": "CEX", **ce}) is None
     assert D.periksa_entri({"t": "2026-10-29", "k": "CEX", **dict(ce, kab={"1101": [[50, 1.5], None, None]})}) is not None, "lv bukan bulat ditolak"

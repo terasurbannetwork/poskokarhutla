@@ -1,0 +1,236 @@
+{
+ "versi_kriteria": "ujibalik-1",
+ "tiket": "TS-14",
+ "dibekukan_pada": "2026-11-25",
+ "status": "BEKU. Kriteria ini dikunci sebelum satu pun hitungan genangan kejadian uji dijalankan. Mengubahnya (kode atau isi) membuat tsunami_ujibalik.py menolak jalan; amandemen = berkas kriteria dan sidik baru yang diberi nomor, ditulis sebelum uji dibuka, tidak menimpa ini.",
+ "peringatan": "Memuat n titik hasil hitungan JUMLAH berkas run-up NCEI saja (tanpa menghitung genangan) untuk menetapkan n_min. Tidak ada hasil model di berkas ini.",
+ "kelas": {
+  "aturan": "Kelas ditentukan dari sifat sumber (literatur) dan ketersediaan titik NCEI, tidak pernah dari hasil hitungan (ALGORITMA 8.1, D8). A = gempa tektonik rupture biasa (bukan gempa tsunami rupture lambat, bukan dipicu longsor) dengan titik run-up berkoordinat cukup. B = rupture lambat, longsor, atau non-gempa: dijalankan dan dilaporkan, tidak ikut vonis. Dikeluarkan = titik kurang (kurang dari n_titik_min), dengan alasan tertulis, tidak dipindah ke B.",
+  "rujukan_sifat_sumber": "Literatur terbitan yang menentukan sifat sumber tiap kejadian: [periksa] belum dibuka satu per satu di sesi ini; dugaan RISET 6 dan keputusan K6 dipakai. Pemeriksaan literatur sebelum TS-15 boleh MEMPERKUAT atau memindah kelas hanya lewat amandemen yang ditulis sebelum uji dibuka (P-TS14-1).",
+  "kejadian": [
+   {
+    "kunci": "aceh2004",
+    "id_ncei": 2439,
+    "nama": "Aceh dan Samudra Hindia 26 Des 2004, M 9,1",
+    "peran": "pengembangan",
+    "kelas": "A",
+    "sifat_sumber": "subduksi, rupture sangat panjang (sekitar 1300 km); dibagi segmen di TS-04",
+    "status_vonis": "disetel; tidak ikut vonis",
+    "n_titik_mentah": 585,
+    "n_titik_layak": 573,
+    "n_titik_runup_berpasangan": 512,
+    "n_titik_tinggi_pantai_berpasangan": 5,
+    "n_titik_lain_tanpa_vonis": 56,
+    "catatan": [
+     "Kejadian pengembangan: tempat sumber, gesekan, ambang basah, dan segmentasi boleh disetel padanya; hasilnya berlabel disetel."
+    ]
+   },
+   {
+    "kunci": "flores1992",
+    "id_ncei": 2214,
+    "nama": "Flores 12 Des 1992, M 7,8",
+    "peran": "uji",
+    "kelas": "A",
+    "sifat_sumber": "kerak naik (thrust belakang busur), tsunami lokal",
+    "status_vonis": "ikut vonis (satu-satunya kejadian uji kelas A)",
+    "n_titik_mentah": 91,
+    "n_titik_layak": 89,
+    "n_titik_runup_berpasangan": 59,
+    "n_titik_tinggi_pantai_berpasangan": 1,
+    "n_titik_lain_tanpa_vonis": 29,
+    "catatan": [
+     "11 titik bernama BABI (Pulau Babi) dikeluarkan dari vonis dan dilaporkan tersendiri (alasan di aturan_pembuangan.babi).",
+     "NCEI memberi kode penyebab 3 (gempa dan longsor) untuk seluruh kejadian ini: kelas A mengikuti keputusan K6 dan dugaan RISET 6, dengan keberatan ini TERBUKA ke pemilik (P-TS14-1)."
+    ]
+   },
+   {
+    "kunci": "banyuwangi1994",
+    "id_ncei": 2227,
+    "nama": "Banyuwangi 2 Jun 1994 UTC (3 Jun WIB), M 7,8",
+    "peran": "uji",
+    "kelas": "B",
+    "sifat_sumber": "subduksi dangkal, gempa tsunami (rupture lambat)",
+    "status_vonis": "dilaporkan, tidak ikut vonis",
+    "n_titik_mentah": 69,
+    "n_titik_layak": 68,
+    "n_titik_runup_berpasangan": 67,
+    "n_titik_tinggi_pantai_berpasangan": 0,
+    "n_titik_lain_tanpa_vonis": 1
+   },
+   {
+    "kunci": "pangandaran2006",
+    "id_ncei": 2832,
+    "nama": "Pangandaran 17 Jul 2006, M 7,7",
+    "peran": "uji",
+    "kelas": "B",
+    "sifat_sumber": "gempa tsunami (rupture lambat)",
+    "status_vonis": "dilaporkan, tidak ikut vonis",
+    "n_titik_mentah": 189,
+    "n_titik_layak": 164,
+    "n_titik_runup_berpasangan": 160,
+    "n_titik_tinggi_pantai_berpasangan": 2,
+    "n_titik_lain_tanpa_vonis": 2
+   },
+   {
+    "kunci": "mentawai2010",
+    "id_ncei": 5342,
+    "nama": "Mentawai 25 Okt 2010, M 7,8",
+    "peran": "uji",
+    "kelas": "B",
+    "sifat_sumber": "gempa tsunami (rupture lambat)",
+    "status_vonis": "dilaporkan, tidak ikut vonis",
+    "n_titik_mentah": 340,
+    "n_titik_layak": 339,
+    "n_titik_runup_berpasangan": 192,
+    "n_titik_tinggi_pantai_berpasangan": 4,
+    "n_titik_lain_tanpa_vonis": 143
+   },
+   {
+    "kunci": "palu2018",
+    "id_ncei": 5689,
+    "nama": "Palu 28 Sep 2018, M 7,5",
+    "peran": "uji",
+    "kelas": "B",
+    "sifat_sumber": "sesar geser; tsunami terutama dari longsor bawah laut dan efek teluk",
+    "status_vonis": "dilaporkan, tidak ikut vonis",
+    "n_titik_mentah": 290,
+    "n_titik_layak": 288,
+    "n_titik_runup_berpasangan": 142,
+    "n_titik_tinggi_pantai_berpasangan": 2,
+    "n_titik_lain_tanpa_vonis": 144
+   },
+   {
+    "kunci": "selatsunda2018",
+    "id_ncei": 5699,
+    "nama": "Selat Sunda 22 Des 2018",
+    "peran": "uji",
+    "kelas": "B",
+    "sifat_sumber": "runtuhnya sisi Anak Krakatau, bukan gempa",
+    "status_vonis": "dilaporkan, tidak ikut vonis",
+    "n_titik_mentah": 410,
+    "n_titik_layak": 405,
+    "n_titik_runup_berpasangan": 215,
+    "n_titik_tinggi_pantai_berpasangan": 4,
+    "n_titik_lain_tanpa_vonis": 186
+   }
+  ]
+ },
+ "pembagian": {
+  "pengembangan": [
+   "aceh2004"
+  ],
+  "uji_kelas_A": [
+   "flores1992"
+  ],
+  "uji_kelas_B": [
+   "banyuwangi1994",
+   "pangandaran2006",
+   "mentawai2010",
+   "palu2018",
+   "selatsunda2018"
+  ],
+  "n_uji_kelas_A": 1,
+  "akibat_tertulis": "Kejadian uji kelas A hanya 1, di bawah n_min_kejadian = 8: selang bootstrap tidak dilaporkan dan label model TETAP hipotesis walau Flores 1992 lolos semua ambang. Ini akibat aturan, ditulis sebelum uji; n_min_kejadian tidak diturunkan agar lulus."
+ },
+ "jendela_W": {
+  "utama_km": 2.0,
+  "kepekaan_km": [
+   1.0,
+   5.0
+  ],
+  "aturan": "Untuk titik amatan i, nilai hitung = nilai TERBESAR (R_hitung untuk run-up, eta maks garis pantai untuk tinggi pantai) dalam jarak W dari titik itu di sepanjang garis pantai hitung; model dan pembanding Abe memakai W sama. Titik tanpa sel hitung dalam W (di luar kotak halus L3 atau jauh dari garis pantai hitung) = 'tidak tercakup': dihitung dan dilaporkan, TIDAK menjadi nol dan tidak masuk K, kappa. Titik dengan nilai hitung 0 (model kering dalam W) dihitung sebagai 'model kering': dilaporkan, tidak masuk ln, tetapi masuk syarat fraksi_kering_maks.",
+  "alasan_W": "Koordinat NCEI dibulatkan 0,001 derajat (sekitar 110 m) dan grid L3 sekitar 30 m: 2 km menyerap galat posisi tanpa meleburkan teluk berbeda; 1 dan 5 km hanya kepekaan. Keputusan agen, tertulis sebelum uji.",
+  "bias": "Nilai terbesar dalam W condong ke atas (membuat K turun, menjauhi batas bawah 0,95; bersama bias +12% mesin K10 melawan lulus); ditulis di bab Metode."
+ },
+ "metrik": {
+  "Ri": "H_obs,i / H_hit,i",
+  "K": "exp(rata-rata ln Ri)",
+  "kappa": "exp(simpangan baku ln Ri), simpangan baku populasi, pembagi n",
+  "E": "akar(rata-rata (ln Ri)^2)",
+  "selisih_berpasangan": "d_i = |ln R_model,i| - |ln R_abe,i| per titik; dirata-ratakan per kejadian; negatif = model lebih dekat ke amatan",
+  "bagi_nol": "Ri tidak didefinisikan bila H_hit <= 0: titik itu 'model kering', null, tidak pernah 1 dan tidak pernah dibuang diam-diam"
+ },
+ "pasangan_besaran": {
+  "runup": {
+   "jenis_ukur_NCEI": [
+    4,
+    5
+   ],
+   "model": "R_hitung (batas basah maksimum) di titik hitung",
+   "pembanding_abe": "hi = 2 x Hr (Tsunami.tinggi)",
+   "vonis": true,
+   "catatan": "Makna kode typeMeasurementId 4 dan 5 sebagai survei lapangan run-up: [periksa] daftar kode NCEI tidak dapat diunduh di sesi ini (API tidak memuat daftar kode, dokumen resmi 404); kode 3 = pelampung dalam laut dan 2 = pengukur pasang sesuai tsunami_runup.py. Bila pemeriksaan mengubah pemetaan, wajib amandemen sebelum uji dibuka (P-TS14-2)."
+  },
+  "tinggi_pantai": {
+   "jenis_ukur_NCEI": [
+    2
+   ],
+   "model": "eta maksimum di garis pantai",
+   "pembanding_abe": "m = Hr",
+   "vonis": true,
+   "catatan": "Titik jenis 2 per kejadian paling banyak 5 (di bawah n_titik_min): pasangan ini TIDAK menghasilkan vonis pada data sekarang; dilaporkan tanpa K dan kappa."
+  },
+  "tanpa_vonis": "jenis_ukur 1 (saksi mata), 10, kosong atau kode lain: dilaporkan tersendiri, tidak masuk vonis, tidak dicampur dengan pasangan di atas. Jenis dicampur = dilarang."
+ },
+ "aturan_terbit": {
+  "pilihan": "a",
+  "bunyi": "Tiap kejadian uji kelas A harus lulus ambang K dan kappa SENDIRI-SENDIRI. Tidak ada rata-rata gabungan antarkejadian (alternatif b ditolak: rata-rata menutup kejadian gagal).",
+  "dipilih_sebelum_uji": true
+ },
+ "ambang": {
+  "K": [
+   0.95,
+   1.05
+  ],
+  "kappa_maks": 1.45,
+  "dibanding_abe": "selang 95% bootstrap selisih berpasangan per kejadian (resampel kejadian, bukan titik) tidak memotong nol dan batas atasnya di bawah nol",
+  "bootstrap": {
+   "ulangan": 10000,
+   "benih": 11
+  },
+  "sumber": "JSCE (2002), Tsunami Assessment Method for Nuclear Power Plants in Japan, bagian 3.1(4) dan Descriptions: 0,95 < K < 1,05 dan kappa < 1,45; mengutip Aida (1977/1978). Diverifikasi 25 Nov 2026 pada teks PDF-nya.",
+  "url": "https://www.jsce.or.jp/committee/ceofnp/Tsunami/eng/JSCE_Tsunami_060519.pdf",
+  "catatan_sumber": "JSCE menyebutnya aturan praktis (rule of thumb) untuk model sesar yang disetel pada kejadian, di area luas; di sini dipakai sebagai ambang uji buta, lebih keras dari maksud aslinya. Aida dikutip JSCE sebagai 1977, di dokumen repo Aida 1978: [periksa] tahun. Teks JSCE menulis 'K < 1,45' di satu tempat dan 'kappa < 1,45' di tempat lain: dipakai kappa."
+ },
+ "n_min": {
+  "n_min_kejadian": 8,
+  "n_titik_min": 10,
+  "alasan": "n_min_kejadian = 8 dari Q8 (dikunci pemilik 25 Nov 2026). n_titik_min = 10 titik berpasangan per kejadian per jenis besaran: di bawahnya K dan kappa tidak stabil dan kejadian dinilai 'tidak cukup titik', bukan lulus atau gagal. Keputusan agen.",
+  "fraksi_kering_maks": 0.25,
+  "alasan_kering": "Model yang mengeringkan lebih dari 25% titik amatan tidak lulus walau K dan kappa dari sisanya bagus (K dan kappa tidak melihat titik kering). Keputusan agen, bisa dibatalkan pemilik sebelum TS-15.",
+  "hitungan_titik_dari_berkas": "public/gempa/data/tsunami_runup.json; hanya jumlah titik, tanpa hitungan genangan"
+ },
+ "aturan_pembuangan": {
+  "layak": "titik masuk bila validitas = 4, doubtful = 'n', alat kosong, tinggi_m ada dan > 0, lat dan lon ada",
+  "pelampung": "alat = 'pelampung' (DART, kode 3 atau nama D5xxxx) selalu dibuang; itu tinggi laut dalam, bukan run-up",
+  "validitas_dan_ragu": "validitas bukan 4 atau doubtful bukan 'n' dibuang dengan hitungan dilaporkan",
+  "tinggi_kosong_atau_nol": "tinggi_m kosong (BUKAN nol) dibuang dan dihitung; 0 dibuang sebagai 'tidak ada run-up tercatat' karena ln 0 tidak terdefinisi",
+  "babi": "titik Flores 1992 yang lokasinya memuat BABI dikeluarkan dari vonis dan dilaporkan tersendiri: run-up Pulau Babi dikenal diperkuat longsor lokal [periksa: Imamura dkk. 1995; Yeh dkk. 1993]",
+  "ragu_lain": "titik meragukan dibuang HANYA dengan alasan tertulis yang ditetapkan sekarang (daftar di atas); tidak ada pembuangan baru sesudah uji dibuka",
+  "dilarang_sesudah_uji": true
+ },
+ "mesin": {
+  "nama": "geoclaw",
+  "versi": "5.14.0",
+  "lisensi": "BSD-3-Clause",
+  "fortran": "gfortran (Homebrew GCC 16.2.0)",
+  "sumber_awal": "Okada 1985, slip seragam, scripts/gempa/tsunami_sumber.py; hash berkas itu dan tsunami_hitung.py tercatat di tsunami_ujibalik.sidik (berkas kode terkunci); hash masukan run-up juga di sidik",
+  "mesin_diganti": "Versi mesin atau sumber Okada berubah = sidik berubah = hitungan menolak jalan."
+ },
+ "batas_mesin": {
+  "K9": "BP04 gelombang pecah dikeluarkan dari syarat lulus mesin dan hanya dilaporkan; mesin diuji untuk gelombang tak pecah saja (H/d < 0,045, lereng 1:19,85). Gelombang pecah di luar cakupan: kejadian atau titik yang bergantung pada gelombang pecah dilaporkan sebagai batas, tidak dijadikan bukti lulus. Kata 'tervalidasi NOAA' tidak dipakai.",
+  "K10": "Mesin tanpa disipasi: BP04 tak pecah +12,2% lawan lab (sama dengan GeoClaw di lokakarya NTHMP 2011), diterima sebagai batas, tidak disebut lulus 5%. Manning tidak masuk mesin. Gerbang 'uji lab' menjaga galat tak pecah tidak melewati 13%. Konsekuensi untuk uji balik: tinggi hitung condong ke atas sekitar +12% pada lereng landai tak pecah, dibaca bersama bias nilai terbesar dalam W.",
+  "label": "Genangan tetap hipotesis sampai ambang di atas, n_min_kejadian, dan uji kepekaan tingkat B terpenuhi (ALGORITMA 10); tidak pernah akurat, andal, atau aman."
+ },
+ "kepekaan_wajib_tanpa_vonis": [
+  "W 1 km dan 5 km",
+  "DEM berbeda pada satu pantai",
+  "sumber seragam lawan heterogen (Q10)",
+  "tingkat B: skenario terdekat lawan hitungan langsung"
+ ],
+ "larangan": [
+  "tidak menghitung genangan kejadian uji sebelum berkas ini disidik dan dicek",
+  "kejadian pengembangan tidak ikut vonis",
+  "kelas B tidak dipakai menyatakan model lulus"
+ ]
+}

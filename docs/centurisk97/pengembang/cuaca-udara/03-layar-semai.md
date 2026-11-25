@@ -9,8 +9,8 @@ Halaman ini menjelaskan seksi Peluang semai di halaman Operasi.
 
 Langkah pakai (Pos komando):
 
-1. Buka seksi. Bilah sumber menampilkan jumlah piksel VIIRS dan satelit yang masuk, putaran ECMWF IFS yang dipakai, dan umur data. Pita kuning muncul bila titik api lebih tua dari 6 jam atau berkas prakiraan lebih tua dari 13 jam.
-2. Geser bilah jam atau tekan putar. Bilah berhenti di langkah model (kelipatan 3 jam). Lapisan peta: titik api (merah di atas 40 MW, oranye di bawahnya), awan layak semai, prakiraan asap, angin pengarah 850 sampai 700 hPa, angin asap, zona, kota dan base. Kotak Lapisan dapat digeser lewat kepalanya.
+1. Buka seksi. Bilah sumber menampilkan jumlah piksel VIIRS dan satelit yang masuk, putaran ECMWF IFS yang dipakai, dan umur data. Pita kuning muncul bila titik panas lebih tua dari 6 jam atau berkas prakiraan lebih tua dari 13 jam.
+2. Geser bilah jam atau tekan putar. Bilah berhenti di langkah model (kelipatan 3 jam). Lapisan peta: titik panas (merah di atas 40 MW, oranye di bawahnya), awan layak semai, prakiraan asap, angin pengarah 850 sampai 700 hPa, angin asap, zona, kota dan base. Kotak Lapisan dapat digeser lewat kepalanya.
 3. Kartu **Rekomendasi** menampilkan zona teratas: provinsi atau kota terdekat, skor 0 sampai 1, jendela terbang jam setempat, koordinat derajat-menit-detik dan desimal (klik untuk menyalin), alasan (C kualitas awan, F daya api, T jarak kota, B base), ketinggian, bahan, dan perkiraan jumlah.
 4. Kartu **Zona usulan 24 jam** memuat sampai lima zona A sampai E; klik baris memindahkan peta dan bilah jam. Pil "hati-hati" menandai MUCAPE sangat tinggi; pil "sudah target" menandai zona yang sudah dijadikan target renlap.
 5. Kartu **Peringatan asap**: hijau bila asap tidak menyeberang ke negara lain dalam 24 jam; merah bila menyeberang, disertai kota di bawah asap dengan status "sudah berasap" atau "tiba +N jam", tingkat, asal cluster, dan arah datang.

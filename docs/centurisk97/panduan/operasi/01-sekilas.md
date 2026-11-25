@@ -4,7 +4,7 @@ Halaman ini menjelaskan untuk apa menu Operasi dipakai dan cara membukanya, memi
 
 ## Sekilas
 
-Menu Operasi (`centurisk97.id/operasi`) adalah layar kerja untuk mengendalikan operasi lapangan. Layar ini menjawab pertanyaan yang biasanya tersebar di grup percakapan: armada udara mana yang sudah melapor hari ini, pangkalan mana yang tidak punya armada siap, titik api mana yang berada di luar jangkauan armada, ke mana armada sebaiknya terbang, dan apa hasil tiap aksi penyiraman air dari udara.
+Menu Operasi (`centurisk97.id/operasi`) adalah layar kerja untuk mengendalikan operasi lapangan. Layar ini menjawab pertanyaan yang biasanya tersebar di grup percakapan: armada udara mana yang sudah melapor hari ini, pangkalan mana yang tidak punya armada siap, titik panas mana yang berada di luar jangkauan armada, ke mana armada sebaiknya terbang, dan apa hasil tiap aksi penyiraman air dari udara.
 
 Layar ini juga memuat rencana lapangan (disingkat renlap, yaitu daftar lokasi yang diusulkan untuk didatangi pada satu hari) dan pencatatan tindakan untuk banjir, longsor, gempa, gunung api, dan bencana lain. Semua keluaran modul ini berupa usulan dan perkiraan. Keputusan terbang selalu ada pada pilot dan komando operasi, bukan pada sistem.
 

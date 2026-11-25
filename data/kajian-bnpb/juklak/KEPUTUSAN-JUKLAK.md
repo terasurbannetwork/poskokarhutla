@@ -40,3 +40,11 @@ Dokumen ini menang atas dokumen lain di folder ini. Hanya pemilik yang boleh men
 - Q7. Format nomor register tidak ditentukan juklak. Saat ini teks bebas dengan keunikan dijaga D1.
 - Q8. Masa simpan identitas pelapor tidak disebut juklak maupun di sini. Berapa lama, dan siapa memusnahkan?
 - Q9. Juklak 9/2023 Format 4 menulis "menikah di usia dini (> 19 tahun)" sedangkan Format 2 "kurang dari 19 tahun"; petunjuk Format 2 "anak-anak (5-12 bulan)" sedangkan formulirnya "5-12 Tahun". Meja memakai "di bawah 19 tahun" dan "5-12 tahun". Benar?
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q8: identitas pelapor pengaduan disimpan **2 tahun**, lalu dimusnahkan.
+

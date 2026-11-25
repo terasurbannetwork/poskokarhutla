@@ -84,3 +84,9 @@ Pemilik, 24 Nov 2026, sesudah membandingkan sistem kita dengan storymap itu: "ga
 | Q22 | Validasi lawan inventaris resmi (PVMBG, BIG, peneliti). | **[BAWAAN SEMENTARA]** HH-02 memeriksa apa yang ada (tanggapan PVMBG di `scripts/longsor/tanggapan_pvmbg.py` sudah dipanen `longsor`); bila ada untuk kejadian itu dipakai sebagai pembanding berdampingan; bila tidak, hanya inventaris manual Q19. Tanpa angka luas longsor sebagai fakta sebelum dibandingkan. | HH-18, HH-19 |
 | Q23 | Bentuk keluaran: poligon atau sel. | **[BAWAAN SEMENTARA]** objek disederhanakan menjadi poligon kasar dan titik pusat di R2 di balik sesi (staf), publik tidak. Sel 110 m untuk agregat peta. | HH-18 |
 | Q24 | Boleh inventaris dipakai `longsor` sebagai label uji balik, dan siapa menimbang biasnya? | **[BAWAAN SEMENTARA]** ya sesudah vonis kalibrasi; `longsor` menulis pra-registrasi sendiri; label citra dan DIBI tidak dijumlah. | HH-21 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

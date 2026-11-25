@@ -228,7 +228,8 @@ Angka di bawah dikutip dari unggahannya, belum diperiksa ke makalah asli kecuali
   - "rawan" disimpulkan dari bentuk DAS, tanpa dicocokkan dengan DAS yang benar-benar terkena bandang.
 - Untuk kita: relief ratio per DAS (beda tinggi dibagi panjang DAS) mudah dihitung sendiri dari DEMNAS atau GLO-30 dan
   HydroBASINS, yang sudah dipakai `scripts/air/neraca/**`. Layak diuji sebagai faktor bandang di
-  `PRAREG-BANDANG.md`, dengan label kejadian bandang DIBI, bukan dari tabel ini. Jarak ke sesar sudah ada di model
+  `PRAREG-BANDANG.md`, dengan label kejadian bandang DIBI, bukan dari tabel ini. Sudah diuji 25 November 2026 (§4.6):
+  tidak lulus melawan riwayat bandang kab. Jarak ke sesar sudah ada di model
   longsor kita (`scripts/longsor/model.py`); knickpoint (lompatan lebar lembah) bisa diturunkan dari DEM yang sama
   dan diuji bersama relief ratio.
 
@@ -241,7 +242,7 @@ Angka di bawah dikutip dari unggahannya, belum diperiksa ke makalah asli kecuali
 4. Hujan rencana periode ulang BRIN untuk Padang sebagai pembanding ambang persentil kita.
 5. Hipotesis "sesudah api, banjir lebih sering" per kabupaten, dengan pra-registrasi sebelum data dibuka.
 6. Pemisahan label pluvial dan fluvial, bila sumber labelnya memungkinkan.
-7. Relief ratio per DAS sebagai calon faktor banjir bandang, dihitung sendiri, diuji lewat pra-registrasi.
+7. Relief ratio per DAS sebagai calon faktor banjir bandang: sudah diuji (§4.6), tidak lulus melawan riwayat kab.
 
 Bahan longsor dari kiriman yang sama (RUSLE Cisarua, MaxEnt Karangkobar, DAS Kuranji) dinilai di
 `scripts/longsor/RISET-KAJIAN-LUAR.md`.
@@ -293,6 +294,63 @@ Vonis: gagal. HAND kalah dari pembanding sel terendah di semua tingkat muka air 
 GLAD: di dataran pesisir timur Sumatra, tinggi mutlak menebak genangan sama baiknya atau lebih baik dari tinggi di atas
 alur. Label "hipotesis" pada skenario HAND di layar tetap. Skenario debit tidak diuji karena Q2 GloFAS belum ada untuk
 titik di Sumatra.
+
+### 4.3 Hujan rencana Padang: ERA5 lawan stasiun BRIN
+
+Hujan harian ERA5 (Open-Meteo, sel di 0,92 LS 100,40 BT, 1995–2025, 31 maksimum tahunan) dihitung dengan cara yang sama
+dengan BRIN (Log-Pearson III, koefisien kemencengan -0,01).
+
+| Periode ulang | ERA5 | Stasiun BRIN | ERA5 lebih rendah |
+| --- | --- | --- | --- |
+| 2 tahun | 137,0 mm | 160,87 mm | 15% |
+| 10 tahun | 192,3 mm | 255,50 mm | 25% |
+| 50 tahun | 235,8 mm | 334,14 mm | 29% |
+
+Kekurangan ERA5 makin besar untuk hujan yang makin langka. Ini memperkuat catatan replay Jabodetabek (hujan ERA5
+kurang dari alat ukur di hulu) dan menjadi alasan ambang hujan kita tidak boleh dibandingkan langsung dengan ambang
+stasiun BMKG atau angka kajian berbasis stasiun. Ambang persentil kita belum mencakup Kota Padang (hanya 40 kab
+sampel); Padang Pariaman "awas" 151,1 mm adalah persentil ERA5, bukan periode ulang. Satu kota, satu sel ERA5:
+petunjuk, bukan vonis.
+
+### 4.4 Pemisahan label pluvial dan fluvial
+
+Belum bisa. Groundsource tidak punya atribut jenis atau lama genangan. DIBI hanya membedakan banjir dan bandang.
+Logbook Pusdalops punya lama genangan, yang bisa jadi penanda kasar (genangan dalam hitungan jam cenderung pluvial,
+berhari-hari cenderung fluvial), tetapi baru ada untuk 2025–2026. Dicoba lagi saat logbook sudah mencakup satu
+musim hujan penuh dan bisa dicocokkan ke label kab-hari.
+
+### 4.5 Sesudah api, banjir? (Landscape 360)
+
+Pra-registrasi `PRAREG-API-BANJIR.md`, skrip `scripts/banjir/api_banjir.py`, keluaran
+`public/banjir/data/lab/api_banjir_ringkas.md`. Luas terbakar per kab per tahun tidak ada di repo (hanya per provinsi),
+jadi paparan api diwakili jumlah titik panas MODIS per kab per tahun.
+
+- Data: 223 kab dengan rata-rata 20 titik atau lebih per tahun, 3.345 pasangan kab-tahun, 2008–2022.
+- Cara: tiap kab dibandingkan dengan dirinya sendiri di tahun lain dan dengan kab lain di tahun yang sama. Riwayat
+  banjir kab ikut diperhitungkan.
+- Hasil: satu penggandaan titik panas diikuti perubahan kejadian banjir tahun berikutnya +1,2% (rentang 95%: -0,6%
+  sampai +3,2%). Api menambah penjelasan variasi banjir dalam kab hanya 0,0005.
+- Vonis menurut aturan yang dikunci: tidak terbukti. Kenaikan sebesar yang diklaim (+25%) tidak tampak. Satuannya
+  berbeda (aliran permukaan lawan jumlah kejadian), jadi ini bukan sanggahan langsung.
+- Hasil diulang sekali oleh sesi induk dan keluarannya sama persis.
+
+### 4.6 Relief ratio per DAS sebagai faktor banjir bandang
+
+Pra-registrasi `PRAREG-RELIEF.md`, skrip `scripts/banjir/relief_das.py`, keluaran
+`public/banjir/data/lab/relief_das_ringkas.md`. Relief ratio dihitung sendiri (rumus Schumm) dari GLO-90, untuk sub-DAS
+HydroBASINS level 7 di provinsi Aceh sampai Lampung. Label: DAS yang memuat pusat kecamatan dari kab tercatat bandang
+DIBI 2022 sampai Oktober 2026.
+
+| Skor | AUC | Selang 95% |
+| --- | --- | --- |
+| Relief ratio | 0,73 | 0,61 sampai 0,83 |
+| Riwayat bandang kab 2018–2021 | 0,76 | 0,69 sampai 0,83 |
+| Penduduk | 0,66 | 0,57 sampai 0,78 |
+| Luas DAS | 0,57 | 0,47 sampai 0,68 |
+
+Vonis: tidak lulus. Relief ratio memang membedakan (mengalahkan luas dan penduduk), tetapi tidak mengalahkan riwayat
+kab (selisih -0,03, selang -0,12 sampai 0,05). Karena label hanya sampai kab, uji ini tidak bisa memisahkan "DAS
+curam" dari "kab yang sering tercatat bandang". 169 DAS dinilai, 52 positif. Relief tidak tampil di layar.
 
 ## 5. Aturan yang ditegaskan ulang oleh bahan ini
 

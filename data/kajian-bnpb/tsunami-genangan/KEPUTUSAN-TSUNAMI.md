@@ -19,6 +19,10 @@ Video rujukan pemilik (akun @arvindvazza: simulasi tsunami Anak Krakatau 2018 ke
 | K5 | 23 Nov 2026 (menjawab Q4 dan Q5): "Yes", hitung di mesin lokal pemilik dulu, pustaka skenario di repo dengan anggaran ukuran. GitHub Actions dan R2 hanya fase 3, setelah waktu hitung terukur nyata. |
 | K6 | 23 Nov 2026 (menjawab Q6 dan Q7): "Yes", tiga kotak pertama: Ujung Kulon, Pangandaran sampai Cilacap, Banyuwangi sampai Rajegwesi; pembagian kejadian kelas A dan kelas B diterima. Aturan kelasnya ditegaskan agent: kelas ditentukan dari sifat sumber dan ketersediaan data, tidak dari hasil hitungan (ALGORITMA 8.1). Akibatnya ditulis terbuka di Q17: ketiga kotak itu belum punya kejadian uji kelas A. |
 | K7 | 23 Nov 2026 (menjawab Q14 dan Q15): pemilik menjawab "Yes" atas pertanyaan pilihan, jadi yang diterima adalah bawaan sementara: saat BMKG memberi peringatan aktif, simulasi tetap tampil di bawah pita resmi dengan label; peta genangan berhipotesis mengikuti hak tab Simulasi sekarang (publik), dengan label hipotesis dan kalimat batas. |
+| K8 | 25 Nov 2026: "Tetap wajib lulus". Pemilik menolak mengeluarkan BP04 gelombang pecah dari syarat validasi; TS-10 baru lulus bila tak pecah dalam 5% dan pecah dalam 10% dari data lab (PMEL-135), tanpa menyetel parameter ke data lab. Manning tetap di luar gerbang sampai ada keputusan lain. |
+| K9 | 25 Nov 2026: "Tinjau ulang K8", sesudah pencarian sumber (RISET 4.2.1) tidak menemukan ambang tebal air run-up di sumber primer dan lokakarya NTHMP 2011 menjadikan kasus pecah opsional. K8 diganti: BP04 gelombang pecah dikeluarkan dari syarat lulus TS-10 dan hanya dilaporkan; mesin dinyatakan diuji untuk gelombang tak pecah saja (H/d < 0,045 pada lereng 1:19,85). Kata "tervalidasi NOAA" dan klaim untuk gelombang pecah tidak dipakai di Metode atau layar. BP04 tak pecah tetap wajib dalam 5%, tanpa menyetel. |
+| K10 | 25 Nov 2026: "Terima batas mesin". BP04 tak pecah tanpa gesekan (+12,2% lawan lab di 2D, sama dengan GeoClaw di lokakarya NTHMP 2011) diterima sebagai batas mesin tanpa disipasi, dilaporkan terbuka bersama ketidakpastian ambang basah dan sebaran lab sekitar 3%. Tidak disebut lulus 5% dan tidak disebut tervalidasi NOAA. Manning tidak masuk mesin. Gerbang `uji lab` menjaga galat tak pecah tidak memburuk melewati 13%. Genangan tetap berlabel hipotesis sampai uji balik kelas A (KEPUTUSAN, AGENTS §2.40). |
+| K11 | 25 Nov 2026 (menjawab P-TS14-1): "Tetap kelas A". Flores 1992 tetap satu-satunya kejadian uji kelas A walau NCEI mengode penyebabnya gempa dan longsor (kode 3); keberatan ini ditulis terbuka di Metode, dan 8 titik longsor lokal Pulau Babi tetap di luar vonis sesuai kriteria beku (sidik 035a4e66a75674c2). Kriteria tidak berubah. |
 
 ## Keputusan rancangan (agent, bisa dibatalkan pemilik)
 
@@ -63,3 +67,10 @@ Video rujukan pemilik (akun @arvindvazza: simulasi tsunami Anak Krakatau 2018 ke
 | Q15 | Siapa boleh melihat peta genangan: publik atau staf? | **Terjawab K7** (bawaan sementara diterima): mengikuti hak tab Simulasi yang berlaku sekarang (publik), dengan label hipotesis dan kalimat batas di tiap tampilan. | TS-18 |
 | Q16 | Tombol bagikan untuk peta genangan? | **[BAWAAN SEMENTARA]** Tidak ada di fase 1. Bila nanti ada, gambar yang dibagikan memuat label simulasi, tingkat (A atau B), dan jam hitung di dalam gambarnya. | TS-22 |
 | Q17 | Tiga kotak pertama (K6) tidak punya kejadian uji kelas A, sehingga label "teruji" tidak berlaku di sana. Tambah kotak untuk kejadian kelas A (usulan: Aceh Besar untuk Aceh 2004, pesisir utara Flores untuk Flores 1992)? | **[BAWAAN SEMENTARA]** Ya, sebagai kotak uji dengan DEM yang tersedia (GLO-30 bila lembar DEMNAS belum ada); tidak ditampilkan di pemilih publik sampai hasilnya ada. | TS-05, TS-14 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q8: ambang Aida K dan kappa (JSCE), n_min 8, dikunci.

@@ -49,3 +49,14 @@
   .tren-sumber .seg{flex-wrap:wrap;border-radius:18px}
   .tren-sumber .seg button{flex:1 1 auto}
 }
+/* grafik tren jangka panjang (tren.js, F-27): warna hanya dari token tema */
+.tr-svg{display:block;width:100%;height:auto;color:var(--ink2)}
+.tr-svg .tr-grid{stroke:var(--line);stroke-width:1}
+.tr-svg .tr-sb{font-size:var(--fs-1);fill:currentColor}
+.tr-svg .tr-deret{fill:none;stroke:currentColor;stroke-width:1.2;opacity:.75}
+.tr-svg .tr-pita{fill:color-mix(in oklch, var(--brand2) 20%, transparent);stroke:none}
+.tr-svg .tr-garis{fill:none;stroke:var(--brand2);stroke-width:2.4}
+.tr-svg .tr-cat{font-size:var(--fs-1);font-style:italic;fill:currentColor}
+.tr-svg .tr-hit{fill:transparent;cursor:crosshair}
+.tr-svg .tr-hit:hover{fill:color-mix(in oklch, var(--brand2) 14%, transparent)}
+.tr-ket{margin:8px 0 0;font-size:var(--fs-2);color:var(--ink2)}

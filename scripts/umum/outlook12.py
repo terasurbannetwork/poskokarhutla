@@ -134,6 +134,51 @@ def deret_karhutla():
     return out
 
 
+# ---------------------------------------------------------------- tren jangka panjang (F-27, PB-53)
+def seri_bulan(rows, jenis, kini=None):
+    """Deret bulanan berurutan jumlah kejadian satu jenis dari bulan kejadian pertama sampai bulan sebelum bulan berjalan
+    (bulan berjalan belum lengkap) atau bulan kejadian terakhir. -> (mulai 'YYYY-MM', [jumlah]) atau (None, [])."""
+    kini = kini or dt.date.today()
+    hit = {}
+    for j, p, n, t, nk, mt in rows:
+        if jenis in j.split("+"):
+            k = int(t[:4]) * 12 + int(t[5:7]) - 1
+            hit[k] = hit.get(k, 0) + nk
+    akhir = min(kini.year * 12 + kini.month - 2, max(hit, default=0))   # tidak menambal bulan sesudah data terakhir dengan nol
+    if not hit or min(hit) > akhir:
+        return None, []
+    a = min(hit)
+    return f"{a // 12}-{a % 12 + 1:02d}", [hit.get(i, 0) for i in range(a, akhir + 1)]
+
+
+def tren_bahaya(selang, rows, label):
+    """Deret bulanan yang ada di repo + regresi garis lurus dan selang 95% (selang.tren_linear; < 60 bulan: tanpa garis).
+    Deskriptif, bukan prakiraan. DIBI ditandai pengamat_berubah: cakupan pencatatan naik dari tahun ke tahun."""
+    out = []
+    for j in ("banjir", "longsor", "cuaca", "kering"):
+        mulai, v = seri_bulan(rows, j)
+        if v:
+            out.append({"bahaya": j, "nama": NAMA[j], "satuan": "kejadian", "sumber": label, "mulai": mulai, "nilai": v,
+                        "pengamat_berubah": "Cakupan pencatatan DIBI naik dari tahun ke tahun; garis naik belum tentu berarti bencana bertambah",
+                        "regresi": selang.tren_linear(v)})
+    kh = deret_karhutla()
+    if kh:
+        th = sorted(kh)
+        v = [kh[y][m] for y in th for m in range(12)]
+        out.append({"bahaya": "karhutla", "nama": NAMA["karhutla"], "satuan": "titik panas", "mulai": f"{th[0]}-01", "nilai": v,
+                    "sumber": "NASA FIRMS MODIS, jumlah titik panas nasional per bulan (public/data/sejarah_modis.json)",
+                    "pengamat_berubah": "Orbit satelit Terra dan Aqua bergeser sejak sekitar 2020; jumlah antar-tahun tidak sepenuhnya sebanding",
+                    "regresi": selang.tren_linear(v)})
+    gm = baca(GEMPA)
+    if gm:
+        g = [["gempa", "", "", w[:10], 1, 0] for w, la, lo, dalam, m, pv in gm["baris"] if m >= 5.0 and w[:4] >= "1990"]
+        mulai, v = seri_bulan([["gempa", "", "", "1990-01-01", 0, 0]] + g, "gempa")   # baris nol: deret mulai Jan 1990
+        out.append({"bahaya": "gempa_m5", "nama": "Gempa M5+", "satuan": "gempa", "mulai": mulai, "nilai": v,
+                    "sumber": "USGS FDSN M>=5 sejak 1990 (public/gempa/data/riwayat_m5.json); gempa susulan ikut terhitung",
+                    "regresi": selang.tren_linear(v)})
+    return out
+
+
 def laju_gempa():
     """Satu sumber dengan peluang_gempa.py: public/gempa/data/laju.json (USGS M>=5, declustering Gardner-Knopoff, dangkal <=70 km)."""
     d = baca(LAJU)
@@ -426,6 +471,7 @@ def bangun():
            "berantai": {"aturan": f"A di provinsi p, lalu B di p dalam 1-{JENDELA_HARI} hari. Pembanding: B diundi ulang di dalam bulan kalender yang sama (musim terjaga), 20 permutasi, benih tetap; lift = frekuensi teramati / rerata permutasi. Tampil bila lift >= 1,5 dan tak ada permutasi yang menyamai (p_perm = 1/21); urut lift.",
                         "jumlah_hari_data": n_hari, "pasangan": ber, "tidak_lolos": ber_lain},
            "uji_balik": uj,
+           "tren": tren_bahaya(_muat("umum_selang_outlook", "scripts/umum/selang.py"), rows, label),
            "batasan": [
                "Pendorong 12 bulan ke depan = persistensi nilai terakhir (lihat iklim_outlook.json); bila El Nino/IOD berubah, tahun pembanding berubah.",
                "Tahun pembanding hanya 5 tahun dari 18 (DIBI 2008-2025) atau 24 (MODIS 2002-2025): satu tahun luar biasa menggeser angka. Uji balik leave-one-out menentukan apakah analog dipakai.",
@@ -498,6 +544,15 @@ def uji():
     ev2 = peristiwa([["banjir+longsor", "11", "K", "2020-01-01", 1, 0]], [], {})
     assert set(j for j, _ in ev2) == {"banjir", "longsor"}
     assert bulan_berikut()[0] > (dt.date.today().year, dt.date.today().month)
+    # tren F-27: deret bulanan tanpa celah, bulan berjalan dibuang, < 60 bulan tanpa garis
+    sl = _muat("umum_selang_outlook_uji", "scripts/umum/selang.py")
+    rw = [["banjir+longsor", "11", "K", "2020-01-15", 2, 0], ["banjir", "11", "K", "2020-03-02", 1, 0], ["banjir", "11", "K", "2026-11-03", 1, 0]]
+    m0, v0 = seri_bulan(rw, "banjir", dt.date(2026, 11, 20))
+    assert m0 == "2020-01" and v0[:3] == [2, 0, 1] and len(v0) == 82 and v0[-1] == 0          # Nov 2026 berjalan: dibuang
+    assert len(seri_bulan(rw[:2], "banjir", dt.date(2026, 11, 20))[1]) == 3                    # tanpa ekor nol sesudah data terakhir
+    assert seri_bulan(rw, "longsor", dt.date(2020, 3, 1)) == ("2020-01", [2]) and seri_bulan(rw, "cuaca") == (None, [])
+    assert sl.tren_linear(seri_bulan(rw, "longsor", dt.date(2023, 1, 1))[1])["alasan"] == "deret terlalu pendek"   # 36 bulan
+    assert sl.tren_linear(v0)["cukup"]
     print("outlook12 uji: lulus")
 
 

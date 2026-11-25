@@ -3,9 +3,8 @@
 (() => {
   /* ?ke= hanya jalur di situs sendiri: awalan satu "/", bukan "//" atau "/\", tanpa karakter kontrol atau spasi (sama dengan tujuan() src/statistik.js) */
   const jalurAman = k => typeof k === "string" && /^\/(?![\/\\])[^\x00-\x20\x7f]*$/.test(k) ? k : "";
-  /* pintu sandi lama yang cocok dengan halaman tujuan (pintu lama tidak ditutup, KEPUTUSAN D3); ke dibuang untuk tiga pintu itu karena halaman sandinya sudah tahu tujuannya sendiri */
-  const pintuSandi = ke => /^\/instansi(?:[\/?#]|$)/.test(ke) ? "/instansi" : /^\/pendataan(?:[\/?#]|$)/.test(ke) ? "/pendataan"
-    : /^\/kemitraan(?:[\/?#]|$)/.test(ke) ? "/kemitraan/masuk" : "/admin/masuk" + (ke ? "?ke=" + encodeURIComponent(ke) : "");
+  /* tautan "Masuk dengan sandi": form sandi di halaman ini (#sandi, K21: staf, admin, pemirsa, instansi), kecuali akun pendataan dan koordinator kampus yang sandinya di modulnya sendiri */
+  const pintuSandi = ke => /^\/pendataan(?:[\/?#]|$)/.test(ke) ? "/pendataan" : /^\/kemitraan(?:[\/?#]|$)/.test(ke) ? "/kemitraan/masuk" : "#sandi";
   const digit = t => String(t ?? "").replace(/\D/g, "");
   const nomorSah = t => { const d = digit(t); return d.length >= 9 && d.length <= 15 && /^(?:0|62)8/.test(d); };
   const kalimat = t => { const s = String(t || "").trim(); return s ? s[0].toUpperCase() + s.slice(1) + (/[.!?]$/.test(s) ? "" : ".") : ""; };
@@ -39,6 +38,7 @@
     email: {f: $("fEmail"), h: "Kode lewat email", info: "Ketik alamat email akunmu. Kode dikirim bila alamat itu cocok dengan akun bernomor ini."},
     sandibaru: {f: $("fSandiBaru"), h: "Atur sandi", info: ""},
     hapus: {f: $("fHapus"), h: "Hapus akun", info: "Penghapusan tidak bisa dibatalkan."},
+    akun: {f: $("fAkun"), h: "Masuk dengan sandi", info: "Untuk staf BNPB, BPBD, dan instansi yang punya username dan sandi."},
   };
   let aktif = "nomor", nomor = "", pilihStaf = null, hitung = null, gambarUlang = null;
   let emailMode = false, segarNo = 0, kirimWa = 0, saluranEmail = false, waMati = false, emailDari = "nomor", sandiTarget = null, akunKini = {sandi: [], anggotaN: 0};
@@ -139,7 +139,7 @@
   /* ---------- kode lewat email sah (D21): hanya akun yang emailnya cocok terbuka; tanpa akun umum, tanpa halaman akun ---------- */
   function sesudahEmail(ruang) {
     if (!ruang.length) { layar("nomor"); return pesan("Tidak ada akun yang bisa dibuka lewat email ini."); }
-    if (ruang.length === 1) return pergi(ruang[0].butuh_sandi ? ruang[0].ke : ke || ruang[0].ke);
+    if (ruang.length === 1) return ruang[0].butuh_sandi ? bukaAkun() : pergi(ke || ruang[0].ke);
     emailMode = true; daftarRuang(ruang, []); layar("ruang");
   }
 
@@ -166,7 +166,7 @@
     }
   }
   async function pilih(r, b) {
-    if (emailMode) return pergi(r.ke);   // lewat email: sesi sudah terbit, staf ke pintu sandi lama
+    if (emailMode) return r.butuh_sandi ? bukaAkun() : pergi(r.ke);   // lewat email: sesi sudah terbit, staf ke form sandi
     if (r.butuh_sandi) { pilihStaf = r.pilih || null; layar("sandi", `${r.nama_ruang}. Masukkan sandi akun stafmu.`); return; }
     if (!r.perlu_pilih) return pergi(r.ke);
     b.disabled = true; pesan("");
@@ -230,7 +230,7 @@
   /* sisa data orang sebelumnya tidak boleh tinggal di halaman sesudah keluar (peramban bersama) */
   function bersih() {
     clearInterval(hitung); gambarUlang = null; nomor = ""; pilihStaf = null; kirimWa = 0; emailMode = false; segarNo++; sandiTarget = null; akunKini = {sandi: [], anggotaN: 0};
-    for (const i of ["iNomor", "iKode", "iSandi", "iNama", "iKab", "iSandiBaru", "iEmail"]) $(i).value = "";
+    for (const i of ["iNomor", "iKode", "iSandi", "iNama", "iKab", "iSandiBaru", "iEmail", "iAkun", "iSandiAkun"]) $(i).value = "";
     $("oSandiHasil").textContent = ""; $("daftarSandi").replaceChildren(); $("daftarMenunggu").replaceChildren(); $("vAkun").hidden = true;
     $("iProv").value = ""; $("iSetuju").checked = false; $("daftarRuang").replaceChildren(); $("daftarKab").replaceChildren();
     $("daftarAkun").replaceChildren(); $("vGabung").hidden = true; $("iGProv").value = ""; $("iGKab").replaceChildren(); gabungNo++;
@@ -322,6 +322,15 @@
     pergi(r.j.wajib_ganti ? r.j.ke : ke || r.j.ke);
   });
 
+  /* ---------- sandi (K21): form biasa POST /masuk, logika server sama dengan /admin/masuk; galat dari server di <body data-galat> ---------- */
+  let galatSandi = document.body.dataset.galat || "";
+  $("fAkun").action = "/masuk" + (ke ? "?ke=" + encodeURIComponent(ke) : "");
+  function bukaAkun() { layar("akun"); pesan(galatSandi); galatSandi = ""; }
+  window.addEventListener("hashchange", () => { if (location.hash === "#sandi") bukaAkun(); });
+  $("fAkun").addEventListener("submit", () => sibuk($("bAkun"), true, "Memeriksa..."));
+  window.addEventListener("pageshow", e => { if (e.persisted) { sibuk($("bAkun"), false); $("iSandiAkun").value = ""; } });   // kembali lewat tombol Back: tombol hidup lagi, sandi tidak tertinggal
+  $("bAkunKembali").addEventListener("click", () => { history.replaceState(null, "", location.pathname + location.search); layar($("bKeluar").hidden ? "nomor" : "ruang"); });
+
   /* ---------- L4: lengkapi ---------- */
   let kabPerProv = null;
   const muatKab = async () => {
@@ -359,6 +368,10 @@
   /* ---------- keadaan awal ---------- */
   const tutup = () => { $("bKirim").disabled = true; $("bKode").disabled = true; $("bUlang").disabled = true; };   // rute belum aktif: tombol kirim mati, tautan sandi tetap ada
   async function mulai() {
+    await mulaiKode();
+    if (galatSandi || location.hash === "#sandi") bukaAkun();
+  }
+  async function mulaiKode() {
     const ambil = jalur => fetch(jalur).then(async r => ({s: r.status, j: await r.json().catch(() => ({}))}), () => ({s: 0, j: {}}));
     const [saya, saluran] = await Promise.all([ambil("/api/masuk/saya"), ambil("/api/masuk/saluran")]);
     $("mkMuat").hidden = true;

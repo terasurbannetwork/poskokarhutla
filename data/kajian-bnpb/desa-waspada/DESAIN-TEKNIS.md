@@ -8,7 +8,7 @@
 | `scripts/data/desa_waspada_laju.json` | hasil hindcast beku, di-commit | `pipa-data` |
 | `scripts/data/desa_cari.py` | **hanya bila** kelas `Desa` dipindah dari `insiden.py` (DW-01) | `pipa-data` |
 | `data/desa_statik.json` | hasil bulanan `{"tahun": {kd: [tahun_terbakar, tahun_terakhir]}, "gambut": {kd: pecahan}}`; di-commit ke `main` oleh `statis.yml` (seperti `data/riwayat_petak.bin`, dilacak git), bukan cache Actions; ukuran diukur di DW-02 | `pipa-data` |
-| `public/data/desa_waspada.json` | keluaran, publik hanya sesudah Q1 dijawab (sebelumnya di `public/.assetsignore`) | `pipa-data` (publikasi lewat deploy `titik.yml`) |
+| `public/data/desa_waspada/<pulau>.json`, `indeks.json` | keluaran, publik hanya sesudah Q1 dijawab (sebelumnya di `public/.assetsignore`) | `pipa-data` (publikasi lewat deploy `titik.yml`) |
 | `public/desa-waspada/index.html`, `desa-waspada.js`, `desa-waspada.css` | halaman | tanpa pemilik sampai DW-00, lalu `layar-peta` |
 | `tests/desa-waspada/**` | uji murni, hasil manual, hasil uji | tanpa pemilik sampai DW-00, lalu `penulis-gerbang` |
 | `tests/agen/gerbang-desa-waspada.test.mjs` | gerbang berkas publik dan kata | `penulis-gerbang` |
@@ -44,24 +44,28 @@ Struktur hindcast (kelompok dan rasio minggu berikutnya) dan ide `fire_years` be
 
 Pin = titik tengah kotak batas poligon yang digeser ke dalam bila di luar, dibulatkan 0,001 derajat (≈ 110 m). Tidak ada koordinat titik panas individual di berkas ini; titik panas individual sudah publik di `hotspot.json`, tetapi paket ini tidak menambah salinan.
 
-## 3. Kunci JSON `public/data/desa_waspada.json`
+## 3. Kunci JSON `public/data/desa_waspada/` (K8, 25 Nov 2026: per pulau)
+
+Folder berisi `indeks.json` dan tujuh berkas pulau: `sumatera`, `jawa`, `bali-nusa-tenggara`, `kalimantan`, `sulawesi`, `maluku`, `papua`. Pulau ditentukan dari kode provinsi 2 digit (`PULAU` di `desa_waspada.py`: Sumatera 11-19,21; Jawa 31-36; Bali-Nusa Tenggara 51-53; Kalimantan 61-65; Sulawesi 71-76; Maluku 81-82; Papua 91-96). Berkas lama `desa_waspada.json` dihapus; `.gitignore` memuat folder.
+
+`indeks.json` (kecil, dimuat dulu):
 
 ```
 {
-  "versi": 1,
-  "dibuat": "2026-11-24T16:40:00+07:00",
-  "acuan": "<acuan hotspot.json>",
-  "definisi": {"sensor": ["N","N20","N21"], "keyakinan_min": "nominal", "jendela_jam": 168,
-               "tahun_riwayat": [2012, 2025], "min_tahun": 3, "tahun_metode": "petak_terbanyak"},
+  "versi": 2, "dibuat": "2026-11-25T11:02:00+07:00", "acuan": "<acuan hotspot.json>",
+  "definisi": {"sensor": ["N","N20","N21"], "keyakinan_min": "nominal", "jendela_jam": 168, "tahun_riwayat": [2012, 2025], "min_tahun": 3, "tahun_metode": "petak_terbanyak"},
   "kolom": ["kd","desa","kec","kab","prov","titik7","titik24","terakhir","tahun","tahun_akhir","gambut","p1","p2","p3","lon","lat"],
-  "a": {"baris": [[...]], "total": 0, "terpotong": 0, "tanpa_desa": 0},
-  "b": {"baris": [[...]], "total": 0, "terpotong_per_prov": {}},
+  "tanpa_desa": 0,
+  "pulau": {"Sumatera": {"berkas": "sumatera.json", "provinsi": ["11", "..."], "a_total": 0, "a_terpotong": 0, "a_total_per_prov": {"11": 0}, "a_terpotong_per_prov": {},
+                         "b_total": 0, "b_terpotong_per_prov": {"11": 0}, "b_total_per_prov": {"11": 0}}},
   "peluang": {"status": "dinilai|menunggu|tak ada", "dibuat": "<prediksi.json dibuat>", "ket": "peluang kab/kota, bukan desa"},
-  "laju": {"status": "belum|lulus_sementara|lulus|gagal", "musim": 2023, "sensor": "S-NPP", "kelompok": {"a": {...}, "b": {...}, "lain": {...}, "tak_pernah": {...}},
+  "laju": {"status": "belum|lulus|gagal", "musim": 2023, "sensor": "S-NPP", "kelompok": {"a": {...}, "b": {...}, "lain": {...}, "tak_pernah": {...}},
            "kepekaan": {"noaa20": {...}, "metode_alt": {...}}},
   "batasan": ["...", "..."]
 }
 ```
+
+Berkas pulau: `{"versi": 1, "dibuat", "acuan", "pulau": "Sumatera", "kolom": [16 kolom sama], "a": {"baris": [[...]], "total", "terpotong", "total_per_prov", "terpotong_per_prov"}, "b": {"baris": [[...]], "total", "terpotong_per_prov", "total_per_prov"}}`. Batas 450 KB berlaku per berkas pulau; batas B 300 baris per provinsi dan A 2.000 baris per pulau; bila berkas melampaui batas, B dipotong per provinsi lebih dulu, lalu A, dan jumlah terpotong ditulis jujur.
 
 - Baris daftar A: `titik7 ≥ 1`; daftar B: `titik7` dan `titik24` bernilai 0 (nol sah di daftar B karena dihitung dari titik nyata, bukan tak-terukur).
 - `terakhir` string `YYYY-MM-DD HH:MM` WIB atau `null` untuk B.
@@ -114,7 +118,7 @@ Tidak ada. Berkas statis lewat Cloudflare static assets.
 
 | Ukuran | Batas | Pemeriksa |
 | ------ | ----- | --------- |
-| `desa_waspada.json` | ≤ 450 KB (mentah, tanpa gzip) | gerbang |
+| tiap `desa_waspada/<pulau>.json` | ≤ 450 KB (mentah, tanpa gzip) per berkas | gerbang |
 | waktu langkah 3 jam | ≤ 90 detik di Actions | DW-05 ukur dan catat |
 | waktu langkah bulanan | ≤ 20 menit | DW-02 ukur |
 | memori | di bawah 1 GB | DW-02 ukur |

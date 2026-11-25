@@ -324,6 +324,12 @@ jobs:
         timeout-minutes: 25
         run: python3 scripts/umum/internet_padam.py uji && python3 scripts/umum/internet_padam.py
 
+      # PB-61.2, PB-61.10: USGS ground-failure dan moment-tensor per gempa M5+ (tanpa kunci, ~10 permintaan); bergulir di public/data (cache data-)
+      - name: Panen produk USGS per gempa (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 -I scripts/umum/usgs_produk.py uji && python3 -I scripts/umum/usgs_produk.py
+
       - name: Simpan cache mentah sinyal dan IODA
         if: always()
         uses: actions/cache/save@v4
@@ -619,6 +625,28 @@ jobs:
           else echo "::warning title=senyap_lintas::gagal; berkas lamanya dibiarkan"; fi
           python3 scripts/prediksi/kalender.py uji && stabil public/prediksi/data/kalender_risiko.json python3 scripts/prediksi/kalender.py || echo "::warning title=kalender::gagal"
           python3 scripts/bnpb/siaga.py --cek && stabil public/data/bnpb/siaga.json python3 scripts/bnpb/siaga.py || echo "::warning title=siaga::gagal"
+
+      # PB-55 / PB-56 / PB-57 (pipa-umum, tanpa jaringan): ekonomi harian sesudah harga pangan (atas), dibi_kejadian, dan prediksi/terbit.py
+      # (prediksi.yml 01.50 UTC, commit ke main); pencegahan dan prioritas mingguan (Senin UTC) sesudah siaga.json di langkah atas. Keluaran
+      # public/data/ekonomi, pencegahan, prioritas ikut cache data- dan deploy. Yang beda HANYA di cap "dibuat" dipulihkan.
+      - name: Keputusan ekonomi, pencegahan, prioritas per bencana (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          jalan() { # jalan <folder> <skrip>
+            d=$1; s=$2; rm -rf "/tmp/$d.lama"; mkdir -p "public/data/$d"; cp -R "public/data/$d" "/tmp/$d.lama"
+            if python3 -I "$s" uji && python3 "$s" buat; then
+              for f in /tmp/$d.lama/*.json; do
+                [ -f "$f" ] || continue; b="public/data/$d/$(basename "$f")"
+                [ -f "$b" ] && python3 -c "import json,sys; g=lambda p:{k:v for k,v in json.load(open(p)).items() if k!='dibuat'}; sys.exit(0 if g(sys.argv[1])==g(sys.argv[2]) else 1)" "$b" "$f" && cp "$f" "$b"
+              done; true
+            else echo "::warning title=$d::$s gagal; berkas lamanya dibiarkan"; rm -rf "public/data/$d"; cp -R "/tmp/$d.lama" "public/data/$d"; fi
+          }
+          jalan ekonomi scripts/umum/ekonomi.py
+          if [ "$(date -u +%u)" = 1 ] || [ "${{ github.event_name }}" = workflow_dispatch ]; then
+            jalan pencegahan scripts/umum/pencegahan.py
+            jalan prioritas scripts/umum/prioritas.py
+          else echo "pencegahan, prioritas: bukan Senin, dilewati"; fi
 
       # Banjir & longsor vs logbook butuh hujan ERA5 2026 (Open-Meteo archive, berkuota): seminggu sekali (Senin UTC), cache
       # sendiri, tiap minggu menambah kab yang dinilai. Hasil lama dibiarkan bila gagal.

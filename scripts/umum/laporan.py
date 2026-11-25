@@ -398,4 +398,6 @@ if __name__ == "__main__":
         gal = periksa(json.load(open(sys.argv[2], encoding="utf-8")))
         print("\n".join(gal) or "sah")
         sys.exit(1 if gal else 0)
+    if sys.argv[1:] not in ([], ["uji"]):
+        sys.exit("pakai: laporan.py [uji | periksa <berkas.json>]")
     uji()

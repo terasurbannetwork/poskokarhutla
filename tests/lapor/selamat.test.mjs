@@ -146,6 +146,23 @@ uji("bersih-bersih: tanda selamat lebih dari 30 hari dihapus, yang baru tetap", 
   assert.equal(await n("lapor_selamat", "id = 'aaaaaaaaaaaaaaaa'"), 0); assert.equal(await n("lapor_selamat"), ada);
 });
 
+uji("bersih-bersih: orang dicari ditutup lebih dari 2 tahun dianonimkan, yang lain utuh, riwayat tetap (Q67)", async () => {
+  const kini = Date.now(), ins = (id, st, dibuat, ditutup) => DB.prepare("INSERT INTO lapor_cari (id, nomor_pencari, nama_dicari, ciri, lokasi_terakhir, nomor_dicari, hubungan, kab, status, dibuat, ditutup, ditutup_oleh) VALUES (?, ?, 'Budi Lama', 'topi', 'pasar', ?, 'anak', ?, ?, ?, ?, 'uji')")
+    .bind(id, WA, WA_DICARI, KAB, st, dibuat, ditutup).run();
+  await ins("q67lama000000001", "tutup", kini - 900 * 864e5, kini - 800 * 864e5);
+  await ins("q67satu000000001", "tutup", kini - 400 * 864e5, kini - 365 * 864e5);
+  await ins("q67buka000000001", "buka", kini - 1100 * 864e5, null);
+  await DB.prepare("INSERT INTO lapor_cari_riwayat (cari_id, status, catatan, oleh, waktu) VALUES ('q67lama000000001', 'tutup', 'rahasia', 'uji', ?)").bind(kini).run();
+  await bersihkanLapor({DB}, kini);
+  const g = id => DB.prepare("SELECT * FROM lapor_cari WHERE id = ?").bind(id).first();
+  const a = await g("q67lama000000001");
+  assert.equal(a.nama_dicari, "dihapus"); assert.equal(a.nomor_pencari, "62000000000");
+  for (const k of ["ciri", "lokasi_terakhir", "nomor_dicari", "hubungan"]) assert.equal(a[k], null, k);
+  assert.equal(a.kab, KAB); assert.equal(a.status, "tutup"); assert.ok(a.dibuat && a.ditutup);
+  for (const id of ["q67satu000000001", "q67buka000000001"]) { const b = await g(id); assert.equal(b.nama_dicari, "Budi Lama"); assert.equal(b.nomor_pencari, WA); assert.equal(b.ciri, "topi"); }
+  assert.equal(await n("lapor_cari_riwayat", "cari_id = 'q67lama000000001'"), 1, "riwayat tak disentuh");
+});
+
 uji("gerbang teks: kata \"aman\" tidak ada di berkas rute dan pesan fitur ini", async () => {
   assert.doesNotMatch(readFileSync(new URL("../../src/lapor_selamat.js", import.meta.url), "utf8"), /\baman\b/i);
   const semua = [await tanda(H2, {kab: "99.99"}), await tanda(H2, {nama_panggil: ""}), await api("POST", "/api/lapor/selamat", {}), await api("GET", `/api/lapor/s/${"B".repeat(43)}`)];

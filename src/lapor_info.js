@@ -128,7 +128,7 @@ export function buatInfo({muat, wilayah}) {
     const bukanPolisi = /\b(satpol|satuan polisi pamong|pamong praja|dishub|dinas perhubungan)\b/i;
     const pilah = jenis => jenis === "rs" ? (osm.rs || []).filter(x => !pkm.test(x[2] || "")) : jenis === "puskesmas" ? [...(osm.puskesmas || []), ...(osm.rs || []).filter(x => pkm.test(x[2] || ""))]
       : jenis === "polisi" ? (osm.polisi || []).filter(x => !bukanPolisi.test(x[2] || "")) : osm[jenis] || [];
-    const dekat = (jenis, n) => pilah(jenis).map(([la, lo, nama]) => ({nama, lat: la, lon: lo, jarakKm: Math.round(km(lat, lon, la, lo) * 10) / 10})).sort((a, b) => a.jarakKm - b.jarakKm).slice(0, n);
+    const dekat = (jenis, n) => pilah(jenis).map(([la, lo, nama, no]) => ({nama, lat: la, lon: lo, nomor: typeof no === "string" && /^(\+62\d{7,13}|1[345]00\d{2,4})$/.test(no) ? no : null, jarakKm: Math.round(km(lat, lon, la, lo) * 10) / 10})).sort((a, b) => a.jarakKm - b.jarakKm).slice(0, n);
     // kantor kab ini belum terdata di bpbd.json tetapi nomornya tercatat: tampilkan BPBD kab ini, bukan kantor kab tetangga
     // kantor kab tetangga tidak ditampilkan sebagai BPBD warga (Kota Kupang dulu tampil "BPBD Timor Tengah Selatan"): cukup BPBD provinsi
     const bKab = kabIni(bpbdKab) ? bp(bpbdKab) : kKab.tingkat === "kab" ? {nama: kKab.nama, alamat: null, nomor: kKab.nomor, jarakKm: null} : null;
@@ -156,7 +156,10 @@ export function buatInfo({muat, wilayah}) {
     if (R) { const ki = Object.fromEntries(R.kolom.map((n, i) => [n, i])), kec = R.kec.filter(r => r[ki.prov] === pv && namaKab(r[ki.kab]) === nk), sk = kec.filter(r => r[ki.risiko] != null);
       if (sk.length) { const skor = sk.reduce((a, r) => a + r[ki.risiko], 0) / sk.length, kelas = R.kelas[R.ambang.filter(x => skor >= x).length];
         const pend = kec.reduce((a, r) => a + (r[ki.pend] || 0), 0), tinggi = sk.filter(r => r[ki.risiko] >= R.ambang[1]).sort((a, b) => b[ki.risiko] - a[ki.risiko]);
-        risiko = {skor: Math.round(skor), kelas, kecamatan: kec.length, penduduk: pend || null, kecTinggi: tinggi.length, contohTinggi: tinggi.slice(0, 3).map(r => r[ki.kec])}; } }
+        risiko = {skor: Math.round(skor), kelas, kecamatan: kec.length, penduduk: pend || null, kecTinggi: tinggi.length, contohTinggi: tinggi.slice(0, 3).map(r => r[ki.kec]),
+          // semua kecamatan berisiko tinggi beserta bahaya utamanya, dan sebaran bahaya utama per kecamatan (pemilik 25 Nov 2026: "10 kecamatan tapi cuma tiga, ga ngasih bahayanya")
+          daftarTinggi: tinggi.slice(0, 30).map(r => ({kec: r[ki.kec], bahaya: r[ki.utama] || null, skor: Math.round(r[ki.risiko]), kelas: R.kelas[R.ambang.filter(x => r[ki.risiko] >= x).length]})),
+          bahayaUtama: Object.entries(sk.reduce((a, r) => (r[ki.utama] && (a[r[ki.utama]] = (a[r[ki.utama]] || 0) + 1), a), {})).map(([bahaya, n]) => ({bahaya, n})).sort((x, y) => y.n - x.n)}; } }
     // kejadian DIBI setahun
     let kejadian = null;
     if (D) { const xs = D.kejadian.filter(x => x.kab_kode === w.kabKode), per = new Map(); let n = 0, meninggal = 0, terdampak = 0, mengungsi = 0;

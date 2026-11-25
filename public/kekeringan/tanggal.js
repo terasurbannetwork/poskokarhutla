@@ -52,7 +52,7 @@ function html() {
 const kalender = {satuan: "kabupaten", get awal() { return lap?.hari?.[0]; },
   ket: "Angka = kabupaten dengan 30% penduduk di HTH 31 hari atau lebih (laporan harian). Yang bisa dibuka: tanggal yang ada di laporan.",
   terbanyak: {judul: "Terbanyak", n: 6},
-  muat: async () => { const L = await ambil(), j = {}; if (L) for (const t of tanggalAda(L)) j[t] = L.nasional.kab31?.[L.hari.indexOf(t)] ?? 0; return {jumlah: j}; },
+  muat: async () => { const L = await ambil(), j = {}; if (L) for (const t of tanggalAda(L)) j[t] = L.nasional.kab31?.[L.hari.indexOf(t)] ?? null; return {jumlah: j}; },
   bisa: t => tanggalAda(lap).includes(t) };
 
 let host = panel;

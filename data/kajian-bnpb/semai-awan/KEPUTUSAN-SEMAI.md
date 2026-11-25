@@ -79,3 +79,8 @@ terbaik seperti ini", "Coba buat tiket dan lain-lain design system dll. Seperti 
 ## Paket turunan
 
 Tujuan banjir (semai redistribusi di hulu angin kab/kota sasaran) diputuskan pemilik 25 Nov 2026 di `data/kajian-bnpb/semai-banjir/KEPUTUSAN-SEMAI-BANJIR.md` (K1-K4). Paket ini tetap berlaku untuk tujuan karhutla dan untuk mesin bersama.
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

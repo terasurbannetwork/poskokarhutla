@@ -1,0 +1,34 @@
+{
+  "versi": 1,
+  "catatan": "Berkas koefisien F-21 (PB-55, Q6). Tiap koefisien wajib nilai, sumber (publikasi atau URL), dan tanggal; ekonomi.py uji menolak entri yang kurang satu. Koefisien tanpa sumber tidak dimasukkan: komponennya tercatat di tidak_tersedia dan kartu menulis 'koefisien tidak tersedia'.",
+  "koefisien": {
+    "beras_kg_orang_hari": {
+      "nilai": 0.4,
+      "satuan": "kg beras/orang/hari",
+      "sumber": "Peraturan Kepala BNPB Nomor 7 Tahun 2008 tentang Pedoman Tata Cara Pemberian Bantuan Pemenuhan Kebutuhan Dasar, bagian B (pangan: beras 400 g/orang/hari); dicatat di scripts/banjir/RISET-PARAMETER.md",
+      "url": "https://www.gitews.de/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%207-2008_Tata%20Cara%20Pemberian%20Bantuan%20Pemenuhan%20Kebutuhan%20Dasar.pdf",
+      "tanggal": "2008"
+    }
+  },
+  "dari_data": {
+    "harga_beras_kg": {
+      "berkas": "public/data/harga_pangan.json",
+      "komoditas": "28",
+      "keterangan": "Beras Medium, harga konsumen per provinsi (kode BPS); nilai, sumber, dan tanggal diambil dari berkasnya saat dihitung dan diperiksa dengan aturan tiga isian yang sama. Provinsi tanpa harga = koefisien tidak tersedia, tidak diganti harga nasional."
+    }
+  },
+  "tidak_tersedia": [
+    {
+      "komponen": "nilai_bangunan",
+      "alasan": "IKK dan IHPB BPS adalah indeks, bukan harga. Rupiah bangunan butuh harga dasar h_ref per jenis bangunan (HSBGN PUPR atau Perka) yang belum bersumber di repo (scripts/siklus/sumber.json pupr-hsbgn, data/kajian-bnpb/siklus/ALGORITMA.md F4.2). Jumlah bangunan terpapar juga terkunci (data/terkunci/bangunan), tidak dibawa ke public/."
+    },
+    {
+      "komponen": "pangan_selain_beras",
+      "alasan": "Perka 7/2008 tidak memberi takaran per orang untuk lauk dan bahan lain yang bisa dipadankan ke komoditas Panel Harga; tidak dikarang."
+    },
+    {
+      "komponen": "air_hunian_jamban",
+      "alasan": "Sphere 2018 memberi takaran (liter, m2, jamban) tapi tidak ada harga satuan air, hunian, atau jamban dari BPS atau Panel Harga; volume tampil tanpa rupiah."
+    }
+  ]
+}

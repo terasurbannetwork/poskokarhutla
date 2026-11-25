@@ -15,7 +15,7 @@ tiap 3 jam, titik.yml (ringan)
   prediksi.json (dari repo, ditulis prediksi.yml harian; kab[].API[3], p pecahan ─▶ persen) ─▶ peluang kab/kota hari 1..3 + status skor.json
   desa_statik.json + desa_cari.json (nama)
   desa_waspada_laju.json (beku, hasil hindcast lokal)
-        └─ desa_waspada.py ─▶ public/data/desa_waspada.json  (A, B, laju, definisi, tanggal)
+        └─ desa_waspada.py ─▶ public/data/desa_waspada/<pulau>.json + indeks.json  (A, B, laju, definisi, tanggal)
               └─ deploy ikut titik.yml tanpa commit besar tiap 3 jam
 
 sekali, lokal (hindcast, DW-03)

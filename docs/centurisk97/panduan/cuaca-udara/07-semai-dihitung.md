@@ -4,11 +4,11 @@ Halaman ini menjelaskan bagaimana sistem memilih awan yang layak disemai dan men
 
 ## Peluang semai awan: awan mana yang layak
 
-Data: prakiraan cuaca ECMWF resolusi sekitar 10 km, dua putaran sehari, sampai 36 jam ke depan dengan langkah 3 jam; titik api dan daya radiasi apinya 24 jam dari satelit; lokasi kota dan bandara.
+Data: prakiraan cuaca ECMWF resolusi sekitar 10 km, dua putaran sehari, sampai 36 jam ke depan dengan langkah 3 jam; titik panas dan daya radiasi apinya 24 jam dari satelit; lokasi kota dan bandara.
 
 Langkah hitung:
 
-1. Cari kumpulan titik api besar. Ukurannya adalah daya radiasi api (panas yang dipancarkan api, diukur satelit, dalam megawatt atau MW) selama 24 jam: paling sedikit 40 MW dan paling sedikit 2% dari kumpulan api terbesar. Bila tidak ada, hasilnya kosong dengan alasan "tidak ada api besar".
+1. Cari kumpulan titik panas besar. Ukurannya adalah daya radiasi api (panas yang dipancarkan api, diukur satelit, dalam megawatt atau MW) selama 24 jam: paling sedikit 40 MW dan paling sedikit 2% dari kumpulan api terbesar. Bila tidak ada, hasilnya kosong dengan alasan "tidak ada api besar".
 2. Hanya sel awan (gumpalan awan di peta prakiraan) dalam 60 km dari api besar yang dipertimbangkan.
 3. Sebuah sel harus lolos sembilan gerbang. Satu gerbang gagal berarti tidak layak.
 4. Sel yang lolos diberi tiga nilai: kualitas awan, daya api di tempat hujan akan jatuh, dan jarak ke kota.

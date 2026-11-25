@@ -36,3 +36,9 @@ Operasi generik di `/operasi` (paket Paritas Bencana, W1) sudah punya sarana, re
 | Q2 | Kualitas udara tidak punya jenis di logbook. Tindakannya dari mana? | **[BAWAAN SEMENTARA]** pembagian masker dan sosialisasi, dari sarana `masker` yang sudah ada di registri udara; persen logbook tampil "tidak tercatat". | tidak menahan |
 | Q3 | OMC banjir dibuatkan zona usulan seperti seksi Peluang semai karhutla? | **[BAWAAN SEMENTARA]** tidak; OMC banjir hanya dicatat sebagai tindakan yang sudah dilakukan. Zona usulan butuh paket sendiri. | tidak menahan |
 | Q4 | Tindakan per target cukup centang, atau perlu jumlah (orang dievakuasi, liter air, unit alat)? | **[BAWAAN SEMENTARA]** centang saja; jumlah tetap di kolom catatan. | TO-06 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

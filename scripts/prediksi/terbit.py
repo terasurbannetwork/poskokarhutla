@@ -8,7 +8,8 @@ jumlah & lama hujan dikali rasio provinsi yang "dipakai". Tiap angka membawa von
 Dampak (aturan.json): jiwa terpapar banjir = paparan_kab.json (scripts/banjir/dampak_kab.py: penduduk x porsi luas zona
 bahaya tinggi), longsor = penduduk kecamatan berbahaya tinggi (public/data/penduduk.json x public/banjir/data/bahaya.json); sekolah & murid dari public/data/sekolah.json; faskes/RS dari public/data/fasilitas.json
 (ke pusat kecamatan terdekat di provinsi yang sama). Mengungsi = jiwa terpapar x laju DIBI sum(mengungsi)/sum(terdampak)
-(kab bila >= 3 kejadian bertercatat, selain itu nasional). Kebutuhan harian Sphere 2018. Semua berlabel perkiraan.
+(hanya baris sah terdampak >= mengungsi dan bencana != 0, kembar dibuang, nasional tanpa provinsi > 50% Σmengungsi, disusutkan ke nasional dengan K_SUSUT, dijepit ke rasio
+kejadian tertinggi kab; kab bila >= 5 baris sah, selain itu nasional; DIBI 12 bulan). Kebutuhan harian Sphere 2018. Semua berlabel perkiraan.
 
 Pakai:  python3 scripts/prediksi/terbit.py   |   python3 scripts/prediksi/terbit.py uji
 """
@@ -27,7 +28,7 @@ OP = {">=": lambda a, b: a >= b, "<": lambda a, b: a < b, ">": lambda a, b: a > 
 BATASAN = ["Semua peluang di halaman ini mentah sampai rapornya cukup (>= 30 pasangan) dan kalibrasinya lolos uji tahan 14 hari.",
            "Peluang hujan tanpa ansambel (m=0) adalah skor kasar dari jumlah hujan deterministik, bukan peluang terkalibrasi.",
            "Hujan sementara dinilai terhadap analisis model, bukan pengukuran; nilai final memakai ERA5.",
-           "Dampak dan kebutuhan Sphere adalah perkiraan dari paparan x laju historis DIBI, belum diuji balik."]
+           "Perkiraan mengungsi (jiwa terpapar di zona prakiraan x laju DIBI 12 bulan) ditahan sampai uji balik lawan DIBI lulus; yang tampil hanya jiwa terpapar."]
 
 
 def terakhir(entri):
@@ -167,20 +168,53 @@ def _gabung(per_kec, b, l):
 GABUNGAN_CATATAN = "perkiraan; independensi diasumsikan"
 
 
-def laju_ungsi(akar, cari, jenis):
-    """-> (fungsi kab -> laju, laju nasional). Laju = sum(mengungsi)/sum(terdampak) kejadian DIBI berjenis itu."""
-    d = D.baca(os.path.join(akar, "public", "data", "dibi_kejadian.json"), {"kejadian": []})
-    per, nas = {}, [0, 0, 0]
-    for r in d["kejadian"]:
-        if r["jenis"] in jenis and (r.get("terdampak") or r.get("mengungsi")):
-            k = cari(r["prov_kode"], r["kab"])
-            x = per.setdefault(k, [0, 0, 0])
-            for y in (x, nas):
-                y[0] += r.get("mengungsi", 0)
-                y[1] += max(r.get("terdampak", 0), r.get("mengungsi", 0))
-                y[2] += 1
-    n = nas[0] / nas[1] if nas[1] else 0
-    return (lambda k: per[k][0] / per[k][1] if k in per and per[k][2] >= 3 and per[k][1] else n), n
+K_SUSUT = 10000   # jiwa terdampak semu dari laju nasional: kab dengan Σterdampak << 10.000 hampir ikut nasional (susut empiris-Bayes kasar)
+MIN_SAH = 5       # baris DIBI sah minimum per kab; kurang dari ini = laju nasional
+DOMINAN = 0.5     # provinsi yang memegang > 50% Σmengungsi nasional dikeluarkan dari laju NASIONAL (Aceh akhir Nov 2025: 90% banjir)
+
+
+def laju_ungsi(akar, cari, jenis, baris=None):
+    """-> (fungsi kab -> (laju, n_kejadian, asal), laju nasional, info nasional). Hanya baris sah: terdampak > 0, terdampak >= mengungsi
+    (kunci tak ada = 0 menurut catatan dibi_kejadian.json; baris mengungsi tanpa terdampak dibuang, bukan dibaca 100%), dan
+    bencana != 0 (baris di bawah ambang DIBI tidak masuk angka resmi, jadi tidak dihitung). Baris kembar persis (kab, tanggal,
+    jenis, angka) dihitung sekali. Laju nasional = Σm/Σt tanpa provinsi dominan (> DOMINAN Σm), dibuang sekali; info membawa
+    metode, provinsi dibuang, median rasio per kejadian, dan n. Laju kab = (Σm + K·nas)/(Σt + K) dari semua baris sah kab itu,
+    dijepit ke rasio per kejadian tertinggi kab; < MIN_SAH baris sah = nasional. Sumber hanya DIBI 12 bulan (dari..sampai)."""
+    if baris is None:
+        baris = D.baca(os.path.join(akar, "public", "data", "dibi_kejadian.json"), {"kejadian": []})["kejadian"]
+    per, lihat, prov, rasio = {}, set(), {}, []
+    for r in baris:
+        t, m = r.get("terdampak") or 0, r.get("mengungsi") or 0
+        if r["jenis"] not in jenis or t <= 0 or t < m or r.get("bencana") == 0:
+            continue
+        k = cari(r["prov_kode"], r["kab"])
+        sid = (k, r.get("tanggal"), r["jenis"], t, m)
+        if sid in lihat:
+            continue
+        lihat.add(sid)
+        x = per.setdefault(k, [0, 0, 0, 0.0])
+        x[0] += m; x[1] += t; x[2] += 1; x[3] = max(x[3], m / t)
+        y = prov.setdefault(r["prov_kode"], [0, 0])
+        y[0] += m; y[1] += t
+        rasio.append(m / t)
+    sm, st = sum(y[0] for y in prov.values()), sum(y[1] for y in prov.values())
+    dom = max(prov, key=lambda p: prov[p][0]) if sm else None
+    buang = dom if dom and prov[dom][0] > DOMINAN * sm and st > prov[dom][1] else None
+    if buang:
+        sm, st = sm - prov[buang][0], st - prov[buang][1]
+    n = sm / st if st else 0
+    rasio.sort()
+    med = (rasio[(len(rasio) - 1) // 2] + rasio[len(rasio) // 2]) / 2 if rasio else None
+    info = {"laju": round(n, 4), "metode": "Σmengungsi/Σterdampak baris DIBI sah, tanpa provinsi > 50% Σmengungsi" if buang
+            else "Σmengungsi/Σterdampak baris DIBI sah (tidak ada provinsi > 50% Σmengungsi)",
+            "prov_dibuang": buang, "median_kejadian": round(med, 4) if med is not None else None, "n_kejadian": len(rasio)}
+
+    def f(k):
+        x = per.get(k)
+        if not x or x[2] < MIN_SAH:
+            return n, x[2] if x else 0, "nasional"
+        return min((x[0] + K_SUSUT * n) / (x[1] + K_SUSUT), x[3]), x[2], "kab"
+    return f, n, info
 
 
 def kebutuhan(ungsi, sp):
@@ -259,8 +293,9 @@ def terbit(akar=D.AKAR, folder=None, data=None, entri=None, kini=None):
                     if p.get("murid"):
                         d["murid"] = pap[k["id"]]["_kab"]["murid"]
                     if a["id"] in laju and d.get("jiwa"):
-                        f, _ = laju[a["id"]]
-                        d["laju_ungsi"] = round(f(k["id"]), 4)
+                        f = laju[a["id"]][0]
+                        lj, nk, asal = f(k["id"])
+                        d["laju_ungsi"], d["n_kejadian"], d["laju_asal"] = round(lj, 4), nk, asal
                         d["kebutuhan"] = kebutuhan(round(d["jiwa"] * d["laju_ungsi"]), at["sphere"])
                     waspada.append({"kab": k["id"], "tenggang": n, "aturan": a["id"], "maka": a["maka"], "dampak": d})
         for n in (1, 2, 3):   # KI-65: banjir dan longsor menyala bersama di kab+tenggang yang sama -> jiwa gabungan di kedua dampak
@@ -284,6 +319,7 @@ def terbit(akar=D.AKAR, folder=None, data=None, entri=None, kini=None):
     out = {"versi": 1, "dibuat": dt.datetime.now(D.WIB).replace(microsecond=0).isoformat(), "kode": kode, "kab": kabs,
            "waspada": waspada, "aturan": [{k: a[k] for k in ("id", "maka", "semua", "salah_satu", "paparan", "catatan", "aktif", "alasan") if k in a} for a in at["aturan"]],
            "sphere": at["sphere"], "kalibrasi": kal.get("ringkas", {}), "batasan": BATASAN,
+           "laju_ungsi_nasional": {i: v[2] for i, v in laju.items()},
            "gabungan_dijepit": sum(1 for v in pap.values() if (v.get("gabungan") or {}).get("dijepit"))}
     galat = periksa(out)
     if galat:
@@ -381,6 +417,30 @@ def uji():
     assert evaluasi(a_lsr, {"HJN": [row(10, 0), None, row(10, 0)]}, 1) is None, "tot3 tak lengkap = masukan kurang, bukan False"
     assert evaluasi({"semua": [{"v": "ASP.kat", "op": ">=", "nilai": 1}]}, {}, 1) is None
     sp = {"air_l": 15, "hunian_m2": 3.5, "jamban_per": 20, "kkal": 2100}
+    # laju mengungsi: baris mengungsi tanpa terdampak dibuang (kasus Kota Bekasi), kembar dihitung sekali, < 5 sah = nasional
+    cari0 = lambda p, n: n
+    bks = [{"jenis": "Banjir", "prov_kode": "32", "kab": "B", "tanggal": f"2026-01-{i:02d}", "mengungsi": m} for i, m in ((1, 80), (2, 21), (3, 985))]
+    sah = [{"jenis": "Banjir", "prov_kode": "32", "kab": "B", "tanggal": f"2026-02-{i:02d}", "terdampak": 1000, "mengungsi": 300} for i in range(1, 6)]
+    lain = [{"jenis": "Banjir", "prov_kode": p, "kab": "N" + p, "tanggal": "2026-03-01", "terdampak": 45000, "mengungsi": 800} for p in ("31", "33")]
+    f0, n0, _ = laju_ungsi(None, cari0, {"Banjir"}, bks + sah + lain)
+    l0, nk0, a0 = f0("B")
+    assert abs(n0 - 3100 / 95000) < 1e-9 and nk0 == 5 and a0 == "kab", (n0, nk0, a0)
+    assert n0 < l0 < 0.3, f"laju kab disusutkan ke nasional, bukan 1,0 atau 0,3: {l0}"
+    f1, _, _ = laju_ungsi(None, cari0, {"Banjir"}, bks + sah[:4] + sah[:4] + lain)
+    assert f1("B") == (laju_ungsi(None, cari0, {"Banjir"}, sah[:4] + lain)[1], 4, "nasional"), "kembar dibuang, 4 sah = nasional"
+    f2, n2, _ = laju_ungsi(None, cari0, {"Banjir"}, bks)
+    assert f2("B") == (0, 0, "nasional") and n2 == 0, "hanya mengungsi tanpa terdampak = tidak ada baris sah"
+    hi = [{"jenis": "Banjir", "prov_kode": "32", "kab": "R", "tanggal": f"2026-04-{i:02d}", "terdampak": 1000, "mengungsi": 10} for i in range(1, 6)]
+    f3, n3, _ = laju_ungsi(None, cari0, {"Banjir"}, hi + [{"jenis": "Banjir", "prov_kode": p, "kab": "N" + p, "tanggal": "x", "terdampak": 1000, "mengungsi": 450} for p in ("31", "33")])
+    assert f3("R")[0] == 0.01 < n3, "dijepit ke rasio kejadian tertinggi kab"
+    # satu provinsi dominan (> 50% Σmengungsi) tidak menyetir laju nasional; baris bencana 0 tidak dihitung
+    dm = [{"jenis": "Banjir", "prov_kode": "11", "kab": f"A{i}", "tanggal": "2025-11-27", "terdampak": 100000, "mengungsi": 90000} for i in range(3)]
+    kecil = [{"jenis": "Banjir", "prov_kode": p, "kab": f"K{p}", "tanggal": "2026-01-01", "terdampak": 10000, "mengungsi": 200} for p in ("31", "32", "33")]
+    b0 = [{"jenis": "Banjir", "prov_kode": "34", "kab": "Z", "tanggal": "2026-01-01", "terdampak": 100, "mengungsi": 100, "bencana": 0}]
+    f4, n4, i4 = laju_ungsi(None, cari0, {"Banjir"}, dm + kecil + b0)
+    assert abs(n4 - 0.02) < 1e-9 and i4["prov_dibuang"] == "11" and i4["n_kejadian"] == 6, (n4, i4)
+    assert i4["median_kejadian"] == round((0.02 + 0.9) / 2, 4), i4
+    assert laju_ungsi(None, cari0, {"Banjir"}, kecil)[2]["prov_dibuang"] is None, "tanpa dominan tidak ada yang dibuang"
     assert kebutuhan(41, sp) == {"mengungsi": 41, "air_l": 615, "hunian_m2": 144, "jamban": 3, "kkal": 86100}
     # kalibrasi hanya bila dipakai; urutan peluang dijaga sesudahnya
     e = {"k": "HJN", "kol": ["p1", "p20", "p50", "tot", "mulai", "lama", "puncak", "sm", "m"], "kab": {"1101": [[0.8, 0.4, 0.05, 10.0, 3, 4, 5, 0.4, 0], None, None]}}

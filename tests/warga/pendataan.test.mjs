@@ -71,7 +71,7 @@ uji("tiap rute tanpa auth ditolak (kecuali yang memang publik)", async () => {
   for (const k of rute) {
     if (publik.has(k)) continue;
     const [m, j] = k.split(" ");
-    if (j === "/admin/pendataan") { const h = await U.mf.dispatchFetch("http://bnpb.lokal" + j, {redirect: "manual"}); assert.equal(h.status, 303); assert.match(h.headers.get("location"), /\/admin\/masuk/); continue; }
+    if (j === "/admin/pendataan") { const h = await U.mf.dispatchFetch("http://bnpb.lokal" + j, {redirect: "manual"}); assert.equal(h.status, 303); assert.match(h.headers.get("location"), /\/masuk/); continue; }
     const r = await api(m, j.replace(":id", "a".repeat(16)), m === "POST" ? {} : undefined, ip(1));
     assert.ok([401, 403, 301, 302, 303, 307].includes(r.s), `${k} tanpa auth harus ditolak, dapat ${r.s}`);
   }

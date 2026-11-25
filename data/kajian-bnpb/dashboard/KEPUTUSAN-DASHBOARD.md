@@ -42,3 +42,9 @@ keputusan ini. Pertanyaan yang belum dijawab pemilik ada di bagian Q, dengan baw
 | Q1 | Target angka untuk bullet graph Efektivitas (ketepatan, kepatuhan renlap, utilisasi, respons) | tanpa garis target; bilah biasa |
 | Q3 | SIPPA ikut (D25), tetapi KEPUTUSAN-SIPPA menang atas modulnya. Bila bertentangan dengan sistem ini, yang mana menang? | KEPUTUSAN-SIPPA menang; hanya token warna, kepala, pil, tabel yang diseragamkan |
 | Q4 | Mode TV `?tv=1` di semua dashboard atau hanya `/operasi` | hanya `/operasi` |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

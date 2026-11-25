@@ -444,7 +444,7 @@ async function muat(){
   if(location.hash.startsWith('#q-')&&!window.__h){window.__h=1;setTimeout(bukaHash,0)}
   return true}
 function masukDulu(r){const st=$('st');st.replaceChildren();
-  if(r.s===401){st.append('Masuk dulu. Akun BPBD masuk lewat ',Object.assign(document.createElement('a'),{href:'/instansi',textContent:'Ruang Instansi'}),', staf BNPB lewat ',Object.assign(document.createElement('a'),{href:'/admin/masuk?ke=/logpal',textContent:'halaman masuk staf'}),'.')}
+  if(r.s===401){st.append('Masuk dulu. Akun BPBD masuk lewat ',Object.assign(document.createElement('a'),{href:'/instansi',textContent:'Ruang Instansi'}),', staf BNPB lewat ',Object.assign(document.createElement('a'),{href:'/masuk?ke=/logpal',textContent:'halaman masuk staf'}),'.')}
   else st.textContent=galat(r,'Akun ini tidak punya akses ke Inventori LogPal.')}
 const tulis=async(jalur,badan,pesanId,sukses,gagalTeks)=>{const g=pesanId==='mg'?null:G0();
   const r=await api(jalur,badan);if(!r.ok){pesan(pesanId,galat(r,gagalTeks));if(r.s===409)muat();return null}

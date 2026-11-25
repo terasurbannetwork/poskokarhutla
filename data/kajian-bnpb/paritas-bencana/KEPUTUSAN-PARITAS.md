@@ -41,6 +41,7 @@ Celah yang sama di hampir semua bencana: operasi dan renlap (G02, G10; penghamba
 | K14 | 16 Nov 2026 | Enam kartu fasilitas gempa yang tampil di tab Insight dan Dampak sekaligus dibiarkan dulu (menjawab Q43). Pemilik: "tetap dulu saja, tinggalkan sebagai catatan, untuk di akhir aja ini nanti". Ditinjau ulang di akhir fase F4, sesudah PB-79. |
 | K16 | 16 Nov 2026 | Enam kartu fasilitas gempa tetap tampil di tab Insight dan Dampak sekaligus (menutup tinjauan K14, PB-82). Pemilik: "biarkan dobel". |
 | K15 | 16 Nov 2026 | Pilihan "Tanggal lain" di pemilih tanggal semua laman bencana berupa date picker kalender bulanan seperti di laman karhutla (`Kal`, `public/index.html`), bukan daftar pilihan biasa. Pemilik: "ini bikin selektor tanggal kayak yang di karhutla coba", "ini berlaku juga untuk bencana2 lainnya ya", "date picker gitu, yang karhutla udah bagus". Kalender dibangun sekali di `public/inti/kalender.js` (D15); karhutla pindah ke mesin itu di PB-80. Tiap hari menampilkan jumlah kejadian bencana itu dan hanya hari yang datanya ada yang bisa dipilih (D16). |
+| K17 | 25 Nov 2026 | Q9 diputuskan sesuai bawaan (pemilik: "gas semua bawaan"): ambang angka dari riset praktik yang bertanda [perlu cek] (hujan, angin, gelombang, HTH, ISPU) tidak dipakai di layar sampai naskah penerbitnya ada di repo dan dibaca; ambang yang sudah ada di kode tetap dipakai. PB-60: tidak ada naskah penerbit di repo untuk ambang itu, jadi pernyataan prediksi kita di Tangga berpil "belum ada ambang bersumber" (`scripts/prediksi/tangga.py` AMBANG, rujukan wajib berkas:baris). |
 
 Aturan pemilik yang sudah berlaku dan mengikat paket ini: tanpa data dummy dan tanpa tombol 🧪/🧹 (11 Nov); kepala kartu nama seksi tanpa kalimat kesimpulan dan tanpa kaki (AGENTS 3.5, 11 Nov); tanpa huruf kapital dipaksa; tanpa titik tengah sebagai pemisah; nama situs Centurisk97, tidak pernah "Pantau Bencana"; angka antarsumber tidak dijumlah; angka karhutla hanya dari sistem; nama kru tidak disimpan; klik tidak membekukan layar (INP); tiap perilaku di luar TypeScript punya uji integrasi.
 
@@ -113,3 +114,11 @@ Aturan pemilik yang sudah berlaku dan mengikat paket ini: tanpa data dummy dan t
 | Q35 | `npm run uji` tidak menjalankan `uji:layar`, `uji:gempa`, dan sejenisnya; uji layar baru paket ini (`tests/layar/pb_*.test.mjs`) masuk rangkaian `uji` atau jalan sendiri? | **[BAWAAN SEMENTARA]** masuk lewat satu skrip baru `uji:paritas` yang dipanggil dari `npm run uji` oleh `mekanik-mesin` di PB-01; tidak melonggarkan hook pre-push | PB-01 |
 | Q36 | Nomor migrasi D13 belum ditetapkan di DESAIN-TEKNIS; 0130 dan 0131 sudah dipakai paket ini. Cukup nomor berikutnya yang kosong saat tiket PB-21? | **[BAWAAN SEMENTARA]** ya, dicek ulang dengan `ls migrations` saat tiket | PB-21 |
 | Q37 | Pemetaan tingkat udara dari kategori ISPU PM2,5 (Tidak sehat = 1, Sangat tidak sehat = 2, Berbahaya = 3) dan aturan gunung api bahwa hanya kenaikan level PVMBG yang memicu peringatan baru (penurunan hanya menurunkan tampilan). Keduanya rancangan agent, bukan ketentuan resmi. | **[BAWAAN SEMENTARA]** dipakai seperti tertulis di ALGORITMA 2.3, bisa diubah pemilik atau staf per daerah; label resmi sumber tetap tampil di samping tingkat. | PB-38, PB-46 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+
+| Q38 | Skor prioritas wilayah (PB-57) kalah dari penduduk terpapar saja dan dari jumlah penduduk dalam mencocokkan jumlah kejadian DIBI 12 bulan (Spearman banjir 0,25 lawan 0,41 lawan 0,47). Skor gabungan tetap ditampilkan berlabel hipotesis, atau layar memakai penduduk terpapar saja sampai bobot diuji? | **[BAWAAN SEMENTARA]** skor belum ditampilkan di layar; berkas data tetap dibuat untuk uji. |

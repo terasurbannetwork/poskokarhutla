@@ -18,19 +18,19 @@ Seberapa bisa dipercaya: pada uji 2024 sampai 2026 (604 titik awal), model meneb
 
 ## Peluang api 7 hari per kotak 5,5 km
 
-Pertanyaan: kotak sekitar 5,5 km mana yang akan tertangkap satelit membawa sedikitnya satu titik api dalam 7 hari sesudah ramalan terbit?
+Pertanyaan: kotak sekitar 5,5 km mana yang akan tertangkap satelit membawa sedikitnya satu titik panas dalam 7 hari sesudah ramalan terbit?
 
-Yang diramal adalah tertangkapnya titik api oleh satelit NOAA-20, bukan adanya api. Satelit kedua hanya membenarkan sekitar 49 persen kotak-minggu berapi pada uji, sehingga sebagian hasilnya ditentukan oleh jalur lintasan satelit.
+Yang diramal adalah tertangkapnya titik panas oleh satelit NOAA-20, bukan adanya api. Satelit kedua hanya membenarkan sekitar 49 persen kotak-minggu berapi pada uji, sehingga sebagian hasilnya ditentukan oleh jalur lintasan satelit.
 
 Langkah hitung:
 
-1. Sistem menyusun keterangan tiap kotak: berapa titik api dalam 7 dan 30 hari terakhir (juga di kotak tetangga), berapa hari sejak api terakhir, jenis lahan, jarak ke kanal dan jalan, kepadatan penduduk, dan kekerapan api di minggu kalender yang sama pada tahun-tahun lalu. Cuaca sengaja tidak dipakai.
+1. Sistem menyusun keterangan tiap kotak: berapa titik panas dalam 7 dan 30 hari terakhir (juga di kotak tetangga), berapa hari sejak api terakhir, jenis lahan, jarak ke kanal dan jalan, kepadatan penduduk, dan kekerapan api di minggu kalender yang sama pada tahun-tahun lalu. Cuaca sengaja tidak dipakai.
 2. Kotak yang berapi terus-menerus karena sumber panas tetap (misalnya pabrik atau tambang) dibuang.
 3. Model dilatih pada semua minggu lengkap 2013 sampai sebelum 23 Oktober 2026, lalu menghasilkan peluang per kotak.
 4. Bila data satelit NOAA-20 kurang dari 85 hari dalam 90 hari terakhir, ramalan minggu itu tidak dibuat dan peta menampilkan ramalan terakhir lengkap dengan tanggalnya.
 5. Ramalan terbit mingguan dan dibekukan saat terbit, bersama dua pembanding sederhana. Dinilai 2 hari sesudah minggu berakhir.
 
-Contoh: kotak yang tahun-tahun lalu hampir selalu berapi pada minggu ini, dan 7 hari terakhir memang ada titik api di sekitarnya, akan mendapat peluang tinggi dan berwarna ungu tua. Kotak tanpa api bertahun-tahun mendapat peluang di bawah 1 persen dan tidak berwarna.
+Contoh: kotak yang tahun-tahun lalu hampir selalu berapi pada minggu ini, dan 7 hari terakhir memang ada titik panas di sekitarnya, akan mendapat peluang tinggi dan berwarna ungu tua. Kotak tanpa api bertahun-tahun mendapat peluang di bawah 1 persen dan tidak berwarna.
 
 Seberapa bisa dipercaya: pada uji balik yang menyembunyikan satu tahun bergantian untuk 2015 sampai 2025, bila 10 persen kotak teratas tiap provinsi ditandai, sekitar 41 dari tiap 100 kotak yang benar berapi tertangkap. Pembanding sederhana menangkap 40,8 dan 34,3. Jadi keunggulannya tipis. Angka yang lebih tinggi pernah dilaporkan tetapi dibatalkan karena pembandingnya terlalu lemah.
 

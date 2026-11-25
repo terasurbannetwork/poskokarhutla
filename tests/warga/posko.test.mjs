@@ -525,7 +525,7 @@ uji("halaman: /lapangan dilayani dengan CSP ketat; /admin/posko hanya untuk admi
   assert.equal(l.status, 200); assert.ok(t.includes("/lapangan.js"));
   assert.match(l.headers.get("content-security-policy"), /script-src 'self'/); assert.doesNotMatch(l.headers.get("content-security-policy"), /unsafe-inline/); assert.equal(l.headers.get("referrer-policy"), "no-referrer");
   assert.ok(!/<script(?![^>]*\bsrc=)[^>]*>/i.test(t) && !/\son\w+=/i.test(t) && !/\sstyle=/i.test(t), "tanpa skrip/gaya inline (CSP)");
-  const a = await mf.dispatchFetch("http://posko.lokal/admin/posko", {redirect: "manual"}); assert.equal(a.status, 303); assert.match(a.headers.get("location"), /\/admin\/masuk/);
+  const a = await mf.dispatchFetch("http://posko.lokal/admin/posko", {redirect: "manual"}); assert.equal(a.status, 303); assert.match(a.headers.get("location"), /\/masuk/);
   const ok = await mf.dispatchFetch("http://posko.lokal/admin/posko", {headers: ADMIN}), h = await ok.text();
   assert.equal(ok.status, 200); assert.ok(h.includes("/admin/posko.js")); assert.match(ok.headers.get("content-security-policy"), /script-src 'self'/);
 });
@@ -609,7 +609,7 @@ uji("tebakan kode regu dan token admin dihitung per IP bergaram; login dan IP la
   assert.equal((await api("GET", "/api/posko/regu", undefined, {"cf-connecting-ip": ip2, ...ADMIN})).s, 403, "300 gagal: token benar pun ditolak dari IP itu");
   assert.equal((await api("GET", "/api/posko/regu", undefined, {"cf-connecting-ip": "203.0.113.10", ...ADMIN})).s, 200, "IP lain normal");
   assert.equal((await api("GET", "/api/posko/regu", undefined, ADMIN)).s, 200, "tanpa IP (skrip lokal) normal");
-  const masuk = await mf.dispatchFetch("http://posko.lokal/admin/masuk", {method: "POST", redirect: "manual", headers: {"cf-connecting-ip": ip2, "content-type": "application/x-www-form-urlencoded"}, body: "email=gerbang%40x&sandi=sandi"});
+  const masuk = await mf.dispatchFetch("http://posko.lokal/admin/masuk", {method: "POST", redirect: "manual", headers: {"cf-connecting-ip": ip2, "content-type": "application/x-www-form-urlencoded", origin: "http://posko.lokal"}, body: "email=gerbang%40x&sandi=sandi"});
   assert.equal(masuk.status, 303, "form masuk punya batas sendiri dan tidak ikut terkunci"); const ck = masuk.headers.get("set-cookie"); assert.match(ck, /sesi_admin=/);
   const sesi = await mf.dispatchFetch("http://posko.lokal/api/posko/regu", {headers: {cookie: ck.split(";")[0], "cf-connecting-ip": ip2}}); assert.equal(sesi.status, 200, "cookie sesi tidak lewat penghitung header");
   await DB.prepare("DELETE FROM laju_posko").run();
@@ -651,19 +651,20 @@ uji("centurisk97.id: /lapangan terbuka tanpa sesi lewat daftar putih bernama; se
   assert.equal((await buka("/lapangan")).status, 200);
   assert.equal((await buka("/pendataan")).status, 200);
   assert.equal((await buka("/meja")).status, 200);
-  const a = await buka("/admin/posko"); assert.equal(a.status, 303); assert.match(a.headers.get("location"), /\/admin\/masuk/);
+  const a = await buka("/admin/posko"); assert.equal(a.status, 303); assert.match(a.headers.get("location"), /\/masuk/);
   const halaman = new Set(["/", "/peringatan", "/privasi", "/laporan", "/f/0123456789abcdef"]);
   for (const f of ["worker.js", "foto.js", "sosmed.js", "posko.js", "ews.js", "gempa.js", "statistik.js"])
     for (const [, x] of readFileSync(path.join(AKAR, "src", f), "utf8").matchAll(/^\s*"GET (\/[\w\/:]*)":/gm)) if (!/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(x) && x !== "/lapangan") halaman.add(x.replace(":id", "0123456789abcdef"));
   assert.ok(halaman.has("/statistik"), "pemindai menemukan rute halaman");
-  for (const j of halaman) { const r = await buka(j); assert.equal(r.status, 303, `${j} di centurisk97.id harus terkunci tanpa sesi, dapat ${r.status}`); assert.match(r.headers.get("location"), /^\/admin\/masuk/); }
+  for (const j of halaman) { const r = await buka(j); assert.equal(r.status, 303, `${j} di centurisk97.id harus terkunci tanpa sesi, dapat ${r.status}`); assert.match(r.headers.get("location"), /^\/masuk/); }
   /* berkas HTML statis dibuka langsung lewat nama (run_worker_first ["/*.html"] di wrangler*.jsonc memanggil Worker HANYA untuk pola ini) */
-  for (const j of ["/laporan.html", "/index.html", "/warga/index.html", "/paparan.html", "/banjir/index.html", "/tentang.html", "/LAPORAN.HTML"]) { const r = await buka(j); assert.equal(r.status, 303, `${j} di centurisk97.id = ${r.status}`); assert.match(r.headers.get("location"), /^\/admin\/masuk/); }
+  for (const j of ["/laporan.html", "/index.html", "/privasi.html", "/paparan.html", "/banjir/index.html", "/tentang.html", "/LAPORAN.HTML"]) { const r = await buka(j); assert.equal(r.status, 303, `${j} di centurisk97.id = ${r.status}`); assert.match(r.headers.get("location"), /^\/masuk/); }
   const lh = await buka("/lapangan.html"); assert.equal(lh.status, 303); assert.equal(lh.headers.get("location"), "/lapangan", "lapangan.html dialihkan ke satu pintu");
   const sesi = await mf.dispatchFetch("https://centurisk97.id/laporan.html", {headers: ADMIN}); assert.equal(sesi.status, 200, "dengan sesi admin berkas terbuka"); await sesi.text();
-  for (const j of ["/laporan.html", "/index.html", "/warga/index.html"]) { const r = await mf.dispatchFetch("https://pantau.terasurban.com" + j, {redirect: "manual"}); await r.text(); assert.equal(r.status, 200, `${j} di host publik harus 200`); }
+  for (const j of ["/laporan.html", "/index.html", "/privasi.html"]) { const r = await mf.dispatchFetch("https://pantau.terasurban.com" + j, {redirect: "manual"}); await r.text(); assert.equal(r.status, 200, `${j} di host publik harus 200`); }
   for (const j of ["/data/meta.json", "/informasi_jenis.js", "/admin/admin.css"]) { const r = await buka(j); assert.equal(r.status, 200, `${j} (JSON/JS/CSS) tidak digerbang`); }
-  assert.equal((await mf.dispatchFetch("https://centurisk97.id/admin/masuk", {redirect: "manual"})).status, 200, "halaman masuk tetap terbuka");
+  assert.equal((await mf.dispatchFetch("https://centurisk97.id/masuk", {redirect: "manual"})).status, 200, "halaman masuk tetap terbuka");
+  assert.equal((await mf.dispatchFetch("https://centurisk97.id/admin/masuk", {redirect: "manual"})).headers.get("location"), "/masuk#sandi", "alamat lama ke /masuk (K21)");
   const ews = await mf.dispatchFetch("https://centurisk97.id/ews/berhenti?x=1", {redirect: "manual"}); assert.ok(!(ews.headers.get("location") || "").startsWith("/admin/masuk"), "tautan surel EWS tidak digerbang admin");
 });
 

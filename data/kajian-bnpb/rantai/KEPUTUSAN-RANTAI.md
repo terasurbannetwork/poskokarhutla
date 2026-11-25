@@ -54,3 +54,11 @@ Rapor SPM:
 - Q12. Juklak 4/2026 (gladi) tidak memuat frekuensi dan Juklak 5/2026 (peralatan) tidak memuat angka; Juklak 5 menunjuk "petunjuk pelaksanaan standar minimal kebutuhan logistik dan peralatan" (hal. 6, 8), yang sama dengan Q4 LogPal (belum didapat). Indikator keduanya dibiarkan tidak diukur sampai ada angka dari pemilik atau dokumennya?
 - Q13. Rapor SPM antar-BPBD boleh dibuka ke publik kelak, atau tetap internal?
 - Q14. Rapor SPM digabung ke skor Rapor Kinerja (perlu bobot) atau tetap blok terpisah?
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+
+Masih terbuka karena tidak punya bawaan: Q2, Q3, Q4, Q5, Q6, Q8, Q9, Q10, Q11, Q12, Q13, Q14. Jangan dijawab dengan karangan.

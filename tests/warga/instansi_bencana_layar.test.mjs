@@ -15,6 +15,11 @@ const TERLARANG = /\bNaN\b|\bundefined\b|\bnull\b|\[object|—|·/g;
 const kini = Date.now();
 const T = (id, bencana, nama, kab, o = {}) => ({id, prov: "16", kab, kec: "Kec " + kab, lat: -3.1, lon: 104.2, level: 2, status: "buka", terlambat: false, dibuat: kini - 36e5, tenggat: kini + 5 * 36e5, konfirmasi_pada: null, n24: 4, luas_ha: 12,
   rekomendasi: null, akses: null, kartu: null, padam: null, ciri: "Contoh ciri", bencana, bencana_nama: nama, jenis: "pemadaman", judul: null, arahan: null, ...o});
+/* bentuk jawaban GET /api/instansi/peta-situs (rute nyata diuji peta_situs_api.test.mjs) */
+const B = (rute, nama, grup) => ({rute, nama, ikon: "daftar", grup, induk: null});
+const MENU = [{pintu: "publik", nama: "Publik", beranda: "/", grup: [{id: "bencana", nama: "Bencana", butir: [B("/", "Peta", "bencana")]}]},
+  {pintu: "instansi", nama: "BPBD dan instansi", beranda: "/instansi", grup: [{id: "kerja", nama: "Kerja BPBD", butir: [B("/instansi", "Instansi: tugas api", "kerja"), B("/lapor/meja", "Meja laporan", "kerja")]},
+    {id: "data", nama: "Data dan logistik", butir: [B("/instansi/data-bencana", "Data bencana Indonesia", "data"), B("/instansi/logpal", "Inventori LogPal", "data")]}]}];
 const TUGAS = [
   T("t_k", "karhutla", "Karhutla", "Ogan Ilir", {kartu: {insiden: "K0001", luas_koreksi: {ha: 12, min: 8, maks: 20}}}),
   T("t_b", "banjir", "Banjir", "Muara Enim", {kartu: {insiden: "B0038", jiwa_terdampak: 12345, hujan_mm: 187.4}}),
@@ -69,6 +74,7 @@ else {
       if (u.pathname === "/api/instansi/tugas") return j({kini: Date.now(), tugas: daftar, pic_kab: {}});
       const m = u.pathname.match(/^\/api\/instansi\/tugas\/(\w+)$/); if (m) { const t = daftar.find(x => x.id === m[1]); return t ? j({tugas: t, kartu: t.kartu, isian: [], media: [], gudang_terdekat: []}) : j({}, 404); }
       if (u.pathname === "/api/instansi/push/status") return j({tersedia: false});
+      if (u.pathname === "/api/instansi/peta-situs") return j(MENU);   // PS-07: menu dari registri
       if (u.pathname === "/api/titik") return j({titik: []});
       if (u.pathname === "/api/masuk/saya") return j({masuk: false});   // pemeriksaan sesi_masuk kartu Undang rekan (?lunak=1)
       if (u.pathname === "/api/instansi/siklus/kejadian/tautan") return j({tautan: {}});   // tanda kejadian KP-07
@@ -112,6 +118,9 @@ else {
     await buka(1440, [TUGAS[0]]);
     assert.equal(await tab.eval("document.getElementById('fBencana').hidden"), true); assert.match(await tab.eval("document.querySelector('[data-tab=tugas]').innerText"), /Tugas api/);
     assert.equal(await tab.eval("!!document.querySelector('.in-baris .in-bc')"), false);
+    /* PS-07: tautan menu dari /api/instansi/peta-situs, halaman ini sendiri tidak ditautkan, Data bencana tetap terkunci ke wilayah akun */
+    assert.deepEqual(await tab.eval("[...document.querySelectorAll('#tab a.in-tab-tautan')].map(a => a.getAttribute('href').split('?')[0])"), ["/lapor/meja", "/instansi/data-bencana", "/instansi/logpal"]);
+    assert.equal(await tab.eval("document.querySelectorAll('#lnDataBencana').length"), 1);
   });
 }
 

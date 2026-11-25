@@ -1290,7 +1290,7 @@ export default {
         [
           "gunungapi",
           "/banjir/data/gunungapi_status.json",
-          30
+          48
         ],
         [
           "berita_gunungapi",
@@ -1489,7 +1489,7 @@ export default {
         [
           "kekeringan",
           "/data/kekeringan_meta.json",
-          30
+          48
         ],
         [
           "berita_kekeringan",

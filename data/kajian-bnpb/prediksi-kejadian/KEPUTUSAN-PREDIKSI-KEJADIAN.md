@@ -36,3 +36,9 @@ Dokumen ini menang atas semua dokumen lain di folder ini. `data/kajian-bnpb/pred
 | Q2 | Berapa hari sesudah tanggal prakiraan kotak "Belum ada laporan" dianggap matang? | Bawaan: 3 hari (logbook biasanya masuk H+1 sampai H+2); sebelum itu tertulis "menunggu laporan". |
 | Q3 | Staf yang boleh melihat titik laporan di Dalops: semua sesi staf Dalops, atau hanya yang juga punya hak Meja Laporan? | Bawaan: semua sesi staf yang sudah boleh membuka `/api/dalops/*`. |
 | Q4 | Tab Karhutla di Dalops ikut dibandingkan dengan titik panas FIRMS (alat ukur), atau hanya dengan logbook karhutla? | Bawaan: logbook dan laporan saja di Dalops; FIRMS tetap di rapor `/prediksi`. |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

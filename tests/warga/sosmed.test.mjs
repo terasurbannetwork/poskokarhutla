@@ -161,7 +161,7 @@ uji("migrasi 0012 sosmed idempoten dan CHECK menolak baris salah langsung di D1"
 
 uji("GET /admin/sosmed: tanpa sesi dialihkan ke masuk, dengan token memuat halaman dan skrip", async () => {
   const r = await mf.dispatchFetch("http://sosmed.lokal/admin/sosmed", {redirect: "manual"});
-  assert.equal(r.status, 303); assert.match(r.headers.get("location"), /\/admin\/masuk/);
+  assert.equal(r.status, 303); assert.match(r.headers.get("location"), /\/masuk/);
   const ok = await mf.dispatchFetch("http://sosmed.lokal/admin/sosmed", {headers: ADMIN}), t = await ok.text();
   assert.equal(ok.status, 200); assert.ok(t.includes("/admin/sosmed.js")); assert.ok(existsSync(path.join(AKAR, "public/admin/sosmed.js")));
   assert.match(ok.headers.get("content-security-policy"), /script-src 'self'/);

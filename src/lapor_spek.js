@@ -60,6 +60,9 @@ export const JENIS = [
 export const KELOMPOK = [
   {id: "kejadian", label: "Kejadian", wajib: true},
   {id: "korban", label: "Korban", tanya: "Ada korban jiwa, hilang, atau luka? Sebutkan jumlahnya, atau ketik *tidak ada*."},
+  /* K94-K96, K98, K102-K103 (pemilik 25 Nov 2026, riset R-PERTANYAAN-LANJUT): penyelamatan dan situasi sekarang ditanya satu per satu, tanpa formulir kelompok */
+  {id: "penyelamatan", label: "Penyelamatan dan medis"},
+  {id: "situasi", label: "Situasi sekarang"},
   /* terdampak dan mengungsi dua kelompok terpisah (pemilik 19 Nov 2026: "dipisah 2") */
   {id: "terdampak", label: "Warga terdampak", tanya: "Berapa keluarga dan warga yang terdampak?"},
   {id: "pengungsian", label: "Pengungsian", tanya: "Berapa warga dan keluarga yang mengungsi?"},
@@ -161,6 +164,8 @@ export const ISIAN = [
   /* layanan dasar yang terlihat warga (pemilik 19 Nov 2026, dari daftar Kendala logbook); jalan tidak di sini karena sudah ditanya di akses_jalan. Bukti untuk status Lifeline per kab/kota; status resmi tetap ditetapkan staf (KEPUTUSAN-LIFELINE). */
   {nama: "layanan_terganggu", label: "Layanan terganggu", kelompok: "layanan", tipe: "opsi_banyak", tanya: "Layanan apa yang terganggu di lokasi? Boleh pilih lebih dari satu.", opsi: [
     ["Listrik padam", ""], ["Sinyal telepon putus", "Tidak bisa menelepon atau internet"], ["Air bersih terhenti", "PDAM atau sumur tidak mengalir"],
+    // K101: BBM, pangan, dan transportasi (Lampiran I 7.4, 7.5); belum mengalir ke Lifeline (Q41)
+    ["BBM atau gas sulit didapat", "SPBU tutup atau antre panjang"], ["Pasar atau toko tutup", "Makanan sulit dibeli"], ["Pelabuhan, bandara, atau terminal tutup", "Angkutan umum berhenti"],
     ["Semua masih berjalan", "", null, null, "Lainnya"], ["Tidak tahu", "", null, null, "Lainnya"]]},
   {nama: "kebutuhan", label: "Kebutuhan mendesak", kelompok: "kebutuhan", tipe: "opsi_banyak", tanya: "Apa yang paling dibutuhkan warga sekarang? Boleh pilih lebih dari satu.", opsi: [
     // Logistik: kategori Perka 18/2009 Standarisasi Logistik dan Perka 23/2014, nama barang mengikuti katalog LogPal (pangan, sandang, family kit, kidsware, logistik lain).
@@ -168,7 +173,7 @@ export const ISIAN = [
     // membuat warga mengungsi; karhutla dan kekeringan memakai kebutuhan khasnya (masker, air).
     ["Makanan siap saji", "", null, [...UNGSI, "karhutla"], "Logistik"], ["Paket pangan atau sembako", "Beras, mi instan, lauk", null, null, "Logistik"],
     ["Air bersih atau air minum", "", null, null, "Logistik"], ["Paket sandang", "Pakaian dan selimut", null, UNGSI, "Logistik"],
-    ["Matras, kasur lipat, atau tikar", "", null, UNGSI, "Logistik"], ["Tenda atau terpal", "", null, UNGSI, "Logistik"],
+    ["Matras, kasur lipat, atau tikar", "", null, UNGSI, "Logistik"], ["Tenda atau terpal", "Tempat berteduh sementara", null, UNGSI, "Logistik"],
     ["Paket kebersihan keluarga (family kit)", "Perlengkapan mandi dan kebersihan keluarga", null, UNGSI, "Logistik"], ["Perlengkapan bayi dan anak (kidsware)", "Popok, susu, botol, dan kebutuhan anak", null, UNGSI, "Logistik"],   // nama katalog LogPal dalam kurung (pemilik 20 Nov 2026: tidak ada bahasa Inggris di pilihan)
     ["Obat dan layanan kesehatan", "", null, null, "Logistik"], ["Masker", "Untuk asap atau abu", null, ["karhutla", "erupsi"], "Logistik"],
     // Peralatan: khas per jenis bencana, dari permintaan yang paling sering tercatat di logbook Pusdalops 2024-2026
@@ -178,15 +183,60 @@ export const ISIAN = [
     ["Alat berat", "Membuka jalan atau mencari korban", null, ["longsor", "gempa", "banjir", "erupsi", "tsunami"], "Peralatan"],
     ["Gergaji mesin", "Memotong pohon tumbang", null, ["cuaca", "longsor"], "Peralatan"], ["Bahan atap", "Seng, asbes, atau terpal atap", null, ["cuaca", "gempa"], "Peralatan"],
     ["Genset dan lampu penerangan", "Listrik padam", null, ["gempa", "tsunami", "banjir", "cuaca", "erupsi"], "Peralatan"],
+    // K99: sanitasi dan penerangan (Lampiran I 9.1, Perka 9/2008 Format-9)
+    ["Toilet atau MCK darurat", "Tempat buang air dan mandi sementara", null, UNGSI, "Logistik"], ["Lampu atau penerangan", "Senter, lampu darurat", null, ["karhutla", "kebakaran_gedung", "longsor", "abrasi"], "Peralatan"],
     ["Lainnya", "Tulis sendiri kebutuhannya", null, null, "Lainnya"], ["Belum ada kebutuhan mendesak", "", null, null, "Lainnya"]]},
+  /* sudah ada petugas di lokasi (pemilik 25 Nov 2026: "harusnya ada pertanyaan apakah sudah ada orang BPBD yang datang") */
+  {nama: "petugas_datang", label: "Petugas di lokasi", kelompok: "kebutuhan", tipe: "opsi", tanya: "Apakah petugas BPBD sudah datang ke lokasi?", opsi: [
+    ["Sudah, petugas BPBD", "Petugas BPBD sudah di lokasi atau pernah datang"], ["Sudah, pemadam kebakaran", "Damkar atau Manggala Agni", null, ["kebakaran_gedung", "karhutla"]],
+    ["Sudah, tim SAR", "Basarnas atau tim pencarian dan pertolongan", null, ["banjir", "longsor", "gempa", "tsunami", "erupsi", "abrasi"]],   // K100
+    ["Sudah, petugas lain", "TNI, Polri, desa, atau relawan, belum BPBD"],
+    ["Belum ada petugas", "Belum ada yang datang membantu"], ["Tidak tahu", "Belum tahu ada petugas atau belum"]]},
+  /* ----- K94, K98: penyelamatan dan medis ----- */
+  {nama: "butuh_penyelamatan", label: "Orang terjebak", kelompok: "penyelamatan", tipe: "opsi", kecuali: ["kekeringan", "abrasi"],
+    tanya: "Apakah masih ada orang yang terjebak atau tertimbun dan butuh diselamatkan sekarang?",
+    tanyaJenis: {longsor: "Apakah masih ada orang yang tertimbun tanah atau material dan butuh diselamatkan sekarang?", gempa: "Apakah masih ada orang yang tertimpa reruntuhan dan butuh diselamatkan sekarang?",
+      banjir: "Apakah masih ada orang yang terjebak atau terseret air dan butuh diselamatkan sekarang?", tsunami: "Apakah masih ada orang yang terjebak atau terseret air dan butuh diselamatkan sekarang?",
+      kebakaran_gedung: "Apakah masih ada orang yang terjebak di dalam bangunan?", erupsi: "Apakah masih ada orang yang terjebak di dekat gunung dan butuh diselamatkan sekarang?",
+      karhutla: "Apakah ada orang yang terkepung api dan butuh diselamatkan sekarang?"}, opsi: [
+    ["Ya, ada yang terlihat atau terdengar", "Ada orang yang diketahui masih terjebak"], ["Ada kabar, belum dipastikan", "Seseorang bilang ada yang terjebak, belum dilihat sendiri"],
+    ["Tidak ada", "Semua orang yang diketahui sudah keluar"], ["Tidak tahu", "Belum bisa memeriksa"]]},
+  {nama: "butuh_medis", label: "Butuh pertolongan medis", kelompok: "penyelamatan", tipe: "opsi", bila: "luka", bilaJenis: ["erupsi", "karhutla", "banjir", "kekeringan"],
+    tanya: "Apakah ada warga yang butuh pertolongan medis sekarang?", opsi: [
+    ["Ada luka berat, belum dibawa berobat", "Perlu dibawa ke puskesmas atau rumah sakit"], ["Banyak warga mendadak sakit", "Misalnya diare, sesak napas, mata perih, gatal"],
+    ["Ada keduanya", "Luka berat dan banyak yang sakit"], ["Tidak ada, sudah tertangani", ""], ["Tidak tahu", ""]]},
+  /* ----- K95, K96, K102, K103: situasi sekarang ----- */
+  {nama: "situasi_sekarang", label: "Keadaan sekarang", kelompok: "situasi", tipe: "opsi", tanya: "Bagaimana keadaan kejadiannya sekarang?", opsi: [
+    ["Masih berlangsung atau membesar", {   // keterangan mengikuti jenis kejadian (pemilik 25 Nov 2026: "sesuaikan lah bencananya apa")
+      banjir: "Air masih naik atau meluas", longsor: "Tanah masih bergerak atau retakan bertambah", abrasi: "Ombak masih tinggi, pantai masih terkikis",
+      cuaca: "Angin atau hujan masih kencang", kekeringan: "Sumber air makin kering", karhutla: "Api masih menjalar, asap masih tebal",
+      gempa: "Gempa susulan masih terasa", tsunami: "Air laut masih naik atau datang lagi", erupsi: "Gunung masih menyemburkan abu atau lava",
+      kebakaran_gedung: "Api masih menyala atau merambat", _: "Kejadiannya masih terjadi atau makin besar"}], ["Masih ada, tidak bertambah", "Bertahan, belum turun"],
+    ["Mulai mereda", "Berkurang, belum selesai"], ["Sudah berakhir", "Tidak ada lagi tanda kejadian"], ["Tidak tahu", "Tidak melihat langsung"]]},
+  {nama: "akses_ke_lokasi", label: "Akses ke lokasi", kelompok: "situasi", tipe: "opsi", kecuali: ["kekeringan"],
+    tanya: "Bagaimana petugas dan kendaraan bisa sampai ke lokasi dari jalan besar terdekat?", opsi: [
+    ["Mobil dan truk bisa masuk", "Jalan masih bisa dilewati kendaraan besar"], ["Hanya motor", "Mobil tidak bisa lewat"], ["Hanya jalan kaki", "Kendaraan tidak bisa masuk"],
+    ["Harus lewat air atau udara", "Perahu atau helikopter"], ["Tidak tahu", ""]]},
+  {nama: "warga_terancam", label: "Warga terancam", kelompok: "situasi", tipe: "opsi", jenis: ["longsor", "banjir", "erupsi", "karhutla", "tsunami", "cuaca"],
+    tanya: "Kira-kira seberapa banyak warga di sekitar yang terancam tetapi belum terkena dampak?", opsi: [   // pita, bukan angka (Lampiran I 4.6)
+    ["Beberapa rumah", "Sekitar belasan orang"], ["Satu kampung atau dusun", "Puluhan sampai ratusan orang"], ["Beberapa desa", "Ribuan orang"], ["Tidak ada", ""], ["Tidak tahu", ""]]},
+  {nama: "evakuasi_pencegahan", label: "Pindah sebelum bahaya", kelompok: "situasi", tipe: "opsi", jenis: ["erupsi", "banjir", "tsunami", "cuaca", "karhutla"],
+    tanya: "Apakah ada warga yang sudah pindah sebelum bahaya datang, karena peringatan atau perintah petugas?", opsi: [   // Lampiran I 5.2, terpisah dari pengungsi
+    ["Ya, sudah banyak yang pindah", ""], ["Ya, sebagian", ""], ["Belum ada perintah pindah", ""], ["Tidak tahu", ""]]},
+  {nama: "wilayah_terisolasi", label: "Kampung terputus", kelompok: "situasi", tipe: "opsi", jenis: ["banjir", "longsor", "gempa", "erupsi", "tsunami", "cuaca", "abrasi"],
+    tanya: "Apakah ada dusun atau kampung lain yang tidak bisa dihubungi atau didatangi sama sekali?", opsi: [
+    ["Ya, terputus total", "Tidak bisa dihubungi dan tidak bisa didatangi"], ["Ya, hanya jalannya terputus", "Masih ada sinyal atau kabar"], ["Tidak ada", ""], ["Tidak tahu", ""]]},
+
 ];
 
 export const isianNama = Object.fromEntries(ISIAN.map(i => [i.nama, i]));
 /* pilihan yang berlaku untuk jenis kejadian ini: opsi berelemen ke-4 berisi daftar jenis hanya muncul untuk jenis itu (kebutuhan khas per bencana, logbook Pusdalops) */
-export const opsiBerlaku = (i, jenis) => (i.opsi || []).filter(o => !o[3] || (jenis && o[3].includes(jenis)));
+/* keterangan opsi (o[1]) boleh berupa peta per jenis {banjir: "...", _: bawaan}; diselesaikan di sini supaya pemanggil tetap menerima teks */
+export const opsiBerlaku = (i, jenis) => (i.opsi || []).filter(o => !o[3] || (jenis && o[3].includes(jenis)))
+  .map(o => o[1] && typeof o[1] === "object" ? [o[0], o[1][jenis] || o[1]._, ...o.slice(2)] : o);
 export const berlaku = (jenis) => ISIAN.filter(i => (!i.jenis || (jenis && i.jenis.includes(jenis))) && !(jenis && i.kecuali?.includes(jenis)));
 /* isian yang berlaku untuk sesi ini: pertanyaan lanjutan (bila) hanya bila isian induknya lebih dari 0 (pemilik 19 Nov 2026: "harusnya ada follow up questionnya") */
-export const berlakuSesi = (sesi) => berlaku(sesi.isian.jenis?.nilai).filter(i => !i.bila || Number(sesi.isian[i.bila]?.nilai) > 0);
+export const berlakuSesi = (sesi) => berlaku(sesi.isian.jenis?.nilai).filter(i => !i.bila || Number(sesi.isian[i.bila]?.nilai) > 0 || i.bilaJenis?.includes(sesi.isian.jenis?.nilai));   // bilaJenis: tetap ditanya untuk jenis ini walau induknya kosong
 
 /* Kronologi berpandu per jenis (pemilik 19 Nov 2026: "kronologisnya bukan disuruh ketik panjang tapi dipandu", "ambil dari laporan Koordalops").
    Tiap langkah satu pertanyaan pilihan; frasa yang dipilih dirangkai jadi kalimat kronologi bergaya laporan Pusdalops

@@ -200,12 +200,12 @@ function terbitBaru(d, h, kini) {
   buatDokumen(h.sesi, h.pelapor || {});   // sekali ketuk tanpa profil: dokumen tanpa nama, sama dengan Worker (lengkapi)
   return tambahan;
 }
-const KUOTA_JAM = 60, KUOTA_MENIT = 20, kuota = {}; // ponytail: hitungan di memori proses; Worker memakai tabel laju D1
+const KUOTA_JAM = 120, KUOTA_MENIT = 20, kuota = {};   // K104 (25 Nov 2026): 120 per jam, sama dengan Worker; // ponytail: hitungan di memori proses; Worker memakai tabel laju D1
 async function pesan(body) {
   const wa = nomorWa(body.wa);
   if (!wa) return [400, {galat: "Nomor WhatsApp tidak sah."}];
   const d = baca(), kini = Date.now();
-  // kuota pesan per nomor (pemilik 19 Nov 2026: "kuota chat pelaporan dalam 1 jam biar ga di-abuse"): 60 per jam, 20 per menit; laporan yang sedang diisi tetap tersimpan
+  // kuota pesan per nomor (pemilik 19 Nov 2026: "kuota chat pelaporan dalam 1 jam biar ga di-abuse"; K104: 120 per jam): 120 per jam, 20 per menit; laporan yang sedang diisi tetap tersimpan
   const jejakKuota = (kuota[wa] ||= []).filter(t => kini - t < 3600e3); kuota[wa] = jejakKuota;
   const lewatMenit = jejakKuota.filter(t => kini - t < 60e3).length >= KUOTA_MENIT, lewatJam = jejakKuota.length >= KUOTA_JAM;
   if (lewatJam || lewatMenit) {

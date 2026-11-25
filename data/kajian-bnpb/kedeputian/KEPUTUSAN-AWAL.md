@@ -198,3 +198,9 @@ Dokumen saudara sempat memakai nama berbeda untuk hal yang sama. Yang berlaku ha
 | Pengerja `public/inti/jam_aturan.*` | `inti-layar` (pemilik `public/inti/**` menurut `ilmu.mjs`) | `ruang-bnpb` |
 
 Bagian §8 ini menang atas `PRD.md` dan dokumen lain untuk hal yang tercantum di tabel, walaupun PRD lebih tinggi di urutan otoritas umum.
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

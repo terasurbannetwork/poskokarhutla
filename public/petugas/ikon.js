@@ -22,6 +22,9 @@ const P = {
   panah: '<path d="M4 12h15M13 6l6 6-6 6"/>',
   buku: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4ZM5 17a3 3 0 0 1 3-3h11"/>',
   hapus: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  grafik: '<path d="M3 3v18h18M7 15l4-4 3 3 5-6"/>',
+  daftar: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  simpan: '<path d="M5 3h11l3 3v15H5V3ZM8 3v6h7V3M8 21v-7h8v7"/>',
   cek: '<circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/>',
 };
 export const ik = (nama, ukuran = 20) => `<svg class="lp-ik" width="${ukuran}" height="${ukuran}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${Object.hasOwn(P, nama) ? P[nama] : '<circle cx="12" cy="12" r="8"/>'}</svg>`;

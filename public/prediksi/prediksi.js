@@ -3,6 +3,9 @@
    Data: data/prediksi.json, skor.json, ujibalik.json, kalibrasi.json, lalu.json (scripts/prediksi/*.py).
    $, fmt, esc, rb dari ../inti/format.js. Angka: format id-ID, peluang dibulatkan ke 5% (tidak ada presisi palsu). */
 const PR = {dampak: null, jalan: null, d: null, skor: null, uji: null, kal: null, lalu: null, kalender: null, n: 60, tab: "besok", lap: undefined, geo: {}, kotor: new Set(), jadwal: false, baris: [], petaHari: null, hari: 1, pil: "ALL", tampil: "tabel", urut: null, lv: new Set(), KOL: {}};
+// Perkiraan mengungsi dan kebutuhan Sphere turunannya ditahan sampai uji balik lawan DIBI lulus (validasi-model 25 Nov 2026, AGENTS 2.27).
+// JSON tetap membawa laju_ungsi, n_kejadian, laju_asal, kebutuhan sebagai masukan uji balik.
+const MENGUNGSI_TAMPIL = false, TAHAN_UNGSI = "Perkiraan mengungsi ditahan sampai uji balik lawan DIBI lulus";
 const LEVEL = ["Normal", "Waspada", "Siaga", "Awas"];
 const ISPU = ["Baik/Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"];
 const KODE_NAMA = {HJN: "Hujan", API: "Titik panas", BNJ: "Banjir", LSR: "Longsor", ASP: "Asap PM2,5", ROB: "Rob"};
@@ -71,7 +74,7 @@ const VONIS_KOL = {HJN: "p20", API: "p", BNJ: "ps", LSR: "ps"};
 const KELAS_GEL = ["di bawah 1,25 m", "Sedang (1,25 sampai di bawah 2,5 m)", "Tinggi (2,5 sampai di bawah 4 m)", "Awas (4 m ke atas)"];   // label gelombang Sedang, Tinggi, Awas (pemilik 19 Nov 2026, KEPUTUSAN-BESOK K12)
 const KELAS_CEX = ["di bawah ambang 46 km/jam", "angin kencang (46 km/jam ke atas)", "setara Beaufort 8 (63 km/jam ke atas)", "setara Beaufort 10 (89 km/jam ke atas)"];
 const tglSingkat = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"});
-Object.assign(KODE_NAMA, {GEL: "Gelombang", CEX: "Angin"});
+Object.assign(KODE_NAMA, {GEL: "Gelombang", CEX: "Angin", GNA: "Gunung api", KEK: "Kekeringan"});
 
 const daftarKab = () => {
   const q = $("#cari").value.trim().toLowerCase(), p = $("#prov").value;
@@ -134,17 +137,17 @@ function gambarWaspada(dk, n) {
   for (const x of PR.d.waspada.filter(x => x.tenggang === n && ids.has(x.kab))) (per[x.aturan] ||= []).push(x);
   const isi = Object.entries(per).map(([id, xs]) => {
     const a = atr[id], jiwa = xs.reduce((s, x) => s + (x.dampak.jiwa || 0), 0), ada = xs.some(x => x.dampak.jiwa != null);
-    const ungsi = xs.reduce((s, x) => s + (x.dampak.kebutuhan?.mengungsi || 0), 0);
+    const ungsi = MENGUNGSI_TAMPIL ? xs.reduce((s, x) => s + (x.dampak.kebutuhan?.mengungsi || 0), 0) : 0;
     const syarat = [...(a.semua || []), ...(a.salah_satu || [])].map(s => esc(s.sumber)).join(a.salah_satu ? " atau " : "; ");
     xs.sort((p, q) => (q.dampak.jiwa || 0) - (p.dampak.jiwa || 0));
     const rinci = xs.slice(0, 40).map(x => {
-      const d = x.dampak, e = d.kebutuhan;
-      return `<tr><td>${esc(kb[x.kab]?.nama)}</td><td class="n">${d.jiwa != null ? ribu(d.jiwa) : "–"}</td><td class="n">${d.sekolah != null ? fmt(d.sekolah) : "–"}</td><td class="n">${d.faskes != null ? fmt(d.faskes) : "–"}</td><td class="n">${d.murid ? ribu(d.murid) : "–"}</td>
-        <td>${e ? `mengungsi ${ribu(e.mengungsi)}; air ${ribu(e.air_l)} L/hari; hunian ${ribu(e.hunian_m2)} m²; ${ribu(e.jamban)} jamban; ${ribu(e.kkal)} kkal/hari` : "–"}</td></tr>`;
+      const d = x.dampak, e = MENGUNGSI_TAMPIL && d.kebutuhan;
+      return `<tr><td>${esc(kb[x.kab]?.nama)}</td><td class="n">${d.jiwa != null ? ribu(d.jiwa) : "–"}</td><td class="n">${d.sekolah != null ? fmt(d.sekolah) : "–"}</td><td class="n">${d.faskes != null ? fmt(d.faskes) : "–"}</td><td class="n">${d.murid ? ribu(d.murid) : "–"}</td>${MENGUNGSI_TAMPIL ? `
+        <td${e ? ` title="Laju mengungsi DIBI 12 bulan, ${d.laju_asal === "kab" ? `kab/kota ini (${fmt(d.n_kejadian)} kejadian sah)` : "nasional (kejadian sah kab/kota ini kurang dari 5)"}"` : ""}>${e ? `mengungsi ${ribu(e.mengungsi)}; air ${ribu(e.air_l)} L/hari; hunian ${ribu(e.hunian_m2)} m²; ${ribu(e.jamban)} jamban; ${ribu(e.kkal)} kkal/hari` : "–"}</td>` : ""}</tr>`;
     }).join("");
-    return `<details class="pr-w" title="Jika: ${esc(syarat.replace(/<[^>]*>/g, ""))}"><summary><b>${esc(a.maka)}</b>, ${fmt(xs.length)} kab/kota${ada ? `, ${ribu(jiwa)} jiwa terpapar` : ""}${ungsi ? `, perkiraan mengungsi ${ribu(ungsi)}` : ""} <span class="pr-pil abu">perkiraan, belum diuji balik</span></summary>
-      <p class="pr-kecil">Jika: ${syarat}. ${a.paparan?.sumber ? `Paparan: ${esc(a.paparan.sumber)}. ` : ""}${a.catatan ? esc(a.catatan) + " " : ""}Kebutuhan: ${esc(PR.d.sphere.sumber)}.</p>
-      <div class="tw ex-tabel"><table><thead><tr><th>Kab/kota</th><th>Jiwa</th><th>Sekolah</th><th>Faskes</th><th>Murid</th><th>Kebutuhan Sphere (perkiraan)</th></tr></thead><tbody>${rinci}</tbody></table></div>
+    return `<details class="pr-w" title="Jika: ${esc(syarat.replace(/<[^>]*>/g, ""))}"><summary><b>${esc(a.maka)}</b>, ${fmt(xs.length)} kab/kota${ada ? `, ${ribu(jiwa)} jiwa terpapar` : ""}${ungsi ? `, perkiraan ${ribu(ungsi)} mengungsi dari jiwa terpapar di zona prakiraan` : ""} <span class="pr-pil abu">${MENGUNGSI_TAMPIL ? "hipotesis, belum diuji balik" : "perkiraan, belum diuji balik"}</span></summary>
+      <p class="pr-kecil">Jika: ${syarat}. ${a.paparan?.sumber ? `Paparan: ${esc(a.paparan.sumber)}. ` : ""}${a.catatan ? esc(a.catatan) + " " : ""}${MENGUNGSI_TAMPIL ? `Kebutuhan: ${esc(PR.d.sphere.sumber)}.` : `${TAHAN_UNGSI}.`}</p>
+      <div class="tw ex-tabel"><table><thead><tr><th>Kab/kota</th><th>Jiwa</th><th>Sekolah</th><th>Faskes</th><th>Murid</th>${MENGUNGSI_TAMPIL ? "<th>Kebutuhan Sphere (hipotesis)</th>" : ""}</tr></thead><tbody>${rinci}</tbody></table></div>
       ${xs.length > 40 ? `<p class="pr-kecil">dan ${fmt(xs.length - 40)} lainnya; persempit dengan saring provinsi atau cari.</p>` : ""}</details>`;
   }).join("") || '<p class="pr-kosong">Tidak ada aturan yang terpicu</p>';
   $("#waspada").innerHTML = `<section class="ex ex-std"><header class="ex-hd"><div class="ex-jd"><h3 class="pr-h">${svgI("M12 3l9 16H3z|M12 10v4|M12 17v.5")}Perlu tindakan</h3></div></header><div class="ex-bd">${isi}</div></section>`;
@@ -232,8 +235,8 @@ function bukaRincian(id, dari) {
   baris.push(barisKal(k, n));
   const atr = Object.fromEntries(PR.d.aturan.map(x => [x.id, x]));
   const dampak = PR.d.waspada.filter(x => x.kab === id && x.tenggang === n).map(x => {
-    const d = x.dampak, e = d.kebutuhan;
-    return `<li><b>${esc(atr[x.aturan]?.maka || x.aturan)}</b>${d.jiwa != null ? `: ${ribu(d.jiwa)} jiwa terpapar${d.sekolah != null ? `, ${fmt(d.sekolah)} sekolah, ${fmt(d.faskes)} faskes` : ""}${d.murid ? `, ${ribu(d.murid)} murid` : ""}` : ""}${e ? `; perkiraan mengungsi ${ribu(e.mengungsi)}` : ""} <span class="pr-pil abu">perkiraan</span></li>`;
+    const d = x.dampak, e = MENGUNGSI_TAMPIL && d.kebutuhan;
+    return `<li><b>${esc(atr[x.aturan]?.maka || x.aturan)}</b>${d.jiwa != null ? `: ${ribu(d.jiwa)} jiwa terpapar${d.sekolah != null ? `, ${fmt(d.sekolah)} sekolah, ${fmt(d.faskes)} faskes` : ""}${d.murid ? `, ${ribu(d.murid)} murid` : ""}` : ""}${e ? `; perkiraan ${ribu(e.mengungsi)} mengungsi dari jiwa terpapar di zona prakiraan` : d.kebutuhan ? `; ${TAHAN_UNGSI}` : ""} <span class="pr-pil abu">${e ? "hipotesis" : "perkiraan"}</span></li>`;
   }).join("");
   const hari = PR.d.kode.HJN?.hari?.[n - 1];
   const dlg = $("#rincian");
@@ -540,6 +543,8 @@ function panelKiri() {
     <nav class="db-nav-isi">${tabs.map(b => `<button type="button" class="db-nav-b" data-tab="${b.dataset.tab}" aria-current="${b.hasAttribute("aria-current")}"><i class="db-nav-ik">${svgD(IK_TAB[b.dataset.tab] || IK_TAB.besok)}</i><span class="db-nav-t">${esc(b.textContent.trim())}</span></button>`).join("")}</nav>
     <div class="db-nav-kaki"><p class="db-nav-g"><i>${svgD("M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z|M12 7v5l3 2")}</i><span>Pembaruan data</span></p>${kaki}</div></aside>`);
   $(".pr-nav").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (b) pilihTab(b.dataset.tab); });
+  /* panel bisa ditarik 200-320 px: pegangan .db-tarik dan kunci db_nav_lebar milik inti/dasbor.js (DasborA.tarik); lebar = --db-w di .db-a (body) */
+  document.body.classList.add("db-a", "pr-a"); window.DasborA?.tarik?.($(".pr-nav"));
   document.querySelector("main").insertAdjacentHTML("afterbegin", `<h1 class="db-l1" id="prJudul">${esc(document.querySelector("#tabs button[aria-current]")?.textContent || "Prakiraan 3 hari")}</h1>`);
 }
 

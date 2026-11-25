@@ -44,3 +44,10 @@ Sesudah hujan ekstrem (contoh: Siklon Senyar, 25 Nov 2025, Sumatera Utara dan Ac
 | Q6 | Poligon bekas longsor boleh di `public/`? | **[BAWAAN SEMENTARA]** tidak sebelum Q5 dijawab; disimpan di R2 `longsor/bekas/` di balik sesi staf. Poligon tidak memuat data orang, jadi alasannya kehati-hatian klaim, bukan privasi. | LS-06 |
 | Q7 | Tebangan di dalam bekas longsor dilaporkan? | **[BAWAAN SEMENTARA]** dilaporkan sebagai irisan luas berlabel "tumpang tindih dengan hilang tutupan tahun yang sama", tanpa kalimat sebab akibat (D8). | LS-04 |
 | Q8 | Dijalankan otomatis tiap kejadian longsor besar? | **[BAWAAN SEMENTARA]** tidak; manual per kejadian sampai vonis lulus. | LS-08 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q4: ambang lulus angka ALGORITMA 4, dikunci sebelum uji.

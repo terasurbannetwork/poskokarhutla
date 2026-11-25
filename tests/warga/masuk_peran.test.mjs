@@ -65,7 +65,7 @@ uji("peran U-12: /masuk dan /alun-alun 200 untuk tamu di centurisk97.id; /, daft
   const m = await buka("/masuk"); assert.equal(m.status, 200); assert.match(m.headers.get("content-type"), /text\/html/); assert.equal(m.headers.get("cache-control"), "no-store");
   assert.match(m.headers.get("content-security-policy"), /challenges\.cloudflare\.com/, "widget Turnstile boleh tampil");
   assert.equal((await buka("/alun-alun")).status, 200);
-  for (const j of ["/", "/relawan", "/berita", "/pendataan/../meja/../relawan"]) { const r = await buka(j); assert.equal(r.status, 303, j); assert.match(r.headers.get("location"), /^\/admin\/masuk/, j); }
+  for (const j of ["/", "/relawan", "/berita", "/pendataan/../meja/../relawan"]) { const r = await buka(j); assert.equal(r.status, 303, j); assert.match(r.headers.get("location"), /^\/masuk\?ke=/, j); }
   assert.equal((await buka("/masuk.html")).status, 303, "berkas html langsung tetap terkunci");
   /* API alun-alun memang terbuka untuk tamu di host terkunci: baca dan tulis (Turnstile + laju), tanpa dialihkan */
   const baca = await mf.dispatchFetch("https://centurisk97.id/api/alun", {redirect: "manual", headers: {"cf-connecting-ip": H()["cf-connecting-ip"]}});
@@ -79,7 +79,7 @@ uji("peran U-12b: GET /masuk tanpa public/masuk.html menjawab halaman sementara 
   const {default: worker} = await import("../../src/worker.js");
   const env = {DB, IP_SALT: "garam-uji", ...KUNCI, ASSETS: {fetch: async () => new Response("tidak ada", {status: 404})}};
   const r = await worker.fetch(new Request(ASAL + "/masuk", {headers: {"cf-connecting-ip": "10.7.250.1"}}), env, {waitUntil() {}});
-  assert.equal(r.status, 200); assert.match(await r.text(), /\/admin\/masuk/);
+  assert.equal(r.status, 200); assert.match(await r.text(), /Halaman masuk belum tersedia/);
   const s = await api("GET", "/api/masuk/saluran?x=" + id16()); assert.equal(s.s, 200);
   assert.equal(s.h.get("cache-control"), "public, max-age=15"); assert.equal(typeof s.j.wa, "boolean");
   /* kunci tetap: cacheTepi dengan tanpaQuery = permintaan berparameter acak tidak membuat entri baru */
@@ -134,6 +134,7 @@ uji("peran U-15: beberapa akun sejenis = tanpa sesi otomatis + pilih; akun beda 
   const asing = await instansi({wa: nomor(95)});
   const j = await login(4); catat(j.r);
   assert.deepEqual(j.r.j.ruang.map(x => x.jenis).sort(), ["instansi", "instansi", "kemitraan", "pendataan"]);
+  assert.deepEqual([...new Set(j.r.j.ruang.map(x => x.jenis + " " + x.ke))].sort(), ["instansi /instansi", "kemitraan /kemitraan", "pendataan /pendataan"], "arah bawaan per akun (peta-situs ALGORITMA)");
   const ins = j.r.j.ruang.filter(x => x.jenis === "instansi");
   assert.ok(ins.every(x => x.perlu_pilih === true && /^[0-9a-f]{16}$/.test(x.pilih))); assert.deepEqual(ins.map(x => x.pilih).sort(), [i1, i2].sort());
   assert.ok(j.r.j.ruang.filter(x => x.jenis !== "instansi").every(x => !x.perlu_pilih && !x.pilih));

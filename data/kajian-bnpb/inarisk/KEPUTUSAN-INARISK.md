@@ -115,3 +115,9 @@ Karena K3, angka pengisi itu **tidak ditiru**. Semua bentuk layar lain ditiru.
   disamarkan mesin, nama tidak bisa. **[bawaan]** tetap ditampilkan, karena sudah publik di InaRISK.
 - **Q6:** dampak radius untuk kejadian logbook butuh pencari koordinat dari nama desa. **[terjawab K6]** dibuat; titik desa
   berlabel perkiraan (pusat desa, bukan titik kejadian).
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

@@ -5,7 +5,7 @@ Halaman ini menjelaskan data masukan peluang semai awan serta turunan, gerbang, 
 ## M13. Peluang semai awan: data masukan
 
 - **Cuaca**: ECMWF IFS Open Data 0,1 derajat (CC BY 4.0), putaran 00 dan 12 UTC, langkah 0 sampai 36 per 3 jam; wilayah 94 sampai 142 BT dan 12 LS sampai 7 LU (grid 481 x 191 = 91.871 sel). Field `sfc`: lcc, mucape, tclw, tp, 10u, 10v, 2t, 2d; field `pl`: u dan v pada 850, 700, 200 hPa, r 850, t dan gh pada 1000, 925, 850, 700, 600, 500 hPa, w 850 dan 700 (29 field per langkah, sekitar 840 MB per putaran). Diambil per potong lewat berkas `.index` (rentang byte), 6 unduhan paralel, 3 kali coba ulang (`scripts/operasi/semai_ifs.py:20-36`). Pengurai GRIB2 memakai `eccodes` (hanya di workflow `semai.yml`, keputusan pemilik). `--putaran auto` mundur sampai 4 putaran bila yang terbaru belum lengkap.
-- **Titik api**: `public/data/kluster.json` (kolom `frp24`, daya radiasi 24 jam, bukan `frp` kumulatif) dan `hotspot24.json` untuk hitungan piksel per satelit; kluster di luar daratan Indonesia atau provinsi tidak dikenal tidak dipakai.
+- **Titik panas**: `public/data/kluster.json` (kolom `frp24`, daya radiasi 24 jam, bukan `frp` kumulatif) dan `hotspot24.json` untuk hitungan piksel per satelit; kluster di luar daratan Indonesia atau provinsi tidak dikenal tidak dipakai.
 - **Pendukung**: batas provinsi repo (zona waktu dan nama), `scripts/udara/kota.json` (kota), `scripts/cuaca/data/bandara.json` (136 bandara BMKG), `op_base` (base terdaftar), `awan_himawari.json` (tanda awan teramati).
 
 ## M14. Peluang semai awan: turunan, gerbang, faktor, skor
@@ -61,7 +61,7 @@ T = ramp(jarak titik hujan ke kota atau bandara terdekat, 10 km, 50 km)
 
 **Skor**: `skor = gerbang x Q^0,45 x D^0,40 x T^0,15` (rerata geometris berbobot; bernilai 0 bila satu faktor 0). Mode seperti Nimbus: `skor = gerbang x (0,45 Q4 + 0,40 D + 0,15 T)` dengan Q4 tanpa komponen naik dan D = 0 memaksa skor 0 (`semai_murni.py:155-164`). Bobot dinormalkan berjumlah 1.
 
-![Alur skor zona semai: masukan prakiraan dan titik api melewati gerbang G1 sampai G9, lalu skor dari tiga faktor Q, D, dan T menghasilkan paling banyak lima zona. Seluruh bobot berstatus hipotesis. Sumber: scripts/operasi/semai_bobot.json dan scripts/operasi/semai_murni.py.](gambar/cuaca-udara-semai-gerbang-skor.svg)
+![Alur skor zona semai: masukan prakiraan dan titik panas melewati gerbang G1 sampai G9, lalu skor dari tiga faktor Q, D, dan T menghasilkan paling banyak lima zona. Seluruh bobot berstatus hipotesis. Sumber: scripts/operasi/semai_bobot.json dan scripts/operasi/semai_murni.py.](gambar/cuaca-udara-semai-gerbang-skor.svg)
 
 **Zona** (`semai_murni.py:173-205`): ambil skor tertinggi tiap sel di langkah siang; pilih serakah, sel terbaik jadi zona, buang sel dalam 40 km; berhenti pada 5 zona (A sampai E) atau skor di bawah 0,35. Jendela terbang: langkah berurutan di sekitar langkah terbaik dengan skor sama dengan atau lebih dari 85% puncak, dipotong ke 07.00 sampai 16.00 setempat. Zona waktu dari kode provinsi (WIB, WITA, WIT); kode tidak dikenal adalah galat, bukan tebakan.
 

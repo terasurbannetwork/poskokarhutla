@@ -3,7 +3,7 @@
 Pakai:  python3 scripts/scrape/osm_nasional.py
 Mentah: data/raw/osm/prov-fasilitas-<kode>.json dan prov-vital-<kode>.json dari
         scripts/scrape/tarik_osm.py fasilitas|vital <kode ...> (workflow osm-nasional.yml).
-Baris tiap kategori: [lat, lon, nama]; rumah ibadah BERNAMA disimpan terpisah di ibadah/<kode>.json (tidak membengkakkan berkas utama), sisanya hanya dihitung.
+Baris tiap kategori: [lat, lon, nama], untuk rs, puskesmas, polisi, damkar ditambah nomor telepon bila tercatat di OSM: [lat, lon, nama, "+62..."]; rumah ibadah BERNAMA disimpan terpisah di ibadah/<kode>.json (tidak membengkakkan berkas utama), sisanya hanya dihitung.
 Provinsi yang mentahnya belum lengkap dilewati, berkas lamanya dibiarkan.
 Sumber: OpenStreetMap via Overpass (ODbL, (c) kontributor OpenStreetMap).
 """
@@ -16,6 +16,27 @@ from wilayah import PROVINSI
 MENTAH = os.path.join(AKAR, "data/raw/osm")
 KELUAR = os.path.join(AKAR, "public/data/osm_nasional")
 KATEGORI = ["rs", "puskesmas", "klinik", "sekolah", "polisi", "damkar", "titik_kumpul", "pemerintahan", "jembatan"]
+BERNOMOR = {"rs", "puskesmas", "polisi", "damkar"}   # nomor telepon untuk kartu Nomor penting /lapor (pemilik 25 Nov 2026)
+
+
+def nomor(t):
+    """nomor pertama dari tag phone, contact:phone, contact:mobile dirapikan ke +62...; None bila tidak sah"""
+    for kunci in ("phone", "contact:phone", "contact:mobile"):
+        for mentah in str(t.get(kunci, "")).replace(",", ";").replace("/", ";").split(";"):
+            d = "".join(ch for ch in mentah if ch.isdigit() or ch == "+")
+            if d.startswith("+"):
+                d = d[1:]
+            if d.startswith("0"):
+                d = "62" + d[1:]
+            if not d.startswith("62") and len(d) >= 3 and d[:2] in ("21", "22", "24", "31", "61") :
+                d = "62" + d   # kode area tanpa 0 di depan
+            if d.startswith("62") and d[2:].startswith(("1500", "1300", "1400")):
+                return d[2:]   # nomor layanan 1500xxx ditelepon tanpa kode negara
+            if d.startswith(("1500", "1300", "1400")) and 6 <= len(d) <= 8:
+                return d
+            if d.startswith("62") and 9 <= len(d) <= 15 and "+" not in d:
+                return "+" + d
+    return None
 
 
 def kategori(t):
@@ -60,7 +81,9 @@ def susun(els):
         c = el if "lat" in el else el.get("center")
         if not k or not c:
             continue
-        out[k].append([round(c["lat"], 5), round(c["lon"], 5), el["tags"].get("name", "")])
+        baris = [round(c["lat"], 5), round(c["lon"], 5), el["tags"].get("name", "")]
+        no = nomor(el["tags"]) if k in BERNOMOR else None
+        out[k].append(baris + [no] if no else baris)
     for v in out.values():
         v.sort()
     out["ibadah_n"] = ibadah
@@ -103,6 +126,14 @@ def uji():
     assert len(d["jembatan"]) == 1 and len(d["titik_kumpul"]) == 1 and d["ibadah_n"] == 3
     assert d["ibadah"] == [[-6.4, 106.7, "Masjid Al-Ikhlas"]], d["ibadah"]  # bernama masuk, tak bernama tidak, kembar koordinat sama dibuang
     assert sum(len(d[k]) for k in KATEGORI) == 3  # bank tidak masuk
+    assert nomor({"phone": "+62 21 5203 435"}) == "+62215203435"
+    assert nomor({"contact:phone": "(021) 8191986; 0812-3456-789"}) == "+62218191986"
+    assert nomor({"phone": "0812 3456 7890"}) == "+6281234567890"
+    assert nomor({"phone": "+62 1 500 799"}) == "1500799" and nomor({"phone": "1500 799"}) == "1500799"
+    assert nomor({"phone": "112"}) is None and nomor({"phone": "abc"}) is None and nomor({}) is None
+    d2 = susun([{"type": "node", "id": 9, "lat": -6.1, "lon": 106.8, "tags": {"amenity": "hospital", "name": "RS A", "phone": "021-555-1234"}},
+                {"type": "node", "id": 10, "lat": -6.1, "lon": 106.8, "tags": {"amenity": "school", "name": "SD B", "phone": "021-555-9999"}}])
+    assert d2["rs"] == [[-6.1, 106.8, "RS A", "+62215551234"]] and d2["sekolah"] == [[-6.1, 106.8, "SD B"]], d2  # sekolah tidak diberi nomor
 
 
 if __name__ == "__main__":

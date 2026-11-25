@@ -55,6 +55,30 @@ export const LAPORAN_BANJIR = [
     args: (d, f, out) => ['penanganan_banjir.py', '--tanggal', d, '--out', out] },
 ]
 
+// Paritas bencana F-11 (PB-59): generator PB-58 (penanganan_jenis.py) untuk gempa dan kekeringan, angka dari laporan harian yang tayang, tanpa bahan WA.
+// Pola LAPORAN_BANJIR: tidak diunggah, satu saklar .env per bencana (LAPORAN_GEMPA=1, LAPORAN_KEKERINGAN=1), MATI bawaan, jadi jalur terjadwal
+// tidak berubah sampai pemilik menyalakannya (KEPUTUSAN-BOT-LAPORAN D9). Cut-off 17.00 WIB seperti banjir [BAWAAN SEMENTARA, belum diputuskan pemilik].
+// Generator menyerahkan deck ke <out>/<id>/Revisi N/ (lewat_deck.serah_revisi); `serah` = jalankanGenerator menyalin revisi terbaru ke <out>/<berkas>.
+export const LAPORAN_PB = [
+  { id: 'penanganan_gempa', saklar: 'LAPORAN_GEMPA', judul: 'Laporan Penanganan Gempa Bumi', butuh: [], jam: 17, unggah: false, serah: true,
+    berkas: (d) => `Laporan Penanganan Gempa Bumi ${ddmmyy(d)}`,
+    args: (d, f, out) => ['penanganan_gempa.py', '--tanggal', d, '--out', path.join(out, 'penanganan_gempa')] },
+  { id: 'penanganan_kekeringan', saklar: 'LAPORAN_KEKERINGAN', judul: 'Laporan Penanganan Kekeringan', butuh: [], jam: 17, unggah: false, serah: true,
+    berkas: (d) => `Laporan Penanganan Kekeringan ${ddmmyy(d)}`,
+    args: (d, f, out) => ['penanganan_kekeringan.py', '--tanggal', d, '--out', path.join(out, 'penanganan_kekeringan')] },
+]
+
+// Revisi terbaru <out>/<id>/Revisi N/<berkas>.pdf|pptx disalin ke <out>/<berkas>.*; tidak ada = dibiarkan, pemeriksa "keluaran tidak ada" yang melapor.
+export function salinRevisi(lap, tanggal, out) {
+  const akar = path.join(out, lap.id)
+  let n = 0
+  try { for (const x of fs.readdirSync(akar)) n = Math.max(n, Number((x.match(/^Revisi (\d+)$/) || [])[1] || 0)) } catch { return }
+  for (const x of ['pdf', 'pptx']) {
+    const dari = path.join(akar, `Revisi ${n}`, `${lap.berkas(tanggal)}.${x}`)
+    if (n && fs.existsSync(dari)) fs.copyFileSync(dari, path.join(out, `${lap.berkas(tanggal)}.${x}`))
+  }
+}
+
 // Laporan hanya lewat proyek bot (perintah), TIDAK PERNAH terjadwal: jalur jalankan() hanya mengulang LAPORAN dan LAPORAN_BANJIR.
 // banjir_sepekan (pemilik 19 Nov 2026: "tambahin laporan paparan banjir sepekan? tapi bisa diatur juga tanggal yang dimau"):
 // periode bebas = tanggal laphar awal s.d. akhir (tanggal proyek = akhir). Data dari WA Koordalops tiap hari periode (f.wa, dikumpulkan
@@ -251,7 +275,9 @@ export async function jalankanGenerator(lap, tanggal, f, out, kerja, dep, env = 
   try {
     // Seluruh pohon proses perlu Python >= 3.12 + Pillow (penanganan.py memanggil `python3` telanjang): venv di depan PATH.
     const pyBin = rumah(env.WA_PY_BIN) || path.join(RUMAH, 'py', 'bin')
-    return (await dep.exec(path.join(pyBin, 'python3'), lap.args(tanggal, f, out), { cwd: GENERATOR, timeout: lap.waktu || 10 * 60e3, maxBuffer: 20e6, env: { ...process.env, ...(opsi.envAnak || {}), PATH: pyBin + path.delimiter + (process.env.PATH || '') } })) || {}
+    const r = (await dep.exec(path.join(pyBin, 'python3'), lap.args(tanggal, f, out), { cwd: GENERATOR, timeout: lap.waktu || 10 * 60e3, maxBuffer: 20e6, env: { ...process.env, ...(opsi.envAnak || {}), PATH: pyBin + path.delimiter + (process.env.PATH || '') } })) || {}
+    if (lap.serah) salinRevisi(lap, tanggal, out)
+    return r
   } catch (x) {
     const penuh = String(x.stderr || x.message || x)
     try { fs.writeFileSync(path.join(kerja, 'galat.txt'), penuh, { mode: 0o600 }) } catch {}
@@ -314,7 +340,7 @@ export async function jalankan(opsi = {}) {
     delete state.gagal.sistem
     const { pilihSesuai } = bahan
 
-    for (const lap of [...LAPORAN, ...(env.LAPORAN_BANJIR === '1' ? LAPORAN_BANJIR : [])]) {
+    for (const lap of [...LAPORAN, ...(env.LAPORAN_BANJIR === '1' ? LAPORAN_BANJIR : []), ...LAPORAN_PB.filter((l) => env[l.saklar] === '1')]) {
       const kunci = `${lap.id}:${tanggal}`
       const { terpilih, teks: teksSesuai } = await pilihSesuai(lap)
       const c = cekSiap(lap, terpilih, now, tanggal, !!opsi.cutoff)

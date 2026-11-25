@@ -7,8 +7,10 @@ import {hitungAntre, kirimTertunda, isiNonceLuring} from "./luring.js";
 import {satuTitik} from "./gps.js";
 import {ik} from "./ikon.js";
 import {ringkasProfil} from "./panggil_murni.js";
+import {pasangMenu} from "./menu.js";
 
 const isi = $("lpIsi");
+pasangMenu($("lpMenu"));
 let kode = ambilKode(), ketua = null, saya = null, layar = "beranda", info = "", bersih = null, tugasId = null;
 
 const tampil = h => { isi.innerHTML = h; };

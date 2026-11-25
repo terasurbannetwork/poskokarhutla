@@ -107,7 +107,7 @@ uji("workers.dev produksi: halaman internal di balik login, HSTS terpasang", asy
   for (const asal of ["https://centurisk97.terasurbannetwork.workers.dev", "https://abc123-centurisk97.terasurbannetwork.workers.dev", "https://centurisk97.id"]) {
     for (const j of ["/monitor", "/direktori", "/prediksi"]) {
       const r = await mf.dispatchFetch(asal + j, {redirect: "manual", headers: {"cf-connecting-ip": ipBaru()}}); await r.text();
-      assert.equal(r.status, 303, `${asal}${j} tamu = ${r.status}`); assert.match(r.headers.get("location"), /^\/admin\/masuk/);
+      assert.equal(r.status, 303, `${asal}${j} tamu = ${r.status}`); assert.match(r.headers.get("location"), /^\/masuk/);
       assert.equal(r.headers.get("strict-transport-security"), "max-age=31536000", `${asal}${j} tanpa HSTS`);
     }
   }

@@ -12,7 +12,8 @@ import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
 import {ruteBencana, sumberStatus, sumberUji, sitemap} from "./bencana.js";
-import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanLabelFoto, halamanSosmed, halamanKunciApi, halamanKontak, halamanBiayaBot} from "./admin_halaman.js";
+import {halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanLabelFoto, halamanSosmed, halamanKunciApi, halamanKontak, halamanBiayaBot, bolehStaf} from "./admin_halaman.js";
+import {menuUntuk} from "./peta_situs.js";   // impor melingkar aman: peta_situs.js memakai bolehHalaman hanya di dalam fungsi
 import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
@@ -23,9 +24,9 @@ import {RUTE_HUKUM} from "./hukum.js";
 import {RUTE_KONTAK} from "./kontak.js";
 import {RUTE_SITREP, arsipkanSitrep, bersihkanArsipSitrep} from "./sitrep.js";
 import {RUTE_RELAWAN, bersihkanRelawan} from "./relawan.js";
-import {RUTE_LAPANGAN, bersihkanLapangan} from "./lapangan.js";
+import {RUTE_LAPANGAN, bersihkanLapangan, petugas as petugasSesi} from "./lapangan.js";
 import {tanyaKondisi} from "./lapangan_wa.js";
-import {layaniKm} from "./kemitraan.js";
+import {layaniKm, hakKm} from "./kemitraan.js";
 import {RUTE_LAPORAN_BNPB} from "./laporan_bnpb.js";
 import {RUTE_RUMAH_RUSAK} from "./rumah_rusak.js";
 import {RUTE_BANGUNAN} from "./bangunan.js";
@@ -40,7 +41,7 @@ import {RUTE_PENGUNGSIAN_TITIK} from "./pengungsian_titik.js";
 import {RUTE_ORANG_TINJAU} from "./orang_tinjau.js";
 import {RUTE_PENGINGAT, buatPengingat, buatPengingatPrioritas} from "./pengingat.js";
 import {RUTE_OPS, nilaiDropTertunda} from "./operasi_lapangan.js";
-import {RUTE_INSTANSI, catatKerja, tugasBaruDariBerkas, bersihkanInstansi} from "./instansi.js";
+import {RUTE_INSTANSI, catatKerja, tugasBaruDariBerkas, bersihkanInstansi, akunMenu} from "./instansi.js";
 import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
 import {RUTE_SEGEL} from "./segel.js";
 import {RUTE_UJI_PILOT} from "./uji_pilot.js";
@@ -65,11 +66,8 @@ import {RUTE_UJI, jalankanUji} from "./uji_lapangan.js";
 import {RUTE_UJI_BANJIR, bersihkanUjiBanjir} from "./uji_banjir.js";
 import {RUTE_STAF, bersihkanStaf, stafPeran, stafSesiSemua} from "./staf.js";
 import {RUTE_CC, bersihkanCc} from "./command_center.js";
-import {RUTE_AKADEMISI, P_AKADEMISI} from "./akademisi.js";
-import {RUTE_DALOPS, PERAN_DALOPS} from "./dalops.js";
-/* menu atas Pusdalops (public/bnpb/menu_pusdalops.js) + peta utama (tab Operasi lapangan di "/operasi"): staf Pusdalops, Koordalops, Pimpinan
-   (mis. akun Dirdalops) membuka halamannya di centurisk97.id; API tiap halaman tetap menjaga haknya sendiri (permintaan pemilik 3 Nov 2026) */
-const MENU_PUSDALOPS = /^\/(bnpb\/(dalops|logbook|bahan|saham|dokumen|operasi|siaga|perencanaan)\/?)?$/;
+import {RUTE_AKADEMISI} from "./akademisi.js";
+import {RUTE_DALOPS} from "./dalops.js";
 import {RUTE_LOGBOOK} from "./logbook.js";
 import {RUTE_PEMULIHAN} from "./pemulihan.js";
 import {RUTE_LAPSUS} from "./lapsus.js";
@@ -82,6 +80,10 @@ import {layaniApiV1, RUTE_KUNCI_API} from "./api_v1.js";
 import {layaniMcp} from "./mcp.js";
 import {RUTE_AI} from "./ai.js";
 import {RUTE_PEMIRSA, bersihkanPemirsa, pemirsaSesi, arahPemirsa, hapusSesiPemirsa, cookiePemirsa} from "./pemirsa.js";
+/* gerbang halaman (host terkunci, daftar putih, bolehHalaman) tinggal di modul daun src/gerbang_halaman.js supaya peta_situs.js dan admin_halaman.js tidak mengimpor worker.js (PS-04);
+   diekspor ulang di sini untuk pengimpor lama. Tabel rute dipasang ke sana lewat pasangTabelRute. */
+import {HOST_TERKUNCI, hostTerkunci, HTML_RUTE, PUBLIK_TANPA_SESI, halamanTerkunci, perananGerbang, bolehHalaman, pasangTabelRute} from "./gerbang_halaman.js";
+export {HOST_TERKUNCI, hostTerkunci, HTML_RUTE, PUBLIK_TANPA_SESI, perananGerbang, bolehHalaman};
 import {RUTE_PANTAU, bersihkanPantau} from "./pantau.js";
 import {RUTE_INVENTARIS} from "./inventaris.js";
 import {RUTE_LOGPAL} from "./logpal.js";
@@ -583,14 +585,17 @@ export async function bersihkan(env, kini = Date.now()) {
 
 /* rute statistik, sesi admin, dan kotak pesan: "METODE /jalur" (":id" = 16 hex). Gerbang uji membaca kunci tabel ini. */
 const RUTE = {
+  "GET /api/peta-situs": petaSitus, "HEAD /api/peta-situs": petaSitus,   // menu per sesi (paket peta-situs D3, D8); tanpa D1 selain pembaca sesi
+  "GET /api/instansi/peta-situs": petaSitus, "HEAD /api/instansi/peta-situs": petaSitus,   // alias PS-07: kuki sesi_instansi berjalur /api/instansi, jadi menu /instansi memanggil jalur ini
   "POST /api/jejak": (env, req, url, kini) => St.jejak(env, req, kini),
   "GET /api/statistik": (env, req, url, kini) => St.statistik(env, req, url, kini),
   "POST /api/pesan": (env, req, url, kini, ctx) => St.kirimPesan(env, req, ctx, kini),
   "GET /api/pesan": (env, req, url, kini) => St.daftarPesan(env, req, url, kini),
   "POST /api/pesan/:id": (env, req, url, kini, ctx, id) => St.ubahPesan(env, req, id, kini),
   "GET /admin": () => new Response(null, {status: 303, headers: {location: "/admin/statistik"}}),
-  "GET /admin/masuk": (env, req, url, kini) => St.masuk(env, req, kini, halamanMasuk),
-  "POST /admin/masuk": (env, req, url, kini) => St.masuk(env, req, kini, halamanMasuk),
+  "GET /admin/masuk": (env, req, url, kini) => St.masuk(env, req, kini),   // 303 ke /masuk?ke= (K21); sesi sah ke ?ke=
+  "POST /admin/masuk": masukSandi,   // klien lama: logika dan balasan sama dengan POST /masuk
+  "POST /masuk": masukSandi,   // form sandi di halaman /masuk (K21)
   "POST /admin/keluar": async (env, req) => { await hapusSesiPemirsa(env, req); const k = await St.keluar(env, req); k.headers.append("set-cookie", cookiePemirsa("", 0)); return k; },   // keluar = sesi admin dan pemirsa
   "GET /admin/statistik": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanStatistik()),
   "GET /admin/pesan": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanPesan()),
@@ -684,12 +689,14 @@ const RUTE = {
 };
 let GABUNG = null;
 const tabelRute = () => GABUNG ||= {...RUTE, ...Ews.RUTE_EWS};
+pasangTabelRute(tabelRute);
 /* CSRF untuk POST: origin lain ditolak. POST yang membawa cookie sesi_admin, sesi_pendataan, sesi_staf atau sesi_instansi wajib Origin sama-situs: Origin kosong atau "null" (iframe tersandbox, pengalihan lintas situs)
    ditolak, karena SameSite=Lax tidak menahannya. Tanpa cookie sesi (publik, token header): seperti semula.
    Pengecualian: halaman admin ber-Referrer-Policy no-referrer, jadi form POST sama-situs (Keluar, Masuk dengan cookie lama) dikirim peramban dengan
    Origin "null". Itu diterima HANYA bila Sec-Fetch-Site = same-origin (header terlarang, tak bisa dipalsukan halaman; iframe tersandbox mengirim cross-site). */
 export const tolakOrigin = (req, url) => {
-  const o = req.headers.get("origin"), sesi = /(?:^|;\s*)(?:sesi_admin|sesi_pendataan|sesi_staf|sesi_kemitraan|sesi_masuk|sesi_instansi|sesi_profil|lapor_perangkat|lapor_data)=/.test(req.headers.get("cookie") || "");
+  /* form sandi (POST /masuk, /admin/masuk) diperlakukan seperti kiriman bersesi: Origin kosong atau "null" ditolak kecuali Sec-Fetch-Site same-origin (cegah login-CSRF) */
+  const o = req.headers.get("origin"), sesi = /^\/(?:admin\/)?masuk\/?$/.test(url.pathname) || /(?:^|;\s*)(?:sesi_admin|sesi_pendataan|sesi_staf|sesi_kemitraan|sesi_masuk|sesi_instansi|sesi_profil|lapor_perangkat|lapor_data)=/.test(req.headers.get("cookie") || "");
   const kosong = !o || o === "null", samaPeramban = kosong && req.headers.get("sec-fetch-site") === "same-origin";
   if (sesi ? (!samaPeramban && (kosong || !URL.canParse(o) || new URL(o).host !== url.host)) : (!kosong && (!URL.canParse(o) || new URL(o).host !== url.host))) return gagal(403, "origin lain ditolak");
   return null;
@@ -718,87 +725,28 @@ async function rute(env, req, url, ctx) {
    [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
 export const BNPB_BERSIH = {index: "/bnpb", relawan: "/relawan", "relawan-saya": "/relawan/saya", kampus: "/kampus", "alun-alun": "/alun-alun", riset: "/riset", mitra: "/riset/mitra",
   meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", logbook: "/bnpb/logbook", bahan: "/bnpb/bahan", saham: "/bnpb/saham", dokumen: "/bnpb/dokumen", "katalog-dokumen": "/bnpb/katalog-dokumen", operasi: "/bnpb/operasi", operasi_lapangan: "/bnpb/operasi-lapangan", perencanaan: "/bnpb/perencanaan", "rapor-sumber": "/bnpb/rapor-sumber", silang: "/bnpb/silang", dalops: "/bnpb/dalops", "data-bencana": "/bnpb/data-bencana", pendataan: "/pendataan", siaga: "/bnpb/siaga", kontak: "/daftar-kontak"};
-export const HOST_TERKUNCI = new Set(["centurisk97.id", "www.centurisk97.id"]);
-/* host yang halamannya di balik login: domain + alamat workers.dev PRODUKSI (dan pratinjau versinya "<hash>-centurisk97...").
-   Uji Setneg 1 Nov 2026: /monitor, /direktori dll. terbuka tanpa login lewat workers.dev. Host *.workers.dev lain (uji lokal) tetap terbuka. */
-export const hostTerkunci = h => HOST_TERKUNCI.has(h) || h.endsWith("centurisk97.terasurbannetwork.workers.dev");
 /* centurisk97.id tampil sama dengan centurisk97.*.workers.dev: data perusahaan, merek Centurisk97 (pemilik, 19 Okt 2026) */
 export const situsCenturisk = h => h.endsWith(".workers.dev") || HOST_TERKUNCI.has(h);
-export const HTML_RUTE = [
-  ...ruteBencana(),   // "/", "/banjir/", tab dan kejadian dari registry; bencana "mati" tanpa rute
-  [/^\/tentang-halaman\/?$/, "/tentang.html", "/tentang-halaman"],   /* /tentang kini tab di index.html (registry) */   // html_handling "none" mematikan /tentang -> tentang.html otomatis
-  [/^\/privasi\/?$/, "/privasi.html", "/privasi"],
-  [/^\/syarat\/?$/, "/syarat.html", "/syarat"],
-  [/^\/design-system\/?$/, "/design-system.html", "/design-system"],   // sistem desain web Centurisk97 (public/design-system*); token dibaca dari /inti/tema.css
-  [/^\/design-system\/bnpb\/?$/, "/design-system-bnpb.html", "/design-system/bnpb"],   // sistem desain deck dan laporan BNPB
-  [/^\/design-system\/sistem\/?$/, "/design-system-peta.html", "/design-system/sistem"],   // papan peta sistem: alur tiap modul dari sumber sampai layar (public/design-system-peta*)
-  [/^\/peringatan\/?$/, "/peringatan.html", "/peringatan"],
-  [/^\/laporan\/?$/, "/laporan.html", "/laporan"],
-  [/^\/paparan\/?$/, "/paparan.html", "/paparan"],   // deck paparan rakor karhutla per provinsi (public/paparan*)
-  [/^\/laporan-konsesi\/?$/, "/laporan_konsesi.html", "/laporan-konsesi"],   // laporan konsesi terbakar 2026, hanya *.workers.dev   // laporan harian karhutla (public/laporan.*)
-  [/^\/presiden\/?$/, "/presiden.html", "/presiden"],
-  [/^\/renlap-cetak\/?$/, "/renlap_cetak.html", "/renlap-cetak"],   // renlap rute udara siap cetak per base (public/renlap_cetak*, pola renlap_pdf.py); di centurisk97.id wajib masuk   // panel publik agregat karhutla untuk dashboard presiden (public/presiden*); boleh di-iframe dari domain mana pun
-  [/^\/renlap-omc\/?$/, "/renlap_omc.html", "/renlap-omc"],   // renlap OMC per zona semai (public/renlap_omc*, data/kajian-bnpb/semai-awan SA-09)
-  [/^\/bantu\/?$/, "/bantu.html", "/bantu"],   // halaman organisasi bertoken (#t=), CSP ketat di layaniHTML
-  [/^\/uji-lapangan\/?$/, "/instansi_uji.html", "/uji-lapangan"],   // protokol + hasil uji lapangan karhutla (public/instansi_uji*, src/uji_lapangan.js); di centurisk97.id wajib masuk
-  [/^\/kabar\/?$/, "/kabar.html", "/kabar"],   // kabar api prioritas per kabupaten, diteruskan Pusdalops ke WA BPBD (public/kabar*, data scripts/data/kabar_kab.py)
-  [/^\/laporan-bnpb\/?$/, "/laporan_bnpb.html", "/laporan-bnpb"],
-  [/^\/dokumen\/?$/, "/dokumen.html", "/dokumen"],   // generator dokumen: laporan dan data ke Excel, PDF, Word, PowerPoint (public/dokumen*)   // input + ekspor Laporan Harian & Paparan Presiden BNPB, hanya situs Centurisk97
-  [/^\/monitor\/?$/, "/monitor.html", "/monitor"],   // monitor peringatan api untuk staf BNPB dan BPBD (public/monitor*, src/monitor.js); tetap tertutup di centurisk97.id, tiap API menjaga sesinya
-  [/^\/direktori\/?$/, "/akademisi.html", "/direktori"],   // Direktori Kebencanaan (dulu /akademisi, nama diganti pemilik 30 Okt 2026): pakar, lembaga, inovasi, sistem data
-  [/^\/akademisi\/?$/, "/akademisi.html", "/akademisi"],   // alamat lama, dialihkan 301 ke /direktori di layaniHTML   // direktori pakar kebencanaan (public/akademisi*, src/akademisi.js); halaman tertutup di centurisk97.id, datanya hanya lewat /api/akademisi bersesi staf
-  [/^\/petugas\/?$/, "/petugas/index.html", "/petugas"],   // modul Pegawai dan Relawan Lapangan: layar petugas berkode (/lapangan milik regu Posko lama)
-  [/^\/petugas\/panel\/?$/, "/petugas/panel.html", "/petugas/panel"],   // panel pimpinan modul Lapangan; tertutup di centurisk97.id (sesi staf), API menjaga hak
-  [/^\/ai\/?$/, "/ai/index.html", "/ai"],   // Asisten AI internal staf (public/ai/, src/ai.js); tertutup di centurisk97.id, tiap API /api/ai/* menjaga sesi staf
-  [/^\/prediksi\/?$/, "/prediksi/index.html", "/prediksi"],   // prediksi bencana per kab (public/prediksi/, src/prediksi.js); login hanya di hostTerkunci (seperti /monitor), TIDAK di PUBLIK_TANPA_SESI; data JSON statis publik
-  [/^\/prediksi\/ringkas\/?$/, "/prediksi/ringkas.html", "/prediksi/ringkas"],   // Siaga 3 hari: halaman ringkas tanpa tab untuk staf (KEPUTUSAN-BESOK K18); terkunci seperti /prediksi
-  [/^\/lapor\/?$/, "/lapor/index.html", "/lapor"],   // Lapor Bencana BNPB, pintu warga (public/lapor/, src/lapor_ai.js); publik (KEPUTUSAN-MASUK K14)
-  [/^\/lapor\/lacak\/?$/, "/lapor/lacak.html", "/lapor/lacak"],   // halaman lacak bertoken ?t=, publik (K14)
-  [/^\/lapor\/s\/[^/]+\/?$/, "/lapor/s/index.html", "/lapor/s"],   // tautan kabar selamat bertoken (LA-80/81, K91 D128): tamu, noindex; token tidak masuk statistik hit (kunci jalur "/lapor/s")
-  [/^\/lapor\/hari-ini\/?$/, "/lapor/hari-ini.html", "/lapor/hari-ini"],   // kejadian hari ini dari laporan terverifikasi BPBD (lapor-kejadian K86, LK-06); publik, data dari /api/lapor/hari-ini di balik saklar LAPOR_HARI_INI
-  [/^\/lapor\/data\/?$/, "/lapor/data/index.html", "/lapor/data"],   // data lanjutan BPBD (LJ-16): token tim di URL ditukar kuki; halaman tidak memuat data, API menjaga kuki tim atau sesi staf
-  [/^\/lapor\/meja\/?$/, "/lapor/meja.html", "/lapor/meja"],   // meja laporan staf; tertutup di centurisk97.id, /api/lapor/meja* menjaga sesi staf
-  [/^\/verifikasi(?:\/[^/]{1,40})?\/?$/, "/verifikasi.html", "/verifikasi"],   // segel dokumen (segel-dokumen SG-08, K3 Q2): publik tanpa akun, kode di jalur; data hanya dari /api/verifikasi/<kode>
-  ...ruteDocs(),   // /docs, /docs/<modul>[/<halaman>], /docs/pengembang/...: pola tertutup, dokumentasi publik Centurisk97 (public/docs/, src/docs_rute.js); terbuka di PUBLIK_TANPA_SESI, tanpa D1/API
-];
-/* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
-   dan /admin/masuk harus terbuka), /ews/ (tautan surel konfirmasi/berhenti) atau /ubin/. Halaman baru otomatis ikut terkunci; yang boleh terbuka HARUS tercatat di sini. */
-/* Cakupan: gerbang ini menutup CANGKANG HALAMAN (HTML, termasuk berkas .html yang dibuka langsung lewat run_worker_first di wrangler*.jsonc),
-   BUKAN /data/*.json, JS, CSS, atau gambar: itu tetap aset statis publik tanpa Worker. */
-export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk dengan KODE tanpa akun (keputusan pemilik 19 Okt 2026); kode dicek di tiap panggilan API"],
-  ["/petugas", "pegawai dan relawan masuk dengan kode pribadi tanpa akun (KEPUTUSAN-LAPANGAN D5); kode dicek di tiap panggilan API"],
-  ["/meja", "petugas BPBD membuka Meja Kerja dengan kode per kabupaten tanpa akun situs (keputusan pemilik 10 Nov 2026); halaman tanpa kode tidak memuat data, kode dan wilayah dicek di tiap panggilan API"],
-  ["/daftar-kontak", "registrasi kontak pemangku kepentingan (kepala daerah, BPBD, TNI, Polri) yang tidak punya akun situs (permintaan pemilik 23 Okt 2026); hanya menulis baris menunggu, tidak membaca apa pun"],
-  ["/renlap", "halaman HP Renlap SIPPA dibuka regu lapangan dengan tautan bertoken di fragmen #t=, tanpa akun (keputusan SIPPA 61, SP-140); data.json hanya terkirim bila token cocok (/api/renlap/data), halaman tanpa token kosong"],
-  ["/uji-pilot", "regu uji pilot SIPPA Kalteng membuka dossier dan melapor dengan tautan bertoken, tanpa akun (keputusan pemilik 26 Okt 2026, keputusan SIPPA 59); token dicek di tiap panggilan API, halaman tanpa token kosong"],
-  ["/bantu", "organisasi (NGO, dunia usaha, lembaga luar) menulis 3W dan tawaran dengan tautan bertoken tanpa akun (KEPUTUSAN-TIGA-W D4); halaman tidak memuat data, token di fragmen #t= dicek di tiap panggilan /api/bantu"],
-  ["/presiden", "panel publik agregat karhutla untuk dashboard presiden, tanpa data pribadi (keputusan pemilik 22 Okt 2026)"],
-  ["/instansi", "pemda, polisi, dan TNI masuk dengan username dan sandi akun instansi sendiri, bukan sesi admin (keputusan pemilik 21 Okt 2026); sesi, status aktif, dan cakupan wilayah dicek di tiap panggilan API"],
-  ["/siklus/kejadian", "ringkasan publik satu kejadian (/siklus/kejadian/KJ-...) dibuka tamu tanpa akun (KEPUTUSAN-AWAL U3 bawaan, DESAIN-TEKNIS siklus 7.2): cangkang publik hanya memuat ringkasan yang sudah dipublikasikan KO; halaman dan API staf Siklus tetap wajib sesi (src/siklus.js)"],
-  ["/bnpb/katalog-dokumen", "katalog dokumen repo, dibuka tanpa login untuk sementara (permintaan pemilik 9 Nov 2026); hanya daftar judul dan tautan GitHub, repo-nya sendiri publik"],
-  ["/pendataan", "pendataan Satu Data BNPB: staf direktorat membuat akun sendiri tanpa akun situs (keputusan pemilik 26 Okt 2026); akun baru menunggu persetujuan Super Admin, sesi dan status aktif dicek di tiap panggilan API"],
-  ["/lapor", "Lapor Bencana BNPB: warga melapor kejadian (KEPUTUSAN-MASUK K14, pemilik 19 Nov 2026); halaman tidak memuat data, pelapor masuk lewat /masuk dan nomor dari sesi dicek di tiap /api/lapor/*"],
-  ["/lapor/lacak", "lacak laporan dengan tautan bertoken ?t= yang dikirim ke pelapor, tanpa akun (KEPUTUSAN-MASUK K14); halaman tanpa token kosong, token dicek di /api/lapor/lacak"],
-  ["/lapor/s", "tautan kabar selamat yang dibagikan penanda sendiri kepada keluarga, tanpa akun (KEPUTUSAN-LAPOR-AI K91, D128); halaman tidak memuat data, token di jalur dicek di /api/lapor/s/:token"],
-  ["/lapor/data", "layar tim pendataan BPBD dari tautan WA (lapor-lanjutan LJ-15, KEPUTUSAN-MASUK K17); halaman tidak memuat data, token ?t= ditukar kuki tim lewat /api/lapor/data/masuk dan tiap API menjaga kuki tim atau sesi staf"],
-  ["/lapor/hari-ini", "kejadian hari ini dari laporan warga terverifikasi BPBD untuk wartawan dan warga (lapor-kejadian K86, KEPUTUSAN-MASUK K15); halaman tidak memuat data, kartu dari /api/lapor/hari-ini berdaftar putih kolom dan di balik saklar LAPOR_HARI_INI"],
-  ["/verifikasi", "pemeriksaan keaslian dokumen bersegel lewat kode di bawah QR, terbuka tanpa akun (KEPUTUSAN-SEGEL K3, Q2); halaman tidak memuat data, sampul dokumen dari /api/verifikasi/<kode> yang berlaju dan tanpa angka isi"],
-  ["/masuk", "pintu masuk satu nomor WhatsApp dan kode sekali pakai harus bisa dibuka tamu (keputusan pemilik 15 Nov 2026, K8); halaman tidak memuat data, kode dan sesi dicek di tiap panggilan /api/masuk/*"],
-  ["/docs", "dokumentasi Centurisk97 (cara kerja, metode, referensi) terbuka tanpa login (KEPUTUSAN-DOCS Q1 bawaan); hanya HTML statis hasil scripts/docs/bangun.py, tanpa data pribadi, tanpa API, tanpa tulis; jalur dikunci ke pola tertutup (segmen [a-z0-9-], paling dalam 3 segmen)"],
-  ["/alun-alun", "forum alun-alun dibuka tamu tanpa login (keputusan pemilik 15 Nov 2026, K8: \"alun alun\"); tulis dan baca lewat /api/alun* yang berlaju dan ber-Turnstile, daftar relawan dan peta utama tetap terkunci"]]);
-function halamanTerkunci(url) {
-  const jalur = url.pathname.replace(/\/+$/, "") || "/";
-  if (/^\/lapor\/(index|lacak|s\/index|data\/index)\.html$/.test(url.pathname) || /^\/lapor\/s\/[^/]+$/.test(jalur)) return false;
-  if (url.pathname === "/verifikasi.html" || /^\/verifikasi\/[^/]{1,40}$/.test(jalur)) return false;   // halaman segel publik: kode di jalur (KEPUTUSAN-SEGEL K3)   // alamat langsung pintu Lapor dan tautan lacak lama (/lapor/lacak.html?t=), sama dengan K14
-  if (DOCS_HTML_LANGSUNG.test(url.pathname)) return false;   // alamat langsung berkas Docs (keluaran generator), publik seperti /docs (DC-03)
-  if (/\.html$/i.test(url.pathname)) return true;   // berkas HTML statis dibuka langsung lewat nama (Worker dipanggil hanya untuk pola ini)
-  if (PUBLIK_TANPA_SESI.has(jalur) || jalurDocs(jalur)) return false;
-  if (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) return true;
-  const kunci = /\/[0-9a-f]{16}$/.test(jalur) ? jalur.slice(0, -16) + ":id" : jalur;
-  if (/^\/command-center(\/|$)/.test(jalur)) return false;
-  if (jalur === "/instansi/data-bencana") return false;   // menjaga dirinya sendiri (src/instansi.js): staf atau akun instansi aktif, tanpa sesi 303 ke /instansi
-  if (jalur === "/instansi/logpal" || jalur === "/logpal/index.html") return false;   // LogPal menjaga dirinya sendiri (src/logpal.js halaman): tanpa sesi sah 303 ke /instansi; BUKAN daftar putih (keputusan pemilik 9 Nov 2026: wajib login)   // meja menjaga dirinya sendiri (src/command_center.js): tamu 303 ke /admin/masuk?ke=
-  return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur);   // /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/masuk?ke= (satu pintu)
+/* GET /api/peta-situs (PS-03): menu untuk sesi peramban ini, disaring menuUntuk (src/peta_situs.js). Urutan sesi = gerbang halaman di fetch(): admin, staf (stafSesiSemua,
+   termasuk akun direktori saja), pemirsa; lalu instansi aktif, petugas lewat sesi akun umum, kampus lewat cookie sesi_kemitraan. Tanpa sesi = tamu (pintu Publik).
+   Pembaca sesi modul dipanggil hanya bila cookie atau header miliknya ada, jadi tamu tanpa cookie tidak menyentuh D1. Jalur kode (x-kode, x-kode-regu) tidak dibaca:
+   menebak kode di sini akan menambah hitungan gagal pemegangKode. ponytail: pemegang kode petugas atau kampus melihat menu tamu. */
+async function sesiMenu(env, req, kini) {
+  if (await adminOK(env, req, kini)) return {jenis: "admin", peran: []};
+  const s = await stafSesiSemua(env, req, kini); if (s) return {jenis: "staf", peran: s.peran};
+  const p = await pemirsaSesi(env, req, kini); if (p) return {jenis: "pemirsa", peran: [], tab: p.tab};
+  const kuki = req.headers.get("cookie") || "", kode = req.headers.has("x-kode") || req.headers.has("x-kode-regu");
+  if (/(?:^|;\s*)sesi_instansi=/.test(kuki) && await akunMenu(env, req, kini)) return {jenis: "instansi", peran: []};   // tanpa syarat sesi profil (PS-07): menu hanya menunjuk /instansi
+  if (!kode && /(?:^|;\s*)sesi_masuk=/.test(kuki) && !((await petugasSesi(env, req, kini)) instanceof Response)) return {jenis: "petugas", peran: []};
+  if (!kode && /(?:^|;\s*)sesi_kemitraan=/.test(kuki) && (await hakKm(env, req, kini)).peran === "KK") return {jenis: "kemitraan", peran: []};
+  return null;
+}
+async function petaSitus(env, req, url, kini) {
+  /* hanya yang dibutuhkan peramban untuk menggambar menu: hak, peran, akses, admin, token, juga tetap di server */
+  const menu = menuUntuk(await sesiMenu(env, req, kini), bolehStaf, hostTerkunci(url.hostname))
+    .map(p => ({pintu: p.pintu, nama: p.nama, beranda: p.beranda, grup: p.grup.map(g => ({id: g.id, nama: g.nama, butir: g.butir.map(({rute, nama, ikon, grup, induk}) => ({rute, nama, ikon, grup, induk}))}))}));
+  const r = json(menu, 200, {"cache-control": "private, no-store", vary: "cookie"});
+  return req.method === "HEAD" ? new Response(null, {status: r.status, headers: r.headers}) : r;
 }
 function catatHTML(env, req, jalur, ctx) {
   if (env.DB) ctx?.waitUntil?.(Pub.catatHit(env, req, jalur).catch(e => console.error("hit", e)));
@@ -902,6 +850,17 @@ function bisaDiIframe(res) {
 /* 404/500 untuk peramban: halaman berkepala situs (public/404.html, public/500.html), bukan badan kosong atau halaman galat Cloudflare.
    API, aset berekstensi selain .html, dan metode selain GET/HEAD tetap mendapat jawaban lama. */
 const mauHalaman = (req, url) => (req.method === "GET" || req.method === "HEAD") && !/^\/(api|mcp|ubin)(\/|$)/.test(url.pathname) && !/\.(?!html?$)[a-z0-9]{1,12}$/i.test(url.pathname);
+/* Form sandi satu pintu (KEPUTUSAN-MASUK K21): logika St.masuk apa adanya (laju, kunci akun, CSRF di rute()); galat = halaman /masuk berpesan di
+   <body data-galat>, dibaca public/masuk.js. Aset hilang = halaman polos berpesan. */
+async function masukSandi(env, req, url, kini) {
+  const esc = s => String(s).replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
+  return St.masuk(env, req, kini, async g => {   // aset dibaca hanya saat galat; sukses tidak menyentuh ASSETS
+    const a = await env.ASSETS.fetch(new Request(new URL("/masuk.html", url)));
+    const t = a.ok ? await a.text() : (a.body?.cancel(), "");
+    return t.includes("<body>") ? t.replace("<body>", () => `<body data-galat="${esc(g)}">`)   // fungsi pengganti: $& atau $1 di pesan tidak ditafsirkan
+      : `<!doctype html><html lang="id"><meta charset="utf-8"><title>Masuk</title><p>${esc(g)}</p><p><a href="/masuk">Coba lagi</a></p></html>`;
+  });
+}
 export async function halamanGalat(env, req, url, kode) {
   try {
     const a = await env.ASSETS.fetch(new Request(new URL(`/${kode}.html`, url)));
@@ -933,7 +892,7 @@ const W = {
     if ((url.pathname === "/api" || url.pathname === "/api/") && (req.method === "GET" || req.method === "HEAD")) {
       /* dokumentasi di centurisk97.id hanya untuk yang masuk: admin atau akun pemirsa (pemilik 23 Okt 2026, akun mitra); endpoint /api/v1 dan /mcp tetap terbuka */
       const kunci = hostTerkunci(url.hostname);
-      if (kunci && !await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=%2Fapi", "cache-control": "no-store"}});
+      if (kunci && !await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/masuk?ke=%2Fapi", "cache-control": "no-store"}});
       const d = await env.ASSETS.fetch(new Request(new URL("/api.html", url)));
       return new Response(d.body, {status: d.status, headers: {"content-type": "text/html; charset=utf-8", "cache-control": kunci ? "private, no-store" : "public, max-age=300", "x-content-type-options": "nosniff"}});
     }
@@ -977,18 +936,19 @@ const W = {
     if (url.pathname === "/instansi.html") return new Response(null, {status: 303, headers: {location: "/instansi", "cache-control": "no-store"}});
     if (url.pathname === "/renlap.html") return new Response(null, {status: 303, headers: {location: "/renlap", "cache-control": "no-store"}});   // satu pintu ber-CSP ketat (fragmen #t= ikut dibawa peramban)   // satu pintu: /instansi (CSP ketat)
     if (url.pathname === "/instansi_uji.html") return new Response(null, {status: 303, headers: {location: "/uji-lapangan", "cache-control": "no-store"}});   // satu pintu: /uji-lapangan
+    if (/^\/warga(\/(index\.html)?)?$/.test(url.pathname)) return new Response(null, {status: 301, headers: {location: "/lapor", "cache-control": "no-store"}});   // Lapor Warga lama pensiun ke /lapor (PETA-SITUS Q1); tujuan tetap, query dibuang: bukan pengalih terbuka
     if (url.pathname === "/presiden.html") return new Response(null, {status: 303, headers: {location: "/presiden" + url.search, "cache-control": "no-store"}});   // satu pintu: /presiden (publik, bisa di-iframe)
     if (url.pathname === "/rumah_rusak.html") return new Response(null, {status: 303, headers: {location: "/rumah-rusak", "cache-control": "no-store"}});   // satu pintu: /rumah-rusak (CSP ketat, 404 di luar Centurisk97)
     /* /uji-lapangan (evaluasi internal): admin ATAU pemirsa di SEMUA host; pemirsa tidak dialihkan ke tab pertamanya oleh gerbang di bawah */
     let ujiOK = false;
     if (/^\/uji-lapangan\/?$/.test(url.pathname) && (req.method === "GET" || req.method === "HEAD")) {
-      if (!await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=" + encodeURIComponent(url.pathname), "cache-control": "no-store"}});
+      if (!await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/masuk?ke=" + encodeURIComponent(url.pathname), "cache-control": "no-store"}});
       ujiOK = true;
     }
     if (!ujiOK && hostTerkunci(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)
-      && !await stafPeran(env, req, /^\/direktori\/?$/.test(url.pathname) ? ["operator_cc", ...P_AKADEMISI] : MENU_PUSDALOPS.test(url.pathname) ? ["operator_cc", ...PERAN_DALOPS] : ["operator_cc"])) {   // operator command center (sesi staf) melihat semua halaman terkunci, GET/HEAD saja; staf berperan Direktori (P_AKADEMISI) membuka /direktori saja
+      && !await stafPeran(env, req, perananGerbang(url.pathname))) {   // operator command center (sesi staf) melihat semua halaman terkunci, GET/HEAD saja; staf berperan Direktori (P_AKADEMISI) membuka /direktori saja
       /* akun pemirsa (src/pemirsa.js): hanya tab miliknya; halaman lain dialihkan ke tab pertamanya */
-      const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname, url.search) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
+      const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname, url.search) : "/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
       if (ke) return new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store"}});
     }
     const r = await rute(env, req, url, ctx); if (r) return bacaSaja(env, req, pasangKeluar(req, url, r));

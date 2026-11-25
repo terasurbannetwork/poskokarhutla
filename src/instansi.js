@@ -119,6 +119,9 @@ async function sesiDari(env, req, kini) {
 }
 /* akun masuk apa pun statusnya, atau Response galat */
 async function akunMasuk(env, req, kini) { const a = await sesiDari(env, req, kini); return !a ? tolakSesi() : akunLain(req, a) || a; }   // x-akun dicek sebelum status: tab basi selalu 401, bukan 403
+/* Menu saja (PS-07, /api/instansi/peta-situs): akun masuk berstatus aktif = pintu instansi, TANPA syarat sesi profil, supaya akun BPBD yang belum memilih profil
+   tetap mendapat menu yang menunjuk /instansi (layar pilih profil). Satu baca D1. Bukan gerbang: rute kerja tetap lewat akunAktif. */
+export async function akunMenu(env, req, kini) { const a = await akunMasuk(env, req, kini); return !(a instanceof Response) && a.status === "aktif"; }
 /* akun masuk DAN aktif */
 export async function akunAktif(env, req, kini) {
   const a = await akunMasuk(env, req, kini); if (a instanceof Response) return a;
@@ -1698,7 +1701,7 @@ async function dummyHapus(env) {
       AND NOT EXISTS (SELECT 1 FROM usulan_kontak_pt u WHERE u.akun_id = instansi_akun.id)`)]);
   return json({ok: true, ...n, dilewati: {akun: await hitung("instansi_akun"), tugas: await hitung("tugas_api")}});
 }
-/* tombol 🧪 pada tab bencana (banjir dst): tiga tugas contoh di kabupaten dummy yang baru dibuat: buka, surut dilaporkan, surut terverifikasi. Hapus ikut 🧹 (tugas_bencana CASCADE). */
+/* rute dummy tanpa tombol (🧪/🧹 disembunyikan pemilik 11 Nov 2026, public/admin/instansi.js): untuk bencana non-karhutla (banjir dst) tiga tugas contoh di kabupaten dummy yang baru dibuat: buka, surut dilaporkan, surut terverifikasi. Hapus ikut aksi "hapus" (tugas_bencana CASCADE). */
 async function dummyTugasBencana(env, kini, bc) {
   const ks = (await env.DB.prepare("SELECT DISTINCT prov, kab FROM tugas_api WHERE dummy = 1 LIMIT 2").all()).results; if (!ks.length) return 0;
   const S = [["buka", null, null, null, 3], ["padam", "padam_dilaporkan", 6, 6, 20], ["padam", "padam_terverifikasi", 55, 3, 70]], st = [];

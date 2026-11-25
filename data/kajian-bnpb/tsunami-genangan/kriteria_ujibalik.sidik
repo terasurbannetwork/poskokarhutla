@@ -1,0 +1,13 @@
+{
+ "sidik": "035a4e66a75674c2",
+ "berkas": {
+  "data/kajian-bnpb/tsunami-genangan/kriteria_ujibalik.json": "feb641078212e5e202b4a433a34a00bc4d450be7a178c007df65a49b1d3019fa",
+  "public/gempa/tsunami.js": "2aa8c20204651b1067211d6fc61e8d31fcb866dcc15c0d9f52111e4804e59a22",
+  "scripts/gempa/tsunami_hitung.py": "53103145d55f5b7a1a5dbe4b109c41419bfd63638448ae580b8312ed4cdaf0af",
+  "scripts/gempa/tsunami_sumber.py": "a4e9d33fdc1cc7e35f328760a4708d06896056a91be722b4d51621a553bd5d2f"
+ },
+ "masukan": [
+  "6adb3bca61e05d50945d514b1893b6024be1d0f6050a0ee54c954b6590d0383e"
+ ],
+ "dibuat": "2026-11-25T06:07:07Z"
+}

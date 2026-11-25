@@ -771,7 +771,7 @@ uji("instansi: reset sandi, cabut, keluar, dan kedaluwarsa mencabut sesi", async
 uji("instansi: halaman /instansi dan /admin/instansi, CSP, nav admin, tanpa pemisah titik tengah", async () => {
   const r = await api("GET", "/instansi"); assert.equal(r.s, 200); assert.match(r.t, /Instansi: Tugas Api/); assert.match(r.h.get("content-security-policy"), /script-src 'self'/); assert.doesNotMatch(r.h.get("content-security-policy"), /unsafe-inline/); assert.equal(r.h.get("cache-control"), "no-store");
   const buka = async j => { const r = await mf.dispatchFetch("https://centurisk97.id" + j, {redirect: "manual", headers: {"cf-connecting-ip": "198.51.100.9"}}); await r.text(); return r; };
-  assert.equal((await buka("/instansi")).status, 200, "centurisk97.id: /instansi terbuka tanpa sesi admin (daftar putih), login instansi sendiri"); const ad = await buka("/admin/instansi"); assert.equal(ad.status, 303); assert.match(ad.headers.get("location"), /\/admin\/masuk/);
+  assert.equal((await buka("/instansi")).status, 200, "centurisk97.id: /instansi terbuka tanpa sesi admin (daftar putih), login instansi sendiri"); const ad = await buka("/admin/instansi"); assert.equal(ad.status, 303); assert.match(ad.headers.get("location"), /\/masuk/);
   assert.equal((await buka("/peringatan")).status, 303, "halaman lain tetap tertutup");
   const lama = await mf.dispatchFetch("http://instansi.lokal/instansi.html", {redirect: "manual"}); await lama.text(); assert.equal(lama.status, 303); assert.equal(lama.headers.get("location"), "/instansi");
   const tanpa = await mf.dispatchFetch("http://instansi.lokal/admin/instansi", {redirect: "manual"}); await tanpa.text(); assert.equal(tanpa.status, 303, "halaman admin butuh sesi admin");

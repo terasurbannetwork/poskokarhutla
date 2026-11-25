@@ -44,7 +44,7 @@ let ipN = 0;
 const ipBaru = () => `10.1.${Math.floor(++ipN / 250)}.${ipN % 250}`;
 const panggil = async (metode, jalur, body, o = {}) => {
   const r = await mf.dispatchFetch("https://posko.lokal" + jalur, {method: metode, redirect: "manual", cf: o.cf,
-    headers: {"cf-connecting-ip": o.ip || "10.9.9.9", "user-agent": o.ua ?? UA, ...(typeof body === "string" ? {"content-type": "application/x-www-form-urlencoded"} : {"content-type": "application/json"}), ...o.h},
+    headers: {"cf-connecting-ip": o.ip || "10.9.9.9", "user-agent": o.ua ?? UA, ...(metode === "POST" && /^\/(admin\/)?masuk(\?|$)/.test(jalur) ? {origin: "https://posko.lokal"} : {}), ...(typeof body === "string" ? {"content-type": "application/x-www-form-urlencoded"} : {"content-type": "application/json"}), ...o.h},
     body: body === undefined ? undefined : typeof body === "string" ? body : JSON.stringify(body)});
   const teks = await r.text(); let j = null; try { j = JSON.parse(teks); } catch (e) {}
   return {status: r.status, j, teks, h: r.headers};
@@ -209,8 +209,8 @@ uji("masuk: email/sandi salah ditolak, cookie HttpOnly Secure SameSite=Lax 12 ja
   const hal = await panggil("GET", "/admin/statistik", undefined, {h: {cookie: kue}});
   assert.equal(hal.status, 200); assert.match(hal.teks, /admin\/statistik\.js/); assert.match(hal.h.get("content-security-policy"), /script-src 'self'/);
   assert.equal((await panggil("GET", "/admin/statistik")).status, 303, "tanpa sesi dialihkan ke /admin/masuk");
-  assert.equal((await panggil("GET", "/admin/pesan")).h.get("location"), "/admin/masuk?ke=%2Fadmin%2Fpesan", "tamu kembali ke halaman asal sesudah masuk");
-  assert.equal((await panggil("GET", "/admin/masuk")).status, 200);
+  assert.equal((await panggil("GET", "/admin/pesan")).h.get("location"), "/masuk?ke=%2Fadmin%2Fpesan", "tamu kembali ke halaman asal sesudah masuk");
+  assert.equal((await panggil("GET", "/admin/masuk")).status, 303, "alamat lama dialihkan ke /masuk (K21)");
 });
 
 uji("masuk: sesi kedaluwarsa, dipalsukan, atau token dicabut ditolak", async () => {
@@ -387,12 +387,12 @@ uji("cron: retensi statistik 90 hari (publik dikosongkan rinciannya), pesan 180 
 uji("centurisk97.id: halaman terkunci sampai masuk, ?ke= dibawa pulang, domain lain tetap terbuka", async () => {
   const buka = (jalur, h = {}) => mf.dispatchFetch("https://centurisk97.id" + jalur, {redirect: "manual", headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, ...h}});
   const r = await buka("/peta?x=1");
-  assert.equal(r.status, 303); assert.equal(r.headers.get("location"), "/admin/masuk?ke=%2Fpeta%3Fx%3D1");
+  assert.equal(r.status, 303); assert.equal(r.headers.get("location"), "/masuk?ke=%2Fpeta%3Fx%3D1");
   assert.equal((await buka("/f/0123456789abcdef")).status, 303, "tautan foto ikut terkunci");
   assert.notEqual((await panggil("GET", "/")).status, 303, "domain lain tidak terkunci");
   const f = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=%2Fpeta", {redirect: "manual", headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA}});
-  const tf = await f.text(); assert.match(tf, /action="\/admin\/masuk\?ke=%2Fpeta"/); assert.match(tf, /alt="Centurisk97"[\s\S]*<h1>Pemantauan kondisi bencana/, "merek Centurisk97 di centurisk97.id");
-  assert.match((await panggil("GET", "/admin/masuk")).teks, /alt="Centurisk97"[\s\S]*<h1>Pemantauan kondisi bencana/, "domain lain tetap Centurisk97");
+  await f.text(); assert.equal(f.status, 303); assert.equal(f.headers.get("location"), "/masuk?ke=%2Fpeta#sandi", "alamat lama ke form sandi /masuk, ?ke= ikut (K21)");
+  const hm = await buka("/masuk"); assert.equal(hm.status, 200, "/masuk terbuka untuk tamu"); assert.match(await hm.text(), /Centurisk97<\/a>[\s\S]*id="fAkun"/, "merek Centurisk97 dan form sandi di /masuk");
   const ok = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=%2Fpeta", {method: "POST", redirect: "manual", body: MASUK,
     headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, "content-type": "application/x-www-form-urlencoded", origin: "https://centurisk97.id"}});
   assert.equal(ok.status, 303); assert.equal(ok.headers.get("location"), "/peta");
@@ -402,7 +402,7 @@ uji("centurisk97.id: halaman terkunci sampai masuk, ?ke= dibawa pulang, domain l
   const th = await hl.text(); assert.match(th, /<html[^>]* data-situs="w"/); assert.match(th, /<title>Centurisk97<\/title>/);
   for (const ke of ["//jahat.id", "/\\jahat.id", "https://jahat.id"]) {
     const x = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=" + encodeURIComponent(ke), {method: "POST", redirect: "manual", body: MASUK,
-      headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, "content-type": "application/x-www-form-urlencoded"}});
+      headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, "content-type": "application/x-www-form-urlencoded", origin: "https://centurisk97.id"}});
     assert.equal(x.headers.get("location"), "/admin/statistik", "tujuan luar ditolak: " + ke);
   }
 });

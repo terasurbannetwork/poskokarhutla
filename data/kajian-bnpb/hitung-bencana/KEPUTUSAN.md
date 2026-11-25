@@ -130,3 +130,9 @@ bagian "Daftar periksa" tiap berkas `naskah/lampiran-a-*.md`. Butir lintas berka
 8. Selesai (12 Nov 2026): "naik kelas" logbook 124 dari 975 (baru melewati ambang di laporan susulan)
    dan 137 dari 1.317 (kelas terdampak naik pada kejadian multihari) adalah dua ukuran berbeda;
    keduanya sah dan disebut dengan definisinya.
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

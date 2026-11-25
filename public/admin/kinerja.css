@@ -21,7 +21,7 @@
 .kj-galat b{font:800 16px var(--display)}.kj-galat p{margin:0;color:var(--ink2);font-size:13px}
 
 .kj-pil{display:inline-flex;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700;background:color-mix(in srgb,var(--w) 14%,transparent);color:color-mix(in srgb,var(--w) 80%,var(--ink));--w:var(--c5)}
-.kj-pil.t-ok{--w:var(--c4)}.kj-pil.t-bahaya{--w:var(--c1)}.kj-pil.t-tunggu{--w:var(--c3)}
+.kj-pil.t-ok{--w:var(--c4)}.kj-pil.t-bahaya{--w:var(--c1)}.kj-pil.t-tunggu{--w:var(--c3)}.kj-pil.t-basi{--w:var(--warn)}
 
 .kj-sumber{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
 .kj-s{background:var(--soft);border-radius:12px;padding:10px 12px;display:grid;gap:8px;min-width:0}

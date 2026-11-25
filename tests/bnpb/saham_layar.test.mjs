@@ -9,6 +9,7 @@ import {readFileSync, existsSync, statSync} from "node:fs";
 import path from "node:path";
 import {bukaPeramban, cariChrome} from "./_peramban.mjs";
 import {KONSESI} from "../../public/bnpb/saham_contoh.js";
+import {petaSitus} from "./_peta.mjs";
 
 const CSP = readFileSync(new URL("../../src/bnpb.js", import.meta.url), "utf8").match(/export const CSP = "([^"]+)"/)[1];
 const PUB = path.resolve(new URL("../../public", import.meta.url).pathname), CHROME = cariChrome();
@@ -19,6 +20,7 @@ test("layar /bnpb/saham: konsesi tanpa harga, lalu dummy lengkap", {skip: CHROME
   const srv = http.createServer((q, r) => {
     const u = decodeURIComponent(q.url.split("?")[0]);
     const js = (o, s = 200) => { r.writeHead(s, {"content-type": "application/json"}); r.end(JSON.stringify(o)); };
+    if (u === "/api/peta-situs") { r.writeHead(200, {"content-type": "application/json"}); return r.end(JSON.stringify(petaSitus())); }
     if (u === "/api/akademisi/saya") return js({super: true});
     if (u === "/api/saham/konsesi") return js(KONSESI);
     if (u.startsWith("/api/saham/")) return js({ok: false, kode: "akses_belum_dibuka", pesan: "belum"}, 403);

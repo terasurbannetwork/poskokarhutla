@@ -51,6 +51,7 @@ Satu-satunya uji bersih: prospektif 2026-11-01..2027-04-30 (lihat PRAREG-CAMPUR.
 | poligon kab bernama "None" | 5 poligon (prov 12, 13, 35, 64) tergabung jadi satu kab per provinsi | belum dibetulkan | banjir (Pencocok) |
 | `scripts/longsor/model.py:132-134` | Skor kab = maks atas kec, kab besar tergelembung | arah belum jelas | longsor |
 | `scripts/banjir/status.py:230,244` | `a7` hari ini dipakai untuk keempat hari; uji_balik menghitung per hari | aturan longsor produksi d>0 ≠ yang diuji | banjir |
+| `scripts/banjir/status.py:230,233,236` | Kecamatan tanpa InaRISK (`b.get("banjir", 0)`, `b.get("longsor", 0)`) dan tanpa hujan 7 hari (`g["a7"] or 0`) dihitung sebagai nol, bukan "data tidak ada" | Status tampil Normal/Waspada seolah tidak rawan; contoh layar metode.js sudah menampilkan "data tidak ada" (25 Nov), model belum. JANGAN ubah tanpa: hitung ulang `uji_balik.py` → `validasi.json`, lalu periksa `validasi-model` | banjir |
 | `scripts/banjir/status.py:250` | Pembanding "lama" tanpa imax/cape/p3 | hanya diagnostik stderr salah baca | banjir |
 | `scripts/banjir/PRAREG-CAMPUR.md` §3.2 | `q_q2` log1p ganda (q3 sudah log1p, model_kab_debit.py:391) | rumus draf salah | banjir (sedang direvisi) |
 

@@ -49,7 +49,7 @@ test("cangkang KM statis: tiap .km-w-<kunci> di kemitraan.css cocok KM.RUMPUN da
 });
 
 test("cangkang KM tampilan: tiap berkas mendaftar KM.tampilan dengan bangun dan angka (4 butir) dan menampilkan kosongHtml", () => {
-  assert.deepEqual(readdirSync(AKAR + "public/kemitraan").filter(n => /\.js$/.test(n) && !["inti.js", "konst.js", "hitung.js", "peta.js", "panduan.js", "buku.js", "daftar.js", "masuk.js"].includes(n)).sort(), TAMPILAN.map(t => t + ".js").sort(), "berkas tampilan di public/kemitraan tidak sama dengan 8 tampilan DS §3");
+  assert.deepEqual(readdirSync(AKAR + "public/kemitraan").filter(n => /\.js$/.test(n) && !["inti.js", "konst.js", "hitung.js", "peta.js", "panduan.js", "buku.js", "daftar.js", "masuk.js", "menu.js"].includes(n)).sort(), TAMPILAN.map(t => t + ".js").sort(), "berkas tampilan di public/kemitraan tidak sama dengan 8 tampilan DS §3");
   for (const t of TAMPILAN) {
     const s = baca(`public/kemitraan/${t}.js`);
     assert.match(s, new RegExp(`KM\\.tampilan\\.${t}\\s*=\\s*\\{`), `${t}.js tidak mendaftar KM.tampilan.${t}`);

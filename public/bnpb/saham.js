@@ -253,7 +253,7 @@ async function cari() {
 function kartuMasuk(s) {
   app.replaceChildren(h("div", {class: "bn-blok"}, h("h2", {teks: "Masuk staf"}),
     h("p", {class: "sh-p", teks: s === 403 ? "Akunmu belum berhak membuka halaman ini." : "Data saham hanya untuk staf. Masuk dulu dengan akun staf, lalu buka halaman ini lagi."}),
-    h("a", {class: "bn-tombol", href: "/admin/masuk?ke=" + encodeURIComponent(TERTANAM ? "/saham" : location.pathname), target: TERTANAM ? "_top" : null, teks: "Masuk staf"})));
+    h("a", {class: "bn-tombol", href: "/masuk?ke=" + encodeURIComponent(TERTANAM ? "/saham" : location.pathname), target: TERTANAM ? "_top" : null, teks: "Masuk staf"})));
 }
 
 /* ---------- dummy (Super Admin saja): isi contoh lokal di layar, tidak memanggil API ---------- */

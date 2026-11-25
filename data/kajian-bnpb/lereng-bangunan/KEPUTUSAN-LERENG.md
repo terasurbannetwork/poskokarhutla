@@ -64,3 +64,11 @@ Video rujukan pemilik (akun GeoImpact, "Bandung Barat rawan longsor") memperliha
 ## Hal yang tidak diubah
 
 Skor S, uji balik, `nowcast.json`, `kerentanan.json` dan PRAREG-LHASA2 modul longsor tidak disentuh. Peta Paparan F2, `scripts/umum/bangunan.py`, dan `scripts/banjir/**` hanya dibaca. Berkas beku sidik J4 tidak disunting.
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q2: DEMNAS Bandung Raya **diunduh Claude**, bukan pemilik; hanya agregat terbit. Bila portal meminta login, sandi diketik pemilik sendiri.
+- Q8: kriteria vonis AUC ≥0,65 dengan selang bootstrap dikunci.

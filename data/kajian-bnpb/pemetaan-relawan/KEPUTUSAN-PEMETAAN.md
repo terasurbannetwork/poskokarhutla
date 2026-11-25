@@ -37,3 +37,9 @@ Peta paparan per bangunan hanya sebaik data bangunannya. Paparan memakai Google 
 | Q6 | Ambang "tipis": rasio berapa? | **[BAWAAN SEMENTARA, HIPOTESIS]** rasio di bawah 0,6 = tipis; 0,6 sampai 0,85 = sedang; di atas 0,85 = memadai. Dikalibrasi dengan sampel manual 10 kab. | tidak menahan |
 | Q7 | Berapa minimum peserta dan lama proyek agar layak dibuka? | **[BAWAAN SEMENTARA]** satu kampus, 10 pemeta, 30 hari. | tidak menahan |
 | Q8 | Apakah kegiatan ini dihitung sebagai jam kegiatan mahasiswa (sertifikat `/kemitraan`)? | **[BAWAAN SEMENTARA]** ya, lewat modul sertifikat yang ada, sesudah KM-sertifikat hidup. | HR-09 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

@@ -30,3 +30,9 @@ test("pemeriksa kalimat temuan menangkap pelanggaran contoh", () => {
   const re = /\bhl\(|class=\\?["']hl|ops-lead/;
   for (const jahat of ['x = `<h3>${hl(n)} desa</h3>`', 'x = \'<b class="hl">3</b>\'', 'x = "ops-lead"']) assert.match(jahat, re);
 });
+
+// Banjir: kartu status dan nowcast longsor tanpa kalimat temuan di baris pertama.
+test("banjir/longsor: tanpa kalimat temuan di kartu status dan nowcast", () => {
+  const js = readFileSync(new URL("../../public/banjir/longsor.js", import.meta.url), "utf8");
+  assert.doesNotMatch(js, /Awas \$\{fmt\(n\[3\]\)\}|kecamatan berbahaya tinggi|\bhl\(|ops-lead/, "kalimat temuan kembali di longsor.js");
+});

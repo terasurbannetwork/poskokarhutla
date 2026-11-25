@@ -21,7 +21,7 @@
   const bencanaNama = (reg, id) => (reg?.bencana ?? []).find(b => b.id === id)?.nama || id;
   /* baris angka berkas ringkas: tiap angka dengan sumber dan arti dari angka_meta; nol tetap nol, null tampil belum tersedia */
   const barisAngka = r => Object.entries(r?.angka ?? {}).map(([k, v]) => { const m = r.angka_meta?.[k] || {};
-    return {nama: k.replace(/_/g, " "), teks: typeof v === "number" || v === null ? angkaTeks(v) : "belum tersedia", satuan: m.satuan || "", title: [m.arti, m.sumber ? "sumber " + m.sumber : "", m.waktu ? "waktu " + tgl(m.waktu) : ""].filter(Boolean).join(", ")}; });
+    return {nama: k.replace(/_/g, " "), teks: m.status_sumber === "mati" && m.keterangan ? m.keterangan : typeof v === "number" || v === null ? angkaTeks(v) : "belum tersedia", satuan: m.satuan || "", title: [m.arti, m.sumber ? "sumber " + m.sumber : "", m.waktu ? "waktu " + tgl(m.waktu) : ""].filter(Boolean).join(", ")}; });
   const barisOperasi = op => OPERASI.map(([k, nama]) => { const a = op?.[k]; return {nama, teks: angkaTeks(a?.nilai), title: a ? [a.sumber ? "sumber " + a.sumber : "", a.waktu ? "waktu " + a.waktu : ""].filter(Boolean).join(", ") : ""}; });
   /* saringan jamak: set kosong = semua; urutan tampil mengikuti registri */
   const terpilih = (bencana, pilih) => pilih.size ? bencana.filter(b => pilih.has(b.id)) : bencana;

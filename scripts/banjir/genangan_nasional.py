@@ -43,7 +43,7 @@ tiff_mini.open = lambda j, m="rb": builtins.open(j, m) if isinstance(j, str) els
 
 STAC = "https://stac.eodc.eu/api/v1/search"
 UA = "poskobanjir/1.0 (riset genangan nasional, Pantau Bencana; +https://centurisk97.id)"
-ATRIBUSI = "Copernicus Emergency Management Service, Global Flood Monitoring (GFM), EODC; ringkasan oleh Pantau Bencana. Syarat: https://global-flood.emergency.copernicus.eu/terms-of-service/"
+ATRIBUSI = "Copernicus Emergency Management Service, Global Flood Monitoring (GFM), EODC; ringkasan oleh Centurisk97. Syarat: https://global-flood.emergency.copernicus.eu/terms-of-service/"
 KOTAK = [94.9, -11.2, 141.1, 6.2]
 DIR = os.path.join(MENTAH, "gfm_nasional")
 ITEM, BULAN, UBIN_BULAN = (os.path.join(DIR, n) for n in ("item.jsonl", "katalog_bulan.json", "ringkas_ubin_bulan.json"))

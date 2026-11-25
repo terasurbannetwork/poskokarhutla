@@ -2,11 +2,15 @@
 /* ================================================================ metode (versi awam): sumber, kategori, cara hitung, batasan.
    Angka batas diambil dari KAT/BATAS di app.js supaya satu sumber dengan peta dan kartu. */
 const Metode = {
+  /* PB-54b (F-28, C22): bab metode inti dalam kartu Cerita.metode (Singkatnya, Alur, Batasan); kalimat polos, item dipisah baris */
+  bab() { return {
+    singkatnya: `Halaman ini menunjukkan perkiraan PM2,5 tiga hari ke depan, jarak pandang di bandara, dan berapa banyak orang yang menghirup udara tidak sehat. Angkanya perkiraan model, bukan ISPU resmi KLHK.`,
+    alur: `Tiap kabupaten/kota diberi kategori dari PM2,5 rata-rata 24 jam di titik penduduknya.<br>Seluruh penduduk kabupaten/kota ikut kategori itu, lalu dijumlahkan per provinsi dan nasional.<br>Rata-rata provinsi dan nasional dihitung dengan bobot jumlah penduduk. Gambar peta adalah interpolasi antartitik kabupaten/kota, dibiarkan bening di tempat yang jauh dari titik mana pun.`,
+    batasan: `Model global beresolusi sekitar 40 km: asap karhutla tertangkap, tetapi polusi kota dan kejadian sempit bisa meleset. Di kota besar model sering membaca lebih tinggi daripada alat ukur di tanah.<br>${S.prak?.koreksi?.status === "terkoreksi" ? `Angka PM2,5 kota dikoreksi dengan ${fmt(S.prak.koreksi.n_stasiun)} stasiun, tetapi di luar kota yang punya stasiun tetap keluaran CAMS.` : "Angka PM2,5 kota di layar tetap keluaran CAMS apa adanya: koreksi per kota belum dipakai karena belum ada stasiun pemantau yang masuk hitungan. Stasiun BMKG tampil terpisah sebagai pengukuran dan dipakai menguji koreksi (lihat Koreksi dan uji terhadap stasiun)."} Uji terhadap alat ukur masih terbatas: sedikit stasiun dan hanya dalam hitungan bulan. Uji prakiraan satu hari ke depan ada terhadap jarak pandang METAR di bandara (lihat Prakiraan 72 jam), sedangkan uji prakiraan dua dan tiga hari belum ada. Di kota besar di Jawa angkanya cenderung terlalu tinggi, jadi jumlah jiwa dibulatkan dan hanya perkiraan kasar. Asap karhutla tidak otomatis penyebab angka kota.<br>Data ISPU resmi KLHK tidak bisa kami jangkau, jadi tidak ditampilkan di sini; yang resmi kami tampilkan hanya pengukuran stasiun BMKG dan data kualitas udara bulanan BMKG, masing-masing berlabel BMKG. Untuk keputusan kesehatan, ikuti pengumuman BMKG dan dinas lingkungan hidup setempat.<br>Jarak pandang bandara dipengaruhi kabut dan hujan, tidak hanya asap, dan hanya mewakili sekitar bandara.`}; },
   bagian() {
     const kolKat = KAT.map((k, i) => `<tr><td>${pilKat(i)}</td><td class="n">${k.r}</td><td class="n">${["0 sampai 50", "51 sampai 100", "101 sampai 200", "201 sampai 300", "di atas 300"][i]}</td>
 </tr>`).join("");
     return [
-      ["Tentang", `<p>Halaman ini menunjukkan perkiraan PM2,5 tiga hari ke depan, jarak pandang di bandara, dan berapa banyak orang yang menghirup udara tidak sehat. Angkanya perkiraan model, bukan ISPU resmi KLHK.</p>`],
       ["Kategori udara", `<div class="tw"><table><thead><tr><th>Kategori</th><th class="n">PM2,5 24 jam <span style="text-transform:none">(µg/m³)</span></th><th class="n">ISPU</th></tr></thead><tbody>${kolKat}</tbody></table></div>
         <p class="kecil">Titik potong mengikuti Permen LHK P.14/2020 untuk rata-rata 24 jam. Nilai per jam disebut PM2,5 per jam, bukan kategori.</p>`],
       ["Dari mana datanya", `<ul class="mt-daftar">
@@ -18,15 +22,6 @@ const Metode = {
         <li><b>Sekolah (Dampak)</b>: Dapodik/EMIS, dihitung di kabupaten/kota yang PM2,5 24 jamnya di atas 55,4 µg/m³; hanya yang tercatat dan cocok titiknya.</li>
         <li><b>Titik api dan PLTU</b>: kompleks api dari titik panas NASA FIRMS yang dikelompokkan; PLTU batu bara dari WRI Global Power Plant Database v1.3 (CC BY 4.0), ${S.atr?.n_pltu != null ? fmt(S.atr.n_pltu) : "beberapa puluh"} unit; nama badan usaha pemegang konsesi di lokasi api hanya nama lembaga, tanpa nama orang.</li>
         <li><b>Berita</b>: Google News RSS, judul dan cuplikan; diperbarui otomatis tiap hari, jam panen tertulis di kartu.</li></ul>`],
-      ["Cara menghitung", `<ol class="mt-daftar">
-        <li>Tiap kabupaten/kota diberi kategori dari PM2,5 rata-rata 24 jam di titik penduduknya.</li>
-        <li>Seluruh penduduk kabupaten/kota ikut kategori itu, lalu dijumlahkan per provinsi dan nasional.</li>
-        <li>Rata-rata provinsi dan nasional dihitung dengan bobot jumlah penduduk. Gambar peta adalah interpolasi antartitik kabupaten/kota, dibiarkan bening di tempat yang jauh dari titik mana pun.</li></ol>`],
-      ["Batasan", `<ul class="mt-daftar">
-        <li>Model global beresolusi sekitar 40 km: asap karhutla tertangkap, tetapi polusi kota dan kejadian sempit bisa meleset. Di kota besar model sering membaca lebih tinggi daripada alat ukur di tanah.</li>
-        <li>${S.prak?.koreksi?.status === "terkoreksi" ? `Angka PM2,5 kota dikoreksi dengan ${fmt(S.prak.koreksi.n_stasiun)} stasiun, tetapi di luar kota yang punya stasiun tetap keluaran CAMS.` : "Angka PM2,5 kota di layar tetap keluaran CAMS apa adanya: koreksi per kota belum dipakai karena belum ada stasiun pemantau yang masuk hitungan. Stasiun BMKG tampil terpisah sebagai pengukuran dan dipakai menguji koreksi (lihat Koreksi dan uji terhadap stasiun)."} Uji terhadap alat ukur masih terbatas: sedikit stasiun dan hanya dalam hitungan bulan. Uji prakiraan satu hari ke depan ada terhadap jarak pandang METAR di bandara (lihat Prakiraan 72 jam), sedangkan uji prakiraan dua dan tiga hari belum ada. Di kota besar di Jawa angkanya cenderung terlalu tinggi, jadi jumlah jiwa dibulatkan dan hanya perkiraan kasar. Asap karhutla tidak otomatis penyebab angka kota.</li>
-        <li>Data ISPU resmi KLHK tidak bisa kami jangkau, jadi tidak ditampilkan di sini; yang resmi kami tampilkan hanya pengukuran stasiun BMKG dan data kualitas udara bulanan BMKG, masing-masing berlabel BMKG. Untuk keputusan kesehatan, ikuti pengumuman BMKG dan dinas lingkungan hidup setempat.</li>
-        <li>Jarak pandang bandara dipengaruhi kabut dan hujan, tidak hanya asap, dan hanya mewakili sekitar bandara.</li></ul>`],
       ...this.prakiraan(),
     ];
   },
@@ -72,6 +67,10 @@ const Metode = {
     if (H?.catatan) li.push(esc(H.catatan));
     (H?.keterbatasan || []).forEach(x => li.push(esc(x)));
     return ["Modifikasi cuaca (OMC)", `<ul class="mt-daftar">${li.map(x => `<li>${x}</li>`).join("")}</ul>`]; },
+  /* label keluaran gerbang tampil udara (scripts/udara/gerbang_udara.py); kunci baru tanpa label tampil dengan namanya sendiri */
+  NAMA_GALAT: {mos_pm25_arsip_openaq: "Koreksi MOS, arsip OpenAQ", mos_pm25_bmkg: "Koreksi MOS, stasiun BMKG", ensambel_cams_geoscf_arsip: "Gabungan CAMS dan GEOS-CF, arsip OpenAQ",
+    ensambel_cams_geoscf_bmkg: "Gabungan CAMS dan GEOS-CF, stasiun BMKG", koreksi_pm25_bmkg: "Koreksi CAMS ke stasiun BMKG", prakiraan_pm25_stasiun: "Prakiraan PM2,5 kota lawan stasiun",
+    prakiraan_metar_analisis: "Asap METAR, analisis hari lampau", prakiraan_metar_h1: "Asap METAR, prakiraan 1 hari"},
   async render() {
     if ($("#metode").dataset.sudah) return; $("#metode").dataset.sudah = 1;
     const ambil = n => fetch("data/" + n + ".json").then(r => r.ok ? r.json() : null).catch(() => null);
@@ -80,6 +79,8 @@ const Metode = {
     const baru = [this.stasiunBmkg(BM), this.koreksi(GC, OM, UP), this.tropomi(TR), this.kualitasBmkg(KB), this.musim(MA), this.omc(OB, OH)].filter(Boolean);
     const pel = [...baru, ...(PL ? [["Peluang PM2,5", Peluang.batasan(PL, {judul: "Peluang dan batasnya"}).replace("<b>0. ", "<b>")]] : []),
       ...(AS?.batasan?.length ? [["Asal asap per kota", `<ul class="mt-daftar">${AS.batasan.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`]] : [])];
-    $("#metode").innerHTML = `<div class="mt-kisi">${[...this.bagian(), ...pel].map(([j, h]) => `<section class="card pad mt-bag"><h3>${j}</h3>${h}</section>`).join("")}</div>`;
+    /* PB-54b (F-28): semua bab memakai kartu bersama inti/cerita.js: kepala nama seksi berikon, tanpa kaki, galat dari gerbang tampil */
+    const GB = typeof Gerbang !== "undefined" ? await Gerbang.muat("udara") : {};
+    $("#metode").innerHTML = `<div class="mt-kisi">${Cerita.metode("Metode PM2,5", this.bab())}${[...this.bagian(), ...pel].map(([j, h]) => Cerita._std(j, h)).join("")}${Cerita.galat(GB, {nama: this.NAMA_GALAT, sumber: "public/data/gerbang/udara.json"})}</div>`;
   },
 };

@@ -107,5 +107,5 @@
     }
   }
   if (sc?.hasAttribute("data-oto")) { const c = {...sc.dataset}; if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => otomatis(c)); else otomatis(c); }
-  window.DasborA = {pasang, kaki, seksi, otomatis};
+  window.DasborA = {pasang, kaki, seksi, otomatis, tarik};
 })();

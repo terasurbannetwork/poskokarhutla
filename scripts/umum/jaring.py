@@ -39,6 +39,8 @@ def ambil(url, data=None, kepala=None, coba=4, jeda_host=0.0, batas=60, mentah=F
 
 
 if __name__ == "__main__":
+    if sys.argv[1:] not in ([], ["uji"]):
+        sys.exit("pakai: jaring.py [uji]")
     jeda("x", 0)
     t = time.time(); jeda("x", 0.2); assert time.time() - t >= 0.15
     print("uji jaring: ok")

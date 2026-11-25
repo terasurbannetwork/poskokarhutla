@@ -87,7 +87,7 @@
 .km-oto{display:block;font-size:10.5px;line-height:1.2;color:var(--ink2);font-weight:600}
 .km-kaki{margin:16px 0 0;padding:12px 0 0 18px;border-top:1px solid var(--line);font-size:12px;color:var(--ink2);display:grid;gap:4px}
 /* KM-D02 halaman daftar dan masuk (DS §7): formulir tunggal, pilihan satu baris dibagi rata */
-.km-halaman{display:grid;gap:16px;max-width:880px;margin:0 auto;padding:20px 0 48px}
+.km-halaman{position:static;display:grid;gap:16px;max-width:880px;margin:0 auto;padding:20px 0 48px}
 .km-form form{display:grid;gap:16px;margin-top:16px}
 .km-judul{margin:0;font-size:20px;line-height:1.25}
 .km-form .km-ket{margin:6px 0 0;font-size:14px;line-height:1.5;text-align:justify;color:var(--ink2)}
@@ -124,3 +124,13 @@
 .km-data-kamus dt{font-family:ui-monospace,monospace;font-weight:700}
 .km-data-kamus dd{margin:0;color:var(--ink2)}
 .km-data-gulung{overflow-x:auto}
+
+/* ---- PS-07: menu halaman Kemitraan dari registri Peta Situs (public/kemitraan/menu.js); baris kartu terang di atas isi, ikon garis tanpa kotak ---- */
+.km-menu{display:flex;flex-wrap:wrap;gap:var(--jr-1) var(--jr-3);padding:var(--jr-1) var(--jr-3);color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.km-menu a{display:inline-flex;align-items:center;gap:var(--jr-2);min-height:var(--h-ctl);padding:0 var(--jr-2);font-size:var(--fs-3);font-weight:600;color:var(--ink2);text-decoration:none;border-bottom:2px solid transparent}
+.km-menu a:hover{color:var(--ink)}
+.km-menu a[aria-current="page"]{color:var(--brand2);border-bottom-color:currentColor}
+.km-menu svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.km-menu.km-menu-lepas{border-width:0 0 1px;border-radius:0;box-shadow:none}
+@media (max-width:600px){.km-menu{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.km-menu a{flex:none}}
+@media print{.km-menu{display:none}}

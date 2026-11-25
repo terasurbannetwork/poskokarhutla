@@ -371,7 +371,7 @@ def uji():
 
 
 if __name__ == "__main__":
-    if "--uji" in sys.argv:
+    if "--uji" in sys.argv or sys.argv[1:] == ["uji"]:
         uji()
     else:
         n = tulis(susun())

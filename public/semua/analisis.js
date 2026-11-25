@@ -1,11 +1,13 @@
 "use strict";
 /* Kartu Insight di bawah kartu situasi /semua: Laporan kejadian, Outlook iklim, Bahaya 12 bulan, Bencana berantai.
    Data: /data/iklim_outlook.json (scripts/umum/iklim_outlook.py) dan /banjir/data/outlook12.json (scripts/umum/outlook12.py).
+   Tren jangka panjang (F-27): medan "tren" kedua berkas, digambar /inti/tren.js.
    Kartu yang datanya gagal dimuat dibuang diam-diam. Segmen urgent (aria-pressed), isi grafik menyusul lewat nanti(). */
 const BL = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"], BP = BL.map(b => b.slice(0, 3).replace("Mei", "Mei").replace("Agu", "Agu"));
 const ang = (v, d = 0) => Number(v).toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d}).replace("-", "−");
 const bln = b => { const [y, m] = b.split("-"); return {y: +y, m: +m - 1}; };
 const tglID = t => { const d = new Date(t + "T12:00:00Z"); return `${d.getUTCDate()} ${BP[d.getUTCMonth()]} ${d.getUTCFullYear()}`; };
+import {svgTren, ringkasTren, cukup as trenCukup} from "/inti/tren.js";
 const getJson = u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
 const nanti = fn => { let ok = false; const go = () => { if (!ok) { ok = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
 const MERAH = "#c9503a", BIRU = "#4f8fc4", ABU = "#9aa5b4";
@@ -121,6 +123,16 @@ function kartuKejadian(L, st) {
     "laporan harian modul Centurisk97 (banjir, cuaca, kualitas udara, kekeringan)", seg);
 }
 
+/* ---------- 3c. Tren jangka panjang (F-27): segmen = deret; deret < 60 bulan tanpa garis */
+const deretTren = (I, O) => [I?.tren?.hujan_nasional, ...(Array.isArray(O?.tren) ? O.tren : [])].filter(s => s?.nilai?.length && s.mulai);
+const LEG_TREN = [["var(--brand2)", "Garis tren"], ["color-mix(in oklch, var(--brand2) 20%, transparent)", "Selang 95%"], ["var(--ink2)", "Deret bulanan"]];
+const isiTren = s => `<div class="tw">${svgTren(s, innerWidth < 640 ? 380 : 940)}</div>${trenCukup(s) ? `<p class="ex-leg tr-ket">${LEG_TREN.map(([w, n]) => `<span><i style="background:${w}"></i>${n}</span>`).join("")}</p>` : ""}<p class="tr-ket">${ringkasTren(s)}</p>${s.sumber ? `<p class="tr-ket">Sumber: ${esc(s.sumber)}</p>` : ""}`;
+function kartuTren(D, st) {
+  if (!D.length) return "";
+  const s = D[st.i] || D[0], seg = D.length > 1 ? Kartu.seg("trn", D.map((x, i) => [i, esc(x.nama)]), {trn: st.i}) : "";
+  return Kartu.kartu("Tren", "Tren jangka panjang", `<div id="ob-tren">${isiTren(s)}</div>`, "", seg);
+}
+
 /* ---------- 4. Cara hitung dan batasan: satu blok terlipat */
 const daftar = a => `<ul class="mt-ul">${(a || []).map(s => `<li>${esc(s)}</li>`).join("")}</ul>`;
 function cara(I, O) {
@@ -138,8 +150,8 @@ export async function pasangAnalisis(el) {
     getJson("/data/kejadian/index-kekeringan.json")]);
   const KJ = [KB, KC, KU, KK].filter(k => k?.versi === "kejadian/1").flatMap(k => k.laporan).sort((x, y) => (y.aktif - x.aktif) || ((y.tingkat === "awas") - (x.tingkat === "awas")) || (y.terakhir > x.terakhir) - (y.terakhir < x.terakhir) || x.kab.localeCompare(y.kab, "id"));
   const iOk = I?.versi?.startsWith("iklim_outlook/") && I.prakiraan?.length, oOk = O?.versi?.startsWith("outlook12/") && O.tabel?.length;
-  const st = {musim: ""}, kj = {b: "", hal: 0};
-  const isi = [KJ.length ? `<div id="kj-kartu">${kartuKejadian(KJ, kj)}</div>` : "", iOk ? kartuIklim(I, st) : "", oOk ? kartuBahaya(O, LJ) : "", oOk ? kartuBerantai(O) : ""].join("");
+  const st = {musim: ""}, kj = {b: "", hal: 0}, tr = {i: 0}, DT = deretTren(I, O);
+  const isi = [KJ.length ? `<div id="kj-kartu">${kartuKejadian(KJ, kj)}</div>` : "", iOk ? kartuIklim(I, st) : "", oOk ? kartuBahaya(O, LJ) : "", oOk ? kartuBerantai(O) : "", kartuTren(DT, tr)].join("");
   if (!isi.trim()) return;
   el.innerHTML = isi + cara(iOk ? I : null, oOk ? O : null);
   if (typeof pasangTip === "function") pasangTip();
@@ -149,6 +161,10 @@ export async function pasangAnalisis(el) {
       if (k.dataset.set) { k.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === k))); kj.b = k.dataset.v; kj.hal = 0; }   /* chrome urgent */
       else kj.hal = +k.dataset.h;
       return nanti(() => { $("#kj-kartu").innerHTML = kartuKejadian(KJ, kj); }); }                                                                   /* isi menyusul */
+    const t = e.target.closest("[data-set='trn']");
+    if (t) { t.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === t))); tr.i = +t.dataset.v;   /* chrome urgent */
+      if (tr.antre) return; tr.antre = 1;   /* klik beruntun: satu gambar ulang, pilihan terakhir menang */
+      return nanti(() => { tr.antre = 0; const s = DT[tr.i], kT = $("#ob-tren"); if (s && kT) kT.innerHTML = isiTren(s); }); }                               /* isi menyusul */
     const b = e.target.closest("[data-set='musim']"); if (!b || !iOk) return;
     b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));       /* chrome urgent */
     st.musim = b.dataset.v;

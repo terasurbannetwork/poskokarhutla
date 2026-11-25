@@ -1,0 +1,424 @@
+{
+ "pintu": {
+  "publik": {
+   "nama": "Publik",
+   "beranda": "/"
+  },
+  "kampus": {
+   "nama": "Kampus dan mitra",
+   "beranda": "/kemitraan"
+  }
+ },
+ "grup": {
+  "publik": [
+   {
+    "id": "bencana",
+    "nama": "Bencana"
+   },
+   {
+    "id": "prediksi",
+    "nama": "Prediksi"
+   },
+   {
+    "id": "peringatan",
+    "nama": "Peringatan"
+   },
+   {
+    "id": "lapor",
+    "nama": "Lapor"
+   },
+   {
+    "id": "masuk",
+    "nama": "Masuk"
+   },
+   {
+    "id": "kaki",
+    "nama": "Tentang situs"
+   }
+  ],
+  "kampus": [
+   {
+    "id": "kemitraan",
+    "nama": "Kemitraan"
+   }
+  ]
+ },
+ "halaman": [
+  {
+   "rute": "/semua",
+   "nama": "Semua bencana",
+   "ikon": "daftar",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": null
+  },
+  {
+   "rute": "/",
+   "nama": "Karhutla",
+   "ikon": "pin",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": null
+  },
+  {
+   "rute": "/desa-waspada",
+   "nama": "Desa waspada",
+   "ikon": "peringatan",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": "/"
+  },
+  {
+   "rute": "/laporan-konsesi",
+   "nama": "Laporan konsesi terbakar",
+   "ikon": "daftar",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": "/"
+  },
+  {
+   "rute": "/banjir",
+   "nama": "Banjir",
+   "ikon": "banjir",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": null
+  },
+  {
+   "rute": "/banjir/replay",
+   "nama": "Replay banjir Jabodetabek",
+   "ikon": "grafik",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": "/banjir"
+  },
+  {
+   "rute": "/banjir/laporan.html",
+   "nama": "Laporan harian banjir & longsor serta rob",
+   "ikon": "simpan",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": "/banjir"
+  },
+  {
+   "rute": "/banjir/laporan-das.html",
+   "nama": "Bukti DAS hulu",
+   "ikon": "simpan",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": "/banjir"
+  },
+  {
+   "rute": "/cuaca",
+   "nama": "Cuaca",
+   "ikon": "awan",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": null
+  },
+  {
+   "rute": "/cuaca/simulasi",
+   "nama": "Simulasi cuaca 72 jam",
+   "ikon": "grafik",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": "/cuaca"
+  },
+  {
+   "rute": "/cuaca/laporan.html",
+   "nama": "Laporan harian cuaca ekstrem",
+   "ikon": "simpan",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": "/cuaca"
+  },
+  {
+   "rute": "/pesisir",
+   "nama": "Pesisir",
+   "ikon": "banjir",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": null
+  },
+  {
+   "rute": "/gempa",
+   "nama": "Gempa",
+   "ikon": "sinyal",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": null
+  },
+  {
+   "rute": "/gempa/laporan.html",
+   "nama": "Laporan harian gempa & tsunami",
+   "ikon": "simpan",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": "/gempa"
+  },
+  {
+   "rute": "/gunungapi",
+   "nama": "Gunung api",
+   "ikon": "peringatan",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": null
+  },
+  {
+   "rute": "/gunungapi/simulasi.html",
+   "nama": "Simulasi erupsi gunung api",
+   "ikon": "grafik",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": "/gunungapi"
+  },
+  {
+   "rute": "/gunungapi/laporan.html",
+   "nama": "Laporan harian gunung api",
+   "ikon": "simpan",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": "/gunungapi"
+  },
+  {
+   "rute": "/kekeringan",
+   "nama": "Kekeringan",
+   "ikon": "kalender",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": null
+  },
+  {
+   "rute": "/kekeringan/simulasi",
+   "nama": "Simulasi kekeringan",
+   "ikon": "grafik",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": "/kekeringan"
+  },
+  {
+   "rute": "/kekeringan/laporan.html",
+   "nama": "Laporan harian kekeringan",
+   "ikon": "simpan",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": "/kekeringan"
+  },
+  {
+   "rute": "/udara",
+   "nama": "Kualitas udara",
+   "ikon": "awan",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": null
+  },
+  {
+   "rute": "/udara/laporan.html",
+   "nama": "Laporan harian kualitas udara",
+   "ikon": "simpan",
+   "pintu": "publik",
+   "grup": "bencana",
+   "induk": "/udara"
+  },
+  {
+   "rute": "/prediksi",
+   "nama": "Prediksi",
+   "ikon": "grafik",
+   "pintu": "publik",
+   "grup": "prediksi",
+   "induk": null
+  },
+  {
+   "rute": "/prediksi/ringkas",
+   "nama": "Siaga 3 hari",
+   "ikon": "daftar",
+   "pintu": "publik",
+   "grup": "prediksi",
+   "induk": "/prediksi"
+  },
+  {
+   "rute": "/peringatan",
+   "nama": "Peringatan dini untuk lokasimu",
+   "ikon": "peringatan",
+   "pintu": "publik",
+   "grup": "peringatan",
+   "induk": null
+  },
+  {
+   "rute": "/monitor",
+   "nama": "Monitor bencana",
+   "ikon": "sinyal",
+   "pintu": "publik",
+   "grup": "peringatan",
+   "induk": "/peringatan"
+  },
+  {
+   "rute": "/lapor",
+   "nama": "Lapor bencana",
+   "ikon": "pin",
+   "pintu": "publik",
+   "grup": "lapor",
+   "induk": null
+  },
+  {
+   "rute": "/lapor/hari-ini",
+   "nama": "Kejadian hari ini",
+   "ikon": "kalender",
+   "pintu": "publik",
+   "grup": "lapor",
+   "induk": "/lapor"
+  },
+  {
+   "rute": "/kabar",
+   "nama": "Kabar api per kabupaten",
+   "ikon": "sinyal",
+   "pintu": "publik",
+   "grup": "lapor",
+   "induk": null
+  },
+  {
+   "rute": "/alun-alun",
+   "nama": "Alun-alun",
+   "ikon": "personel",
+   "pintu": "publik",
+   "grup": "lapor",
+   "induk": null
+  },
+  {
+   "rute": "/lapor/poster.html",
+   "nama": "Poster QR desa",
+   "ikon": "simpan",
+   "pintu": "publik",
+   "grup": "lapor",
+   "induk": "/lapor"
+  },
+  {
+   "rute": "/masuk",
+   "nama": "Masuk",
+   "ikon": "personel",
+   "pintu": "publik",
+   "grup": "masuk",
+   "induk": null
+  },
+  {
+   "rute": "/tentang",
+   "nama": "Tentang",
+   "ikon": "daftar",
+   "pintu": "publik",
+   "grup": "kaki",
+   "induk": null
+  },
+  {
+   "rute": "/docs",
+   "nama": "Panduan",
+   "ikon": "daftar",
+   "pintu": "publik",
+   "grup": "kaki",
+   "induk": null
+  },
+  {
+   "rute": "/privasi",
+   "nama": "Pemberitahuan privasi",
+   "ikon": "daftar",
+   "pintu": "publik",
+   "grup": "kaki",
+   "induk": null
+  },
+  {
+   "rute": "/syarat",
+   "nama": "Syarat dan ketentuan",
+   "ikon": "daftar",
+   "pintu": "publik",
+   "grup": "kaki",
+   "induk": null
+  },
+  {
+   "rute": "/statistik",
+   "nama": "Statistik pengunjung",
+   "ikon": "grafik",
+   "pintu": "publik",
+   "grup": "kaki",
+   "induk": null
+  },
+  {
+   "rute": "/api",
+   "nama": "API data",
+   "ikon": "daftar",
+   "pintu": "publik",
+   "grup": "kaki",
+   "induk": null
+  },
+  {
+   "rute": "/verifikasi",
+   "nama": "Periksa keaslian dokumen",
+   "ikon": "simpan",
+   "pintu": "publik",
+   "grup": "kaki",
+   "induk": null
+  },
+  {
+   "rute": "/daftar-kontak",
+   "nama": "Registrasi kontak pemangku kepentingan",
+   "ikon": "sinyal",
+   "pintu": "publik",
+   "grup": "kaki",
+   "induk": null
+  },
+  {
+   "rute": "/laporan",
+   "nama": "Laporan harian karhutla",
+   "ikon": "simpan",
+   "pintu": "publik",
+   "grup": "kaki",
+   "induk": null
+  },
+  {
+   "rute": "/paparan",
+   "nama": "Paparan rakor karhutla",
+   "ikon": "kalender",
+   "pintu": "publik",
+   "grup": "kaki",
+   "induk": null
+  },
+  {
+   "rute": "/kemitraan",
+   "nama": "Kemitraan kampus",
+   "ikon": "personel",
+   "pintu": "kampus",
+   "grup": "kemitraan",
+   "induk": null
+  },
+  {
+   "rute": "/kemitraan/masuk",
+   "nama": "Masuk koordinator kemitraan kampus",
+   "ikon": "personel",
+   "pintu": "kampus",
+   "grup": "kemitraan",
+   "induk": "/kemitraan"
+  },
+  {
+   "rute": "/kemitraan/buku",
+   "nama": "Buku profil daerah",
+   "ikon": "daftar",
+   "pintu": "kampus",
+   "grup": "kemitraan",
+   "induk": "/kemitraan"
+  },
+  {
+   "rute": "/kemitraan/panduan",
+   "nama": "Panduan wawancara",
+   "ikon": "daftar",
+   "pintu": "kampus",
+   "grup": "kemitraan",
+   "induk": "/kemitraan"
+  },
+  {
+   "rute": "/kemitraan/daftar",
+   "nama": "Daftar kemitraan kampus",
+   "ikon": "daftar",
+   "pintu": "kampus",
+   "grup": "kemitraan",
+   "induk": "/kemitraan"
+  }
+ ]
+}

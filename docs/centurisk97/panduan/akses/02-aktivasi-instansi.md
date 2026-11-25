@@ -34,7 +34,7 @@ Fitur utama akun aktif:
 | Laporan harian provinsi | Form laporan karhutla provinsi yang sudah terisi draf dari sistem |
 | Pemberitahuan | Opsional |
 
-Sebagian besar angka di kartu dan kebutuhan adalah perkiraan, dan kartu memberi label itu sendiri. Titik api yang berdekatan (berjarak 2 km atau kurang) di kabupaten yang sama digabung menjadi satu tugas.
+Sebagian besar angka di kartu dan kebutuhan adalah perkiraan, dan kartu memberi label itu sendiri. Titik panas yang berdekatan (berjarak 2 km atau kurang) di kabupaten yang sama digabung menjadi satu tugas.
 
 ## Profil BPBD: pilih profil, lalu PIN
 

@@ -1,4 +1,4 @@
-"""Desa waspada (PKH-18) -> public/data/desa_waspada.json. Paket: data/kajian-bnpb/desa-waspada/ (KEPUTUSAN-DESA.md menang).
+"""Desa waspada (PKH-18) -> public/data/desa_waspada/<pulau>.json + indeks.json. Paket: data/kajian-bnpb/desa-waspada/ (KEPUTUSAN-DESA.md menang).
 
 Dua daftar desa: A = desa dengan titik panas VIIRS (n/h) 7 hari terakhir; B = desa tanpa titik 7 hari yang punya >= 3 tahun terbakar
 (2012-2025, petak 375 m terbanyak, `riwayat_petak.bin`). Peluang yang menyertai = peluang KAB/KOTA dari prediksi.json, BUKAN peluang desa.
@@ -9,7 +9,7 @@ dan diukur ulang di data kita. Tidak ada kode yang disalin.
 
 Pencari desa: insiden.Desa (diimpor, tanpa salinan; insiden.py aman diimpor: hanya definisi, `main` di bawah `__main__`).
 
-Pakai:  python3 scripts/data/desa_waspada.py          # putaran 3 jam: baca hotspot.json + desa_statik.json -> public/data/desa_waspada.json
+Pakai:  python3 scripts/data/desa_waspada.py          # putaran 3 jam: baca hotspot.json + desa_statik.json -> public/data/desa_waspada/ (per pulau)
         python3 scripts/data/desa_waspada.py statik   # bulanan: riwayat_petak.bin + gambut.geojson -> data/desa_statik.json
         python3 scripts/data/desa_waspada.py laju     # hindcast lokal (butuh data/raw/firms/viirs_2023.csv) -> scripts/data/desa_waspada_laju.json
         python3 scripts/data/desa_waspada.py --uji    # self-check
@@ -25,9 +25,15 @@ import titik_palsu  # noqa: E402
 DATA = os.path.join(AKAR, "public/data")
 STATIK = os.path.join(AKAR, "data/desa_statik.json")
 LAJU = os.path.join(AKAR, "scripts/data/desa_waspada_laju.json")
-KELUAR = os.path.join(DATA, "desa_waspada.json")
+KELUAR = os.path.join(DATA, "desa_waspada")      # folder: indeks.json + <pulau>.json (K8, 25 Nov 2026)
 WIB = dt.timezone(dt.timedelta(hours=7))
 
+# Pulau menurut kode provinsi Kemendagri 2 digit (K8): berkas per pulau.
+PULAU = {"Sumatera": {"11", "12", "13", "14", "15", "16", "17", "18", "19", "21"}, "Jawa": {"31", "32", "33", "34", "35", "36"},
+         "Bali-Nusa Tenggara": {"51", "52", "53"}, "Kalimantan": {"61", "62", "63", "64", "65"}, "Sulawesi": {"71", "72", "73", "74", "75", "76"},
+         "Maluku": {"81", "82"}, "Papua": {"91", "92", "93", "94", "95", "96"}}
+BERKAS = {"Sumatera": "sumatera.json", "Jawa": "jawa.json", "Bali-Nusa Tenggara": "bali-nusa-tenggara.json", "Kalimantan": "kalimantan.json",
+          "Sulawesi": "sulawesi.json", "Maluku": "maluku.json", "Papua": "papua.json"}
 JENDELA_JAM = 168
 JAM24 = 24
 MIN_TAHUN = 3
@@ -45,7 +51,7 @@ MAKS_TITIK_GAMBUT = 200
 SEL = 0.05                  # sel indeks Desa.muat
 MUSIM = 2023
 MINGGU = 17                 # 1 Jul - 27 Okt 2023 (minggu penuh)
-AMBANG = {"a_kali": 3, "b_kali": 2, "n_min": 200}   # [SEMENTARA, Q2]; terkunci di RENCANA-UJI §2
+AMBANG = {"a_kali": 3, "b_kali": 2, "n_min": 200}   # Q2 disahkan K7 (25 Nov 2026); terkunci di RENCANA-UJI §2
 
 
 # ---- bagian murni ----
@@ -212,6 +218,7 @@ def peluang_kab(pred, sekarang):
 
 
 def susun(hs, desa, cari, statik, pred, skor, laju, sekarang, maks_b=MAKS_B_PER_PROV, maks_kb=UKURAN_MAKS_KB):
+    """-> (indeks, {pulau: berkas pulau}). Batas ukuran berlaku per berkas pulau; bila terlampaui, daftar B dipotong per provinsi lebih dulu, lalu A."""
     acuan = dt.datetime.fromisoformat(hs["acuan"])
     agg, tanpa = daftar_a(hs, desa)
     nama = {kd: (d, kec) for kd, d, kec in cari["baris"]}
@@ -228,56 +235,67 @@ def susun(hs, desa, cari, statik, pred, skor, laju, sekarang, maks_b=MAKS_B_PER_
 
     urut = sorted(agg, key=lambda k: (-agg[k][0], -(thn.get(k) or [0])[0], k))
     pin = {}
-    for kd in urut[:MAKS_A]:                       # pin dari poligon kab yang memuat desanya
-        kk = kd[:5]
-        pin.setdefault(kk, set()).add(kd)
+    for kd in urut:                       # pin dari poligon kab yang memuat desanya (semua pulau; batas MAKS_A per pulau dipotong di bawah)
+        pin.setdefault(kd[:5], set()).add(kd)
     pos = {}
     for kk, kds in pin.items():
         cd = cincin_desa(desa.muat(kk))
         for kd in kds:
             if kd in cd:
                 pos[kd] = titik_dalam(cd[kd])
-    a_baris = []
-    for kd in urut[:MAKS_A]:
-        t7, t24, j = agg[kd]
-        akhir = (acuan + dt.timedelta(hours=j)).astimezone(WIB).strftime("%Y-%m-%d %H:%M")
-        x, y = pos.get(kd, (None, None))
-        a_baris.append(baris(kd, t7, t24, akhir, x, y))
-    a_tot, a_pot = collections.Counter(kd[:2] for kd in agg), collections.Counter(kd[:2] for kd in urut[MAKS_A:])
-    a_tot, a_pot = dict(sorted(a_tot.items())), dict(sorted(a_pot.items()))
-    # B: desa_statik dengan tahun >= 3 dan 0 titik 7 hari
-    cb = collections.defaultdict(list)
+    cb = collections.defaultdict(list)    # B: desa_statik dengan tahun >= 3 dan 0 titik 7 hari
     for kd, th in thn.items():
         if th[0] >= MIN_TAHUN and kd not in agg:
             cb[kd[:2]].append(kd)
-    total_b = sum(len(v) for v in cb.values())
     for v in cb.values():
         v.sort(key=lambda k: (-thn[k][0], -(gam.get(k) if gam.get(k) is not None else -1), k))
-    while True:
-        b_baris, terpotong = [], {}
-        for pv in sorted(cb):
-            for kd in cb[pv][:maks_b]:
-                th = thn[kd]
-                b_baris.append(baris(kd, 0, 0, None, th[2] if len(th) > 2 else None, th[3] if len(th) > 3 else None))
-            if len(cb[pv]) > maks_b:
-                terpotong[pv] = len(cb[pv]) - maks_b
-        out = {
-            "versi": 1, "dibuat": sekarang.astimezone(WIB).isoformat(timespec="seconds"), "acuan": hs["acuan"],
-            "definisi": {"sensor": sorted(SENSOR_DAFTAR), "keyakinan_min": "nominal", "jendela_jam": JENDELA_JAM,
-                         "tahun_riwayat": [TH0, TH1], "min_tahun": MIN_TAHUN, "tahun_metode": "petak_terbanyak"},
-            "kolom": ["kd", "desa", "kec", "kab", "prov", "titik7", "titik24", "terakhir", "tahun", "tahun_akhir", "gambut", "p1", "p2", "p3", "lon", "lat"],
-            "a": {"baris": a_baris, "total": len(agg), "terpotong": max(0, len(agg) - MAKS_A), "tanpa_desa": tanpa,
-                  "total_per_prov": a_tot, "terpotong_per_prov": a_pot},
-            "b": {"baris": b_baris, "total": total_b, "terpotong_per_prov": terpotong,
-                  "total_per_prov": {pv: len(v) for pv, v in sorted(cb.items())}},
-            "peluang": {"status": (skor or {}).get("kode", {}).get("API", {}).get("status", "tak ada") if st_pel == "ok" else "tak ada",
-                        "dibuat": (pred or {}).get("dibuat") if st_pel == "ok" else None, "ket": "peluang kab/kota, bukan desa"},
-            "laju": laju_ringkas(laju),
-            "batasan": batasan(statik, st_pel),
-        }
-        if len(json.dumps(out, ensure_ascii=False, separators=(",", ":"))) <= maks_kb * 1024 or maks_b <= 0:
-            return out
-        maks_b = max(0, int(maks_b * 0.8) - 1)
+    kolom = ["kd", "desa", "kec", "kab", "prov", "titik7", "titik24", "terakhir", "tahun", "tahun_akhir", "gambut", "p1", "p2", "p3", "lon", "lat"]
+    dibuat = sekarang.astimezone(WIB).isoformat(timespec="seconds")
+    per, ringkas = {}, {}
+    for pulau, kodes in PULAU.items():
+        ua = [kd for kd in urut if kd[:2] in kodes]
+        a_baris = []
+        for kd in ua[:MAKS_A]:
+            t7, t24, j = agg[kd]
+            akhir = (acuan + dt.timedelta(hours=j)).astimezone(WIB).strftime("%Y-%m-%d %H:%M")
+            x, y = pos.get(kd, (None, None))
+            a_baris.append(baris(kd, t7, t24, akhir, x, y))
+        a_tot = dict(sorted(collections.Counter(kd[:2] for kd in ua).items()))
+        a_pot = dict(sorted(collections.Counter(kd[:2] for kd in ua[MAKS_A:]).items()))
+        cbp = {pv: cb[pv] for pv in sorted(cb) if pv in kodes}
+        mb, ma = maks_b, MAKS_A
+        while True:
+            b_baris, terpotong = [], {}
+            for pv, v in cbp.items():
+                for kd in v[:mb]:
+                    th = thn[kd]
+                    b_baris.append(baris(kd, 0, 0, None, th[2] if len(th) > 2 else None, th[3] if len(th) > 3 else None))
+                if len(v) > mb:
+                    terpotong[pv] = len(v) - mb
+            a_pakai = a_baris[:ma]
+            a_pot_pakai = dict(sorted(collections.Counter(kd[:2] for kd in ua[ma:]).items()))
+            obj = {"versi": 1, "dibuat": dibuat, "acuan": hs["acuan"], "pulau": pulau, "kolom": kolom,
+                   "a": {"baris": a_pakai, "total": len(ua), "terpotong": max(0, len(ua) - ma), "total_per_prov": a_tot, "terpotong_per_prov": a_pot_pakai},
+                   "b": {"baris": b_baris, "total": sum(len(v) for v in cbp.values()), "terpotong_per_prov": terpotong,
+                         "total_per_prov": {pv: len(v) for pv, v in cbp.items()}}}
+            if len(json.dumps(obj, ensure_ascii=False, separators=(",", ":")).encode()) <= maks_kb * 1024 or (mb <= 0 and ma <= 0):
+                break
+            if mb > 0:
+                mb = max(0, int(mb * 0.8) - 1)
+            else:
+                ma = int(ma * 0.8)
+        per[pulau] = obj
+        ringkas[pulau] = {"berkas": BERKAS[pulau], "provinsi": sorted(kodes), "a_total": obj["a"]["total"], "a_terpotong": obj["a"]["terpotong"],
+                          "a_total_per_prov": obj["a"]["total_per_prov"], "a_terpotong_per_prov": obj["a"]["terpotong_per_prov"],
+                          "b_total": obj["b"]["total"], "b_terpotong_per_prov": obj["b"]["terpotong_per_prov"], "b_total_per_prov": obj["b"]["total_per_prov"]}
+    idx = {"versi": 2, "dibuat": dibuat, "acuan": hs["acuan"],
+           "definisi": {"sensor": sorted(SENSOR_DAFTAR), "keyakinan_min": "nominal", "jendela_jam": JENDELA_JAM,
+                        "tahun_riwayat": [TH0, TH1], "min_tahun": MIN_TAHUN, "tahun_metode": "petak_terbanyak"},
+           "kolom": kolom, "tanpa_desa": tanpa, "pulau": ringkas,
+           "peluang": {"status": (skor or {}).get("kode", {}).get("API", {}).get("status", "tak ada") if st_pel == "ok" else "tak ada",
+                       "dibuat": (pred or {}).get("dibuat") if st_pel == "ok" else None, "ket": "peluang kab/kota, bukan desa"},
+           "laju": laju_ringkas(laju), "batasan": batasan(statik, st_pel)}
+    return idx, per
 
 
 def laju_ringkas(l):
@@ -401,10 +419,17 @@ def jalan():
     t0 = time.time()
     out = susun(hs, Desa(cari), cari, baca(STATIK), baca(os.path.join(AKAR, "public/prediksi/data/prediksi.json")),
                 baca(os.path.join(AKAR, "public/prediksi/data/skor.json")), baca(LAJU), dt.datetime.now(WIB))
-    tulis(KELUAR, out)
-    print("desa_waspada: A %d desa (%d baris), B %d desa (%d baris), %d titik tanpa desa, laju %s, %.0f KB, %.1f s"
-          % (out["a"]["total"], len(out["a"]["baris"]), out["b"]["total"], len(out["b"]["baris"]), out["a"]["tanpa_desa"],
-             out["laju"]["status"], os.path.getsize(KELUAR) / 1024, time.time() - t0))
+    idx, per = out
+    for pulau, obj in per.items():
+        tulis(os.path.join(KELUAR, BERKAS[pulau]), obj)
+    tulis(os.path.join(KELUAR, "indeks.json"), idx)
+    lama = os.path.join(DATA, "desa_waspada.json")
+    if os.path.exists(lama):
+        os.remove(lama)
+    for pulau, obj in per.items():
+        print("desa_waspada %-18s A %d desa (%d baris), B %d desa (%d baris), %.0f KB" % (
+            pulau, obj["a"]["total"], len(obj["a"]["baris"]), obj["b"]["total"], len(obj["b"]["baris"]), os.path.getsize(os.path.join(KELUAR, BERKAS[pulau])) / 1024))
+    print("desa_waspada: %d titik tanpa desa, laju %s, indeks %.0f KB, %.1f s" % (idx["tanpa_desa"], idx["laju"]["status"], os.path.getsize(os.path.join(KELUAR, "indeks.json")) / 1024, time.time() - t0))
 
 
 # ---- hindcast lokal ----
@@ -551,7 +576,7 @@ def jalan_laju():
     res = {"snpp": kelompok(ws, tmax, universe), "noaa20": kelompok(wn, tmax, universe), "metode_alt": kelompok(ws, t_or, universe)}
     out = {"dasar": "persen desa-minggu yang punya titik VIIRS (n/h, type 0, bukan sumber tetap) minggu berikutnya, musim kering 2023 (1 Jul sampai 27 Okt), riwayat desa 2012-2022 saja",
            "musim": MUSIM, "dibuat": dt.datetime.now(WIB).strftime("%Y-%m-%d"),
-           "kriteria": dict(AMBANG, ket="[SEMENTARA, Q2] dikunci di RENCANA-UJI §2 sebelum run pertama; lulus atas ambang ini = lulus_sementara"),
+           "kriteria": dict(AMBANG, ket="[Q2 disahkan, K7] dikunci di RENCANA-UJI §2 sebelum run pertama; disahkan pemilik K7 25 Nov 2026; lulus atas ambang ini = lulus"),
            "hasil": {}, "desa": {"universe": len(universe), "tanpa_riwayat": sum(1 for d in universe if tmax.get(d, 0) == 0),
                                  "ge3_petak_terbanyak": sum(1 for d in universe if tmax.get(d, 0) >= MIN_TAHUN),
                                  "ge3_tahun_berbeda": sum(1 for d in universe if t_or.get(d, 0) >= MIN_TAHUN)}}
@@ -565,7 +590,7 @@ def jalan_laju():
         okq, ket = vonis_strata(kq)
         v["lulus_total"] = v["lulus"] and okq
         out["hasil"][nm] = {"kelompok": k, "vonis": v, "per_kuartil_luas": kq, "vonis_kuartil": {"lulus": okq, "per_kuartil": ket}}
-    out["status"] = "lulus_sementara" if all(v["vonis"]["lulus_total"] for v in out["hasil"].values()) else "gagal"
+    out["status"] = "lulus" if all(v["vonis"]["lulus_total"] for v in out["hasil"].values()) else "gagal"
     out["batas_kuartil_luas_deg2"] = [round(x, 8) for x in qs]
     out["batas_penempatan"] = {"titik": batas[0], "dalam_200m_dari_batas": batas[1],
                                "persen": round(100 * batas[1] / batas[0], 1) if batas[0] else None}
@@ -577,7 +602,7 @@ def jalan_laju():
                       "Hindcast memakai SATU sensor per run (S-NPP atau NOAA-20) dengan riwayat S-NPP, sedangkan daftar produksi menjumlah N, N20, N21 dalam 168 jam: laju hindcast bukan laju daftar produksi.",
                       "Selang Wilson terlalu sempit karena desa-minggu beruntun berkorelasi (n efektif jauh lebih kecil dari n).",
                       "Stratifikasi per kuartil luas desa ditambah SETELAH run pertama dilihat, atas saran pemeriksa (RENCANA-UJI §2, tambahan bertanggal).",
-                      "Angka ambang 3x, 2x, 200 tebakan perancang (Q2 belum dijawab): lulus_sementara tetap berpil hipotesis."]
+                      "Angka ambang 3x, 2x, 200 adalah tebakan perancang yang disahkan pemilik (K7, 25 Nov 2026); vonis lulus tidak berarti lebih mungkin per desa, hanya terhadap kriteria ini."]
     tulis(LAJU, out)
     print(json.dumps({"status": out["status"], **{k: [v["vonis"], v["vonis_kuartil"]] for k, v in out["hasil"].items()}}, ensure_ascii=False, indent=1))
     print("selesai %.0f s" % (time.time() - t0))
@@ -646,32 +671,40 @@ def uji():
         # B: tahun 3, 0 titik: harus ada bila tak ada di A. Desa B muncul di A di fixture, jadi hapus titiknya
         hs2 = dict(hs, baris=[b for b in hs["baris"] if b[1] < 95.1])
         skor = {"kode": {"API": {"status": "dinilai"}}}
-        o = susun(hs2, Desa(cari, geo=geo), cari, st_, pred, skor, None, now)
-        kd_b = [r[0] for r in o["b"]["baris"]]
-        assert kd_b == ["11.01.01.2002"] and o["b"]["baris"][0][5:8] == [0, 0, None], o["b"]
-        ra = {r[0]: r for r in o["a"]["baris"]}["11.01.01.2001"]
+        o, po = susun(hs2, Desa(cari, geo=geo), cari, st_, pred, skor, None, now)
+        assert list(po) == list(PULAU) and set(o["pulau"]) == set(PULAU) and all(po[k]["pulau"] == k for k in po)
+        assert po["Sumatera"]["kolom"] == o["kolom"] and len(o["kolom"]) == 16 and o["pulau"]["Jawa"]["a_total"] == 0
+        assert all(not po[k]["a"]["baris"] and not po[k]["b"]["baris"] for k in po if k != "Sumatera")
+        kd_b = [r[0] for r in po["Sumatera"]["b"]["baris"]]
+        assert kd_b == ["11.01.01.2002"] and po["Sumatera"]["b"]["baris"][0][5:8] == [0, 0, None], po["Sumatera"]["b"]
+        ra = {r[0]: r for r in po["Sumatera"]["a"]["baris"]}["11.01.01.2001"]
         assert ra[8] is None and ra[11:14] == [3, 50, 13] and ra[10] == 0.0       # tahun null (kurang dari 3), bukan 0
         assert o["laju"]["status"] == "belum" and o["peluang"]["status"] == "dinilai" and o["peluang"]["ket"].endswith("bukan desa")
-        o2 = susun(hs2, Desa(cari, geo=geo), cari, st_, None, None, None, now)
-        assert o2["peluang"]["status"] == "tak ada" and all(r[11:14] == [None] * 3 for r in o2["a"]["baris"])
-        o3 = susun(hs2, Desa(cari, geo=geo), cari, None, pred, skor, None, now)
-        assert o3["b"]["baris"] == [] and any("statik" in x for x in o3["batasan"])
+        o2, po2 = susun(hs2, Desa(cari, geo=geo), cari, st_, None, None, None, now)
+        assert o2["peluang"]["status"] == "tak ada" and all(r[11:14] == [None] * 3 for r in po2["Sumatera"]["a"]["baris"])
+        o3, po3 = susun(hs2, Desa(cari, geo=geo), cari, None, pred, skor, None, now)
+        assert po3["Sumatera"]["b"]["baris"] == [] and any("statik" in x for x in o3["batasan"])
         # potong B: 301 desa satu provinsi -> 300
         st301 = {"tahun": {"11.01.01.%04d" % i: [3, 2019, 95.0, 4.0] for i in range(5000, 5301)}, "gambut": {}}
-        o4 = susun(hs2, Desa(cari, geo=geo), cari, st301, None, None, None, now)
-        assert o4["a"]["total_per_prov"] == {"11": 1} and o4["a"]["terpotong_per_prov"] == {} and o4["b"]["total_per_prov"] == {"11": 301}
-        assert len(o4["b"]["baris"]) == 300 and o4["b"]["terpotong_per_prov"] == {"11": 1} and o4["b"]["total"] == 301
+        o4, po4 = susun(hs2, Desa(cari, geo=geo), cari, st301, None, None, None, now)
+        s4 = po4["Sumatera"]
+        assert s4["a"]["total_per_prov"] == {"11": 1} and s4["a"]["terpotong_per_prov"] == {} and s4["b"]["total_per_prov"] == {"11": 301}
+        assert len(s4["b"]["baris"]) == 300 and s4["b"]["terpotong_per_prov"] == {"11": 1} and s4["b"]["total"] == 301
+        assert o4["pulau"]["Sumatera"]["b_terpotong_per_prov"] == {"11": 1}
+        o4k, po4k = susun(hs2, Desa(cari, geo=geo), cari, st301, None, None, None, now, maks_kb=8)      # batas ukuran per berkas pulau: B dipotong dulu
+        assert len(json.dumps(po4k["Sumatera"], separators=(",", ":"))) <= 8 * 1024 and len(po4k["Sumatera"]["b"]["baris"]) < 300 and po4k["Sumatera"]["b"]["terpotong_per_prov"]
         # idempoten
-        o5 = susun(hs2, Desa(cari, geo=geo), cari, st_, pred, skor, None, now)
-        assert json.dumps(o, sort_keys=True) == json.dumps(o5, sort_keys=True)
+        o5, po5 = susun(hs2, Desa(cari, geo=geo), cari, st_, pred, skor, None, now)
+        assert json.dumps([o, po], sort_keys=True) == json.dumps([o5, po5], sort_keys=True)
         # kata terlarang dan titik individual
-        teks = json.dumps(o, ensure_ascii=False).lower()
+        teks = json.dumps([o, po], ensure_ascii=False).lower()
         assert not re.search(r"pelaku|penyebab|bebas api|\baman\b|·", teks)
         # hindcast: kelompok dan vonis
         un = ["x%d" % i for i in range(400)]
         mg = {u: set(range(MINGGU)) if i < 200 else ({0, 2} if i < 300 else set()) for i, u in enumerate(un)}
         th = {u: 0 if i >= 300 else 4 for i, u in enumerate(un)}
         k = kelompok(mg, th, un)
+        assert PROVINSI.keys() == set().union(*PULAU.values()) and sum(map(len, PULAU.values())) == len(PROVINSI)   # tiap provinsi tepat satu pulau
         assert (k["b"]["n"], k["b"]["ya"]) == (1400, 100) and (k["tak_pernah"]["n"], k["tak_pernah"]["ya"]) == (1600, 0), k
         assert k["tak_pernah"]["wilson"][0] == 0.0 and k["lain"]["n"] == 1600 and vonis(k)["lulus"] is True
         k["lain"] = dict(k["lain"], laju=0.5)

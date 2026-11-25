@@ -131,8 +131,10 @@
   let janji = null;
   /* judul berita terjemahan mesin: gagal = judul tetap bahasa Indonesia */
   const muatJudul = () => fetch(new URL("data/berita_en.json", src), {cache: "no-cache"}).then(r => r.ok ? r.json() : {}).then(d => { JUDUL = d; }, () => {});
-  const muatKamus = () => janji ||= Promise.all([fetch(new URL("i18n/en.json?v=2", src)).then(r => r.ok ? r.json() : Promise.reject(r.status)), muatJudul()]).then(([d]) => {
-    KAMUS = d.kamus || {}; POLA = (d.pola || []).map(([re, g]) => [new RegExp(re, "su"), g]); CACHE = new Map(); TIP.clear();
+  const muatKamus = () => janji ||= Promise.all([fetch(new URL("i18n/en.json?v=3", src)).then(r => r.ok ? r.json() : Promise.reject(r.status)), muatJudul()]).then(([d]) => {
+    /* bagian paritas (PB-64): teks mesin bersama public/inti untuk laman bencana selain karhutla, dijaga tests/layar/pb_i18n.test.mjs.
+       Pola paritas didahulukan: semuanya berjangkar teks tetap, jadi tidak merebut teks pola umum. */
+    KAMUS = {...d.kamus, ...d.paritas}; POLA = [...(d.pola_paritas || []), ...(d.pola || [])].map(([re, g]) => [new RegExp(re, "su"), g]); CACHE = new Map(); TIP.clear();
   }).catch(e => { janji = null; KAMUS = KAMUS || {}; console.warn("i18n/en.json", e); });
 
   /* ---------- kanvas (gambar bagikan): teks yang digambar ikut diterjemahkan saat EN */

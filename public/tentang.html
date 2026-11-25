@@ -390,6 +390,8 @@ th,td{text-align:left;padding:12px 24px;border-top:1px solid var(--line);vertica
 thead th{border-top:0;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2)}
 td:first-child{font-weight:600}
 td small{color:var(--ink2)}
+#kredit-data thead th{text-transform:none;letter-spacing:0;font-size:12.5px}
+#kredit-data td a{overflow-wrap:anywhere}
 @media (max-width:600px){.lipat thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.lipat tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:14px 20px;border-top:1px solid var(--line)}
   .lipat tr:first-child{border-top:0}.lipat td{border:0;padding:0}.lipat td:nth-child(2){grid-column:1;grid-row:2;color:var(--ink2);font-size:13px}.lipat td:nth-child(3){grid-column:2;grid-row:1/3;text-align:right;font-size:13px;max-width:13ch}}
 .batas{margin-top:clamp(32px,5vw,56px);padding:clamp(24px,3.4vw,44px);border-radius:var(--r);background:color-mix(in oklab,var(--aksen) 10%,var(--card));display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(16px,3vw,28px)}
@@ -1203,6 +1205,132 @@ section[hidden],[hidden]{display:none!important}
     <li><b>Google News</b><span>Judul dan tautan berita media (RSS)</span><em class="lis">Hak cipta tetap milik media</em></li>
     </ul>
     <p class="catatan">Logo di pita atas hanya menandai sumber data (Wikimedia Commons), bukan tanda kemitraan.</p>
+  </div>
+</section>
+
+<!-- ============ 6b. KREDIT DATA (PB-65; kolom lisensi menunggu lisensi tercatat di DATA-PUBLIK.md): baris bagian C "Sudah dipakai sistem" docs/multi-bencana/DATA-PUBLIK.md ============ -->
+<section class="seksi putih" id="kredit-data" aria-labelledby="h-kredit">
+  <div class="wrap">
+    <header class="kepala" data-muncul><h2 class="h2" id="h-kredit">Kredit data</h2><p class="lead">Centurisk97 memakai 116 data publik. Lembaga di bawah ini adalah penyedia data, bukan pendukung atau mitra resmi.</p></header>
+    <details class="lipat" id="kreditLipat"><summary>Daftar 116 data dan penyedianya</summary><div class="isi">
+    <table><thead><tr><th scope="col">Data</th><th scope="col">Penyedia</th></tr></thead><tbody>
+<tr><td><a href="https://firms.modaps.eosdis.nasa.gov/active_fire/" rel="noopener" target="_blank">FIRMS VIIRS S-NPP NRT titik panas</a></td><td>NASA FIRMS</td></tr>
+<tr><td><a href="https://firms.modaps.eosdis.nasa.gov/active_fire/" rel="noopener" target="_blank">FIRMS VIIRS NOAA-20 NRT</a></td><td>NASA FIRMS</td></tr>
+<tr><td><a href="https://firms.modaps.eosdis.nasa.gov/active_fire/" rel="noopener" target="_blank">FIRMS VIIRS NOAA-21 NRT</a></td><td>NASA FIRMS</td></tr>
+<tr><td><a href="https://firms.modaps.eosdis.nasa.gov/active_fire/" rel="noopener" target="_blank">FIRMS MODIS C6.1 NRT</a></td><td>NASA FIRMS</td></tr>
+<tr><td><a href="https://www.eorc.jaxa.jp/ptree/" rel="noopener" target="_blank">Himawari-9 Hotspot (WLF)</a></td><td>JAXA P-Tree dan BMKG</td></tr>
+<tr><td><a href="https://gpm.nasa.gov/data/imerg" rel="noopener" target="_blank">IMERG hujan satelit</a></td><td>NASA GPM</td></tr>
+<tr><td><a href="https://sharaku.eorc.jaxa.jp/GSMaP/" rel="noopener" target="_blank">GSMaP hujan satelit</a></td><td>JAXA</td></tr>
+<tr><td><a href="https://dataspace.copernicus.eu/data-collections/sentinel-data/sentinel-5p" rel="noopener" target="_blank">TROPOMI Sentinel-5P CO, NO2, UVAI</a></td><td>Copernicus</td></tr>
+<tr><td><a href="https://docs.openaq.org/" rel="noopener" target="_blank">OpenAQ PM2.5 sensor</a></td><td>OpenAQ</td></tr>
+<tr><td><a href="https://aviationweather.gov/data/api/" rel="noopener" target="_blank">Jarak pandang (visibility) METAR bandara</a></td><td>NOAA/Aviation Weather</td></tr>
+<tr><td><a href="https://sihka.pu.go.id" rel="noopener" target="_blank">Sistem Informasi Hidrologi dan Hidrometeorologi</a></td><td>Kementerian PU</td></tr>
+<tr><td><a href="https://global-flood.emergency.copernicus.eu" rel="noopener" target="_blank">Global Flood Monitoring GFM</a></td><td>Copernicus GFM/EODC</td></tr>
+<tr><td><a href="https://floodmap.modaps.eosdis.nasa.gov" rel="noopener" target="_blank">MODIS banjir MCDWD</a></td><td>NASA LANCE</td></tr>
+<tr><td><a href="https://magma.esdm.go.id/" rel="noopener" target="_blank">Sistem Informasi Gerakan Tanah MAGMA Indonesia</a></td><td>PVMBG</td></tr>
+<tr><td><a href="https://data.bmkg.go.id/gempabumi/" rel="noopener" target="_blank">Katalog gempa terkini M5+ dan dirasakan</a></td><td>BMKG</td></tr>
+<tr><td><a href="https://earthquake.usgs.gov/fdsnws/event/1/" rel="noopener" target="_blank">Katalog gempa USGS ComCat</a></td><td>USGS</td></tr>
+<tr><td><a href="https://www.seismicportal.eu/fdsnws/event/1/" rel="noopener" target="_blank">Katalog gempa EMSC</a></td><td>EMSC</td></tr>
+<tr><td><a href="https://data.bmkg.go.id/" rel="noopener" target="_blank">Peringatan tsunami InaTEWS</a></td><td>BMKG</td></tr>
+<tr><td><a href="https://www.ioc-sealevelmonitoring.org/" rel="noopener" target="_blank">Sensor muka laut IOC</a></td><td>UNESCO IOC / VLIZ</td></tr>
+<tr><td><a href="https://www.ndbc.noaa.gov/dart.shtml" rel="noopener" target="_blank">Buoy DART (tekanan dasar laut)</a></td><td>NOAA NDBC</td></tr>
+<tr><td><a href="https://magma.esdm.go.id/" rel="noopener" target="_blank">Status level gunung api Indonesia</a></td><td>PVMBG, MAGMA Indonesia</td></tr>
+<tr><td><a href="https://magma.esdm.go.id/v1/vona" rel="noopener" target="_blank">VONA (Volcano Observatory Notice for Aviation)</a></td><td>PVMBG MAGMA</td></tr>
+<tr><td><a href="https://www.bom.gov.au/aviation/volcanic-ash/" rel="noopener" target="_blank">Darwin VAAC advisory (VAA)</a></td><td>BoM Australia</td></tr>
+<tr><td><a href="http://www.mirovaweb.it/NRT/" rel="noopener" target="_blank">MIROVA hotspot termal vulkanik</a></td><td>Univ. Torino</td></tr>
+<tr><td><a href="https://www.bmkg.go.id/cuaca/siklon-tropis" rel="noopener" target="_blank">Lintasan dan peringatan siklon tropis (TCWC Jakarta)</a></td><td>BMKG</td></tr>
+<tr><td><a href="https://api.reliefweb.int/v2/" rel="noopener" target="_blank">ReliefWeb API laporan dan bencana</a></td><td>UN OCHA</td></tr>
+<tr><td><a href="https://cds.climate.copernicus.eu/" rel="noopener" target="_blank">ERA5 reanalisis suhu, kelembapan, angin</a></td><td>ECMWF/Copernicus C3S</td></tr>
+<tr><td><a href="https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land" rel="noopener" target="_blank">ERA5-Land</a></td><td>ECMWF/Copernicus C3S</td></tr>
+<tr><td><a href="https://open-meteo.com/en/docs" rel="noopener" target="_blank">Open-Meteo prakiraan dan arsip</a></td><td>Open-Meteo</td></tr>
+<tr><td><a href="https://api.bmkg.go.id/publik/prakiraan-cuaca" rel="noopener" target="_blank">Prakiraan cuaca BMKG per kecamatan</a></td><td>BMKG</td></tr>
+<tr><td><a href="https://www.bmkg.go.id/alerts/nowcast/id" rel="noopener" target="_blank">Peringatan dini cuaca CAP BMKG</a></td><td>BMKG</td></tr>
+<tr><td><a href="https://www.chc.ucsb.edu/data/chirps" rel="noopener" target="_blank">CHIRPS hujan harian</a></td><td>UCSB CHC</td></tr>
+<tr><td><a href="https://esa-worldcover.org/" rel="noopener" target="_blank">ESA WorldCover 10 m</a></td><td>ESA</td></tr>
+<tr><td><a href="https://ads.atmosphere.copernicus.eu/" rel="noopener" target="_blank">CAMS prakiraan komposisi atmosfer global</a></td><td>Copernicus CAMS</td></tr>
+<tr><td><a href="https://ewds.climate.copernicus.eu" rel="noopener" target="_blank">Debit sungai GloFAS v4</a></td><td>Copernicus EWDS/ECMWF</td></tr>
+<tr><td><a href="https://www.hydrosheds.org" rel="noopener" target="_blank">HydroSHEDS dan HydroBASINS</a></td><td>WWF HydroSHEDS</td></tr>
+<tr><td><a href="https://hydro.iis.u-tokyo.ac.jp/~yamadai/MERIT_Hydro/" rel="noopener" target="_blank">MERIT Hydro dan MERIT DEM</a></td><td>Univ. Tokyo</td></tr>
+<tr><td><a href="https://tanahair.indonesia.go.id/demnas" rel="noopener" target="_blank">DEMNAS dan MASNAS</a></td><td>BIG</td></tr>
+<tr><td><a href="https://maritim.bmkg.go.id" rel="noopener" target="_blank">Gelombang dan angin laut BMKG Maritim</a></td><td>BMKG</td></tr>
+<tr><td><a href="https://soilgrids.org" rel="noopener" target="_blank">SoilGrids 2.0</a></td><td>ISRIC</td></tr>
+<tr><td><a href="http://geodesy.unr.edu/NGLStationPages/GlobalStationList" rel="noopener" target="_blank">Time series GNSS global</a></td><td>Nevada Geodetic Laboratory</td></tr>
+<tr><td><a href="https://magma.esdm.go.id/v1/gunung-api/laporan" rel="noopener" target="_blank">Gempa vulkanik (VT, tremor) harian</a></td><td>PVMBG MAGMA</td></tr>
+<tr><td><a href="https://www.bmkg.go.id/iklim/prakiraan-musim" rel="noopener" target="_blank">Prakiraan musim dan awal musim hujan/kemarau (ZOM)</a></td><td>BMKG</td></tr>
+<tr><td><a href="https://open-meteo.com/en/docs/marine-weather-api" rel="noopener" target="_blank">Open-Meteo Marine API gelombang</a></td><td>Open-Meteo</td></tr>
+<tr><td><a href="https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php" rel="noopener" target="_blank">Indeks ENSO Nino 3.4 (ONI)</a></td><td>NOAA CPC</td></tr>
+<tr><td><a href="https://psl.noaa.gov/gcos_wgsp/Timeseries/DMI" rel="noopener" target="_blank">Indeks IOD (DMI)</a></td><td>NOAA PSL / BoM</td></tr>
+<tr><td><a href="https://drought.emergency.copernicus.eu" rel="noopener" target="_blank">Global Drought Observatory (indeks SPI, soil moisture anomaly, fAPAR)</a></td><td>JRC</td></tr>
+<tr><td><a href="https://power.larc.nasa.gov/docs/" rel="noopener" target="_blank">NASA POWER daily meteorology</a></td><td>NASA Langley</td></tr>
+<tr><td><a href="https://data.globalforestwatch.org/" rel="noopener" target="_blank">Peta konsesi sawit dan HTI (Auto Salur)</a></td><td>Global Forest Watch</td></tr>
+<tr><td><a href="https://download.geofabrik.de/asia/indonesia.html" rel="noopener" target="_blank">Sumber air terbuka OpenStreetMap (sungai, danau, kanal, embung)</a></td><td>OpenStreetMap/Geofabrik</td></tr>
+<tr><td><a href="https://overpass-turbo.eu/" rel="noopener" target="_blank">Jalan akses dan sekat kanal OSM</a></td><td>OpenStreetMap</td></tr>
+<tr><td><a href="https://overpass-api.de/api/interpreter" rel="noopener" target="_blank">OpenStreetMap tanggul dan bendungan</a></td><td>OSM</td></tr>
+<tr><td><a href="https://download.geofabrik.de/asia/indonesia.html" rel="noopener" target="_blank">OSM bangunan dan penggunaan lahan Indonesia (Geofabrik)</a></td><td>OpenStreetMap, Geofabrik</td></tr>
+<tr><td><a href="https://overpass-api.de/" rel="noopener" target="_blank">OSM tempat ibadah, aula, lapangan (kandidat TES)</a></td><td>OpenStreetMap</td></tr>
+<tr><td><a href="https://ourairports.com/data/" rel="noopener" target="_blank">Bandara dan landasan (OurAirports)</a></td><td>OurAirports</td></tr>
+<tr><td><a href="https://overpass-api.de/" rel="noopener" target="_blank">Helipad rumah sakit dan gedung (OSM aeroway=helipad)</a></td><td>OpenStreetMap</td></tr>
+<tr><td><a href="https://panelharga.badanpangan.go.id/" rel="noopener" target="_blank">Panel Harga Pangan</a></td><td>Badan Pangan Nasional</td></tr>
+<tr><td><a href="https://dataspace.copernicus.eu/" rel="noopener" target="_blank">Sentinel-2 L2A</a></td><td>Copernicus</td></tr>
+<tr><td><a href="https://dataspace.copernicus.eu/" rel="noopener" target="_blank">Sentinel-1 SAR GRD</a></td><td>Copernicus</td></tr>
+<tr><td><a href="https://webapi.bps.go.id/" rel="noopener" target="_blank">PDRB kab/kota per sektor</a></td><td>BPS</td></tr>
+<tr><td><a href="https://sirup.lkpp.go.id/" rel="noopener" target="_blank">SIRUP pengadaan pemerintah</a></td><td>LKPP</td></tr>
+<tr><td><a href="https://blackmarble.gsfc.nasa.gov/" rel="noopener" target="_blank">VIIRS Black Marble cahaya malam</a></td><td>NASA</td></tr>
+<tr><td><a href="https://data.bris.ac.uk/data/dataset/s5hqmjcdj8yo2ibzi9b4ew3sn" rel="noopener" target="_blank">FABDEM v1.2</a></td><td>Univ. Bristol</td></tr>
+<tr><td><a href="https://dataspace.copernicus.eu" rel="noopener" target="_blank">Copernicus GLO-30 DEM</a></td><td>ESA Copernicus</td></tr>
+<tr><td><a href="https://global-surface-water.appspot.com" rel="noopener" target="_blank">Global Surface Water</a></td><td>EC JRC</td></tr>
+<tr><td><a href="https://inarisk.bnpb.go.id" rel="noopener" target="_blank">inaRISK bahaya banjir dan longsor</a></td><td>BNPB</td></tr>
+<tr><td><a href="https://www.worldpop.org" rel="noopener" target="_blank">WorldPop penduduk per sel</a></td><td>WorldPop Univ. Southampton</td></tr>
+<tr><td><a href="https://www.gebco.net/data_and_products/gridded_bathymetry_data" rel="noopener" target="_blank">GEBCO batimetri</a></td><td>GEBCO</td></tr>
+<tr><td><a href="https://volcano.si.edu/" rel="noopener" target="_blank">Katalog gunung api aktif (Holocene)</a></td><td>Smithsonian GVP</td></tr>
+<tr><td><a href="https://magma.esdm.go.id/" rel="noopener" target="_blank">Zona radius bahaya per level</a></td><td>PVMBG</td></tr>
+<tr><td><a href="https://www.bps.go.id/id/statistics-table" rel="noopener" target="_blank">Luas panen, produksi padi per kab</a></td><td>BPS</td></tr>
+<tr><td><a href="https://www.bps.go.id/id/statistics-table/3/Ulk5RmNLWnNaUTdoUDdMUUFKNm9Odz09" rel="noopener" target="_blank">Statistik desa dengan sumber air minum dan sulit air (PODES)</a></td><td>BPS</td></tr>
+<tr><td><a href="https://www.usgs.gov/landsat-missions/landsat-collection-2" rel="noopener" target="_blank">Landsat 8/9 dan 5/7 koleksi 2</a></td><td>USGS</td></tr>
+<tr><td><a href="https://human-settlement.emergency.copernicus.eu/" rel="noopener" target="_blank">GHS-BUILT-S luas bangunan</a></td><td>JRC GHSL</td></tr>
+<tr><td><a href="https://sensus.bps.go.id/" rel="noopener" target="_blank">Sensus Penduduk 2020 tabel kab/kota</a></td><td>BPS</td></tr>
+<tr><td><a href="https://webapi.bps.go.id/" rel="noopener" target="_blank">WebAPI BPS (indikator per kab/kota)</a></td><td>BPS</td></tr>
+<tr><td><a href="https://sites.research.google/open-buildings/" rel="noopener" target="_blank">Google Open Buildings v3 (Asia Tenggara)</a></td><td>Google Research</td></tr>
+<tr><td><a href="https://dapo.kemdikbud.go.id/" rel="noopener" target="_blank">Data Pokok Pendidikan (sekolah, koordinat)</a></td><td>Kemendikdasmen Dapodik</td></tr>
+<tr><td><a href="https://webapi.bps.go.id/" rel="noopener" target="_blank">SUSENAS (Survei Sosial Ekonomi Nasional)</a></td><td>BPS</td></tr>
+<tr><td><a href="https://webapi.bps.go.id/" rel="noopener" target="_blank">Indeks Pembangunan Manusia</a></td><td>BPS</td></tr>
+<tr><td><a href="https://inarisk.bnpb.go.id/irbi" rel="noopener" target="_blank">Indeks Risiko Bencana Indonesia (IRBI) tahunan</a></td><td>BNPB</td></tr>
+<tr><td><a href="https://kemendagri.go.id/" rel="noopener" target="_blank">Kode wilayah Kemendagri</a></td><td>Kemendagri</td></tr>
+<tr><td><a href="https://gadm.org/" rel="noopener" target="_blank">GADM batas administrasi</a></td><td>UC Davis</td></tr>
+<tr><td><a href="https://firms.modaps.eosdis.nasa.gov/download/" rel="noopener" target="_blank">FIRMS arsip standar VIIRS dan MODIS</a></td><td>NASA FIRMS</td></tr>
+<tr><td><a href="https://www.ncei.noaa.gov/products/international-best-track-archive" rel="noopener" target="_blank">IBTrACS lintasan badai global</a></td><td>NOAA NCEI</td></tr>
+<tr><td><a href="https://uhslc.soest.hawaii.edu" rel="noopener" target="_blank">Level muka laut stasiun pasut</a></td><td>UHSLC</td></tr>
+<tr><td><a href="https://dibi.bnpb.go.id/" rel="noopener" target="_blank">DIBI kejadian bencana 1815-sekarang</a></td><td>BNPB</td></tr>
+<tr><td><a href="https://www.data.jma.go.jp/mscweb/en/himawari89/" rel="noopener" target="_blank">Himawari-9 AHI citra mentah</a></td><td>JMA/JAXA/NICT</td></tr>
+<tr><td><a href="https://www.bmkg.go.id/kualitas-udara" rel="noopener" target="_blank">PM2.5 stasiun BMKG (AQMS/Jakarta, Pekanbaru, dst)</a></td><td>BMKG</td></tr>
+<tr><td><a href="https://pusair-pu.go.id" rel="noopener" target="_blank">Tinggi muka air pos duga Puslitbang SDA</a></td><td>Kementerian PU Pusair</td></tr>
+<tr><td><a href="https://www.bmkg.go.id/" rel="noopener" target="_blank">Kejadian petir</a></td><td>BMKG</td></tr>
+<tr><td><a href="https://www.earthdata.nasa.gov/data/projects/opera" rel="noopener" target="_blank">OPERA DSWx (luas air permukaan dari Sentinel-1 dan HLS)</a></td><td>NASA OPERA, PO.DAAC</td></tr>
+<tr><td><a href="https://www.earthdata.nasa.gov/data/projects/opera" rel="noopener" target="_blank">OPERA DIST-ALERT (gangguan permukaan: hilang vegetasi, longsor, kebakaran) HLS dan S1</a></td><td>NASA OPERA (LP DAAC, ASF DAAC)</td></tr>
+<tr><td><a href="https://simatag.brg.go.id/" rel="noopener" target="_blank">Muka air tanah gambut TMAT SIMATAG</a></td><td>BRGM (Badan Restorasi Gambut dan Mangrove)</td></tr>
+<tr><td><a href="https://glad.umd.edu/" rel="noopener" target="_blank">GLAD Alerts kehilangan hutan mingguan</a></td><td>UMD GLAD</td></tr>
+<tr><td><a href="https://sites.research.google/floods" rel="noopener" target="_blank">Google Flood Hub gauge dan prakiraan</a></td><td>Google Research</td></tr>
+<tr><td><a href="https://geologi.esdm.go.id" rel="noopener" target="_blank">Prakiraan gerakan tanah bulanan</a></td><td>Badan Geologi</td></tr>
+<tr><td><a href="https://grace.jpl.nasa.gov/data" rel="noopener" target="_blank">Hotspot dan sumur pantau NASA GRACE-FO</a></td><td>NASA GRACE</td></tr>
+<tr><td><a href="https://www.metoc.navy.mil/jtwc/jtwc.html" rel="noopener" target="_blank">Prakiraan lintasan siklon aktif (ATCF)</a></td><td>JTWC</td></tr>
+<tr><td><a href="https://cds.climate.copernicus.eu/datasets/seasonal-original-single-levels" rel="noopener" target="_blank">Seasonal forecast SEAS5</a></td><td>ECMWF/C3S</td></tr>
+<tr><td><a href="https://webapi.bps.go.id/" rel="noopener" target="_blank">IHPB bahan bangunan dan Indeks Kemahalan Konstruksi</a></td><td>BPS</td></tr>
+<tr><td><a href="https://ppid.menlhk.go.id/" rel="noopener" target="_blank">Peta Kesatuan Hidrologis Gambut (KHG)</a></td><td>KLHK</td></tr>
+<tr><td><a href="https://data.globalforestwatch.org/" rel="noopener" target="_blank">Indonesia Logging Concessions (HPH)</a></td><td>GFW</td></tr>
+<tr><td><a href="https://trase.earth/open-data" rel="noopener" target="_blank">Trase pulp dan sawit rantai pasok</a></td><td>Trase</td></tr>
+<tr><td><a href="https://glad.earthengine.app/view/global-forest-change" rel="noopener" target="_blank">Hansen Global Forest Change</a></td><td>UMD/GLAD</td></tr>
+<tr><td><a href="https://ghsl.jrc.ec.europa.eu" rel="noopener" target="_blank">GHSL populasi dan bangunan</a></td><td>EC JRC</td></tr>
+<tr><td><a href="https://github.com/GEMScienceTools/gem-global-active-faults" rel="noopener" target="_blank">Global Active Faults Database (GEM)</a></td><td>GEM Foundation</td></tr>
+<tr><td><a href="https://inarisk.bnpb.go.id/" rel="noopener" target="_blank">Peta bahaya tsunami (zona genangan)</a></td><td>Pusat Studi Gempa dan Tsunami, BNPB inaRISK</td></tr>
+<tr><td><a href="https://www.bi.go.id/hargapangan" rel="noopener" target="_blank">Harga pangan harian</a></td><td>Bapanas / PIHPS BI</td></tr>
+<tr><td><a href="https://tanahair.indonesia.go.id/" rel="noopener" target="_blank">Batas administrasi desa, kecamatan, kab (Ina-Geoportal)</a></td><td>BIG</td></tr>
+<tr><td><a href="https://sipongi.menlhk.go.id/" rel="noopener" target="_blank">SiPongi hotspot dan luas karhutla</a></td><td>KLHK</td></tr>
+<tr><td><a href="https://ppid.menlhk.go.id/" rel="noopener" target="_blank">Peta Indikatif Penundaan Izin Baru (PIPPIB)</a></td><td>KLHK</td></tr>
+<tr><td><a href="https://uhslc.soest.hawaii.edu/data" rel="noopener" target="_blank">UHSLC Fast Delivery dan Research Quality</a></td><td>Univ. Hawaii</td></tr>
+<tr><td><a href="https://gpm.nasa.gov/landslides/data.html" rel="noopener" target="_blank">NASA Global Landslide Catalog</a></td><td>NASA GSFC</td></tr>
+<tr><td><a href="https://repogempa.bmkg.go.id/eventcatalog" rel="noopener" target="_blank">Katalog gempa InaTEWS arsip</a></td><td>BMKG</td></tr>
+<tr><td><a href="https://www.bmkg.go.id/gempabumi/mitigasi/katalog-gempabumi-tsunami" rel="noopener" target="_blank">Katalog tsunami Indonesia (Pusat Studi)</a></td><td>BMKG dan LIPI/BRIN</td></tr>
+    </tbody></table></div></details>
   </div>
 </section>
 

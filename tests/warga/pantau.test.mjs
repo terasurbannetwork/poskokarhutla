@@ -190,7 +190,7 @@ uji("matriks peran x rute: tiap peran hanya rute sahnya; rute lama tidak melongg
     assert.equal((await situs("/direktori", P.pusdalops)).status, 200, "staf pusdalops membuka halaman /direktori");
     assert.equal((await situs("/monitor", P.direktori)).status, 303, "staf Direktori saja tidak membuka /monitor");
     assert.equal((await situs("/monitor", P.pusdalops)).status, 303, "staf non-operator tidak membuka /monitor");
-    const tamu = await situs("/direktori"); assert.equal(tamu.status, 303); assert.match(tamu.headers.get("location"), /^\/admin\/masuk\?ke=/, "tamu tetap dialihkan"); }
+    const tamu = await situs("/direktori"); assert.equal(tamu.status, 303); assert.match(tamu.headers.get("location"), /^\/masuk\?ke=/, "tamu tetap dialihkan"); }
   /* wilayah: staf Kalteng membuka tugas Kalteng (200) tetapi tugas Kalbar 404 */
   { const kt = await bikin("Ver Kalteng", ["verifikator"], ["62"]), tK = await tugas({prov: "62"}), tB = await tugas({prov: "61", kab: "Kubu Raya"});
     assert.equal((await dari(kt, "GET", "/api/instansi/admin/tugas/" + tK)).s, 200); assert.equal((await dari(kt, "GET", "/api/instansi/admin/tugas/" + tB)).s, 404, "tugas provinsi lain: 404");
@@ -402,7 +402,7 @@ uji("dummy: hanya Super Admin; menumbuhkan seluruh rantai (tiap jenis butir teri
 /* ================================================================ halaman dan gaya */
 uji("halaman /admin/pantau: tamu 303 ke /admin/masuk; kerangka tanpa data dengan CSP ketat; berkas klien ada; tanpa pemisah titik tengah", async () => {
   const tamu = await U.mf.dispatchFetch("http://bnpb.lokal/admin/pantau", {redirect: "manual"}); await tamu.text();
-  assert.equal(tamu.status, 303); assert.equal(tamu.headers.get("location"), "/admin/masuk?ke=%2Fadmin%2Fpantau", "satu pintu masuk: tamu ke /admin/masuk");
+  assert.equal(tamu.status, 303); assert.equal(tamu.headers.get("location"), "/masuk?ke=%2Fadmin%2Fpantau", "satu pintu masuk: tamu ke /admin/masuk");
   const r = await U.mf.dispatchFetch("http://bnpb.lokal/admin/pantau", {headers: ADMIN});
   assert.equal(r.status, 200); const html = await r.text();
   assert.match(r.headers.get("content-security-policy"), /script-src 'self'/); assert.match(r.headers.get("content-security-policy"), /frame-ancestors 'self'/); assert.equal(r.headers.get("cache-control"), "no-store");

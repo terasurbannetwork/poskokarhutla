@@ -901,8 +901,8 @@ uji("cc gerbang: sesi staf operator_cc melihat halaman terkunci centurisk97.id (
   const o = await situs("/monitor", {cookie: op1.cookie}); assert.equal(o.status, 200, "operator masuk"); assert.match(o.headers.get("cache-control"), /no-store/); assert.match(await o.text(), /<html/i);
   assert.equal((await situs("/monitor", {cookie: op1.cookie}, "HEAD")).status, 200); assert.equal((await situs("/laporan", {cookie: op2.cookie})).status, 200); assert.equal((await situs("/direktori", {cookie: opWil.cookie})).status, 200, "operator berwilayah juga");
   for (const [nama, h] of [["pusdalops", pusd.cookie], ["koordalops", koord.cookie], ["pimpinan", pim.cookie], ["tmc", tmc.cookie], ["kemitraan", kampus.cookie], ["operator dengan sandi awal belum diganti", tertahan.cookie], ["tamu", ""], ["sesi palsu", "sesi_staf=" + "c".repeat(64)], ["pemirsa peta", pPeta.h.cookie]]) {
-    const r = await situs("/monitor", h ? {cookie: h} : {}); assert.equal(r.status, 303, nama); assert.ok(/^\/admin\/masuk\?ke=|^\/(berita|peta)/.test(r.headers.get("location")), `${nama}: ${r.headers.get("location")}`);
-    if (nama !== "pemirsa peta") assert.match(r.headers.get("location"), /^\/admin\/masuk\?ke=%2Fmonitor/, nama);
+    const r = await situs("/monitor", h ? {cookie: h} : {}); assert.equal(r.status, 303, nama); assert.ok(/^\/masuk\?ke=|^\/(berita|peta)/.test(r.headers.get("location")), `${nama}: ${r.headers.get("location")}`);
+    if (nama !== "pemirsa peta") assert.match(r.headers.get("location"), /^\/masuk\?ke=%2Fmonitor/, nama);
   }
   assert.equal((await situs("/monitor", {cookie: pPeta.h.cookie})).headers.get("location"), "/peta");
   /* menu Pusdalops + peta utama: staf pusdalops/koordalops/pimpinan (akun Dirdalops) lolos; tmc dan kemitraan tidak */
@@ -935,7 +935,7 @@ uji("cc peran: Super Admin memberi peran operator_cc lewat API; tab pemirsa 'din
 
 /* ================================================================ halaman: meja operator (/command-center); layar dinding dibuang */
 const man = async (j, h = {}, host = "http://bnpb.lokal", metode = "GET") => { const r = await mf.dispatchFetch(host + j, {method: metode, redirect: "manual", headers: h}); return {s: r.status, h: r.headers, t: await r.text()}; };
-const SITUS = "https://centurisk97.id", KE_MEJA = "/admin/masuk?ke=%2Fcommand-center";
+const SITUS = "https://centurisk97.id", KE_MEJA = "/masuk?ke=%2Fcommand-center";
 const berkasKlien = t => [...t.matchAll(/(?:src|href)="(\/[^"]+\.(?:js|css))(?:\?v=\d+)?"/g)].map(m => m[1]);
 
 uji("cc halaman meja: /command-center terbuka bagi operator, koordalops, pimpinan, moderator; tamu ke Meja Pantau; sesi tanpa hak 403 polos; CSP_ADMIN tanpa sebaris", async () => {
@@ -948,7 +948,7 @@ uji("cc halaman meja: /command-center terbuka bagi operator, koordalops, pimpina
   const r = await man("/command-center", op1.h), h = r.h;
   assert.match(h.get("content-type"), /text\/html/); assert.match(h.get("cache-control"), /private, no-store/); assert.match(h.get("vary"), /cookie/i); assert.equal(h.get("x-frame-options"), "DENY"); assert.match(h.get("x-robots-tag"), /noindex/);
   assert.equal(h.get("content-security-policy"), CSP_ADMIN); assert.doesNotMatch(CSP_ADMIN, /unsafe-inline|unsafe-eval/);
-  assert.match(r.t, /data-staf="1" data-peran="operator_cc"/); assert.match(r.t, /<span class="ad-sep staf">Staf<\/span>/); assert.match(r.t, /data-staf-keluar/); assert.match(r.t, /href="\/admin\/command-center" aria-current="page"/);
+  assert.match(r.t, /data-staf="1" data-peran="operator_cc"/); assert.match(r.t, /<span class="ad-sep staf">Staf<\/span>/); assert.match(r.t, /data-staf-keluar/); assert.match(r.t, /href="\/command-center" aria-current="page"/);
   assert.doesNotMatch(r.t, /\sstyle=|<style|\son[a-z]+=|<script(?![^>]*\ssrc=)/i, "tanpa gaya dan skrip sebaris");
   const klien = berkasKlien(r.t);
   assert.ok(["/admin/command_bersama.css", "/admin/command_center.css", "/admin/command_bersama.js", "/admin/command_center.js"].every(x => klien.includes(x)), klien.join(" "));
@@ -989,13 +989,13 @@ uji("cc halaman menu: entri Command center di menu admin untuk operator_cc, koor
   assert.deepEqual([...HALAMAN_STAF["command-center"]].sort(), ["koordalops", "operator_cc", "pimpinan"], "sama dengan peran yang diterima pelaku() untuk meja");
   for (const [nama, h] of [["tamu", {}], ["operator", op1.h], ["tmc", tmc.h], ["moderator", ADMIN]]) { const r = await man("/admin/command-center", h); assert.equal(r.s, 303, nama); assert.equal(r.h.get("location"), "/command-center", nama); assert.equal(r.t, ""); }
   const nav = async h => (await man("/admin/pantau", h)).t;
-  for (const h of [op1.h, koord.h, pim.h]) assert.match(await nav(h), /href="\/admin\/command-center"/);
-  for (const h of [tmc.h, pusd.h, kampus.h]) assert.doesNotMatch(await nav(h), /href="\/admin\/command-center"/, "peran lain tidak melihat menunya");
-  assert.match((await man("/admin/statistik", ADMIN)).t, /href="\/admin\/command-center"/);
+  for (const h of [op1.h, koord.h, pim.h]) assert.match(await nav(h), /href="\/command-center"/);
+  for (const h of [tmc.h, pusd.h, kampus.h]) assert.doesNotMatch(await nav(h), /href="\/command-center"/, "peran lain tidak melihat menunya");
+  assert.match((await man("/admin/statistik", ADMIN)).t, /href="\/command-center"/);
   const src = teks("public/admin/pantau.js"), m = src.match(/const KE_PIPA = (\/\^[^\n;]+\/);/); assert.ok(m); const re = eval(m[1]);
   for (const ok of ["/command-center", "/command-center?x=1", "/pipa/peta", "/admin/drone"]) assert.ok(re.test(ok), ok);
-  /* masuk staf (/admin/masuk): operator_cc SAJA (peran tunggal) ke "/", sesudah ?ke= sah; perilaku di peramban ada di command_center_layar.test.mjs */
-  assert.match(teks("src/statistik.js"), /p\.length === 1 && p\[0\] === "operator_cc" \? "\/" : "\/admin\/pantau"/, "satu pintu /admin/masuk: operator_cc saja ke peta utama");
+  /* masuk staf (/masuk, K21): operator_cc SAJA ke /command-center (peta-situs ALGORITMA), sesudah ?ke= sah; perilaku di peramban ada di command_center_layar.test.mjs */
+  assert.match(teks("src/admin_halaman.js"), /peran\.every\(p => p === "operator_cc"\)\) return "\/command-center"/, "satu pintu /masuk: operator_cc saja ke meja command center");
   for (const salah of ["/command-centerX", "//command-center", "https://x.id/command-center", "/x/command-center", "/\\command-center", "command-center"]) assert.ok(!re.test(salah), salah);
 });
 
@@ -1029,7 +1029,7 @@ uji("cc klien berkas: sintaks lolos node --check; tanpa innerHTML/eval/gaya seba
   for (const k of ["jajak(muat, 30e3)", "/api/cc/antrean", "/api/cc/kontak", "/api/cc/aksi/", "/api/cc/log?", "tel:", "r.status === 409", "Koreksi wajib bercatatan"]) assert.ok(mj.includes(k), "meja memuat " + k);
   assert.ok(existsSync(path.join(AKAR, "public/suara/alarm-api.mp3")), "berkas bunyi tetap ada: dipakai halaman lain, hanya command center yang senyap");
   /* tidak ada pemformat durasi lokal (SATU formatter: fmt.durasi) dan baris 403 + /admin/masuk?ke= (pantulan) */
-  for (const f of KLIEN_JS) { assert.doesNotMatch(teks(f), /const (?:jamTeks|durasiTeks|lama) = ms =>/, f); teks(f).split("\n").forEach((b, i) => assert.ok(!(/403/.test(b) && /\/admin\/masuk\?ke=/.test(b)), `${f}:${i + 1}`)); }
+  for (const f of KLIEN_JS) { assert.doesNotMatch(teks(f), /const (?:jamTeks|durasiTeks|lama) = ms =>/, f); teks(f).split("\n").forEach((b, i) => assert.ok(!(/403/.test(b) && /\/(?:admin\/)?masuk\?ke=/.test(b)), `${f}:${i + 1}`)); }
   /* dimuat dengan navigator.userActivation.hasBeenActive = true (pemicu keluhan): tidak ada Audio, play(), pendengar atau interval bunyi, dan Cc tidak punya pengendali suara */
   const B = muatBersama({aktif: true}); assert.deepEqual(B.log, [], "memuat command_bersama.js tidak menyentuh Audio/setInterval/addEventListener"); assert.equal(B.Cc.suara, undefined, "tidak ada pengendali suara"); assert.ok(!Object.keys(B.Cc).some(k => /suara|bunyi|senyap|gerbang/i.test(k)));
   /* konsep lama sudah hilang dari seluruh berkas klien (JS dan CSS) */

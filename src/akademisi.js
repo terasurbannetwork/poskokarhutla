@@ -9,7 +9,8 @@ import {laju} from "./bnpb.js";
 const KUNCI = "akademisi/induk.json";
 /* peran staf yang boleh membuka direktori (baca DAN tulis): daftar EKSPLISIT, bukan Object.keys(PERAN). operator_cc (command center, hanya baca halaman centurisk97.id; buku kontak penuh TETAP TERTUTUP,
    src/staf.js) sengaja tidak ada; peran staf baru tertutup di sini sampai pemilik memasukkannya. Dijaga tests/warga/akademisi_peran.test.mjs. */
-export const P_AKADEMISI = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan", "kemitraan", "direktori"];   // direktori: peran yang HANYA membuka Direktori (2 Nov 2026)
+import {P_AKADEMISI} from "./gerbang_halaman.js";   // nilai tinggal di modul daun gerbang (dipakai bolehHalaman tanpa mengimpor modul ini)
+export {P_AKADEMISI};
 
 async function induk(env, req) {
   if (!(await stafOK(env, req, P_AKADEMISI))) return gagal(401, "masuk sebagai staf BNPB atau admin");

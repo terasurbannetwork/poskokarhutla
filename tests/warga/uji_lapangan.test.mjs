@@ -522,7 +522,7 @@ uji("uji lapangan: halaman /uji-lapangan dilayani (protokol, hasil, catatan juju
   for (const kata of ["24 jam", "H\\+1", "H\\+3", "H\\+7", "gambut", "keliling GPS", "taksiran", "drone", "Foto 4 arah", "Keselamatan", "Sampel uji \\(bukan api prioritas\\)", "bias|Karena itu ada sampel kontrol"]) assert.match(h.t, new RegExp(kata, "i"), kata);
   assert.doesNotMatch(h.t, /<script(?![^>]*\bsrc=)/i, "tanpa skrip inline"); assert.doesNotMatch(h.t, /\son[a-z]+=/i, "tanpa handler inline");
   assert.equal((await api("GET", "/uji-lapangan/", undefined, ADMIN)).s, 200);
-  for (const host of ["centurisk97.id", "pantau.lokal"]) { const kunci = await api("GET", "/uji-lapangan", undefined, {"x-admin-token": ""}, host); assert.equal(kunci.s, 303, host); assert.match(kunci.h.get("location"), /\/admin\/masuk/); }
+  for (const host of ["centurisk97.id", "pantau.lokal"]) { const kunci = await api("GET", "/uji-lapangan", undefined, {"x-admin-token": ""}, host); assert.equal(kunci.s, 303, host); assert.match(kunci.h.get("location"), /\/masuk/); }
   assert.equal((await api("GET", "/uji-lapangan", undefined, ADMIN, "centurisk97.id")).s, 200);
   const langsung = await api("GET", "/instansi_uji.html"); assert.equal(langsung.s, 303); assert.equal(langsung.h.get("location"), "/uji-lapangan");
   const js = readFileSync(path.join(AKAR, "public/instansi_uji_halaman.js"), "utf8"); assert.doesNotMatch(js, /innerHTML/, "data API ditulis dengan textContent");

@@ -136,27 +136,28 @@ else {
     await tab.tutup();
   });
 
-  /* masuk lewat satu pintu /admin/masuk: operator_cc SAJA ke peta utama "/", ?ke= yang sah menang, peran lain tetap di Meja Pantau */
+  /* masuk lewat satu pintu (/admin/masuk dialihkan ke form sandi /masuk, K21): operator_cc SAJA ke /command-center, ?ke= yang sah menang, peran lain ke /bnpb (host uji tidak terkunci) */
   const stafLogin = async (nama, peran) => {
     const i = ++n, id = "6" + i.toString(16).padStart(3, "0") + "f".repeat(12), garam = "h".repeat(32), sandi = "sandi-uji-" + i;
     await DB.prepare("INSERT INTO staf (id, username, nama, nip, unit, email, wa, peran, wilayah, garam, sandi_sha, wajib_ganti, dibuat, dibuat_oleh, dummy) VALUES (?, ?, ?, ?, 'Unit Uji', ?, ?, ?, '[]', ?, ?, 0, 1, 'tes', 0)")
       .bind(id, "masukstaf" + i + "xx", nama, "8000" + i + "000", `m${i}@b.id`, "62813000" + String(i).padStart(4, "0"), JSON.stringify(peran), garam, sha256(garam + sandi)).run();
     return {username: "masukstaf" + i + "xx", sandi};
   };
-  uji("cc layar masuk staf (Chrome): operator_cc saja diarahkan ke peta utama '/'; ?ke= sah menang; operator + peran lain dan koordalops tetap ke Meja Pantau; Direktori saja tidak berputar di ?ke=/", async () => {
+  uji("cc layar masuk staf (Chrome): operator_cc saja diarahkan ke /command-center; ?ke= sah menang; operator + peran lain dan koordalops ke /bnpb; Direktori saja tidak berputar di ?ke=/", async () => {
     const masuk = async (akun, ke = "") => {
       const tab = await tabBaru(1440, 900); await cookie(tab, "sesi_staf", null);
-      await tab.buka(base + "/admin/masuk" + (ke ? "?ke=" + encodeURIComponent(ke) : ""), {tunggu: "#email"});
-      await tab.eval(`(() => { document.getElementById("email").value = ${JSON.stringify(akun.username)}; document.getElementById("sandi").value = ${JSON.stringify(akun.sandi)}; document.querySelector(".ad-tombol-masuk").click(); })()`);
+      await tab.buka(base + "/admin/masuk" + (ke ? "?ke=" + encodeURIComponent(ke) : ""), {tunggu: "#fAkun"});
+      await tab.tungguFungsi(`location.pathname === "/masuk" && !document.getElementById("fAkun").hidden`, 15000);
+      await tab.eval(`(() => { document.getElementById("iAkun").value = ${JSON.stringify(akun.username)}; document.getElementById("iSandiAkun").value = ${JSON.stringify(akun.sandi)}; document.getElementById("bAkun").click(); })()`);
       return tab;
     };
     const op1 = await stafLogin("Operator Saja", ["operator_cc"]);
-    let tab = await masuk(op1); await tab.tungguFungsi(`location.pathname === "/"`, 15000); await tab.tutup();
+    let tab = await masuk(op1); await tab.tungguFungsi(`location.pathname === "/command-center"`, 15000); await tab.tutup();
     tab = await masuk(op1, "/command-center"); await tab.tungguFungsi(`location.pathname === "/command-center"`, 15000); await tab.tutup();
-    tab = await masuk(op1, "https://jahat.example/x"); await tab.tungguFungsi(`location.pathname === "/"`, 15000); assert.equal(await q(tab, "location.origin"), base, "?ke= berupa URL penuh diabaikan"); await tab.tutup();
+    tab = await masuk(op1, "https://jahat.example/x"); await tab.tungguFungsi(`location.pathname === "/command-center"`, 15000); assert.equal(await q(tab, "location.origin"), base, "?ke= berupa URL penuh diabaikan"); await tab.tutup();
     const campur = await stafLogin("Operator Campur", ["operator_cc", "pusdalops"]), koordP = await stafLogin("Koord Masuk", ["koordalops"]);
-    for (const akun of [campur, koordP]) { tab = await masuk(akun); await tab.tungguFungsi(`document.querySelector(".pt-judul, h1, .pt-butir, .pt-kosong, .pt-bar") && location.pathname === "/admin/pantau"`, 15000); await tab.tutup(); }
-    /* akun Direktori saja dengan ?ke=/ (pantulan dari peta utama): dulu berputar di /admin/masuk?ke=%2F, sekarang mendarat di /direktori (3 Nov 2026) */
+    for (const akun of [campur, koordP]) { tab = await masuk(akun); await tab.tungguFungsi(`location.pathname === "/bnpb"`, 15000); await tab.tutup(); }
+    /* akun Direktori saja dengan ?ke=/ (pantulan dari peta utama): dulu berputar di /admin/masuk?ke=%2F (kini /masuk), sekarang mendarat di /direktori (3 Nov 2026) */
     const dir = await stafLogin("Direktori Saja", ["direktori"]);
     tab = await masuk(dir, "/"); await tab.tungguFungsi(`location.pathname === "/direktori"`, 15000); await tab.tutup();
   });
@@ -211,6 +212,8 @@ else {
     assert.match(await q(tab, `q('${sebut(PA)} [data-riwayat]').innerText`), /\d{1,2} \p{L}+ \d\d\.\d\d WIB, Budi Santoso: tindak lanjut Baru → Dalam konfirmasi/u);
     /* keputusan akhir langsung, tanpa catatan */
     await tab.klik(`${sebut(PA)} button[data-cc-ke="ada_api"]`); await tab.tungguFungsi(`document.querySelector('${sebut(PA)} [data-cc]')?.dataset.cc === 'ada_api'`);
+    // riwayat dimuat ulang async sesudah transisi ("Memuat riwayat…" sebentar): tunggu isinya, CI lebih lambat dari lokal (terbit gagal 25 Nov 2026)
+    await tab.tungguFungsi(`/Dalam konfirmasi → Ada api/.test(document.querySelector('${sebut(PA)} [data-riwayat]')?.innerText ?? '')`);
     assert.match(await q(tab, `q('${sebut(PA)} [data-riwayat]').innerText`), /Dalam konfirmasi → Ada api/);
     /* koreksi: input kecil, catatan >= 3 huruf; Batal menutup tanpa menulis */
     const n0 = await jejakN(PD);

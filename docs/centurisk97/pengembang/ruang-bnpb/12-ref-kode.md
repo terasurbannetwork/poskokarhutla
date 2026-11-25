@@ -44,7 +44,7 @@ Tidak ada di repo (rancangan): `public/bnpb/unit/`, `scripts/berkala/`, `src/lap
 | GET `/api/pb/ringkas`, `/api/pb/papan-sk` | admin, staf bersesi, atau pemirsa pusdalops | `src/pb_ringkas.js:101` |
 | GET `/api/laporan-bnpb`, POST `/api/laporan-bnpb`, `/baca`, `/urai` | admin, GET juga pemirsa | isi JSON maksimal 98304 byte |
 | GET `/api/hukum/cari`, `/api/hukum/dok`, POST `/api/hukum/tanya` | publik berlaju | cari 120 per jam, tanya 8 per jam dan 30 per hari, ditambah plafon global 300 tanya per hari untuk membatasi biaya model (`src/hukum.js:9, 102`) |
-| GET `/admin/gakkum` | admin (halaman admin) | Berkas Gakkum: daftar konsesi dengan titik api per provinsi dan cetak A4 per konsesi (`src/bnpb.js:82`, `public/admin/gakkum.js`) |
+| GET `/admin/gakkum` | admin (halaman admin) | Berkas Gakkum: daftar konsesi dengan titik panas per provinsi dan cetak A4 per konsesi (`src/bnpb.js:82`, `public/admin/gakkum.js`) |
 | GET `/api/bnpb/katalog-dokumen`, `/berkas` | publik | |
 | GET `/api/logbook/hari`, `/buka`, `/turunan/:nama`, `/sk/aktif`, POST `/api/logbook/kejadian`, `/:id/entri`, `/:id/tutup`, `/:id/sk` | moderator atau staf pusdalops, koordalops, pimpinan, dibatasi wilayah | `src/logbook.js:495` |
 | `/api/pusdalops/pemulihan`, `/lapsus`, `/rollcall`, `/berantai` | staf | `src/pemulihan.js`, `lapsus.js`, `rollcall.js`, `berantai.js` |

@@ -29,7 +29,7 @@ Di tingkat wilayah yang sudah dipilih (turun ke provinsi atau lebih dalam) ukura
 
 | Grup | Lapisan |
 | --- | --- |
-| Api dan respons | Titik panas, Cluster, Warna wilayah, Luas terbakar per kabupaten, Masih terdeteksi per kabupaten (perkiraan satelit), Lokasi langganan api, Citra satelit dan titik api Himawari 10 menit, Citra harian, Medan 3D, Foto lapangan warga |
+| Api dan respons | Titik panas, Cluster, Warna wilayah, Luas terbakar per kabupaten, Masih terdeteksi per kabupaten (perkiraan satelit), Lokasi langganan api, Citra satelit dan titik panas Himawari 10 menit, Citra harian, Medan 3D, Foto lapangan warga |
 | Cuaca dan asap | FWI, Angin, Api 3D (ilustrasi), Cahaya matahari (ilustrasi), PM2.5, PM10, AQI (ISPU), Hujan |
 | Lahan | Lahan gambut, Kesatuan Hidrologis Gambut, peta moratorium PIPPIB 2026-I, Areal terbakar (Kemenhut), konsesi dan kawasan hutan lewat pil di ubin grup |
 | Infrastruktur | Markas Manggala Agni, Pangkalan helikopter dan pesawat, METAR (jarak pandang bandara) |

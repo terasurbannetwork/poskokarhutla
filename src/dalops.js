@@ -8,7 +8,8 @@ import {halamanBnpbPublik} from "./bnpb.js";
 import {bacaLaporan, dummyLaporan} from "./dalops_laporan.js";
 import {RUTE_TINDAK} from "./dalops_tindak.js";
 
-export const PERAN_DALOPS = ["pusdalops", "koordalops", "pimpinan"];
+import {PERAN_DALOPS} from "./gerbang_halaman.js";   // nilai tinggal di modul daun gerbang (dipakai bolehHalaman tanpa mengimpor modul ini)
+export {PERAN_DALOPS};
 /* Pantau = Karhutla, Banjir, Longsor, Gempa, Cuaca, Kekeringan (pemilik 5 Nov 2026), Gelombang Pasang, Kebakaran Permukiman (11 Nov 2026); satu rute per jenis, kunci R2 dalops/<jenis>.json */
 
 async function data(env, req, jenis) {

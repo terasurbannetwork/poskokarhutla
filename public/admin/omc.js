@@ -228,7 +228,7 @@
     if (!r) return kosong("Jaringan putus. Periksa sinyal lalu coba lagi.", h("button", {class: "om-btn utama", type: "button", "data-ulang": "1", teks: "Coba lagi"}));
     if (r.status === 401 || r.status === 403) return kosong("Akun ini belum bisa membuka sortie OMC. Peran yang boleh: staf TMC/OMC, koordinator, pimpinan, atau admin moderator.",
       ...(document.body.dataset.masuk === "1" ? [h("a", {class: "om-btn utama", href: "/admin/pantau", teks: "Kembali ke Meja Pantau"})]   // staf yang sudah masuk: tidak dilempar ke login admin
-        : [h("a", {class: "om-btn utama", href: "/admin/pantau", teks: "Masuk sebagai staf"}), h("a", {class: "om-btn", href: "/admin/masuk?ke=%2Fadmin%2Fomc", teks: "Masuk sebagai admin"})]));
+        : [h("a", {class: "om-btn utama", href: "/admin/pantau", teks: "Masuk sebagai staf"}), h("a", {class: "om-btn", href: "/masuk?ke=%2Fadmin%2Fomc#sandi", teks: "Masuk sebagai admin"})]));
     if (r.status === 503) return kosong("Sortie OMC belum diaktifkan: migrasi D1 0033_omc belum diterapkan.");
     if (!r.ok) return kosong(`Galat ${r.status}.`, h("button", {class: "om-btn utama", type: "button", "data-ulang": "1", teks: "Coba lagi"}));
     D = await r.json(); EP = null; HASIL = hasil && Array.isArray(hasil.episode) ? hasil : null;

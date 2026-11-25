@@ -1107,7 +1107,7 @@
       "id": "status-cuaca",
       "judul": "Cuaca 72 jam dan pantauan Himawari",
       "berkas": "panduan/cuaca-udara/03-status-cuaca.md",
-      "isi": "panduan/06-cuaca-udara-semai.md: Status cuaca 72 jam per kecamatan; Peringatan dini jangka sangat pendek dari BMKG; Titik api Himawari dan peringatan api baru; Awan dingin dan awan tumbuh cepat"
+      "isi": "panduan/06-cuaca-udara-semai.md: Status cuaca 72 jam per kecamatan; Peringatan dini jangka sangat pendek dari BMKG; Titik panas Himawari dan peringatan api baru; Awan dingin dan awan tumbuh cepat"
      },
      {
       "id": "pm25",
@@ -1187,7 +1187,7 @@
       "id": "pengukuran-himawari",
       "judul": "Stasiun, satelit, dan Himawari",
       "berkas": "pengembang/cuaca-udara/07-pengukuran-himawari.md",
-      "isi": "06-cuaca-udara-semai.md: M10. Pengukuran stasiun dan satelit pembanding; M11. Himawari: titik api, alarm, dan awan"
+      "isi": "06-cuaca-udara-semai.md: M10. Pengukuran stasiun dan satelit pembanding; M11. Himawari: titik panas, alarm, dan awan"
      },
      {
       "id": "modifikasi",
@@ -1279,7 +1279,7 @@
       "id": "peluang-membesar",
       "judul": "Peluang api membesar dan WASPADA",
       "berkas": "panduan/model-sebaran/05-peluang-membesar.md",
-      "isi": "panduan/03-model-sebaran.md: Peluang titik api baru membesar (tanda WASPADA); Jejak api kompleks aktif"
+      "isi": "panduan/03-model-sebaran.md: Peluang titik panas baru membesar (tanda WASPADA); Jejak api kompleks aktif"
      },
      {
       "id": "peluang-kotak",

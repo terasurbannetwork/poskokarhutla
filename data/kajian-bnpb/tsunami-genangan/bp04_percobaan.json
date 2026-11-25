@@ -1,0 +1,796 @@
+{
+ "dibuat": "2026-11-25",
+ "asal": "data/raw/tsunami/run/*.exp.json (gitignored), penyelidikan BP04 TS-10, RISET 4.2.1",
+ "catatan": "R_d = run-up/d; termasuk percobaan yang dibuang (lihat RISET 4.2.1). Bukan hasil kejadian nyata. Sapuan 25 Nov siang (c_*, d_*): 1D classic uji konvergensi CFL, dx, ambang basah (ambang_basah_d = 2 dry_d, definisi monitor_runup), dan sakelar dispersi (minh_d). Semua H/d 0,3, tanpa gesekan, d = 1 (tanpa gesekan bebas skala).",
+ "percobaan": [
+  {
+   "nama": "b_bou",
+   "H_d": 0.3,
+   "d": 0.15,
+   "eq": 2,
+   "mode": "sgn",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.7673533333333333,
+   "t_tau": 49.64932966012492
+  },
+  {
+   "nama": "b_bou_n013",
+   "H_d": 0.3,
+   "d": 0.15,
+   "eq": 2,
+   "mode": "sgn",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.013,
+   "R_d": 0.4146626666666667,
+   "t_tau": 43.758496839168274
+  },
+  {
+   "nama": "b_swe_dx80",
+   "H_d": 0.3,
+   "d": 0.15,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.0125,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.7354733333333334,
+   "t_tau": 48.870953345287425
+  },
+  {
+   "nama": "b_swe_eks",
+   "H_d": 0.3,
+   "d": 0.15,
+   "eq": 0,
+   "mode": "swe_exact",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.7033,
+   "t_tau": 48.786848268151736
+  },
+  {
+   "nama": "b_swe_lin",
+   "H_d": 0.3,
+   "d": 0.15,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.7222266666666667,
+   "t_tau": 48.84636878427853
+  },
+  {
+   "nama": "b_swe_n010",
+   "H_d": 0.3,
+   "d": 0.15,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.01,
+   "R_d": 0.48178266666666664,
+   "t_tau": 45.29454668062525
+  },
+  {
+   "nama": "b_swe_n013",
+   "H_d": 0.3,
+   "d": 0.15,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.013,
+   "R_d": 0.4347646666666667,
+   "t_tau": 45.374123022838255
+  },
+  {
+   "nama": "m_bou_n0.01",
+   "H_d": 0.0185,
+   "d": 0.3,
+   "eq": 2,
+   "mode": "sgn",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.01,
+   "R_d": 0.076219,
+   "t_tau": 56.8268002801649
+  },
+  {
+   "nama": "m_bou_n0.013",
+   "H_d": 0.0185,
+   "d": 0.3,
+   "eq": 2,
+   "mode": "sgn",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.013,
+   "R_d": 0.07387099999999999,
+   "t_tau": 56.90131091987495
+  },
+  {
+   "nama": "m_swe_n0.01",
+   "H_d": 0.0185,
+   "d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.01,
+   "R_d": 0.07755166666666667,
+   "t_tau": 56.107541012111994
+  },
+  {
+   "nama": "m_swe_n0.013",
+   "H_d": 0.0185,
+   "d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.013,
+   "R_d": 0.07499533333333334,
+   "t_tau": 56.33135885081125
+  },
+  {
+   "nama": "o_bou0185",
+   "H_d": 0.0185,
+   "d": 1.0,
+   "eq": 2,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.0813721,
+   "t_tau": 56.19474097808086
+  },
+  {
+   "nama": "o_bouS0185",
+   "H_d": 0.0185,
+   "d": 1.0,
+   "eq": 2,
+   "mode": "sgn",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.0809705,
+   "t_tau": 56.690237924993745
+  },
+  {
+   "nama": "o_swe0185",
+   "H_d": 0.0185,
+   "d": 1.0,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.0832644,
+   "t_tau": 56.2508054240337
+  },
+  {
+   "nama": "p_swe0185_t90",
+   "H_d": 0.0185,
+   "d": 1.0,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.0832644,
+   "t_tau": 56.2508054240337
+  },
+  {
+   "nama": "q_bou_0.005",
+   "H_d": 0.005,
+   "d": 1.0,
+   "eq": 2,
+   "mode": "sgn",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.0173356,
+   "t_tau": 70.6744020752889
+  },
+  {
+   "nama": "q_bou_0.01",
+   "H_d": 0.01,
+   "d": 1.0,
+   "eq": 2,
+   "mode": "sgn",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.0398624,
+   "t_tau": 60.970554787516896
+  },
+  {
+   "nama": "q_bou_0.02",
+   "H_d": 0.02,
+   "d": 1.0,
+   "eq": 2,
+   "mode": "sgn",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.0882392,
+   "t_tau": 56.367006035477885
+  },
+  {
+   "nama": "q_bou_0.03",
+   "H_d": 0.03,
+   "d": 1.0,
+   "eq": 2,
+   "mode": "sgn",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.135277,
+   "t_tau": 53.900796831943026
+  },
+  {
+   "nama": "q_bou_0.04",
+   "H_d": 0.04,
+   "d": 1.0,
+   "eq": 2,
+   "mode": "sgn",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.17943,
+   "t_tau": 52.656729908341255
+  },
+  {
+   "nama": "q_swe_0.005",
+   "H_d": 0.005,
+   "d": 1.0,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.0175148,
+   "t_tau": 70.12534635598529
+  },
+  {
+   "nama": "q_swe_0.01",
+   "H_d": 0.01,
+   "d": 1.0,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.040767,
+   "t_tau": 60.970554787516896
+  },
+  {
+   "nama": "q_swe_0.02",
+   "H_d": 0.02,
+   "d": 1.0,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.0908199,
+   "t_tau": 55.72586681276568
+  },
+  {
+   "nama": "q_swe_0.03",
+   "H_d": 0.03,
+   "d": 1.0,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.13934,
+   "t_tau": 52.883180156519515
+  },
+  {
+   "nama": "q_swe_0.04",
+   "H_d": 0.04,
+   "d": 1.0,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "R_d": 0.184569,
+   "t_tau": 51.652894437509495
+  },
+  {
+   "nama": "w_pecah_n010",
+   "H_d": 0.3,
+   "R_d": {
+    "0.001": 0.48413234380000003,
+    "0.01": 0.4741838553333333
+   }
+  },
+  {
+   "nama": "w_pecah_n013",
+   "H_d": 0.3,
+   "R_d": {
+    "0.001": 0.4361782447333334,
+    "0.01": 0.42800771666666676
+   }
+  },
+  {
+   "nama": "w_tak_n010",
+   "H_d": 0.0185,
+   "R_d": {
+    "0.001": 0.07863180486666668,
+    "0.01": 0.07244397966666667
+   }
+  },
+  {
+   "nama": "w_tak_n013",
+   "H_d": 0.0185,
+   "R_d": {
+    "0.001": 0.07595925013333334,
+    "0.01": 0.07024528466666666
+   }
+  },
+  {
+   "nama": "x_dry4",
+   "H_d": 0.0185,
+   "R_d": {
+    "0.001": 0.08763537889999999,
+    "0.01": 0.076222889,
+    "0.03": 0.058404499
+   }
+  },
+  {
+   "nama": "x_eks",
+   "H_d": 0.0185,
+   "R_d": {
+    "0.001": 0.0847556295,
+    "0.01": 0.075240275,
+    "0.03": 0.058339833
+   }
+  },
+  {
+   "nama": "x_h005",
+   "H_d": 0.005,
+   "R_d": {
+    "0.001": 0.0119175738,
+    "0.01": 0.01176117292,
+    "0.03": NaN
+   }
+  },
+  {
+   "nama": "x_h01",
+   "H_d": 0.01,
+   "R_d": {
+    "0.001": 0.0402721822,
+    "0.01": 0.037807149,
+    "0.03": 0.0324703228
+   }
+  },
+  {
+   "nama": "x_h02",
+   "H_d": 0.02,
+   "R_d": {
+    "0.001": 0.0927582503,
+    "0.01": 0.082614809,
+    "0.03": 0.062504292
+   }
+  },
+  {
+   "nama": "x_h03",
+   "H_d": 0.03,
+   "R_d": {
+    "0.001": 0.14666612429999998,
+    "0.01": 0.126695284,
+    "0.03": 0.08746037000000001
+   }
+  },
+  {
+   "nama": "x_h04",
+   "H_d": 0.04,
+   "R_d": {
+    "0.001": 0.1981758652,
+    "0.01": 0.170749051,
+    "0.03": 0.107792495
+   }
+  },
+  {
+   "nama": "y_pecah_eks",
+   "H_d": 0.3,
+   "R_d": {
+    "0.001": 0.8255934457999999,
+    "0.01": 0.753835142
+   }
+  },
+  {
+   "nama": "y_pecah_fino",
+   "H_d": 0.3,
+   "R_d": {
+    "0.001": 0.8454586369,
+    "0.01": 0.7776480619999999
+   }
+  },
+  {
+   "nama": "y_tak_fino",
+   "H_d": 0.0185,
+   "R_d": {
+    "0.001": 0.0850142508,
+    "0.01": 0.07536805599999999
+   }
+  },
+  {
+   "nama": "z_pecah_cfl025",
+   "H_d": 0.3,
+   "R_d": {
+    "0.001": 0.7876596035,
+    "0.01": 0.736192667
+   }
+  },
+  {
+   "nama": "z_pecah_seragam",
+   "H_d": 0.3,
+   "R_d": {
+    "0.001": 0.8359595035,
+    "0.01": 0.7766138739999999
+   }
+  },
+  {
+   "nama": "c_cfl0.1",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "minh_d": 0.05,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.709965,
+   "t_tau": 48.59284059974782,
+   "cfl": 0.1,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002
+  },
+  {
+   "nama": "c_cfl0.25",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "minh_d": 0.05,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.723508,
+   "t_tau": 48.8891364984707,
+   "cfl": 0.25,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002
+  },
+  {
+   "nama": "c_cfl0.5",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "minh_d": 0.05,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.755105,
+   "t_tau": 48.901664866281386,
+   "cfl": 0.5,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002
+  },
+  {
+   "nama": "c_cfl0.9",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "minh_d": 0.05,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.810007,
+   "t_tau": 49.019431523701904,
+   "cfl": 0.9,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002
+  },
+  {
+   "nama": "c_dry1e-2",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "minh_d": 0.05,
+   "dry_d": 0.01,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.520019,
+   "t_tau": 42.458638510437424,
+   "cfl": 0.25,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.02
+  },
+  {
+   "nama": "c_dry1e-4",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "minh_d": 0.05,
+   "dry_d": 0.0001,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.856993,
+   "t_tau": 50.23624924731543,
+   "cfl": 0.25,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.0002
+  },
+  {
+   "nama": "c_dx160",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.00625,
+   "minh_d": 0.05,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.739394,
+   "t_tau": 48.69933172613871,
+   "cfl": 0.25,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002
+  },
+  {
+   "nama": "c_dx20",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.05,
+   "minh_d": 0.05,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.709168,
+   "t_tau": 49.14471520180883,
+   "cfl": 0.25,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002
+  },
+  {
+   "nama": "c_dx80",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.0125,
+   "minh_d": 0.05,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.735547,
+   "t_tau": 48.81271345482547,
+   "cfl": 0.25,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002
+  },
+  {
+   "nama": "c_dx80_cfl0.1",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.0125,
+   "minh_d": 0.05,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.720905,
+   "t_tau": 48.89790635593818,
+   "cfl": 0.1,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002
+  },
+  {
+   "nama": "d_2dsetara",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "minh_d": 0.05,
+   "dry_d": 0.0005,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.833285,
+   "t_tau": 49.69157845674556,
+   "cfl": 0.75,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.001
+  },
+  {
+   "nama": "d_kon_thr1e-2",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.0125,
+   "minh_d": 0.05,
+   "dry_d": 0.005,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.585555,
+   "t_tau": 45.02100293691934,
+   "cfl": 0.1,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.01
+  },
+  {
+   "nama": "d_kon_thr1e-3",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.0125,
+   "minh_d": 0.05,
+   "dry_d": 0.0005,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.766087,
+   "t_tau": 49.588845840697886,
+   "cfl": 0.1,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.001
+  },
+  {
+   "nama": "d_kon_thr1e-4",
+   "H_d": 0.3,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.0125,
+   "minh_d": 0.05,
+   "dry_d": 5e-05,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.841866,
+   "t_tau": 50.784678548228506,
+   "cfl": 0.1,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.0001
+  },
+  {
+   "nama": "d_sgn_min0.05_dx80_cfl0.1",
+   "H_d": 0.3,
+   "eq": 2,
+   "mode": "sgn",
+   "dx_d": 0.0125,
+   "minh_d": 0.05,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.811676,
+   "t_tau": 50.28479667258186,
+   "cfl": 0.1,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002
+  },
+  {
+   "nama": "d_sgn_min0.2",
+   "H_d": 0.3,
+   "eq": 2,
+   "mode": "sgn",
+   "dx_d": 0.025,
+   "minh_d": 0.2,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.636328,
+   "t_tau": 47.33906419109275,
+   "cfl": 0.25,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002
+  },
+  {
+   "nama": "d_sgn_min0.5",
+   "H_d": 0.3,
+   "eq": 2,
+   "mode": "sgn",
+   "dx_d": 0.025,
+   "minh_d": 0.5,
+   "dry_d": 0.001,
+   "manning": 0.0,
+   "d": 1.0,
+   "R_d": 0.782919,
+   "t_tau": 50.67912704942341,
+   "cfl": 0.25,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002
+  },
+  {
+   "H_d": 0.0185,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "minh_d": 0.05,
+   "manning": 0.0,
+   "d": 1.0,
+   "cfl": 0.25,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002,
+   "dry_d": 0.001,
+   "nama": "r_swe0185",
+   "R_d": 0.0832851,
+   "t_tau": 56.2176,
+   "catatan": "tanpa gesekan, soliter nthmp, 90 bingkai; profil model lawan profil lab (Case0_0185.t=30..70): puncak t=30 model 0,0236@9,06 lawan lab 0,0223@9,02 (+6%); t=40 0,0302 lawan 0,0295 (+2%); t=50 0,0650 lawan 0,0551 (+18%); t=60 0,0656 lawan 0,0604 (+9%). Waktu dan posisi cocok; selisih muncul di lereng. Luas di bawah profil (x 0..20): lab 0,841 (t=30) dan 0,914 (t=40) dari model"
+  },
+  {
+   "H_d": 0.0185,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "minh_d": 0.05,
+   "manning": 0.0,
+   "d": 1.0,
+   "cfl": 0.25,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002,
+   "dry_d": 0.001,
+   "nama": "s_lab30",
+   "R_d": 0.0874023,
+   "t_tau": 25.927,
+   "catatan": "kondisi awal = profil lab t=30 (profs.tgz), u = eta sqrt(g/h) ke darat (penutup linear, asumsi); tfinal 45 tau; run-up +15% lawan lab; puncak t=50 0,0686 lawan lab 0,0551 (+25%). Tidak menurunkan run-up"
+  },
+  {
+   "H_d": 0.0185,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "minh_d": 0.05,
+   "manning": 0.016,
+   "d": 0.3,
+   "cfl": 0.25,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.0002,
+   "dry_d": 0.0001,
+   "nama": "t_n016_dry0.0001",
+   "R_d": 0.0731927,
+   "catatan": "DIAGNOSTIK, bukan gerbang (K9: Manning di luar gerbang). n=0,016 dari NTHMP 2011 bab 8 (SELFE, BP4 tak pecah, galat 1,9%); ditetapkan sebelum jalan; d lab 0,30 m; lab 0,0758 d"
+  },
+  {
+   "H_d": 0.0185,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "minh_d": 0.05,
+   "manning": 0.016,
+   "d": 0.3,
+   "cfl": 0.25,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.002,
+   "dry_d": 0.001,
+   "nama": "t_n016_dry0.001",
+   "R_d": 0.0724113,
+   "catatan": "DIAGNOSTIK, bukan gerbang (K9: Manning di luar gerbang). n=0,016 dari NTHMP 2011 bab 8 (SELFE, BP4 tak pecah, galat 1,9%); ditetapkan sebelum jalan; d lab 0,30 m; lab 0,0758 d"
+  },
+  {
+   "H_d": 0.0185,
+   "eq": 0,
+   "mode": "nthmp",
+   "dx_d": 0.025,
+   "minh_d": 0.05,
+   "manning": 0.016,
+   "d": 0.3,
+   "cfl": 0.25,
+   "solver": "1D classic",
+   "ambang_basah_d": 0.02,
+   "dry_d": 0.01,
+   "nama": "t_n016_dry0.01",
+   "R_d": 0.0615397,
+   "catatan": "DIAGNOSTIK, bukan gerbang (K9: Manning di luar gerbang). n=0,016 dari NTHMP 2011 bab 8 (SELFE, BP4 tak pecah, galat 1,9%); ditetapkan sebelum jalan; d lab 0,30 m; lab 0,0758 d"
+  }
+ ]
+}

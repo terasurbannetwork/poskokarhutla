@@ -58,7 +58,7 @@ export function jarakM(lat1, lon1, lat2, lon2) {
 export const teksJarak = m => !Number.isFinite(m) ? "" : m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1).replace(".", ",")} km`;
 
 /* tautan Renlap dari server: hanya https:// atau jalur situs sendiri (bukan javascript: atau data:) */
-export const tautanAman = u => typeof u === "string" && (/^https:\/\/[^\s"'<>]+$/.test(u) || /^\/[^\s"'<>/][^\s"'<>]*$/.test(u)) ? u : null;
+export const tautanAman = u => typeof u === "string" && (/^https:\/\/[^\s"'<>]+$/.test(u) || /^\/[^\s"'<>/\\][^\s"'<>\\]*$/.test(u)) ? u : null;
 
 const ALASAN = {
   wajah_belum_daftar: "wajah belum terdaftar", wajah_rendah: "wajah kurang jelas", wajah_berbeda: "wajah tampak berbeda dari yang terdaftar",

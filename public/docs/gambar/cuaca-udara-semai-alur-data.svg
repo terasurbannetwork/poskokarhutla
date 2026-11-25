@@ -30,7 +30,7 @@
 <text class="dg-teks-lemah" x="630" y="258" font-size="13" text-anchor="middle">kesesuaian saja</text>
 <rect class="dg-kotak" x="10" y="300" width="160" height="62" rx="8"/>
 <text class="dg-teks" x="90" y="326" font-size="14" text-anchor="middle">IFS 0,1 derajat,</text>
-<text class="dg-teks" x="90" y="346" font-size="14" text-anchor="middle">titik api, bandara</text>
+<text class="dg-teks" x="90" y="346" font-size="14" text-anchor="middle">titik panas, bandara</text>
 <rect class="dg-kotak-aksen" x="250" y="300" width="220" height="62" rx="8"/>
 <text class="dg-teks" x="360" y="326" font-size="14" text-anchor="middle">semai.py, lintasan.py</text>
 <text class="dg-teks-lemah" x="360" y="346" font-size="13" text-anchor="middle">semai.yml 10.00 dan 22.00 UTC</text>

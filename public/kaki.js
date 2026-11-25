@@ -2,7 +2,8 @@
    Merek + ringkasan di kiri, tiga kolom tautan, ikon sosial dari data/kontak.json, lalu baris hak cipta. */
 (() => {
   const D = document, HAL = ["insight", "berita", "tren", "dampak", "foto"];
-  if (D.documentElement.dataset.situs === "w") return;   /* footer Teras Urban tidak tampil di *.workers.dev (pemilik, 17 Okt 2026) */
+  /* merek Teras Urban tidak tampil di *.workers.dev dan centurisk97.id (pemilik, 17 Okt 2026); kolom tautan tetap tampil di sana (PS-05, D6 peta-situs) */
+  const W = D.documentElement.dataset.situs === "w";
   /* kolom "Pantau" = tab bencana halaman ini minus tab_sembunyi (tanpa Simulasi → "Alat", tanpa Tentang → "Tentang"); kolom "Bencana" = bencana registry berstatus aktif (yang uji masih "Segera", tidak ditautkan).
      Registry gagal dimuat = footer karhutla seperti dulu. */
   const LABEL = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", dampak: "Dampak", foto: "Foto", kejadian: "Kejadian", sim: "Simulasi"};
@@ -26,7 +27,7 @@
 .kaki-situs .kk-m{display:flex;align-items:center;gap:10px;font:800 17px var(--display,Inter),sans-serif;color:#fff}
 .kaki-situs .kk-m img{width:30px;height:30px}
 .kaki-situs p{margin:10px 0 0;line-height:1.55;color:#a9b5c8;max-width:34ch}
-.kaki-situs h4{margin:4px 0 10px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7f8ca3}
+.kaki-situs h4{margin:4px 0 10px;font-size:var(--fs-2,12px);font-weight:800;color:#7f8ca3}
 .kaki-situs ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .kaki-situs a{color:#e6ecf5;text-decoration:none}.kaki-situs a:hover{color:#fff;text-decoration:underline}
 .kaki-situs .kk-s{display:flex;gap:10px;margin-top:20px}
@@ -34,7 +35,8 @@
 .kaki-situs .kk-s a:hover{background:#e8742e;border-color:#e8742e;transform:translateY(-2px);text-decoration:none}
 .kaki-situs .kk-s svg{width:16px;height:16px}
 .kaki-situs .kk-b{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:32px;padding-top:16px;border-top:1px solid rgb(255 255 255 / .1);font-size:12px;color:#7f8ca3}
-@media (max-width:760px){.kaki-situs .kk-g{grid-template-columns:1fr 1fr}.kaki-situs .kk-g > :first-child{grid-column:1/-1}}
+.kaki-situs .kk-g.kk-w{grid-template-columns:repeat(var(--n,3),1fr)}
+@media (max-width:760px){.kaki-situs .kk-g{grid-template-columns:1fr 1fr}.kaki-situs .kk-g:not(.kk-w) > :first-child{grid-column:1/-1}}
 </style>`);
   let sos = "";
   fetch("/data/kontak.json").then(r => r.ok ? r.json() : {}).catch(() => ({})).then(k => {
@@ -43,25 +45,34 @@
     sos = `<a href="https://terasurban.com/" target="_blank" rel="noopener" aria-label="Situs Teras Urban" title="terasurban.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></a>` + sos;
     D.querySelectorAll(".kaki-situs .kk-s").forEach(el => el.innerHTML = sos);
   });
-  let R = LAMA;
+  /* sama dengan esc di inti/kepala.js (berkas ini skrip klasik, tidak bisa mengimpor modul) */
+  const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  let R = LAMA, KAKI = {nama: "Tentang", isi: [{rute: "/tentang", nama: "Tentang"}]};   /* peta situs gagal dimuat = kolom lama */
   const dasar = b => b.rute.replace(/\/$/, "");
   const ini = () => R.bencana.filter(b => b.rute !== "/").find(b => location.pathname === dasar(b) || location.pathname.startsWith(b.rute)) || R.bencana.find(b => b.rute === "/") || LAMA.bencana[0];
   const tautan = (b, xs) => xs.map(t => `<li><a href="${dasar(b)}/${t}">${label(t)}</a></li>`).join("");
   const html = () => { const b = ini(), nampak = b.tab.filter(t => !(b.tab_sembunyi || []).includes(t)), alat = nampak.filter(t => t === "sim"), pantau = nampak.filter(t => t !== "sim" && t !== "tentang");
     const lain = R.bencana.filter(x => x.status === "aktif" && x.id === "karhutla"),   /* bencana lain disembunyikan sementara (pemilik, 17 Okt 2026) */ n = 2 + (alat.length ? 1 : 0) + (lain.length > 1 ? 1 : 0);
-    return `<footer class="kaki-situs"><div class="kk"><div class="kk-g" style="--n:${n}">
-    <div class="kk-tu"><a class="kk-tum" href="https://terasurban.com/" target="_blank" rel="noopener" aria-label="Teras Urban"><img src="/img/teras-urban-mark.png" alt="" width="46" height="34"><span>TERAS<br>URBAN</span></a>
+    return `<footer class="kaki-situs"><div class="kk"><div class="kk-g${W ? " kk-w" : ""}" style="--n:${n}">
+    ${W ? "" : `<div class="kk-tu"><a class="kk-tum" href="https://terasurban.com/" target="_blank" rel="noopener" aria-label="Teras Urban"><img src="/img/teras-urban-mark.png" alt="" width="46" height="34"><span>TERAS<br>URBAN</span></a>
       <p>Unit socio-urban intelligence dan geospatial advisory. Jakarta, Indonesia.</p><p class="kk-sl">Di antara ruang dan manusia.</p>
-      <div class="kk-s">${sos}</div><a class="kk-al" href="https://www.google.com/maps/search/?api=1&query=Jl.%20Plumpang%20Semper%20Raya%20No.%2022%2C%20Tugu%20Selatan%2C%20Koja%2C%20Jakarta%20Utara%2014260" target="_blank" rel="noopener" title="Buka di Google Maps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Jl. Plumpang Semper Raya No. 22, RT.10/RW.2, Tugu Selatan, Kec. Koja, Jakarta Utara, DKI Jakarta 14260</span></a></div>
+      <div class="kk-s">${sos}</div><a class="kk-al" href="https://www.google.com/maps/search/?api=1&query=Jl.%20Plumpang%20Semper%20Raya%20No.%2022%2C%20Tugu%20Selatan%2C%20Koja%2C%20Jakarta%20Utara%2014260" target="_blank" rel="noopener" title="Buka di Google Maps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Jl. Plumpang Semper Raya No. 22, RT.10/RW.2, Tugu Selatan, Kec. Koja, Jakarta Utara, DKI Jakarta 14260</span></a></div>`}
     <div><h4>Pantau</h4><ul>${tautan(b, pantau)}</ul></div>
     ${alat.length ? `<div><h4>Alat</h4><ul>${tautan(b, alat)}</ul></div>` : ""}
     ${lain.length > 1 ? `<div><h4>Bencana</h4><ul>${lain.map(x => `<li><a href="${x.rute}">${x.nama}</a></li>`).join("")}</ul></div>` : ""}
-    <div><h4>Tentang</h4><ul><li><a href="/tentang">Tentang</a></li><li><a href="#" data-pesan>Hubungi kami</a></li></ul></div>
+    <div><h4>${esc(KAKI.nama)}</h4><ul>${KAKI.isi.map(h => `<li><a href="${esc(h.rute)}">${esc(h.nama)}</a></li>`).join("")}<li><a href="/kemitraan">Kemitraan</a></li><li><a href="#" data-pesan>Hubungi kami</a></li></ul></div>
   </div></div></footer>`; };
   /* di halaman tanpa tab (tentang.html) footer dipasang di akhir body */
   const pasang = () => { if (!D.querySelector(".page")) { if (!D.querySelector(".kaki-situs")) D.body.insertAdjacentHTML("beforeend", html()); return; }
     HAL.forEach(id => { const p = D.getElementById("p-" + id); if (p && !p.querySelector(":scope > .kaki-situs")) p.insertAdjacentHTML("beforeend", html()); }); };
   D.addEventListener("click", e => { if (e.target.closest?.("[data-pesan]")) { e.preventDefault(); D.getElementById("kirimPesan")?.click(); } });
   const mulai = () => D.readyState === "loading" ? D.addEventListener("DOMContentLoaded", pasang) : pasang();
-  fetch("/bencana.json").then(r => r.ok ? r.json() : LAMA).catch(() => LAMA).then(j => { if (j?.bencana?.length) R = j; mulai(); });
+  const json = (u, cad) => fetch(u).then(r => r.ok ? r.json() : cad).catch(() => cad);
+  /* kolom situs = semua butir grup "kaki" pintu Publik di peta situs publik, plus Kemitraan (pindah dari menu bencana, PS-05) */
+  Promise.all([json("/bencana.json", LAMA), json("/inti/peta_situs_publik.json", null)]).then(([j, p]) => {
+    if (j?.bencana?.length) R = j;
+    const isi = (p?.halaman || []).filter(h => h.pintu === "publik" && h.grup === "kaki");
+    if (isi.length) KAKI = {nama: p.grup?.publik?.find(g => g.id === "kaki")?.nama || "Tentang situs", isi};
+    mulai();
+  });
 })();

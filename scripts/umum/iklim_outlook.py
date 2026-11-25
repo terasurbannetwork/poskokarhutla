@@ -61,6 +61,34 @@ KOTAK = {
 }
 
 
+def _muat_selang():
+    """scripts/umum/selang.py: satu mesin selang (regresi tren + selang 95%, F-27)."""
+    s = importlib.util.spec_from_file_location("umum_selang_iklim", os.path.join(AKAR, "scripts/umum/selang.py"))
+    m = importlib.util.module_from_spec(s)
+    s.loader.exec_module(m)
+    return m
+
+
+def tren_hujan(seri_nas):
+    """Deret anomali hujan bulanan nasional (mm, terhadap rerata bulan yang sama BASIS) + regresi garis lurus dan selang 95%.
+    Deskriptif: lereng masa lalu, bukan prakiraan. Bulan tanpa data = None (tidak diisi)."""
+    if not seri_nas:
+        return None
+    bl = sorted(seri_nas)
+    klim = {}
+    for m in range(1, 13):
+        v = [seri_nas[(y, m)] for y in range(BASIS[0], BASIS[1] + 1) if (y, m) in seri_nas]
+        klim[m] = sum(v) / len(v) if v else None
+    a, z = bulan_ke_indeks(*bl[0]), bulan_ke_indeks(*bl[-1])
+    nilai = []
+    for i in range(a, z + 1):
+        b = indeks_ke_bulan(i)
+        nilai.append(round(seri_nas[b] - klim[b[1]], 1) if b in seri_nas and klim[b[1]] is not None else None)
+    return {"nama": "Anomali hujan bulanan Indonesia", "satuan": "mm", "dasar": f"selisih dari rerata bulan yang sama {BASIS[0]}-{BASIS[1]}",
+            "sumber": "CHIRPS v2.0, rerata kotak berbobot sel darat", "mulai": f"{bl[0][0]}-{bl[0][1]:02d}", "nilai": nilai,
+            "regresi": _muat_selang().tren_linear(nilai)}
+
+
 def _muat_iklim():
     """Muat scripts/data/iklim.py (oni(), netcdf3(), ambil) dengan nama unik; tidak disalin."""
     s = importlib.util.spec_from_file_location("umum_iklim_cpc", os.path.join(AKAR, "scripts/data/iklim.py"))
@@ -155,9 +183,20 @@ def nama_bulan_iri(y, m):
 _kunci = threading.Lock()
 
 
+def buang_ulangan(nilai):
+    """Cache lama bisa memuat deret yang tersambung dua kali (24 Nov 2026: 549 bulan lalu ulang dari Jan 1981, deret sampai 2072).
+    Tanda ulangan: 12 bulan pertama muncul lagi persis. -> deret sampai sebelum ulangan pertama."""
+    kepala = nilai[:12]
+    for L in range(12, len(nilai) - 11):
+        if nilai[L:L + 12] == kepala:
+            return nilai[:L]
+    return nilai
+
+
 def ambil_kotak(kid, tembolok):
     """Perpanjang deret bulanan satu kotak dari bulan setelah data cache sampai sekarang; sambungan per 5 tahun."""
     k = tembolok.setdefault(kid, {"mulai": f"{MULAI_HUJAN}-01", "nilai": []})
+    k["nilai"] = buang_ulangan(k["nilai"])
     _, x0, x1, y0, y1 = KOTAK[kid]
     sel = f"X/{x0}/{x1}/RANGEEDGES/Y/{y0}/{y1}/RANGEEDGES"
     mulai = bulan_ke_indeks(MULAI_HUJAN, 1)
@@ -171,8 +210,9 @@ def ambil_kotak(kid, tembolok):
         url = (f"{IRI}/{sel}/%5BX/Y%5Daverage/T/({nama_bulan_iri(ya, ma).replace(' ', '%20')})/"
                f"(Dec%20{akhir_th})/RANGE/data.tsv")
         v = parse_tsv(unduh(url))
-        if not v:
-            break  # belum ada data lagi
+        if not v or len(v) > (akhir_th - ya) * 12 + 13 - ma:
+            if v: print(f"peringatan: jawaban IRI {len(v)} bulan, lebih panjang dari jendela yang diminta; deret {sel} berhenti di sini", file=sys.stderr)
+            break  # belum ada data lagi, atau jawaban lebih panjang dari jendela yang diminta (bukan potongan ini)
         k["nilai"] += v
         with _kunci:
             _tulis("chirps.json", json.dumps(tembolok, separators=(",", ":")))
@@ -208,9 +248,10 @@ def muat_hujan():
         dari_cache = True
     _tulis("chirps.json", json.dumps({**tem, "_sel": sel}, separators=(",", ":")))
     seri = {}
+    a = bulan_ke_indeks(MULAI_HUJAN, 1)
+    kini = bulan_ke_indeks(dt.date.today().year, dt.date.today().month)
     for kid in KOTAK:
-        a = bulan_ke_indeks(MULAI_HUJAN, 1)
-        seri[kid] = {indeks_ke_bulan(a + i): v for i, v in enumerate(tem[kid]["nilai"]) if v is not None}
+        seri[kid] = {indeks_ke_bulan(a + i): v for i, v in enumerate(buang_ulangan(tem[kid]["nilai"])) if v is not None and a + i <= kini}
     return seri, sel, dari_cache
 
 
@@ -523,6 +564,7 @@ def bangun():
            "uji_balik": uji_balik,
            "prakiraan": prak,
            "fit": wil_fit,
+           "tren": {"hujan_nasional": tren_hujan(seri["nasional"])},
            "pendorong_riwayat": {ms: {str(t): [round(r, 2), round(d, 2)] for t, (r, d) in p.items()} for ms, p in pend.items()},
            "batasan": [
                "Pendorong musim depan = persistensi nilai terakhir (RONI musim teramati terakhir, DMI 4 minggu terakhir), bukan prakiraan. ENSO dan IOD berubah dalam hitungan bulan; prakiraan lebih dari 2-3 musim ke depan hampir pasti meleset kalau keadaan pendorongnya berubah.",
@@ -603,6 +645,18 @@ def uji():
             roni_rw[(ms, y)] = rerata_musim_dmi(dmi_rw, y, c)
     s0, s6, s12 = (sd_persistensi(roni_rw, dmi_rw, L)[0] for L in (0, 6, 12))
     assert s0 == 0 and 0.3 < s6 < s12 and abs(s6 - 0.3 * math.sqrt(6)) < 0.25, (s6, s12)
+    d = [float(i) for i in range(30)]
+    assert buang_ulangan(d + d) == d and buang_ulangan(d) == d and buang_ulangan([]) == []
+    # tren F-27: anomali terhadap rerata bulan yang sama, lereng dikenali, deret < 60 bulan tanpa garis
+    sb = {(y, m): 100.0 + 50 * (m == 1) + 0.1 * ((y - 1981) * 12 + m - 1) for y in range(1981, 2026) for m in range(1, 13)}
+    tr = tren_hujan(sb)
+    assert tr["mulai"] == "1981-01" and len(tr["nilai"]) == 45 * 12 and tr["nilai"][0] < 0 < tr["nilai"][-1]
+    assert abs(tr["nilai"][12] - tr["nilai"][13] + 0.1) < 0.11            # musim Januari terbuang oleh anomali per bulan
+    assert tr["regresi"]["cukup"] and tr["regresi"]["arah"] == "naik" and abs(tr["regresi"]["lereng_dekade"] - 12) < 0.05
+    pendek = tren_hujan({(2020, m): 1.0 for m in range(1, 13)} | {(2021, m): 2.0 for m in range(1, 13)})
+    assert pendek["regresi"] == {"cukup": False, "n": 24, "minimum": 60, "alasan": "deret terlalu pendek"}
+    del sb[(2000, 5)]
+    assert tren_hujan(sb)["nilai"][(2000 - 1981) * 12 + 4] is None and tren_hujan(None) is None
     print("iklim_outlook uji: lulus")
 
 

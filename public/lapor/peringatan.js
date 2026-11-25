@@ -33,20 +33,16 @@ function gambar() {
 
 /* ---- kartu pasang aplikasi: satu baris per perangkat, QR untuk membuka di HP (pemilik 24 Nov 2026, pola halaman unduh) ---- */
 const ANDROID = /Android/.test(navigator.userAgent), HP = iPhone || ANDROID;
-function barisPasang(nama, ket, aksi) {
-  const li = el("li", "lp-pw-baris"), t = el("span"); t.append(el("b", null, nama)); if (ket) t.append(el("small", null, ket));
-  li.append(t, aksi); return li;
+function ubinPasang(nama, ket, ik, langkah, tombol) {   // satu ubin per perangkat: langkah selalu tampak, tanpa tombol lipat (pemilik 25 Nov 2026: "bagusin")
+  const li = el("li", "lp-pw-ubin"), kep = el("div", "lp-pw-ubin-kep"), u = el("span", "lp-pw-ik lp-pw-platform"), t = el("span");
+  for (const x of [].concat(ik)) u.append(ikon(x)); t.append(el("b", null, nama), el("small", null, ket)); kep.append(u, t);
+  const ol = el("ol", "lp-pw-langkah"); for (const x of langkah) ol.append(el("li", null, x));
+  li.append(kep, ol); if (tombol) li.append(tombol); return li;
 }
 function tombolPasang(teks) {
-  const b = el("button", "lp-pw-tbl"); b.type = "button"; b.append(ikon("i-unduh"), teks);
+  const b = el("button", "lp-pw-tbl lp-pw-tbl-utama"); b.type = "button"; b.append(ikon("i-unduh"), teks);
   b.addEventListener("click", async () => { const e = pasangTunda; if (!e) return; pasangTunda = null; await e.prompt(); await e.userChoice.catch(() => null); gambar(); });
   return b;
-}
-function tombolLangkah(judul, langkah) {
-  const d = el("details", "lp-pw-lipat"), s = el("summary", "lp-pw-tbl", "Lihat langkah"), ol = el("ol", "lp-pw-langkah");
-  s.setAttribute("aria-label", `Lihat langkah ${judul}`);
-  for (const x of langkah) ol.append(el("li", null, x));
-  d.append(s, ol); return d;
 }
 function kartuPasang() {
   const k = el("section", "lp-pw-kartu lp-pw-pasang"), kep = el("div", "lp-pw-kep"), ik = el("span", "lp-pw-ik"); ik.append(ikon("i-unduh"));
@@ -54,11 +50,10 @@ function kartuPasang() {
   kep.append(ik, t); k.append(kep);
   if (terpasang()) { const ok = el("p", "lp-pw-ok"); ok.append(ikon("i-centang"), "Aplikasi sudah terpasang di perangkat ini."); k.append(ok); return k; }
   const badan = el("div", "lp-pw-pbadan"), ul = el("ul", "lp-pw-daftar");
-  const pasangAndroid = pasangTunda && !iPhone ? tombolPasang("Pasang") : tombolLangkah("Android", ["Buka halaman ini di Chrome.", "Ketuk menu titik tiga di kanan atas.", "Pilih Instal aplikasi atau Tambahkan ke layar utama."]);
   ul.append(
-    barisPasang("Android", "Chrome", ANDROID ? pasangAndroid : tombolLangkah("Android", ["Buka halaman ini di Chrome di HP Android.", "Ketuk menu titik tiga di kanan atas.", "Pilih Instal aplikasi atau Tambahkan ke layar utama."])),
-    barisPasang("iPhone dan iPad", "Safari", tombolLangkah("iPhone", ["Buka halaman ini di Safari.", "Ketuk tombol Bagikan (kotak dengan panah ke atas).", "Pilih Tambah ke Layar Utama, lalu Tambah.", "Buka Pantau Bencana dari ikon di layar utama untuk menyalakan peringatan."])),
-    barisPasang("Komputer", "Chrome atau Edge", !HP && pasangTunda ? tombolPasang("Pasang") : tombolLangkah("komputer", ["Buka halaman ini di Chrome atau Edge.", "Klik ikon pasang di ujung kanan kolom alamat.", "Pilih Instal."])));
+    ubinPasang("Android", "Chrome", "p-android", ["Buka halaman ini di Chrome.", "Ketuk menu titik tiga di kanan atas.", "Pilih Instal aplikasi atau Tambahkan ke layar utama."], ANDROID && pasangTunda ? tombolPasang("Pasang sekarang") : null),
+    ubinPasang("iPhone dan iPad", "Safari", "p-apple", ["Buka halaman ini di Safari.", "Ketuk tombol Bagikan (kotak dengan panah ke atas).", "Pilih Tambah ke Layar Utama, lalu Tambah.", "Buka Pantau Bencana dari ikon di layar utama untuk menyalakan peringatan."], null),
+    ubinPasang("Komputer", "Windows atau Mac, Chrome atau Edge", ["p-windows", "p-apple"], ["Buka halaman ini di Chrome atau Edge.", "Klik ikon pasang di ujung kanan kolom alamat.", "Pilih Instal."], !HP && pasangTunda ? tombolPasang("Pasang sekarang") : null));
   badan.append(ul);
   const qr = !HP && window.Bagi?.QR ? (() => { try { return window.Bagi.QR.kanvas(location.origin + "/lapor/", 4); } catch { return null; } })() : null;
   if (qr) {
@@ -173,3 +168,9 @@ async function bukaArahan(kec) {
 
 navigator.serviceWorker?.addEventListener("message", e => { if (e.data?.pw === "langganan-berubah") tulis(null), gambar(); });
 gambar();
+// tombol hero Pasang aplikasi dan Peringatan dini menggulir ke kartunya (pemilik 25 Nov 2026)
+for (const b of document.querySelectorAll("[data-ke-pw]")) b.addEventListener("click", () => {
+  const k = document.querySelector(`#pwIsi ${b.dataset.kePw}`); if (!k) return;
+  k.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
+  k.classList.remove("lp-pw-sorot"); void k.offsetWidth; k.classList.add("lp-pw-sorot");
+});

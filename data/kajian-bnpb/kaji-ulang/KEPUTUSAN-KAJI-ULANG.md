@@ -48,3 +48,9 @@ Catatan penomoran: di `data/kajian-bnpb/siklus/KEPUTUSAN-AWAL.md` kode F6 sudah 
 | Q11 | Kejadian jenis apa yang ikut? | **[BAWAAN SEMENTARA]** semua jenis di Buku Besar. `tugas_api` membawa tugas multi-bencana (migrasi 0047, `tugas_bencana`), jadi bagian per tugas muncul untuk jenis yang punya tugas terhubung (karhutla dan banjir), dengan kata mengikuti jenisnya; jenis tanpa tugas hanya memakai linimasa kejadian, Lifeline, dan 3W. | tidak menahan |
 | Q12 | Bentrok nomor F6 dengan Risiko Masa Depan di paket Siklus. | **[BAWAAN SEMENTARA]** dipakai nama "Kaji ulang", kode tiket `KU-*`; pemilik atau orkestrator menentukan nomor fase resminya. | tidak menahan |
 | Q13 | Boleh BPBD menulis pelajaran kab wilayahnya? | **[BAWAAN SEMENTARA]** tidak di fase ini. Bila ya: tambah `kab4` di `ku_pelajaran`, entri baca-tulis akun instansi di MATRIKS_SK, dan uji hak (tiket tambahan). | tidak menahan |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

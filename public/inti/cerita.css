@@ -2,5 +2,17 @@
 .cr{display:grid;gap:10px;padding:2px 0}
 .cr>div{display:flex;gap:10px;align-items:flex-start}
 .cr .pl{flex:none;min-width:96px;justify-content:center;margin-top:1px}
-.cr p{margin:0;font-size:14px;line-height:1.5}
+.cr p{margin:0;font-size:14px;line-height:1.5;min-width:0;max-width:100%;overflow-x:auto}
 @media(max-width:640px){.cr>div{flex-direction:column;gap:4px}.cr .pl{min-width:0}}
+/* F-28 kartu bukti model (Cerita.galat, Cerita.pendorong): batang bertooltip [data-tip], warna hanya token */
+.cr-bts{display:grid;gap:var(--jr-2)}
+.cr-bt{display:grid;grid-template-columns:minmax(110px,1fr) 3fr;gap:var(--jr-3);align-items:center;font-size:var(--fs-3)}
+.cr-bt>div{display:grid;gap:3px;position:relative}
+.cr-bt .cr-nol{position:absolute;inset:-2px auto -2px calc(var(--k) * 1%);border-left:1px solid var(--ink2)}
+.cr-bt i,.cr-leg i{display:block;height:10px;border-radius:var(--r-pill);background:var(--brand2)}
+.cr-bt i{margin-left:calc(var(--k, 0) * 1%);width:max(2px,calc(var(--p) * 1%))}
+.cr-bt i.pb,.cr-leg i.pb{background:var(--kat-lain)}
+.cr-leg{display:flex;gap:var(--jr-4);font-size:var(--fs-2);color:var(--ink2)}
+.cr-leg span{display:inline-flex;align-items:center;gap:var(--jr-1)}
+.cr-leg i{width:14px}
+@media(max-width:640px){.cr-bt{grid-template-columns:1fr}}

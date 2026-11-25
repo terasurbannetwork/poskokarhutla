@@ -43,7 +43,7 @@ Arti angka dan label:
 
 - **Titik panas (hotspot)**: piksel satelit yang jauh lebih panas daripada sekitarnya. Satu titik bukan satu hektare terbakar.
 - **Angka platform** berbeda dari SiPongi dan GIS BNPB karena definisinya lokasi unik, memuat empat satelit, dan semua tingkat keyakinan.
-- Kata resmi yang dipakai layar adalah "titik panas". Kata "titik api" hanya boleh muncul sebagai kutipan istilah resmi (dijaga `tests/agen/gerbang-istilah-titik-api.test.mjs`).
+- Kata resmi yang dipakai layar adalah "titik panas". Istilah lain untuk deteksi panas satelit hanya boleh muncul sebagai kutipan istilah resmi (dijaga `tests/agen/gerbang-istilah-titik-api.test.mjs`).
 
 Sering disalahpahami:
 

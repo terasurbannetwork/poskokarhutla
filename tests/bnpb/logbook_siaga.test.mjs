@@ -8,6 +8,7 @@ import {spawnSync} from "node:child_process";
 import {existsSync, readFileSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 import {bukaPeramban, cariChrome} from "./_peramban.mjs";
+import {petaSitus} from "./_peta.mjs";
 
 const AKAR = path.join(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PUB = path.join(AKAR, "public");
@@ -60,6 +61,7 @@ let server, base;
 const jalankan = () => new Promise(ok => {
   server = http.createServer(async (req, res) => {
     const u = new URL(req.url, "http://x"), p = u.pathname, json = (s, o) => { res.writeHead(s, {"content-type": "application/json"}); res.end(JSON.stringify(o)); };
+    if (p === "/api/peta-situs") return json(200, petaSitus());   // menu staf, di luar log panggilan API halaman
     if (p.startsWith("/api/")) {
       const c = []; for await (const x of req) c.push(x); let body = null; try { body = JSON.parse(Buffer.concat(c).toString()); } catch (e) {}
       S.log.push({m: req.method, p, q: u.search, body, h: req.headers});
@@ -96,7 +98,7 @@ else {
   const tanpaGulir = async l => { for (const [w, h] of [[1440, 900], [390, 844]]) { await tab.ukuran(w, h); const x = await tab.lebihLebar(); assert.ok(x.sw <= x.iw + 1, `${l} ${w}px gulir mendatar ${x.sw}>${x.iw}`); } await tab.ukuran(1440, 900); };
 
   test("logbook: tanpa sesi tampil kartu masuk", async () => {
-    S.masuk = false; await tab.buka(base + "/bnpb/logbook.html", {tunggu: ".bn-blok a[href^='/admin/masuk?ke=%2Fbnpb%2Flogbook']"});
+    S.masuk = false; await tab.buka(base + "/bnpb/logbook.html", {tunggu: ".bn-blok a[href^='/masuk?ke=%2Fbnpb%2Flogbook']"});
     assert.match(await tab.teks(), /Masuk staf/); S.masuk = true;
   });
 

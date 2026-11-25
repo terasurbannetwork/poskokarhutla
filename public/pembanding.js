@@ -72,7 +72,7 @@
     return PETA;
   };
   /* dipakai insiden_kaya.js: insiden (berisi id) untuk id cluster, atau null */
-  window.PKH_INSIDEN = {cari: async kid => petaInsiden(await mulai("data/insiden.json")).get(kid) || null};
+  window.PKH_INSIDEN = {cari: async kid => petaInsiden(await mulai("data/insiden.json")).get(kid) || null, data: () => mulai("data/insiden.json")};
   const insidenHtml = (id, r, d, uji, lin) => r ? insidenIsi(id, r, d, uji, lin) : `<p class="fnd">${TIDAK} insiden untuk cluster ini (hanya cluster tingkat 2 ke atas didaftar sebagai insiden).</p>`;
   nanti(() => mulai("data/insiden.json"));   /* unduh senyap sesudah halaman tenang, supaya klik cluster pertama tidak menunggu */
   const _buka = Laci.buka.bind(Laci);

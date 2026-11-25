@@ -38,3 +38,9 @@ Sesudah kejadian, pertanyaan pimpinan hampir selalu "listrik dan jalan sudah pul
 | Q5 | Masuk Laporan Berkala ke Presiden? | **[BAWAAN SEMENTARA]** ya, satu tabel per kejadian aktif; menunggu paket Laporan Berkala menerima bab baru. | LF-09 |
 | Q6 | Perpanjang token Earthdata (habis sekitar 11 Des 2026) dan bangun jalur VNP46A2 untuk listrik? | **[BAWAAN SEMENTARA]** ya, sebagai tiket tersendiri; status listrik tetap jalan tanpa satelit sampai lulus. | LF-10 |
 | Q7 | Berapa lama status tanpa pembaruan dianggap basi? | **[BAWAAN SEMENTARA]** 24 jam: tampil dengan tanda "lewat 24 jam", warna tidak diubah otomatis. | tidak menahan |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

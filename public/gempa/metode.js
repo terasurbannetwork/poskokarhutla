@@ -1,27 +1,22 @@
 "use strict";
 /* ================================================================ metode gempa dan tsunami
-   Satu-satunya tempat rumus (selera pemilik: kartu dan laci tanpa rumus). Gaya dan markup dari public/inti/metode.css (kembaran banjir/metode.js).
+   Satu-satunya tempat rumus (selera pemilik: kartu dan laci tanpa rumus). Kartu dari Cerita.metode (public/inti/cerita.js, PB-54b); bab Peluang.batasan tetap bergaya inti/metode.css.
    Bab yang belum berisi DISEMBUNYIKAN, tidak pernah menampilkan teks "menunggu". Bab Susulan, Tsunami, Evakuasi, dan Bukti muncul hanya bila modulnya
    (susulan.js, tsunami.js, data/bukti.json) ada; parameter diambil dari modulnya, bukan ditulis tangan.
    Bab Susulan dan Bukti diisi dari model_susulan.json dan bukti.json (pengerja pipa). Bab Tsunami dan Evakuasi sudah terisi (konstanta dari Tsunami.KALIBRASI dan SISI_AMAN). */
 const Metode = (() => {
-  const IK = {
-    getar: '<path d="M2 12h4l2-6 4 12 3-9 2 3h5"/>', susulan: '<path d="M3 17l5-5 3 3 6-8"/><circle cx="19" cy="7" r="2"/>', ombak: '<path d="M2 12c2.5-6 4.5-6 7 0s4.5 6 7 0 3.5-4 6-3"/><path d="M2 19h20"/>',
-    evak: '<path d="M4 20h16M6 20V9l6-5 6 5v11M12 20v-6"/>', gedung: '<path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6"/>', orang: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/>',
-    berkas: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/>', batas: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', sumber: '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>'};
-  const ik = n => `<svg class="mt-ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[n] || ""}</svg>`;
   const a = (x, d = 2) => x == null || isNaN(x) ? "–" : Number(x).toLocaleString("id-ID", {maximumFractionDigits: d});
-  const li = L => `<ul>${L.filter(Boolean).map(x => `<li><span>${x}</span></li>`).join("")}</ul>`;
-  const bab = (n, ikon, judul, sub, singkat, teknis, batas) => `<details class="mt-sek"><summary><span class="mt-nom">${ik(ikon)}</span><span class="mt-jd"><b>${n}. ${judul}</b><small>${sub}</small></span></summary>
-    <div class="mt-isi"><div class="mt-singkat"><span class="mt-lbl">Singkatnya</span><p>${singkat}</p></div>
-      ${teknis ? `<details class="mt-tek"><summary>Rumus, konstanta, dan sumber</summary><div class="mt-tekisi">${teknis}</div></details>` : ""}
-      ${batas && batas.length ? `<div class="mt-batas"><span class="mt-lbl">Batasan</span>${li(batas)}</div>` : ""}</div></details>`;
-  const ptg = x => `<p>${x}</p>`;
+  /* PB-54b (F-28): tiap bab = Cerita.metode (inti/cerita.js): kepala nama seksi berikon, tanpa kalimat temuan; anak judul ke title kepala.
+     Isi bab dibungkus <p> oleh komponen, jadi paragraf dan butir di sini span blok (.mt-p, gempa.css), bukan <p>/<ul> bersarang. */
+  const li = L => L.filter(Boolean).map(x => `<span class="mt-p mt-b">${x}</span>`).join("");
+  /* o = {peta, keluaran}: pil hipotesis di kepala bila keluaran belum lolos gerbang (Cerita._std, gagal-tertutup) */
+  const bab = (n, ikon, judul, sub, singkat, teknis, batas, o = {}) => Cerita.metode(judul, {singkatnya: singkat, rincian: teknis, batasan: batas?.length ? li(batas) : ""}, {sumber: sub, ...o});
+  const ptg = x => `<span class="mt-p">${x}</span>`;
 
   /* ---- bab-bab; tiap fungsi mengembalikan HTML atau "" (bab disembunyikan) ---- */
   function guncangan(M, E, EP, PG) {
     if (!M) return "";
-    const P = M.param, S2 = M.sitasi || {}, ke = E?.kinerja_uji?.rmse, pg = PG?.metrik?.dicatat ? ` Catatan prospektif ramalan MMI: ${fmt(PG.metrik.dicatat)} dicatat, ${fmt(PG.metrik.dinilai_mmi || 0)} dinilai.` : "";
+    const P = M.param, S2 = M.sitasi || {}, ke = E?.kinerja_uji?.rmse, pg = PG?.metrik?.dicatat ? ` Catatan prospektif ramalan MMI: ${fmt(PG.metrik.dicatat)} dicatat, ${fmt(PG.metrik.dinilai_mmi)} dinilai.` : "";
     return bab(0, "getar", "Guncangan satu gempa", "dari magnitudo dan jarak ke tingkat guncangan (MMI) di tiap kecamatan",
       "Dari kekuatan, kedalaman, dan jenis gempa, kami menghitung percepatan tanah di pusat tiap kecamatan, lalu mengubahnya ke skala MMI yang dipakai BMKG. Hasilnya perkiraan rata-rata, bukan pengukuran.",
       `${ptg(`<b>Percepatan tanah (PGA).</b> Gempa dangkal kerak memakai ${esc(S2.kerak || "BSSA14")}; gempa antarmuka subduksi dan intraslab (kedalaman 50 km atau lebih) memakai ${esc(S2.antarmuka || "Zhao 2006")}. Perkiraan MMI per kecamatan memakai Vs30 per sel bila peta Vs30 termuat (lihat bab Simulasi), selain itu ${a(M.vs30_baku, 0)} m/s seragam.`)}
@@ -36,7 +31,7 @@ const Metode = (() => {
        ${EP?.metrik ? ptg(`<b>Uji prospektif terhadap EMSC.</b> Koreksi diuji ke depan dengan aturan tambah-saja: ${fmt(EP.metrik.n_kejadian)} gempa baru dengan ${fmt(EP.metrik.n_sel)} sel sejak ${esc((EP.beku_sejak || "").slice(0, 10))}, RMSE ${a(EP.metrik.rmse_raw, 3)} kelas tanpa koreksi. Terlalu sedikit untuk menyimpulkan apa pun.`) : ""}`,
       (M.catatan || []).map(esc));
   }
-  function susulan(M, PS) {
+  function susulan(M, PS, GB) {
     if (!M?.param) return "";
     const p = M.param, u = M.kinerja_uji?.m5, v = M.kinerja_validasi?.m5, n = M.pembagian?.n_utama || {}, mc = a(p.mc, 1), pr = x => a(x * 100, 1) + "%";
     const bu = M.kinerja_uji?.bootstrap_selisih_brier, ks = M.kinerja_sesuaikan?.per_t1, unggul = (x, pb) => pb ? a((pb - x) / pb * 100, 1) + "%" : "–";
@@ -47,9 +42,10 @@ const Metode = (() => {
        ${ptg(`<b>Parameter Indonesia</b> (katalog USGS M ${a(4.5, 1)} atau lebih, gempa utama 2000 sampai 2019): a = ${a(p.a)}, b = ${a(p.b)}, p = ${a(p.p)}, c = ${a(p.c)} hari, α = ${a(p.alfa)}, kelengkapan magnitudo ${mc}. Gempa utama adalah M 5 atau lebih di Indonesia yang tidak berada di jendela Gardner dan Knopoff (1974) gempa lebih besar sebelumnya. Susulan adalah gempa M ${mc} atau lebih dalam jarak 10^(0,1238 Mu + 0,983) km, 1 jam sampai 7 hari sesudahnya.`)}
        ${ks ? ptg(`<b>Penyesuaian per rangkaian diuji dan kalah.</b> Pada validasi, memperbarui a dengan susulan teramati (jendela sesudah t1 sampai 7 hari) memberi Brier lebih buruk daripada parameter umum: ${Object.entries(ks).map(([t1, v]) => `t1 = ${a(+t1, 1)} hari, ${a(v.brier_sesuai, 3)} lawan ${a(v.brier_generik, 3)}`).join("; ")}. Karena itu penyesuaian tidak dipakai.`) : ""}
        ${u ? ptg(`<b>Pengujian.</b> Validasi 2020 sampai 2022 (${fmt(n.validasi)} gempa utama), uji 2023 sampai 2026 dibuka satu kali (${fmt(n.uji)} gempa utama), melawan pembanding sederhana: proporsi gempa sekelas M (lebar 0,5) yang diikuti susulan. Untuk susulan M 5 atau lebih dalam 7 hari, model belum terbukti lebih baik dari pembanding sederhana: skill terhadap pembanding (BSS) hanya ${a(u.bss, 4)}${u.reliabilitas?.length ? `, dan pada peluang tinggi (${a(u.reliabilitas.at(-1).bin[0] * 100, 0)} sampai ${a(u.reliabilitas.at(-1).bin[1] * 100, 0)} persen, ${u.reliabilitas.at(-1).n} kasus) model meramal ${a(u.reliabilitas.at(-1).ramal * 100, 1)} persen padahal teramati ${a(u.reliabilitas.at(-1).amat * 100, 1)} persen` : ""} (nilai Brier ${a(u.brier, 3)} lawan ${a(u.brier_pembanding, 3)} pada uji, selisih ${unggul(u.brier, u.brier_pembanding)}${bu ? `; bootstrap ${fmt(bu.n_boot)} ulangan memberi selisih Brier ${a(bu.selisih_brier, 4)} dengan CI95 ${a(bu.ci95[0], 4)} sampai ${a(bu.ci95[1], 4)}, mencakup nol, jadi tidak berbeda nyata dari pembanding` : ", tidak berbeda nyata"}). Target susulan M 6 dan M (Mu - 1) kalah dari pembanding di validasi, sehingga tidak kami tampilkan. Tiap gempa utama baru dicatat ramalannya lalu dinilai 7 hari kemudian (prospektif, tidak pernah diubah).`) : ""}
-       ${PS?.dicatat ? ptg(`<b>Uji prospektif.</b> Sejak parameter dibekukan, ${fmt(PS.dicatat)} gempa utama dicatat dan ${fmt(PS.dinilai)} sudah dinilai. Untuk susulan M 5 atau lebih, ${fmt(PS.metrik?.m5?.n_terjadi ?? 0)} dari ${fmt(PS.metrik?.m5?.n ?? 0)} yang dinilai benar-benar terjadi, sedangkan harapan model ${a(PS.metrik?.m5?.n_test?.harapan, 1)}. Cacahnya masih terlalu kecil untuk menilai model.`) : ""}`,
-      ["Rentangnya lebar karena rangkaian gempa Indonesia sangat beragam.", u?.n_test ? `Cacah susulan rata-rata terlalu tinggi (uji: harapan ${fmt(Math.round(u.n_test.harapan))}, teramati ${fmt(u.n_test.amat)}), prakiraan cenderung sedikit terlalu tinggi (rata-rata ${a((u.ramal_rata ?? 0) * 100, 0)}% lawan teramati ${a((u.frek_amat ?? 0) * 100, 0)}% pada uji).` : "",
-       "Jam pertama tidak dimodelkan karena katalog tidak lengkap.", "Jenis magnitudo USGS campur.", `Jendela jarak terlalu sempit untuk gempa megathrust M 8 atau lebih.`, "Gempa dalam kawanan bisa tergolong susulan gempa sebelumnya dan tidak mendapat peluang sendiri.", "Peluang adalah perkiraan model, bukan peringatan resmi."]);
+       ${PS?.dicatat ? ptg(`<b>Uji prospektif.</b> Sejak parameter dibekukan, ${fmt(PS.dicatat)} gempa utama dicatat dan ${fmt(PS.dinilai)} sudah dinilai. Untuk susulan M 5 atau lebih, ${fmt(PS.metrik?.m5?.n_terjadi)} dari ${fmt(PS.metrik?.m5?.n)} yang dinilai benar-benar terjadi, sedangkan harapan model ${a(PS.metrik?.m5?.n_test?.harapan, 1)}. Cacahnya masih terlalu kecil untuk menilai model.`) : ""}`,
+      ["Rentangnya lebar karena rangkaian gempa Indonesia sangat beragam.", u?.n_test && u.ramal_rata != null && u.frek_amat != null ? `Cacah susulan rata-rata terlalu tinggi (uji: harapan ${fmt(Math.round(u.n_test.harapan))}, teramati ${fmt(u.n_test.amat)}), prakiraan cenderung sedikit terlalu tinggi (rata-rata ${a(u.ramal_rata * 100, 0)}% lawan teramati ${a(u.frek_amat * 100, 0)}% pada uji).` : "",
+       "Jam pertama tidak dimodelkan karena katalog tidak lengkap.", "Jenis magnitudo USGS campur.", `Jendela jarak terlalu sempit untuk gempa megathrust M 8 atau lebih.`, "Gempa dalam kawanan bisa tergolong susulan gempa sebelumnya dan tidak mendapat peluang sendiri.", "Peluang adalah perkiraan model, bukan peringatan resmi."],
+      {peta: GB, keluaran: "susulan"});
   }
   /* teks dari pengerja sim (gempa-metode-B.md, versi final) */
   function simulasi() {
@@ -58,7 +54,7 @@ const Metode = (() => {
       "Simulasi menjawab \"bagaimana jika\"; ia tidak meramal kapan atau di mana gempa terjadi. Status tsunami resmi hanya dari BMKG.",
       `${ptg("<b>Bidang patahan.</b> Panjang L dan lebar W: antarmuka subduksi Strasser dkk. (2010), log L = -2,477 + 0,585 Mw dan log W = -0,882 + 0,351 Mw; sesar kerak Wells dan Coppersmith (1994) per mekanisme (geser, naik, turun). W dibatasi ketebalan seismogenik (kerak 20 km, antarmuka 50 km tegak). Kemiringan bawaan: subduksi 15°, naik 35°, turun 60°, geser 90°. Slip seragam D = M0 / (μ L W), M0 = 10^(1,5 Mw + 9,1) N·m, μ = 3×10^10 Pa. Untuk megathrust, bidang diletakkan dari parit ke arah darat.")}
        ${ptg("<b>Guncangan.</b> MMI dari model guncangan yang sama seperti bab Guncangan: BSSA14 untuk kerak, Zhao dkk. (2006) untuk antarmuka dan intraslab, lalu Worden dkk. (2012). Jarak = jarak ke proyeksi permukaan bidang patahan (Rjb); untuk Zhao dipakai x = √(Rjb² + h²) sebagai perkiraan jarak ke bidang (makalah memakai Rrup). Magnitudo dipotong 7,8 hanya untuk intraslab (seperti OpenQuake NSHMP 2014); antarmuka tidak dipotong. Laut tidak diwarnai.")}
-       ${ptg("<b>Contoh megathrust selatan Jawa M 8,5.</b> Di simulasi (pusat 9,83° LS 110,72° BT, kedalaman 25 km, bidang 313 × 122 km), MMI terkuat di permukiman sekitar VI (6,44 di Kecamatan Tulungagung). Angka ini wajar karena bidang patahan berada di laut: Rjb terkecil ke pusat kecamatan berpenduduk 121 km (Munjungan, Trenggalek; MMI 6,39). Sebagai pembanding, ShakeMap USGS mencatat MMI terkuat 5,0 pada Pangandaran 2006 (M 7,7) dan 5,3 pada Banyuwangi 1994 (M 7,8), sedangkan model memberi 3,6 sampai 4,5 pada Rjb 174 sampai 275 km (kedalaman 20 sampai 25 km). Jadi model cenderung 0,5 sampai 1,5 kelas lebih rendah di pantai yang jauh dari megathrust; anggap angkanya perkiraan bawah.")}
+       ${ptg("<b>Contoh megathrust selatan Jawa M 8,5.</b> Di simulasi (pusat di laut selatan Yogyakarta, kedalaman 25 km, bidang 313 × 122 km), MMI terkuat di permukiman VI (Kecamatan Tulungagung). Angka ini wajar karena bidang patahan berada di laut: Rjb terkecil ke pusat kecamatan berpenduduk 121 km (Munjungan, Trenggalek; MMI VI). Sebagai pembanding, ShakeMap USGS mencatat MMI terkuat V pada Pangandaran 2006 (M 7,7) dan Banyuwangi 1994 (M 7,8), sedangkan model memberi IV sampai V pada Rjb 174 sampai 275 km (kedalaman 20 sampai 25 km). Jadi model cenderung 0,5 sampai 1,5 kelas lebih rendah di pantai yang jauh dari megathrust; anggap angkanya perkiraan bawah.")}
        ${ptg("<b>Gelombang P dan S.</b> Muka gelombang P 6,5 km/s dan S 3,7 km/s memancar dari titik pusat, seketika, pada kedalaman h: r = √((v t)² - h²). Lamanya patahan merobek (puluhan detik sampai beberapa menit untuk megathrust) tidak dimodelkan. Jeda P ke S per kota adalah ilustrasi gagasan peringatan dini, belum termasuk waktu deteksi dan siaran. Penduduk: WorldPop 2026 per kecamatan, MMI di titik pusat kecamatan.")}
        ${ptg("<b>Tanah per sel.</b> Vs30 tiap sel 0,05° (sekitar 5,5 km) diturunkan dari kemiringan lereng DEM AWS Terrain Tiles (SRTM, GMTED) dengan korelasi Wald dan Allen (2007) untuk wilayah tektonik aktif: lereng landai berarti tanah lunak (Vs30 mulai 180 m/s), lereng curam berarti batuan (sampai 760 m/s). Ini proksi kasar dengan galat tipikal sekitar 30%, bukan pengukuran, dan tabelnya belum dicocokkan ke makalah asli. Sel di luar grid memakai 400 m/s.")}
        ${ptg("<b>Rentang.</b> Guncangan dipecah dua: sebaran antar-kejadian (tau) menggeser seluruh kecamatan bersama-sama, sebaran antar-lokasi (phi) dilebur ke kurva kerapuhan sebagai beta efektif = akar(beta² + phi²). BSSA14 untuk PGA: tau 0,348 dan phi 0,495 (M 5,5 ke atas, membesar untuk M lebih kecil). Zhao dkk. (2006) total 0,678 (antarmuka) dan 0,684 (slab) dari OpenQuake; pembagian tau 0,40 adalah asumsi kami. Persentil 16 dan 84 menggeser PGA sebesar tau. Ketidakpastian kerapuhan dan peluang meninggal digabung di ruang log sebagai akar(0,35² + faktor-galat²) lalu ditambahkan ke pita itu, bukan tiga kasus terburuk ditumpuk. Sigma GMICE tidak ikut dihitung.")}
@@ -97,7 +93,7 @@ const Metode = (() => {
     return bab(0, "gedung", "Sekolah, fasilitas kesehatan, dan bangunan publik rawan", "fasilitas yang berdiri di tempat berbahaya",
       `Kami mencocokkan lokasi sekolah, fasilitas kesehatan, dan bangunan publik (balai kota, kantor polisi, pemadam kebakaran) dengan jejak sesar aktif, perkiraan guncangan sesar terdekat, dan pesisir rendah. Dari ${fmt(dinilai)} fasilitas yang dinilai di ${fmt(prov)} provinsi, yang memenuhi paling sedikit satu syarat masuk daftar. Cacah bukan sensus: sekolah dan klinik tanpa tag OpenStreetMap tidak terhitung, dan provinsi yang tidak muncul belum tentu bebas risiko.`,
       `${ptg("<b>Sumber lokasi.</b> Sekolah dari Dapodik Kemendikbudristek dan EMIS Kemenag, serta data rumah sakit dan puskesmas Centurisk97, di provinsi yang datanya ada. Provinsi lain memakai OpenStreetMap (ODbL 1.0, kontributor OpenStreetMap), yang kelengkapannya beragam.")}
-       ${ptg(`<b>Di atas sesar</b> (${c("atas_sesar")}): jarak 1 km atau kurang dari jejak sesar aktif GEM (Styron dan Pagani 2020, CC BY-SA 4.0).`)}
+       ${ptg(`<b>Di atas sesar</b> (${c("atas_sesar")}): jarak 1 km atau kurang dari jejak sesar aktif GEM (Styron dan Pagani 2020, CC BY-SA 4.0). Katalog ini belum memuat banyak sesar di Jawa dan Bali, jadi fasilitas di dekat Sesar Lembang, Cimandiri, atau Baribis tidak terhitung di sini.`)}
        ${ptg(`<b>Zona guncangan tinggi</b> (${c("mmi_tinggi")}): MMI VII atau lebih pada skenario sesar terdekat (60 km atau kurang) yang pecah utuh sepanjang jejaknya. Itu bisa melebihi segmen yang nyata pecah sekaligus. Magnitudo skenario dari panjang jejak (Wells dan Coppersmith 1994), dipotong M 7,8, kedalaman kerak 10 km, tanpa efek tapak, dengan model guncangan yang sama seperti bab Guncangan.`)}
        ${ptg(`<b>Pesisir rendah</b> (${c("genangan")}): proksi topografi (ketinggian 10 m atau kurang dan 2 km atau kurang dari garis pantai), bukan peta bahaya tsunami. Ketinggian dari ubin AWS Terrain Tiles (sekitar 150 m).`)}
        ${ptg(`<b>Tanpa evakuasi</b> (${c("tanpa_evakuasi")}): pesisir rendah dan tanah setinggi 20 m atau lebih terdekat lebih dari 2 km, tanpa memeriksa jalan atau gedung evakuasi vertikal.`)}
@@ -157,18 +153,18 @@ const Metode = (() => {
       "NOAA NCEI: batimetri ETOPO 2022; AWS Terrain Tiles: ketinggian dan proksi Vs30",
       "BNPB: tempat evakuasi tsunami; PVMBG MAGMA: level dan kegempaan gunung api; Sentinel-2 (Copernicus/ESA): citra sebelum dan sesudah gempa",
       "Penduduk: WorldPop 2026, disesuaikan dengan total PBB (CC BY 4.0)"];
-    return bab(0, "sumber", "Sumber data", "dari mana data dan model berasal", "Semua data berasal dari penyedia resmi dan terbuka; atribusi lengkap ada di bawah.", "", L);
+    /* daftar atribusi, bukan metode: kartu standar polos tanpa baris Batasan */
+    return Cerita._std("Sumber data", `<div class="cr"><div><span class="pl" style="--w:var(--brand2)">Atribusi</span><p>${li(L)}</p></div></div>`, {sumber: "dari mana data dan model berasal"});
   }
 
   async function render() {
     const el = $("#metode"); if (!el || el.dataset.ok) return; el.dataset.ok = 1;
     el.innerHTML = `<div class="head"><div><h2>Metode &amp; data</h2><p>Cara tiap angka gempa dan tsunami dihitung, berikut batasnya.</p></div></div><div class="kosong"><div class="spin"></div></div>`;
     const j = u => muatJSON(u).catch(() => null);
-    const [M, MS, meta, bm, B, PL, E, EP, PG, PS, BR, Z, D, EV] = await Promise.all([j("data/model_guncangan.json"), j("data/model_susulan.json"), j("data/meta.json"), j("data/bahaya_meta.json"), typeof Bukti !== "undefined" ? Bukti.muat() : null, typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, j("data/emsc_residu.json"), j("data/emsc_prospektif.json"), j("data/prospektif_gempa.json"), j("data/prospektif_susulan.json"), j("data/beruntun.json"), j("data/tsunami_zona.json"), j("data/dart.json"), typeof Evakuasi !== "undefined" ? Evakuasi.muat() : null]);
-    const bagian = [guncangan(M, E, EP, PG), susulan(MS, PS), simulasi(), tsunami(), evakuasi(EV), zonaTsunami(Z, D), bukti(B), beruntun(BR), paparan(), dataHidup(), laporan(), typeof Peluang !== "undefined" ? Peluang.batasan(PL) : "", batas(), sumber(meta, bm)].filter(Boolean);
-    let n = 0; el.innerHTML = `<div class="head"><div><h2>Metode &amp; data</h2><p>Cara tiap angka gempa dan tsunami dihitung, berikut batasnya.</p></div></div>
-      ${bagian.map(h => h.replace(/<b>0\. /, `<b>${++n}. `)).join("")}`;
-    el.querySelector("details.mt-sek")?.setAttribute("open", "");
+    const [M, MS, meta, bm, B, PL, E, EP, PG, PS, BR, Z, D, EV, GB] = await Promise.all([j("data/model_guncangan.json"), j("data/model_susulan.json"), j("data/meta.json"), j("data/bahaya_meta.json"), typeof Bukti !== "undefined" ? Bukti.muat() : null, typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, j("data/emsc_residu.json"), j("data/emsc_prospektif.json"), j("data/prospektif_gempa.json"), j("data/prospektif_susulan.json"), j("data/beruntun.json"), j("data/tsunami_zona.json"), j("data/dart.json"), typeof Evakuasi !== "undefined" ? Evakuasi.muat() : null, typeof Gerbang !== "undefined" ? Gerbang.muat("gempa") : {}]);
+    const bagian = [guncangan(M, E, EP, PG), susulan(MS, PS, GB), simulasi(), tsunami(), evakuasi(EV), zonaTsunami(Z, D), bukti(B), beruntun(BR), paparan(), dataHidup(), laporan(), typeof Peluang !== "undefined" ? Peluang.batasan(PL) : "", batas(), sumber(meta, bm)].filter(Boolean);
+    el.innerHTML = `<div class="head"><div><h2>Metode &amp; data</h2><p>Cara tiap angka gempa dan tsunami dihitung, berikut batasnya.</p></div></div>
+      ${bagian.map(h => h.replace(/<b>0\. /, "<b>")).join("")}`;
   }
   return {render};
 })();

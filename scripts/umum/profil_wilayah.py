@@ -5,6 +5,13 @@ Pakai: python3 scripts/umum/profil_wilayah.py DIR_SUMBER   (DIR_SUMBER berisi da
 Layar: public/inti/profil_wilayah.js. Sumber bukan data terbuka (IRBI = InaRISK BNPB), lihat teks sumber di panel."""
 import json, os, re, sys, collections
 
+if sys.argv[1:] == ["uji"]:  # self-check murni: tanpa DIR_SUMBER, tanpa menulis public/
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from nama_wilayah import nk as _nk
+    _norm = lambda s: re.sub(r"[^a-z0-9]", "", re.sub(r"^(kab\.?|kabupaten|kota|adm\.?|administrasi)\s+", "", (s or "").lower().strip()))
+    assert _norm("Kab. Pulang Pisau") == "pulangpisau" and _norm("Kota Palangka Raya") == "palangkaraya" and _norm(None) == ""
+    assert _nk("Kab. Toba Samosir") == (False, "toba") and _nk("Kota Adm. Jakarta Utara")[1] == _norm("Jakarta Utara")
+    print("profil_wilayah.py uji: lulus"); sys.exit(0)
 SUM = sys.argv[1] if len(sys.argv) > 1 else sys.exit("pakai: profil_wilayah.py DIR_SUMBER")
 KEL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "public", "data", "wilayah")
 J = lambda p: json.load(open(os.path.join(SUM, p), encoding="utf-8"))

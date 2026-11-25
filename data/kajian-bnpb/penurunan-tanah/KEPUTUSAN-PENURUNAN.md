@@ -47,3 +47,12 @@ Benchmark: Copernicus European Ground Motion Service (EGMS, Sentinel-1 InSAR, ke
 | Q10 | Kapan angka gabungan rob dan penurunan boleh ada? | **[BAWAAN SEMENTARA]** tidak sebelum uji balik terhadap rob teramati (`public/pesisir/data/rob_kejadian.json`) lulus dan dipra-registrasi. | tidak menahan |
 | Q11 | Data pembanding GNSS (stasiun CORS BIG, levelling)? | **[BAWAAN SEMENTARA]** hanya angka dari literatur di `subsiden_literatur.json`; data mentah GNSS belum ada dan diminta pemilik bila tersedia. | PT-07 sebagian |
 | Q12 | Bila validasi ALGORITMA 6 gagal, tayangkan angka dengan label "di luar rentang literatur"? | **[BAWAAN SEMENTARA]** tidak; hanya literatur tayang. | PT-09 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q1: **diizinkan** menjalankan dua skrip LiCSBAS di luar repo.
+- Q6: unduh DeltaDTM lokal **ya**.
+- Q7: tayang di peta banjir publik berpil hipotesis **ya**.

@@ -20,7 +20,7 @@ const IKON_JENIS = {banjir: "b-banjir", longsor: "b-longsor", abrasi: "b-gelomba
 const ILUS_JENIS = {}; // jenis tanpa foto memakai ilustrasi
 const KREDIT = {kekeringan: "Foto: Crisco 1492, CC BY-SA 4.0", kebakaran_gedung: "Foto: CEphoto, Uwe Aranas, CC BY-SA 3.0"}; // foto berlisensi atribusi
 const GAMBAR = {kebakaran_gedung: "kebakaran", kekeringan: "kekeringan", banjir: "banjir", longsor: "longsor", abrasi: "rob", cuaca: "cuaca", gempa: "gempa", tsunami: "tsunami", erupsi: "gunungapi", karhutla: "karhutla"};
-const KELOMPOK_IKON = {"Kejadian": "i-kejadian", "Korban": "i-korban", "Warga terdampak": "i-orang", "Pengungsian": "i-pengungsian", "Warga terdampak dan mengungsi": "i-pengungsian", "Kerusakan rumah": "i-rumah", "Fasilitas dan jalan": "i-fasilitas", "Data khusus": "i-khusus", "Kebutuhan": "i-kebutuhan"};
+const KELOMPOK_IKON = {"Kejadian": "i-kejadian", "Korban": "i-korban", "Warga terdampak": "i-orang", "Pengungsian": "i-pengungsian", "Warga terdampak dan mengungsi": "i-pengungsian", "Kerusakan rumah": "i-rumah", "Fasilitas dan jalan": "i-fasilitas", "Data khusus": "i-khusus", "Kebutuhan": "i-kebutuhan", "Penyelamatan dan medis": "i-plus", "Situasi sekarang": "i-status", "Kelompok rentan": "i-orang", "Layanan dasar": "k-listrik"};
 const KEPALA = {tempat: ["i-pengungsian", "Titik pengungsian"], pilihan: ["i-daftar", "Pilih salah satu"], setuju: ["i-status", "Persetujuan data"], identitas: ["i-orang", "Data pelapor"], lokasi: ["i-lokasi", "Lokasi kejadian"], jenis: ["i-kejadian", "Jenis bencana"],
   sub: ["i-kejadian", "Karakteristik"], foto: ["i-kamera", "Foto kejadian"]};
 const BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"], HARI = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
@@ -49,6 +49,7 @@ function ke(tab) {
   if (tab === "tentang" && !$("heroTentang").querySelector(".lp-hero-tengah")) { // salin maskot dan kartu kontak beranda tanpa id ganda
     for (const k of [".lp-hero-tengah", ".lp-hero-kanan"]) { const c = document.querySelector(`#lBeranda ${k}`)?.cloneNode(true); if (!c) continue; c.querySelectorAll("[id]").forEach(e => e.removeAttribute("id")); c.querySelectorAll("svg.sg").forEach(s => { s.outerHTML = maskot(s.dataset.pose); }); /* gradien salinan merujuk id beranda yang tersembunyi: gambar ulang */ $("heroTentang").append(c); } }
   if (tab === "chat") requestAnimationFrame(() => gulir.scrollTo({top: gulir.scrollHeight}));
+  sigapLayar(tab);
 }
 // menu: Bantuan dilebur ke Beranda, diganti Kebijakan privasi (pemilik 19 Nov 2026)
 document.querySelectorAll("#tab button[data-ke]").forEach(b => b.addEventListener("click", () => b.dataset.ke === "lapor" ? bukaChat() : b.dataset.ke === "privasi" ? bukaPrivasi() : ke(b.dataset.ke)));
@@ -138,11 +139,27 @@ function tombolOpsi(label, ket, aksi, kelas = "") {
   b.addEventListener("click", aksi); return b;
 }
 
-const ikonKebutuhan = o => [  // kelompok rentan dan layanan terganggu berikon sendiri (pemilik 19 Nov 2026 "bagusin")
-  [/^tidak ada|^semua masih|^belum ada/i, "i-centang"], [/^tidak tahu/i, "i-bantuan"], [/hamil|menyusui|disabilitas|lansia/i, "i-orang"], [/listrik/i, "k-listrik"], [/sinyal|telepon/i, "i-telepon"],
+const ikonKebutuhan = (o, bawaan = "i-kebutuhan") => [  // kelompok rentan dan layanan terganggu berikon sendiri (pemilik 19 Nov 2026 "bagusin")
+  [/^tidak ada|^semua masih|^belum ada/i, "i-centang"], [/^tidak tahu|^belum tahu/i, "i-bantuan"],
+  // benda yang terdampak bergambar sendiri (pemilik 25 Nov 2026: "rumah warga, jalan, sawah masa sama semua")
+  [/terjebak/i, "i-orang"], [/genset|penerangan/i, "k-listrik"], [/bahan atap/i, "i-rumah"], [/gergaji/i, "k-alat"], [/pompa/i, "k-air-turun"],
+  [/rumah sakit|puskesmas|klinik/i, "i-plus"], [/rumah/i, "i-rumah"], [/jalan|jembatan/i, "k-jalan"], [/sawah|kebun|ladang|lahan/i, "k-daun"], [/sekolah|ibadah|masjid|gereja/i, "k-sekolah"], [/pasar|toko|warung/i, "k-pasar"], [/kantor|gedung/i, "b-gedung"], [/hamil|menyusui|disabilitas|lansia/i, "i-orang"], [/listrik/i, "k-listrik"], [/sinyal|telepon/i, "i-telepon"],
   [/makan/i, "k-makan"], [/air/i, "b-banjir"], [/selimut|pakaian/i, "k-baju"], [/obat|kesehatan/i, "i-plus"], [/tenda|terpal/i, "k-tenda"],
-  [/bayi|lansia/i, "k-bayi"], [/sembako|pangan/i, "i-kebutuhan"], [/sandang/i, "k-baju"], [/matras|tikar|kasur/i, "k-kasur"], [/family kit/i, "k-sabun"], [/kidsware/i, "k-bayi"], [/tangki/i, "b-banjir"], [/mandi|kebersihan/i, "b-banjir"], [/tandon|penampungan/i, "b-banjir"], [/mesin|selang|pemadam/i, "b-api"], [/masker/i, "i-plus"], [/karung|bronjong/i, "b-longsor"], [/evakuasi|perahu/i, "k-perahu"], [/alat berat/i, "k-alat"], [/lainnya/i, "i-tambah-teks"], [/belum/i, "i-centang"]].find(([r]) => r.test(o))?.[1] || "i-kebutuhan";
-const ikonOpsi = o => [[/^ganti/i, "i-orang"], [/^benar|^ya\b|^setuju|kirim/i, "i-centang"], [/^bukan|^tidak setuju|batal/i, "i-tutup"], [/tidak tahu|ragu/i, "i-bantuan"],
+  [/bayi|lansia/i, "k-bayi"], [/sembako|pangan/i, "k-makan"], [/sandang/i, "k-baju"], [/matras|tikar|kasur/i, "k-kasur"], [/family kit/i, "k-sabun"], [/kidsware/i, "k-bayi"], [/tangki/i, "b-banjir"], [/mandi|kebersihan/i, "b-banjir"], [/tandon|penampungan/i, "b-banjir"], [/mesin|selang|pemadam/i, "b-api"], [/masker/i, "i-plus"], [/karung|bronjong/i, "b-longsor"], [/evakuasi|perahu/i, "k-perahu"], [/alat berat/i, "k-alat"], [/lainnya/i, "i-tambah-teks"], [/belum/i, "i-centang"]].find(([r]) => r.test(o))?.[1] || bawaan;
+// sub-jenis bergambar sendiri; yang belum punya gambar memakai ikon jenisnya (pemilik 25 Nov 2026: "biar iconnya beda-beda")
+const ikonSub = o => [[/luapan sungai/i, "b-sungai"], [/genangan/i, "b-genangan"], [/bandang/i, "b-bandang"], [/banjir rob/i, "b-rob"], [/lahar/i, "b-lahar"], [/tanggul|waduk|bendungan/i, "b-tanggul"]].find(([r]) => r.test(o))?.[1];
+const ikonOpsi = o => [
+  // dicocokkan dengan pertanyaannya (pemilik 25 Nov 2026: "cari kesesuaian icon dan pertanyaan"); null = skala bertingkat berbatang
+  [/^SIG |menutupi tanah/i, null], [/^pelan, sedikit/i, "k-air-naik"], [/merayap/i, "b-longsor"], [/\d+\s*jam\b|setengah hari|sehari|seperempat|setengah jam|minggu|kali ini/i, "k-jam"],
+  [/^bisa dilewati/i, "k-jalan"], [/^terputus/i, "i-tutup"], [/^sudah tenang/i, "i-centang"], [/reda dan cerah/i, "b-matahari"], [/^antre/i, "i-orang"], [/tempat jauh/i, "i-lokasi"], [/tertimpa atau terjepit/i, "i-orang"], [/^mulai sulit/i, "k-air-turun"],
+  [/lahan kosong|pekarangan/i, "k-daun"], [/membakar/i, "b-api"], [/sangat kering/i, "b-matahari"], [/tidak mengancam/i, "i-centang"], [/getaran|hentakan/i, "b-gempa"], [/detik/i, "k-jam"], [/lari keluar/i, "i-pengungsian"], [/sembako|paket pangan/i, "k-makan"], [/hewan|ternak/i, "k-daun"], [/dentuman|ledakan/i, "b-gunung"], [/kendaraan/i, "k-jalan"], [/kebakaran|lava|belerang/i, "b-api"], [/ikan|biota/i, "b-gelombang"], [/sirene|kentongan/i, "i-sirene"], [/hidran/i, "b-banjir"],
+  [/^masih naik|naik cepat/i, "k-air-naik"], [/hitungan menit/i, "k-jam"], [/^bertahan/i, "k-air-tetap"], [/^mulai surut/i, "k-air-turun"], [/^sudah surut/i, "k-air-surut"],
+  [/laut pasang/i, "b-rob"], [/tanggul|talud|pintu air|bendungan/i, "b-tanggul"], [/dari arah hulu|tiba-tiba, deras/i, "b-bandang"],
+  [/semua kendaraan/i, "k-jalan"], [/motor dan pejalan/i, "i-orang"], [/^putus/i, "i-tutup"], [/^masih cukup/i, "i-centang"], [/^tidak ada air/i, "i-tutup"],
+  [/orang tertimbun|warga masih|ternak hanyut/i, "i-orang"], [/arus deras/i, "b-bandang"], [/gemuruh/i, "b-gempa"], [/kendaraan tertimpa/i, "k-jalan"], [/pohon/i, "k-daun"],
+  [/^masih bergerak/i, "b-longsor"], [/^sudah berhenti/i, "i-centang"], [/^masih tinggi|surut mendadak|terkikis|garis pantai|sampah laut|bibir pantai/i, "b-gelombang"], [/^masih berlangsung/i, "k-jam"],
+  [/awan|gelap/i, "b-hujan"], [/dingin|angin/i, "b-angin"], [/gerah|panas/i, "b-matahari"], [/petir|kilat/i, "b-petir"], [/^hujan/i, "b-hujan"], [/retak|menggantung|miring/i, "b-gempa"], [/dinding|bangunan/i, "b-gedung"], [/peringatan/i, "i-sirene"],
+  [/^ganti/i, "i-orang"], [/^benar|^ya\b|^setuju|kirim/i, "i-centang"], [/^bukan|^tidak setuju|batal/i, "i-tutup"], [/tidak tahu|ragu/i, "i-bantuan"],
   [/tanpa foto|lanjut/i, "i-panah"], [/ubah/i, "i-daftar"], [/lokasi|desa|gps/i, "i-lokasi"], [/foto/i, "i-kamera"],
   [/petir/i, "b-petir"], [/hujan es|butiran es/i, "b-es"], [/hujan|kemarau/i, "b-hujan"], [/angin|puting|siklon/i, "b-angin"],
   [/permukiman/i, "i-rumah"], [/jauh ke darat|darat/i, "i-lokasi"], [/pantai saja/i, "b-gelombang"], [/gempa kuat terasa/i, "b-gempa"],
@@ -168,7 +185,11 @@ function kartuPilihan(j) {
   const tanyaT = !j.minta && (j.inti || j.balasan || "").replace(/^\*[^*]+\*\s*/, "").split("\n").map(x => x.trim()).filter(Boolean)[0];
   if (tanyaT && tanyaT.length < 200) { const kp = isi.closest(".lp-langkah")?.querySelector(".lp-langkah-kepala"); kp?.classList.add("lp-kepala-tanya"); const jd = el("span", "lp-kepala-teks");
     const nodes = [...(kp?.childNodes || [])].filter(n => n.nodeType === 3); const judulT = nodes.map(n => n.textContent).join(""); nodes.forEach(n => n.remove());
-    jd.append(el("b", null, judulT), el("small", null, tanyaT.replace(/\*/g, ""))); kp?.querySelector("svg")?.after(jd); } // judul = judul pertanyaan, di baris mana pun
+    const sub = tanyaT.replace(/\*/g, ""), lk = sub.match(/^(.+?),\s*langkah (\d+) dari (\d+)\.?$/i);   // "Cerita kejadian, langkah 7 dari 8." jadi label (pemilik 25 Nov 2026)
+    let bawah = el("small", null, sub);
+    if (lk) { bawah = el("span", "lp-langkah-label"); const t = el("b", null, `${lk[2]} dari ${lk[3]}`), r = el("span", "lp-langkah-rantai"); r.setAttribute("aria-hidden", "true");
+      for (let x = 1; x <= Number(lk[3]); x++) r.append(el("i", x <= Number(lk[2]) ? "isi" : "")); bawah.append(lk[1], t, r); }
+    jd.append(el("b", null, judulT), bawah); kp?.querySelector("svg")?.after(jd); } // judul = judul pertanyaan, di baris mana pun
   if (j.minta === "jenis" && j.kunci) { // kartu bergambar
     const g = el("div", "lp-jenis");
     j.kunci.forEach((id, i) => {
@@ -186,7 +207,7 @@ function kartuPilihan(j) {
   }
   if (j.minta === "sub" && j.kunci?.[0]) { // karakteristik: ubin berikon jenis, "Tidak tahu" berikon tanya
     const d = el("div", "lp-opsi lp-opsi-ikon lp-simetris"), jid = j.kunci[0]; d.style.setProperty("--kol", kolomSimetris(j.pilihan.length));
-    j.pilihan.forEach((o, i) => { const b = tombolOpsi(o, j.ket?.[i], () => kirim({teks: String(i + 1), tampil: o})); const u = el("span", "lp-opsi-ubin"); u.append(ikon(i === j.pilihan.length - 1 ? "i-bantuan" : IKON_JENIS[jid] || "i-kejadian"));
+    j.pilihan.forEach((o, i) => { const b = tombolOpsi(o, j.ket?.[i], () => kirim({teks: String(i + 1), tampil: o})); const u = el("span", "lp-opsi-ubin"); u.append(ikon(i === j.pilihan.length - 1 ? "i-bantuan" : ikonSub(o) || IKON_JENIS[jid] || "i-kejadian"));
       b.prepend(u); d.append(b); });
     isi.closest(".lp-langkah").classList.add("lp-langkah-bebas"); isi.append(d); return;
   }
@@ -205,7 +226,7 @@ function kartuPilihan(j) {
         if (dipilih.has(i)) dipilih.delete(i);
         else { if (TUNGGAL.test(asli(i))) dipilih.clear(); else for (const k of [...dipilih]) if (TUNGGAL.test(asli(k))) dipilih.delete(k); dipilih.add(i); }
         segar(); if (asli(i) === "Lainnya" && !lLain.hidden) lain.focus(); }); tombol[i] = b;
-      const u = el("span", "lp-opsi-ubin"); u.append(ikon(ikonKebutuhan(o))); b.prepend(u); b.setAttribute("aria-pressed", "false");
+      const u = el("span", "lp-opsi-ubin"); u.append(ikon(ikonKebutuhan(o, null) || ikonOpsi(o) || "i-kebutuhan"));   // pilihan ganda di luar soal kebutuhan memakai peta ikon umum (pemilik 25 Nov 2026) b.prepend(u); b.setAttribute("aria-pressed", "false");
       kotak.get(j.grup?.[i] || "").append(b); });
     const s = el("button", "lp-utama", "Simpan pilihan"); s.type = "button"; s.disabled = true;
     s.addEventListener("click", () => kirim({pilih: [...dipilih], lain: lain.value.trim(), tampil: [...dipilih].map(i => asli(i) === "Lainnya" && lain.value.trim() ? `Lainnya: ${lain.value.trim()}` : j.pilihan[i]).join(", ")}));
@@ -482,6 +503,11 @@ function kartuTempat(j = {}) {
   const daftar = el("div", "lp-tempat-kisi"), pilihan = el("div", "lp-tempat-pilihan"), lain = el("input"); lain.type = "text"; lain.placeholder = "Tempat lain yang tidak ada di daftar, misalnya tenda di lapangan desa"; lain.maxLength = 80;
   const lLain = el("label", "lp-isi"); lLain.append(jenisT === "pengungsian" ? "Tempat lain" : "Tidak ada di daftar? Tulis namanya", lain); if (jenisT !== "pengungsian") lain.placeholder = "Nama yang tidak ada di daftar";
   const s = el("button", "lp-utama"); s.type = "button"; s.append(ikon("i-centang"), simpanT);
+  for (const n of j.sudah || []) dipilih.set(n, {nama: n});   // tambah nama: pilihan sebelumnya tetap tercentang (pemilik 25 Nov 2026)
+  // tempat yang tidak ada di daftar wajib beralamat (pemilik 25 Nov 2026: "kalau tidak ada di daftar tulis alamatnya")
+  const alamat = el("input"); alamat.type = "text"; alamat.maxLength = 120; alamat.placeholder = "Alamat atau nama jalan, misalnya Jl. Merdeka No. 5, RT 02";
+  const lAlamat = el("label", "lp-isi"); lAlamat.append("Alamatnya", alamat); lAlamat.hidden = true;
+  lain.addEventListener("input", () => { lAlamat.hidden = !lain.value.trim(); });
   const segarPilihan = () => { pilihan.replaceChildren(...[...dipilih.keys()].map(n => { const c = el("button", "lp-tempat-chip"); c.type = "button"; c.append(n, ikon("i-tutup")); c.addEventListener("click", () => { dipilih.delete(n); segarPilihan(); gambarDaftar(q.value.trim()); }); return c; }));
     pilihan.hidden = !dipilih.size; };
   let ulangTempat = 0;
@@ -527,12 +553,13 @@ function kartuTempat(j = {}) {
   };
   q.addEventListener("input", () => gambarDaftar(q.value.trim()));
   s.addEventListener("click", () => { const ketik = !dipilih.size && !lain.value.trim() && q.value.trim().length >= 3 ? [q.value.trim()] : [];   // hanya mengetik di pencarian = itu namanya
-    const semua = [...dipilih.keys(), ...(lain.value.trim() ? [lain.value.trim()] : []), ...ketik];
+    if (lain.value.trim() && alamat.value.trim().length < 5) { statusEl.textContent = "Tulis alamat tempat lain itu, misalnya nama jalan atau RT."; alamat.focus(); return; }
+    const semua = [...dipilih.keys(), ...(lain.value.trim() ? [`${lain.value.trim()} (${alamat.value.trim()})`] : []), ...ketik];
     if (!semua.length) { statusEl.textContent = "Pilih atau tulis setidaknya satu tempat."; return; }
     kirim({teks: `${awalan}:\n${semua.map((n, i) => `${i + 1}. ${n}`).join("\n")}`, tampil: `${awalan}: ${semua.join(", ")}`}); });
   const tt = el("button", "lp-kedua", "Belum tahu"); tt.type = "button"; tt.addEventListener("click", () => kirim({teks: "belum tahu", tampil: `Belum tahu ${awalan.toLowerCase()}`}));
   const aksi = el("div", "lp-aksi-dua"); aksi.append(tt, s); pilihan.hidden = true;
-  isi.append(cari, pilihan, daftar, lLain, aksi); muat();
+  isi.append(cari, pilihan, daftar, lLain, lAlamat, aksi); segarPilihan(); muat();
 }
 
 function kartuFoto(j) {
@@ -587,7 +614,7 @@ function hangatkanTerima() { if (bahasaKini() === "id" || document.querySelector
 /* kartu penilaian 5 emoji; hanya di layar terima kasih tahap kedua (wajib) */
 function kotakPenilaian(nomor, sesudah) {
   const nilai = el("div", "lp-nilai"), tanya = el("b", null, TEKS_TERIMA[5]);
-  ["😠", "🙁", "😐", "🙂", "🤩"].forEach((e, i) => { const b = el("button", null, e); b.type = "button"; b.setAttribute("aria-label", `Nilai ${i + 1} dari 5`);
+  ["😠", "🙁", "😐", "🙂", "🤩"].forEach((e, i) => { const b = el("button", null, e); b.dataset.label = ["Buruk", "Kurang", "Biasa", "Baik", "Sangat baik"][i]; b.type = "button"; b.setAttribute("aria-label", `Nilai ${i + 1} dari 5`);
     b.addEventListener("click", async () => { nilai.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); tanya.textContent = TEKS_TERIMA[6]; sesudah?.();
       try { await fetch("/api/lapor/nilai", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, nomor, nilai: i + 1})}); } catch {} }); nilai.append(b); });
   return {tanya, nilai};
@@ -604,14 +631,17 @@ function ucapanTerimaKasih(nomor) {
   // dua tahap (pemilik 21 Nov 2026): terima kasih dulu, diketuk baru penilaian besar di tengah, dipilih baru kembali.
   // Penilaian tetap wajib: layar tidak bisa ditutup sebelum satu emoji dipilih (pemilik 20 Nov 2026)
   const tutup = () => { try { localStorage.setItem(kunci, "1"); } catch {} setTimeout(() => { pb.classList.add("pergi"); setTimeout(() => pb.remove(), 400); }, 350); };   // langsung pindah sesudah emoji diketuk (pemilik 21 Nov 2026: "susah banget di hape")
+  // kepala BNPB seperti layar pembuka (pemilik 25 Nov 2026: "bagusin kaya halaman welcoming"); dua tahap tetap (21 Nov 2026)
+  const merek = () => { const w = el("div", "lp-pb-merek"), lg = Object.assign(el("img"), {src: "/lapor/lambang-bnpb.png", alt: "", width: 44, height: 44}), nm = el("span");
+    nm.append(el("b", null, "BNPB"), el("small", null, "Badan Nasional Penanggulangan Bencana")); w.append(lg, nm); return w; };
   const lanjut = el("button", "lp-terima-lanjut", TEKS_TERIMA[4]); lanjut.type = "button";
   let tahap = 1;
   const keNilai = () => { if (tahap !== 1) return; tahap = 2;
     const {tanya, nilai} = kotakPenilaian(nomor, tutup), kotak = el("div", "lp-terima-nilai lp-terima-besar"); tanya.classList.add("lp-terima-tanya"); kotak.append(tanya, nilai);
     const m2 = el("div", "lp-pembuka-maskot"); m2.innerHTML = maskot("sapa");
-    pb.replaceChildren(riak, m2, kotak); pb.classList.add("tahap-nilai"); nilai.querySelector("button")?.focus(); };
-  pb.addEventListener("click", e => { if (tahap === 1) keNilai(); });
-  pb.append(riak, m, el("p", "lp-pembuka-sapa", TEKS_TERIMA[0]), judul, bnpb, lanjut);
+    pb.replaceChildren(riak, merek(), m2, kotak); pb.classList.add("tahap-nilai"); nilai.querySelector("button")?.focus(); };
+  pb.addEventListener("click", () => { if (tahap === 1) keNilai(); });
+  pb.append(riak, merek(), m, el("p", "lp-pembuka-sapa", TEKS_TERIMA[0]), judul, bnpb, lanjut);
   document.body.append(pb); lanjut.focus();
 }
 /* kartu tiket (pemilik 19 Nov 2026: "bagusin maksimal"): pita sukses, tiket bersobek dengan nomor, langkah berikutnya, aksi berikon, penilaian */
@@ -642,8 +672,16 @@ function kartuTiket(j) {
     const t = el("div"); t.append(el("b", null, "Hubungi BPBD setempat"), el("span", null, bp.tingkat === "nasional" ? "Nomor BPBD daerah Anda belum tercatat. Hubungi Call Center BNPB." : bp.nama));
     const tel = Object.assign(el("a", "lp-tk-tel"), {href: `tel:${bp.nomor.replace(/[^\d+]/g, "")}`}); tel.append(ikon("i-telepon"), `Telepon ${bp.nomor}`);
     hub.append(t, tel);
-  }
-  isi.append(pita, tiket, aksi, ...(bp?.nomor ? [hub] : []), baru);   // penilaian hanya di layar terima kasih (pemilik 21 Nov 2026: "disininya gausah ada lagi")
+  } else { const t = el("div"); t.append(el("b", null, "Butuh pertolongan sekarang?"), el("span", null, "Telepon 112 untuk keadaan darurat.")); const tel = Object.assign(el("a", "lp-tk-tel"), {href: "tel:112"}); tel.append(ikon("i-telepon"), "Telepon 112"); hub.append(t, tel); }
+  // nomor penting di akhir obrolan (pemilik 25 Nov 2026: "hubungi BPBD dan kasih nomor penting"): rumah sakit, polisi, pemadam terdekat
+  // nomor darurat nasional selalu tampak, nomor terdekat lewat tombol (pemilik 25 Nov 2026: "kasih juga nomor penting lainnya")
+  const nasional = el("div", "lp-tk-nomor-penting"), kep = el("div", "lp-tk-np-kepala"); kep.append(el("b", null, "Nomor penting lainnya"));
+  const np = el("button", "lp-tk-np-terdekat"); np.type = "button"; np.append(ikon("i-lokasi"), "Lihat yang terdekat"); np.addEventListener("click", () => bukaInfo("penting")); kep.append(np);
+  const kisi = el("div", "lp-tk-np-kisi");
+  for (const [n, t, ik] of [["112", "Panggilan darurat", "i-sirene"], ["117", "Call Center BNPB", "i-telepon"], ["115", "Basarnas, pencarian dan pertolongan", "i-cari"], ["119", "Ambulans dan layanan gawat darurat", "i-plus"], ["110", "Polisi", "i-orang"], ["113", "Pemadam kebakaran", "b-api"]]) {
+    const a = Object.assign(el("a", "lp-tk-np"), {href: `tel:${n}`}), u = el("span", "lp-tk-np-ikon"), tx = el("span"); u.append(ikon(ik)); tx.append(el("b", null, n), el("small", null, t)); a.append(u, tx); kisi.append(a); }
+  nasional.append(kep, kisi);
+  isi.append(pita, tiket, aksi, hub, nasional, baru);   // penilaian hanya di layar terima kasih (pemilik 21 Nov 2026: "disininya gausah ada lagi")
 }
 
 async function unduh(e, url) { // dokumen dibuat di latar; bila belum jadi, beri tahu, jangan buka halaman kosong
@@ -716,7 +754,7 @@ function selesaiBalas(j) {
   if (j.balasan) tambah("bot", j.minta === "setuju" ? (idAwal ? "Terima kasih. Sebelum mulai, baca dan setujui pemakaian data di bawah." : "Halo, saya Sigap, asisten AI Pantau Bencana BNPB. Sebelum mulai, baca dan setujui pemakaian data di bawah.") : j.balasan);
   if (j.pelapor?.nama) cache.pelapor = j.pelapor.nama;
   if (j.nomor && j.susulan) { const l = (cache.laporan || []).find(x => x.nomor === j.nomor); if (l) { l.versi = j.susulan; if (j.foto) l.foto = j.foto; } cache.fotoSesi = []; } // susulan: kartu tetap, versi naik
-  else if (j.nomor) { cache.laporan = [{nomor: j.nomor, lacak: j.lacak, foto: j.foto || null, status: "baru", statusLabel: "Laporan diterima", waktu: Date.now()}, ...(cache.laporan || []).filter(l => l.nomor !== j.nomor)]; cache.fotoSesi = []; }
+  else if (j.nomor) { cache.laporan = [{nomor: j.nomor, lacak: j.lacak, foto: j.foto || null, status: "baru", statusLabel: "Laporan diterima", waktu: Date.now(), ringkas: ringkasLaporan(j.isian || cache.keadaan?.isian || [])}, ...(cache.laporan || []).filter(l => l.nomor !== j.nomor)]; cache.fotoSesi = []; }
   if (j.unduhan && !j.nomor) { const d = el("div", "lp-langkah-isi"); } // daftar lacak dari "status" tampil di tab Laporan
   terapkan(j);
 }
@@ -725,6 +763,7 @@ $("bIsian").addEventListener("click", () => $("bIsian").setAttribute("aria-expan
 $("bTutupIsian").addEventListener("click", () => { $("panelIsian").classList.remove("buka"); $("bIsian").setAttribute("aria-expanded", "false"); });
 /* Sigap di panel isian bereaksi pada keadaan laporan */
 let poseSigap = "", sigapKe = 0, sigapPrihatin = false, sigapAkhir = null;
+$("sigapPanel")?.addEventListener("click", e => { if (sigapAkhir && !e.target.closest("a")) suasanaSigap(sigapAkhir, 1, true); });
 /* perkiraan waktu sisa dari laju pelapor sendiri (detik per isian terjawab, 10 sampai 40 detik), pemilik 21 Nov 2026: "kasih kira-kira estimasi waktunya" */
 const lajuIsian = {mulai: 0, awal: 0};
 function perkiraan(isian) {
@@ -749,7 +788,48 @@ function kalimatSigap(j) {
     ["semangat", "Ada yang belum ditanya?", "Tulis saja di kolom pesan, saya catat di laporan."]];
   return L >= 70 ? akhir : L >= 30 ? tengah : awal;
 }
-function suasanaSigap(j, geser = 1) {
+/* kalimat Sigap mengikuti pertanyaan yang sedang tampil (pemilik 25 Nov 2026: "harusnya menyesuaikan"); diketuk = saran umum berikutnya */
+function sigapKonteks(j) {
+  const f = j.form?.isian?.[0];
+  if (j.minta === "jenis") return ["sapa", "Pilih yang paling mirip", "Bila ragu, pilih yang paling mendekati. Petugas bisa membetulkannya nanti."];
+  if (j.minta === "sub") return ["sapa", "Seperti apa kejadiannya?", "Baca penjelasan di bawah tiap pilihan. Tidak yakin? Pilih Tidak tahu."];
+  if (j.minta === "lokasi") return ["semangat", "Di mana kejadiannya?", "Bila Anda di tempat kejadian, pakai lokasi HP. Bila tidak, cari nama desanya."];
+  if (j.minta === "foto") return ["semangat", "Foto dari kamera", "Potret langsung supaya waktu dan lokasinya terekam. Jaga jarak aman saat memotret."];
+  if (j.minta?.startsWith("tempat")) return ["sapa", "Tempat terdekat", "Pilih tempat yang paling dekat dengan lokasi kejadian."];
+  if (f?.tipe === "tanggal") return ["sapa", "Kapan terjadinya?", "Perkiraan jam sudah cukup bila Anda tidak ingat persis."];
+  if (f?.nama === "rt") return ["sapa", "RT dan RW", "Kosongkan bila tidak tahu. Petugas tetap bisa menemukan lokasinya."];
+  if (j.form) return ["sapa", "Isi angka yang Anda tahu", "Kosongkan bila tidak tahu. Kolom kosong tidak dihitung nol."];
+  if (j.banyak) return ["semangat", "Boleh pilih lebih dari satu", "Pilih semua yang dibutuhkan, lalu tekan Kirim."];
+  return null;
+}
+/* ringkasan isian untuk kartu Laporan Anda (pemilik 25 Nov 2026: "kartu ini dilengkapi informasi lain yang dilaporkan"); hanya di perangkat pelapor sendiri */
+function ringkasLaporan(isian) {
+  const ada = n => isian.find(x => x.nama === n && x.status === "isi")?.tampil || "";
+  const ANGKA = [["meninggal", "meninggal", "i-korban"], ["hilang", "hilang", "i-cari"], ["luka", "luka", "i-plus"], ["mengungsi_jiwa", "mengungsi", "i-pengungsian"], ["terdampak_jiwa", "terdampak", "i-orang"], ["rumah_berat", "rumah rusak berat", "i-rumah"], ["rumah_terendam", "rumah terendam", "b-banjir"]];
+  return {sub: ada("subjenis"), lokasi: ada("lokasi").split("\n")[0].slice(0, 90),
+    angka: ANGKA.map(([n, t, ik]) => [Number(String(ada(n)).match(/\d[\d.]*/)?.[0]?.replace(/\./g, "")) || 0, t, ik]).filter(([v]) => v > 0).slice(0, 4)};
+}
+/* Sigap di menu samping mengikuti layar yang terbuka (pemilik 25 Nov 2026: "harus menyesuaikan dengan halaman yang terbuka"); di obrolan lapor ikut pertanyaan */
+const SIGAP_LAYAR = {
+  beranda: ["sapa", "Halo, saya Sigap", "Lihat kejadian bencana? Laporkan di sini. Laporan Anda sampai ke BNPB dan BPBD setempat."],
+  laporan: ["sapa", "Laporan Anda", "Ketuk satu laporan untuk melihat tindak lanjut petugas. Simpan nomor tiketnya."],
+  alun: ["sapa", "Kabar dari warga", "Yang tampil hanya laporan yang sudah ditindaklanjuti petugas, tanpa nama pelapor."],
+  tentang: ["sapa", "Cara melapor", "Cukup tiga langkah: pilih jenis kejadian, tandai lokasinya, jawab pertanyaan singkat."],
+  privasi: ["sapa", "Data Anda aman bersama kami", "Nomor WhatsApp dan identitas Anda hanya dibaca petugas yang menangani."],
+  "info:penting": ["semangat", "Simpan nomor ini", "Dalam keadaan darurat, telepon 112. Untuk tindak lanjut di daerah, hubungi BPBD setempat."],
+  "info:info": ["sapa", "Info hari ini", "Waspada berarti bersiap. Ikuti imbauan petugas setempat dan pantau kabar terbaru."],
+  "info:prediksi": ["sapa", "Prediksi 3 hari", "Ini prakiraan, bukan peringatan resmi. Peringatan resmi cuaca tetap dari BMKG."],
+  "info:edukasi": ["sapa", "Siaga sebelum terjadi", "Siapkan tas siaga, kenali jalur evakuasi, dan simpan nomor penting."],
+};
+function sigapLayar(tab) { try { sigapLayar1(tab); } catch { /* dipanggil sebelum keadaan Sigap siap saat halaman dimuat */ } }
+function sigapLayar1(tab) {
+  if (tab === "chat") { if (sigapAkhir) suasanaSigap(sigapAkhir, 0); return; }
+  const k = SIGAP_LAYAR[tab === "info" ? `info:${infoMode}` : tab]; if (!k || !$("sigapTeks")) return;
+  const [pose, judul, teks] = k;
+  if (pose !== poseSigap) { $("sigapMaskot").innerHTML = maskot(pose); poseSigap = pose; }
+  $("sigapTeks").replaceChildren(el("b", null, judul), el("span", null, teks)); $("sigapPanel").dataset.pose = pose;
+}
+function suasanaSigap(j, geser = 1, ketuk = false) {
   sigapAkhir = j;
   const ang = n => Number((j.isian || []).find(x => x.nama === n)?.tampil?.match?.(/\d+/)?.[0] || 0);
   const korban = ang("meninggal") > 0 || ang("hilang") > 0 || j.darurat;
@@ -757,7 +837,7 @@ function suasanaSigap(j, geser = 1) {
   // prihatin tampil saat korban pertama tercatat, lalu muncul lagi tiap empat pertanyaan; di antaranya Sigap memberi semangat dan saran
   const prihatin = j.status !== "terkirim" && korban && (!sigapPrihatin || sigapKe % 4 === 0);
   if (korban) sigapPrihatin = true;
-  const pil = kalimatSigap(j), [pose, judul, teks] = prihatin ? ["sedih", "Turut prihatin", "Utamakan keselamatan. Bila ada yang perlu ditolong sekarang, telepon 112."] : pil[sigapKe % pil.length];
+  const pil = kalimatSigap(j), konteks = !ketuk && j.status !== "terkirim" ? sigapKonteks(j) : null, [pose, judul, teks] = prihatin ? ["sedih", "Turut prihatin", "Utamakan keselamatan. Bila ada yang perlu ditolong sekarang, telepon 112."] : konteks || pil[sigapKe % pil.length];
   if (pose !== poseSigap) { $("sigapMaskot").innerHTML = maskot(pose); poseSigap = pose; }
   const isi = [el("b", null, judul), el("span", null, teks)];
   if (pose === "sedih") { const a = el("a", "lp-sigap-tel"); a.href = "tel:112"; a.append(ikon("i-telepon"), "Telepon 112"); isi.push(a); }
@@ -778,8 +858,8 @@ function tampilIsian(isian, lengkap) {
   const pk = perkiraan(isian), rk = $("ringkasIsian"); rk.replaceChildren(el("b", null, `${isian.filter(jawab).length} dari ${isian.length}`), " terjawab");
   if (pk.teks && belum.length) { const w = el("span", "lp-panel-waktu"); w.append(ikon("k-jam"), pk.teks); rk.append(w); }
   $("sisaIsian").hidden = false;
-  if (belum.length) { const pil = belum.slice(0, 3).map(x => el("span", "lp-panel-pil", x.label)); $("sisaIsian").replaceChildren(el("small", null, "Berikutnya"), ...pil, ...(belum.length > 3 ? [el("span", "lp-panel-pil lain", `${belum.length - 3} lagi`)] : [])); }
-  else $("sisaIsian").replaceChildren(ikon("i-centang"), "Semua terjawab, laporan siap dikirim");
+  if (belum.length) $("sisaIsian").hidden = true;   // tanpa daftar "Berikutnya" (pemilik 25 Nov 2026: "terlalu tinggi, gausah ada berikutnya")
+  else { const u = el("span", "lp-sisa-ok"); u.append(ikon("i-centang")); const t = el("span"); t.append(el("b", null, "Semua terjawab"), el("small", null, "Laporan siap dikirim")); $("sisaIsian").replaceChildren(u, t); }
   $("sisaIsian").classList.toggle("selesai", !belum.length);
   const per = new Map(); for (const x of isian) per.set(x.kelompok, [...(per.get(x.kelompok) || []), x]);
   const frag = document.createDocumentFragment();
@@ -996,13 +1076,16 @@ function tampilDaftarLaporan() {
     // baris meta: nomor tiket dan waktu kirim berikon (pemilik 19 Nov 2026 "bagusin")
     const meta = el("span", "lp-lap-meta"), m1 = el("span"), m2 = el("span"); m1.append(ikon("i-daftar"), l.nomor);
     m2.append(ikon("i-kalender"), l.waktu ? new Date(l.waktu).toLocaleString("id-ID", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(":", ".") : "Terkirim"); meta.append(m1, m2);
+    const rk = l.ringkas, rkEl = [];
+    if (rk?.lokasi) { const p = el("span", "lp-lap-lokasi"); p.append(ikon("i-lokasi"), rk.lokasi); rkEl.push(p); }
+    if (rk?.angka?.length) { const d = el("span", "lp-lap-angka"); for (const [v, t, ik] of rk.angka) { const c = el("span"); c.append(ikon(ik), el("b", null, v.toLocaleString("id-ID")), ` ${t}`); d.append(c); } rkEl.push(d); }
     // laporan susulan (F-28): Tambah kabar 72 jam sejak terkirim, sebelum laporan selesai (Q26); server memeriksa ulang
     const bisaSusul = l.bisaSusul ?? (l.waktu && Date.now() - l.waktu < 72 * 3600e3 && !["selesai", "tidak_valid"].includes(l.status));
     const kep = el("span", "lp-lap-kep"), tombolKep = el("span", "lp-lap-tombol");
     if (bisaSusul) { const tk = el("button", "lp-lap-susul"); tk.type = "button"; tk.append(ikon("i-tambah-teks"), "Tambah kabar");
       tk.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); mulaiSusulan(l.nomor); }); tombolKep.append(tk); }
     // judul dan meta di atas, langkah di tengah, tombol di kaki kartu supaya semua kartu rata (pemilik 21 Nov 2026: "bagusin lagi")
-    tombolKep.append(aksi); tombolKep.classList.add("lp-lap-kaki"); kep.append(el("b", null, l.jenis || "Laporan"), meta);
+    tombolKep.append(aksi); tombolKep.classList.add("lp-lap-kaki"); kep.append(el("b", null, l.ringkas?.sub && !/tidak tahu/i.test(l.ringkas.sub) ? l.ringkas.sub : l.jenis || "Laporan"), meta, ...rkEl);
     tx.append(kep, lk, tombolKep); a.append(g, tx); isi.push(a);
   }
   if (!isi.length) {
@@ -1222,7 +1305,7 @@ function tambahInfo(dari, teks) {
   requestAnimationFrame(() => $("gulirInfo").scrollTo({top: $("gulirInfo").scrollHeight, behavior: "smooth"}));
 }
 function bukaInfo(mode) {
-  infoMode = mode; ke("info");
+  infoMode = mode; ke("info"); sigapLayar("info");
   $("infoJudul").textContent = INFO[mode][0]; $("infoSub").textContent = INFO[mode][1];
   $("infoIkon").className = `lp-info-ikon ${mode}`; $("infoIkon").replaceChildren(ikon(INFO[mode][2])); // ikon layanan, bukan logo (pemilik 19 Nov 2026: "bagusin")
   $("logInfo").replaceChildren(); $("kartuInfo").replaceChildren();
@@ -1285,7 +1368,16 @@ function kartuRapor(j) {
   if (r) {
     const lv = KELAS_LV[r.kelas] ?? 0, n = el("div", `lp-an-nilai lv${lv}`); n.append(el("b", null, r.kelas), el("small", null, `${angka(r.kecamatan)} kecamatan dinilai`)); c1.append(n);
     const meter = el("div", "lp-an-meter"); meter.setAttribute("aria-hidden", "true"); for (let i = 0; i < 4; i++) meter.append(el("i", i <= lv ? `isi lv${lv}` : "")); c1.append(meter);
-    if (r.kecTinggi) { const d = el("p", "lp-an-ket"); d.append(el("b", null, `${angka(r.kecTinggi)} kecamatan berisiko tinggi`), ...(r.contohTinggi?.length ? [el("span", null, r.contohTinggi.join(", "))] : [])); c1.append(d); }
+    // bahaya utama tiap kecamatan dan semua kecamatan berisiko tinggi (pemilik 25 Nov 2026: "10 kecamatan tapi cuma tiga, ga ngasih bahayanya")
+    const NAMA_BAHAYA = {banjir: "Banjir", cuaca: "Cuaca ekstrem", gempa: "Gempa", gunungapi: "Gunung api", karhutla: "Kebakaran hutan dan lahan", kekeringan: "Kekeringan"};
+    const IK_BAHAYA = {banjir: "b-banjir", cuaca: "b-angin", gempa: "b-gempa", gunungapi: "b-gunung", karhutla: "b-api", kekeringan: "b-matahari"};
+    if (r.bahayaUtama?.length) { const d = el("div", "lp-an-bahaya"); d.append(el("p", "lp-an-sub", "Bahaya utama per kecamatan"));
+      const ul = el("ul"); for (const x of r.bahayaUtama) { const l = el("li"); l.append(ikon(IK_BAHAYA[x.bahaya] || "i-kejadian"), el("span", null, NAMA_BAHAYA[x.bahaya] || x.bahaya), el("b", null, `${angka(x.n)} kec.`)); ul.append(l); } d.append(ul); c1.append(d); }
+    if (r.kecTinggi) { const d = el("div", "lp-an-tinggi"); d.append(el("p", "lp-an-sub", `${angka(r.kecTinggi)} kecamatan berisiko tinggi`));
+      const ul = el("ul"); for (const x of r.daftarTinggi || (r.contohTinggi || []).map(kec => ({kec}))) { const l = el("li");
+        l.append(el("b", null, x.kec), ...(x.bahaya ? [(t => (t.append(ikon(IK_BAHAYA[x.bahaya] || "i-kejadian"), NAMA_BAHAYA[x.bahaya] || x.bahaya), t))(el("span", "lp-an-pil"))] : []),
+          ...(x.kelas ? [el("span", `lp-an-kelas lv${KELAS_LV[x.kelas] ?? 0}`, x.kelas)] : [])); ul.append(l); }
+      d.append(ul); c1.append(d); }
   } else c1.append(el("p", "lp-an-kosong", "Belum ada data"));
   const k = j.kejadian;
   if (k) {
@@ -1364,7 +1456,13 @@ function kartuPenting(j) {
     for (const b of j.bpbd) daftar.append(baris(b.nama, {ik: "i-status", km: b.jarakKm, alamat: b.alamat}, b.nomor ? "Telepon" : "Arah", b.nomor ? `tel:${b.nomor.replace(/[^\d+]/g, "")}` : peta(b.lat, b.lon), !!b.nomor));
     if (!j.bpbd.length) daftar.append(baris("BPBD setempat", {ik: "i-status", alamat: "Nomor belum tercatat di data kami. Hubungi 112."}, "112", "tel:112", true)); });
   for (const [judul, list, ik] of [["Rumah sakit terdekat", j.rs, "i-fasilitas"], ["Puskesmas terdekat", j.puskesmas, "i-korban"], ["Kantor polisi terdekat", j.polisi, "i-orang"]])
-    if (list?.length) grup(judul, ik, daftar => { for (const x of list) daftar.append(baris(x.nama, {ik, km: x.jarakKm}, "Arah", peta(x.lat, x.lon))); });
+    if (list?.length) grup(judul, ik, daftar => { for (const x of list) {
+      // nomor dari OpenStreetMap bila tercatat: tombol Telepon di samping Arah (pemilik 25 Nov 2026: "dilengkapi dengan nomor hapenya")
+      if (!x.nomor) { daftar.append(baris(x.nama, {ik, km: x.jarakKm}, "Arah", peta(x.lat, x.lon))); continue; }
+      const r = baris(x.nama, {ik, km: x.jarakKm, alamat: x.nomor.replace(/^\+62(21|22|24|31|61)/, "0$1 ").replace(/^\+62/, "0")}, null, null); r.classList.add("dua-aksi");   // baris bukan tautan: dua tombol sendiri
+      const tombol = (kls, href, ikn, label) => { const t = Object.assign(el("a", kls), {href, title: label}); if (href.startsWith("http")) Object.assign(t, {target: "_blank", rel: "noopener"}); t.setAttribute("aria-label", `${label}, ${x.nama}`); t.append(ikon(ikn), el("span", "lp-no-teks", label)); return t; };
+      r.append(tombol("no merah", `tel:${x.nomor}`, "i-telepon", "Telepon"), tombol("no", peta(x.lat, x.lon), "i-arah", "Arah"));
+      daftar.append(r); } });
   k.classList.add("lp-langkah-penting");
   kolom.style.setProperty("--kol", kolom.childElementCount);
   const nas = el("section", "lp-kontak-grup nasional"), hn = el("h3"); hn.append(ikon("i-telepon"), "Nomor darurat nasional"); nas.append(hn, kisi);
@@ -1629,7 +1727,7 @@ async function dialogBahasa(selesai = null) {   // selesai(): dipanggil sesudah 
   if (daftarBahasa.length < 2) return selesai?.();
   const d = el("dialog", "lp-dialog-bahasa"), kep = el("div", "lp-db-kepala"), m = el("div", "lp-db-maskot"), tx = el("div"), h = el("h2", null, "Pilih bahasa Anda");
   m.innerHTML = maskot("sapa"); h.id = "judulDialogBahasa"; d.setAttribute("aria-labelledby", h.id);
-  const subJ = el("p", null, "Sigap akan bertanya dan menjawab dalam bahasa ini. Choose your language."); tx.append(h, subJ);
+  tx.append(h);   // cukup "Pilih bahasa Anda" (pemilik 25 Nov 2026)
   // tombol tutup kanan atas (pemilik 20 Nov 2026: "di kanan atas ada buat closenya"); sama dengan Esc
   const bTutup = el("button", "lp-ikon lp-db-tutup"); bTutup.type = "button"; bTutup.setAttribute("aria-label", "Tutup"); bTutup.append(ikon("i-tutup"));
   bTutup.addEventListener("click", () => d.dispatchEvent(new Event("cancel")));
@@ -1643,8 +1741,8 @@ async function dialogBahasa(selesai = null) {   // selesai(): dipanggil sesudah 
   // pratinjau: judul, keterangan, dan tombol Lanjut langsung memakai bahasa yang dipilih (pemilik 20 Nov 2026), dari simpanan atau satu permintaan terjemah
   let urutPratinjau = 0;
   const pratinjau = async k => { const no = ++urutPratinjau, nama = kode.get(k)?.replace(/^Bahasa /, "") || "Indonesia";
-    const grup = [...d.querySelectorAll(".lp-db-grup h3")], asli = ["Pilih bahasa Anda", "Sigap akan bertanya dan menjawab dalam bahasa ini.", `Lanjut dalam bahasa ${nama}`, ...grup.map(x => x.dataset.asli ||= x.textContent)];
-    const pasang = t => { if (no !== urutPratinjau) return; h.textContent = t[0]; subJ.textContent = k === "en" ? t[1] : `${t[1]} Choose your language.`; lanjut.lastChild.textContent = t[2]; grup.forEach((x, i) => { x.textContent = t[3 + i]; }); };
+    const grup = [...d.querySelectorAll(".lp-db-grup h3")], asli = ["Pilih bahasa Anda", `Lanjut dalam bahasa ${nama}`, ...grup.map(x => x.dataset.asli ||= x.textContent)];
+    const pasang = t => { if (no !== urutPratinjau) return; h.textContent = t[0]; lanjut.lastChild.textContent = t[1]; grup.forEach((x, i) => { x.textContent = t[2 + i]; }); };
     if (k === "id") return pasang(asli);
     const kamus = {...trBaca(k), ...await muatStatis(k)}, belum = asli.filter(t => !kamus[t]);   // kamus statis dulu: pratinjau seketika
     pasang(asli.map(t => kamus[t] || t));
@@ -1749,6 +1847,10 @@ const TUR = [
   ["#bDarurat", "Lapor darurat", "Laporkan bencana yang sedang berlangsung dan butuh penanganan cepat. Cukup isi lokasi, jenis kejadian, dan ada korban atau tidak. Petugas BNPB dan BPBD langsung menerimanya dan menindaklanjuti."],
   ["#bLaporBaru", "Lapor kejadian", "Ceritakan lewat obrolan. Saya bertanya satu per satu, Anda cukup memilih jawaban dan memotret dari kamera."],
   ["#bCekStatus", "Cek status laporan", "Simpan nomor laporan Anda. Dari sini Anda bisa melihat tindak lanjut BPBD dan BNPB."],
+  // tiga pintu tambahan di hero ikut dijelaskan (pemilik 25 Nov 2026: "ini kenapa ga ada di tur?")
+  [".lp-kaca-pasang", "Pasang aplikasi", "Pasang Pantau Bencana di layar utama HP Anda. Bisa dibuka cepat tanpa mengetik alamat."],
+  [".lp-kaca-peringatan", "Peringatan dini", "Pilih kecamatan Anda, lalu terima notifikasi saat prakiraan banjir, longsor, asap, atau angin naik ke Waspada, Siaga, atau Awas."],
+  [".lp-kaca-hilang", "Lapor orang hilang", "Laporkan keluarga atau kerabat yang belum ditemukan. Isi nama, ciri, dan tempat terakhir terlihat, lalu kirim ke petugas."],
   ['#lBeranda [data-aksi="info"]', "Info dan prediksi", "Kejadian hari ini serta prakiraan hujan, banjir, longsor, asap, dan angin 3 hari ke depan di daerah Anda."],
   ['#lBeranda [data-aksi="edukasi"]', "Edukasi siaga bencana", "Yang perlu dilakukan sebelum, saat, dan sesudah bencana."],
   ['#lBeranda [data-aksi="penting"]', "Nomor penting", "BPBD, rumah sakit, polisi, dan pemadam kebakaran terdekat dari lokasi Anda."],

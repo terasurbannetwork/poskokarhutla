@@ -5,7 +5,7 @@ Halaman ini menjelaskan cara menelusuri asal asap, arti persentase sumber asap, 
 ## Asal asap: telusur mundur
 
 1. Dari tiap kota, hitung jalur mundur segumpal udara dengan arah angin dibalik, sampai 72 jam ke belakang, pada tiga ketinggian angin. Hasilnya beberapa jalur per kota, yaitu lima waktu tiba berbeda.
-2. Beri bobot pada jalur yang melewati dalam 25 km dari kumpulan titik api aktif; makin dekat dan makin besar api, makin besar bobotnya.
+2. Beri bobot pada jalur yang melewati dalam 25 km dari kumpulan titik panas aktif; makin dekat dan makin besar api, makin besar bobotnya.
 3. Gabungkan menjadi persen relatif per sumber.
 4. Kota dibuang dari hitungan (bukan ditulis 0%) bila kurang dari 2 dari 5 waktu tiba yang melewati api, atau PM2,5 prakiraannya di bawah 30.
 

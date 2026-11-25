@@ -183,8 +183,10 @@ jobs:
   # Bulanan (cron tgl 3) atau dispatch jenis=jam_hujan. Menarik semua imerg/<YYYY-MM>.json.gz dari R2 (ratusan MB; bulan tanpa objek dilewati,
   # berkas skema 1 disaring jam_hujan.py sendiri), menjalankan uji lalu skrip, meng-commit satu berkas ke main. Skrip keluar 3 bila belum ada skema 2:
   # run merah itu disengaja (panen ulang belum selesai), berkas tayang lama tidak disentuh.
+  # Panen ulang penuh (jenis=imerg, timpa=ya) langsung disusul job ini sesudah semua bulan selesai, tanpa dispatch kedua.
   jam-hujan:
-    if: github.event.schedule == '30 3 3 * *' || inputs.jenis == 'jam_hujan'
+    needs: imerg
+    if: ${{ !cancelled() && (github.event.schedule == '30 3 3 * *' || inputs.jenis == 'jam_hujan' || (inputs.jenis == 'imerg' && inputs.timpa == 'ya')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     permissions:

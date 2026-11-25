@@ -19,7 +19,7 @@ CURING(c) = 0,005 (exp(0,061 c) - 1)                bila c < 58,8
           = 0,176 + 0,02 (c - 58,8)                 bila c >= 58,8
 ```
 
-Laju belakang memakai ISI dengan efek angin berbalik (`bisi = 0,208 exp(-0,05039 W) fFF`). Bentuk elips: `a = (kepala + belakang) / 2`, `b = a / LB`, dengan rasio panjang-lebar `LB = 1 (angin < 1 km/jam), 1,1 W^0,464` untuk tipe rumput dan `1 + 8,729 (1 - exp(-0,030 W))^2,155` untuk lainnya. Laju ke tiap dari 16 arah tetangga diperoleh dari persamaan elips yang berpusat di titik api. Laju antara dua sel adalah rata-rata harmonik laju kedua sel kali faktor skenario.
+Laju belakang memakai ISI dengan efek angin berbalik (`bisi = 0,208 exp(-0,05039 W) fFF`). Bentuk elips: `a = (kepala + belakang) / 2`, `b = a / LB`, dengan rasio panjang-lebar `LB = 1 (angin < 1 km/jam), 1,1 W^0,464` untuk tipe rumput dan `1 + 8,729 (1 - exp(-0,030 W))^2,155` untuk lainnya. Laju ke tiap dari 16 arah tetangga diperoleh dari persamaan elips yang berpusat di titik panas. Laju antara dua sel adalah rata-rata harmonik laju kedua sel kali faktor skenario.
 
 Parameter bahan bakar (`BAHAN`, `public/index.html:6707`, sama dengan `simfisika.py`):
 

@@ -1,6 +1,6 @@
 # Sekilas model sebaran
 
-Bagian ini menjawab tiga pertanyaan yang sering muncul saat ada titik panas baru. Titik panas adalah lokasi yang dideteksi satelit lebih panas daripada sekitarnya. Pertama, apakah titik api yang baru muncul akan membesar? Kedua, ke arah mana dan seberapa luas api bisa menjalar dalam 72 jam? Ketiga, kotak peta mana yang berpeluang memuat api dalam tujuh hari ke depan?
+Bagian ini menjawab tiga pertanyaan yang sering muncul saat ada titik panas baru. Titik panas adalah lokasi yang dideteksi satelit lebih panas daripada sekitarnya. Pertama, apakah titik panas yang baru muncul akan membesar? Kedua, ke arah mana dan seberapa luas api bisa menjalar dalam 72 jam? Ketiga, kotak peta mana yang berpeluang memuat api dalam tujuh hari ke depan?
 
 Semua jawabannya adalah perkiraan hitungan, bukan pengamatan dan bukan keputusan resmi. Tiap perkiraan diberi label yang menunjukkan seberapa jauh sudah terbukti tepat. Baca label itu sebelum memakai angkanya.
 
@@ -15,9 +15,9 @@ Ringkasan enam perkiraan dan statusnya:
 
 | Perkiraan | Yang dijawab | Status |
 | --- | --- | --- |
-| Peluang titik api baru membesar (tanda WASPADA) | Apakah titik api baru akan mencapai sekitar 140 hektare dalam 72 jam | Hasil uji balik baik, tetapi uji berjalan belum punya cukup data, jadi masih hipotesis |
+| Peluang titik panas baru membesar (tanda WASPADA) | Apakah titik panas baru akan mencapai sekitar 140 hektare dalam 72 jam | Hasil uji balik baik, tetapi uji berjalan belum punya cukup data, jadi masih hipotesis |
 | Model data per kotak | Kotak 375 meter mana yang ikut terbakar dalam 24, 48, 72 jam | Eksperimental: belum mengalahkan pembanding sederhana |
 | Mesin fisika penjalaran api | Kapan api tiba di tiap lokasi dan berapa luasnya menurut skenario | Belum diuji untuk Indonesia; dipakai membandingkan skenario saja |
 | Jejak api kompleks aktif | Simulasi 24, 48, 72 jam untuk kompleks api yang sedang aktif | Hanya dipakai bila memenuhi syarat kelayakan tampil; pada penilaian 23 Oktober 2026 belum memenuhi |
-| Peluang api 7 hari per kotak 5,5 km | Kotak mana yang akan tertangkap satelit membawa titik api minggu depan | Eksperimental, hanya untuk pengguna yang sudah masuk |
+| Peluang api 7 hari per kotak 5,5 km | Kotak mana yang akan tertangkap satelit membawa titik panas minggu depan | Eksperimental, hanya untuk pengguna yang sudah masuk |
 | Riset pendukung | Awal musim, tren 25 tahun, faktor pendorong | Informasi; beberapa percobaan gagal dan sengaja tidak dipasang |

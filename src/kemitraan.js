@@ -49,7 +49,7 @@ const cariKode = (env, kini) => async kodeSha => {
 /* Isi HTML dari tiket KM-A10 (public/kemitraan.html, public/kemitraan/<halaman>.html). Sebelum ada: cangkang layar masuk tanpa skrip. Halaman tidak membawa data;
    hak ditegakkan API (hakKm). Tamu tetap 200 (layar masuk), bukan dialihkan ke /admin/masuk. */
 const CANGKANG = `<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Kemitraan Kampus</title></head>
-<body><main><h1>Kemitraan Kampus</h1><p>Masuk untuk melanjutkan.</p><p><a href="/admin/masuk?ke=%2Fkemitraan">Masuk staf BNPB</a> | <a href="/kemitraan/masuk">Masuk koordinator kampus</a></p></main></body></html>`;
+<body><main><h1>Kemitraan Kampus</h1><p>Masuk untuk melanjutkan.</p><p><a href="/masuk?ke=%2Fkemitraan#sandi">Masuk staf BNPB</a> | <a href="/kemitraan/masuk">Masuk koordinator kampus</a></p></main></body></html>`;
 async function halaman(env, url, berkas, turnstile = false) {
   const r = env.ASSETS ? await env.ASSETS.fetch(new Request(new URL(berkas, url))) : null;
   const t = tajuk(turnstile && env.TURNSTILE_SITEKEY);

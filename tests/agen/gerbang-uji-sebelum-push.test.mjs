@@ -164,6 +164,23 @@ test("npm run dorong: rebase bentrok dan index kotor, menyusul lewat gabung tanp
   assert.match(git(a, "diff", "--cached", "--name-only"), /lain\.txt/, "suntingan sesi lain di index tidak tersentuh");
 });
 
+// 25 Nov 2026: merge-tree yang bentrok tetap menulis pohon berpenanda <<<<<<<; dorong sempat meng-commit-nya. Bentrok sungguhan harus berhenti.
+test("npm run dorong: bentrok sungguhan dan index kotor, berhenti tanpa commit gabungan berpenanda", () => {
+  const {d, a, log} = arenaPush(() => "exit 0\n");
+  const git = (cwd, ...x) => execFileSync("git", x, {cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"]}).trim();
+  const b = join(d, "b");
+  git(b, "pull", "-q", "origin", "main");
+  writeFileSync(join(b, "f.txt"), "2"); git(b, "add", "f.txt"); git(b, "commit", "-qm", "lawan-f"); git(b, "push", "-q", "origin", "main");
+  writeFileSync(join(a, "f.txt"), "3"); git(a, "add", "f.txt"); git(a, "commit", "-qm", "kita-f");
+  writeFileSync(join(a, "lain.txt"), "sesi lain"); git(a, "add", "lain.txt");
+  const sebelum = git(a, "rev-parse", "HEAD");
+  const r = spawnSync("sh", [join(process.cwd(), "scripts/agents/dorong.sh")], {cwd: a, encoding: "utf8", env: envPush});
+  assert.notEqual(r.status, 0, r.stdout + r.stderr);
+  assert.equal(git(a, "rev-parse", "HEAD"), sebelum, "main lokal tidak boleh berubah");
+  assert.deepEqual(log(), ["lawan-f", "awal"]);
+  assert.doesNotMatch(git(a, "show", "HEAD:f.txt"), /<<<<<<<|>>>>>>>/);
+});
+
 test("npm run dorong: uji merah berhenti di percobaan pertama, tidak ada yang masuk", () => {
   const {d, a, log} = arenaPush(d => `echo x >> ${d}/hitung\nexit 1\n`);
   const r = spawnSync("sh", [join(process.cwd(), "scripts/agents/dorong.sh")], {cwd: a, encoding: "utf8", env: envPush});

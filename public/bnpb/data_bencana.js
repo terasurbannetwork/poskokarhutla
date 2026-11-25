@@ -18,16 +18,30 @@
   /* jenis DIBI -> kelompok layar; urutan aturan penting (Banjir Lahar ke gunung api, Banjir Rob ke gelombang) */
   const ATURAN = [[/lahar|erupsi|gunung/i, "gunungapi"], [/rob|gelombang|abrasi/i, "gelombang_pasang"], [/tsunami/i, "gempabumi_tsunami"], [/gempa/i, "gempabumi"],
     [/banjir/i, "banjir"], [/longsor|gerakan tanah/i, "longsor"], [/cuaca|angin|puting|topan|siklon/i, "cuaca"], [/hutan|lahan/i, "karhutla"],
-    [/kekeringan/i, "kekeringan"], [/permukiman|gedung/i, "kebakaran_permukiman"]];
+    [/kekeringan/i, "kekeringan"], [/permukiman|gedung/i, "kebakaran_permukiman"],
+    /* non-alam dipisah dari Lainnya agar sama dengan daftar Ringkasan kanan (kategori DIBI), pemilik 25 Nov 2026 */
+    [/epidemi|wabah/i, "wabah"], [/konflik/i, "konflik_sosial"], [/gagal teknologi|kecelakaan industri|teknologi/i, "kegagalan_teknologi"]];
   /* [kunci, nama, ikon, token warna kategori di tema.css] */
   const KEL = [["banjir", "Banjir", "banjir", "--kat-banjir"], ["cuaca", "Cuaca ekstrem", "cuaca", "--kat-cuaca"], ["longsor", "Tanah longsor", "longsor", "--kat-longsor"],
     ["karhutla", "Karhutla", "karhutla", "--kat-karhutla"], ["gelombang_pasang", "Gelombang dan abrasi", "gelombang_pasang", "--kat-gelombang"], ["gempabumi", "Gempa bumi", "gempabumi", "--kat-gempa"],
     ["kekeringan", "Kekeringan", "kekeringan", "--kat-kering"], ["gunungapi", "Erupsi gunung api", "gunungapi", "--kat-erupsi"], ["tsunami", "Tsunami", "tsunami", "--kat-tsunami"],
-    ["kebakaran_permukiman", "Kebakaran permukiman", "kebakaran_permukiman", "--kat-lain"], ["lainnya", "Lainnya", "lainnya", "--kat-lain"]];
+    ["kebakaran_permukiman", "Kebakaran permukiman", "kebakaran_permukiman", "--kat-lain"], ["wabah", "Wabah penyakit", "wabah", "--kat-lain"],
+    ["konflik_sosial", "Konflik sosial", "konflik_sosial", "--kat-lain"], ["kegagalan_teknologi", "Kegagalan teknologi", "kegagalan_teknologi", "--kat-lain"], ["lainnya", "Lainnya", "lainnya", "--kat-lain"]];
   const namaKel = k => KEL.find(x => x[0] === k)?.[1] || k;
+  /* kelompok daftar jenis (pemilik 25 Nov 2026): bencana alam dulu, lalu bencana lainnya (permukiman, nonalam, sosial, lainnya); sama dengan bendera alam di dibi_tren.js */
+  const ALAM = new Set(["banjir", "cuaca", "longsor", "karhutla", "gelombang_pasang", "gempabumi", "kekeringan", "gunungapi", "tsunami"]);
   const kelompok = j => { for (const [re, k] of ATURAN) if (re.test(j)) return k === "gempabumi_tsunami" ? (/gempa/i.test(j) ? "gempabumi" : "tsunami") : k; return "lainnya"; };
   /* nama kab dinormalkan: DIBI "Kota Adm. Jakarta Barat", geo "Kota Administrasi Jakarta Barat" */
   const ALIAS = {kotapadangsidempuan: "kotapadangsidimpuan"};
+  /* lambang daerah (pemilik 25 Nov 2026), dipakai kartu tooltip dan kartu rincian kab/kota (daftar peringkat tanpa lambang, pemilik 25 Nov 2026):
+     provinsi /lambang/provinsi/<kode>.png; kab/kota lewat /lambang/kabkota.json (kunci "prov|nama", dicocokkan dengan norm), tanpa lambang kab: lambang provinsinya.
+     Elemen gambar disimpan per alamat dan kelas supaya tidak dibuat ulang tiap gerak tetikus; gagal muat disembunyikan. */
+  let LAMB = null; const lambangImg = new Map();
+  fetch("/lambang/kabkota.json").then(r => r.json()).then(d => { LAMB = new Map(Object.entries(d).map(([k, v]) => { const [pv, nm] = k.split("|"); return [pv + "|" + norm(nm), v]; })); }).catch(() => {});
+  const srcLambang = (prov, nama) => { const slug = nama ? LAMB?.get(prov + "|" + norm(nama)) : null; return slug ? `/lambang/kabkota/${slug}.png` : `/lambang/provinsi/${prov}.png`; };
+  const gbrLambang = (src, kls) => { const kunci = kls + " " + src; let img = lambangImg.get(kunci);
+    if (!img) { img = h("img", {class: kls, alt: "", src, decoding: "async"}); img.addEventListener("error", () => { img.style.visibility = "hidden"; }, {once: true}); lambangImg.set(kunci, img); }
+    return img; };
   const norm = s => { const n = String(s || "").toLowerCase().replace(/kep\./g, "kepulauan ").replace(/administrasi|adm\.|kab\./g, "").replace(/\bdan\b/g, "").replace(/[^a-z]/g, ""); return ALIAS[n] || n; };
   const CADANG_PROV = {fakfak: "92"};   // tidak ada di wilayah.json
   /* skala warna berurutan satu rona (pemilik: bukan hijau-kuning-merah polos); batas bawah tiap kelas per tingkat peta */
@@ -50,7 +64,10 @@
     return [[x0, y0], [x1, y1]]; };
   const persen = (kini, lalu) => !lalu ? null : Math.round((kini - lalu) / lalu * 100);
   const kataUbah = p => p == null ? "tanpa pembanding" : p === 0 ? "sama" : (p > 0 ? "naik " : "turun ") + F(Math.abs(p)) + " persen";
-  const waLink = (teks, label) => h("a", {class: "bd-wa", href: "https://wa.me/?text=" + encodeURIComponent(teks), target: "_blank", rel: "noopener"}, ikon("lanjut"), h("span", {teks: label}));
+  /* logo WhatsApp (path Simple Icons, sama dengan dalops.js dan public/inti/alarm.js), pemilik 25 Nov 2026 "jadi logo WA" */
+  const ikonWA = () => { const sv = document.createElementNS("http://www.w3.org/2000/svg", "svg"); sv.setAttribute("viewBox", "0 0 24 24"); sv.setAttribute("aria-hidden", "true"); sv.setAttribute("class", "bd-wa-ikon");
+    const pa = document.createElementNS("http://www.w3.org/2000/svg", "path"); pa.setAttribute("d", "M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.89 9.88m8.41-18.3A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.16-3.48-8.41"); sv.appendChild(pa); return sv; };
+  const waLink = (teks, label) => h("a", {class: "bd-wa", href: "https://wa.me/?text=" + encodeURIComponent(teks), target: "_blank", rel: "noopener"}, ikonWA(), h("span", {teks: label}));
   const GEO = new Map(), ambil = u => GEO.get(u) || GEO.set(u, fetch(u).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).catch(e => { GEO.delete(u); throw e; })).get(u);
 
   async function siapkan() {
@@ -95,6 +112,11 @@
     const jepit = t => t < D.d.dari ? D.d.dari : t > D.d.sampai ? D.d.sampai : t;
     const q = TANAM ? new URLSearchParams() : new URLSearchParams(location.search), awalTahun = D.d.sampai.slice(0, 4) + "-01-01";
     const BAKU = {dari: jepit(awalTahun), sampai: D.d.sampai, prov: "", kab: "", jenis: ""};
+    /* st.jenis: kelompok dipisah koma, "" = semua; bisa beberapa sekaligus (pemilik 25 Nov 2026 "multiselect") */
+    const jSet = (() => { let k, v; return () => k === st.jenis ? v : (k = st.jenis, v = new Set(st.jenis ? st.jenis.split(",") : [])); })(), cocokJ = kel => !st.jenis || jSet().has(kel);
+    /* nama jenis terpilih untuk judul: satu atau dua disebut, lebih dari itu cukup jumlahnya (judul tidak memanjang jadi daftar) */
+    const namaJ = () => { if (!st.jenis) return null; if (st.jenis === "-") return "Tidak ada jenis dipilih"; const j = st.jenis.split(","); if (j.length > 2) { const al = j.filter(k => ALAM.has(k)).length; if (al === j.length && al >= ALAM.size - 1) return "Bencana alam"; if (!al) return "Bencana lainnya"; }
+      return j.length <= 2 ? j.map(namaKel).join(" dan ") : `${j.length} jenis bencana`; };
     const st = {...BAKU, ukur: "jumlah", lapis: new Set()};   // ukur: jumlah | per100; lapis: posko, rambu
     const css = getComputedStyle(document.documentElement), kuas = document.createElement("canvas").getContext("2d", {willReadFrequently: true});
     /* token tema berupa oklch, MapLibre hanya paham rgb: warnai satu piksel lalu baca kembali */
@@ -117,18 +139,18 @@
       if (p.kab !== undefined) { const k = String(p.kab || "");
         if (/^\d{2}\.?\d{2}$/.test(k)) { const kode = k.includes(".") ? k : k.slice(0, 2) + "." + k.slice(2), x = D.baris.find(y => y.kab_kode === kode); st.kab = x ? x.kabN : ""; if (x) st.prov = x.prov; }
         else st.kab = norm(k); }
-      if (p.jenis !== undefined) st.jenis = KEL.some(x => x[0] === p.jenis) ? p.jenis : "";
+      if (p.jenis !== undefined) st.jenis = p.jenis === "-" ? "-" : String(p.jenis || "").split(",").filter((j, i, a) => KEL.some(x => x[0] === j) && a.indexOf(j) === i).join(",");
       if (p.ukur !== undefined) st.ukur = p.ukur === "per100" ? "per100" : "jumlah";
       if (p.lapis !== undefined) { st.lapis = new Set((p.lapis || []).filter(x => x === "posko" || x === "rambu")); muatLapis(); }
       terap(simpan);
     };
 
     /* ---------- panel Ringkasan (kiri, gaya /lapor/meja) ---------- */
-    const elTotal = h("b", {class: "bd-total-n"}), elWil = h("span", {class: "bd-total-wil"}), elBand = h("span", {class: "bd-total-band"}), elAkt = h("span", {class: "bd-total-akt", hidden: true});
+    const elTotal = h("b", {class: "bd-total-n"}), elWil = h("span", {class: "bd-total-wil"}), elPerT = h("span", {class: "bd-total-per"}), elBand = h("span", {class: "bd-total-band"}), elAkt = h("span", {class: "bd-total-akt", hidden: true});
     const kJenis = h("div", {class: "bd-rk-jenis", role: "group", "aria-label": "Saring jenis bencana"}), kPering = h("ol", {class: "bd-rk-kab"}), lPering = h("p", {class: "bd-rk-label"}), kLapis = h("div", {class: "bd-rk-lapis"});
     const ringkas = h("details", {class: "bd-ringkas", open: true}, h("summary", null, ikon("data"), h("span", {teks: "Ringkasan"})),
-      h("div", {class: "bd-ringkas-isi"}, h("div", {class: "bd-rk-total"}, h("span", {class: "bd-rk-label", teks: "Jumlah kejadian bencana"}), elTotal, elWil, elBand, elAkt),
-        h("p", {class: "bd-rk-label", teks: "Per jenis bencana"}), kJenis, lPering, kPering, kLapis));
+      h("div", {class: "bd-ringkas-isi"}, h("div", {class: "bd-rk-total"}, h("span", {class: "bd-rk-label", teks: "Jumlah kejadian bencana"}), h("span", {class: "bd-total-baris"}, elTotal, h("span", {teks: "kejadian"})), elWil, elPerT, elBand, elAkt),
+        kJenis, lPering, kPering, kLapis));
 
     /* ---------- kartu Dampak dan Kerusakan (di luar peta; tidak dipakai mode tanam) ---------- */
     const A = {}; const ubin = (...xs) => xs.map(([k, ik, l]) => { const n = h("b"); A[k] = n; return h("div", {class: "bd-ang"}, h("i", null, ikon(ik)), n, h("span", {teks: l})); });
@@ -155,7 +177,7 @@
     bPeriode.addEventListener("click", async () => { try { await muatKal(); } catch (e) { pesanF.textContent = "Kalender gagal dimuat. Muat ulang halaman ini."; return; }
       window.Kalender.buka({tombol: bPeriode, rentang: true, hariIni: D.d.sampai, terpilih: fT.dari ? [fT.dari, fT.sampai] : undefined, judul: "Pilih periode", satuan: "kejadian", awal: D.d.dari,
         ket: "Angka = kejadian DIBI hari itu.", bisa: t => t >= D.d.dari && t <= D.d.sampai, terbanyak: {judul: "Hari dengan kejadian terbanyak", n: 5},
-        muat: async () => { const jumlah = {}; for (const x of D.baris) if (x.bencana !== 0 && diWil(x) && (!st.jenis || x.kel === st.jenis)) jumlah[x.tanggal] = (jumlah[x.tanggal] || 0) + 1; return {jumlah}; },
+        muat: async () => { const jumlah = {}; for (const x of D.baris) if (x.bencana !== 0 && diWil(x) && cocokJ(x.kel)) jumlah[x.tanggal] = (jumlah[x.tanggal] || 0) + 1; return {jumlah}; },
         pilih: (a, z) => { fT.dari = a; fT.sampai = z; pesanF.textContent = ""; labelP(); }}); });
     const sProv = h("select", {id: "bdProv"}, h("option", {value: "", teks: "Semua provinsi"}), ...Object.entries(PROV).sort((a, b) => a[1].localeCompare(b[1], "id")).map(([k, n]) => h("option", {value: k, teks: n})));
     const sKab = h("select", {id: "bdKab"});
@@ -208,6 +230,8 @@
     geserPanel(ringkas, ringkas.querySelector("summary"), peta);
 
     /* ---------- peta ---------- */
+    /* sorot wilayah dari luar peta (daftar peringkat, pemilik 25 Nov 2026): kode wilayah -> id fitur peta; diisi tiap peta digambar */
+    let idPerKode = new Map(), sorotLuar = () => {}, elPesanJ = null;
     let M = null, siapPeta = null, idSorot = null, bingkaiAkhir = [[94.8, -11.2], [141.2, 6.2]], lebarFit = 0;
     const ruang = () => innerWidth > 1100 ? {top: 70, bottom: 60, left: 310, right: st.kab ? 340 : 40} : 24;   // panel Ringkasan dan rincian menutup tepi peta di layar lebar
     /* peta bisa lahir di panel yang belum berukuran (tab Dalops): ukur ulang tiap kali wadahnya berubah, dan bingkai ulang
@@ -238,14 +262,20 @@
         M.addLayer({id: "akt-n", type: "symbol", source: "akt", filter: [">", ["get", "n"], 1], layout: {"text-field": ["to-string", ["get", "n"]], "text-font": ["Noto Sans Regular"], "text-size": 11, "text-allow-overlap": true},
           paint: {"text-color": warna("--card")}});
         r(); }));
+      /* lambang daerah di kepala kartu (pemilik 25 Nov 2026): provinsi /lambang/provinsi/<kode>.png, kab/kota lewat /lambang/kabkota.json
+         (kunci "prov|nama", dicocokkan dengan norm); kab tanpa lambang memakai lambang provinsinya; gagal muat disembunyikan.
+         Elemen gambar disimpan per alamat supaya tidak dibuat ulang tiap gerak tetikus. */
+      const lambang = p => gbrLambang(st.prov ? srcLambang(st.prov, p.nama) : srcLambang(p.kode), "bd-tip-lambang");
       const sorot = id => { if (idSorot != null) M.setFeatureState({source: "w", id: idSorot}, {sorot: false}); idSorot = id; if (id != null) M.setFeatureState({source: "w", id}, {sorot: true}); };
+      sorotLuar = kode => sorot(kode == null ? null : idPerKode.get(kode) ?? null);
       M.on("mousemove", "w-isi", e => { const f = e.features[0]; if (!f || e.originalEvent.bdPosko || M.queryRenderedFeatures(e.point, {layers: ["posko-titik"]}).length) return; sorot(f.id); M.getCanvas().style.cursor = "pointer";
         const p = f.properties, top = JSON.parse(p.top || "[]"), akt = JSON.parse(p.akt || "[]");
         const per100 = st.ukur === "per100", lain = top.find(([k]) => k === "lainnya")?.[1] || 0, utama = top.filter(([k]) => k !== "lainnya");
         const sisa = lain + utama.slice(4).reduce((t, [, n]) => t + n, 0), daftar = [...utama.slice(0, 4), ...(sisa ? [["lainnya", sisa]] : [])];
-        const baris = ([k, n]) => { const w = KEL.find(x => x[0] === k)?.[3] || "--kat-lain", b = h("span", {class: "bd-tip-k"}, h("i"), h("span", {teks: namaKel(k)}), h("strong", {teks: F(n)}), h("em"));
-          b.querySelector("i").style.background = `var(${w})`; b.querySelector("em").style.setProperty("--p", (p.n ? n / p.n * 100 : 0).toFixed(1) + "%"); b.querySelector("em").style.setProperty("--w", `var(${w})`); return b; };
-        tip.replaceChildren(h("span", {class: "bd-tip-kepala"}, h("b", {teks: p.nama}), ...(p.urut ? [h("small", {class: "bd-tip-urut", teks: `Ke-${F(p.urut)} dari ${F(p.dari)}`})] : [])),
+        /* baris jenis: ubin ikon berwarna jenis (sama dengan Ringkasan), nama, angka, batang porsi */
+        const baris = ([k, n]) => { const kl = KEL.find(x => x[0] === k), w = kl?.[3] || "--kat-lain", b = h("span", {class: "bd-tip-k"}, h("span", {class: "bd-tip-ik"}, ikon(kl?.[2] || "lainnya")), h("span", {teks: namaKel(k)}), h("strong", {teks: F(n)}), h("em"));
+          b.style.setProperty("--jn", `var(${w})`); b.querySelector("em").style.setProperty("--p", (p.n ? n / p.n * 100 : 0).toFixed(1) + "%"); b.querySelector("em").style.setProperty("--w", `var(${w})`); return b; };
+        tip.replaceChildren(h("span", {class: "bd-tip-kepala"}, lambang(p), h("b", {teks: p.nama}), ...(p.urut ? [h("small", {class: "bd-tip-urut", teks: `Ke-${F(p.urut)} dari ${F(p.dari)}`})] : [])),
           h("span", {class: "bd-tip-angka"}, h("strong", {teks: per100 ? (p.laju != null ? F1(p.laju) : "–") : F(p.n)}),
             h("span", {teks: per100 ? (p.laju != null ? `kejadian per 100 ribu jiwa, ${F(p.n)} kejadian` : `${F(p.n)} kejadian, tanpa data penduduk`) : (p.n ? "kejadian" : "Tidak ada kejadian tercatat")})),
           ...(daftar.length ? [h("span", {class: daftar.length > 1 ? "bd-tip-rinci" : "bd-tip-satu"}, ...daftar.map(baris))] : []),
@@ -277,16 +307,18 @@
     let tingkatGeo = null;
     async function gambar(rows, akt) {
       if (!M) return; await siapPeta;
-      const fitur = [], titik = [], tingkat = st.prov ? "kab" : "prov";
+      const fitur = [], titik = [], tingkat = st.prov ? "kab" : "prov", idBaru = new Map();
       const kel = (kunci, xs) => { const m = new Map(); for (const x of xs) { const k = kunci(x); m.set(k, [...(m.get(k) || []), x]); } return m; };
       const top = a => JSON.stringify(Object.entries(a.kel).filter(([, n]) => n > 0).sort((x, y) => y[1] - x[1]));
       const hitung = kunci => { const per = new Map(); for (const x of rows) { if (x.bencana === 0) continue; const k = kunci(x), a = per.get(k) || {n: 0, kel: {}}; a.n += x.kejadian; a.kel[x.kel] = (a.kel[x.kel] || 0) + x.kejadian; per.set(k, a); } return per; };
       const pusat = g => { const [[x0, y0], [x1, y1]] = tengah(g); return [(x0 + x1) / 2, (y0 + y1) / 2]; };
+      idPerKode = idBaru;
       if (!st.prov) {
         const g = await ambil("/geo/provinsi.json"), per = hitung(x => x.prov), ak = kel(x => x.prov, akt);
         g.features.forEach(f => { const k = f.properties.kode, a = per.get(k) || {n: 0, kel: {}}, xa = ak.get(k) || [];
           const u = ukurWil(a.n, PEND?.prov.get(k), tingkat);
           let rambuTeks = null; if (st.lapis.has("rambu") && RAMBU?.size) { const xs = [...RAMBU].filter(([kk]) => kk.startsWith(k + "|")); rambuTeks = xs.length ? `Rambu evakuasi IDRIP ${RAMBU.tahun}: ${F(xs.reduce((t, [, v]) => t + v.n, 0))} di ${F(xs.length)} kab/kota` : "Tidak tercakup data rambu IDRIP"; }
+          idBaru.set(k, k);
           fitur.push({type: "Feature", properties: {id: k, kode: k, nama: PROV[k] || k, n: a.n, w: u.w, laju: u.laju, rambuTeks, top: top(a), akt: JSON.stringify(ringkasAkt(xa, false))}, geometry: f.geometry});
           if (xa.length) titik.push({type: "Feature", properties: {n: new Set(xa.map(x => x.kabN)).size}, geometry: {type: "Point", coordinates: pusat(f.geometry)}}); });
       } else {
@@ -294,6 +326,7 @@
         const per = hitung(x => x.kabN), ak = kel(x => x.kabN, akt);
         g.features.forEach((f, i) => { const kn = norm(f.properties.kab), a = per.get(kn) || {n: 0, kel: {}}, xa = ak.get(kn) || [];
           const u = ukurWil(a.n, PEND?.kab.get(st.prov + "|" + kn), tingkat), rk = st.prov + "|" + kn;
+          idBaru.set(kn, st.prov + "-" + i);
           fitur.push({type: "Feature", properties: {id: st.prov + "-" + i, kode: kn, nama: f.properties.kab, n: a.n, w: u.w, laju: u.laju, pilih: st.kab === kn ? 1 : 0,
             rambu: st.lapis.has("rambu") && RAMBU?.has(rk) ? 1 : 0, rambuTeks: teksRambu(rk, f.properties.kab), top: top(a), akt: JSON.stringify(ringkasAkt(xa, true))}, geometry: f.geometry});
           if (xa.length) titik.push({type: "Feature", properties: {n: 1}, geometry: {type: "Point", coordinates: pusat(f.geometry)}}); });
@@ -358,7 +391,7 @@
       let a = y0 * 100 + m0; if (d0 !== 1) a = m0 === 12 ? (y0 + 1) * 100 + 1 : a + 1;
       const b = y1 * 100 + m1; if (a > b || Math.floor(a / 100) !== Math.floor(b / 100)) return {catatan: "Banding tahun lalu perlu minimal satu bulan penuh dalam satu tahun"};
       const K = TREN.kolom_bulan, iB = K.indexOf("bulan"), iK = K.indexOf("kategori"), iP = K.indexOf("prov"), ukur = ["kejadian", "mdh", "luka", "terdampak", "rumah"].map(k => K.indexOf(k));
-      const jum = (lo, hi) => { const t = [0, 0, 0, 0, 0]; for (const r of TREN.bulan_prov) { if (r[iB] < lo || r[iB] > hi || (st.prov && r[iP] !== st.prov) || (st.jenis && kelompok(TREN.kategori[r[iK]]) !== st.jenis)) continue; ukur.forEach((i, j) => { t[j] += r[i] || 0; }); } return t; };
+      const jum = (lo, hi) => { const t = [0, 0, 0, 0, 0]; for (const r of TREN.bulan_prov) { if (r[iB] < lo || r[iB] > hi || (st.prov && r[iP] !== st.prov) || !cocokJ(kelompok(TREN.kategori[r[iK]]))) continue; ukur.forEach((i, j) => { t[j] += r[i] || 0; }); } return t; };
       const th = Math.floor(a / 100);
       return {label: `${BLN3[a % 100 - 1]}${a === b ? "" : " sampai " + BLN3[b % 100 - 1]}`, th, kini: jum(a, b), lalu: jum(a - 100, b - 100), sementara: th >= +(TREN.sementara || 9999)};
     }
@@ -369,7 +402,7 @@
     function rekonTiga() {
       const R = window.RekonTiga; if (!R) return [];
       const hariIni = AKT.reduce((m, x) => x.hari > m ? x.hari : m, "") || new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
-      const pas = x => diWil(x) && (!st.jenis || x.kel === st.jenis) && x.lo >= st.dari && x.lo <= st.sampai && x.lo >= D.d.dari;
+      const pas = x => diWil(x) && cocokJ(x.kel) && x.lo >= st.dari && x.lo <= st.sampai && x.lo >= D.d.dari;
       const dibi = D.baris.map(x => ({prov: x.prov, kabN: x.kabN, kel: x.kel, lo: x.tanggal, nama: x.kab}));
       const logbook = AKT.map(x => ({prov: x.prov, kabN: x.kabN, kel: x.kel, lo: x.mulai, hi: x.terakhir || x.mulai, nama: x.nama, kata: x.kata}));
       const lapor = LAP.map(x => { const kel = R.KEL_LAPOR[x.jenis] || "lainnya", k = kabKunci(x.prov, x.kabNama || ""); return {prov: x.prov, kabN: k.split("|")[1], kel, lo: x.pertama, hi: x.terakhir, n: x.n, nama: x.kabNama}; });
@@ -396,7 +429,7 @@
     /* rincian satu kab/kota (panel kanan): angka utama, tren 12 bulan, kejadian terakhir, masih berlangsung, kirim ringkasan */
     function gambarRinci(kabNama, s) {
       if (!st.kab) { kotakRinci.hidden = true; return; }
-      const semua = D.baris.filter(x => x.bencana !== 0 && x.prov === st.prov && x.kabN === st.kab && (!st.jenis || x.kel === st.jenis));
+      const semua = D.baris.filter(x => x.bencana !== 0 && x.prov === st.prov && x.kabN === st.kab && cocokJ(x.kel));
       const bulan = []; for (let i = 11; i >= 0; i--) { const d = new Date(Date.parse(D.d.sampai.slice(0, 7) + "-01T00:00:00Z")); d.setUTCMonth(d.getUTCMonth() - i); bulan.push(d.toISOString().slice(0, 7)); }
       const nB = bulan.map(b => semua.filter(x => x.tanggal.startsWith(b)).reduce((t, x) => t + x.kejadian, 0)), maks = Math.max(1, ...nB);
       const tren = h("div", {class: "bd-tren", role: "img", "aria-label": "Kejadian per bulan, 12 bulan terakhir"}, ...bulan.map((b, i) => {
@@ -405,13 +438,13 @@
       const akhir = semua.slice().sort((a, b) => b.tanggal.localeCompare(a.tanggal)).slice(0, 5);
       const rr = x => (x.rr_berat || 0) + (x.rr_sedang || 0) + (x.rr_ringan || 0);
       const dampakSingkat = x => [x.meninggal && `${F(x.meninggal)} meninggal`, x.mengungsi && `${F(x.mengungsi)} mengungsi`, rr(x) && `${F(rr(x))} rumah rusak`, x.terendam && `${F(x.terendam)} rumah terendam`].filter(Boolean).join(", ");
-      const akt = AKT.filter(x => !x.surut && x.prov === st.prov && x.kabN === st.kab && (!st.jenis || x.kel === st.jenis));
+      const akt = AKT.filter(x => !x.surut && x.prov === st.prov && x.kabN === st.kab && cocokJ(x.kel));
       const pesan = `Ringkasan kejadian bencana ${kabNama}, ${tgl(st.dari)} sampai ${tgl(st.sampai)} (DIBI BNPB):\n` +
         `${F(s.total)} kejadian. Meninggal ${F(s.meninggal || 0)}, hilang ${F(s.hilang || 0)}, luka ${F(s.luka || 0)}, mengungsi ${F(s.mengungsi || 0)}. ` +
         `Rumah rusak ${F(rr(s))}, terendam ${F(s.terendam || 0)}.` + (akt.length ? `\nMasih berlangsung menurut Pusdalops BNPB: ${akt.map(x => `${x.kata} sejak ${tgl(x.mulai)}`).join("; ")}.` : "");
       const tutup = h("button", {type: "button", class: "bd-tutup", "aria-label": "Tutup rincian"}, "×");
       tutup.addEventListener("click", () => { st.kab = ""; terap(true); });
-      const kepala = h("div", {class: "bd-rinci-kepala"}, h("span", null, h("b", {teks: kabNama}), h("small", {teks: PROV[st.prov] || ""})), tutup);
+      const kepala = h("div", {class: "bd-rinci-kepala"}, h("span", {class: "bd-rinci-nama"}, gbrLambang(srcLambang(st.prov, kabNama), "bd-rinci-lambang"), h("span", null, h("b", {teks: kabNama}), h("small", {teks: PROV[st.prov] || ""}))), tutup);
       kotakRinci.replaceChildren(kepala, h("div", {class: "bd-rinci-isi"},
         h("div", {class: "bd-rinci-angka"}, ...[["Kejadian", s.total], ["Meninggal", s.meninggal || 0], ["Mengungsi", s.mengungsi || 0], ["Rumah rusak", rr(s)]].map(([t, v]) => h("span", null, h("b", {teks: F(v)}), h("small", {teks: t})))),
         h("p", {class: "bd-rk-label", teks: "Kejadian per bulan"}), tren,
@@ -430,7 +463,7 @@
     function unduhExcel() {
       const X = window.DalopsHitung?.xlsx; if (!X || !terakhir) return alert("Pembuat Excel belum termuat. Muat ulang halaman ini.");
       const {rows, s, per, kabNama} = terakhir, wil = kabNama || (st.prov ? PROV[st.prov] : "Indonesia"), ada = k => D.kolomAda.has(k);
-      const ring = [["Wilayah", wil], ["Periode", `${tgl(st.dari)} sampai ${tgl(st.sampai)}`], ["Jenis", st.jenis ? namaKel(st.jenis) : "Semua"], ["Sumber", "DIBI BNPB, kejadian di atas ambang Juklak 7/2023"],
+      const ring = [["Wilayah", wil], ["Periode", `${tgl(st.dari)} sampai ${tgl(st.sampai)}`], ["Jenis", namaJ() || "Semua"], ["Sumber", "DIBI BNPB, kejadian di atas ambang Juklak 7/2023"],
         ["Jumlah kejadian", s.total], ...[["Meninggal", "meninggal"], ["Hilang", "hilang"], ["Luka-luka", "luka"], ["Mengungsi", "mengungsi"], ["Jiwa menderita", "terdampak"], ["Rumah terendam", "terendam"],
           ["Lahan terdampak (ha)", "lahan_ha"], ["Rumah rusak ringan", "rr_ringan"], ["Rumah rusak sedang", "rr_sedang"], ["Rumah rusak berat", "rr_berat"], ["Fasilitas pendidikan rusak", "f_pendidikan"],
           ["Kantor rusak", "f_kantor"], ["Jembatan rusak", "jembatan"], ["Rumah ibadah rusak", "f_ibadah"], ["Fasilitas kesehatan rusak", "f_kesehatan"], ["Fasilitas umum rusak", "f_umum"]].map(([t, k]) => [t, ada(k) ? s[k] || 0 : "tidak ada data"])];
@@ -473,27 +506,40 @@
     function terap(simpanUrl) {
       const kabNama = st.kab ? D.kabDaftar.get(st.prov)?.get(st.kab) || AKT.find(x => x.kabN === st.kab)?.namaKab || q.get("kab") || st.kab : null;
       const pilihWil = D.baris.filter(x => x.tanggal >= st.dari && x.tanggal <= st.sampai && diWil(x));
-      const rows = st.jenis ? pilihWil.filter(x => x.kel === st.jenis) : pilihWil;
+      const rows = st.jenis ? pilihWil.filter(x => cocokJ(x.kel)) : pilihWil;
       const {per} = jumlah(pilihWil), {s} = jumlah(rows);
-      const akt = AKT.filter(x => !x.surut && diWil(x) && (!st.jenis || x.kel === st.jenis));
+      const akt = AKT.filter(x => !x.surut && diWil(x) && cocokJ(x.kel));
       terakhir = {rows, s, per, kabNama};
-      const wil = kabNama || (st.prov ? PROV[st.prov] : "Indonesia"), periode = `${tgl(st.dari)} sampai ${tgl(st.sampai)}`;
+      const wil = kabNama || (st.prov ? PROV[st.prov] : "Indonesia"), periode = st.dari === st.sampai ? tgl(st.dari) : `${tgl(st.dari)} sampai ${tgl(st.sampai)}`;   /* satu hari: satu tanggal saja */
 
       /* Ringkasan: jumlah, banding, aktif, per jenis (tombol saring), peringkat wilayah */
       elTotal.textContent = F(s.total);
-      elWil.textContent = [st.jenis ? namaKel(st.jenis) : null, wil].filter(Boolean).join(", ") + (TANAM ? `, ${periode}` : "");   // tanam: periode peta (data 365 hari) bisa lebih pendek dari periode kerangka
+      /* wilayah (dan jenis terpilih) satu baris, periode baris sendiri; tanam: periode peta (data 365 hari) bisa lebih pendek dari periode kerangka */
+      elWil.textContent = [namaJ(), wil].filter(Boolean).join(", "); elPerT.textContent = TANAM ? periode : ""; elPerT.hidden = !TANAM;
       const bd = banding();
       elBand.textContent = !bd || bd.catatan ? "" : `${kataUbah(persen(bd.kini[0], bd.lalu[0]))} dari ${F(bd.lalu[0])} (${bd.label} ${bd.th - 1})`;
       elBand.dataset.arah = bd?.kini ? Math.sign(bd.kini[0] - bd.lalu[0]) : "";
       elAkt.hidden = !opsi.aktif || !AKT.length;
       elAkt.textContent = akt.length ? `${F(new Set(akt.map(x => x.prov + x.kabN)).size)} kab/kota masih berlangsung` : "Tidak ada kejadian yang masih berlangsung";
       elAkt.classList.toggle("bd-nol", !akt.length);
-      kJenis.replaceChildren(...KEL.filter(([k]) => k !== "lainnya" || per.lainnya).map(([k, t, ik, w]) => {
-        const b = h("button", {type: "button", class: "bd-rk-baris", "aria-pressed": String(st.jenis === k), disabled: per[k] ? null : true},
+      const pilih = jSet(); if (!elPesanJ) elPesanJ = h("p", {class: "bd-rk-pesan", role: "status", hidden: true});
+      elPesanJ.textContent = "Belum ada jenis bencana yang dipilih. Pilih paling sedikit satu untuk melihat angkanya."; elPesanJ.hidden = st.jenis !== "-";
+      /* judul kelompok + tombol pil "Pilih semua" / "Lepas semua" (sama dengan Ringkasan kanan). Tanpa saringan = semua terpilih.
+         Lepas semua boleh sampai tidak ada jenis terpilih: st.jenis = "-" (beda dengan "" = tanpa saringan). */
+      const KUNCI = KEL.map(x => x[0]), kelAda = k => k !== "lainnya" || per.lainnya;
+      const simpanJ = j => { j.delete("-"); st.jenis = KUNCI.filter(kelAda).every(k => j.has(k)) ? "" : j.size ? KUNCI.filter(k => j.has(k)).join(",") : "-"; terap(false); };
+      const grupJ = al => { const ks = KUNCI.filter(k => ALAM.has(k) === al && kelAda(k)), penuh = !st.jenis || ks.every(k => pilih.has(k));
+        const aksi = h("button", {type: "button", class: "bd-rk-grup-b", teks: penuh ? "Lepas semua" : "Pilih semua", "aria-label": `${penuh ? "Lepas" : "Pilih"} semua ${al ? "bencana alam" : "bencana lainnya"}`});
+        aksi.addEventListener("click", () => { const j = st.jenis ? new Set(jSet()) : new Set(KUNCI.filter(kelAda)); ks.forEach(k => penuh ? j.delete(k) : j.add(k)); simpanJ(j); });
+        return h("div", {class: "bd-rk-grup"}, h("span", {teks: al ? "Bencana alam" : "Bencana lainnya"}), aksi); };
+      kJenis.replaceChildren(...KEL.filter(([k]) => k !== "lainnya" || per.lainnya).flatMap(([k, t, ik, w], i, a) => {
+        const b = h("button", {type: "button", class: "bd-rk-baris", "aria-pressed": String(pilih.has(k)), disabled: per[k] ? null : true},
           h("span", {class: "bd-rk-ik"}, ikon(ik)), h("span", {teks: t}), h("b", {teks: F(per[k])}));
         b.style.setProperty("--jn", `var(${w})`);
-        b.addEventListener("click", () => { st.jenis = st.jenis === k ? "" : k; terap(false); });
-        return b; }));
+        /* klik menambah atau melepas satu jenis; semua terlepas = semua jenis */
+        b.addEventListener("click", () => { if (!st.jenis) { st.jenis = k; return terap(false); } const j = new Set(jSet()); j.has(k) ? j.delete(k) : j.add(k); simpanJ(j); });
+        const awalGrup = i === 0 ? ALAM.has(k) : !ALAM.has(k) && ALAM.has(a[i - 1][0]) ? false : null;
+        return awalGrup !== null ? [grupJ(awalGrup), b] : [b]; }), elPesanJ);
       kJenis.classList.toggle("bd-saring", !!st.jenis);
       const perWil = new Map(); for (const x of rows) { if (x.bencana === 0) continue; const k = st.prov ? x.kabN : x.prov; perWil.set(k, (perWil.get(k) || 0) + x.kejadian); }
       const laju = perLaju(), jiwaWil = k => st.prov ? PEND?.kab.get(st.prov + "|" + k) : PEND?.prov.get(k);
@@ -504,6 +550,9 @@
         const b = h("button", {type: "button", "aria-pressed": String(st.kab === k)}, h("i"), h("em", {teks: String(i + 1)}), h("span", {teks: nama}), h("b", {teks: laju ? F1(n) : F(n)}));
         b.querySelector("i").style.inlineSize = Math.round(n / maks * 100) + "%";
         b.addEventListener("click", () => { if (st.prov) st.kab = st.kab === k ? "" : k; else Object.assign(st, {prov: k, kab: ""}); terap(true); });
+        /* arahkan kursor atau fokus: batas wilayahnya tersorot di peta (garis tebal, sama dengan saat peta di-hover) */
+        b.addEventListener("pointerenter", () => sorotLuar(k)); b.addEventListener("pointerleave", () => sorotLuar(null));
+        b.addEventListener("focus", () => sorotLuar(k)); b.addEventListener("blur", () => sorotLuar(null));
         return h("li", null, b); }));
       if (!atas.length) kPering.replaceChildren(h("li", {class: "bd-kosong", teks: "Tidak ada kejadian pada saringan ini."}));
       /* posko dan rambu di panel Ringkasan; rambu: kab rawan lawan cakupan data IDRIP, "tidak tercakup" bukan "nol" */
@@ -521,7 +570,7 @@
 
       /* kartu Dampak dan Kerusakan; kolom yang tidak ada di data tampil "–" */
       elPer.textContent = periode;
-      judulCetak.textContent = `Data Bencana Indonesia, ${[st.jenis ? namaKel(st.jenis) : null, wil].filter(Boolean).join(", ")}, ${periode}`;
+      judulCetak.textContent = `Data Bencana Indonesia, ${[namaJ(), wil].filter(Boolean).join(", ")}, ${periode}`;
       for (const k of Object.keys(A)) if (k !== "rr_total") { const ada = D.kolomAda.has(k); A[k].textContent = ada ? F(s[k] || 0) : "–"; A[k].parentElement.title = ada ? "" : "Belum ada di data DIBI"; }
       A.rr_total.textContent = F((s.rr_ringan || 0) + (s.rr_sedang || 0) + (s.rr_berat || 0));
       elBandD.replaceChildren(...(!bd ? [] : bd.catatan ? [h("p", {class: "bd-kosong", teks: bd.catatan})] : [

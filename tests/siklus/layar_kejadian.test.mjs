@@ -160,3 +160,10 @@ test('layar kejadian di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome 
     });
   } finally { await pb.tutup(); }
 });
+
+test('PB-52 kasus historis: tab Kasus membaca /kejadian/kasus, tanpa total, kolom kosong tertulis', () => {
+  const t = SKRIP.find(([n]) => /kejadian\.js$/.test(n))?.[1] ?? '';
+  assert.match(t, /\/api\/siklus\/kejadian\/kasus/);
+  assert.match(t, /tidak ada data/);
+  assert.match(t, /r\.sinyal/);
+});

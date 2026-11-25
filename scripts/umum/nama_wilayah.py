@@ -10,3 +10,13 @@ def nk(n):
         if m == n: break
         n = m
     return (False, ALIAS.get(re.sub(r"[^a-z0-9]", "", n), re.sub(r"[^a-z0-9]", "", n)))
+
+
+if __name__ == "__main__":
+    import sys
+    if sys.argv[1:] != ["uji"]:
+        sys.exit("pakai: nama_wilayah.py uji")
+    assert nk("Kab. Toba Samosir") == (False, "toba") and nk("Kabupaten Kep. Mentawai") == (False, "kepulauanmentawai")
+    assert nk("Kota Administrasi Jakarta Utara") == (False, "jakartautara") and nk("Kota Adm. Jakarta Pusat") == (False, "jakartapusat")
+    assert nk("KOTA Padang Sidempuan") == (False, "padangsidimpuan") and nk(None) == (False, "") and nk("Kotabaru") == (False, "kotabaru")
+    print("nama_wilayah.py uji: lulus")
