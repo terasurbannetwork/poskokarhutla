@@ -641,7 +641,18 @@ Sebelum menyentuh alat gambar di peta utama (mode gambar, hitungan titik panas, 
 
 Aturan berhentinya sama dengan §2.1. Luas gambar bernama "luas wilayah digambar", tidak pernah luas terbakar; titik panas memakai definisi angka utama; tanpa tafsir "malam berarti gambut"; tanpa "aman" atau "bebas api"; hitung di peramban, gambar tidak disimpan atau masuk URL; penduduk hanya kecamatan beririsan berpil perkiraan kasar.
 
-### 2.40 Kemampuan Inti (prediksi, simulasi, peringatan dini, pemodelan, analisa dampak disilangkan ke semua bencana): baca dulu, baru bangun
+### 2.47 Pemetaan bekas longsor dari satelit (Sentinel-2 rdNDVI sebelum-sesudah, kerapatan radar Sentinel-1, kasus Tapanuli Tengah Nov 2025): baca dulu, baru bangun
+
+Sebelum menyentuh pemetaan bekas longsor sesudah kejadian (komposit, rdNDVI, saringan tebangan, poligon dan luas per kecamatan, uji balik lembar buta), baca dokumen di
+`data/kajian-bnpb/longsor-satelit/` dengan urutan otoritas ini (pipeline `scripts/longsor/bekas*.py` dan `tests/longsor/bekas*` milik `longsor`; rute staf di `src/siklus*.js` milik `warga-api`; lapisan `public/siklus/**` milik `siklus`):
+
+1. `KEPUTUSAN-LONGSOR-SATELIT.md`: keputusan pemilik K1-K3, rancangan D1-D9, pertanyaan terbuka Q1-Q8 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (komposit, rdNDVI, saringan, kriteria terkunci), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LS-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Tanpa vonis lulus tidak ada luas atau jumlah bekas longsor di layar mana pun; tebangan dilaporkan terpisah tanpa klaim sebab; tidak membuat kejadian di Buku Besar dan tidak masuk Jitupasna; nowcast longsor dan pra-registrasi LHASA2 tidak disentuh.
+
+### 2.48 Kemampuan Inti (prediksi, simulasi, peringatan dini, pemodelan, analisa dampak disilangkan ke semua bencana): baca dulu, baru bangun
 
 Sebelum menyentuh mesin bersama pemodelan (`scripts/umum/pembanding.py`, `sidik.py`, `gerbang.py`, `selang.py`, `setara.mjs`, `label_mutu.py`, `berantai_lift.py`, `lonjakan.py`, `senyap.py` milik `pipa-umum`; `public/inti/gerbang.js` dan `public/inti/perlakuan.js` milik `inti-layar`), gerbang tampil per bencana `public/data/gerbang/**`, atau tiket `KI-*` di modul bencana mana pun, baca dokumen di
 `data/kajian-bnpb/kemampuan-inti/` dengan urutan otoritas ini (berkas per bencana tetap milik pengerja bencananya; cek `ilmu.mjs pemilik`):
