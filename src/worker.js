@@ -41,7 +41,7 @@ import {RUTE_PENGUNGSIAN_TITIK} from "./pengungsian_titik.js";
 import {RUTE_ORANG_TINJAU} from "./orang_tinjau.js";
 import {RUTE_PENGINGAT, buatPengingat, buatPengingatPrioritas} from "./pengingat.js";
 import {RUTE_OPS, nilaiDropTertunda} from "./operasi_lapangan.js";
-import {RUTE_INSTANSI, catatKerja, tugasBaruDariBerkas, bersihkanInstansi, akunAktif} from "./instansi.js";
+import {RUTE_INSTANSI, catatKerja, tugasBaruDariBerkas, bersihkanInstansi, akunMenu} from "./instansi.js";
 import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
 import {RUTE_SEGEL} from "./segel.js";
 import {RUTE_UJI_PILOT} from "./uji_pilot.js";
@@ -586,6 +586,7 @@ export async function bersihkan(env, kini = Date.now()) {
 /* rute statistik, sesi admin, dan kotak pesan: "METODE /jalur" (":id" = 16 hex). Gerbang uji membaca kunci tabel ini. */
 const RUTE = {
   "GET /api/peta-situs": petaSitus, "HEAD /api/peta-situs": petaSitus,   // menu per sesi (paket peta-situs D3, D8); tanpa D1 selain pembaca sesi
+  "GET /api/instansi/peta-situs": petaSitus, "HEAD /api/instansi/peta-situs": petaSitus,   // alias PS-07: kuki sesi_instansi berjalur /api/instansi, jadi menu /instansi memanggil jalur ini
   "POST /api/jejak": (env, req, url, kini) => St.jejak(env, req, kini),
   "GET /api/statistik": (env, req, url, kini) => St.statistik(env, req, url, kini),
   "POST /api/pesan": (env, req, url, kini, ctx) => St.kirimPesan(env, req, ctx, kini),
@@ -727,13 +728,13 @@ export const situsCenturisk = h => h.endsWith(".workers.dev") || HOST_TERKUNCI.h
 /* GET /api/peta-situs (PS-03): menu untuk sesi peramban ini, disaring menuUntuk (src/peta_situs.js). Urutan sesi = gerbang halaman di fetch(): admin, staf (stafSesiSemua,
    termasuk akun direktori saja), pemirsa; lalu instansi aktif, petugas lewat sesi akun umum, kampus lewat cookie sesi_kemitraan. Tanpa sesi = tamu (pintu Publik).
    Pembaca sesi modul dipanggil hanya bila cookie atau header miliknya ada, jadi tamu tanpa cookie tidak menyentuh D1. Jalur kode (x-kode, x-kode-regu) tidak dibaca:
-   menebak kode di sini akan menambah hitungan gagal pemegangKode. ponytail: pemegang kode petugas atau kampus melihat menu tamu; tambah bila PS-07 membutuhkannya. */
+   menebak kode di sini akan menambah hitungan gagal pemegangKode. ponytail: pemegang kode petugas atau kampus melihat menu tamu. */
 async function sesiMenu(env, req, kini) {
   if (await adminOK(env, req, kini)) return {jenis: "admin", peran: []};
   const s = await stafSesiSemua(env, req, kini); if (s) return {jenis: "staf", peran: s.peran};
   const p = await pemirsaSesi(env, req, kini); if (p) return {jenis: "pemirsa", peran: [], tab: p.tab};
   const kuki = req.headers.get("cookie") || "", kode = req.headers.has("x-kode") || req.headers.has("x-kode-regu");
-  if (/(?:^|;\s*)sesi_instansi=/.test(kuki) && !((await akunAktif(env, req, kini)) instanceof Response)) return {jenis: "instansi", peran: []};
+  if (/(?:^|;\s*)sesi_instansi=/.test(kuki) && await akunMenu(env, req, kini)) return {jenis: "instansi", peran: []};   // tanpa syarat sesi profil (PS-07): menu hanya menunjuk /instansi
   if (!kode && /(?:^|;\s*)sesi_masuk=/.test(kuki) && !((await petugasSesi(env, req, kini)) instanceof Response)) return {jenis: "petugas", peran: []};
   if (!kode && /(?:^|;\s*)sesi_kemitraan=/.test(kuki) && (await hakKm(env, req, kini)).peran === "KK") return {jenis: "kemitraan", peran: []};
   return null;

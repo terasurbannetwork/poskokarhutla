@@ -1,12 +1,15 @@
 /* Peta Situs PS-03: GET /api/peta-situs lewat Worker sungguhan (miniflare + D1 berisi migrasi). Sesi dibuat lewat sisipan D1 langsung.
    Tiap sesi diuji di host terkunci (centurisk97.id) dan tak terkunci; hasil = menuUntuk(sesi, bolehStaf, terkunci) persis (RENCANA-UJI U2).
+   PS-07: alias /api/instansi/peta-situs untuk halaman /instansi.
    Jalankan: node --test tests/warga/peta_situs_api.test.mjs */
 import {test, before, after} from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
 import {createHash, randomBytes} from "node:crypto";
 import {Miniflare} from "miniflare";
+import {readFileSync} from "node:fs";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
+import {profilAktif} from "./_profil.mjs";
 import "../../src/worker.js";
 import {bolehStaf} from "../../src/admin_halaman.js";
 import {HALAMAN, PINTU, menuUntuk} from "../../src/peta_situs.js";
@@ -87,4 +90,42 @@ uji("peta situs API: staf tanpa peran ditolak CHECK D1, dan menuUntuk untuknya h
   await assert.rejects(DB.prepare(`INSERT INTO staf (id, username, nama, nip, unit, email, wa, peran, wilayah, garam, sandi_sha, wajib_ganti, dibuat, dibuat_oleh, dummy)
     VALUES ('kosong0000000000', 'stafkosong', 'Nama uji', '2000199', 'Unit', 'k0@b.id', '628120000399', '[]', '[]', ?, ?, 0, 1, 'tes', 0)`).bind("g".repeat(32), "a".repeat(64)).run(), /CHECK constraint failed/);
   for (const t of [true, false]) assert.deepEqual(menuUntuk({jenis: "staf", peran: []}, bolehStaf, t).map(p => p.pintu), ["publik"]);
+});
+
+/* PS-07: alias /api/instansi/peta-situs (kuki sesi_instansi berjalur /instansi dan /api/instansi). Akun BPBD aktif mendapat pintu instansi dengan ATAU tanpa sesi profil
+   (menu hanya menunjuk /instansi yang menampilkan pemilih profil); gerbang profil tetap di rute kerja (/api/instansi/tugas 401 profil_perlu tanpa sesi profil). */
+uji("peta situs API alias instansi: akun BPBD dengan dan tanpa sesi profil = pintu instansi di kedua host, rute kerja tetap butuh profil, HEAD tanpa badan", async () => {
+  const kini = Date.now(), tAkun = tok(), tBelum = tok(), id = "b2b2b2b2b2b2b2b2", idBelum = "c3c3c3c3c3c3c3c3";
+  const akun = (i, u, status) => DB.prepare(`INSERT INTO instansi_akun (id, username, jenis, tingkat, wilayah, kunci_wilayah, cakupan, prov, kab, garam, sandi_sha, status, nama, nip, jabatan, unit, email, wa, surat, kartu, wajib_ganti, dibuat)
+    VALUES (?, ?, 'pemkab', 'kab', 'BPBD Uji', ?, '["13"]', '13', 'Kabupaten Uji', ?, ?, ?, 'Sari', '198001012005012002', 'Kalak', 'BPBD', 's@x.go.id', '6281234567892', 1, 1, 0, ?)`).bind(i, u, "kw-" + u, "g".repeat(32), "a".repeat(64), status, kini);
+  await DB.batch([akun(id, "bpbdpetasitus", "aktif"), akun(idBelum, "bpbdbelumaktif", "menunggu"),
+    DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(sha(tAkun), id, kini, kini + 3600e3),
+    DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(sha(tBelum), idBelum, kini, kini + 3600e3)]);
+  const p = await profilAktif(DB, id);
+  const alias = (host, cookie, method = "GET") => mf.dispatchFetch(`https://${host}/api/instansi/peta-situs`, {method, headers: cookie ? {cookie} : {}});
+  for (const [host, terkunci] of [["centurisk97.id", true], ["t.lokal", false]]) {
+    const harap = rute(menuUntuk({jenis: "instansi", peran: []}, bolehStaf, terkunci));
+    for (const [nama, cookie] of [["tanpa profil", "sesi_instansi=" + tAkun], ["dengan profil", `sesi_instansi=${tAkun}; ${p.cookie}`], ["polda", "sesi_instansi=" + K.instansi]]) {
+      const r = await alias(host, cookie), m = await r.json();
+      assert.equal(r.status, 200); assert.equal(r.headers.get("cache-control"), "private, no-store");
+      assert.deepEqual(m.map(x => x.pintu), ["publik", "instansi"], `${nama} di ${host}`);
+      assert.deepEqual(rute(m), harap, `${nama} di ${host}: butir = menuUntuk instansi`);
+    }
+    assert.deepEqual((await (await alias(host, "sesi_instansi=" + tBelum)).json()).map(x => x.pintu), ["publik"], `akun belum aktif di ${host} = tamu`);
+    assert.deepEqual((await (await alias(host, null)).json()).map(x => x.pintu), ["publik"], `tanpa kuki di ${host} = tamu`);
+    /* alias dan jalur asli memberi jawaban sama untuk sesi yang sama (kuki dikirim manual ke jalur asli) */
+    assert.deepEqual(await (await alias(host, "sesi_instansi=" + tAkun)).json(), await (await ambil(host, {cookie: "sesi_instansi=" + tAkun})).json());
+    const h = await alias(host, "sesi_instansi=" + tAkun, "HEAD");
+    assert.equal(h.status, 200); assert.equal(await h.text(), "");
+  }
+  const kerja = await mf.dispatchFetch("https://t.lokal/api/instansi/tugas", {headers: {cookie: "sesi_instansi=" + tAkun}}), jk = await kerja.json();
+  assert.equal(kerja.status, 401); assert.equal(jk.profil_perlu, true, "gerbang profil di rute kerja tidak ikut melonggar");
+});
+
+uji("peta situs API alias instansi: public/instansi.js menggambar menu dari /api/instansi/peta-situs, tautan statis instansi.html tetap jadi cadangan", () => {
+  const js = readFileSync(path.join(AKAR, "public/instansi.js"), "utf8"), html = readFileSync(path.join(AKAR, "public/instansi.html"), "utf8");
+  assert.match(js, /fetch\("\/api\/instansi\/peta-situs"/);
+  assert.doesNotMatch(js, /fetch\("\/api\/peta-situs"/, "jalur asli tidak menerima kuki sesi_instansi");
+  assert.match(js, /p\.pintu === "instansi"/);
+  assert.match(html, /class="in-tab-tautan"[^>]*href="\/instansi\/logpal"/, "cadangan statis sebelum fetch selesai");
 });

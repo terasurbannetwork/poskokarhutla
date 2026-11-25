@@ -83,11 +83,27 @@
     if (saya.akun.status === "aktif" && saya.akun.wajib_ganti) { $("vGanti").hidden = false; return; }
     if (saya.akun.wajib_ganti && saya.profil_mode) { $("vGanti").hidden = false; return; }   // akun BPBD: sandi lembaga baru lebih dulu, baru daftar PIC
     if (saya.profil_mode && !tampilProfil()) return;
-    /* tautan Data Bencana terkunci ke wilayah akun (pemilik 23 Nov 2026 "pintu masuk BPBD"): provinsi dari cakupan, kab/kota dari nama kab akun */
-    const ln = $("lnDataBencana"), pv = Array.isArray(saya.cakupan) && saya.cakupan.length === 1 ? saya.cakupan[0] : "";
-    if (ln) ln.href = "/instansi/data-bencana" + (pv ? "?prov=" + encodeURIComponent(pv) + (saya.akun.tingkat === "kab" && saya.kab ? "&kab=" + encodeURIComponent(saya.kab) : "") : "");
-    if (saya.akun.status === "aktif") { $("vUtama").hidden = false; pasangUndang(); siapIsi(); gantiTab(tab, true); pindahLama().finally(() => { prosesAntrean(); muatDraf(); }); return; }
+    tautData();
+    if (saya.akun.status === "aktif") { $("vUtama").hidden = false; pasangMenu(); pasangUndang(); siapIsi(); gantiTab(tab, true); pindahLama().finally(() => { prosesAntrean(); muatDraf(); }); return; }
     $("vVerif").hidden = false; isiVerif();
+  }
+  /* tautan Data Bencana terkunci ke wilayah akun (pemilik 23 Nov 2026 "pintu masuk BPBD"): provinsi dari cakupan, kab/kota dari nama kab akun */
+  function tautData() {
+    const ln = $("lnDataBencana"), pv = Array.isArray(saya?.cakupan) && saya.cakupan.length === 1 ? saya.cakupan[0] : "";
+    if (ln && saya) ln.href = "/instansi/data-bencana" + (pv ? "?prov=" + encodeURIComponent(pv) + (saya.akun.tingkat === "kab" && saya.kab ? "&kab=" + encodeURIComponent(saya.kab) : "") : "");
+  }
+  /* Peta Situs PS-07: tautan menu dari registri (src/peta_situs.js) lewat GET /api/instansi/peta-situs (kuki sesi_instansi berjalur /api/instansi). Butir pintu
+     instansi (grup kerja dan data, plus butir "juga" seperti /lapor/meja) menggantikan tautan statis di instansi.html; gagal ambil = tautan statis tetap.
+     Sekali per muat halaman; hanya tautan, tanpa penangan klik. */
+  let menuDipasang = false;
+  async function pasangMenu() {
+    if (menuDipasang) return; menuDipasang = true;
+    let pintu; try { const r = await fetch("/api/instansi/peta-situs", {credentials: "same-origin"}); if (r.ok) pintu = (await r.json()).find(p => p.pintu === "instansi"); } catch (e) {}
+    const butir = (pintu?.grup || []).flatMap(g => g.butir).filter(b => b.rute !== "/instansi" && !b.rute.includes(":"));
+    if (!butir.length) { menuDipasang = false; return; }   // tanpa jawaban: tautan statis tetap, coba lagi di tampil berikutnya
+    for (const a of $("tab").querySelectorAll("a.in-tab-tautan")) a.remove();
+    $("tab").insertAdjacentHTML("beforeend", butir.map(b => `<a class="in-tab-tautan"${b.rute === "/instansi/data-bencana" ? ' id="lnDataBencana"' : ""} href="${esc(b.rute)}">${esc(b.nama)}</a>`).join(""));
+    tautData();
   }
   /* akun BPBD (profil_mode): belum aktif = daftar PIC; aktif tanpa sesi profil = pilih profil dan PIN; aktif dengan sesi profil = layar kerja dengan kepala profil.
      Kembalian true bila layar kerja boleh digambar. Kode layar di instansi_profil.js. */

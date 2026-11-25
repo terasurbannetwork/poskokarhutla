@@ -119,6 +119,9 @@ async function sesiDari(env, req, kini) {
 }
 /* akun masuk apa pun statusnya, atau Response galat */
 async function akunMasuk(env, req, kini) { const a = await sesiDari(env, req, kini); return !a ? tolakSesi() : akunLain(req, a) || a; }   // x-akun dicek sebelum status: tab basi selalu 401, bukan 403
+/* Menu saja (PS-07, /api/instansi/peta-situs): akun masuk berstatus aktif = pintu instansi, TANPA syarat sesi profil, supaya akun BPBD yang belum memilih profil
+   tetap mendapat menu yang menunjuk /instansi (layar pilih profil). Satu baca D1. Bukan gerbang: rute kerja tetap lewat akunAktif. */
+export async function akunMenu(env, req, kini) { const a = await akunMasuk(env, req, kini); return !(a instanceof Response) && a.status === "aktif"; }
 /* akun masuk DAN aktif */
 export async function akunAktif(env, req, kini) {
   const a = await akunMasuk(env, req, kini); if (a instanceof Response) return a;
