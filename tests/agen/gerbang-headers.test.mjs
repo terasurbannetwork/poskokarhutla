@@ -9,7 +9,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, appendFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync, appendFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { tmpdir } from 'node:os'
 import { dirname, join, relative, sep } from 'node:path'
@@ -32,6 +32,12 @@ const PYTHON = ['python3', 'python'].find((p) => {
 // salin public/ lalu terbitkan seperti CI; `ubah(akar)` menyuntik keadaan salah untuk bukti merah.
 // Salinan (~1,7 GB) dihapus bila langkah apa pun gagal: 29 Okt-11 Nov 2026 di Windows tanpa `python3`,
 // tiap uji melempar sebelum try/finally pemanggil dan meninggalkan 51 salinan (76 GB) di Temp.
+// sisa salinan dari uji yang dibunuh paksa (batas waktu agen) tidak sempat lewat finally: sapu yang lebih tua dari 2 jam (disk penuh 25 Nov 2026)
+for (const n of readdirSync(tmpdir())) {
+  if (!n.startsWith('headers-')) continue
+  try { const p = join(tmpdir(), n); if (Date.now() - statSync(p).mtimeMs > 2 * 3600e3) rmSync(p, { recursive: true, force: true }) } catch {}
+}
+
 function terbit(ubah) {
   const akar = mkdtempSync(join(tmpdir(), 'headers-'))
   try {
