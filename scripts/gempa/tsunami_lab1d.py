@@ -20,24 +20,42 @@ QINIT = """subroutine qinit(meqn,mbc,mx,xlower,dx,q,maux,aux)
     real(kind=8), intent(in) :: aux(maux,1-mbc:mx+mbc)
     real(kind=8), intent(inout) :: q(meqn,1-mbc:mx+mbc)
     integer :: i
-    real(kind=8) :: H, dd, x0, kap, mode, eta, u, c
+    logical :: dari_lab
+    real(kind=8) :: H, dd, x0, kap, mode, eta, u, c, hl
+    real(kind=8) :: etalab(mx)
     open(unit=77, file='soliter.data', status='old')
     read(77,*) H, dd, x0, kap, mode
     close(77)
+    inquire(file='profil.data', exist=dari_lab)
+    if (dari_lab) then
+        open(unit=78, file='profil.data', status='old')
+        do i=1,mx
+            read(78,*) etalab(i)
+        enddo
+        close(78)
+    endif
     do i=1,mx
         eta = 0.d0
-        if (abs(kap*(xcell(i)-x0)/dd) < 30.d0) eta = H / cosh(kap*(xcell(i)-x0)/dd)**2
+        if (dari_lab) then
+            eta = etalab(i)
+        else if (abs(kap*(xcell(i)-x0)/dd) < 30.d0) then
+            eta = H / cosh(kap*(xcell(i)-x0)/dd)**2
+        endif
         q(1,i) = max(0.d0, eta - aux(1,i))
         c = sqrt(9.81d0*(dd+H))
         u = sqrt(9.81d0/dd)*eta
         if (mode > 0.5d0) u = c*eta/(dd+eta)
+        if (dari_lab) then
+            hl = max(-aux(1,i), 0.01d0*dd)
+            u = sqrt(9.81d0/hl)*eta
+        endif
         q(2,i) = q(1,i)*u
     enddo
 end subroutine qinit
 """
 
 
-def jalan(nama, H_d, eq=0, mode="nthmp", dx_d=1 / 40., minh_d=0.05, dry_d=1e-3, manning=0.0, tau_akhir=90., d=1.0, cfl=0.25):
+def jalan(nama, H_d, eq=0, mode="nthmp", dx_d=1 / 40., minh_d=0.05, dry_d=1e-3, manning=0.0, tau_akhir=90., d=1.0, cfl=0.25, n_out=4, profil=None):
     D = os.path.join(T.RUN, nama)
     shutil.rmtree(D, ignore_errors=True)
     os.makedirs(D)
@@ -54,6 +72,16 @@ def jalan(nama, H_d, eq=0, mode="nthmp", dx_d=1 / 40., minh_d=0.05, dry_d=1e-3, 
             x = xl + i * dx
             f.write("%15.8f %15.8f\n" % (x, max(-d, x / cot)))
     open(os.path.join(D, "qinit.f90"), "w").write(QINIT)
+    if profil:  # profil = daftar (x/d dari pantai, positif ke laut, eta/d) dari data lab; interpolasi linear, di luar jangkauan 0
+        import bisect
+        P = sorted(profil)
+        px = [p[0] for p in P]
+        with open(os.path.join(D, "profil.data"), "w") as f:
+            for i in range(mx):
+                xc = -((xl + (i + .5) * dx) / d)
+                j = bisect.bisect_left(px, xc)
+                e = 0.0 if j == 0 or j >= len(P) else P[j - 1][1] + (P[j][1] - P[j - 1][1]) * (xc - px[j - 1]) / (px[j] - px[j - 1])
+                f.write("%.10g\n" % (e * d))
     open(os.path.join(D, "setprob.f90"), "w").write("subroutine setprob\nend subroutine setprob\n")
     open(os.path.join(D, "soliter.data"), "w").write("%.15g %.15g %.15g %.15g %d\n" % (H_d * d, d, x0, gam, 0 if mode == "nthmp" else 1))
     mk = open(os.path.join(EX, "Makefile")).read()
@@ -72,7 +100,7 @@ def jalan(nama, H_d, eq=0, mode="nthmp", dx_d=1 / 40., minh_d=0.05, dry_d=1e-3, 
     R("monitor_runup = False", "monitor_runup = True")
     R("bouss_equations = 2 ", "bouss_equations = %d " % eq)
     R("bouss_min_depth = 0.06", "bouss_min_depth = %.8g" % (minh_d * d))
-    R("clawdata.num_output_times = 50", "clawdata.num_output_times = 4")
+    R("clawdata.num_output_times = 50", "clawdata.num_output_times = %d" % n_out)
     R("clawdata.tfinal = 25.", "clawdata.tfinal = %.8g" % (tau_akhir * tau))
     R("clawdata.cfl_desired = 0.25", "clawdata.cfl_desired = %.3g" % cfl)
     R("clawdata.steps_max = 50000", "clawdata.steps_max = 5000000")
