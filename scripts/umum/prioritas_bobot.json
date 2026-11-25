@@ -1,0 +1,45 @@
+{
+  "status": "bobot sementara, hipotesis",
+  "sumber": "KEPUTUSAN-PARITAS Q21 (bawaan diterima pemilik 25 Nov 2026), ALGORITMA bagian 4; diubah hanya sesudah uji terhadap kejadian",
+  "bobot": {
+    "bahaya": 0.4,
+    "paparan": 0.3,
+    "kerentanan": 0.2,
+    "tren_peringatan": 0.1
+  },
+  "ambang_bahaya": 0.666,
+  "bencana": {
+    "banjir": {
+      "lapisan": "banjir",
+      "jiwa_dari": "paparan_kab.json",
+      "jenis_dibi": [
+        "Banjir",
+        "Banjir Bandang",
+        "Banjir Genangan",
+        "Banjir dan Tanah Longsor"
+      ]
+    },
+    "longsor": {
+      "lapisan": "longsor",
+      "jenis_dibi": [
+        "Tanah Longsor",
+        "Gerakan Tanah",
+        "Banjir dan Tanah Longsor"
+      ]
+    },
+    "kekeringan": {
+      "lapisan": "kering",
+      "jenis_dibi": [
+        "Kekeringan",
+        "Kekeringan Pertanian"
+      ]
+    }
+  },
+  "ditahan": {
+    "pesisir": "ditahan: perlu masker garis pantai (lapisan gelombang bernilai 0 di darat, 7058/7274 kecamatan; validasi-model 25 Nov 2026)"
+  },
+  "tren_peringatan": {
+    "pakai": false,
+    "alasan": "arsip tanpa jenis bencana"
+  }
+}

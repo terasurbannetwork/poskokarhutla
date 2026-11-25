@@ -119,3 +119,5 @@ Aturan pemilik yang sudah berlaku dan mengikat paket ini: tanpa data dummy dan t
 
 Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
 
+
+| Q38 | Skor prioritas wilayah (PB-57) kalah dari penduduk terpapar saja dan dari jumlah penduduk dalam mencocokkan jumlah kejadian DIBI 12 bulan (Spearman banjir 0,25 lawan 0,41 lawan 0,47). Skor gabungan tetap ditampilkan berlabel hipotesis, atau layar memakai penduduk terpapar saja sampai bobot diuji? | **[BAWAAN SEMENTARA]** skor belum ditampilkan di layar; berkas data tetap dibuat untuk uji. |

@@ -261,3 +261,15 @@ Tiap rumus dan ambang baru di dokumen ini diperiksa pemeriksa bersih (bukan penu
 ## Pertanyaan untuk KEPUTUSAN
 
 > Catatan orkestrator 15 Nov 2026: pertanyaan di bagian ini sudah dipindah ke KEPUTUSAN-PARITAS.md (Q1 sampai Q37) dan dinomori ulang di sana. Bila isi atau bawaan berbeda, KEPUTUSAN yang berlaku. Untuk rute layar baru berlaku Q13 (papan status darurat dilebur ke `siaga.html`, pembuat dokumen di `/bnpb/sitrep`, dashboard pimpinan `/bnpb/pimpinan`); panel kiri berlaku D12.
+
+## Revisi §4 sesudah PB-57 (25 Nov 2026, validasi-model)
+
+Bagian ini menang atas tabel §4 di atas sampai tabel itu ditulis ulang.
+
+1. Bahaya: porsi kecamatan berindeks InaRISK ≥ 0,666 dari `public/banjir/data/bahaya.json`. Wilayah dengan bahaya 0 tidak diberi skor dan masuk `belum_cukup` dengan alasan "bahaya tinggi tidak tercatat" (tidak pernah ditulis "bukan wilayah berbahaya"). Persentil semua komponen dihitung hanya di antara wilayah dengan bahaya > 0.
+2. Paparan kosong: null, bobot dibagi ulang bila hanya satu komponen kosong; dua komponen kosong berarti tidak diberi skor.
+3. Tren peringatan: null ("tidak ada data") bila sumber basi atau arsip tanpa jenis bencana; tidak dihitung untuk ambang dua komponen kosong; bobotnya dibagi ulang. Sekarang dimatikan karena arsip Tangga tidak menyimpan jenis bencana.
+4. Kerentanan: (balita + lansia) / penduduk dari profil wilayah, bukan WorldPop.
+5. Normalisasi: persentil peringkat tengah, (bawah + setengah seri) / n.
+6. Pesisir ditahan sampai ada masker garis pantai (lapisan gelombang bernilai 0 di darat).
+7. `cek_kejadian`: Spearman lawan jumlah kejadian DIBI 12 bulan, berdampingan dengan `paparan_saja` dan `penduduk`; deskriptif, tidak pernah dipakai menyetel bobot. Hasil pertama (25 Nov 2026): skor gabungan kalah dari paparan saja dan dari penduduk di banjir, longsor, dan kekeringan, jadi skor belum ditampilkan di layar sebelum pemilik memutuskan (Q38).
