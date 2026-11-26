@@ -1,4 +1,4 @@
-"""Uji balik status prakiraan BNJ, LSR, CEX lewat gerbang bersama (DP-07) + arsip harian status (D36).
+"""Uji balik status prakiraan BNJ, BDG, LSR, CEX lewat gerbang bersama (DP-07) + arsip harian status (D36).
 
 Unit = (terbit t, tenggang d, kab) dengan tanggal sasaran s = t + d; blok bootstrap = s. Alarm A = status >= 2 (Siaga); >= 1 (Waspada)
 dilaporkan terpisah. Kejadian y = ada kejadian jenis itu di kab itu pada s-1..s+1 (prediksi-kejadian K3). Label DIBI dan logbook Pusdalops dinilai
@@ -24,7 +24,7 @@ KELUAR = os.path.join(AKAR, "public/data/gerbang/status_prakiraan.json")
 LOGBOOK = os.path.join(AKAR, "public/data/logbook_kejadian.json")
 WIB = SP.WIB
 HARI_MIN = N_MIN = 30
-JENIS_LB = {"BNJ": {"banjir", "banjir_bandang", "banjir_longsor"}, "LSR": {"longsor", "banjir_longsor"}, "CEX": {"cuaca"}}
+JENIS_LB = {"BNJ": {"banjir", "banjir_bandang", "banjir_longsor"}, "LSR": {"longsor", "banjir_longsor"}, "CEX": {"cuaca"}, "BDG": {"banjir_bandang"}}
 
 
 def tambah(t, n):
@@ -45,8 +45,8 @@ def arsipkan(out, kini, folder=ARSIP_STATUS):
                     return False
     os.makedirs(folder, exist_ok=True)
     kab = {i: {k: v["hari"] for k, v in d.items()} for i, d in out["kab"].items()}
-    with open(p, "a", encoding="utf-8") as f:
-        f.write(json.dumps({"t": tgl, "dibuat": out["dibuat"], "umpan_bmkg": out["sumber"]["umpan_bmkg"], "kab": kab}, ensure_ascii=False, separators=(",", ":")) + "\n")
+    with open(p, "a", encoding="utf-8") as f:     # versi_kriteria: baris lama tanpa kunci ini = versi 2 (D22)
+        f.write(json.dumps({"t": tgl, "versi_kriteria": out.get("versi_kriteria"), "dibuat": out["dibuat"], "umpan_bmkg": out["sumber"]["umpan_bmkg"], "kab": kab}, ensure_ascii=False, separators=(",", ":")) + "\n")
     return True
 
 
@@ -70,18 +70,23 @@ def status_retro(kr, kelas, folder=ARSIP_PRAKIRAAN):
                     continue
                 lihat.add((r["t"], k))
                 for kab, rs in r["kab"].items():
-                    K = SP.ambil_K(kelas, kab, kr["kelas_kab"][k])
-                    for n in (1, 2, 3):
-                        E = SP.level_sel(k, r["kol"], rs[n - 1] if len(rs) >= n else None)
-                        S = SP.tabel(kr, k, K, E, None)
-                        if S is not None and r["hari"][n - 1] == tambah(r["t"], n):
-                            out[k].append((r["t"], n, kab, S))
+                    for tujuan in [x for x in kr["bahaya"] if x == k or kr.get("sumber_E", {}).get(x) == k]:   # BDG memakai E arsip BNJ
+                        K = SP.ambil_K(kelas, kab, kr["kelas_kab"][tujuan])
+                        for n in (1, 2, 3):
+                            E = SP.level_sel(k, r["kol"], rs[n - 1] if len(rs) >= n else None)
+                            S = SP.tabel(kr, tujuan, K, E, None)
+                            if S is not None and r["hari"][n - 1] == tambah(r["t"], n):
+                                out[tujuan].append((r["t"], n, kab, S))
     return out
 
 
-def status_pros(kr):
+def status_pros(kr, versi=None):
+    """Baris arsip status dari satu versi kriteria (bawaan: versi berlaku); skor tiap versi dinilai terpisah, tak digabung (D22)."""
+    versi = kr["versi"] if versi is None else versi
     out = {k: [] for k in kr["bahaya"]}
     for r in baca_status_arsip():
+        if (r.get("versi_kriteria") or 2) != versi:
+            continue
         for kab, d in r["kab"].items():
             for k in out:
                 for n, S in enumerate(d.get(k) or []):
@@ -93,6 +98,7 @@ def status_pros(kr):
 # ---------- label ----------
 def label_dibi(kode, cari):
     import nilai as N
+    N.JENIS.setdefault("BDG", {"Banjir Bandang"})   # BDG: label bandang saja; BNJ tetap memakai label lamanya (PH-02 D12)
     am, akhir = N.amatan_dibi(AKAR, cari, kode)
     ev = {}
     for t, h in am.items():
@@ -201,6 +207,13 @@ def entri(ev_, nama, prospektif):
     return e
 
 
+def lama_info(e, v):
+    """Skor versi kriteria lama: dinilai sendiri, tak menentukan boleh_tampil versi berlaku."""
+    e["boleh_tampil"] = False
+    e["alasan"] = "kriteria versi %s sudah diganti: skor terpisah, informasi; %s" % (v, e.get("alasan", ""))
+    return e
+
+
 def jalankan(keluar=KELUAR, kini=None):
     kr = SP._json(SP.KRITERIA)
     kelas = SP._json(SP.KELAS)
@@ -219,6 +232,13 @@ def jalankan(keluar=KELUAR, kini=None):
                 r[nm] = {"siaga": entri(evaluasi(rows, A["utama"]), nm, pros_), "waspada": entri(evaluasi(rows, A["terpisah"]), nm, pros_),
                          "baris_tanpa_label": buang, "label_sampai": akhir}
             e = r["prospektif"]["siaga"]
+            lama = {}     # versi kriteria sebelumnya: skor terpisah, informasi, tak menentukan boleh_tampil
+            for v in sorted({(b.get("versi_kriteria") or 2) for b in baca_status_arsip()} - {kr["versi"]}):
+                rw, _ = baris(status_pros(kr, v)[k], ev, dari, akhir, ids)
+                lama[str(v)] = {n: lama_info(entri(evaluasi(rw, a), "versi_lama", True), v) for n, a in (("siaga", A["utama"]), ("waspada", A["terpisah"]))}
+            if lama:
+                e["versi_sebelumnya"] = lama
+            e["versi_kriteria"] = kr["versi"]
             e["retrospektif"] = {"siaga": r["retrospektif"]["siaga"], "waspada": r["retrospektif"]["waspada"], "label_sampai": akhir,
                                  "baris_tanpa_label": r["retrospektif"]["baris_tanpa_label"]}
             e["waspada"] = r["prospektif"]["waspada"]
@@ -283,6 +303,20 @@ def cek():
     # sebelum label: sasaran di luar jendela label dibuang, tak diisi 0
     rows, buang = baris([("2026-11-01", 1, "k0", 2)], {}, "2026-01-01", "2026-10-29", ["k0"])
     assert rows == [] and buang == 1
+    # PH-02 D22: arsip mencatat versi_kriteria; skor dipisah per versi (baris lama tanpa kunci = versi 2); BDG dari E arsip BNJ
+    with tempfile.TemporaryDirectory() as d:
+        o3 = dict(out, versi_kriteria=3)
+        assert arsipkan(o3, t1, d) and json.loads(open(os.path.join(d, "2026-11.jsonl")).readline())["versi_kriteria"] == 3
+        with open(os.path.join(d, "2026-11.jsonl"), "a") as f:
+            f.write(json.dumps({"t": "2026-11-25", "dibuat": "x", "umpan_bmkg": "segar", "kab": {"1101": {"BNJ": [None, 3, 3, 3]}}}) + "\n")
+        rs = list(baca_status_arsip(d))
+        assert [(r.get("versi_kriteria") or 2) for r in rs] == [3, 2]
+    with tempfile.TemporaryDirectory() as ar:
+        json.dump({"t": "2026-11-20", "k": "BNJ", "kol": ["lv", "ps"], "hari": ["2026-11-21", "2026-11-22", "2026-11-23"], "kab": {"1101": [[2, 0], [3, 0], [0, 0]]}},
+                  open(os.path.join(ar, "2026-11.jsonl"), "w"))
+        kr2 = dict(kr, sumber_E={"BDG": "BNJ"})
+        rt = status_retro(kr2, {"kab": {"1101": {"K": {"BNJ": "rendah", "BDG": "tinggi"}}}}, ar)
+        assert [x[3] for x in rt["BNJ"]] == [2, 2, 0] and [x[3] for x in rt["BDG"]] == [2, 3, 0]   # K rendah memagari BNJ, bukan BDG
     print("status_prakiraan_uji: cek hijau (P19, P20)")
 
 
@@ -293,5 +327,5 @@ if __name__ == "__main__":
         o = jalankan()
         for k, e in o["keluaran"].items():
             print(k, {x: e.get(x) for x in ("n", "n_kejadian", "n_alarm", "skor_model", "skor_pembanding", "selisih", "selang95", "vonis_prospektif", "boleh_tampil")},
-                  "| retro:", {x: e["retrospektif"]["siaga"].get(x) for x in ("n", "n_kejadian", "n_alarm", "skor_model", "skor_pembanding", "selisih", "selang95")})
+                  "| retro:", {x: ((e.get("retrospektif") or {}).get("siaga") or {}).get(x) for x in ("n", "n_kejadian", "n_alarm", "skor_model", "skor_pembanding", "selisih", "selang95")})
         print("boleh_per_bahaya", o["boleh_per_bahaya"])

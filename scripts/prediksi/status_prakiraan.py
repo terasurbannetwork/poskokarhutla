@@ -15,7 +15,7 @@ KRITERIA = os.path.join(AB, "status_prakiraan_kriteria.json")
 SIDIK = os.path.join(AB, "status_prakiraan.sidik")
 PREDIKSI = os.path.join(AKAR, "public/prediksi/data/prediksi.json")
 LALU = os.path.join(AKAR, "public/prediksi/data/lalu.json")
-KELAS = os.path.join(AKAR, "public/data/kelas_bahaya_kab.json")
+KELAS = os.path.join(AKAR, "public/data/kelas_desa_bnpb.json")      # PH-02: K dari kelas desa BNPB, bukan kelas_bahaya_kab.json
 KLUSTER = os.path.join(AKAR, "public/data/kluster.json")      # keluaran harian.py (aturan.py), ALGORITMA 5.1
 META = os.path.join(AKAR, "public/data/meta.json")            # "dibuat" = jam pipeline karhutla terakhir jalan
 UJIBALIK = os.path.join(AKAR, "public/data/ujibalik_status.json")
@@ -92,16 +92,17 @@ def tabel(kr, kode, K, E, R):
 def status_kab(kr, kode, K, P, R):
     """P = [P0..P3] int|None, R = int|None (hari 0), K = rendah|sedang|tinggi|None. -> {s, pemicu, sebagian, hari}."""
     hari_r = set(kr["hari_bmkg"])
-    S = []
+    S, E = [], []
     for d in kr["hari"]:
         r = R if d in hari_r else None
         e = [x for x in (P[d], r) if x is not None]
+        E.append(max(e) if e else None)      # e: tingkat pemicu per hari sebelum matriks K, untuk pengurutan di layar
         S.append(tabel(kr, kode, K, max(e), r) if e else None)
     ada = [x for x in S if x is not None]
     lengkap = all(p is not None for p in P) and R is not None and (K is not None or kr["kelas_kab"][kode] is None)
     s = max(ada) if ada else None
     if not lengkap and not s:  # tak ada tingkat di atas 0 dan ada sumber hilang: abu, bukan Normal
-        return {"s": None, "pemicu": None, "sebagian": False, "hari": [None] * len(S)}
+        return {"s": None, "pemicu": None, "sebagian": False, "hari": [None] * len(S), "e": E}
     pemicu = None
     if s:
         p_kena = r_kena = False
@@ -111,7 +112,7 @@ def status_kab(kr, kode, K, P, R):
             p_kena |= P[d] is not None and tabel(kr, kode, K, P[d], None) >= s
             r_kena |= d in hari_r and R is not None and tabel(kr, kode, K, R, R) >= s
         pemicu = "keduanya" if p_kena and r_kena else "bmkg" if r_kena else "prakiraan"
-    return {"s": s, "pemicu": pemicu, "sebagian": not lengkap, "hari": S}
+    return {"s": s, "pemicu": pemicu, "sebagian": not lengkap, "hari": S, "e": E}
 
 
 # ---------- masukan ----------
@@ -150,23 +151,24 @@ def ambil_R(h, kode, kab4):
 
 
 def ambil_K(kelas, kab4, nama_kelas):
+    """kelas = kelas_desa_bnpb.json: kab[k4].K[KODE] = tinggi|sedang|rendah|null."""
     if nama_kelas is None or not kelas:
         return None
-    x = ((kelas.get("kab") or {}).get(kab4) or {}).get(nama_kelas)
-    return x.get("K") if x else None
+    return (((kelas.get("kab") or {}).get(kab4) or {}).get("K") or {}).get(nama_kelas)
 
 
 def hitung(kr, prediksi, lalu, kelas, h, kini, gerbang=None):
     pb = (gerbang or {}).get("boleh_per_bahaya") or {}
     per = {k: pb.get(k) is True for k in kr["bahaya"]}     # hilang = false (gagal-tertutup); KHT punya vonis sendiri (status_kht)
     boleh = all(per.values())
-    out = {"versi": 1, "dibuat": kini.astimezone(WIB).isoformat(timespec="seconds"), "boleh_tampil": boleh, "hipotesis": not boleh,
+    out = {"versi": 1, "versi_kriteria": kr["versi"], "dibuat": kini.astimezone(WIB).isoformat(timespec="seconds"), "boleh_tampil": boleh, "hipotesis": not boleh,
            "boleh_per_bahaya": per,
            "sumber": {"prediksi": (prediksi or {}).get("dibuat"), "umpan_bmkg": (h or {}).get("umpan", {}).get("status", "mati"),
                       "kelas_kab": bool(kelas)}, "kab": {}}
     for kab in (prediksi or {}).get("kab") or []:
         out["kab"][kab["id"]] = {kode: dict(hipotesis=not per[kode], **status_kab(kr, kode, ambil_K(kelas, kab["id"], kr["kelas_kab"][kode]),
-                                                  ambil_P(kr, prediksi, lalu, kab, kode, kini), ambil_R(h, kode, kab["id"])))
+                                                  ambil_P(kr, prediksi, lalu, kab, kr.get("sumber_E", {}).get(kode, kode), kini),
+                                                  ambil_R(h, kr.get("sumber_E", {}).get(kode, kode), kab["id"])))
                                  for kode in kr["bahaya"]}
     return out
 
@@ -287,7 +289,7 @@ def _cek():
         if kode != "CEX" and K is None:
             return min(E, 2)
         return E
-    for kode, K, R, E in itertools.product(("BNJ", "LSR", "CEX"), ("rendah", "sedang", "tinggi", None), (None, 0, 1, 2, 3), range(4)):
+    for kode, K, R, E in itertools.product(("BNJ", "BDG", "LSR", "CEX"), ("rendah", "sedang", "tinggi", None), (None, 0, 1, 2, 3), range(4)):
         for d in range(4):
             P = [E] * 4
             st = status_kab(kr, kode, K, P, R)
@@ -355,7 +357,7 @@ def _cek():
                                                           "CEX": {"kol": ["emb", "lv"], "hari": H3}},
             "kab": [kab("1101", 2), kab("1102", 0)]}
     lalu = {"hari": {"2026-11-26": {k: {"kol": pred["kode"][k]["kol"], "kab": {"1101": [2, 0], "1102": [0, 0]}} for k in ("BNJ", "LSR", "CEX")}}}
-    kelas = {"kab": {"1101": {"banjir": {"K": "rendah"}, "longsor": {"K": "tinggi"}}, "1102": {"banjir": {"K": "sedang"}, "longsor": None}}}
+    kelas = {"kab": {"1101": {"K": {"BNJ": "rendah", "LSR": "tinggi", "BDG": "sedang"}}, "1102": {"K": {"BNJ": "sedang", "LSR": None, "BDG": None}}}}
     h = {"umpan": {"status": "segar"}, "kab_tersentuh": {"BNJ": {"1101": 3}, "LSR": {"1101": 3}}}
     o = hitung(kr, pred, lalu, kelas, h, kini)
     assert o["hipotesis"] is True and set(o["kab"]) == {"1101", "1102"}
@@ -364,6 +366,19 @@ def _cek():
     assert o["kab"]["1101"]["LSR"]["s"] == 3 and o["kab"]["1101"]["CEX"]["s"] == 0
     assert o["kab"]["1102"]["BNJ"]["s"] == 0 and o["kab"]["1102"]["LSR"]["s"] is None   # K longsor null: belum terukur, bukan Normal
     assert o["kab"]["1102"]["CEX"]["s"] == 0
+    # PH-02: golden K lama disuntik (bentuk baru) memberi hasil sama; BDG = BNJ dengan K bandang, E sama; e per hari ada
+    assert ambil_K(kelas, "1101", "BNJ") == "rendah" and ambil_K(kelas, "1102", "LSR") is None and ambil_K(None, "1101", "BNJ") is None
+    assert ambil_K({"kab": {"1101": {"nama": "x"}}}, "1101", "BNJ") is None          # kab tanpa blok K: null, tak jatuh
+    assert b["e"] == [3, 2, 2, 2] and o["kab"]["1101"]["BDG"]["e"] == b["e"]                     # E BDG = E BNJ hari yang sama
+    g1 = o["kab"]["1101"]["BDG"]
+    assert g1["hari"] == [3, 2, 2, 2] and g1["s"] == 3 and g1["hipotesis"] is True                  # K sedang: S = E; tanpa vonis BDG = hipotesis
+    assert o["kab"]["1102"]["BDG"]["s"] is None and o["kab"]["1102"]["BDG"]["e"] == [0, 0, 0, 0]  # K bandang null dan E = 0: belum terukur
+    assert o["kab"]["1102"]["BNJ"]["e"] == [0, 0, 0, 0] and o["versi_kriteria"] == kr["versi"] == 3
+    assert "BDG" in kr["bahaya"] and kr["sumber_E"] == {"BDG": "BNJ"} and "kelas_bahaya_kab" not in KELAS
+    assert os.path.exists(SIDIK + ".v3") and os.path.exists(SIDIK + ".v2") and os.path.exists(SIDIK + ".v1")   # sidik lama diarsipkan, tak dibuang
+    kd = _json(KELAS)
+    if kd:   # berkas nyata: kab, K per kode baku
+        assert all(set(v["K"]) >= {"BNJ", "BDG", "LSR"} for v in kd["kab"].values() if v.get("K"))
     # umpan BMKG basi: R null -> tidak Normal
     x = hitung(kr, pred, lalu, kelas, {"umpan": {"status": "basi"}, "kab_tersentuh": None}, kini)
     assert x["kab"]["1102"]["BNJ"]["s"] is None and x["kab"]["1101"]["BNJ"]["sebagian"] is True
@@ -390,8 +405,8 @@ def _cek():
     assert hitung(kr, pred, lalu, kelas, h, kini, {"boleh_tampil": True})["hipotesis"] is True      # tanpa boleh_per_bahaya: false
     g = hitung(kr, pred, lalu, kelas, h, kini, {"boleh_per_bahaya": {"BNJ": True, "LSR": False, "CEX": False}})
     k1 = g["kab"]["1101"]
-    assert g["boleh_per_bahaya"] == {"BNJ": True, "LSR": False, "CEX": False} and g["hipotesis"] is True
-    assert k1["BNJ"]["hipotesis"] is False and k1["LSR"]["hipotesis"] is True and k1["CEX"]["hipotesis"] is True
+    assert g["boleh_per_bahaya"] == {"BNJ": True, "BDG": False, "LSR": False, "CEX": False} and g["hipotesis"] is True
+    assert k1["BNJ"]["hipotesis"] is False and k1["BDG"]["hipotesis"] is True and k1["LSR"]["hipotesis"] is True and k1["CEX"]["hipotesis"] is True
 
     # P17: karhutla KHT
     nm = {0: "Pencegahan rutin", 1: "Patroli terpadu", 2: "Siaga pemadaman awal", 3: "Prioritas pemadaman"}
