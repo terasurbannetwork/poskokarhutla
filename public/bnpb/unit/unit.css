@@ -68,3 +68,13 @@
 .un-jf-lv ol{margin:0 0 6px;padding-left:0;list-style:none;display:grid;gap:4px}
 .un-jf-no{font-weight:700;margin-right:4px}
 .un-lbl svg{width:13px;height:13px;vertical-align:-2px;margin-right:4px}
+/* RRP-3 bentuk G (DS 7.9): masukan kiri, hasil kanan; menumpuk di ponsel */
+.un-g{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:20px;align-items:start}
+.un-g-in{width:100%;max-width:160px;box-sizing:border-box;height:36px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit}
+select.un-g-in{max-width:320px}
+.un-g-ganda{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px}
+.un-g-ganda p,.un-g-in-wadah>p{margin:0;display:flex;flex-direction:column;gap:4px;font-size:var(--fs-2)}
+.un-g-cat{margin:0 0 12px;color:var(--ink2);font-size:var(--fs-2)}
+.un-g-out .un-ringkas{grid-template-columns:1fr}
+.un-st-kurang{color:var(--bad-tx);font-weight:700}
+@media (max-width:760px){.un-g{grid-template-columns:1fr}.un-g-in,select.un-g-in{max-width:none}.ex-std .un-aksi .ad-tombol{min-height:44px}}

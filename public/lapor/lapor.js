@@ -1814,7 +1814,7 @@ const singkatProv = n => SINGKAT_PROV[n] || n.replace(/^Sumatera /, "Sum. ").rep
 let alunGrup = new Map(), alunTempat = new Map(), alunProvTerdampak = [];
 let alunKjId = new Map();   // id kejadian -> data lengkap kartu (gambarKabar), untuk jendela rincian dari pop-up peta
 /* arsiran provinsi satu warna bertingkat menurut total kejadian (pemilik 26 Nov 2026); tanpa kejadian = tanpa isi. Ambang bawah tiap tingkat, sama dengan legenda */
-const TINGKAT_PROV = [[1, .18, "1 sampai 2"], [3, .32, "3 sampai 5"], [6, .5, "6 sampai 10"], [11, .7, "lebih dari 10"]];   // arsiran oranye --f2 (pemilik 26 Nov 2026 "jangan pakai abu, pakai orange")
+const TINGKAT_PROV = [[1, .15, "1 sampai 2"], [3, .27, "3 sampai 5"], [6, .4, "6 sampai 10"], [11, .55, "lebih dari 10"]];   // arsiran oranye --f2 (pemilik 26 Nov 2026 "jangan pakai abu, pakai orange")
 const tingkatProv = n => TINGKAT_PROV.reduce((o, [a, v]) => n >= a ? v : o, 0);
 const isiProv = () => { const m = []; for (const [k, g] of alunGrup) if (/^\d{2}$/.test(k)) m.push(k, tingkatProv(g.n)); return m.length ? ["match", ["get", "kode"], ...m, 0] : 0; };
 /* ruang untuk panel daftar (kiri di layar lebar, bawah di HP) dan legenda bersaringan jenis di bawah */
@@ -1986,10 +1986,10 @@ async function gambarPetaAlun(daftar) {
   alunPeta.on("load", () => {
     // peta dasar polos seperti peta Laporan Harian: label negara, laut, dan kota bawaan disembunyikan; nama yang tampil hanya nama provinsi kita
     for (const l of alunPeta.getStyle().layers) if (l.type === "symbol") alunPeta.setLayoutProperty(l.id, "visibility", "none");
-    // gambar tanda per jenis sekali: lingkaran, gempa persegi, erupsi segitiga; tepi putih supaya terpisah dari peta
-    const putih = tok("--card"), gelap = tok("--ink");
     alunPeta.addSource("alun", {type: "geojson", data: fc});
     alunPeta.addSource("alun-prov", {type: "geojson", data: fp});
+    // gambar tanda per jenis sekali: lingkaran, gempa persegi, erupsi segitiga; tepi putih supaya terpisah dari peta
+    const putih = tok("--card"), gelap = tok("--ink");
     for (const j of [...Object.keys(KAT_JENIS), "lainnya"]) { const w = tok(KAT_JENIS[j] || "--kat-lain"), c = document.createElement("canvas"); c.width = c.height = 64; const x = c.getContext("2d");
       x.beginPath(); if (j === "gempa") x.roundRect(6, 6, 52, 52, 8); else if (j === "erupsi") { x.moveTo(32, 3); x.lineTo(61, 58); x.lineTo(3, 58); x.closePath(); } else x.arc(32, 32, 27, 0, 7);
       x.fillStyle = w; x.fill(); x.lineWidth = 6; x.strokeStyle = putih; x.stroke();
@@ -2348,7 +2348,7 @@ async function tampilAlun() {
     alunData = j.baris || [];
     gambarAlun();
     if (dpDok === undefined) muatDp().then(() => { if (dpDok && alunKabar && alunMode === "kejadian") gambarAlun(); });   // baris prakiraan menyusul, tidak menahan daftar
-  } catch { w.replaceChildren(el("p", "lp-redup", "Alun-alun belum bisa dimuat. Coba lagi.")); }
+  } catch { w.replaceChildren(el("p", "lp-redup", "Situasi bencana belum bisa dimuat. Coba lagi.")); }
 }
 
 /* ============ bahasa (K58, D80): dipilih pelapor, tidak ditebak; disimpan di perangkat. Percakapan diterjemahkan server, data tetap Indonesia ============ */

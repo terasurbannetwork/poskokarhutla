@@ -111,7 +111,7 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-014 | MB-1 status `tidak_bisa_dicek` | `ruang-bnpb` | `penulis-gerbang` | 4 | S | selesai 6 Nov (a2ed1d5d5; seed produksi bersama RU-057) |
 | RU-015 | MB-2 lengkap: semua kunci dan `tenggat()` | `inti-layar` | `penulis-gerbang` | 4 | M | selesai 6 Nov (30c771b1d) |
 | RU-016 | MB-2 pembaca Python dan uji kembar | `ruang-bnpb` | `penulis-gerbang` | 5 | S | tinjau 26 Nov (belum di-commit; 3 kasus cap waktu bertanggal tidak ada ditandai todo di JS, perbaikan `jam_aturan.js` milik `inti-layar`) |
-| RU-017 | Uji layar masuk `uji` dan `terbit.yml` | `mekanik-mesin` | `higiene-repo` | 1 | S | selesai 26 Nov 2026: `uji:layar` (424/424, 6 mnt 42 dtk lokal) dirangkai ke `uji` (variabel l) dan terbit.yml (langkah 12 mnt, batas job 70 jadi 82); tanpa Chrome uji melewati diri dengan pesan; waktu CI nyata menunggu run pertama |
+| RU-017 | Uji layar masuk `uji` dan `terbit.yml` | `mekanik-mesin` | `higiene-repo` | 1 | S | selesai 26 Nov 2026: `uji:layar` (424/424, 6 mnt 42 dtk lokal) dirangkai ke `uji` dan terbit.yml (langkah 12 mnt, batas job 82) di 2793c8fc4; pre-push menjalankannya bila layar BNPB berubah di 9dba1aa04; tanpa Chrome uji melewati diri dengan pesan |
 | RU-018 | Migrasi 0111 peran `unit` | `warga-api` | `migrasi-idempoten` | 4 | S | kode selesai 23 Nov (c616a7d17, migrasi jadi 0168); terap produksi oleh pemilik |
 | RU-019 | Rute baca `src/unit.js` dan gerbang host | `warga-api` | `guard-api`, `security-reviewer` | 5 | M | tinjau 26 Nov (belum di-commit; 4 rute GET, `/bnpb/unit*` dikecualikan dari gerbang host di `src/gerbang_halaman.js`; `tests/warga/unit.test.mjs` 14 uji hijau S1-S6, S8 baca, kuota hanya stafOK, basi dari `MEDIA.head`; S7 dan S8 POST menunggu rute tulis RU-033; `DATA_UNIT` 5 berkas + `pengadaan` kelas T; cangkang HTML RU-020 belum ada, halaman 404 sampai itu) |
 | RU-020 | Cangkang `/bnpb/unit`, katalog 70 ID, registri | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 5 | M | belum |
@@ -131,9 +131,9 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-034 | MB-7 `terima.py` dan layar `ketuk.js` | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 7 | M | belum |
 | RU-035 | MB-8 `panen.py` inti dan CKAN | `ruang-bnpb` | `security-reviewer` | 4 | M | tinjau 26 Nov (belum di-commit; `--cek` hijau; fixture CKAN disusun tangan karena data.bnpb.go.id tidak terjangkau, ganti tangkapan bersih saat tarikan pertama; bukti G-5 hijau 26 Nov lewat RU-024) |
 | RU-036 | MB-8 ArcGIS, INALOGPAL, SIRUP | `ruang-bnpb` | `security-reviewer` | 10 | M | belum |
-| RU-037 | HUK-1 kartu status peraturan | `ruang-bnpb` | `selera-angka` | 6 | S | belum |
-| RU-038 | KPOD-2 kartu Jam Aturan | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 6 | S | belum |
-| RU-039 | KPOD-2 masa status dari Jam Aturan | `inti-layar` | `penulis-gerbang` | 6 | S | belum |
+| RU-037 | HUK-1 kartu status peraturan | `ruang-bnpb` | `selera-angka` | 6 | S | tinjau 26 Nov (belum di-commit; `huk1.py` 13 konflik dari 233 dokumen, 42 tanpa teks dihitung terpisah; tautan `/bnpb/hukum` dan Unduh CSV lewat `rapor.kartu(tautan, unduh)`; kolom pasal pencabut tidak ada karena `relasi` katalog tanpa pasal) |
+| RU-038 | KPOD-2 kartu Jam Aturan | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 6 | S | tinjau 26 Nov (belum di-commit; `jam.js` dari `/inti/jam_aturan.json`, 23 tenggat berpasal, 19 asumsi, 54 kunci; tab "Dipakai oleh" belum: tidak ada medan pemakai di Jam Aturan) |
+| RU-039 | KPOD-2 masa status dari Jam Aturan | `inti-layar` | `penulis-gerbang` | 6 | S | selesai |
 | RU-040 | RRX-1 `rrx1.py` dan kartu jam pascabencana | `ruang-bnpb` | `selera-angka` | 6 | M | belum |
 | RU-041 | RRX-1 kolom `tgl_r3p` dan uji alur | `warga-api` | `guard-api` | 6 | S | belum |
 | RU-042 | PLP-1 neraca stok penyangga | `ruang-bnpb` | `validasi-model`, `selera-angka` | 7 | M | tinjau 26 Nov (belum di-commit; 514 kab, dua penyebut: 209 dari 5.269 kab-tahun (0 bila tidak tercatat) dan 209 dari 4.434 berdata, 35 kab tanpa kode DIBI dikeluarkan, reproduksi riset/4 5.654 tetap pembanding sidik beku; stok `belum_dilaporkan` sampai RU-036; SISA `pipa-data`: padanan kode kab lama ke baru di pembuat `dibi_kab_tahun.json`; nama `src/unit.js` `DATA_UNIT` oleh warga-api) |
@@ -142,22 +142,22 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-045 | KPOD-3 arsip Laphar mode satu hari | `pipa-umum` | `security-reviewer` | 8 | S | belum |
 | RU-046 | KPOD-3 entri `arsip_laphar` di pengatur WA | `wa-bot` | `security-reviewer` | 8 | S | tertahan (gateway WA mati sejak 4 Nov, OUTSTANDING E1) |
 | RU-047 | KPOD-3 kartu cakupan Laphar | `ruang-bnpb` | `selera-angka` | 8 | S | belum |
-| RU-048 | REN-1 rapor Reformasi Birokrasi | `ruang-bnpb` | `selera-angka` | 8 | S | belum |
-| RU-049 | REN-3 kalender monev | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 8 | S | belum |
-| RU-050 | JF-1 kamus kompetensi | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 8 | S | belum |
-| RU-051 | PD-3 `pesanStandar` | `layar-peta` | `penulis-gerbang` | 9 | S | belum |
+| RU-048 | REN-1 rapor Reformasi Birokrasi | `ruang-bnpb` | `selera-angka` | 8 | S | tinjau 26 Nov (belum di-commit; 22 komponen berbobot 77, catatan LAKIP tidak merinci 23 bobot sisanya; hilang 22,82 dari 100, 19,03 di komponen bertabel; faktor kemudahan penilaian analis berlabel asumsi) |
+| RU-049 | REN-3 kalender monev | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 8 | S | tinjau 26 Nov (belum di-commit; 10 kewajiban, 6 berulang menunggu tanggal kegiatan terakhir, 4 berpemicu tampil sebagai aturan; kalender 12 bulan bertanggal menunggu data kegiatan terakhir) |
+| RU-050 | JF-1 kamus kompetensi | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 8 | S | tinjau 26 Nov (belum di-commit; 58 kode = 58 kode unik di seed, semua 5 level, 870 indikator; teks indikator dari ekstraksi PDF dua kolom berlabel; jenis umum/khusus belum diurai; `jf1.js` masuk `LAYAR` gerbang kartu standar) |
+| RU-051 | PD-3 `pesanStandar` | `layar-peta` | `penulis-gerbang` | 9 | S | tinjau 26 Nov (belum di-commit; fungsi murni di `ews_tindakan.js`, konteks `{turunan, kelas_bahaya, jiwa_terpapar, sumber_daya}`; `src/ews.js` belum mengimpornya karena tidak memakai pesan enam baris) |
 | RU-052 | PD-3 layar penyusun pesan | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 9 | S | belum |
-| RU-053 | KS-4 kalender gladi | `ruang-bnpb` | `selera-angka` | 9 | S | belum |
-| RU-054 | RRP-3 kalkulator Jitupasna | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 9 | S | belum |
-| RU-055 | RRS-3 fasilitas sosial rusak | `ruang-bnpb` | `selera-angka` | 9 | S | belum |
-| RU-056 | KEU-1 penguji konsistensi LAKIP dan LK | `ruang-bnpb` | `higiene-repo` | 9 | S | belum |
+| RU-053 | KS-4 kalender gladi | `ruang-bnpb` | `selera-angka` | 9 | S | tinjau 26 Nov (belum di-commit; 153 kab/kota dengan saran, 361 tanpa musim di `siaga.json`; bahaya dilatih = bahaya bermusim ber-R tertinggi, berlabel asumsi) |
+| RU-054 | RRP-3 kalkulator Jitupasna | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 9 | S | tinjau 26 Nov (belum di-commit; `ikk.py` BPS var 2515 dan 128, IKK 2026 514 kab dan 38 provinsi, kota acuan 2026 tidak tertulis di BPS; `rrp3.js` J1-J6 dan uji Chrome hijau, tanpa POST; kolom CSV = Formulir 08 hlm. 104 yang disebut lampiran 7; nama resmi IKK tidak ditulis utuh karena kata tuduhan gerbang §9.3; CI butuh secret `BPS_KEY` atau cache) |
+| RU-055 | RRS-3 fasilitas sosial rusak | `ruang-bnpb` | `selera-angka` | 9 | S | tinjau 26 Nov (belum di-commit; banjir aktif saja: 11 kejadian, 253 sekolah, 25 puskesmas dan RS di jejak per 19 Okt; jejak gempa MMI VII ke atas menunggu berkas dari modul `gempa`) |
+| RU-056 | KEU-1 penguji konsistensi LAKIP dan LK | `ruang-bnpb` | `higiene-repo` | 9 | S | tinjau 26 Nov (belum di-commit; `keu1.py --cek` menangkap 8 selisih 5-lakip.md termasuk Biro Keuangan 95,68%; draf di jalur repo terlacak ditolak; belum diuji atas PDF asli karena tidak ada draf atau LAKIP PDF di mesin) |
 | RU-057 | [induk] Tinjauan dan terbit F1 | sesi induk | pemeriksa per lapisan | 9 | M | belum |
 | RU-058 | PERB-2 kolom rusak sedang dan ringan DIBI | `banjir` | `validasi-model` | 10 | S | belum |
 | RU-059 | PERB-2 kerugian ekonomi berjalan | `ruang-bnpb` | `validasi-model` | 10 | M | belum |
 | RU-060 | PSPB-3 rapor Sendai dan SDGs 11.b | `ruang-bnpb` | `validasi-model` | 10 | S | belum |
 | RU-061 | MT-2 daerah prioritas mitigasi | `ruang-bnpb` | `validasi-model` | 10 | S | tinjau 26 Nov (belum di-commit; hipotesis, judul "urutan skor", pil "Asumsi: belum lulus uji balik"; kriteria `lab_kriteria/mb4.json` dikunci, uji balik belum dijalankan dan belum bertiket; 35 kab tanpa kode DIBI ditandai, 15 di kuartil atas) |
-| RU-062 | PLP-2 daftar pendek hibah logpal | `ruang-bnpb` | `validasi-model` | 10 | M | belum |
-| RU-063 | OJL-2 penempatan stok | `ruang-bnpb` | `validasi-model` | 10 | M | belum |
+| RU-062 | PLP-2 daftar pendek hibah logpal | `ruang-bnpb` | `validasi-model` | 10 | M | tinjau 26 Nov (belum di-commit; 511 kab berskor dari 3 komponen terisi (risiko, kejadian, celah kapasitas); celah stok menunggu RU-036, celah peralatan menunggu inventaris per provinsi, penerima hibah U10; `standar_peralatan_2009.json` 33 provinsi diekstrak dari teks Perka 17/2009) |
+| RU-063 | OJL-2 penempatan stok | `ruang-bnpb` | `validasi-model` | 10 | M | tinjau 26 Nov (belum di-commit; 38 gudang ibu kota provinsi, target musiman beras PR 1%; saran pindah menunggu stok RU-036; bagian jelang tidak tampil karena BNJ dan LSR /prediksi kalah dari klimatologi di skor.json) |
 | RU-064 | OJL-3 rapor Klaster Logistik | `ruang-bnpb` | `security-reviewer`, `selera-angka` | 10 | S | belum |
 | RU-065 | RRP-1 neraca rumah rusak | `ruang-bnpb` | `security-reviewer`, `validasi-model` | 10 | M | belum |
 | RU-066 | RRS-1 kunci kriteria uji | `ruang-bnpb` | `validasi-model` | 10 | S | belum |
@@ -167,9 +167,9 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-070 | REN-2 belanja lawan risiko | `ruang-bnpb` | `validasi-model` | 10 | S | belum |
 | RU-071 | SDU-1 rapor tata kelola pengadaan | `ruang-bnpb` | `security-reviewer`, `selera-angka` | 10 | M | belum |
 | RU-072 | [induk] Tinjauan dan terbit F2 Januari | sesi induk | pemeriksa per lapisan | 10 | S | belum |
-| RU-073 | PSPB-1 register status RPBD | `ruang-bnpb` | `selera-angka` | 11 | S | belum |
-| RU-074 | KS-1 pemantau dokumen kesiapsiagaan | `ruang-bnpb` | `selera-angka` | 11 | S | belum |
-| RU-075 | SPB-1 peta NSPK | `ruang-bnpb` | `selera-angka` | 11 | S | belum |
+| RU-073 | PSPB-1 register status RPBD | `ruang-bnpb` | `selera-angka` | 11 | S | tinjau 26 Nov (belum di-commit; 552 pemda: 2 berlaku, 231 tidak ditemukan, 317 situs tidak bisa dicek; usulan_rpbd 4 baris, gabung keputusan menunggu RU-034) |
+| RU-074 | KS-1 pemantau dokumen kesiapsiagaan | `ruang-bnpb` | `selera-angka` | 11 | S | tinjau 26 Nov (belum di-commit; 4 renkon ditemukan, semuanya kedaluwarsa; tautan Salin ke Meja Kerja `/bnpb/meja#salin=` membuka isian renkon terisi; gabung keputusan menunggu RU-034) |
+| RU-075 | SPB-1 peta NSPK | `ruang-bnpb` | `selera-angka` | 11 | S | tinjau 26 Nov (belum di-commit; 180 dokumen berlaku efektif, 13 konflik tidak dihitung; `renstra_nspk.json` 75 butir: 11 terbit, 14 lewat target, 50 belum jatuh tempo; pencocok frasa judul berlabel asumsi) |
 | RU-076 | HUK-2 pelacak amanat | `ruang-bnpb` | `penulis-gerbang` | 11 | M | belum |
 | RU-077 | KPOD-1 rapor intervensi status darurat | `ruang-bnpb` | `validasi-model` | 11 | M | belum |
 | RU-078 | WIL-1 data direktorat wilayah | `ruang-bnpb` | `penulis-gerbang` | 11 | S | belum |

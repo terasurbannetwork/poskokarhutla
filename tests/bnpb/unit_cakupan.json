@@ -11,19 +11,24 @@
   "JF-1": "jf1.py --cek; tests/bnpb/unit_layar.test.mjs",
   "KPOD-2": "tests/bnpb/unit_layar.test.mjs; tests/agen/gerbang-jam-aturan.test.mjs",
   "KS-4": "ks4.py --cek",
-  "RRS-3": "rrs3.py --cek"
+  "RRS-3": "rrs3.py --cek",
+  "RRP-3": "ikk.py --cek; tests/bnpb/unit_rrp3.test.mjs",
+  "PLP-2": "plp2.py --cek",
+  "OJL-2": "ojl2.py --cek",
+  "PSPB-1": "pspb1.py --cek",
+  "KS-1": "ks1.py --cek",
+  "SPB-1": "spb1.py --cek"
  },
- "dikecualikan": {},
+ "dikecualikan": {
+  "KEU-1": "berjalan di mesin pemilik atas data internal (U9); keu1.py --cek menguji aturannya atas selisih 5-lakip.md"
+ },
  "antre": [
   "PERB-2",
-  "PSPB-1",
   "PSPB-3",
-  "SPB-1",
   "PUS-2",
   "PD-1",
   "PD-2",
   "PD-3",
-  "KS-1",
   "KS-3",
   "MT-1",
   "MT-3",
@@ -32,18 +37,14 @@
   "WIL-1",
   "WIL-2",
   "WIL-3",
-  "PLP-2",
   "PLP-3",
-  "OJL-2",
   "OJL-3",
   "RRX-1",
   "RRP-1",
   "RRP-2",
-  "RRP-3",
   "RRI-1",
   "RRS-1",
   "REN-2",
-  "KEU-1",
   "SDU-1",
   "HUK-2",
   "IRT-1",
@@ -51,5 +52,5 @@
   "DIK-4",
   "JF-2"
  ],
- "antre_maks": 35
+ "antre_maks": 28
 }

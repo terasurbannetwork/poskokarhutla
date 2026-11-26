@@ -366,6 +366,7 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
     const el = document.getElementById("mjSpek"); if (!el || !form) return;
     const m = M(), sp = spekMeja(m, form.mode === "status" ? form.ke : null), awal = {};
     for (const c of sp.kolom) { const v = form.baris?.data?.[c.nama]; if (v != null && form.mode !== "status") awal[c.nama] = v; }
+    if (form.mode === "baru" && form.salin) for (const c of sp.kolom) { const v = form.salin[c.nama]; if (typeof v === "string" && v) awal[c.nama] = v.slice(0, 300); }   // KS-1: dari Ruang Unit
     form.spek = gambarSpek(sp, el, awal);
     for (const o of el.querySelectorAll('[id$="-titik_id"] option')) { const t = titik.find(x => x.id === o.value); if (t) o.textContent = t.nama; }   // nama titik, bukan kode
   };
@@ -500,6 +501,9 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
 
   /* ---------- mulai ---------- */
   async function mulai() {
+    /* KS-1 (RU-074): #salin=<JSON> dari Ruang Unit membuka isian meja renkon terisi; hanya teks, hanya kolom spek renkon, tidak dikirim tanpa Simpan */
+    const salinUrl = location.hash.match(/(?:^|[#&])salin=([^&]{1,2000})/);
+    if (salinUrl) { try { const o = JSON.parse(decodeURIComponent(salinUrl[1])); if (o && typeof o === "object" && !Array.isArray(o)) sessionStorage.setItem("meja_salin", JSON.stringify(o)); } catch (e) {} history.replaceState(null, "", location.pathname + location.hash.replace(/[#&]?salin=[^&]*/, "").replace(/^&/, "#")); }
     const dariUrl = location.hash.match(/(?:^|[#&])k=([0-9a-fA-F]{26})(?:&|$)/);
     if (dariUrl) { sessionStorage.setItem(KUNCI, dariUrl[1].toLowerCase()); history.replaceState(null, "", location.pathname); }   // kode tidak tertinggal di bilah alamat
     kode = sessionStorage.getItem(KUNCI) || "";
@@ -510,6 +514,8 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
     if (!sy.ok || sy.j.peran !== "petugas") { sessionStorage.removeItem(KUNCI); app.innerHTML = JUDUL + `<p class="mj-pesan galat">${esc(sy.j.galat || "Kodemu tidak berlaku.")} Minta tautan baru dari admin.</p>`; return; }
     S = sp; saya = sy.j; meja = S.meja.find(m => saya.petugas.meja.includes(m.id))?.id;
     if (!meja) { app.innerHTML = JUDUL + '<p class="mj-pesan galat">Kodemu belum punya meja yang boleh diisi.</p>'; return; }
+    let salin = null; try { salin = JSON.parse(sessionStorage.getItem("meja_salin") || "null"); } catch (e) {} sessionStorage.removeItem("meja_salin");
+    if (salin && saya.petugas.meja.includes("renkon")) { meja = "renkon"; form = {mode: "baru", salin}; }
     muat();
   }
   mulai().catch(() => { app.innerHTML = JUDUL + '<p class="mj-pesan galat">Gagal memuat Meja Kerja. Periksa sambunganmu lalu muat ulang.</p>'; });

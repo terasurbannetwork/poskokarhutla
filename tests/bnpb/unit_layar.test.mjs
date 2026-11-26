@@ -145,7 +145,8 @@ test("katalog: 22 unit = KODE_UNIT src/unit.js, tiap unit tepat satu kelompok, u
 test("katalog: berkas unik, tiap DATA_UNIT yang berkartu punya pemilik sistem, skrip yang ditautkan ada", () => {
   const b = KAT.SISTEM.map(s => s.berkas).filter(Boolean);
   assert.equal(new Set(b).size, b.length, "berkas dipakai dua sistem");
-  for (const n of DATA_UNIT.filter(n => n !== "jdih_daerah")) assert.ok(b.includes(n), `${n} di DATA_UNIT tanpa sistem di katalog`);   // jdih_daerah = masukan MB-3, tanpa kartu
+  for (const n of DATA_UNIT.filter(n => n !== "jdih_daerah" && !n.startsWith("usulan_"))) assert.ok(b.includes(n), `${n} di DATA_UNIT tanpa sistem di katalog`);   // jdih_daerah = masukan MB-3; usulan_<berkas> = baris MB-7 untuk ketuk (DT 4.7), tanpa kartu
+  for (const n of DATA_UNIT.filter(n => n.startsWith("usulan_"))) assert.ok(b.includes(n.slice(7)), `${n} tanpa berkas induk ${n.slice(7)} di katalog`);
   for (const s of KAT.SISTEM.filter(s => s.skrip)) assert.ok(existsSync(AKAR + s.skrip), `${s.id}: ${s.skrip} tidak ada`);
   assert.ok(existsSync(AKAR + KAT.DT));
   assert.deepEqual(KAT.SISTEM.filter(s => s.lokal).map(s => s.id), ["KEU-1", "IRT-1"], "DS 8.6");

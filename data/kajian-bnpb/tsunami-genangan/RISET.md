@@ -182,6 +182,40 @@ Gesekan Manning, n dari sumber, bukan disetel: dasar tangki "lembar baja nirkara
 - Kutipan NTHMP 2011 terverifikasi: GeoClaw tanpa gesekan R/d 0,085 dan "falls well within the scatter" membandingkan dengan model lain, bukan lab (nthmp.txt 5612-5645); lokakarya memakai batas 10% sejak Catalina 2004 (nthmp.txt 2300-2322), sedangkan PMEL-135 tetap 5% untuk tak pecah dan PMEL-135 yang berlaku untuk gerbang kita; SELFE Manning 0,016 galat 1,9% (satu kelompok).
 - Rekomendasi pemeriksa: opsi (a), terima galat +12,2% (2D) sebagai batas mesin tanpa disipasi yang dilaporkan terbuka, dengan ketidakpastian ambang basah dan sebaran lab ditulis; opsi (c) batas 10% tidak direkomendasikan karena dipilih sesudah hasil diketahui.
 
+### 4.3 TS-11 (26 Nov 2026): ukuran hitung nyata satu skenario di satu kotak
+
+Skenario SINTETIS, bukan kejadian uji dan bukan kejadian pengembangan Aceh: megathrust selatan Bali dan Jawa timur, antarmuka, M 8,6, pusat 10,6 LS 115,0 BT, strike 85, kedalaman 20 km, dip 15 (bawaan jenis subduksi). Dari `tsunami_sumber.py`: L 358 km, W 137 km, slip 6,8 m, M0 1e22 N m, dipecah 4 segmen 100 km, Okada per segmen, uz -1,2 sampai +3,1 m. Alasan memilih: Banyuwangi 1994 adalah M 7,8 di 10,5 LS 112,8 BT (kejadian uji kelas B); sumber ini 0,8 M lebih besar dan 2,2 derajat ke timur, jadi bukan tiruan dan tidak dipakai menyetel apa pun. Peringatan jujur: bidangnya masih memanjang ke barat sampai sekitar 113,4 BT, jadi jejaknya bersinggungan dengan wilayah sumber 1994 walau parameternya jauh berbeda. Tujuannya hanya mengukur ongkos hitung.
+
+Kotak `banyuwangi_rajegwesi` (113,75 sampai 114,5 BT, 8,9 sampai 8,4 LS; 2701 x 1801 sel 1 detik busur; darat 203.352 sel pada kisi 3 detik, 37,5 persen). Domain GeoClaw 112,5 sampai 117,0 BT, 11,8 sampai 8,2 LS, tanpa gesekan (manning 0, K10 dan K12), tfinal 2400 s, dtopo satu kali pada t = 0 (naik 1 detik), tanpa gauge, hanya fgmax di kotak.
+
+| Butir | Nilai |
+| --- | --- |
+| Tingkat kasar | ETOPO 2022 yang sudah di repo, 3 menit busur (belum ada GEBCO per paparan di luar kotak; paparan antara kotak dan laut dalam hanya diinterpolasi dari 3 menit) |
+| Tingkat halus | GLO-30 + GEBCO 15 detik keluaran TS-06 di kotak, 1 detik busur |
+| Grid bersarang (uji ukur 3 detik) | tingkat 1: 90 x 72 sel (3 menit); tingkat 2: rasio 6, 30 detik, adaptif ambang gelombang 0,1 m (sekitar 128 grid, 233.280 sel pada t = 2380 s); tingkat 3: rasio 10, 3 detik, dipaksa di seluruh kotak sejak t = 1200 s (480 grid, 601.600 sel) |
+| Grid bersarang rancangan 1 detik | 1: 3 menit, 2: 30 detik, 3: 5 detik (paparan), 4: 1 detik di kotak (4,86 juta sel kotak) |
+| fgmax | 540.000 titik (3 detik) di kotak, dicek tiap 10 s mulai saat tingkat halus dipaksa |
+| Mesin | Mac pemilik, Apple M4, 10 inti, 16 GB; GeoClaw 5.14.0 tanpa OpenMP (satu inti); beban mesin saat uji tinggi (load average 20 sampai 28 pada 10 inti dari sesi lain), jadi WAKTU DINDING menggelembung dan WAKTU CPU lebih jujur |
+
+Hasil terukur (3 detik busur):
+- Ukur 300 s waktu simulasi, tingkat halus dipaksa sejak t = 0: dinding 679 detik, CPU 478 detik (1,6 detik CPU per detik simulasi), memori puncak 272,5 MB.
+- Skenario penuh 2400 s, tingkat halus dipaksa mulai t = 1200 s: dinding 2975 detik (49,6 menit), memori puncak 218,8 MB (`ru_maxrss` anak; macOS memampatkan memori sehingga bisa kurang dari puncak sebenarnya). CPU perkiraan sekitar 39 menit (dari sampel `ps` waktu CPU proses, 1,8 detik CPU per detik simulasi pada fase halus; `cpu_detik` baru ditambahkan ke keluaran sesudah proses ini jalan, jadi untuk run ini angka CPU adalah perkiraan, bukan keluaran).
+- Ringkasan genangan (HIPOTESIS, bukan peringatan, bukan bukti; hanya 2400 s pertama, jadi maksimum belum tentu final): d_maks_darat 12,2 m, run-up (ujung genangan, elevasi) 27,0 m di 114,28 BT, 1808 dari 203.352 sel darat basah (median kedalaman 1,1 m, persentil 90 = 4,8 m). Angka sebesar ini wajar curiga: tanpa gesekan (K10, K12), DSM GLO-30 (atap), batimetri paparan kasar, sumber slip seragam 6,8 m tanpa distribusi. Dibaca sebagai batas atas kasar mesin, bukan perkiraan.
+- `tiba_pertama_s` 1205,6 s TIDAK bermakna: fgmax baru mulai mencatat pada t = 1200 s, jadi nilai ini hanya batas bawah artefak; gelombang sudah di kotak saat pencatatan mulai. Skenario berikutnya mulai fgmax lebih awal (tingkat halus cukup dipaksa mulai ketika gelombang mendekat, fgmax dengan tingkat tetap).
+- 1 detik busur: percobaan 30 s waktu simulasi dihentikan manual pada menit ke 25 dinding (CPU 17,6 menit) sebelum langkah waktu pertama selesai; penyiapan awal tingkat 4 (4,86 juta sel, lebih dari 1900 grid) saja sudah lebih dari 17 menit CPU. Tidak ada angka per detik simulasi untuk 1 detik; yang ada hanya batas bawah.
+
+Ekstrapolasi (BUKAN ukuran; dasar: biaya sel x langkah naik 3^3 = 27 kali dari 3 ke 1 detik, karena sel 9 kali lebih banyak dan langkah waktu 3 kali lebih kecil menurut CFL pada kedalaman kotak sampai 2126 m):
+- 3 detik, 7200 s simulasi (3 jam sudah cukup untuk gelombang pertama sampai ke genangan): fase ringan sampai 1200 s lalu 1,6 sampai 2,3 detik CPU per detik simulasi, jadi sekitar 9.600 sampai 13.800 detik CPU, yaitu 2,7 sampai 3,8 jam di satu inti M4 yang tidak berebut.
+- 1 detik, 7200 s: kira-kira 27 kali itu, sekitar 70 sampai 100 jam CPU, belum termasuk penyiapan awal. Tidak layak, di mesin lokal pun.
+
+Keputusan GitHub Actions (ubuntu-latest, 4 vCPU, 16 GB, batas job 6 jam; spek runner dan batas diambil dari tugas, belum dicocokkan ke dokumentasi GitHub sesi ini, K5 minta dibaca saat fase 3):
+- 1 detik per kotak penuh: TIDAK layak (puluhan jam CPU, jauh di atas 6 jam; 16 GB cukup untuk memori tetapi bukan penghalangnya).
+- 3 detik per kotak, 3 jam waktu simulasi: 2,7 sampai 3,8 jam di inti M4 menjadi sekitar 4 sampai 8 jam di satu inti runner (anggapan: inti runner 1,5 sampai 2 kali lebih lambat dari M4, belum diukur di runner), jadi MELAMPAUI atau menyentuh batas 6 jam; satu inti terpakai karena build tanpa OpenMP. Tidak layak apa adanya.
+- Yang bisa membuatnya layak, semuanya belum diukur: build dengan OpenMP (4 vCPU), tingkat halus hanya di sel dangkal (kotak persegi memaksa 3 detik di laut dalam 2000 m, tempat langkah waktu terkecil dan hasil paling tidak berguna), tfinal diperpendek sesudah puncak, dan satu job per skenario. Sebelum fase 3 butuh ukuran di runner sungguhan, bukan perkiraan dari M4.
+- Rekomendasi: fase 3 TIDAK memakai Actions sebagai tempat hitung kotak 1 detik. Hitungan tetap di mesin lokal (K5); Actions hanya dipertimbangkan untuk tingkat kasar sesudah uji OpenMP dan uji dangkal-saja terukur di runner.
+
+Catatan mesin dan kode: `tsunami_hitung.py` ditambah `siapkan_skenario`, `jalankan_skenario`, mode `skenario <nama> <res 1|3> <tfinal> <t_halus> [kotak]`; setrun lintang-bujur memerlukan `capa_index = 2` dan `aux_type = [center, capacity, yleft]` (tanpa itu GeoClaw berhenti "mcapa does not agree with auxtype"); keluaran dilaporkan `cpu_detik` dan, untuk spek `ringkas`, larik fgmax disimpan di `fgmax.npz` di folder kerja. K12: `hitung()` menolak `manning > 0` kecuali spek bertanda `diagnostik_lab`.
+
 ## 5. Sumber data: bahan dan syarat
 
 | Data | Sumber | Syarat atau catatan |
@@ -189,7 +223,7 @@ Gesekan Manning, n dari sumber, bukan disetel: dasar tangki "lembar baja nirkara
 | Run-up historis | NOAA NCEI/WDS Global Historical Tsunami Database: layanan data kejadian dan run-up (layanan REST di domain `ngdc.noaa.gov`, jalur `hazard-service/api/v1/tsunamis/runups`) **[periksa alamat dan nama kolom saat TS-03]**. | Data pemerintah AS; atribusi wajib dituliskan. Disaring ke Indonesia dan ke kode validitas kejadian pasti **[periksa makna kode]**. Tidak ditarik tiap muat halaman; ditarik sekali per tiket dan disimpan di repo. |
 | DEM darat | DEMNAS (BIG), Copernicus GLO-30 (terbuka lewat AWS), FABDEM | Pemilik mengizinkan DEMNAS di layar publik dan menyediakan lembar pesisir (K4); atribusi BIG dicatat. DEMNAS berupa DSM-hidro tahun tertentu (lihat `medan.py`), jadi tinggi tanah bisa berbeda dari tahun kejadian. GLO-30 hanya cadangan: model permukaan, pohon dan bangunan ikut tinggi, sehingga genangan di bawah kanopi cenderung diremehkan. FABDEM berlisensi non-komersial, tidak untuk layar publik. |
 | Batimetri | ETOPO 2022 (sudah ada), GEBCO, BATNAS BIG | GEBCO terbuka dengan atribusi **[periksa]**; BATNAS **[periksa lisensi dan format]**. |
-| Kekasaran | WorldCover (ESA, terbuka) dan jejak bangunan Overture | Dipakai menurunkan koefisien Manning per kelas lahan; tabel Manning yang dipakai diberi sumber di ALGORITMA. |
+| Kekasaran | WorldCover (ESA, terbuka) dan jejak bangunan Overture | Tidak dipakai: K12 (26 Nov 2026) menjalankan hitungan pantai tanpa gesekan; TS-07 dibatalkan. |
 | Geometri subduksi | Slab2 (USGS) | Bila dipakai (Q11). Data USGS umumnya domain publik **[periksa]**. |
 | Sumber inversi | USGS finite-fault, SRCMOD | Hanya untuk uji sensitivitas (Q10); lisensi **[periksa]**. |
 

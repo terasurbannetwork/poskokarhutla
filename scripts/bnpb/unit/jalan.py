@@ -33,6 +33,12 @@ LANGKAH = [
     ("JF-1", "jf1", "harian"),    # RU-050 unit/kompetensi.json (dari data/hukum/seed.sql perban-5-2024)
     ("KS-4", "ks4", "bulanan"),    # RU-053 unit/kalender_gladi.json (dari siaga.json, risiko_hvc.json, dibi_kab_tahun.json)
     ("RRS-3", "rrs3", "harian"),    # RU-055 unit/fasilitas_sosial.json (OSM x jejak banjir aktif; gempa menunggu jejak MMI)
+    ("RRP-3", "ikk", "bulanan"),    # RU-054 unit/ikk.json (BPS WebAPI IKK, BPS_KEY; tanpa kunci cache terakhir)
+    ("PLP-2", "plp2", "bulanan"),    # RU-062 unit/hibah_prioritas.json (MB-4; risiko kecamatan, DIBI, IKD, PLP-1, Perka 17/2009)
+    ("OJL-2", "ojl2", "harian"),    # RU-063 unit/prepositioning.json (PLP-1 x kalender_operasi; jelang hanya bila /prediksi lolos gerbang)
+    ("PSPB-1", "pspb1", "mingguan"),    # RU-073 unit/rpbd.json, unit/usulan_rpbd.json (dari jdih_daerah.jalan, cache MB-3)
+    ("KS-1", "ks1", "mingguan"),    # RU-074 unit/dokumen_siaga.json, unit/usulan_dokumen_siaga.json (jdih_daerah, status_darurat, Jam Aturan)
+    ("SPB-1", "spb1", "harian"),    # RU-075 unit/peta_nspk.json (katalog hukum MB-1 x renstra_nspk.json)
 ]
 
 BASI_JAM = {"harian": 48, "mingguan": 240, "bulanan": 1080}  # DT sec 9.4
