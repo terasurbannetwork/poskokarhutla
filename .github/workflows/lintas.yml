@@ -281,6 +281,22 @@ jobs:
           python3 scripts/kekeringan/status.py || echo "::warning title=kekeringan::status/rantai kekeringan ada yang gagal"
           python3 scripts/kekeringan/peluang_kering.py uji && python3 scripts/kekeringan/peluang_kering.py || echo "::warning title=peluang_kering::gagal"
 
+      # PH-06: HTH harian (hth.py jalan di rantai status.py di atas) di-commit supaya analisis_wilayah.py (dampak_peringatan.yml, baca dari checkout) tidak basi > 3 hari.
+      - name: Commit HTH harian (boleh gagal)
+        continue-on-error: true
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          F=public/data/kekeringan_hth.json
+          [ -e "$F" ] && git add -f $F
+          git diff --cached --quiet -- $F && { echo "HTH tidak berubah"; exit 0; }
+          git commit -q -m "data: HTH harian $(TZ=Asia/Jakarta date +%F)" -- $F
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::warning title=Push HTH gagal::git push ke main gagal 3x"
+
       # Panen #24 #25 #20 (30 Okt 2026): MIROVA (deret VRP 90 hari dikumpulkan sendiri di berkasnya, jadi WAJIB tahan lintas run), Copernicus GDO,
       # nowcast longsor harian (membaca public/banjir/data/hujan.json dari cache banjir-). Proposal modulnya titik.yml/data.yml, tetapi keduanya tidak
       # meng-commit dan public/gunungapi|kekeringan|longsor/data di luar cache ditimpa checkout main saat terbit; di sini ada commit ke main.

@@ -32,14 +32,6 @@
   "public/udara/data/omc_hasil.json"
  ],
  "pengecualian": {
-  "public/gempa/data/tsunami_genangan/**": {
-   "alasan": "Keluaran lab tsunami genangan (TS-12, commit e2e7889cd). Pemakainya layar genangan.js di tab Simulasi /gempa/sim (TS-17, TS-18) yang belum dibangun; genangan berlabel hipotesis sampai uji balik kelas A (TS-15). Hapus pengecualian ini begitu TS-18 memasang lapisannya.",
-   "tanggal": "2026-11-26"
-  },
-  "public/banjir/data/debit_kab.json": {
-   "alasan": "Potensi Hidromet PH-04 (data/kajian-bnpb/potensi-hidromet/KEPUTUSAN-POTENSI.md D6): debit GloFAS per kab ditulis scripts/banjir/debit_glofas.py terbit. Pemakai analisis_wilayah.py (PH-05) dan tab Iklim /potensi (PH-11), jadwal banjir.yml (PH-06) menyusul di paket yang sama. Hapus pengecualian ini saat PH-05 dan PH-06 masuk.",
-   "tanggal": "2026-11-26"
-  },
   "public/data/alun/**": {
    "alasan": "Kabar Alun-alun KA-01..KA-04 (data/kajian-bnpb/kabar-alun/ALUR.md langkah 2, Q3 bawaan sementara): kabar.json ditulis scripts/data/alun_kabar.py yang dipanggil langkah ekspor jalan.py laporan harian di mesin lokal, bukan workflow GitHub. Pemakai layar public/lapor/alun_kabar.js menyusul di KA-05. Dicatat sesi lapor supaya push tidak tertahan; pengerja pipa-data menghapus pengecualian ini bila penjadwalnya pindah ke workflow.",
    "tanggal": "2026-11-25"
