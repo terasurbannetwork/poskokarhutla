@@ -952,3 +952,8 @@ h1.dl-l1{margin:0;padding:12px 16px;border-radius:14px;background:var(--head-bg)
 .dd-ikon:disabled{opacity:.4;cursor:not-allowed}
 .dd-ikon svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
 .dd-tabel td.n{text-align:center;font-variant-numeric:tabular-nums}
+/* kerangka sebelum akses diperiksa (pemilik 26 Nov 2026 "rapikan Memeriksa akses"): bidang seukuran peta Data Bencana (.bd-peta), tanpa tulisan
+   yang berkedip; teks status tetap dibaca pembaca layar. Diganti seluruhnya oleh dalops.js begitu sesi dijawab */
+.dl-kerangka{position:relative;height:720px;border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow)}
+.dl-kerangka>p{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media (max-width:1100px){.dl-kerangka{height:min(560px,70dvh)}}
