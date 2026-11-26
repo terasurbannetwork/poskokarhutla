@@ -3419,19 +3419,19 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-ikon-atas-titik{position:absolute;top:8px;right:9px;width:9px;height:9px;border-radius:50%;background:var(--lh-gunungapi);box-shadow:0 0 0 2px var(--head-bg)}
 .lp-ikon-atas-titik[hidden]{display:none}
 /* cincin donat per provinsi di peta Alun-alun (pemilik 26 Nov 2026: "Ya, pakai donat"); warna potongan dari kelas lp-jenis-* (sama dengan pil tabel) */
-.lp-donat{position:relative;display:block;width:var(--d);height:var(--d);padding:0;border:0;background:none;cursor:pointer}
-.lp-donat svg{filter:drop-shadow(0 1px 1.5px color-mix(in oklab,var(--head-bg) 18%,transparent))}
+/* penanda provinsi gaya peta Laporan Kejadian Bencana Harian (pemilik 26 Nov 2026 "Bagusin maksimal"): satu lingkaran berwarna per jenis, besar mengikuti jumlah,
+   berdampingan sedikit bertumpuk, tepi putih, angka putih tebal; nama provinsi di sampingnya tanpa kotak */
+.lp-donat{position:relative;display:block;width:var(--w);height:var(--d);padding:0;border:0;background:none;cursor:pointer}
 .lp-donat[hidden]{display:none}
-.lp-donat svg{display:block;overflow:visible}
-.lp-donat-isi{fill:var(--card);stroke:var(--card);stroke-width:2}
-.lp-donat-potong{fill:none;stroke:var(--k,var(--kat-lain))}
-.lp-donat-angka{fill:var(--head-bg);font-family:var(--font);font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.lp-donat-deret{display:flex;align-items:center;height:100%}
+.lp-donat-j{display:grid;place-items:center;flex:none;width:var(--s);height:var(--s);margin-left:-5px;border-radius:50%;background:var(--k,var(--kat-lain));color:var(--on-pekat);border:2px solid var(--card);box-shadow:0 2px 6px -2px color-mix(in oklab,var(--head-bg) 45%,transparent);font:800 calc(var(--s) * .42)/1 var(--font);font-variant-numeric:tabular-nums;letter-spacing:-.02em;box-sizing:border-box}
+.lp-donat-j:first-child{margin-left:0}
+.lp-donat:hover .lp-donat-j{filter:brightness(1.06)}
+.lp-donat:focus-visible{outline:2px solid var(--brand2);outline-offset:3px;border-radius:999px}
 .lp-donat-nama{position:absolute;left:calc(100% + 5px);top:50%;transform:translateY(-50%);white-space:nowrap;font:600 .75rem/1.3334 var(--font);color:var(--head-bg);text-shadow:0 0 2px var(--card),1px 1px 0 var(--card),-1px -1px 0 var(--card),1px -1px 0 var(--card),-1px 1px 0 var(--card),0 1px 0 var(--card),0 -1px 0 var(--card),1px 0 0 var(--card),-1px 0 0 var(--card);pointer-events:none}
 .lp-donat-nama[data-pos=kiri]{left:auto;right:calc(100% + 5px)}
 .lp-donat-nama[data-pos=bawah]{left:50%;top:calc(100% + 2px);transform:translateX(-50%)}
 .lp-donat-nama[data-pos=atas]{left:50%;top:auto;bottom:calc(100% + 2px);transform:translateX(-50%)}
-.lp-donat:focus-visible{outline:2px solid var(--brand2);outline-offset:3px;border-radius:50%}
-.lp-donat:hover .lp-donat-isi{fill:color-mix(in oklab,var(--brand2) 10%,var(--card))}
 /* gunung api Siaga/Awas di skala provinsi: segitiga oranye bernama, ikut aturan tanpa tumpukan */
 .lp-gunung-tanda{position:relative;width:20px;height:18px;pointer-events:none}
 .lp-gunung-tanda svg{display:block;overflow:visible;filter:drop-shadow(0 1px 1.5px color-mix(in oklab,var(--head-bg) 22%,transparent))}

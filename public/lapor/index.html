@@ -18,7 +18,7 @@
 <script src="/halaman_awal.js" data-tema></script>
 <link href="/bnpb/bnpb.css" rel="stylesheet">
 <link href="/inti/kartu.css?v=2" rel="stylesheet">
-<link href="/lapor/lapor.css?v=234" rel="stylesheet">
+<link href="/lapor/lapor.css?v=235" rel="stylesheet">
 <link href="/lapor/selamat.css?v=3" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
@@ -358,6 +358,23 @@
           <article><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-kirim"/></svg></span><b>Diteruskan ke daerah</b><p>Petugas BNPB menelaah laporan, lalu meneruskannya ke BPBD kabupaten/kota tempat kejadian.</p></article>
         </div>
       </section>
+      <section class="lp-tt-blok" id="ttJenis">
+        <h2><svg aria-hidden="true"><use href="#i-pesan"/></svg>Tiga jenis laporan</h2>
+        <div class="lp-tt-jenis">
+          <article class="darurat"><span class="lp-tt-jenis-ikon"><svg aria-hidden="true"><use href="#i-sirene"/></svg></span><b>Lapor darurat</b>
+            <p>Kejadian sedang berlangsung dan perlu bantuan sekarang.</p>
+            <ul><li>Cukup lokasi, jenis bencana, dan ada korban atau orang terjebak.</li><li>Langsung muncul sebagai peringatan di meja BNPB dan BPBD setempat.</li><li>Foto dan rincian bisa menyusul lewat Tambah kabar.</li></ul>
+            <button type="button" data-aksi="darurat">Mulai lapor darurat</button></article>
+          <article class="kejadian"><span class="lp-tt-jenis-ikon"><svg aria-hidden="true"><use href="#i-kirim"/></svg></span><b>Lapor kejadian</b>
+            <p>Bencana sudah terjadi dan Anda bisa menceritakannya lengkap.</p>
+            <ul><li>Ikuti enam langkah di bawah: lokasi, jenis, urutan kejadian, dampak, kebutuhan, dan foto.</li><li>Ditelaah petugas BNPB, lalu diteruskan ke BPBD tempat kejadian.</li><li>Anda mendapat nomor tiket, PDF, dan tautan lacak.</li></ul>
+            <button type="button" data-aksi="lapor">Mulai lapor kejadian</button></article>
+          <article class="hilang"><span class="lp-tt-jenis-ikon"><svg aria-hidden="true"><use href="#i-cari"/></svg></span><b>Lapor orang hilang</b>
+            <p>Keluarga atau kerabat belum ditemukan sesudah bencana.</p>
+            <ul><li>Isi nama panggilan, umur, tinggi dan berat badan, serta ciri lain.</li><li>Lampirkan sampai 10 foto orang yang dicari, boleh dari galeri.</li><li>Petugas memakai data ini untuk mencocokkan dengan pencarian di lapangan.</li></ul>
+            <button type="button" data-aksi="hilang">Mulai lapor orang hilang</button></article>
+        </div>
+      </section>
       <section class="lp-tt-blok" id="ttCara">
         <h2><svg aria-hidden="true"><use href="#i-daftar"/></svg>Cara melapor</h2>
         <ol class="lp-tt-langkah">
@@ -481,7 +498,7 @@
 <script src="/inti/antre.js" defer></script>
 <script src="/inti/tarik_lebar.js?v=1" defer></script>
 <script src="/bagi.js" defer></script>
-<script type="module" src="/lapor/lapor.js?v=191"></script>
+<script type="module" src="/lapor/lapor.js?v=193"></script>
 <script type="module" src="/lapor/peringatan.js?v=5"></script>
 <script type="module" src="/lapor/luring.js?v=4"></script>
 <script src="/bnpb/turnstile.js" defer></script>
