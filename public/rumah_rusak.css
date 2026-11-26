@@ -3,9 +3,9 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
 a{color:var(--navy2)}
-#rrWadah{display:grid;gap:12px}
-.rr-siapa{margin:0;font-size:15px;color:var(--ink2);font-weight:600}
-.rr-isi{max-width:720px;margin:0 auto;padding:12px 14px 32px;display:grid;gap:12px}
+#rrWadah{display:grid;gap:12px;min-width:0}#rrWadah>*,.rr-isi>*{min-width:0}
+.rr-siapa{margin:0;font-size:15px;color:var(--ink2);font-weight:600;background:var(--card);border-radius:16px;padding:10px 14px;box-shadow:0 0 0 1px var(--line)}
+.rr-isi{max-width:720px;margin:0 auto;padding:12px 14px 96px;display:grid;gap:12px}
 .rr-blok{background:var(--card);border-radius:16px;padding:14px;box-shadow:0 0 0 1px var(--line);display:grid;gap:12px;min-width:0}
 .rr-blok h2{margin:0;font-size:16px;letter-spacing:.02em}
 label{display:grid;gap:6px;font-size:15px;color:var(--ink2);font-weight:600}
@@ -45,3 +45,5 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 .rr-tabel tr.kab td{font-weight:800;background:color-mix(in srgb,var(--navy2) 8%,var(--card))}
 .rr-tabel tr.kec td:first-child{padding-left:20px}
 .rr-tabel tr.jumlah td{font-weight:800;border-top:2px solid var(--ink)}
+/* di layar lebar (panel Pusdalops) tombol kirim mengikuti alur kolom isi, tidak lengket */
+@media (min-width:901px){.rr-tombol.besar{position:static}.rr-isi{padding-bottom:32px}}

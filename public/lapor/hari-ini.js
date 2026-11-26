@@ -50,7 +50,7 @@ function tampil() { return state.jenis ? state.baris.filter(b => b.jenis === sta
 function gambarDaftar() {
   const w = $("daftar"), t = tampil(); w.setAttribute("aria-label", "Daftar kejadian");
   if (!t.length) { const b = el("div", "hi-keadaan"); b.setAttribute("role", "status");
-    b.append(el("p", null, "Belum ada laporan terverifikasi dalam 24 jam terakhir. Ini bukan berarti tidak ada kejadian. Lihat Alun-alun atau hubungi BPBD setempat.")); w.replaceChildren(b); }
+    b.append(el("p", null, "Belum ada laporan terverifikasi dalam 24 jam terakhir. Ini bukan berarti tidak ada kejadian. Lihat Situasi terkini atau hubungi BPBD setempat.")); w.replaceChildren(b); }
   else w.replaceChildren(...t.map(kartuPublik));
   gambarPeta(t);
   const id = location.hash.startsWith("#k-") ? document.getElementById(location.hash.slice(1)) : null; if (id) id.scrollIntoView({block: "nearest"});

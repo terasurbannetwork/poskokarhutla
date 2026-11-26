@@ -23,3 +23,4 @@
 .rl-bahaya summary{cursor:pointer;font-weight:700;color:var(--c1)}
 .rl-grid2{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));align-items:start}
 @media (max-width:640px){.rl-grid2{grid-template-columns:1fr}}
+.rl-nama{margin:0;font-size:1.125rem;font-weight:800}

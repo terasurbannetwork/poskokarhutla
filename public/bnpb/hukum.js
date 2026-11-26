@@ -183,7 +183,7 @@
     const aksi = h("div", {class: "hk-aksi"}, kembali, bagi);
     pdf.forEach((u, i) => aksi.append(h("a", {class: "ad-tombol", href: u, target: "_blank", rel: "noopener noreferrer"}, svg("tautan"), pdf.length > 1 ? `PDF resmi ${i + 1}` : "PDF resmi")));
     if (d.url) aksi.append(h("a", {class: "ad-tombol", href: d.url, target: "_blank", rel: "noopener noreferrer"}, svg("tautan"), "Halaman JDIH"));
-    const kepala = h("div", {class: "bn-kartu hk-kepala"}, h("h1", {class: "hk-judul", teks: d.judul || nama}), h("div", {class: "hk-pils"}, ...pils), aksi);
+    const kepala = h("div", {class: "bn-kartu hk-kepala"}, h("h2", {class: "hk-judul", teks: d.judul || nama}), h("div", {class: "hk-pils"}, ...pils), aksi);
 
     /* daftar isi */
     const toc = h("ol"), teks = h("div", {class: "hk-teks"}); let babLalu = null;

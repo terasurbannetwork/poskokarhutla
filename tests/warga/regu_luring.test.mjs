@@ -104,7 +104,7 @@ test("install: scope /pipa/lapangan menyimpan semua modul yang di-import lapanga
 });
 test("install: scope /lapangan dan /lacak tetap seperti semula", async () => {
   const a = await pasang("https://x/lapangan/"), b = await pasang("https://x/lacak/");
-  assert.equal(a.diambil[0], "/lapangan"); assert.ok(a.diambil.some(u => u.includes("maplibre-gl.js")) && a.diambil.includes("/rumah_rusak.js?v=1"));
+  assert.equal(a.diambil[0], "/lapangan"); assert.ok(a.diambil.some(u => u.includes("maplibre-gl.js")) && a.diambil.includes("/rumah_rusak.js?v=2"));
   assert.equal(b.diambil[0], "/lacak"); assert.ok(!b.diambil.includes("/vendor/qrcode/qrcode.min.js?v=1") && b.diambil.includes("/img/logo.svg"));
 });
 test("sw-lapangan: VERSI 6, jalur API SIPPA memakai x-kode, POST tidak disentuh", () => {

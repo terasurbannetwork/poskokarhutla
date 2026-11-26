@@ -12,8 +12,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/ai/ai.css?v=4" rel="stylesheet">
-<link href="/bnpb/menu_pusdalops.css?v=16" rel="stylesheet">
+<link href="/ai/ai.css?v=5" rel="stylesheet">
+<link href="/bnpb/menu_pusdalops.css?v=17" rel="stylesheet">
 </head>
 <body>
 <header class="ad-top">
@@ -21,9 +21,10 @@
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a>
   <span class="ad-sep">AI Internal</span>
 </header>
-<script src="/bnpb/menu_pusdalops.js?v=28" data-opsional></script>
+<script src="/bnpb/menu_pusdalops.js?v=29" data-opsional></script>
 
 <main class="ai" id="aiApp" aria-busy="true">
+  <div class="bn-judul"><h1>AI internal</h1></div>
   <nav class="ad-tabs" id="aiTab" aria-label="Bagian AI internal"><button type="button" data-h="" aria-pressed="true">Obrolan</button><button type="button" data-h="#agen" aria-pressed="false">Kelola agen</button><button type="button" data-h="#pengetahuan" aria-pressed="false">Pengetahuan</button></nav>
   <p class="ad-galat ai-galat" id="aiGalat" role="alert" hidden></p>
 
@@ -44,7 +45,7 @@
     <section class="ai-ruang" aria-label="Ruang obrol">
       <div class="ai-kepala">
         <span class="ai-avatar besar" id="aiAvatarAktif"></span>
-        <div class="ai-judul"><h1 id="aiNamaAgen">Memuat…</h1><span class="ai-pembuat"><span class="bn-pil ai-pil-staf" id="aiPilStaf" title="Agen ini dibuat staf, bukan rujukan resmi BNPB" hidden>Agen buatan staf</span><span id="aiPembuat" hidden></span></span></div>
+        <div class="ai-judul"><h2 id="aiNamaAgen">Memuat…</h2><span class="ai-pembuat"><span class="bn-pil ai-pil-staf" id="aiPilStaf" title="Agen ini dibuat staf, bukan rujukan resmi BNPB" hidden>Agen buatan staf</span><span id="aiPembuat" hidden></span></span></div>
         <label class="ai-model"><select id="aiModel" aria-label="Pilih model"></select></label>
         <label class="ai-sakelar"><input type="checkbox" id="aiNalar" role="switch"><span>Mode penalaran</span></label>
         <button type="button" class="ai-ik" id="aiBaru" aria-label="Percakapan baru" title="Percakapan baru"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v7M12 8v8M8 12h8"/></svg></button>
