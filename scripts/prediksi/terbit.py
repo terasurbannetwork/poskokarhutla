@@ -342,7 +342,15 @@ def lalu(semua, kini, pk, rk, hari=3):
         if awal <= s <= kini:
             kab = {k: r for k in e["kab"] if (r := baris_tampil(e, k, k[:2], pk, rk)[0])}
             out.setdefault(s, {})[e["k"]] = {"terbit": e["t"], "kol": TAMPIL[e["k"]], "kab": kab}
-    return {"dibuat": kini, "hari": out}
+    # hari0: per kode, terbitan terakhir yang salah satu hari sasarannya = hari ini (tenggang berapa pun), untuk status_prakiraan.py
+    # (DP-06b). "hari" di atas hanya tenggang +1; bila terbitan kemarin tak ada di arsip, hari ini tak punya baris di sana.
+    h0 = {}
+    for e in sorted(semua, key=lambda e: e["t"]):
+        if kini in e["hari"]:
+            n = e["hari"].index(kini)
+            h0[e["k"]] = {"terbit": e["t"], "tenggang": n + 1, "kol": TAMPIL[e["k"]],
+                          "kab": {k: r for k in e["kab"] if (r := baris_tampil(e, k, k[:2], pk, rk)[n])}}
+    return {"dibuat": kini, "hari": out, "hari0": h0}
 
 
 def lengas(akhir):
@@ -487,6 +495,12 @@ def uji():
         bad = json.loads(json.dumps(o))
         bad["kab"][0]["HJN"][0][0] = 1.4
         assert periksa(bad), "peluang > 1 ditolak"
+    # DP-06b: hari0 = terbitan terakhir yang salah satu sasarannya hari ini, meski terbitan kemarin hilang dari arsip
+    lu = lalu(ent, "2026-10-31", {}, {})          # terbitan 10-29 menyasar 10-30, 10-31, 11-01; tak ada terbitan 10-30
+    assert lu["hari"] == {"2026-10-30": lu["hari"]["2026-10-30"]} and "2026-10-31" not in lu["hari"], "tenggang +1 saja: hari ini kosong"
+    z = lu["hari0"]["HJN"]
+    assert z["tenggang"] == 2 and z["terbit"] == t and len(z["kab"]) == 514, z["tenggang"]
+    assert lalu(ent, "2026-11-10", {}, {})["hari0"] == {}, "tak ada terbitan menyasar hari itu"
     # KI-65: gabungan tanpa hitung ganda
     assert gabung_jiwa([(1000, 0.2, 1.0)], 200, 1000) == 1000, "longsor seluruh kec menelan banjir"
     assert gabung_jiwa([(1000, 0.2, 0.0), (500, 0.0, 1.0)], 200, 500) == 700, "tanpa irisan = jumlah"

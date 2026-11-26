@@ -10,7 +10,8 @@
   "K_rendah_plafon": 2,
   "K_rendah_lepas_bila_R": 3,
   "K_sedang_tinggi_atau_CEX": "S = E",
-  "K_null": "E = 0: belum terukur; E > 0: tingkat E dengan tanda sebagian"
+  "K_null_plafon": 2,
+  "K_null": "E = 0: belum terukur; E > 0: tingkat min(E, K_null_plafon) dengan tanda sebagian (direvisi 26 Nov 2026 sebelum ada uji balik)"
  },
  "porsi_K_min": 0.10,
  "tak_terliput_maks": 0.5,

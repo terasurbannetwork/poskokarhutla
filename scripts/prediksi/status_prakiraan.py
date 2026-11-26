@@ -16,6 +16,10 @@ SIDIK = os.path.join(AB, "status_prakiraan.sidik")
 PREDIKSI = os.path.join(AKAR, "public/prediksi/data/prediksi.json")
 LALU = os.path.join(AKAR, "public/prediksi/data/lalu.json")
 KELAS = os.path.join(AKAR, "public/data/kelas_bahaya_kab.json")
+KLUSTER = os.path.join(AKAR, "public/data/kluster.json")      # keluaran harian.py (aturan.py), ALGORITMA 5.1
+META = os.path.join(AKAR, "public/data/meta.json")            # "dibuat" = jam pipeline karhutla terakhir jalan
+UJIBALIK = os.path.join(AKAR, "public/data/ujibalik_status.json")
+BENCANA = os.path.join(AKAR, "public/bencana.json")
 GERBANG = os.path.join(AKAR, "public/data/gerbang/status_prakiraan.json")
 KELUAR = os.path.join(AKAR, "data/raw/prediksi/status.json")  # layanan R2 diunggah workflow (DP-08); bukan public/
 WIB = dt.timezone(dt.timedelta(hours=7))
@@ -78,7 +82,9 @@ def tabel(kr, kode, K, E, R):
     t = kr["tabel"]
     if kode != "CEX" and K == "rendah":
         return E if R == t["K_rendah_lepas_bila_R"] else min(E, t["K_rendah_plafon"])
-    return E  # K sedang/tinggi, CEX, dan K null (tanda sebagian ditambah di status_kab)
+    if kode != "CEX" and K is None:  # K null: plafon Siaga, tanpa pelepasan oleh R (bias ke atas dicegah); tanda sebagian di status_kab
+        return min(E, t["K_null_plafon"])
+    return E  # K sedang/tinggi dan CEX
 
 
 def status_kab(kr, kode, K, P, R):
@@ -115,14 +121,20 @@ def _umur_jam(s, kini):
 
 
 def ambil_P(kr, prediksi, lalu, kab, kode, kini):
-    """-> [P0..P3]. Prediksi basi atau hilang: semua None. Hari 0 dari lalu.json untuk tanggal WIB hari ini."""
+    """-> [P0..P3]. P1..P3 dipetakan lewat tanggal sasaran (prediksi.kode[kode].hari) lawan tanggal WIB hari ini + n, bukan
+    indeks baris: terbitan lama (mis. 30 jam) tidak bergeser sehari; sasaran yang tak tercakup = None. Prediksi basi atau hilang:
+    semua None. Hari 0: lalu.hari[hari ini] (terbitan kemarin, tenggang +1), lalu lalu.hari0 (terbitan terakhir yang menyasar hari ini)."""
     P = [None] * 4
+    hi = kini.astimezone(WIB).date()
     u = _umur_jam((prediksi or {}).get("dibuat"), kini)
     if u is not None and u <= kr["segar_jam"]["prakiraan"]:
-        kol = prediksi["kode"].get(kode, {}).get("kol")
+        e = prediksi["kode"].get(kode, {})
         for n in (1, 2, 3):
-            P[n] = level_kode(kab, kol, n, kode)
-    b = ((lalu or {}).get("hari") or {}).get(kini.astimezone(WIB).date().isoformat(), {}).get(kode)
+            tgl = (hi + dt.timedelta(days=n)).isoformat()
+            if tgl in (e.get("hari") or []):
+                P[n] = level_kode(kab, e.get("kol"), e["hari"].index(tgl) + 1, kode)
+    iso = hi.isoformat()
+    b = ((lalu or {}).get("hari") or {}).get(iso, {}).get(kode) or (((lalu or {}).get("hari0") or {}).get(kode) if (lalu or {}).get("dibuat") == iso else None)
     if b:
         P[0] = level_sel(kode, b.get("kol"), (b.get("kab") or {}).get(kab["id"]))
     return P
@@ -154,6 +166,37 @@ def hitung(kr, prediksi, lalu, kelas, h, kini, gerbang=None):
     return out
 
 
+# ---------- karhutla (KHT, DP-06): status taktis kluster yang sudah terbit, maks per kab; tanpa R dan K ----------
+def nama_tingkat_kht(bencana):
+    return {t["kode"]: t["nama"] for t in next(e for e in bencana["bencana"] if e["id"] == "karhutla")["tingkat"]}
+
+
+def hipotesis_kht(ujibalik, s):
+    """Pil hipotesis tetap kecuali vonis tingkat itu (Waspada=1, Siaga=2, Awas=3) 'LULUS'. Tingkat 0 tak punya vonis."""
+    v = ((ujibalik or {}).get("tingkat") or {}).get({1: "Waspada", 2: "Siaga", 3: "Awas"}.get(s), {}).get("vonis")
+    return str(v).upper() != "LULUS"
+
+
+def status_kht(kr, kluster, meta, ujibalik, nama, kab, cari, kini):
+    """-> {kab_id: {s, nama, pemicu, sebagian, hari, hipotesis}}. Pipeline basi/hilang: s null (abu), tak pernah 0.
+    kluster.json hanya memuat kompleks aktif (<=72 jam, gambut 168 jam, harian.py); kab tanpa kluster aktif = 0 bila segar."""
+    u = _umur_jam((meta or {}).get("dibuat"), kini)
+    segar = bool(kluster) and u is not None and u <= kr["segar_jam"]["prakiraan"]   # 36 jam (ALGORITMA 5.1)
+    maks = {}
+    if segar:
+        for f in kluster.get("features") or []:
+            p = f.get("properties") or {}
+            i = cari(p.get("prov"), p.get("kab"))
+            if i is not None and p.get("level") in (0, 1, 2, 3):
+                maks[i] = max(maks.get(i, 0), p["level"])
+    out = {}
+    for k in kab:
+        s = maks.get(k["id"], 0) if segar else None
+        out[k["id"]] = {"s": s, "nama": None if s is None else nama[s], "pemicu": None if not s else "kluster", "sebagian": False,
+                        "hari": [s, None, None, None], "hipotesis": True if s is None else hipotesis_kht(ujibalik, s)}
+    return out
+
+
 def jalankan(umpan=None, kini=None, keluar=KELUAR):
     kr = _json(KRITERIA)
     kini = kini or dt.datetime.now(dt.timezone.utc)
@@ -161,6 +204,11 @@ def jalankan(umpan=None, kini=None, keluar=KELUAR):
     doc = _json(umpan) if umpan else dp.baca_umpan()
     h = dp.jalankan(doc, kini)
     out = hitung(kr, _json(PREDIKSI), _json(LALU), _json(KELAS), h, kini, _json(GERBANG))
+    dasar = _muat("sp_dasar", "scripts/prediksi/dasar.py")
+    kabs = (_json(PREDIKSI) or {}).get("kab") or []
+    nm, kl = nama_tingkat_kht(_json(BENCANA)), _json(KLUSTER)
+    for i, v in status_kht(kr, kl, _json(META), _json(UJIBALIK), nm, kabs, dasar.pencari(kabs), kini).items():
+        out["kab"][i]["KHT"] = v
     os.makedirs(os.path.dirname(keluar), exist_ok=True)
     tmp = keluar + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
@@ -186,6 +234,8 @@ def _cek():
     def ref(kode, K, E, R):
         if kode != "CEX" and K == "rendah":
             return E if R == 3 else min(E, 2)
+        if kode != "CEX" and K is None:
+            return min(E, 2)
         return E
     for kode, K, R, E in itertools.product(("BNJ", "LSR", "CEX"), ("rendah", "sedang", "tinggi", None), (None, 0, 1, 2, 3), range(4)):
         for d in range(4):
@@ -197,7 +247,7 @@ def _cek():
                 assert st["s"] == max(esp) and st["hari"] == esp, (kode, K, R, E, st, esp)
             else:
                 assert st["s"] is None, (kode, K, R, E, st)
-            if K == "rendah" and kode != "CEX" and R != 3:
+            if kode != "CEX" and (K is None or (K == "rendah" and R != 3)):
                 assert (st["s"] or 0) <= 2
             if st["s"] == 0:
                 assert lengkap and not st["sebagian"] and st["pemicu"] is None   # Normal hanya bila semua sumber masuk
@@ -243,10 +293,16 @@ def _cek():
     finally:
         os.chdir(asal)
 
+    x = status_kab(kr, "BNJ", None, [3, 3, 3, 3], 3)
+    assert x["s"] == 2 and x["sebagian"] is True and x["hari"] == [2, 2, 2, 2]      # K null: plafon Siaga, tanda sebagian tetap
+    assert status_kab(kr, "CEX", None, [3, 0, 0, 0], 3)["s"] == 3                    # CEX tak butuh K, tak dipagari
+
     # uji ujung ke ujung dengan fixture (tanpa jaringan)
     kini = dt.datetime(2026, 11, 26, 2, 0, tzinfo=dt.timezone.utc)   # 09.00 WIB
     kab = lambda i, lv: {"id": i, "nama": i, "BNJ": [[lv, .1]] * 3, "LSR": [[0, 0]] * 3, "CEX": [[10, 0]] * 3}
-    pred = {"dibuat": "2026-11-26T04:46:15+07:00", "kode": {"BNJ": {"kol": ["lv", "ps"]}, "LSR": {"kol": ["lv", "ps"]}, "CEX": {"kol": ["emb", "lv"]}},
+    H3 = ["2026-11-27", "2026-11-28", "2026-11-29"]
+    pred = {"dibuat": "2026-11-26T04:46:15+07:00", "kode": {"BNJ": {"kol": ["lv", "ps"], "hari": H3}, "LSR": {"kol": ["lv", "ps"], "hari": H3},
+                                                          "CEX": {"kol": ["emb", "lv"], "hari": H3}},
             "kab": [kab("1101", 2), kab("1102", 0)]}
     lalu = {"hari": {"2026-11-26": {k: {"kol": pred["kode"][k]["kol"], "kab": {"1101": [2, 0], "1102": [0, 0]}} for k in ("BNJ", "LSR", "CEX")}}}
     kelas = {"kab": {"1101": {"banjir": {"K": "rendah"}, "longsor": {"K": "tinggi"}}, "1102": {"banjir": {"K": "sedang"}, "longsor": None}}}
@@ -269,9 +325,41 @@ def _cek():
     # lalu.json tanpa tanggal hari ini: P0 null, tidak Normal
     z = hitung(kr, pred, {"hari": {}}, kelas, h, kini)
     assert z["kab"]["1102"]["BNJ"]["s"] is None
+    # DP-06b: pemetaan P1..P3 lewat tanggal sasaran. Terbitan 25 Nov (sasaran 26..28) dibaca 26 Nov 20.00 WIB (umur 15 jam):
+    # +1 = 27 = baris ke-2, +3 = 29 tak tercakup = None (bukan baris ke-3 yang bergeser)
+    kb = {"id": "1101", "BNJ": [[1, 0], [2, 0], [3, 0]]}
+    pl = {"dibuat": "2026-11-25T17:00:00+07:00", "kode": {"BNJ": {"kol": ["lv", "ps"], "hari": ["2026-11-26", "2026-11-27", "2026-11-28"]}}}
+    assert ambil_P(kr, pl, None, kb, "BNJ", dt.datetime(2026, 11, 26, 13, 0, tzinfo=dt.timezone.utc))[1:] == [2, 3, None]
+    # hari 0: tanpa lalu.hari[hari ini], pakai hari0 hanya bila berkas dibuat hari ini
+    h0 = {"dibuat": "2026-11-26", "hari": {}, "hari0": {"BNJ": {"kol": ["lv", "ps"], "kab": {"1101": [2, 0]}}}}
+    assert ambil_P(kr, pred, h0, kb, "BNJ", kini)[0] == 2
+    assert ambil_P(kr, pred, dict(h0, dibuat="2026-11-25"), kb, "BNJ", kini)[0] is None   # hari0 basi tak dipakai
+    # Normal kini bisa tercapai bila hari0 ada
+    assert status_kab(kr, "CEX", None, [0, 0, 0, 0], 0)["s"] == 0
     # boleh_tampil hanya bila gerbang menyatakan true
     assert hitung(kr, pred, lalu, kelas, h, kini, {"boleh_tampil": True})["hipotesis"] is False
-    print("status_prakiraan: cek hijau (P10, P11, P12 + fixture)")
+
+    # P17: karhutla KHT
+    nm = {0: "Pencegahan rutin", 1: "Patroli terpadu", 2: "Siaga pemadaman awal", 3: "Prioritas pemadaman"}
+    assert nama_tingkat_kht(_json(BENCANA)) == nm
+    kk = [{"id": "1101", "nama": "A"}, {"id": "1102", "nama": "B"}, {"id": "1103", "nama": "C"}]
+    cari = {("11", "A"): "1101", ("11", "B"): "1102", ("11", "C"): "1103"}.get
+    ft = lambda n, lv: {"properties": {"prov": "11", "kab": n, "level": lv}}
+    kl = {"features": [ft("A", 1), ft("A", 3), ft("A", 2), ft("B", 0), ft("X", 3)]}
+    meta = {"dibuat": "2026-11-26T08:00:00+07:00"}                       # 1 jam sebelum kini (09.00 WIB)
+    lw = {"tingkat": {"Waspada": {"vonis": "TIDAK LULUS"}, "Siaga": {"vonis": "TIDAK LULUS"}, "Awas": {"vonis": "TIDAK LULUS"}}}
+    r = status_kht(kr, kl, meta, lw, nm, kk, lambda p, n: cari((p, n)), kini)
+    assert r["1101"]["s"] == 3 and r["1101"]["nama"] == "Prioritas pemadaman" and r["1101"]["pemicu"] == "kluster"   # maks kluster
+    assert r["1102"]["s"] == 0 and r["1103"]["s"] == 0 and r["1103"]["nama"] == "Pencegahan rutin"                   # tanpa kluster, segar
+    assert all(v["hipotesis"] and not v["sebagian"] and set(v) >= {"s", "hari"} for v in r.values())               # tanpa R dan K
+    lw["tingkat"]["Awas"]["vonis"] = "LULUS"
+    r = status_kht(kr, kl, meta, lw, nm, kk, lambda p, n: cari((p, n)), kini)
+    assert r["1101"]["hipotesis"] is False and r["1102"]["hipotesis"] is True                                         # lulus hanya untuk tingkatnya
+    for m in ({"dibuat": "2026-11-24T08:00:00+07:00"}, None, {}):                                                     # basi / hilang
+        r = status_kht(kr, kl, m, lw, nm, kk, lambda p, n: cari((p, n)), kini)
+        assert all(v["s"] is None and v["nama"] is None and v["hipotesis"] for v in r.values())
+    assert status_kht(kr, None, meta, lw, nm, kk, lambda p, n: None, kini)["1101"]["s"] is None
+    print("status_prakiraan: cek hijau (P10, P11, P12, P17 + fixture)")
 
 
 if __name__ == "__main__":
