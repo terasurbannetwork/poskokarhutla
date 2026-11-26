@@ -1576,6 +1576,71 @@
   }
  },
  "dirakit": "2026-10-27T03:10:00Z",
+ "kegiatan": {
+  "cakup": [
+   [
+    "2026-10-01",
+    "2026-10-31"
+   ]
+  ],
+  "calon": [
+   {
+    "jam": "12:00",
+    "jenis": [],
+    "judul": "Perkembangan Situasi Contoh 20 Oktober 2026",
+    "lokasi": null,
+    "pelaksana": "Pusdatinkom",
+    "situasi": true,
+    "tanggal": "2026-10-20",
+    "tautan": "https://bnpb.go.id/berita/contoh-situasi-20"
+   },
+   {
+    "jam": "12:00",
+    "jenis": [],
+    "judul": "Perkembangan Situasi Contoh 21 Oktober 2026",
+    "lokasi": null,
+    "pelaksana": "Pusdatinkom",
+    "situasi": true,
+    "tanggal": "2026-10-21",
+    "tautan": "https://bnpb.go.id/berita/contoh-situasi-21"
+   },
+   {
+    "jam": "15:00",
+    "jenis": [
+     "karhutla"
+    ],
+    "judul": "Satgas Contoh Lakukan Water Bombing Karhutla di Riau",
+    "lokasi": "Riau",
+    "pelaksana": "Satgas operasi",
+    "situasi": false,
+    "tanggal": "2026-10-22",
+    "tautan": "https://bnpb.go.id/berita/contoh-satgas-22"
+   }
+  ],
+  "catatan": "Calon kegiatan dari daftar siaran pers bnpb.go.id (judul, tanggal, tautan; isi berita tidak disalin). Pelaksana, jenis, dan lokasi adalah usulan mesin dari judul; baris masuk laporan hanya bila dipilih staf (Q8). Hitungan di sini adalah siaran pers yang terbit, bukan kegiatan yang dipilih.",
+  "rekap": {
+   "jenis": {
+    "banjir": 0,
+    "cuaca_ekstrem": 0,
+    "erupsi": 0,
+    "gelombang": 0,
+    "gempa": 0,
+    "karhutla": 1,
+    "kekeringan": 0,
+    "longsor": 0
+   },
+   "pelaksana": {
+    "Kepala BNPB": 0,
+    "Pusdatinkom": 2,
+    "Satgas operasi": 1,
+    "belum_digolongkan": 0
+   },
+   "siaran": 3,
+   "situasi": 2
+  },
+  "status": "ok",
+  "tarik": "2026-11-11"
+ },
  "kode": "2026-W43",
  "label_jenis": {
   "banjir": "Banjir",
@@ -1790,6 +1855,10 @@
    "hari_rentang": 7,
    "status": "ok",
    "tarik": "2026-11-01"
+  },
+  "kegiatan": {
+   "status": "ok",
+   "tarik": "2026-11-11"
   },
   "prakiraan_sepekan": {
    "status": "ok",

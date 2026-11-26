@@ -3418,5 +3418,51 @@
     7
    ]
   ]
+ },
+ "kegiatan": {
+  "tarik": "2026-01-02",
+  "cakup": [
+   [
+    "2025-10-01",
+    "2025-12-31"
+   ]
+  ],
+  "butir": [
+   {
+    "tanggal": "2025-10-05",
+    "jam": "09:00",
+    "judul": "Kepala BNPB Pimpin Rapat Contoh",
+    "tautan": "https://bnpb.go.id/berita/contoh-2025-10",
+    "pelaksana": "Kepala BNPB",
+    "jenis": [],
+    "lokasi": null,
+    "situasi": false,
+    "asal": "bnpb.go.id"
+   },
+   {
+    "tanggal": "2025-11-07",
+    "jam": "09:00",
+    "judul": "Satgas Contoh Salurkan Logistik Banjir",
+    "tautan": "https://bnpb.go.id/berita/contoh-2025-11",
+    "pelaksana": "Satgas operasi",
+    "jenis": [
+     "banjir"
+    ],
+    "lokasi": null,
+    "situasi": false,
+    "asal": "bnpb.go.id"
+   },
+   {
+    "tanggal": "2025-11-08",
+    "jam": "12:00",
+    "judul": "Perkembangan Situasi Contoh 8 November 2025",
+    "tautan": "https://bnpb.go.id/berita/contoh-2025-11-s",
+    "pelaksana": "Pusdatinkom",
+    "jenis": [],
+    "lokasi": null,
+    "situasi": true,
+    "asal": "bnpb.go.id"
+   }
+  ]
  }
 }

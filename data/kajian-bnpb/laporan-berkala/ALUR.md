@@ -9,7 +9,7 @@
 | Senin sampai Rabu, sesudah potongan | `rakit.py --periode mingguan --kode <minggu ISO lalu>` (Q24) | R2 `berkala/mingguan/<YYYY-Www>/angka/...` |
 | Tanggal 1 sampai 20, sesudah potongan | `rakit.py --periode bulanan --kode <bulan lalu>` | R2 `berkala/bulanan/<YYYY-MM>/angka/...` |
 | 1 sampai 31 Januari, sesudah potongan | `rakit.py --periode tahunan --kode <tahun lalu>` (D13) | R2 `berkala/tahunan/<YYYY>/angka/...` |
-| Tiap hari | `kegiatan.py` panen siaran pers (Q16) untuk minggu, bulan, dan tahun berjalan | `berkala/<periode>/<kode>/kegiatan_calon.json` |
+| Tiap hari, sebelum rakit | `kegiatan.py panen` siaran pers (Q16) sejak akhir cakupan terakhir; rakit mingguan, bulanan, tahunan membaca arsipnya | `berkala/kegiatan/<YYYY-MM>.json` |
 | Di luar jendela di atas | hanya potongan harian; berkas angka periode mana pun bisa dirakit ulang lewat `workflow_dispatch` (input `periode`, `kode`) | |
 
 Urutan dalam satu job: potongan dulu, lalu harian, mingguan, bulanan, tahunan. Satu periode yang gagal tidak menghentikan periode berikutnya.

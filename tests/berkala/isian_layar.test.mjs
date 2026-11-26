@@ -187,6 +187,14 @@ else {
     await ketik("#lbkf-dukungan-0-langkah", "<b>Dukungan</b> anggaran");
     await tab.eval("document.querySelector('[data-tambah=kegiatan]').click(); true");
     await ketik("#lbkf-kegiatan-0-tautan", "javascript:alert(1)");
+    await tab.eval("document.querySelector('[data-calon=\"3\"]').click(); true");   // LB-09: centang calon siaran pers = baris kegiatan bertautan
+    assert.deepEqual(await tab.eval("window.__lbk.I.kegiatan.map(k => [k.pelaksana || '', k.tautan])"), [["", "javascript:alert(1)"], ["Satgas operasi", "https://bnpb.go.id/berita/contoh-satgas-22"]]);
+    assert.equal(await tab.eval("document.querySelector('[data-calon=\"3\"]').checked"), true, "calon tetap tercentang sesudah daftar digambar ulang");
+    // judul siaran pers bermarkup jahat tampil sebagai teks di pemilih dan di pratinjau; tautan di luar bnpb.go.id/berita tetap teks
+    assert.match(await tab.eval("document.querySelector('[data-calon=\"5\"]').closest('label').textContent"), /<img src=x onerror=alert\(1\)>Judul Jahat <script>/);
+    assert.equal(await tab.eval("document.querySelectorAll('#lbkIsianFs img, #lbkIsianFs script').length"), 0, "markup judul tidak menjadi elemen");
+    await tab.eval("document.querySelector('[data-calon=\"5\"]').click(); document.querySelector('[data-tambah=kegiatan]').click(); true");
+    await ketik("#lbkf-kegiatan-3-tautan", "https://contoh.example/berita/lain");
     await ketik("#lbkf-kota", "Jakarta"); await ketik("#lbkf-tanggal", "2026-11-12");
     await tab.eval("document.querySelector('#lbkBekukan').click(); true");
     await tab.tungguFungsi("/Bekukan di server belum tersedia|Penyimpanan draf di server belum tersedia/.test(document.querySelector('#lbkSt').textContent)", 5000);
@@ -203,6 +211,11 @@ else {
     await tab.tungguFungsi("document.querySelector('#lbkKertas').innerText.includes('<b>Dukungan</b> anggaran')", 5000);
     assert.equal(await tab.eval("document.querySelectorAll('#lbkKertas b').length > 0 && ![...document.querySelectorAll('#lbkKertas b')].some(b => b.textContent === 'Dukungan')"), true, "L5 teks isian tampil sebagai teks");
     assert.equal(await tab.eval("document.querySelectorAll('#lbkKertas a[href^=javascript]').length"), 0, "L6");
+    assert.equal(await tab.eval("document.querySelectorAll('#lbkKertas a[href=\"https://bnpb.go.id/berita/contoh-satgas-22\"]').length"), 1, "Lampiran: tautan siaran pers jadi tautan");
+    assert.deepEqual(await tab.eval("[...document.querySelectorAll('#lbkKertas a[href]')].map(a => a.getAttribute('href')).filter(h => !/^https:\\/\\/bnpb\\.go\\.id\\/berita\\/[a-z0-9-]+$/.test(h))"), [], "tautan selain bnpb.go.id/berita tidak aktif");
+    assert.match(await tab.eval("document.querySelector('#lbkKertas').innerText"), /https:\/\/contoh\.example\/berita\/lain/, "tautan lain tampil sebagai teks");
+    assert.match(await tab.eval("document.querySelector('#lbkKertas').innerText"), /<img src=x onerror=alert\(1\)>Judul Jahat/, "judul jahat tampil sebagai teks di pratinjau");
+    assert.equal(await tab.eval("document.querySelectorAll('#lbkKertas script, #lbkKertas img[onerror]').length"), 0);
     assert.equal(await tab.eval("document.querySelector('#lbkKurangW').hidden"), true, "kekurangan habis");
     assert.equal(await tab.eval("localStorage.length"), 0);
   });

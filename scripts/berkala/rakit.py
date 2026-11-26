@@ -12,7 +12,8 @@ Sumber data (--sumber): folder public/ atau https://centurisk97.id (bawaan: fold
 --wrangler). Jaringan hanya ke situs kita sendiri dan R2 kita sendiri (lewat gudang.py); tidak memanen DIBI, tidak ada buku kejadian kedua.
 R2 (bucket poskokarhutla-foto, put/get dari scripts/siklus/gudang.py):
   baca  dalops/banjir.json (privat), siklus/bersih/dibi/<YYYY>.jsonl.gz + laporan.json (lapis Siklus, tahun lalu Q3), berkala/potong/*,
-        berkala/bulanan/<YYYY-MM>/beku/v<N>.json (tahunan: versi beku bulanan terakhir per bulan, D13; hanya dibaca)
+        berkala/bulanan/<YYYY-MM>/beku/v<N>.json (tahunan: versi beku bulanan terakhir per bulan, D13; hanya dibaca),
+        berkala/kegiatan/<YYYY-MM>.json (arsip siaran pers dari kegiatan.py, LB-09; bukan harian)
   tulis berkala/potong/<tanggal>.json (tidak ditimpa tanpa --timpa), berkala/<periode>/<kode>/angka/<tarik>.json dan terbaru.json.
   Tidak pernah menulis berkala/.../beku/ (versi beku milik rute Bekukan) dan tidak pernah ke public/data (Q22).
 Log hanya mencetak status dan jumlah hari tiap sumber, tidak pernah isi dalops atau angka laporan.
@@ -51,6 +52,7 @@ def _muat(nama, rel):
 H = _muat("berkala_hitung", "scripts/berkala/hitung.py")
 G = _muat("siklus_gudang", "scripts/siklus/gudang.py")
 W = _muat("data_wilayah", "scripts/data/wilayah.py")
+KG = _muat("berkala_kegiatan", "scripts/berkala/kegiatan.py")
 
 BERKAS = {"dibi": "data/dibi_kejadian.json", "karhutla": "data/peta_karhutla.json", "gunungapi": "banjir/data/gunungapi_status.json",
           "perubahan_level": "gunungapi/data/perubahan_level.json", "gempa": "gempa/data/inatews_detail_{bulan}.json",
@@ -467,6 +469,13 @@ def kumpul(periode, kode, src, be, hari_ini):
                        "selisih tahunan lawan versi beku bulanan.")
         catatan.append("Riwayat 10 tahun dari dibi_tren.json memakai angka resmi DIBI tujuh jenis (tanpa erupsi); titik tahun laporan juga resmi, dari "
                        "tarikan tahunan; bila angka resmi tahun laporan tidak diketahui, tren tidak dibandingkan.")
+    if periode != "harian":   # LB-09: calon kegiatan dari arsip siaran pers (kegiatan.py), dipilih staf di layar
+        try:
+            x = KG.arsip(be, a.isoformat(), b.isoformat())
+            if x:
+                m["kegiatan"] = x
+        except Exception as e:
+            gagal["kegiatan"] = type(e).__name__
     if periode in ("bulanan", "tahunan"):
         catatan.append("Status layanan dasar (lifeline) dan rekomendasi kaji ulang tersimpan di basis data staf dan belum punya jalur baca untuk "
                        "perakit terjadwal, jadi bagian itu tertulis belum tersedia.")
@@ -610,7 +619,13 @@ def uji():
         except H.KodeSalah:
             ok(not os.path.exists(os.path.join(r2, "berkala", "bulanan")), "H13 rakit")
 
+        # LB-09: arsip siaran pers dari kegiatan.py dibaca lewat be yang sama; tanpa arsip = belum_tersedia
+        KG.simpan(be, [KG.usul({"tanggal": "2026-10-09", "jam": "10:00", "judul": "Kepala BNPB Tinjau Posko Contoh", "tautan": KG.AWAL_TAUTAN + "contoh-a"}),
+                       KG.usul({"tanggal": "2026-11-01", "jam": "10:00", "judul": "Satgas Contoh", "tautan": KG.AWAL_TAUTAN + "contoh-b"})],
+                  "2026-10-01", "2026-11-11", "2026-11-11")
         out = rakit("bulanan", "2026-10", src, be, hari_ini=dt.date(2026, 11, 12), dirakit="2026-11-12T03:10:00Z")
+        ok(out["kegiatan"]["status"] == "ok" and [x["tautan"][-8:] for x in out["kegiatan"]["calon"]] == ["contoh-a"]
+           and out["kegiatan"]["calon"][0]["pelaksana"] == "Kepala BNPB" and out["sumber"]["kegiatan"] == {"tarik": "2026-11-11", "status": "ok"}, f"LB-09 {out['kegiatan']}")
         b1 = out["bab1"]
         ok(b1["alam"]["kejadian"] == 6 and b1["resmi"]["alam"]["kejadian"] == 5 and b1["alam"]["prov"] == 5, f"Q28 dan provinsi Papua terpisah (tanpa kode ulang 4) {b1['alam']}")
         ok(out["sumber"]["dibi"]["tarik"] == "2026-11-11", "tarik dibi")

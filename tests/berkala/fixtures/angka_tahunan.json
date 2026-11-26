@@ -3508,8 +3508,117 @@
  },
  "dirakit": "2026-01-20T03:10:00Z",
  "kegiatan": {
-  "catatan": "Rekap kegiatan 12 bulan dari versi beku bulanan belum tersedia: panen dan pemilih kegiatan dari siaran pers BNPB belum dibangun.",
-  "status": "belum_tersedia"
+  "bulan": [
+   {
+    "bulan": "2025-01",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-02",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-03",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-04",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-05",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-06",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-07",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-08",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-09",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-10",
+    "jenis": {
+     "banjir": 0,
+     "cuaca_ekstrem": 0,
+     "erupsi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kekeringan": 0,
+     "longsor": 0
+    },
+    "pelaksana": {
+     "Kepala BNPB": 1,
+     "Pusdatinkom": 0,
+     "Satgas operasi": 0,
+     "belum_digolongkan": 0
+    },
+    "siaran": 1,
+    "situasi": 0
+   },
+   {
+    "bulan": "2025-11",
+    "jenis": {
+     "banjir": 1,
+     "cuaca_ekstrem": 0,
+     "erupsi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kekeringan": 0,
+     "longsor": 0
+    },
+    "pelaksana": {
+     "Kepala BNPB": 0,
+     "Pusdatinkom": 1,
+     "Satgas operasi": 1,
+     "belum_digolongkan": 0
+    },
+    "siaran": 2,
+    "situasi": 1
+   },
+   {
+    "bulan": "2025-12",
+    "jenis": {
+     "banjir": 0,
+     "cuaca_ekstrem": 0,
+     "erupsi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kekeringan": 0,
+     "longsor": 0
+    },
+    "pelaksana": {
+     "Kepala BNPB": 0,
+     "Pusdatinkom": 0,
+     "Satgas operasi": 0,
+     "belum_digolongkan": 0
+    },
+    "siaran": 0,
+    "situasi": 0
+   }
+  ],
+  "cakup": [
+   [
+    "2025-10-01",
+    "2025-12-31"
+   ]
+  ],
+  "catatan": "Calon kegiatan dari daftar siaran pers bnpb.go.id (judul, tanggal, tautan; isi berita tidak disalin). Pelaksana, jenis, dan lokasi adalah usulan mesin dari judul; baris masuk laporan hanya bila dipilih staf (Q8). Hitungan di sini adalah siaran pers yang terbit, bukan kegiatan yang dipilih.",
+  "rekap": null,
+  "status": "sebagian",
+  "tarik": "2026-01-02"
  },
  "kode": "2025",
  "label_jenis": {
@@ -4046,6 +4155,10 @@
    "hari_rentang": 365,
    "status": "ok",
    "tarik": "2026-01-01"
+  },
+  "kegiatan": {
+   "status": "sebagian",
+   "tarik": "2026-01-02"
   },
   "lifeline": {
    "status": "ok",

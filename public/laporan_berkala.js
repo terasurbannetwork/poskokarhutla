@@ -18,7 +18,7 @@ const ALAMAT = "Graha BNPB, Jl. Pramuka Kav. 38, Jakarta Timur 13120";
 const NAMA_SUMBER = {dibi: "DIBI BNPB", dibi_tahun_lalu: "DIBI tahun lalu (lapis Siklus)", karhutla: "Sistem karhutla Centurisk97", dalops_banjir: "Laporan banjir harian Pusdalops",
   gunungapi: "MAGMA Indonesia (PVMBG)", gempa: "Katalog gempa BMKG", prakiraan_hujan: "Model statistik GIS BNPB", peluang: "Logbook Pusdalops",
   prakiraan_besok: "Prediksi model Centurisk97 (/prediksi)", prakiraan_sepekan: "Tangga Peringatan (/prediksi)",
-  lifeline: "Status layanan dasar (Siklus, ditetapkan staf)", kaji_ulang: "Rekomendasi kaji ulang pasca-kejadian (Siklus)", beku_bulanan: "Versi beku laporan bulanan",
+  lifeline: "Status layanan dasar (Siklus, ditetapkan staf)", kaji_ulang: "Rekomendasi kaji ulang pasca-kejadian (Siklus)", kegiatan: "Siaran pers bnpb.go.id", beku_bulanan: "Versi beku laporan bulanan",
   dibi_tren: "DIBI BNPB resmi per tahun (riwayat 10 tahun)", luas_resmi: "KLHK SiPongi (luas indikasi)", luas_satelit: "GWIS, MODIS MCD64A1 (luas satelit)"};
 const MUTU = {hipotesis: "hipotesis", uji_balik_lulus: "lulus uji balik"};
 const KEADAAN = {ok: "lengkap", sebagian: "sebagian", belum_ada: "belum ada", gagal: "gagal ditarik", basi: "terbit bukan untuk periode ini"};
@@ -393,9 +393,11 @@ function blokBulanan(A, I, ctx) {
 
   /* Bab 6 */
   t = B(6, "Program kerja", "data");
-  if (tahunan) t(`<p>${kosong(A.kegiatan?.catatan || "rekap kegiatan 12 bulan belum tersedia")}</p>`);
+  if (tahunan) t(rekapSiaran(A, No, bulan));
   t(`<p>Kegiatan dipilih staf dari siaran pers BNPB ${ini}.</p>`);
   t(isi(I.kegiatan) ? tabel(No.tabel(), `Kegiatan BNPB, ${bulan}`, ["Tanggal", "Kegiatan", "Lokasi", "Pelaksana"], I.kegiatan.map(k => [tgl(k.tanggal) || k.tanggal || "", k.kegiatan || "", k.lokasi || "", k.pelaksana || ""]))
+    + tabel(No.tabel(), `Kegiatan terpilih per pelaksana, ${bulan}`, ["Pelaksana", "Kegiatan"],
+      [...PELAKSANA, ""].map(p => [p || "Belum digolongkan", I.kegiatan.filter(k => (k?.pelaksana || "") === p).length]).filter(r => r[1]))
     : `<p>${kosong("belum ada kegiatan dipilih")}</p>`);
   t(`<p>Laporan situasi harian yang terbit ${ini}: ${typeof I.laporan_situasi === "number" ? `<b>${n(I.laporan_situasi)}</b>` : kosong()}</p>`);
   t(sub("Tindak lanjut kaji ulang pasca-kejadian")); t(blokKaji(A));
@@ -442,8 +444,22 @@ function blokBulanan(A, I, ctx) {
     {jumlah: ["Bencana alam, non-alam dan sosial", {v: `${n(dba.alam)} dan ${n(dba.bukan_alam)}`, n: true}], sumber: `${SDIBI}. Ambang bencana DIBI menurut Juklak BNPB 7/2023`}));
   if (tahunan) for (const h of blokLampiranTahunan(A, No, bulan, SDIBI)) t(h);
   t(sub("Daftar kegiatan dan tautan sumber"));
-  t(isi(I.kegiatan) ? `<ul>${I.kegiatan.map(k => `<li>${esc(k.kegiatan || "")}${k.tautan ? `, ${esc(k.tautan)}` : ""}</li>`).join("")}</ul>` : `<p>${kosong("belum ada kegiatan dipilih")}</p>`);
+  t(isi(I.kegiatan) ? `<ul>${I.kegiatan.map(k => `<li>${esc(k.kegiatan || "")}${k.tautan ? `, ${tautan(k.tautan)}` : ""}</li>`).join("")}</ul>` : `<p>${kosong("belum ada kegiatan dipilih")}</p>`);
   return bab;
+}
+
+/* tautan sumber: hanya siaran pers bnpb.go.id jadi tautan aktif, selain itu teks (KEAMANAN-PRIVASI 4, L6) */
+const TAUTAN_SAH = /^https:\/\/bnpb\.go\.id\/berita\/[a-z0-9-]+$/;
+const tautan = u => TAUTAN_SAH.test(String(u)) ? `<a href="${esc(u)}" rel="noopener noreferrer">${esc(u)}</a>` : esc(u);
+/* tahunan (LB-09): siaran pers per bulan dan usulan pelaksana; bulan yang belum dipanen tertulis, bukan 0 */
+function rekapSiaran(A, No, bulan) {
+  const kg = A.kegiatan || {};
+  if (!Array.isArray(kg.bulan)) return `<p>${kosong("rekap siaran pers 12 bulan belum tersedia: arsip siaran pers belum ada untuk tahun ini")}</p>`;
+  const bp = {v: "belum dipanen", cls: "tk"};
+  return tabel(No.tabel(), `Siaran pers BNPB per bulan menurut usulan pelaksana, ${bulan}`, ["Bulan", "Siaran pers", ...PELAKSANA, "Belum digolongkan", "Laporan situasi"],
+    kg.bulan.map(x => x.siaran == null ? [tgl(x.bulan), bp, bp, bp, bp, bp, bp]
+      : [tgl(x.bulan), x.siaran, ...PELAKSANA.map(p => x.pelaksana?.[p] ?? ""), x.pelaksana?.belum_digolongkan ?? "", x.situasi]),
+    {sumber: "Daftar siaran pers bnpb.go.id; pelaksana adalah usulan mesin dari judul, bukan kegiatan yang dipilih staf"});
 }
 
 /* ---------------------------------------------------------------- isi laporan harian dan mingguan (LB-11, PRD 2, ALGORITMA 12)
@@ -770,13 +786,28 @@ const apIsian = (I, bab) => `<fieldset class="lbk-ap3"><legend>Action plan</lege
   .map(([k, l]) => teks(I, `action.${bab}.${k}`, l, {baris: 4})).join("")}</fieldset>`;
 const catatanIsian = (I, bab) => teks(I, `catatan.${bab}`, "Catatan bab (pilihan)", {baris: 2, wajibIsi: false, bantu: "Tampil sebagai kotak catatan di bab ini. Boleh dikosongkan."});
 
-function daftarIsian(I, nama) {
+function daftarIsian(I, nama, atas = "") {
   const D = DAFTAR[nama], xs = Array.isArray(I[nama]) ? I[nama] : [];
-  return `<div class="lbk-daftar" data-daftar="${nama}">${xs.map((_, i) => `<div class="lbk-baris"><div class="lbk-baris-k"><b>Baris ${i + 1}</b>
+  return `<div class="lbk-daftar" data-daftar="${nama}">${atas}${xs.map((_, i) => `<div class="lbk-baris"><div class="lbk-baris-k"><b>Baris ${i + 1}</b>
     <button type="button" class="lbk-ik" data-hapus="${nama}.${i}" aria-label="Hapus baris ${i + 1}" title="Hapus baris">${ikon(IK.hapus)}</button></div>
     <div class="lbk-baris-g">${D.kolom.map(([k, l, j]) => teks(I, `${nama}.${i}.${k}`, l, {jenis: j || "text", baris: 2})).join("")}</div></div>`).join("")}
     <button type="button" class="lbk-tambah" data-tambah="${nama}"${xs.length >= D.maks ? " disabled" : ""}>${ikon(IK.tambah)}${D.baru}</button></div>`;
 }
+/* LB-09, Q8: calon dari siaran pers; baris masuk laporan hanya bila dicentang staf, lalu bisa disunting di baris kegiatan */
+function calonIsian(A, I) {
+  const kg = A.kegiatan || {}, cal = Array.isArray(kg.calon) ? kg.calon : [], xs = Array.isArray(I.kegiatan) ? I.kegiatan : [];
+  if (kg.status !== "ok" && kg.status !== "sebagian") return `<p class="lbk-h">Daftar calon dari siaran pers belum tersedia untuk periode ini, jadi kegiatan ditulis staf.</p>`;
+  const dipilih = new Set(xs.map(k => k?.tautan).filter(Boolean)), penuh = xs.length >= DAFTAR.kegiatan.maks;
+  return `<fieldset class="lbk-usul"><legend>Calon dari siaran pers BNPB, ${n(cal.length)} judul</legend>
+    ${kg.status === "sebagian" ? `<p class="lbk-h">Panen siaran pers belum mencakup seluruh periode, jadi daftar ini belum lengkap.</p>` : ""}
+    <p class="lbk-h">Centang untuk memasukkan ke laporan. Pelaksana dan lokasi diusulkan mesin dari judul; sunting di baris kegiatan.</p>
+    ${cal.length ? cal.map((c, i) => { const on = dipilih.has(c.tautan);
+      return `<label class="lbk-u"><input type="checkbox" data-calon="${i}"${on ? " checked" : ""}${penuh && !on ? " disabled" : ""}>
+        <span>${esc(tgl(c.tanggal) || c.tanggal)}, ${esc(c.judul)}</span><small>${esc(c.pelaksana || "belum digolongkan")}${c.lokasi ? `, ${esc(c.lokasi)}` : ""}</small></label>`; }).join("")
+      : `<p class="lbk-h">Tidak ada siaran pers pada periode ini.</p>`}</fieldset>`;
+}
+const kegiatanIsian = (A, I) => daftarIsian(I, "kegiatan", calonIsian(A, I));
+const mesinSiaran = A => { const r = A.kegiatan?.rekap; return r ? mesin([["Siaran pers", n(r.siaran)], ["Laporan situasi di siaran pers", n(r.situasi)]]) : ""; };
 function temuanIsian(A, I, nama) {
   const maks = H.MAKS_TEMUAN[nama], xs = Array.isArray(I[nama]) ? I[nama] : [], usul = A.usulan_temuan || [], penuhT = xs.length >= maks;
   const dipilih = new Set(xs.map(t => t?.kode).filter(Boolean));
@@ -815,7 +846,7 @@ function kartuIsian(A, I, periode = "bulanan") {
       apIsian(I, "bab4") + catatanIsian(I, "bab4")),
     K(IK.gunung, "Bab 5", "Geologi dan vulkanologi", mesin([["Peristiwa gempa", n(b5.peristiwa?.gempa)], ["Gunung api Level III", n(pl["3"])], ["Perubahan level", n(b5.perubahan_level?.length)]]) +
       apIsian(I, "bab5") + catatanIsian(I, "bab5")),
-    K(IK.program, "Kegiatan", "Kegiatan minggu ini", daftarIsian(I, "kegiatan"))].join("");
+    K(IK.program, "Kegiatan", "Kegiatan minggu ini", mesinSiaran(A) + kegiatanIsian(A, I))].join("");
   return [
     K(IK.ringkas, "Ringkasan", "Ringkasan Eksekutif", mesin([["Kejadian, semua laporan", n(b1.alam?.kejadian)], ["Kejadian, resmi DIBI", n(b1.resmi?.alam?.kejadian)],
       ["Meninggal dan hilang", n(d.meninggal_hilang)], ["Terdampak dan mengungsi", n(d.terdampak_mengungsi)], ["Rumah rusak", n(d.rumah_rusak)]]) +
@@ -832,8 +863,7 @@ function kartuIsian(A, I, periode = "bulanan") {
       apIsian(I, "bab4") + catatanIsian(I, "bab4")),
     K(IK.gunung, "Bab 5", "Geologi dan vulkanologi", mesin([["Peristiwa gempa", n(b5.peristiwa?.gempa)], ["Peristiwa erupsi", n(b5.peristiwa?.erupsi)], ["Gunung api Level III", n(pl["3"])], ["Gunung api Level IV", n(pl["4"])]]) +
       apIsian(I, "bab5") + catatanIsian(I, "bab5")),
-    K(IK.program, "Bab 6", "Program kerja", `<p class="lbk-h">Daftar calon dari siaran pers belum tersedia, jadi kegiatan ditulis staf. Tautan sumber tampil di Lampiran sebagai teks.</p>` +
-      daftarIsian(I, "kegiatan") + teks(I, "laporan_situasi", "Laporan situasi harian yang terbit", {jenis: "angka", bantu: "Banyaknya laporan situasi harian pada periode ini. Kosong tetap tertulis belum diisi, bukan 0."})),
+    K(IK.program, "Bab 6", "Program kerja", mesinSiaran(A) + kegiatanIsian(A, I) + teks(I, "laporan_situasi", "Laporan situasi harian yang terbit", {jenis: "angka", bantu: "Banyaknya laporan situasi harian pada periode ini. Kosong tetap tertulis belum diisi, bukan 0."})),
     K(IK.prediksi, "Bab 7", "Prediksi dan dukungan", mesin([["Indeks RONI", en?.status === "ok" ? H.angka(en.nilai, 2) : "tidak diketahui"], ["Usulan temuan mesin", n((A.usulan_temuan || []).length)]]) +
       `<p class="lbk-lbl">Dukungan yang dimohon</p>` + daftarIsian(I, "dukungan") +
       `<p class="lbk-lbl">Temuan untuk musim berikutnya</p>` + temuanIsian(A, I, "temuan_bab7") +
@@ -945,7 +975,7 @@ async function mulai() {
   const gambarIsian = () => { fs.querySelectorAll(":scope > :not(legend)").forEach(x => x.remove()); fs.insertAdjacentHTML("beforeend", kartuIsian(S.A, S.I, periode)); $(".lbk-isian").hidden = false; aturMode(); };
   const gambarDaftar = nama => {
     const lamaEl = fs.querySelector(`[data-daftar="${nama}"]`); if (!lamaEl) return;
-    const t = document.createElement("template"); t.innerHTML = nama.startsWith("temuan") ? temuanIsian(S.A, S.I, nama) : daftarIsian(S.I, nama);
+    const t = document.createElement("template"); t.innerHTML = nama.startsWith("temuan") ? temuanIsian(S.A, S.I, nama) : nama === "kegiatan" ? kegiatanIsian(S.A, S.I) : daftarIsian(S.I, nama);
     const baru = t.content.firstElementChild; lamaEl.replaceWith(baru); return baru;
   };
 
@@ -956,7 +986,17 @@ async function mulai() {
     ubah();
   });
   form.addEventListener("change", e => {
-    const el = e.target, nama = el.dataset?.usul; if (!nama) return;
+    const el = e.target;
+    if (el.dataset?.calon !== undefined) {   // LB-09: centang calon = tambah baris kegiatan, lepas = buang baris bertautan sama
+      const c = (S.A.kegiatan?.calon || [])[+el.dataset.calon]; if (!c) return;
+      const xs = Array.isArray(S.I.kegiatan) ? S.I.kegiatan : (S.I.kegiatan = []);
+      if (!el.checked) S.I.kegiatan = xs.filter(k => k?.tautan !== c.tautan);
+      else if (xs.length < DAFTAR.kegiatan.maks && !xs.some(k => k?.tautan === c.tautan))
+        xs.push({tanggal: c.tanggal, kegiatan: c.judul, lokasi: c.lokasi || "", pelaksana: PELAKSANA.includes(c.pelaksana) ? c.pelaksana : "", tautan: c.tautan});
+      gambarDaftar("kegiatan")?.querySelector(`[data-calon="${+el.dataset.calon}"]`)?.focus();
+      ubah(); return;
+    }
+    const nama = el.dataset?.usul; if (!nama) return;
     const u = (S.A.usulan_temuan || []).find(x => x.kode === el.value); if (!u) return;
     const xs = Array.isArray(S.I[nama]) ? S.I[nama] : (S.I[nama] = []);
     if (el.checked) { if (xs.length < H.MAKS_TEMUAN[nama]) xs.push({kode: u.kode, pil: u.pil || "data", judul: "", kalimat: u.kalimat || "", sumber: u.sumber || ""}); }

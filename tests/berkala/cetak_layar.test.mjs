@@ -169,7 +169,7 @@ else {
     assert.match(teks, /KLHK SiPongi/); assert.match(teks, /GWIS satelit/); assert.match(teks, /tidak dijumlah/);
     assert.match(teks, /324 \(versi 2\)/, "H19 versi beku Oktober"); assert.match(teks, /beda sumber/, "status beda sumber tampil"); assert.match(teks, /angka resmi tahun ini tidak diketahui/, "H20b"); assert.match(teks, /belum ada versi beku/, "bulan tanpa beku bukan 0");
     assert.match(teks, /Banjir Aceh Desember 2025/); assert.match(teks, /lumpuh/); assert.match(teks, /belum diketahui/, "abu tanpa status");
-    assert.match(teks, /rekomendasi lewat tenggat/); assert.match(teks, /rekap kegiatan 12 bulan/i);
+    assert.match(teks, /rekomendasi lewat tenggat/); assert.match(teks, /Siaran pers BNPB per bulan menurut usulan pelaksana/); assert.match(teks, /belum dipanen/, "LB-09: bulan tak dipanen bukan 0");
     assert.match(teks, /Dukungan yang dimohon/, "Q27: bagian kebijakan ada di tahunan");
     assert.deepEqual(tab.galat().filter(g => !/favicon|status of 404/.test(g)), []);
     mode = {angka: ANGKA, baris: null}; await buka();
