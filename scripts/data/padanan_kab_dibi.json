@@ -1,0 +1,3599 @@
+{
+ "dibuat": "2026-11-26",
+ "sumber": "DIBI BNPB Superset dasbor publik (id_kab_bps, kabupaten, provinsi; semua tahun) dicocokkan nama ke scripts/udara/kota.json (kode Kemendagri); pembuat scripts/data/padanan_kab_dibi.py",
+ "catatan": "tiap padanan: nama kab dan provinsi DIBI sama (kunci_nama) dengan satu baris kota.json; satu ke satu; pemekaran Papua 2022 memindah kab utuh, tidak memecah kab",
+ "padanan": {
+  "1101": {
+   "nama_dibi": "Simeulue",
+   "prov_dibi": "Aceh",
+   "kode": "1109",
+   "nama_kita": "Kab. Simeulue",
+   "cara": "kode beda"
+  },
+  "1102": {
+   "nama_dibi": "Aceh Singkil",
+   "prov_dibi": "Aceh",
+   "kode": "1110",
+   "nama_kita": "Kab. Aceh Singkil",
+   "cara": "kode beda"
+  },
+  "1103": {
+   "nama_dibi": "Aceh Selatan",
+   "prov_dibi": "Aceh",
+   "kode": "1101",
+   "nama_kita": "Kab. Aceh Selatan",
+   "cara": "kode beda"
+  },
+  "1104": {
+   "nama_dibi": "Aceh Tenggara",
+   "prov_dibi": "Aceh",
+   "kode": "1102",
+   "nama_kita": "Kab. Aceh Tenggara",
+   "cara": "kode beda"
+  },
+  "1105": {
+   "nama_dibi": "Aceh Timur",
+   "prov_dibi": "Aceh",
+   "kode": "1103",
+   "nama_kita": "Kab. Aceh Timur",
+   "cara": "kode beda"
+  },
+  "1106": {
+   "nama_dibi": "Aceh Tengah",
+   "prov_dibi": "Aceh",
+   "kode": "1104",
+   "nama_kita": "Kab. Aceh Tengah",
+   "cara": "kode beda"
+  },
+  "1107": {
+   "nama_dibi": "Aceh Barat",
+   "prov_dibi": "Aceh",
+   "kode": "1105",
+   "nama_kita": "Kab. Aceh Barat",
+   "cara": "kode beda"
+  },
+  "1108": {
+   "nama_dibi": "Aceh Besar",
+   "prov_dibi": "Aceh",
+   "kode": "1106",
+   "nama_kita": "Kab. Aceh Besar",
+   "cara": "kode beda"
+  },
+  "1109": {
+   "nama_dibi": "Pidie",
+   "prov_dibi": "Aceh",
+   "kode": "1107",
+   "nama_kita": "Kab. Pidie",
+   "cara": "kode beda"
+  },
+  "1110": {
+   "nama_dibi": "Bireuen",
+   "prov_dibi": "Aceh",
+   "kode": "1111",
+   "nama_kita": "Kab. Bireuen",
+   "cara": "kode beda"
+  },
+  "1111": {
+   "nama_dibi": "Aceh Utara",
+   "prov_dibi": "Aceh",
+   "kode": "1108",
+   "nama_kita": "Kab. Aceh Utara",
+   "cara": "kode beda"
+  },
+  "1112": {
+   "nama_dibi": "Aceh Barat Daya",
+   "prov_dibi": "Aceh",
+   "kode": "1112",
+   "nama_kita": "Kab. Aceh Barat Daya",
+   "cara": "kode sama"
+  },
+  "1113": {
+   "nama_dibi": "Gayo Lues",
+   "prov_dibi": "Aceh",
+   "kode": "1113",
+   "nama_kita": "Kab. Gayo Lues",
+   "cara": "kode sama"
+  },
+  "1114": {
+   "nama_dibi": "Aceh Tamiang",
+   "prov_dibi": "Aceh",
+   "kode": "1116",
+   "nama_kita": "Kab. Aceh Tamiang",
+   "cara": "kode beda"
+  },
+  "1115": {
+   "nama_dibi": "Nagan Raya",
+   "prov_dibi": "Aceh",
+   "kode": "1115",
+   "nama_kita": "Kab. Nagan Raya",
+   "cara": "kode sama"
+  },
+  "1116": {
+   "nama_dibi": "Aceh Jaya",
+   "prov_dibi": "Aceh",
+   "kode": "1114",
+   "nama_kita": "Kab. Aceh Jaya",
+   "cara": "kode beda"
+  },
+  "1117": {
+   "nama_dibi": "Bener Meriah",
+   "prov_dibi": "Aceh",
+   "kode": "1117",
+   "nama_kita": "Kab. Bener Meriah",
+   "cara": "kode sama"
+  },
+  "1118": {
+   "nama_dibi": "Pidie Jaya",
+   "prov_dibi": "Aceh",
+   "kode": "1118",
+   "nama_kita": "Kab. Pidie Jaya",
+   "cara": "kode sama"
+  },
+  "1171": {
+   "nama_dibi": "Kota Banda Aceh",
+   "prov_dibi": "Aceh",
+   "kode": "1171",
+   "nama_kita": "Kota Banda Aceh",
+   "cara": "kode sama"
+  },
+  "1172": {
+   "nama_dibi": "Kota Sabang",
+   "prov_dibi": "Aceh",
+   "kode": "1172",
+   "nama_kita": "Kota Sabang",
+   "cara": "kode sama"
+  },
+  "1173": {
+   "nama_dibi": "Kota Langsa",
+   "prov_dibi": "Aceh",
+   "kode": "1174",
+   "nama_kita": "Kota Langsa",
+   "cara": "kode beda"
+  },
+  "1174": {
+   "nama_dibi": "Kota Lhokseumawe",
+   "prov_dibi": "Aceh",
+   "kode": "1173",
+   "nama_kita": "Kota Lhokseumawe",
+   "cara": "kode beda"
+  },
+  "1175": {
+   "nama_dibi": "Kota Subulussalam",
+   "prov_dibi": "Aceh",
+   "kode": "1175",
+   "nama_kita": "Kota Subulussalam",
+   "cara": "kode sama"
+  },
+  "1201": {
+   "nama_dibi": "Nias",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1204",
+   "nama_kita": "Kab. Nias",
+   "cara": "kode beda"
+  },
+  "1202": {
+   "nama_dibi": "Mandailing Natal",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1213",
+   "nama_kita": "Kab. Mandailing Natal",
+   "cara": "kode beda"
+  },
+  "1203": {
+   "nama_dibi": "Tapanuli Selatan",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1203",
+   "nama_kita": "Kab. Tapanuli Selatan",
+   "cara": "kode sama"
+  },
+  "1204": {
+   "nama_dibi": "Tapanuli Tengah",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1201",
+   "nama_kita": "Kab. Tapanuli Tengah",
+   "cara": "kode beda"
+  },
+  "1205": {
+   "nama_dibi": "Tapanuli Utara",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1202",
+   "nama_kita": "Kab. Tapanuli Utara",
+   "cara": "kode beda"
+  },
+  "1206": {
+   "nama_dibi": "Toba",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1212",
+   "nama_kita": "Kab. Toba",
+   "cara": "kode beda"
+  },
+  "1207": {
+   "nama_dibi": "Labuhanbatu",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1210",
+   "nama_kita": "Kab. Labuhanbatu",
+   "cara": "kode beda"
+  },
+  "1208": {
+   "nama_dibi": "Asahan",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1209",
+   "nama_kita": "Kab. Asahan",
+   "cara": "kode beda"
+  },
+  "1209": {
+   "nama_dibi": "Simalungun",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1208",
+   "nama_kita": "Kab. Simalungun",
+   "cara": "kode beda"
+  },
+  "1210": {
+   "nama_dibi": "Dairi",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1211",
+   "nama_kita": "Kab. Dairi",
+   "cara": "kode beda"
+  },
+  "1211": {
+   "nama_dibi": "Karo",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1206",
+   "nama_kita": "Kab. Karo",
+   "cara": "kode beda"
+  },
+  "1212": {
+   "nama_dibi": "Deli Serdang",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1207",
+   "nama_kita": "Kab. Deli Serdang",
+   "cara": "kode beda"
+  },
+  "1213": {
+   "nama_dibi": "Langkat",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1205",
+   "nama_kita": "Kab. Langkat",
+   "cara": "kode beda"
+  },
+  "1214": {
+   "nama_dibi": "Nias Selatan",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1214",
+   "nama_kita": "Kab. Nias Selatan",
+   "cara": "kode sama"
+  },
+  "1215": {
+   "nama_dibi": "Humbang Hasundutan",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1216",
+   "nama_kita": "Kab. Humbang Hasundutan",
+   "cara": "kode beda"
+  },
+  "1216": {
+   "nama_dibi": "Pakpak Bharat",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1215",
+   "nama_kita": "Kab. Pakpak Bharat",
+   "cara": "kode beda"
+  },
+  "1217": {
+   "nama_dibi": "Samosir",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1217",
+   "nama_kita": "Kab. Samosir",
+   "cara": "kode sama"
+  },
+  "1218": {
+   "nama_dibi": "Serdang Bedagai",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1218",
+   "nama_kita": "Kab. Serdang Bedagai",
+   "cara": "kode sama"
+  },
+  "1219": {
+   "nama_dibi": "Batu Bara",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1219",
+   "nama_kita": "Kab. Batu Bara",
+   "cara": "kode sama"
+  },
+  "1220": {
+   "nama_dibi": "Padang Lawas Utara",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1220",
+   "nama_kita": "Kab. Padang Lawas Utara",
+   "cara": "kode sama"
+  },
+  "1221": {
+   "nama_dibi": "Padang Lawas",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1221",
+   "nama_kita": "Kab. Padang Lawas",
+   "cara": "kode sama"
+  },
+  "1222": {
+   "nama_dibi": "Labuhanbatu Selatan",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1222",
+   "nama_kita": "Kab. Labuhanbatu Selatan",
+   "cara": "kode sama"
+  },
+  "1223": {
+   "nama_dibi": "Labuhanbatu Utara",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1223",
+   "nama_kita": "Kab. Labuhanbatu Utara",
+   "cara": "kode sama"
+  },
+  "1224": {
+   "nama_dibi": "Nias Utara",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1224",
+   "nama_kita": "Kab. Nias Utara",
+   "cara": "kode sama"
+  },
+  "1225": {
+   "nama_dibi": "Nias Barat",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1225",
+   "nama_kita": "Kab. Nias Barat",
+   "cara": "kode sama"
+  },
+  "1271": {
+   "nama_dibi": "Kota Sibolga",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1273",
+   "nama_kita": "Kota Sibolga",
+   "cara": "kode beda"
+  },
+  "1272": {
+   "nama_dibi": "Kota Tanjung Balai",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1274",
+   "nama_kita": "Kota Tanjungbalai",
+   "cara": "kode beda"
+  },
+  "1273": {
+   "nama_dibi": "Kota Pematangsiantar",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1272",
+   "nama_kita": "Kota Pematangsiantar",
+   "cara": "kode beda"
+  },
+  "1274": {
+   "nama_dibi": "Kota Tebing Tinggi",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1276",
+   "nama_kita": "Kota Tebing Tinggi",
+   "cara": "kode beda"
+  },
+  "1275": {
+   "nama_dibi": "Kota Medan",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1271",
+   "nama_kita": "Kota Medan",
+   "cara": "kode beda"
+  },
+  "1276": {
+   "nama_dibi": "Kota Binjai",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1275",
+   "nama_kita": "Kota Binjai",
+   "cara": "kode beda"
+  },
+  "1277": {
+   "nama_dibi": "Kota Padang Sidempuan",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1277",
+   "nama_kita": "Kota Padangsidimpuan",
+   "cara": "kode sama; alias kab: ejaan baku Kemendagri satu kata, 'i' bukan 'e'"
+  },
+  "1278": {
+   "nama_dibi": "Kota Gunungsitoli",
+   "prov_dibi": "Sumatera Utara",
+   "kode": "1278",
+   "nama_kita": "Kota Gunungsitoli",
+   "cara": "kode sama"
+  },
+  "1301": {
+   "nama_dibi": "Kepulauan Mentawai",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1309",
+   "nama_kita": "Kab. Kepulauan Mentawai",
+   "cara": "kode beda"
+  },
+  "1302": {
+   "nama_dibi": "Pesisir Selatan",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1301",
+   "nama_kita": "Kab. Pesisir Selatan",
+   "cara": "kode beda"
+  },
+  "1303": {
+   "nama_dibi": "Solok",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1302",
+   "nama_kita": "Kab. Solok",
+   "cara": "kode beda"
+  },
+  "1304": {
+   "nama_dibi": "Sijunjung",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1303",
+   "nama_kita": "Kab. Sijunjung",
+   "cara": "kode beda"
+  },
+  "1305": {
+   "nama_dibi": "Tanah Datar",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1304",
+   "nama_kita": "Kab. Tanah Datar",
+   "cara": "kode beda"
+  },
+  "1306": {
+   "nama_dibi": "Padang Pariaman",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1305",
+   "nama_kita": "Kab. Padang Pariaman",
+   "cara": "kode beda"
+  },
+  "1307": {
+   "nama_dibi": "Agam",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1306",
+   "nama_kita": "Kab. Agam",
+   "cara": "kode beda"
+  },
+  "1308": {
+   "nama_dibi": "Lima Puluh Kota",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1307",
+   "nama_kita": "Kab. Lima Puluh Kota",
+   "cara": "kode beda"
+  },
+  "1309": {
+   "nama_dibi": "Pasaman",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1308",
+   "nama_kita": "Kab. Pasaman",
+   "cara": "kode beda"
+  },
+  "1310": {
+   "nama_dibi": "Solok Selatan",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1311",
+   "nama_kita": "Kab. Solok Selatan",
+   "cara": "kode beda"
+  },
+  "1311": {
+   "nama_dibi": "Dharmasraya",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1310",
+   "nama_kita": "Kab. Dharmasraya",
+   "cara": "kode beda"
+  },
+  "1312": {
+   "nama_dibi": "Pasaman Barat",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1312",
+   "nama_kita": "Kab. Pasaman Barat",
+   "cara": "kode sama"
+  },
+  "1371": {
+   "nama_dibi": "Kota Padang",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1371",
+   "nama_kita": "Kota Padang",
+   "cara": "kode sama"
+  },
+  "1372": {
+   "nama_dibi": "Kota Solok",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1372",
+   "nama_kita": "Kota Solok",
+   "cara": "kode sama"
+  },
+  "1373": {
+   "nama_dibi": "Kota Sawahlunto",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1373",
+   "nama_kita": "Kota Sawahlunto",
+   "cara": "kode sama"
+  },
+  "1374": {
+   "nama_dibi": "Kota Padang Panjang",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1374",
+   "nama_kita": "Kota Padang Panjang",
+   "cara": "kode sama"
+  },
+  "1375": {
+   "nama_dibi": "Kota Bukittinggi",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1375",
+   "nama_kita": "Kota Bukittinggi",
+   "cara": "kode sama"
+  },
+  "1376": {
+   "nama_dibi": "Kota Payakumbuh",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1376",
+   "nama_kita": "Kota Payakumbuh",
+   "cara": "kode sama"
+  },
+  "1377": {
+   "nama_dibi": "Kota Pariaman",
+   "prov_dibi": "Sumatera Barat",
+   "kode": "1377",
+   "nama_kita": "Kota Pariaman",
+   "cara": "kode sama"
+  },
+  "1401": {
+   "nama_dibi": "Kuantan Singingi",
+   "prov_dibi": "Riau",
+   "kode": "1409",
+   "nama_kita": "Kab. Kuantan Singingi",
+   "cara": "kode beda"
+  },
+  "1402": {
+   "nama_dibi": "Indragiri Hulu",
+   "prov_dibi": "Riau",
+   "kode": "1402",
+   "nama_kita": "Kab. Indragiri Hulu",
+   "cara": "kode sama"
+  },
+  "1403": {
+   "nama_dibi": "Indragiri Hilir",
+   "prov_dibi": "Riau",
+   "kode": "1404",
+   "nama_kita": "Kab. Indragiri Hilir",
+   "cara": "kode beda"
+  },
+  "1404": {
+   "nama_dibi": "Pelalawan",
+   "prov_dibi": "Riau",
+   "kode": "1405",
+   "nama_kita": "Kab. Pelalawan",
+   "cara": "kode beda"
+  },
+  "1405": {
+   "nama_dibi": "Siak",
+   "prov_dibi": "Riau",
+   "kode": "1408",
+   "nama_kita": "Kab. Siak",
+   "cara": "kode beda"
+  },
+  "1406": {
+   "nama_dibi": "Kampar",
+   "prov_dibi": "Riau",
+   "kode": "1401",
+   "nama_kita": "Kab. Kampar",
+   "cara": "kode beda"
+  },
+  "1407": {
+   "nama_dibi": "Rokan Hulu",
+   "prov_dibi": "Riau",
+   "kode": "1406",
+   "nama_kita": "Kab. Rokan Hulu",
+   "cara": "kode beda"
+  },
+  "1408": {
+   "nama_dibi": "Bengkalis",
+   "prov_dibi": "Riau",
+   "kode": "1403",
+   "nama_kita": "Kab. Bengkalis",
+   "cara": "kode beda"
+  },
+  "1409": {
+   "nama_dibi": "Rokan Hilir",
+   "prov_dibi": "Riau",
+   "kode": "1407",
+   "nama_kita": "Kab. Rokan Hilir",
+   "cara": "kode beda"
+  },
+  "1410": {
+   "nama_dibi": "Kepulauan Meranti",
+   "prov_dibi": "Riau",
+   "kode": "1410",
+   "nama_kita": "Kab. Kepulauan Meranti",
+   "cara": "kode sama"
+  },
+  "1471": {
+   "nama_dibi": "Kota Pekanbaru",
+   "prov_dibi": "Riau",
+   "kode": "1471",
+   "nama_kita": "Kota Pekanbaru",
+   "cara": "kode sama"
+  },
+  "1473": {
+   "nama_dibi": "Kota Dumai",
+   "prov_dibi": "Riau",
+   "kode": "1472",
+   "nama_kita": "Kota Dumai",
+   "cara": "kode beda"
+  },
+  "1501": {
+   "nama_dibi": "Kerinci",
+   "prov_dibi": "Jambi",
+   "kode": "1501",
+   "nama_kita": "Kab. Kerinci",
+   "cara": "kode sama"
+  },
+  "1502": {
+   "nama_dibi": "Merangin",
+   "prov_dibi": "Jambi",
+   "kode": "1502",
+   "nama_kita": "Kab. Merangin",
+   "cara": "kode sama"
+  },
+  "1503": {
+   "nama_dibi": "Sarolangun",
+   "prov_dibi": "Jambi",
+   "kode": "1503",
+   "nama_kita": "Kab. Sarolangun",
+   "cara": "kode sama"
+  },
+  "1504": {
+   "nama_dibi": "Batanghari",
+   "prov_dibi": "Jambi",
+   "kode": "1504",
+   "nama_kita": "Kab. Batanghari",
+   "cara": "kode sama"
+  },
+  "1505": {
+   "nama_dibi": "Muaro Jambi",
+   "prov_dibi": "Jambi",
+   "kode": "1505",
+   "nama_kita": "Kab. Muaro Jambi",
+   "cara": "kode sama"
+  },
+  "1506": {
+   "nama_dibi": "Tanjung Jabung Timur",
+   "prov_dibi": "Jambi",
+   "kode": "1507",
+   "nama_kita": "Kab. Tanjung Jabung Timur",
+   "cara": "kode beda"
+  },
+  "1507": {
+   "nama_dibi": "Tanjung Jabung Barat",
+   "prov_dibi": "Jambi",
+   "kode": "1506",
+   "nama_kita": "Kab. Tanjung Jabung Barat",
+   "cara": "kode beda"
+  },
+  "1508": {
+   "nama_dibi": "Tebo",
+   "prov_dibi": "Jambi",
+   "kode": "1509",
+   "nama_kita": "Kab. Tebo",
+   "cara": "kode beda"
+  },
+  "1509": {
+   "nama_dibi": "Bungo",
+   "prov_dibi": "Jambi",
+   "kode": "1508",
+   "nama_kita": "Kab. Bungo",
+   "cara": "kode beda"
+  },
+  "1571": {
+   "nama_dibi": "Kota Jambi",
+   "prov_dibi": "Jambi",
+   "kode": "1571",
+   "nama_kita": "Kota Jambi",
+   "cara": "kode sama"
+  },
+  "1572": {
+   "nama_dibi": "Kota Sungai Penuh",
+   "prov_dibi": "Jambi",
+   "kode": "1572",
+   "nama_kita": "Kota Sungai Penuh",
+   "cara": "kode sama"
+  },
+  "1601": {
+   "nama_dibi": "Ogan Komering Ulu",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1601",
+   "nama_kita": "Kab. Ogan Komering Ulu",
+   "cara": "kode sama"
+  },
+  "1602": {
+   "nama_dibi": "Ogan Komering Ilir",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1602",
+   "nama_kita": "Kab. Ogan Komering Ilir",
+   "cara": "kode sama"
+  },
+  "1603": {
+   "nama_dibi": "Muara Enim",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1603",
+   "nama_kita": "Kab. Muara Enim",
+   "cara": "kode sama"
+  },
+  "1604": {
+   "nama_dibi": "Lahat",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1604",
+   "nama_kita": "Kab. Lahat",
+   "cara": "kode sama"
+  },
+  "1605": {
+   "nama_dibi": "Musi Rawas",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1605",
+   "nama_kita": "Kab. Musi Rawas",
+   "cara": "kode sama"
+  },
+  "1606": {
+   "nama_dibi": "Musi Banyuasin",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1606",
+   "nama_kita": "Kab. Musi Banyuasin",
+   "cara": "kode sama"
+  },
+  "1607": {
+   "nama_dibi": "Banyuasin",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1607",
+   "nama_kita": "Kab. Banyuasin",
+   "cara": "kode sama"
+  },
+  "1608": {
+   "nama_dibi": "Ogan Komering Ulu Selatan",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1609",
+   "nama_kita": "Kab. Ogan Komering Ulu Selatan",
+   "cara": "kode beda"
+  },
+  "1609": {
+   "nama_dibi": "Ogan Komering Ulu Timur",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1608",
+   "nama_kita": "Kab. Ogan Komering Ulu Timur",
+   "cara": "kode beda"
+  },
+  "1610": {
+   "nama_dibi": "Ogan Ilir",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1610",
+   "nama_kita": "Kab. Ogan Ilir",
+   "cara": "kode sama"
+  },
+  "1611": {
+   "nama_dibi": "Empat Lawang",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1611",
+   "nama_kita": "Kab. Empat Lawang",
+   "cara": "kode sama"
+  },
+  "1612": {
+   "nama_dibi": "Penukal Abab Lematang Ilir",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1612",
+   "nama_kita": "Kab. Penukal Abab Lematang Ilir",
+   "cara": "kode sama"
+  },
+  "1613": {
+   "nama_dibi": "Musi Rawas Utara",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1613",
+   "nama_kita": "Kab. Musi Rawas Utara",
+   "cara": "kode sama"
+  },
+  "1671": {
+   "nama_dibi": "Kota Palembang",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1671",
+   "nama_kita": "Kota Palembang",
+   "cara": "kode sama"
+  },
+  "1672": {
+   "nama_dibi": "Kota Prabumulih",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1674",
+   "nama_kita": "Kota Prabumulih",
+   "cara": "kode beda"
+  },
+  "1673": {
+   "nama_dibi": "Kota Pagar Alam",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1672",
+   "nama_kita": "Kota Pagar Alam",
+   "cara": "kode beda"
+  },
+  "1674": {
+   "nama_dibi": "Kota Lubuk Linggau",
+   "prov_dibi": "Sumatera Selatan",
+   "kode": "1673",
+   "nama_kita": "Kota Lubuk Linggau",
+   "cara": "kode beda"
+  },
+  "1701": {
+   "nama_dibi": "Bengkulu Selatan",
+   "prov_dibi": "Bengkulu",
+   "kode": "1701",
+   "nama_kita": "Kab. Bengkulu Selatan",
+   "cara": "kode sama"
+  },
+  "1702": {
+   "nama_dibi": "Rejang Lebong",
+   "prov_dibi": "Bengkulu",
+   "kode": "1702",
+   "nama_kita": "Kab. Rejang Lebong",
+   "cara": "kode sama"
+  },
+  "1703": {
+   "nama_dibi": "Bengkulu Utara",
+   "prov_dibi": "Bengkulu",
+   "kode": "1703",
+   "nama_kita": "Kab. Bengkulu Utara",
+   "cara": "kode sama"
+  },
+  "1704": {
+   "nama_dibi": "Kaur",
+   "prov_dibi": "Bengkulu",
+   "kode": "1704",
+   "nama_kita": "Kab. Kaur",
+   "cara": "kode sama"
+  },
+  "1705": {
+   "nama_dibi": "Seluma",
+   "prov_dibi": "Bengkulu",
+   "kode": "1705",
+   "nama_kita": "Kab. Seluma",
+   "cara": "kode sama"
+  },
+  "1706": {
+   "nama_dibi": "Muko Muko",
+   "prov_dibi": "Bengkulu",
+   "kode": "1706",
+   "nama_kita": "Kab. Mukomuko",
+   "cara": "kode sama"
+  },
+  "1707": {
+   "nama_dibi": "Lebong",
+   "prov_dibi": "Bengkulu",
+   "kode": "1707",
+   "nama_kita": "Kab. Lebong",
+   "cara": "kode sama"
+  },
+  "1708": {
+   "nama_dibi": "Kepahiang",
+   "prov_dibi": "Bengkulu",
+   "kode": "1708",
+   "nama_kita": "Kab. Kepahiang",
+   "cara": "kode sama"
+  },
+  "1709": {
+   "nama_dibi": "Bengkulu Tengah",
+   "prov_dibi": "Bengkulu",
+   "kode": "1709",
+   "nama_kita": "Kab. Bengkulu Tengah",
+   "cara": "kode sama"
+  },
+  "1771": {
+   "nama_dibi": "Kota Bengkulu",
+   "prov_dibi": "Bengkulu",
+   "kode": "1771",
+   "nama_kita": "Kota Bengkulu",
+   "cara": "kode sama"
+  },
+  "1801": {
+   "nama_dibi": "Lampung Barat",
+   "prov_dibi": "Lampung",
+   "kode": "1804",
+   "nama_kita": "Kab. Lampung Barat",
+   "cara": "kode beda"
+  },
+  "1802": {
+   "nama_dibi": "Tanggamus",
+   "prov_dibi": "Lampung",
+   "kode": "1806",
+   "nama_kita": "Kab. Tanggamus",
+   "cara": "kode beda"
+  },
+  "1803": {
+   "nama_dibi": "Lampung Selatan",
+   "prov_dibi": "Lampung",
+   "kode": "1801",
+   "nama_kita": "Kab. Lampung Selatan",
+   "cara": "kode beda"
+  },
+  "1804": {
+   "nama_dibi": "Lampung Timur",
+   "prov_dibi": "Lampung",
+   "kode": "1807",
+   "nama_kita": "Kab. Lampung Timur",
+   "cara": "kode beda"
+  },
+  "1805": {
+   "nama_dibi": "Lampung Tengah",
+   "prov_dibi": "Lampung",
+   "kode": "1802",
+   "nama_kita": "Kab. Lampung Tengah",
+   "cara": "kode beda"
+  },
+  "1806": {
+   "nama_dibi": "Lampung Utara",
+   "prov_dibi": "Lampung",
+   "kode": "1803",
+   "nama_kita": "Kab. Lampung Utara",
+   "cara": "kode beda"
+  },
+  "1807": {
+   "nama_dibi": "Way Kanan",
+   "prov_dibi": "Lampung",
+   "kode": "1808",
+   "nama_kita": "Kab. Way Kanan",
+   "cara": "kode beda"
+  },
+  "1808": {
+   "nama_dibi": "Tulang Bawang",
+   "prov_dibi": "Lampung",
+   "kode": "1805",
+   "nama_kita": "Kab. Tulang Bawang",
+   "cara": "kode beda"
+  },
+  "1809": {
+   "nama_dibi": "Pesawaran",
+   "prov_dibi": "Lampung",
+   "kode": "1809",
+   "nama_kita": "Kab. Pesawaran",
+   "cara": "kode sama"
+  },
+  "1810": {
+   "nama_dibi": "Pringsewu",
+   "prov_dibi": "Lampung",
+   "kode": "1810",
+   "nama_kita": "Kab. Pringsewu",
+   "cara": "kode sama"
+  },
+  "1811": {
+   "nama_dibi": "Mesuji",
+   "prov_dibi": "Lampung",
+   "kode": "1811",
+   "nama_kita": "Kab. Mesuji",
+   "cara": "kode sama"
+  },
+  "1812": {
+   "nama_dibi": "Tulang Bawang Barat",
+   "prov_dibi": "Lampung",
+   "kode": "1812",
+   "nama_kita": "Kab. Tulang Bawang Barat",
+   "cara": "kode sama"
+  },
+  "1813": {
+   "nama_dibi": "Pesisir Barat",
+   "prov_dibi": "Lampung",
+   "kode": "1813",
+   "nama_kita": "Kab. Pesisir Barat",
+   "cara": "kode sama"
+  },
+  "1871": {
+   "nama_dibi": "Kota Bandar Lampung",
+   "prov_dibi": "Lampung",
+   "kode": "1871",
+   "nama_kita": "Kota Bandar Lampung",
+   "cara": "kode sama"
+  },
+  "1872": {
+   "nama_dibi": "Kota Metro",
+   "prov_dibi": "Lampung",
+   "kode": "1872",
+   "nama_kita": "Kota Metro",
+   "cara": "kode sama"
+  },
+  "1901": {
+   "nama_dibi": "Bangka",
+   "prov_dibi": "Kepulauan Bangka Belitung",
+   "kode": "1901",
+   "nama_kita": "Kab. Bangka",
+   "cara": "kode sama"
+  },
+  "1902": {
+   "nama_dibi": "Belitung",
+   "prov_dibi": "Kepulauan Bangka Belitung",
+   "kode": "1902",
+   "nama_kita": "Kab. Belitung",
+   "cara": "kode sama"
+  },
+  "1903": {
+   "nama_dibi": "Bangka Barat",
+   "prov_dibi": "Kepulauan Bangka Belitung",
+   "kode": "1905",
+   "nama_kita": "Kab. Bangka Barat",
+   "cara": "kode beda"
+  },
+  "1904": {
+   "nama_dibi": "Bangka Tengah",
+   "prov_dibi": "Kepulauan Bangka Belitung",
+   "kode": "1904",
+   "nama_kita": "Kab. Bangka Tengah",
+   "cara": "kode sama"
+  },
+  "1905": {
+   "nama_dibi": "Bangka Selatan",
+   "prov_dibi": "Kepulauan Bangka Belitung",
+   "kode": "1903",
+   "nama_kita": "Kab. Bangka Selatan",
+   "cara": "kode beda"
+  },
+  "1906": {
+   "nama_dibi": "Belitung Timur",
+   "prov_dibi": "Kepulauan Bangka Belitung",
+   "kode": "1906",
+   "nama_kita": "Kab. Belitung Timur",
+   "cara": "kode sama"
+  },
+  "1971": {
+   "nama_dibi": "Kota Pangkal Pinang",
+   "prov_dibi": "Kepulauan Bangka Belitung",
+   "kode": "1971",
+   "nama_kita": "Kota Pangkal Pinang",
+   "cara": "kode sama"
+  },
+  "2101": {
+   "nama_dibi": "Karimun",
+   "prov_dibi": "Kepulauan Riau",
+   "kode": "2102",
+   "nama_kita": "Kab. Karimun",
+   "cara": "kode beda"
+  },
+  "2102": {
+   "nama_dibi": "Bintan",
+   "prov_dibi": "Kepulauan Riau",
+   "kode": "2101",
+   "nama_kita": "Kab. Bintan",
+   "cara": "kode beda"
+  },
+  "2103": {
+   "nama_dibi": "Natuna",
+   "prov_dibi": "Kepulauan Riau",
+   "kode": "2103",
+   "nama_kita": "Kab. Natuna",
+   "cara": "kode sama"
+  },
+  "2104": {
+   "nama_dibi": "Lingga",
+   "prov_dibi": "Kepulauan Riau",
+   "kode": "2104",
+   "nama_kita": "Kab. Lingga",
+   "cara": "kode sama"
+  },
+  "2105": {
+   "nama_dibi": "Kepulauan Anambas",
+   "prov_dibi": "Kepulauan Riau",
+   "kode": "2105",
+   "nama_kita": "Kab. Kepulauan Anambas",
+   "cara": "kode sama"
+  },
+  "2171": {
+   "nama_dibi": "Kota Batam",
+   "prov_dibi": "Kepulauan Riau",
+   "kode": "2171",
+   "nama_kita": "Kota Batam",
+   "cara": "kode sama"
+  },
+  "2172": {
+   "nama_dibi": "Kota Tanjung Pinang",
+   "prov_dibi": "Kepulauan Riau",
+   "kode": "2172",
+   "nama_kita": "Kota Tanjung Pinang",
+   "cara": "kode sama"
+  },
+  "3101": {
+   "nama_dibi": "Adm. Kep. Seribu",
+   "prov_dibi": "DKI Jakarta",
+   "kode": "3101",
+   "nama_kita": "Kab. Administrasi Kepulauan Seribu",
+   "cara": "kode sama"
+  },
+  "3171": {
+   "nama_dibi": "Kota Adm. Jakarta Selatan",
+   "prov_dibi": "DKI Jakarta",
+   "kode": "3174",
+   "nama_kita": "Kota Administrasi Jakarta Selatan",
+   "cara": "kode beda"
+  },
+  "3172": {
+   "nama_dibi": "Kota Adm. Jakarta Timur",
+   "prov_dibi": "DKI Jakarta",
+   "kode": "3175",
+   "nama_kita": "Kota Administrasi Jakarta Timur",
+   "cara": "kode beda"
+  },
+  "3173": {
+   "nama_dibi": "Kota Adm. Jakarta Pusat",
+   "prov_dibi": "DKI Jakarta",
+   "kode": "3171",
+   "nama_kita": "Kota Administrasi Jakarta Pusat",
+   "cara": "kode beda"
+  },
+  "3174": {
+   "nama_dibi": "Kota Adm. Jakarta Barat",
+   "prov_dibi": "DKI Jakarta",
+   "kode": "3173",
+   "nama_kita": "Kota Administrasi Jakarta Barat",
+   "cara": "kode beda"
+  },
+  "3175": {
+   "nama_dibi": "Kota Adm. Jakarta Utara",
+   "prov_dibi": "DKI Jakarta",
+   "kode": "3172",
+   "nama_kita": "Kota Administrasi Jakarta Utara ",
+   "cara": "kode beda"
+  },
+  "3201": {
+   "nama_dibi": "Bogor",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3201",
+   "nama_kita": "Kab. Bogor",
+   "cara": "kode sama"
+  },
+  "3202": {
+   "nama_dibi": "Sukabumi",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3202",
+   "nama_kita": "Kab. Sukabumi",
+   "cara": "kode sama"
+  },
+  "3203": {
+   "nama_dibi": "Cianjur",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3203",
+   "nama_kita": "Kab. Cianjur",
+   "cara": "kode sama"
+  },
+  "3204": {
+   "nama_dibi": "Bandung",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3204",
+   "nama_kita": "Kab. Bandung",
+   "cara": "kode sama"
+  },
+  "3205": {
+   "nama_dibi": "Garut",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3205",
+   "nama_kita": "Kab. Garut",
+   "cara": "kode sama"
+  },
+  "3206": {
+   "nama_dibi": "Tasikmalaya",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3206",
+   "nama_kita": "Kab. Tasikmalaya",
+   "cara": "kode sama"
+  },
+  "3207": {
+   "nama_dibi": "Ciamis",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3207",
+   "nama_kita": "Kab. Ciamis",
+   "cara": "kode sama"
+  },
+  "3208": {
+   "nama_dibi": "Kuningan",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3208",
+   "nama_kita": "Kab. Kuningan",
+   "cara": "kode sama"
+  },
+  "3209": {
+   "nama_dibi": "Cirebon",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3209",
+   "nama_kita": "Kab. Cirebon",
+   "cara": "kode sama"
+  },
+  "3210": {
+   "nama_dibi": "Majalengka",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3210",
+   "nama_kita": "Kab. Majalengka",
+   "cara": "kode sama"
+  },
+  "3211": {
+   "nama_dibi": "Sumedang",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3211",
+   "nama_kita": "Kab. Sumedang",
+   "cara": "kode sama"
+  },
+  "3212": {
+   "nama_dibi": "Indramayu",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3212",
+   "nama_kita": "Kab. Indramayu",
+   "cara": "kode sama"
+  },
+  "3213": {
+   "nama_dibi": "Subang",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3213",
+   "nama_kita": "Kab. Subang",
+   "cara": "kode sama"
+  },
+  "3214": {
+   "nama_dibi": "Purwakarta",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3214",
+   "nama_kita": "Kab. Purwakarta",
+   "cara": "kode sama"
+  },
+  "3215": {
+   "nama_dibi": "Karawang",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3215",
+   "nama_kita": "Kab. Karawang",
+   "cara": "kode sama"
+  },
+  "3216": {
+   "nama_dibi": "Bekasi",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3216",
+   "nama_kita": "Kab. Bekasi",
+   "cara": "kode sama"
+  },
+  "3217": {
+   "nama_dibi": "Bandung Barat",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3217",
+   "nama_kita": "Kab. Bandung Barat",
+   "cara": "kode sama"
+  },
+  "3218": {
+   "nama_dibi": "Pangandaran",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3218",
+   "nama_kita": "Kab. Pangandaran",
+   "cara": "kode sama"
+  },
+  "3271": {
+   "nama_dibi": "Kota Bogor",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3271",
+   "nama_kita": "Kota Bogor",
+   "cara": "kode sama"
+  },
+  "3272": {
+   "nama_dibi": "Kota Sukabumi",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3272",
+   "nama_kita": "Kota Sukabumi",
+   "cara": "kode sama"
+  },
+  "3273": {
+   "nama_dibi": "Kota Bandung",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3273",
+   "nama_kita": "Kota Bandung",
+   "cara": "kode sama"
+  },
+  "3274": {
+   "nama_dibi": "Kota Cirebon",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3274",
+   "nama_kita": "Kota Cirebon",
+   "cara": "kode sama"
+  },
+  "3275": {
+   "nama_dibi": "Kota Bekasi",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3275",
+   "nama_kita": "Kota Bekasi",
+   "cara": "kode sama"
+  },
+  "3276": {
+   "nama_dibi": "Kota Depok",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3276",
+   "nama_kita": "Kota Depok",
+   "cara": "kode sama"
+  },
+  "3277": {
+   "nama_dibi": "Kota Cimahi",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3277",
+   "nama_kita": "Kota Cimahi",
+   "cara": "kode sama"
+  },
+  "3278": {
+   "nama_dibi": "Kota Tasikmalaya",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3278",
+   "nama_kita": "Kota Tasikmalaya",
+   "cara": "kode sama"
+  },
+  "3279": {
+   "nama_dibi": "Kota Banjar",
+   "prov_dibi": "Jawa Barat",
+   "kode": "3279",
+   "nama_kita": "Kota Banjar",
+   "cara": "kode sama"
+  },
+  "3301": {
+   "nama_dibi": "Cilacap",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3301",
+   "nama_kita": "Kab. Cilacap",
+   "cara": "kode sama"
+  },
+  "3302": {
+   "nama_dibi": "Banyumas",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3302",
+   "nama_kita": "Kab. Banyumas",
+   "cara": "kode sama"
+  },
+  "3303": {
+   "nama_dibi": "Purbalingga",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3303",
+   "nama_kita": "Kab. Purbalingga",
+   "cara": "kode sama"
+  },
+  "3304": {
+   "nama_dibi": "Banjarnegara",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3304",
+   "nama_kita": "Kab. Banjarnegara",
+   "cara": "kode sama"
+  },
+  "3305": {
+   "nama_dibi": "Kebumen",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3305",
+   "nama_kita": "Kab. Kebumen",
+   "cara": "kode sama"
+  },
+  "3306": {
+   "nama_dibi": "Purworejo",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3306",
+   "nama_kita": "Kab. Purworejo",
+   "cara": "kode sama"
+  },
+  "3307": {
+   "nama_dibi": "Wonosobo",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3307",
+   "nama_kita": "Kab. Wonosobo",
+   "cara": "kode sama"
+  },
+  "3308": {
+   "nama_dibi": "Magelang",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3308",
+   "nama_kita": "Kab. Magelang",
+   "cara": "kode sama"
+  },
+  "3309": {
+   "nama_dibi": "Boyolali",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3309",
+   "nama_kita": "Kab. Boyolali",
+   "cara": "kode sama"
+  },
+  "3310": {
+   "nama_dibi": "Klaten",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3310",
+   "nama_kita": "Kab. Klaten",
+   "cara": "kode sama"
+  },
+  "3311": {
+   "nama_dibi": "Sukoharjo",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3311",
+   "nama_kita": "Kab. Sukoharjo",
+   "cara": "kode sama"
+  },
+  "3312": {
+   "nama_dibi": "Wonogiri",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3312",
+   "nama_kita": "Kab. Wonogiri",
+   "cara": "kode sama"
+  },
+  "3313": {
+   "nama_dibi": "Karanganyar",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3313",
+   "nama_kita": "Kab. Karanganyar",
+   "cara": "kode sama"
+  },
+  "3314": {
+   "nama_dibi": "Sragen",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3314",
+   "nama_kita": "Kab. Sragen",
+   "cara": "kode sama"
+  },
+  "3315": {
+   "nama_dibi": "Grobogan",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3315",
+   "nama_kita": "Kab. Grobogan",
+   "cara": "kode sama"
+  },
+  "3316": {
+   "nama_dibi": "Blora",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3316",
+   "nama_kita": "Kab. Blora",
+   "cara": "kode sama"
+  },
+  "3317": {
+   "nama_dibi": "Rembang",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3317",
+   "nama_kita": "Kab. Rembang",
+   "cara": "kode sama"
+  },
+  "3318": {
+   "nama_dibi": "Pati",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3318",
+   "nama_kita": "Kab. Pati",
+   "cara": "kode sama"
+  },
+  "3319": {
+   "nama_dibi": "Kudus",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3319",
+   "nama_kita": "Kab. Kudus",
+   "cara": "kode sama"
+  },
+  "3320": {
+   "nama_dibi": "Jepara",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3320",
+   "nama_kita": "Kab. Jepara",
+   "cara": "kode sama"
+  },
+  "3321": {
+   "nama_dibi": "Demak",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3321",
+   "nama_kita": "Kab. Demak",
+   "cara": "kode sama"
+  },
+  "3322": {
+   "nama_dibi": "Semarang",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3322",
+   "nama_kita": "Kab. Semarang",
+   "cara": "kode sama"
+  },
+  "3323": {
+   "nama_dibi": "Temanggung",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3323",
+   "nama_kita": "Kab. Temanggung",
+   "cara": "kode sama"
+  },
+  "3324": {
+   "nama_dibi": "Kendal",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3324",
+   "nama_kita": "Kab. Kendal",
+   "cara": "kode sama"
+  },
+  "3325": {
+   "nama_dibi": "Batang",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3325",
+   "nama_kita": "Kab. Batang",
+   "cara": "kode sama"
+  },
+  "3326": {
+   "nama_dibi": "Pekalongan",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3326",
+   "nama_kita": "Kab. Pekalongan",
+   "cara": "kode sama"
+  },
+  "3327": {
+   "nama_dibi": "Pemalang",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3327",
+   "nama_kita": "Kab. Pemalang",
+   "cara": "kode sama"
+  },
+  "3328": {
+   "nama_dibi": "Tegal",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3328",
+   "nama_kita": "Kab. Tegal",
+   "cara": "kode sama"
+  },
+  "3329": {
+   "nama_dibi": "Brebes",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3329",
+   "nama_kita": "Kab. Brebes",
+   "cara": "kode sama"
+  },
+  "3371": {
+   "nama_dibi": "Kota Magelang",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3371",
+   "nama_kita": "Kota Magelang",
+   "cara": "kode sama"
+  },
+  "3372": {
+   "nama_dibi": "Kota Surakarta",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3372",
+   "nama_kita": "Kota Surakarta",
+   "cara": "kode sama"
+  },
+  "3373": {
+   "nama_dibi": "Kota Salatiga",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3373",
+   "nama_kita": "Kota Salatiga",
+   "cara": "kode sama"
+  },
+  "3374": {
+   "nama_dibi": "Kota Semarang",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3374",
+   "nama_kita": "Kota Semarang",
+   "cara": "kode sama"
+  },
+  "3375": {
+   "nama_dibi": "Kota Pekalongan",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3375",
+   "nama_kita": "Kota Pekalongan",
+   "cara": "kode sama"
+  },
+  "3376": {
+   "nama_dibi": "Kota Tegal",
+   "prov_dibi": "Jawa Tengah",
+   "kode": "3376",
+   "nama_kita": "Kota Tegal",
+   "cara": "kode sama"
+  },
+  "3401": {
+   "nama_dibi": "Kulon Progo",
+   "prov_dibi": "Daerah Istimewa Yogyakarta",
+   "kode": "3401",
+   "nama_kita": "Kab. Kulon Progo",
+   "cara": "kode sama; alias provinsi: nama panjang DIY; kota.json/wilayah.py memakai 'DI Yogyakarta'"
+  },
+  "3402": {
+   "nama_dibi": "Bantul",
+   "prov_dibi": "Daerah Istimewa Yogyakarta",
+   "kode": "3402",
+   "nama_kita": "Kab. Bantul",
+   "cara": "kode sama; alias provinsi: nama panjang DIY; kota.json/wilayah.py memakai 'DI Yogyakarta'"
+  },
+  "3403": {
+   "nama_dibi": "Gunungkidul",
+   "prov_dibi": "Daerah Istimewa Yogyakarta",
+   "kode": "3403",
+   "nama_kita": "Kab. Gunungkidul",
+   "cara": "kode sama; alias provinsi: nama panjang DIY; kota.json/wilayah.py memakai 'DI Yogyakarta'"
+  },
+  "3404": {
+   "nama_dibi": "Sleman",
+   "prov_dibi": "Daerah Istimewa Yogyakarta",
+   "kode": "3404",
+   "nama_kita": "Kab. Sleman",
+   "cara": "kode sama; alias provinsi: nama panjang DIY; kota.json/wilayah.py memakai 'DI Yogyakarta'"
+  },
+  "3471": {
+   "nama_dibi": "Kota Yogyakarta",
+   "prov_dibi": "Daerah Istimewa Yogyakarta",
+   "kode": "3471",
+   "nama_kita": "Kota Yogyakarta",
+   "cara": "kode sama; alias provinsi: nama panjang DIY; kota.json/wilayah.py memakai 'DI Yogyakarta'"
+  },
+  "3501": {
+   "nama_dibi": "Pacitan",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3501",
+   "nama_kita": "Kab. Pacitan",
+   "cara": "kode sama"
+  },
+  "3502": {
+   "nama_dibi": "Ponorogo",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3502",
+   "nama_kita": "Kab. Ponorogo",
+   "cara": "kode sama"
+  },
+  "3503": {
+   "nama_dibi": "Trenggalek",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3503",
+   "nama_kita": "Kab. Trenggalek",
+   "cara": "kode sama"
+  },
+  "3504": {
+   "nama_dibi": "Tulungagung",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3504",
+   "nama_kita": "Kab. Tulungagung",
+   "cara": "kode sama"
+  },
+  "3505": {
+   "nama_dibi": "Blitar",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3505",
+   "nama_kita": "Kab. Blitar",
+   "cara": "kode sama"
+  },
+  "3506": {
+   "nama_dibi": "Kediri",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3506",
+   "nama_kita": "Kab. Kediri",
+   "cara": "kode sama"
+  },
+  "3507": {
+   "nama_dibi": "Malang",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3507",
+   "nama_kita": "Kab. Malang",
+   "cara": "kode sama"
+  },
+  "3508": {
+   "nama_dibi": "Lumajang",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3508",
+   "nama_kita": "Kab. Lumajang",
+   "cara": "kode sama"
+  },
+  "3509": {
+   "nama_dibi": "Jember",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3509",
+   "nama_kita": "Kab. Jember",
+   "cara": "kode sama"
+  },
+  "3510": {
+   "nama_dibi": "Banyuwangi",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3510",
+   "nama_kita": "Kab. Banyuwangi",
+   "cara": "kode sama"
+  },
+  "3511": {
+   "nama_dibi": "Bondowoso",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3511",
+   "nama_kita": "Kab. Bondowoso",
+   "cara": "kode sama"
+  },
+  "3512": {
+   "nama_dibi": "Situbondo",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3512",
+   "nama_kita": "Kab. Situbondo",
+   "cara": "kode sama"
+  },
+  "3513": {
+   "nama_dibi": "Probolinggo",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3513",
+   "nama_kita": "Kab. Probolinggo",
+   "cara": "kode sama"
+  },
+  "3514": {
+   "nama_dibi": "Pasuruan",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3514",
+   "nama_kita": "Kab. Pasuruan",
+   "cara": "kode sama"
+  },
+  "3515": {
+   "nama_dibi": "Sidoarjo",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3515",
+   "nama_kita": "Kab. Sidoarjo",
+   "cara": "kode sama"
+  },
+  "3516": {
+   "nama_dibi": "Mojokerto",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3516",
+   "nama_kita": "Kab. Mojokerto",
+   "cara": "kode sama"
+  },
+  "3517": {
+   "nama_dibi": "Jombang",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3517",
+   "nama_kita": "Kab. Jombang",
+   "cara": "kode sama"
+  },
+  "3518": {
+   "nama_dibi": "Nganjuk",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3518",
+   "nama_kita": "Kab. Nganjuk",
+   "cara": "kode sama"
+  },
+  "3519": {
+   "nama_dibi": "Madiun",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3519",
+   "nama_kita": "Kab. Madiun",
+   "cara": "kode sama"
+  },
+  "3520": {
+   "nama_dibi": "Magetan",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3520",
+   "nama_kita": "Kab. Magetan",
+   "cara": "kode sama"
+  },
+  "3521": {
+   "nama_dibi": "Ngawi",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3521",
+   "nama_kita": "Kab. Ngawi",
+   "cara": "kode sama"
+  },
+  "3522": {
+   "nama_dibi": "Bojonegoro",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3522",
+   "nama_kita": "Kab. Bojonegoro",
+   "cara": "kode sama"
+  },
+  "3523": {
+   "nama_dibi": "Tuban",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3523",
+   "nama_kita": "Kab. Tuban",
+   "cara": "kode sama"
+  },
+  "3524": {
+   "nama_dibi": "Lamongan",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3524",
+   "nama_kita": "Kab. Lamongan",
+   "cara": "kode sama"
+  },
+  "3525": {
+   "nama_dibi": "Gresik",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3525",
+   "nama_kita": "Kab. Gresik",
+   "cara": "kode sama"
+  },
+  "3526": {
+   "nama_dibi": "Bangkalan",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3526",
+   "nama_kita": "Kab. Bangkalan",
+   "cara": "kode sama"
+  },
+  "3527": {
+   "nama_dibi": "Sampang",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3527",
+   "nama_kita": "Kab. Sampang",
+   "cara": "kode sama"
+  },
+  "3528": {
+   "nama_dibi": "Pamekasan",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3528",
+   "nama_kita": "Kab. Pamekasan",
+   "cara": "kode sama"
+  },
+  "3529": {
+   "nama_dibi": "Sumenep",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3529",
+   "nama_kita": "Kab. Sumenep",
+   "cara": "kode sama"
+  },
+  "3571": {
+   "nama_dibi": "Kota Kediri",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3571",
+   "nama_kita": "Kota Kediri",
+   "cara": "kode sama"
+  },
+  "3572": {
+   "nama_dibi": "Kota Blitar",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3572",
+   "nama_kita": "Kota Blitar",
+   "cara": "kode sama"
+  },
+  "3573": {
+   "nama_dibi": "Kota Malang",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3573",
+   "nama_kita": "Kota Malang",
+   "cara": "kode sama"
+  },
+  "3574": {
+   "nama_dibi": "Kota Probolinggo",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3574",
+   "nama_kita": "Kota Probolinggo",
+   "cara": "kode sama"
+  },
+  "3575": {
+   "nama_dibi": "Kota Pasuruan",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3575",
+   "nama_kita": "Kota Pasuruan",
+   "cara": "kode sama"
+  },
+  "3576": {
+   "nama_dibi": "Kota Mojokerto",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3576",
+   "nama_kita": "Kota Mojokerto",
+   "cara": "kode sama"
+  },
+  "3577": {
+   "nama_dibi": "Kota Madiun",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3577",
+   "nama_kita": "Kota Madiun",
+   "cara": "kode sama"
+  },
+  "3578": {
+   "nama_dibi": "Kota Surabaya",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3578",
+   "nama_kita": "Kota Surabaya",
+   "cara": "kode sama"
+  },
+  "3579": {
+   "nama_dibi": "Kota Batu",
+   "prov_dibi": "Jawa Timur",
+   "kode": "3579",
+   "nama_kita": "Kota Batu",
+   "cara": "kode sama"
+  },
+  "3601": {
+   "nama_dibi": "Pandeglang",
+   "prov_dibi": "Banten",
+   "kode": "3601",
+   "nama_kita": "Kab. Pandeglang",
+   "cara": "kode sama"
+  },
+  "3602": {
+   "nama_dibi": "Lebak",
+   "prov_dibi": "Banten",
+   "kode": "3602",
+   "nama_kita": "Kab. Lebak",
+   "cara": "kode sama"
+  },
+  "3603": {
+   "nama_dibi": "Tangerang",
+   "prov_dibi": "Banten",
+   "kode": "3603",
+   "nama_kita": "Kab. Tangerang",
+   "cara": "kode sama"
+  },
+  "3604": {
+   "nama_dibi": "Serang",
+   "prov_dibi": "Banten",
+   "kode": "3604",
+   "nama_kita": "Kab. Serang",
+   "cara": "kode sama"
+  },
+  "3671": {
+   "nama_dibi": "Kota Tangerang",
+   "prov_dibi": "Banten",
+   "kode": "3671",
+   "nama_kita": "Kota Tangerang",
+   "cara": "kode sama"
+  },
+  "3672": {
+   "nama_dibi": "Kota Cilegon",
+   "prov_dibi": "Banten",
+   "kode": "3672",
+   "nama_kita": "Kota Cilegon",
+   "cara": "kode sama"
+  },
+  "3673": {
+   "nama_dibi": "Kota Serang",
+   "prov_dibi": "Banten",
+   "kode": "3673",
+   "nama_kita": "Kota Serang",
+   "cara": "kode sama"
+  },
+  "3674": {
+   "nama_dibi": "Kota Tangerang Selatan",
+   "prov_dibi": "Banten",
+   "kode": "3674",
+   "nama_kita": "Kota Tangerang Selatan",
+   "cara": "kode sama"
+  },
+  "5101": {
+   "nama_dibi": "Jembrana",
+   "prov_dibi": "Bali",
+   "kode": "5101",
+   "nama_kita": "Kab. Jembrana",
+   "cara": "kode sama"
+  },
+  "5102": {
+   "nama_dibi": "Tabanan",
+   "prov_dibi": "Bali",
+   "kode": "5102",
+   "nama_kita": "Kab. Tabanan",
+   "cara": "kode sama"
+  },
+  "5103": {
+   "nama_dibi": "Badung",
+   "prov_dibi": "Bali",
+   "kode": "5103",
+   "nama_kita": "Kab. Badung",
+   "cara": "kode sama"
+  },
+  "5104": {
+   "nama_dibi": "Gianyar",
+   "prov_dibi": "Bali",
+   "kode": "5104",
+   "nama_kita": "Kab. Gianyar",
+   "cara": "kode sama"
+  },
+  "5105": {
+   "nama_dibi": "Klungkung",
+   "prov_dibi": "Bali",
+   "kode": "5105",
+   "nama_kita": "Kab. Klungkung",
+   "cara": "kode sama"
+  },
+  "5106": {
+   "nama_dibi": "Bangli",
+   "prov_dibi": "Bali",
+   "kode": "5106",
+   "nama_kita": "Kab. Bangli",
+   "cara": "kode sama"
+  },
+  "5107": {
+   "nama_dibi": "Karangasem",
+   "prov_dibi": "Bali",
+   "kode": "5107",
+   "nama_kita": "Kab. Karangasem",
+   "cara": "kode sama"
+  },
+  "5108": {
+   "nama_dibi": "Buleleng",
+   "prov_dibi": "Bali",
+   "kode": "5108",
+   "nama_kita": "Kab. Buleleng",
+   "cara": "kode sama"
+  },
+  "5171": {
+   "nama_dibi": "Kota Denpasar",
+   "prov_dibi": "Bali",
+   "kode": "5171",
+   "nama_kita": "Kota Denpasar",
+   "cara": "kode sama"
+  },
+  "5201": {
+   "nama_dibi": "Lombok Barat",
+   "prov_dibi": "Nusa Tenggara Barat",
+   "kode": "5201",
+   "nama_kita": "Kab. Lombok Barat",
+   "cara": "kode sama"
+  },
+  "5202": {
+   "nama_dibi": "Lombok Tengah",
+   "prov_dibi": "Nusa Tenggara Barat",
+   "kode": "5202",
+   "nama_kita": "Kab. Lombok Tengah",
+   "cara": "kode sama"
+  },
+  "5203": {
+   "nama_dibi": "Lombok Timur",
+   "prov_dibi": "Nusa Tenggara Barat",
+   "kode": "5203",
+   "nama_kita": "Kab. Lombok Timur",
+   "cara": "kode sama"
+  },
+  "5204": {
+   "nama_dibi": "Sumbawa",
+   "prov_dibi": "Nusa Tenggara Barat",
+   "kode": "5204",
+   "nama_kita": "Kab. Sumbawa",
+   "cara": "kode sama"
+  },
+  "5205": {
+   "nama_dibi": "Dompu",
+   "prov_dibi": "Nusa Tenggara Barat",
+   "kode": "5205",
+   "nama_kita": "Kab. Dompu",
+   "cara": "kode sama"
+  },
+  "5206": {
+   "nama_dibi": "Bima",
+   "prov_dibi": "Nusa Tenggara Barat",
+   "kode": "5206",
+   "nama_kita": "Kab. Bima",
+   "cara": "kode sama"
+  },
+  "5207": {
+   "nama_dibi": "Sumbawa Barat",
+   "prov_dibi": "Nusa Tenggara Barat",
+   "kode": "5207",
+   "nama_kita": "Kab. Sumbawa Barat",
+   "cara": "kode sama"
+  },
+  "5208": {
+   "nama_dibi": "Lombok Utara",
+   "prov_dibi": "Nusa Tenggara Barat",
+   "kode": "5208",
+   "nama_kita": "Kab. Lombok Utara",
+   "cara": "kode sama"
+  },
+  "5271": {
+   "nama_dibi": "Kota Mataram",
+   "prov_dibi": "Nusa Tenggara Barat",
+   "kode": "5271",
+   "nama_kita": "Kota Mataram",
+   "cara": "kode sama"
+  },
+  "5272": {
+   "nama_dibi": "Kota Bima",
+   "prov_dibi": "Nusa Tenggara Barat",
+   "kode": "5272",
+   "nama_kita": "Kota Bima",
+   "cara": "kode sama"
+  },
+  "5301": {
+   "nama_dibi": "Sumba Barat",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5312",
+   "nama_kita": "Kab. Sumba Barat",
+   "cara": "kode beda"
+  },
+  "5302": {
+   "nama_dibi": "Sumba Timur",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5311",
+   "nama_kita": "Kab. Sumba Timur",
+   "cara": "kode beda"
+  },
+  "5303": {
+   "nama_dibi": "Kupang",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5301",
+   "nama_kita": "Kab. Kupang",
+   "cara": "kode beda"
+  },
+  "5304": {
+   "nama_dibi": "Timor Tengah Selatan",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5302",
+   "nama_kita": "Kab. Timor Tengah Selatan",
+   "cara": "kode beda"
+  },
+  "5305": {
+   "nama_dibi": "Timor Tengah Utara",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5303",
+   "nama_kita": "Kab. Timor Tengah Utara",
+   "cara": "kode beda"
+  },
+  "5306": {
+   "nama_dibi": "Belu",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5304",
+   "nama_kita": "Kab. Belu",
+   "cara": "kode beda"
+  },
+  "5307": {
+   "nama_dibi": "Alor",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5305",
+   "nama_kita": "Kab. Alor",
+   "cara": "kode beda"
+  },
+  "5308": {
+   "nama_dibi": "Lembata",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5313",
+   "nama_kita": "Kab. Lembata",
+   "cara": "kode beda"
+  },
+  "5309": {
+   "nama_dibi": "Flores Timur",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5306",
+   "nama_kita": "Kab. Flores Timur",
+   "cara": "kode beda"
+  },
+  "5310": {
+   "nama_dibi": "Sikka",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5307",
+   "nama_kita": "Kab. Sikka",
+   "cara": "kode beda"
+  },
+  "5311": {
+   "nama_dibi": "Ende",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5308",
+   "nama_kita": "Kab. Ende",
+   "cara": "kode beda"
+  },
+  "5312": {
+   "nama_dibi": "Ngada",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5309",
+   "nama_kita": "Kab. Ngada",
+   "cara": "kode beda"
+  },
+  "5313": {
+   "nama_dibi": "Manggarai",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5310",
+   "nama_kita": "Kab. Manggarai",
+   "cara": "kode beda"
+  },
+  "5314": {
+   "nama_dibi": "Rote Ndao",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5314",
+   "nama_kita": "Kab. Rote Ndao",
+   "cara": "kode sama"
+  },
+  "5315": {
+   "nama_dibi": "Manggarai Barat",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5315",
+   "nama_kita": "Kab. Manggarai Barat",
+   "cara": "kode sama"
+  },
+  "5316": {
+   "nama_dibi": "Sumba Tengah",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5317",
+   "nama_kita": "Kab. Sumba Tengah",
+   "cara": "kode beda"
+  },
+  "5317": {
+   "nama_dibi": "Sumba Barat Daya",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5318",
+   "nama_kita": "Kab. Sumba Barat Daya",
+   "cara": "kode beda"
+  },
+  "5318": {
+   "nama_dibi": "Nagekeo",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5316",
+   "nama_kita": "Kab. Nagekeo",
+   "cara": "kode beda"
+  },
+  "5319": {
+   "nama_dibi": "Manggarai Timur",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5319",
+   "nama_kita": "Kab. Manggarai Timur",
+   "cara": "kode sama"
+  },
+  "5320": {
+   "nama_dibi": "Sabu Raijua",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5320",
+   "nama_kita": "Kab. Sabu Raijua",
+   "cara": "kode sama"
+  },
+  "5321": {
+   "nama_dibi": "Malaka",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5321",
+   "nama_kita": "Kab. Malaka",
+   "cara": "kode sama"
+  },
+  "5371": {
+   "nama_dibi": "Kota Kupang",
+   "prov_dibi": "Nusa Tenggara Timur",
+   "kode": "5371",
+   "nama_kita": "Kota Kupang",
+   "cara": "kode sama"
+  },
+  "6101": {
+   "nama_dibi": "Sambas",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6101",
+   "nama_kita": "Kab. Sambas",
+   "cara": "kode sama"
+  },
+  "6102": {
+   "nama_dibi": "Bengkayang",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6107",
+   "nama_kita": "Kab. Bengkayang",
+   "cara": "kode beda"
+  },
+  "6103": {
+   "nama_dibi": "Landak",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6108",
+   "nama_kita": "Kab. Landak",
+   "cara": "kode beda"
+  },
+  "6104": {
+   "nama_dibi": "Mempawah",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6102",
+   "nama_kita": "Kab. Mempawah",
+   "cara": "kode beda"
+  },
+  "6105": {
+   "nama_dibi": "Sanggau",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6103",
+   "nama_kita": "Kab. Sanggau",
+   "cara": "kode beda"
+  },
+  "6106": {
+   "nama_dibi": "Ketapang",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6104",
+   "nama_kita": "Kab. Ketapang",
+   "cara": "kode beda"
+  },
+  "6107": {
+   "nama_dibi": "Sintang",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6105",
+   "nama_kita": "Kab. Sintang",
+   "cara": "kode beda"
+  },
+  "6108": {
+   "nama_dibi": "Kapuas Hulu",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6106",
+   "nama_kita": "Kab. Kapuas Hulu",
+   "cara": "kode beda"
+  },
+  "6109": {
+   "nama_dibi": "Sekadau",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6109",
+   "nama_kita": "Kab. Sekadau",
+   "cara": "kode sama"
+  },
+  "6110": {
+   "nama_dibi": "Melawi",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6110",
+   "nama_kita": "Kab. Melawi",
+   "cara": "kode sama"
+  },
+  "6111": {
+   "nama_dibi": "Kayong Utara",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6111",
+   "nama_kita": "Kab. Kayong Utara",
+   "cara": "kode sama"
+  },
+  "6112": {
+   "nama_dibi": "Kubu Raya",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6112",
+   "nama_kita": "Kab. Kubu Raya",
+   "cara": "kode sama"
+  },
+  "6171": {
+   "nama_dibi": "Kota Pontianak",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6171",
+   "nama_kita": "Kota Pontianak",
+   "cara": "kode sama"
+  },
+  "6172": {
+   "nama_dibi": "Kota Singkawang",
+   "prov_dibi": "Kalimantan Barat",
+   "kode": "6172",
+   "nama_kita": "Kota Singkawang",
+   "cara": "kode sama"
+  },
+  "6201": {
+   "nama_dibi": "Kotawaringin Barat",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6201",
+   "nama_kita": "Kab. Kotawaringin Barat",
+   "cara": "kode sama"
+  },
+  "6202": {
+   "nama_dibi": "Kotawaringin Timur",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6202",
+   "nama_kita": "Kab. Kotawaringin Timur",
+   "cara": "kode sama"
+  },
+  "6203": {
+   "nama_dibi": "Kapuas",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6203",
+   "nama_kita": "Kab. Kapuas",
+   "cara": "kode sama"
+  },
+  "6204": {
+   "nama_dibi": "Barito Selatan",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6204",
+   "nama_kita": "Kab. Barito Selatan",
+   "cara": "kode sama"
+  },
+  "6205": {
+   "nama_dibi": "Barito Utara",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6205",
+   "nama_kita": "Kab. Barito Utara",
+   "cara": "kode sama"
+  },
+  "6206": {
+   "nama_dibi": "Sukamara",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6208",
+   "nama_kita": "Kab. Sukamara",
+   "cara": "kode beda"
+  },
+  "6207": {
+   "nama_dibi": "Lamandau",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6209",
+   "nama_kita": "Kab. Lamandau",
+   "cara": "kode beda"
+  },
+  "6208": {
+   "nama_dibi": "Seruyan",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6207",
+   "nama_kita": "Kab. Seruyan",
+   "cara": "kode beda"
+  },
+  "6209": {
+   "nama_dibi": "Katingan",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6206",
+   "nama_kita": "Kab. Katingan",
+   "cara": "kode beda"
+  },
+  "6210": {
+   "nama_dibi": "Pulang Pisau",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6211",
+   "nama_kita": "Kab. Pulang Pisau",
+   "cara": "kode beda"
+  },
+  "6211": {
+   "nama_dibi": "Gunung Mas",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6210",
+   "nama_kita": "Kab. Gunung Mas",
+   "cara": "kode beda"
+  },
+  "6212": {
+   "nama_dibi": "Barito Timur",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6213",
+   "nama_kita": "Kab. Barito Timur",
+   "cara": "kode beda"
+  },
+  "6213": {
+   "nama_dibi": "Murung Raya",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6212",
+   "nama_kita": "Kab. Murung Raya",
+   "cara": "kode beda"
+  },
+  "6271": {
+   "nama_dibi": "Kota Palangkaraya",
+   "prov_dibi": "Kalimantan Tengah",
+   "kode": "6271",
+   "nama_kita": "Kota Palangkaraya",
+   "cara": "kode sama"
+  },
+  "6301": {
+   "nama_dibi": "Tanah Laut",
+   "prov_dibi": "Kalimantan Selatan",
+   "kode": "6301",
+   "nama_kita": "Kab. Tanah Laut",
+   "cara": "kode sama"
+  },
+  "6302": {
+   "nama_dibi": "Kotabaru",
+   "prov_dibi": "Kalimantan Selatan",
+   "kode": "6302",
+   "nama_kita": "Kab. Kotabaru",
+   "cara": "kode sama"
+  },
+  "6303": {
+   "nama_dibi": "Banjar",
+   "prov_dibi": "Kalimantan Selatan",
+   "kode": "6303",
+   "nama_kita": "Kab. Banjar",
+   "cara": "kode sama"
+  },
+  "6304": {
+   "nama_dibi": "Barito Kuala",
+   "prov_dibi": "Kalimantan Selatan",
+   "kode": "6304",
+   "nama_kita": "Kab. Barito Kuala",
+   "cara": "kode sama"
+  },
+  "6305": {
+   "nama_dibi": "Tapin",
+   "prov_dibi": "Kalimantan Selatan",
+   "kode": "6305",
+   "nama_kita": "Kab. Tapin",
+   "cara": "kode sama"
+  },
+  "6306": {
+   "nama_dibi": "Hulu Sungai Selatan",
+   "prov_dibi": "Kalimantan Selatan",
+   "kode": "6306",
+   "nama_kita": "Kab. Hulu Sungai Selatan",
+   "cara": "kode sama"
+  },
+  "6307": {
+   "nama_dibi": "Hulu Sungai Tengah",
+   "prov_dibi": "Kalimantan Selatan",
+   "kode": "6307",
+   "nama_kita": "Kab. Hulu Sungai Tengah",
+   "cara": "kode sama"
+  },
+  "6308": {
+   "nama_dibi": "Hulu Sungai Utara",
+   "prov_dibi": "Kalimantan Selatan",
+   "kode": "6308",
+   "nama_kita": "Kab. Hulu Sungai Utara",
+   "cara": "kode sama"
+  },
+  "6309": {
+   "nama_dibi": "Tabalong",
+   "prov_dibi": "Kalimantan Selatan",
+   "kode": "6309",
+   "nama_kita": "Kab. Tabalong",
+   "cara": "kode sama"
+  },
+  "6310": {
+   "nama_dibi": "Tanah Bumbu",
+   "prov_dibi": "Kalimantan Selatan",
+   "kode": "6310",
+   "nama_kita": "Kab. Tanah Bumbu",
+   "cara": "kode sama"
+  },
+  "6311": {
+   "nama_dibi": "Balangan",
+   "prov_dibi": "Kalimantan Selatan",
+   "kode": "6311",
+   "nama_kita": "Kab. Balangan",
+   "cara": "kode sama"
+  },
+  "6371": {
+   "nama_dibi": "Kota Banjarmasin",
+   "prov_dibi": "Kalimantan Selatan",
+   "kode": "6371",
+   "nama_kita": "Kota Banjarmasin",
+   "cara": "kode sama"
+  },
+  "6372": {
+   "nama_dibi": "Kota Banjarbaru",
+   "prov_dibi": "Kalimantan Selatan",
+   "kode": "6372",
+   "nama_kita": "Kota Banjarbaru",
+   "cara": "kode sama"
+  },
+  "6401": {
+   "nama_dibi": "Paser",
+   "prov_dibi": "Kalimantan Timur",
+   "kode": "6401",
+   "nama_kita": "Kab. Paser",
+   "cara": "kode sama"
+  },
+  "6402": {
+   "nama_dibi": "Kutai Barat",
+   "prov_dibi": "Kalimantan Timur",
+   "kode": "6407",
+   "nama_kita": "Kab. Kutai Barat",
+   "cara": "kode beda"
+  },
+  "6403": {
+   "nama_dibi": "Kutai Kartanegara",
+   "prov_dibi": "Kalimantan Timur",
+   "kode": "6402",
+   "nama_kita": "Kab. Kutai Kartanegara",
+   "cara": "kode beda"
+  },
+  "6404": {
+   "nama_dibi": "Kutai Timur",
+   "prov_dibi": "Kalimantan Timur",
+   "kode": "6408",
+   "nama_kita": "Kab. Kutai Timur",
+   "cara": "kode beda"
+  },
+  "6405": {
+   "nama_dibi": "Berau",
+   "prov_dibi": "Kalimantan Timur",
+   "kode": "6403",
+   "nama_kita": "Kab. Berau",
+   "cara": "kode beda"
+  },
+  "6409": {
+   "nama_dibi": "Penajam Paser Utara",
+   "prov_dibi": "Kalimantan Timur",
+   "kode": "6409",
+   "nama_kita": "Kab. Penajam Paser Utara",
+   "cara": "kode sama"
+  },
+  "6411": {
+   "nama_dibi": "Mahakam Ulu",
+   "prov_dibi": "Kalimantan Timur",
+   "kode": "6411",
+   "nama_kita": "Kab. Mahakam Ulu",
+   "cara": "kode sama"
+  },
+  "6471": {
+   "nama_dibi": "Kota Balikpapan",
+   "prov_dibi": "Kalimantan Timur",
+   "kode": "6471",
+   "nama_kita": "Kota Balikpapan",
+   "cara": "kode sama"
+  },
+  "6472": {
+   "nama_dibi": "Kota Samarinda",
+   "prov_dibi": "Kalimantan Timur",
+   "kode": "6472",
+   "nama_kita": "Kota Samarinda",
+   "cara": "kode sama"
+  },
+  "6474": {
+   "nama_dibi": "Kota Bontang",
+   "prov_dibi": "Kalimantan Timur",
+   "kode": "6474",
+   "nama_kita": "Kota Bontang",
+   "cara": "kode sama"
+  },
+  "6501": {
+   "nama_dibi": "Malinau",
+   "prov_dibi": "Kalimantan Utara",
+   "kode": "6502",
+   "nama_kita": "Kab. Malinau",
+   "cara": "kode beda"
+  },
+  "6502": {
+   "nama_dibi": "Bulungan",
+   "prov_dibi": "Kalimantan Utara",
+   "kode": "6501",
+   "nama_kita": "Kab. Bulungan",
+   "cara": "kode beda"
+  },
+  "6503": {
+   "nama_dibi": "Tana Tidung",
+   "prov_dibi": "Kalimantan Utara",
+   "kode": "6504",
+   "nama_kita": "Kab. Tana Tidung",
+   "cara": "kode beda"
+  },
+  "6504": {
+   "nama_dibi": "Nunukan",
+   "prov_dibi": "Kalimantan Utara",
+   "kode": "6503",
+   "nama_kita": "Kab. Nunukan",
+   "cara": "kode beda"
+  },
+  "6571": {
+   "nama_dibi": "Kota Tarakan",
+   "prov_dibi": "Kalimantan Utara",
+   "kode": "6571",
+   "nama_kita": "Kota Tarakan",
+   "cara": "kode sama"
+  },
+  "7101": {
+   "nama_dibi": "Bolaang Mongondow",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7101",
+   "nama_kita": "Kab. Bolaang Mongondow",
+   "cara": "kode sama"
+  },
+  "7102": {
+   "nama_dibi": "Minahasa",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7102",
+   "nama_kita": "Kab. Minahasa",
+   "cara": "kode sama"
+  },
+  "7103": {
+   "nama_dibi": "Kepulauan Sangihe",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7103",
+   "nama_kita": "Kab. Kepulauan Sangihe",
+   "cara": "kode sama"
+  },
+  "7104": {
+   "nama_dibi": "Kepulauan Talaud",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7104",
+   "nama_kita": "Kab. Kepulauan Talaud",
+   "cara": "kode sama"
+  },
+  "7105": {
+   "nama_dibi": "Minahasa Selatan",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7105",
+   "nama_kita": "Kab. Minahasa Selatan",
+   "cara": "kode sama"
+  },
+  "7106": {
+   "nama_dibi": "Minahasa Utara",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7106",
+   "nama_kita": "Kab. Minahasa Utara",
+   "cara": "kode sama"
+  },
+  "7107": {
+   "nama_dibi": "Bolaang Mongondow Utara",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7108",
+   "nama_kita": "Kab. Bolaang Mongondow Utara",
+   "cara": "kode beda"
+  },
+  "7108": {
+   "nama_dibi": "Kep. Siau Tagulandang Biaro",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7109",
+   "nama_kita": "Kab. Kep. Siau Tagulandang Biaro",
+   "cara": "kode beda"
+  },
+  "7109": {
+   "nama_dibi": "Minahasa Tenggara",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7107",
+   "nama_kita": "Kab. Minahasa Tenggara",
+   "cara": "kode beda"
+  },
+  "7110": {
+   "nama_dibi": "Bolaang Mongondow Selatan",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7111",
+   "nama_kita": "Kab. Bolaang Mongondow Selatan",
+   "cara": "kode beda"
+  },
+  "7111": {
+   "nama_dibi": "Bolaang Mongondow Timur",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7110",
+   "nama_kita": "Kab. Bolaang Mongondow Timur",
+   "cara": "kode beda"
+  },
+  "7171": {
+   "nama_dibi": "Kota Manado",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7171",
+   "nama_kita": "Kota Manado",
+   "cara": "kode sama"
+  },
+  "7172": {
+   "nama_dibi": "Kota Bitung",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7172",
+   "nama_kita": "Kota Bitung",
+   "cara": "kode sama"
+  },
+  "7173": {
+   "nama_dibi": "Kota Tomohon",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7173",
+   "nama_kita": "Kota Tomohon",
+   "cara": "kode sama"
+  },
+  "7174": {
+   "nama_dibi": "Kota Kotamobagu",
+   "prov_dibi": "Sulawesi Utara",
+   "kode": "7174",
+   "nama_kita": "Kota Kotamobagu",
+   "cara": "kode sama"
+  },
+  "7201": {
+   "nama_dibi": "Banggai Kepulauan",
+   "prov_dibi": "Sulawesi Tengah",
+   "kode": "7207",
+   "nama_kita": "Kab. Banggai Kepulauan",
+   "cara": "kode beda"
+  },
+  "7202": {
+   "nama_dibi": "Banggai",
+   "prov_dibi": "Sulawesi Tengah",
+   "kode": "7201",
+   "nama_kita": "Kab. Banggai",
+   "cara": "kode beda"
+  },
+  "7203": {
+   "nama_dibi": "Morowali",
+   "prov_dibi": "Sulawesi Tengah",
+   "kode": "7206",
+   "nama_kita": "Kab. Morowali",
+   "cara": "kode beda"
+  },
+  "7204": {
+   "nama_dibi": "Poso",
+   "prov_dibi": "Sulawesi Tengah",
+   "kode": "7202",
+   "nama_kita": "Kab. Poso",
+   "cara": "kode beda"
+  },
+  "7205": {
+   "nama_dibi": "Donggala",
+   "prov_dibi": "Sulawesi Tengah",
+   "kode": "7203",
+   "nama_kita": "Kab. Donggala",
+   "cara": "kode beda"
+  },
+  "7206": {
+   "nama_dibi": "Toli Toli",
+   "prov_dibi": "Sulawesi Tengah",
+   "kode": "7204",
+   "nama_kita": "Kab. Toli-Toli",
+   "cara": "kode beda"
+  },
+  "7207": {
+   "nama_dibi": "Buol",
+   "prov_dibi": "Sulawesi Tengah",
+   "kode": "7205",
+   "nama_kita": "Kab. Buol",
+   "cara": "kode beda"
+  },
+  "7208": {
+   "nama_dibi": "Parigi Moutong",
+   "prov_dibi": "Sulawesi Tengah",
+   "kode": "7208",
+   "nama_kita": "Kab. Parigi Moutong",
+   "cara": "kode sama"
+  },
+  "7209": {
+   "nama_dibi": "Tojo Una Una",
+   "prov_dibi": "Sulawesi Tengah",
+   "kode": "7209",
+   "nama_kita": "Kab. Tojo Una Una",
+   "cara": "kode sama"
+  },
+  "7210": {
+   "nama_dibi": "Sigi",
+   "prov_dibi": "Sulawesi Tengah",
+   "kode": "7210",
+   "nama_kita": "Kab. Sigi",
+   "cara": "kode sama"
+  },
+  "7211": {
+   "nama_dibi": "Banggai Laut",
+   "prov_dibi": "Sulawesi Tengah",
+   "kode": "7211",
+   "nama_kita": "Kab. Banggai Laut",
+   "cara": "kode sama"
+  },
+  "7212": {
+   "nama_dibi": "Morowali Utara",
+   "prov_dibi": "Sulawesi Tengah",
+   "kode": "7212",
+   "nama_kita": "Kab. Morowali Utara",
+   "cara": "kode sama"
+  },
+  "7271": {
+   "nama_dibi": "Kota Palu",
+   "prov_dibi": "Sulawesi Tengah",
+   "kode": "7271",
+   "nama_kita": "Kota Palu",
+   "cara": "kode sama"
+  },
+  "7301": {
+   "nama_dibi": "Kepulauan Selayar",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7301",
+   "nama_kita": "Kab. Kepulauan Selayar",
+   "cara": "kode sama"
+  },
+  "7302": {
+   "nama_dibi": "Bulukumba",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7302",
+   "nama_kita": "Kab. Bulukumba",
+   "cara": "kode sama"
+  },
+  "7303": {
+   "nama_dibi": "Bantaeng",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7303",
+   "nama_kita": "Kab. Bantaeng",
+   "cara": "kode sama"
+  },
+  "7304": {
+   "nama_dibi": "Jeneponto",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7304",
+   "nama_kita": "Kab. Jeneponto",
+   "cara": "kode sama"
+  },
+  "7305": {
+   "nama_dibi": "Takalar",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7305",
+   "nama_kita": "Kab. Takalar",
+   "cara": "kode sama"
+  },
+  "7306": {
+   "nama_dibi": "Gowa",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7306",
+   "nama_kita": "Kab. Gowa",
+   "cara": "kode sama"
+  },
+  "7307": {
+   "nama_dibi": "Sinjai",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7307",
+   "nama_kita": "Kab. Sinjai",
+   "cara": "kode sama"
+  },
+  "7308": {
+   "nama_dibi": "Maros",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7309",
+   "nama_kita": "Kab. Maros",
+   "cara": "kode beda"
+  },
+  "7309": {
+   "nama_dibi": "Pangkajene Dan Kepulauan",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7310",
+   "nama_kita": "Kab. Pangkajene dan Kepulauan",
+   "cara": "kode beda"
+  },
+  "7310": {
+   "nama_dibi": "Barru",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7311",
+   "nama_kita": "Kab. Barru",
+   "cara": "kode beda"
+  },
+  "7311": {
+   "nama_dibi": "Bone",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7308",
+   "nama_kita": "Kab. Bone",
+   "cara": "kode beda"
+  },
+  "7312": {
+   "nama_dibi": "Soppeng",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7312",
+   "nama_kita": "Kab. Soppeng",
+   "cara": "kode sama"
+  },
+  "7313": {
+   "nama_dibi": "Wajo",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7313",
+   "nama_kita": "Kab. Wajo",
+   "cara": "kode sama"
+  },
+  "7314": {
+   "nama_dibi": "Sidenreng Rappang",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7314",
+   "nama_kita": "Kab. Sidenreng Rappang",
+   "cara": "kode sama"
+  },
+  "7315": {
+   "nama_dibi": "Pinrang",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7315",
+   "nama_kita": "Kab. Pinrang",
+   "cara": "kode sama"
+  },
+  "7316": {
+   "nama_dibi": "Enrekang",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7316",
+   "nama_kita": "Kab. Enrekang",
+   "cara": "kode sama"
+  },
+  "7317": {
+   "nama_dibi": "Luwu",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7317",
+   "nama_kita": "Kab. Luwu",
+   "cara": "kode sama"
+  },
+  "7318": {
+   "nama_dibi": "Tana Toraja",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7318",
+   "nama_kita": "Kab. Tana Toraja",
+   "cara": "kode sama"
+  },
+  "7322": {
+   "nama_dibi": "Luwu Utara",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7322",
+   "nama_kita": "Kab. Luwu Utara",
+   "cara": "kode sama"
+  },
+  "7325": {
+   "nama_dibi": "Luwu Timur",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7324",
+   "nama_kita": "Kab. Luwu Timur",
+   "cara": "kode beda"
+  },
+  "7326": {
+   "nama_dibi": "Toraja Utara",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7326",
+   "nama_kita": "Kab. Toraja Utara",
+   "cara": "kode sama"
+  },
+  "7371": {
+   "nama_dibi": "Kota Makassar",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7371",
+   "nama_kita": "Kota Makassar",
+   "cara": "kode sama"
+  },
+  "7372": {
+   "nama_dibi": "Kota Parepare",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7372",
+   "nama_kita": "Kota Parepare",
+   "cara": "kode sama"
+  },
+  "7373": {
+   "nama_dibi": "Kota Palopo",
+   "prov_dibi": "Sulawesi Selatan",
+   "kode": "7373",
+   "nama_kita": "Kota Palopo",
+   "cara": "kode sama"
+  },
+  "7401": {
+   "nama_dibi": "Buton",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7404",
+   "nama_kita": "Kab. Buton",
+   "cara": "kode beda"
+  },
+  "7402": {
+   "nama_dibi": "Muna",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7403",
+   "nama_kita": "Kab. Muna",
+   "cara": "kode beda"
+  },
+  "7403": {
+   "nama_dibi": "Konawe",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7402",
+   "nama_kita": "Kab. Konawe",
+   "cara": "kode beda"
+  },
+  "7404": {
+   "nama_dibi": "Kolaka",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7401",
+   "nama_kita": "Kab. Kolaka",
+   "cara": "kode beda"
+  },
+  "7405": {
+   "nama_dibi": "Konawe Selatan",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7405",
+   "nama_kita": "Kab. Konawe Selatan",
+   "cara": "kode sama"
+  },
+  "7406": {
+   "nama_dibi": "Bombana",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7406",
+   "nama_kita": "Kab. Bombana",
+   "cara": "kode sama"
+  },
+  "7407": {
+   "nama_dibi": "Wakatobi",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7407",
+   "nama_kita": "Kab. Wakatobi",
+   "cara": "kode sama"
+  },
+  "7408": {
+   "nama_dibi": "Kolaka Utara",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7408",
+   "nama_kita": "Kab. Kolaka Utara",
+   "cara": "kode sama"
+  },
+  "7409": {
+   "nama_dibi": "Buton Utara",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7410",
+   "nama_kita": "Kab. Buton Utara",
+   "cara": "kode beda"
+  },
+  "7410": {
+   "nama_dibi": "Konawe Utara",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7409",
+   "nama_kita": "Kab. Konawe Utara",
+   "cara": "kode beda"
+  },
+  "7411": {
+   "nama_dibi": "Kolaka Timur",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7411",
+   "nama_kita": "Kab. Kolaka Timur",
+   "cara": "kode sama"
+  },
+  "7412": {
+   "nama_dibi": "Konawe Kepulauan",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7412",
+   "nama_kita": "Kab. Konawe Kepulauan",
+   "cara": "kode sama"
+  },
+  "7413": {
+   "nama_dibi": "Muna Barat",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7413",
+   "nama_kita": "Kab. Muna Barat",
+   "cara": "kode sama"
+  },
+  "7414": {
+   "nama_dibi": "Buton Tengah",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7414",
+   "nama_kita": "Kab. Buton Tengah",
+   "cara": "kode sama"
+  },
+  "7415": {
+   "nama_dibi": "Buton Selatan",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7415",
+   "nama_kita": "Kab. Buton Selatan",
+   "cara": "kode sama"
+  },
+  "7471": {
+   "nama_dibi": "Kota Kendari",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7471",
+   "nama_kita": "Kota Kendari",
+   "cara": "kode sama"
+  },
+  "7472": {
+   "nama_dibi": "Kota Bau Bau",
+   "prov_dibi": "Sulawesi Tenggara",
+   "kode": "7472",
+   "nama_kita": "Kota Bau Bau",
+   "cara": "kode sama"
+  },
+  "7501": {
+   "nama_dibi": "Boalemo",
+   "prov_dibi": "Gorontalo",
+   "kode": "7502",
+   "nama_kita": "Kab. Boalemo",
+   "cara": "kode beda"
+  },
+  "7502": {
+   "nama_dibi": "Gorontalo",
+   "prov_dibi": "Gorontalo",
+   "kode": "7501",
+   "nama_kita": "Kab. Gorontalo",
+   "cara": "kode beda"
+  },
+  "7503": {
+   "nama_dibi": "Pohuwato",
+   "prov_dibi": "Gorontalo",
+   "kode": "7504",
+   "nama_kita": "Kab. Pohuwato",
+   "cara": "kode beda"
+  },
+  "7504": {
+   "nama_dibi": "Bone Bolango",
+   "prov_dibi": "Gorontalo",
+   "kode": "7503",
+   "nama_kita": "Kab. Bone Bolango",
+   "cara": "kode beda"
+  },
+  "7505": {
+   "nama_dibi": "Gorontalo Utara",
+   "prov_dibi": "Gorontalo",
+   "kode": "7505",
+   "nama_kita": "Kab. Gorontalo Utara",
+   "cara": "kode sama"
+  },
+  "7571": {
+   "nama_dibi": "Kota Gorontalo",
+   "prov_dibi": "Gorontalo",
+   "kode": "7571",
+   "nama_kita": "Kota Gorontalo",
+   "cara": "kode sama"
+  },
+  "7601": {
+   "nama_dibi": "Majene",
+   "prov_dibi": "Sulawesi Barat",
+   "kode": "7605",
+   "nama_kita": "Kab. Majene",
+   "cara": "kode beda"
+  },
+  "7602": {
+   "nama_dibi": "Polewali Mandar",
+   "prov_dibi": "Sulawesi Barat",
+   "kode": "7604",
+   "nama_kita": "Kab. Polewali Mandar",
+   "cara": "kode beda"
+  },
+  "7603": {
+   "nama_dibi": "Mamasa",
+   "prov_dibi": "Sulawesi Barat",
+   "kode": "7603",
+   "nama_kita": "Kab. Mamasa",
+   "cara": "kode sama"
+  },
+  "7604": {
+   "nama_dibi": "Mamuju",
+   "prov_dibi": "Sulawesi Barat",
+   "kode": "7602",
+   "nama_kita": "Kab. Mamuju",
+   "cara": "kode beda"
+  },
+  "7605": {
+   "nama_dibi": "Pasangkayu",
+   "prov_dibi": "Sulawesi Barat",
+   "kode": "7601",
+   "nama_kita": "Kab. Pasangkayu",
+   "cara": "kode beda"
+  },
+  "7606": {
+   "nama_dibi": "Mamuju Tengah",
+   "prov_dibi": "Sulawesi Barat",
+   "kode": "7606",
+   "nama_kita": "Kab. Mamuju Tengah",
+   "cara": "kode sama"
+  },
+  "8101": {
+   "nama_dibi": "Kepulauan Tanimbar",
+   "prov_dibi": "Maluku",
+   "kode": "8103",
+   "nama_kita": "Kab. Kepulauan Tanimbar",
+   "cara": "kode beda"
+  },
+  "8102": {
+   "nama_dibi": "Maluku Tenggara",
+   "prov_dibi": "Maluku",
+   "kode": "8102",
+   "nama_kita": "Kab. Maluku Tenggara",
+   "cara": "kode sama"
+  },
+  "8103": {
+   "nama_dibi": "Maluku Tengah",
+   "prov_dibi": "Maluku",
+   "kode": "8101",
+   "nama_kita": "Kab. Maluku Tengah",
+   "cara": "kode beda"
+  },
+  "8104": {
+   "nama_dibi": "Buru",
+   "prov_dibi": "Maluku",
+   "kode": "8104",
+   "nama_kita": "Kab. Buru",
+   "cara": "kode sama"
+  },
+  "8105": {
+   "nama_dibi": "Kepulauan Aru",
+   "prov_dibi": "Maluku",
+   "kode": "8107",
+   "nama_kita": "Kab. Kepulauan Aru",
+   "cara": "kode beda"
+  },
+  "8106": {
+   "nama_dibi": "Seram Bagian Barat",
+   "prov_dibi": "Maluku",
+   "kode": "8106",
+   "nama_kita": "Kab. Seram Bagian Barat",
+   "cara": "kode sama"
+  },
+  "8107": {
+   "nama_dibi": "Seram Bagian Timur",
+   "prov_dibi": "Maluku",
+   "kode": "8105",
+   "nama_kita": "Kab. Seram Bagian Timur",
+   "cara": "kode beda"
+  },
+  "8108": {
+   "nama_dibi": "Maluku Barat Daya",
+   "prov_dibi": "Maluku",
+   "kode": "8108",
+   "nama_kita": "Kab. Maluku Barat Daya",
+   "cara": "kode sama"
+  },
+  "8109": {
+   "nama_dibi": "Buru Selatan",
+   "prov_dibi": "Maluku",
+   "kode": "8109",
+   "nama_kita": "Kab. Buru Selatan",
+   "cara": "kode sama"
+  },
+  "8171": {
+   "nama_dibi": "Kota Ambon",
+   "prov_dibi": "Maluku",
+   "kode": "8171",
+   "nama_kita": "Kota Ambon",
+   "cara": "kode sama"
+  },
+  "8172": {
+   "nama_dibi": "Kota Tual",
+   "prov_dibi": "Maluku",
+   "kode": "8172",
+   "nama_kita": "Kota Tual",
+   "cara": "kode sama"
+  },
+  "8201": {
+   "nama_dibi": "Halmahera Barat",
+   "prov_dibi": "Maluku Utara",
+   "kode": "8201",
+   "nama_kita": "Kab. Halmahera Barat",
+   "cara": "kode sama"
+  },
+  "8202": {
+   "nama_dibi": "Halmahera Tengah",
+   "prov_dibi": "Maluku Utara",
+   "kode": "8202",
+   "nama_kita": "Kab. Halmahera Tengah",
+   "cara": "kode sama"
+  },
+  "8203": {
+   "nama_dibi": "Kepulauan Sula",
+   "prov_dibi": "Maluku Utara",
+   "kode": "8205",
+   "nama_kita": "Kab. Kepulauan Sula",
+   "cara": "kode beda"
+  },
+  "8204": {
+   "nama_dibi": "Halmahera Selatan",
+   "prov_dibi": "Maluku Utara",
+   "kode": "8204",
+   "nama_kita": "Kab. Halmahera Selatan",
+   "cara": "kode sama"
+  },
+  "8205": {
+   "nama_dibi": "Halmahera Utara",
+   "prov_dibi": "Maluku Utara",
+   "kode": "8203",
+   "nama_kita": "Kab. Halmahera Utara",
+   "cara": "kode beda"
+  },
+  "8206": {
+   "nama_dibi": "Halmahera Timur",
+   "prov_dibi": "Maluku Utara",
+   "kode": "8206",
+   "nama_kita": "Kab. Halmahera Timur",
+   "cara": "kode sama"
+  },
+  "8207": {
+   "nama_dibi": "Pulau Morotai",
+   "prov_dibi": "Maluku Utara",
+   "kode": "8207",
+   "nama_kita": "Kab. Pulau Morotai",
+   "cara": "kode sama"
+  },
+  "8208": {
+   "nama_dibi": "Pulau Taliabu",
+   "prov_dibi": "Maluku Utara",
+   "kode": "8208",
+   "nama_kita": "Kab. Pulau Taliabu",
+   "cara": "kode sama"
+  },
+  "8271": {
+   "nama_dibi": "Kota Ternate",
+   "prov_dibi": "Maluku Utara",
+   "kode": "8271",
+   "nama_kita": "Kota Ternate",
+   "cara": "kode sama"
+  },
+  "8272": {
+   "nama_dibi": "Kota Tidore Kepulauan",
+   "prov_dibi": "Maluku Utara",
+   "kode": "8272",
+   "nama_kita": "Kota Tidore Kepulauan",
+   "cara": "kode sama"
+  },
+  "9101": {
+   "nama_dibi": "Fak Fak",
+   "prov_dibi": "Papua Barat",
+   "kode": "9203",
+   "nama_kita": "Kab. Fak Fak",
+   "cara": "kode beda"
+  },
+  "9102": {
+   "nama_dibi": "Kaimana",
+   "prov_dibi": "Papua Barat",
+   "kode": "9208",
+   "nama_kita": "Kab. Kaimana",
+   "cara": "kode beda"
+  },
+  "9103": {
+   "nama_dibi": "Teluk Wondama",
+   "prov_dibi": "Papua Barat",
+   "kode": "9207",
+   "nama_kita": "Kab. Teluk Wondama",
+   "cara": "kode beda"
+  },
+  "9104": {
+   "nama_dibi": "Teluk Bintuni",
+   "prov_dibi": "Papua Barat",
+   "kode": "9206",
+   "nama_kita": "Kab. Teluk Bintuni",
+   "cara": "kode beda"
+  },
+  "9105": {
+   "nama_dibi": "Manokwari",
+   "prov_dibi": "Papua Barat",
+   "kode": "9202",
+   "nama_kita": "Kab. Manokwari",
+   "cara": "kode beda"
+  },
+  "9106": {
+   "nama_dibi": "Sorong Selatan",
+   "prov_dibi": "Papua Barat Daya",
+   "kode": "9602",
+   "nama_kita": "Kab. Sorong Selatan",
+   "cara": "kode beda"
+  },
+  "9107": {
+   "nama_dibi": "Sorong",
+   "prov_dibi": "Papua Barat Daya",
+   "kode": "9601",
+   "nama_kita": "Kab. Sorong",
+   "cara": "kode beda"
+  },
+  "9108": {
+   "nama_dibi": "Raja Ampat",
+   "prov_dibi": "Papua Barat Daya",
+   "kode": "9603",
+   "nama_kita": "Kab. Raja Ampat",
+   "cara": "kode beda"
+  },
+  "9109": {
+   "nama_dibi": "Tambrauw",
+   "prov_dibi": "Papua Barat Daya",
+   "kode": "9604",
+   "nama_kita": "Kab. Tambrauw",
+   "cara": "kode beda"
+  },
+  "9110": {
+   "nama_dibi": "Maybrat",
+   "prov_dibi": "Papua Barat Daya",
+   "kode": "9605",
+   "nama_kita": "Kab. Maybrat",
+   "cara": "kode beda"
+  },
+  "9111": {
+   "nama_dibi": "Manokwari Selatan",
+   "prov_dibi": "Papua Barat",
+   "kode": "9211",
+   "nama_kita": "Kab. Manokwari Selatan",
+   "cara": "kode beda"
+  },
+  "9112": {
+   "nama_dibi": "Pegunungan Arfak",
+   "prov_dibi": "Papua Barat",
+   "kode": "9212",
+   "nama_kita": "Kab. Pegunungan Arfak",
+   "cara": "kode beda"
+  },
+  "9171": {
+   "nama_dibi": "Kota Sorong",
+   "prov_dibi": "Papua Barat Daya",
+   "kode": "9671",
+   "nama_kita": "Kota Sorong",
+   "cara": "kode beda"
+  },
+  "9401": {
+   "nama_dibi": "Merauke",
+   "prov_dibi": "Papua Selatan",
+   "kode": "9301",
+   "nama_kita": "Kab. Merauke",
+   "cara": "kode beda"
+  },
+  "9402": {
+   "nama_dibi": "Jayawijaya",
+   "prov_dibi": "Papua Pegunungan",
+   "kode": "9501",
+   "nama_kita": "Kab. Jayawijaya",
+   "cara": "kode beda"
+  },
+  "9403": {
+   "nama_dibi": "Jayapura",
+   "prov_dibi": "Papua",
+   "kode": "9103",
+   "nama_kita": "Kab. Jayapura",
+   "cara": "kode beda"
+  },
+  "9404": {
+   "nama_dibi": "Nabire",
+   "prov_dibi": "Papua Tengah",
+   "kode": "9401",
+   "nama_kita": "Kab. Nabire",
+   "cara": "kode beda"
+  },
+  "9408": {
+   "nama_dibi": "Kepulauan Yapen",
+   "prov_dibi": "Papua",
+   "kode": "9105",
+   "nama_kita": "Kab. Kepulauan Yapen",
+   "cara": "kode beda"
+  },
+  "9409": {
+   "nama_dibi": "Biak Numfor",
+   "prov_dibi": "Papua",
+   "kode": "9106",
+   "nama_kita": "Kab. Biak Numfor",
+   "cara": "kode beda"
+  },
+  "9410": {
+   "nama_dibi": "Paniai",
+   "prov_dibi": "Papua Tengah",
+   "kode": "9403",
+   "nama_kita": "Kab. Paniai",
+   "cara": "kode beda"
+  },
+  "9411": {
+   "nama_dibi": "Puncak Jaya",
+   "prov_dibi": "Papua Tengah",
+   "kode": "9402",
+   "nama_kita": "Kab. Puncak Jaya",
+   "cara": "kode beda"
+  },
+  "9412": {
+   "nama_dibi": "Mimika",
+   "prov_dibi": "Papua Tengah",
+   "kode": "9404",
+   "nama_kita": "Kab. Mimika",
+   "cara": "kode beda"
+  },
+  "9413": {
+   "nama_dibi": "Boven Digoel",
+   "prov_dibi": "Papua Selatan",
+   "kode": "9302",
+   "nama_kita": "Kab. Boven Digoel",
+   "cara": "kode beda"
+  },
+  "9414": {
+   "nama_dibi": "Mappi",
+   "prov_dibi": "Papua Selatan",
+   "kode": "9303",
+   "nama_kita": "Kab. Mappi",
+   "cara": "kode beda"
+  },
+  "9415": {
+   "nama_dibi": "Asmat",
+   "prov_dibi": "Papua Selatan",
+   "kode": "9304",
+   "nama_kita": "Kab. Asmat",
+   "cara": "kode beda"
+  },
+  "9416": {
+   "nama_dibi": "Yahukimo",
+   "prov_dibi": "Papua Pegunungan",
+   "kode": "9503",
+   "nama_kita": "Kab. Yahukimo",
+   "cara": "kode beda"
+  },
+  "9417": {
+   "nama_dibi": "Pegunungan Bintang",
+   "prov_dibi": "Papua Pegunungan",
+   "kode": "9502",
+   "nama_kita": "Kab. Pegunungan Bintang",
+   "cara": "kode beda"
+  },
+  "9418": {
+   "nama_dibi": "Tolikara",
+   "prov_dibi": "Papua Pegunungan",
+   "kode": "9504",
+   "nama_kita": "Kab. Tolikara",
+   "cara": "kode beda"
+  },
+  "9419": {
+   "nama_dibi": "Sarmi",
+   "prov_dibi": "Papua",
+   "kode": "9110",
+   "nama_kita": "Kab. Sarmi",
+   "cara": "kode beda"
+  },
+  "9420": {
+   "nama_dibi": "Keerom",
+   "prov_dibi": "Papua",
+   "kode": "9111",
+   "nama_kita": "Kab. Keerom",
+   "cara": "kode beda"
+  },
+  "9426": {
+   "nama_dibi": "Waropen",
+   "prov_dibi": "Papua",
+   "kode": "9115",
+   "nama_kita": "Kab. Waropen",
+   "cara": "kode beda"
+  },
+  "9427": {
+   "nama_dibi": "Supiori",
+   "prov_dibi": "Papua",
+   "kode": "9119",
+   "nama_kita": "Kab. Supiori",
+   "cara": "kode beda"
+  },
+  "9428": {
+   "nama_dibi": "Mamberamo Raya",
+   "prov_dibi": "Papua",
+   "kode": "9120",
+   "nama_kita": "Kab. Mamberamo Raya",
+   "cara": "kode beda"
+  },
+  "9429": {
+   "nama_dibi": "Nduga",
+   "prov_dibi": "Papua Pegunungan",
+   "kode": "9508",
+   "nama_kita": "Kab. Nduga",
+   "cara": "kode beda"
+  },
+  "9430": {
+   "nama_dibi": "Lanny Jaya",
+   "prov_dibi": "Papua Pegunungan",
+   "kode": "9507",
+   "nama_kita": "Kab. Lanny Jaya",
+   "cara": "kode beda"
+  },
+  "9431": {
+   "nama_dibi": "Mamberamo Tengah",
+   "prov_dibi": "Papua Pegunungan",
+   "kode": "9505",
+   "nama_kita": "Kab. Mamberamo Tengah",
+   "cara": "kode beda"
+  },
+  "9433": {
+   "nama_dibi": "Puncak",
+   "prov_dibi": "Papua Tengah",
+   "kode": "9405",
+   "nama_kita": "Kab. Puncak",
+   "cara": "kode beda"
+  },
+  "9434": {
+   "nama_dibi": "Dogiyai",
+   "prov_dibi": "Papua Tengah",
+   "kode": "9406",
+   "nama_kita": "Kab. Dogiyai",
+   "cara": "kode beda"
+  },
+  "9435": {
+   "nama_dibi": "Intan Jaya",
+   "prov_dibi": "Papua Tengah",
+   "kode": "9407",
+   "nama_kita": "Kab. Intan Jaya",
+   "cara": "kode beda"
+  },
+  "9436": {
+   "nama_dibi": "Deiyai",
+   "prov_dibi": "Papua Tengah",
+   "kode": "9408",
+   "nama_kita": "Kab. Deiyai",
+   "cara": "kode beda"
+  },
+  "9471": {
+   "nama_dibi": "Kota Jayapura",
+   "prov_dibi": "Papua",
+   "kode": "9171",
+   "nama_kita": "Kota Jayapura",
+   "cara": "kode beda"
+  }
+ },
+ "tidak_terpetakan": {}
+}
