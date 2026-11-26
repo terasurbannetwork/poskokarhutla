@@ -1,0 +1,30 @@
+/* Menu lapisan peta dan pemberitahuan melayang mode Peringatan /lapor (K8b, K8c). Token inti/tema.css saja. */
+.lp-lp-btn.lp-lp-btn{width:auto;min-height:34px;padding:0 10px;display:inline-flex;align-items:center;gap:6px;font:600 var(--fs-2) var(--font);color:var(--ink)}
+.lp-lp-pn{position:fixed;inset:auto;margin:0;width:min(300px,calc(100vw - 16px));max-height:min(70vh,560px);overflow:auto;padding:8px;border:1px solid var(--line);border-radius:var(--r-md,10px);background:var(--card);color:var(--ink);box-shadow:var(--sh-2,0 8px 24px color-mix(in oklab,var(--ink) 18%,transparent))}
+.lp-lp-pn:not(:popover-open){display:none}
+.lp-lp-b{display:grid;gap:4px;padding:8px 4px;border-bottom:1px solid var(--line)}
+.lp-lp-b:last-child{border-bottom:0}
+.lp-lp-b label:first-child{display:flex;align-items:center;gap:8px;min-height:32px;font:600 var(--fs-3) var(--font);cursor:pointer}
+.lp-lp-b input[type=checkbox]{width:18px;height:18px;accent-color:var(--brand2)}
+.lp-lp-b select{min-height:32px;padding:0 8px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);color:var(--ink);font:var(--fs-2) var(--font)}
+.lp-lp-o{display:flex;align-items:center;gap:8px;font-size:var(--fs-2);color:var(--ink2)}
+.lp-lp-o input{flex:1;min-width:0}
+.lp-lp-b small{color:var(--ink2);font-size:var(--fs-2);min-height:0}
+.lp-lp-b small:empty{display:none}
+
+/* pemberitahuan melayang: kanan atas, di kiri tumpukan kontrol peta, di bawah bilah tab */
+.lp-kb{position:absolute;z-index:5;top:64px;right:172px;width:min(320px,calc(100% - 24px));display:grid;gap:8px;pointer-events:none}
+.lp-kb[hidden]{display:none}
+.lp-kb>*{pointer-events:auto}
+.lp-kb-k{display:grid;gap:4px;padding:10px 12px;border-radius:var(--r-md,10px);border-left:4px solid var(--kb-w,var(--warn));background:color-mix(in oklab,var(--head-bg) 94%,transparent);color:var(--on-head);box-shadow:0 6px 18px color-mix(in oklab,var(--ink) 25%,transparent)}
+.lp-kb-k p{margin:0;font-size:var(--fs-3);overflow-wrap:anywhere}
+.lp-kb-k small{font-size:var(--fs-2);opacity:.8}
+.lp-kb-a{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:var(--fs-3)}
+.lp-kb button{min-height:32px;padding:0 10px;border:1px solid color-mix(in oklab,var(--on-head) 35%,transparent);border-radius:var(--r-pill);background:none;color:inherit;font:600 var(--fs-2) var(--font);cursor:pointer}
+.lp-kb button:disabled{opacity:.5;cursor:default}
+.lp-kb button:focus-visible{outline:2px solid var(--on-head);outline-offset:2px}
+.lp-kb .lp-kb-x{width:32px;padding:0;border:0;font-size:1.25rem;line-height:1}
+.lp-kb-t{display:flex;gap:6px}
+.lp-kb-f{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:var(--r-pill);background:color-mix(in oklab,var(--head-bg) 94%,transparent);color:var(--on-head);font-size:var(--fs-2)}
+@media (max-width:899px){.lp-kb{top:132px;right:12px}}
+#petaAlun:has(.pp-baca:not([hidden])) .lp-kb{display:none}

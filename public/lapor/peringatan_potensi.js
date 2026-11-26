@@ -15,25 +15,27 @@ const TAB = [
 const BAHAYA = ["bnj", "bdg", "lsr", "gel", "kht", "kek", "cex"];
 const HARI = ["ringkas", "0", "1", "2", "3"];
 const KOTAK = [[94, -11.5], [141.5, 6.5]];
-const CSS = ["/potensi/potensi.css?v=2", "/potensi/status.css?v=2", "/lapor/peringatan_potensi.css?v=5"];
+const CSS = ["/potensi/potensi.css?v=2", "/potensi/status.css?v=3", "/lapor/peringatan_potensi.css?v=5", "/potensi/lapis_peta.css?v=1"];
 const $ = (id) => document.getElementById(id);
 const hp = matchMedia("(max-width:899px)");
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
-const state = { tab: "status", b: "", h: "ringkas", kab: "" };
+const state = { tab: "status", b: "", h: "ringkas", kab: "", lp: "" };
+const lapis = () => lapis.j ||= Promise.all([import("/potensi/lapis_peta.js?v=1"), import("/potensi/kabar_baru.js?v=2")]);   // K8b menu lapisan, K8c pemberitahuan melayang
 const fns = [], mods = new Map(); // mods: k -> { aktif } | null
 let peta = null, aside = null, kini = "", dibangun = false, kamusLayer = [];
 
 function baca() {
   const [u, q = ""] = location.hash.slice(1).split("?"), [m, t] = u.split("/"), p = new URLSearchParams(q);
   const b = (p.get("b") || "").toLowerCase(), h = p.get("h") || "ringkas", kab = p.get("kab") || "";
-  return { ada: m === "peringatan", tab: TAB.some((x) => x.k === t) ? t : "status", b: BAHAYA.includes(b) ? b : "", h: HARI.includes(h) ? h : "ringkas", kab: /^\d{4}$/.test(kab) ? kab : "" };
+  return { ada: m === "peringatan", tab: TAB.some((x) => x.k === t) ? t : "status", b: BAHAYA.includes(b) ? b : "", h: HARI.includes(h) ? h : "ringkas", kab: /^\d{4}$/.test(kab) ? kab : "", lp: (p.get("lp") || "").split(".").filter((t) => /^[a-z]{2,4}(-[a-z]{3})?$/.test(t)).join(".") };
 }
 function tulis(dorong) {
   const p = new URLSearchParams();
   if (state.b) p.set("b", state.b);
   if (state.h !== "ringkas") p.set("h", state.h);
   if (state.kab) p.set("kab", state.kab);
+  if (state.lp) p.set("lp", state.lp);
   const q = p.toString(), url = "#peringatan/" + state.tab + (q ? "?" + q : "");
   if (url !== location.hash) history[dorong ? "pushState" : "replaceState"](null, "", url);
 }
@@ -104,7 +106,7 @@ function bangun(kartuGunung) {
   const pil = Object.assign(document.createElement("div"), { id: "ppTab", className: "lp-alun-sumber pp-pil" });
   pil.setAttribute("role", "tablist"); pil.setAttribute("aria-label", "Bagian Peringatan");
   pil.innerHTML = TAB.map(tombol).join("");
-  pil.addEventListener("click", (e) => { const b = e.target.closest("[data-tab]"); if (b) pilih(b.dataset.tab, true); });
+  pil.addEventListener("click", (e) => { const b = e.target.closest("[data-tab]"); if (!b) return; if (!kini && keTab) return keTab(b.dataset.tab); pilih(b.dataset.tab, true); });   // di mode Kejadian: klik tab menyalakan mode Peringatan di tab itu
   const pt = TAB.filter((d) => d.peta), pb = TAB.filter((d) => !d.peta);
   const panel = Object.assign(document.createElement("div"), { id: "ppPanel", className: "pp-panel" });
   panel.innerHTML = pt.map((d) => `<section id="pp-${d.k}" class="po-pt" role="tabpanel" hidden></section>`).join("");
@@ -122,10 +124,11 @@ function bangun(kartuGunung) {
 }
 
 /** Dipanggil lapor.js saat mode Peringatan menyala. siap() = janji peta Alun-alun siap; kamus = id lapis Kejadian yang disembunyikan. */
-export function buka({ ambilPeta, siap, kamus, kartuGunung, bahaya }) {
+export function buka({ ambilPeta, siap, kamus, kartuGunung, bahaya, tab: tabMinta }) {
   if (!dibangun) bangun(kartuGunung);
   const s = baca();
   if (s.ada) Object.assign(state, s);
+  if (tabMinta) state.tab = tabMinta;
   if (bahaya) Object.assign(state, { tab: "status", b: bahaya, kab: "" });
   kamusLayer = kamus;
   const tab = state.tab; kini = "";
@@ -136,12 +139,28 @@ export function buka({ ambilPeta, siap, kamus, kartuGunung, bahaya }) {
     for (const l of kamus) if (peta.getLayer(l)) peta.setLayoutProperty(l, "visibility", "none");
     for (const f of fns) f(peta);
     if (kini) mods.get(kini)?.aktif?.(true);
+    nanti(() => lapis().then(([lp, kb]) => {
+      if (!kini || peta !== ambilPeta()) return;
+      lp.buka(peta, state, ubah);
+      kb.buka({ arena: $("petaAlun"), peta: () => peta, pad: padPeta, keDampak: () => pilih("dampak", true) });
+    }).catch((e) => console.error(e)));
   });
 }
 /** Mode kembali ke Kejadian: lapis modul dimatikan, alamat dibersihkan. */
+let keTab = null;
+/** Mode Kejadian: bilah tab Peringatan sudah tampil sejak awal, tanpa tab terpilih; klik tab memanggil ke(tab) di lapor.js. */
+export function tabAwal({ kartuGunung, ke }) {
+  keTab = ke;
+  if (!dibangun) bangun(kartuGunung);
+  if (kini) return;
+  $("ppBawah").hidden = $("ppBaca").hidden = true; $("ppTab").hidden = false;
+  for (const b of $("ppTab").children) b.setAttribute("aria-selected", "false");
+}
 export function tutup() {
   if (kini) mods.get(kini)?.aktif?.(false);
   kini = ""; kamusLayer = [];
-  $("ppBawah").hidden = $("ppBaca").hidden = $("ppTab").hidden = true;
+  lapis.j?.then(([lp, kb]) => { lp.tutup(); kb.tutup(); });
+  $("ppBawah").hidden = $("ppBaca").hidden = true;
+  for (const b of $("ppTab").children) b.setAttribute("aria-selected", "false");   // bilah tab tetap tampil di mode Kejadian (pemilik 26 Nov 2026 "dari awal gini aja")
   if (baca().ada) history.replaceState(null, "", location.pathname + location.search);
 }

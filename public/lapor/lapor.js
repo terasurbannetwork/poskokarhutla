@@ -2428,8 +2428,8 @@ const muatDp = () => muatDp.j ||= Promise.all([dpModul(), dpJson("/api/dampak-pe
 const KAMUS_PETA = ["kelompok", "kelompok-n", "titik", "titik-n", "prov-terdampak", "prov-garis", "gunung-siaga"];
 const petaAlunSiap = async () => { for (let i = 0; i < 100 && !alunPeta; i++) await new Promise(r => setTimeout(r, 100));
   if (!alunPeta) return false; if (!alunPeta.getLayer("titik")) await new Promise(r => alunPeta.once("load", r)); return true; };
-const potensi = () => potensi.j ||= import("/lapor/peringatan_potensi.js?v=6");   // K7: isi /potensi pindah ke sini; dimuat malas saat mode Peringatan pertama kali
-function setModeAlun(mode, bahaya) {
+const potensi = () => potensi.j ||= import("/lapor/peringatan_potensi.js?v=8");   // K7: isi /potensi pindah ke sini; dimuat malas saat mode Peringatan pertama kali
+function setModeAlun(mode, bahaya, tab) {
   const per = mode === "peringatan"; alunMode = mode;
   for (const b of $("modeAlun").children) b.setAttribute("aria-selected", String(b.dataset.mode === mode));   // chrome langsung
   $("saringPanel").hidden = per; $("daftarAlun").hidden = per; if ($("legendaAlun")) $("legendaAlun").hidden = per; if ($("periodeAlun")) $("periodeAlun").hidden = per; if ($("menuJenisAlun")) $("menuJenisAlun").hidden = per; $("isiPeringatan").hidden = !per; $("sumberAlun").hidden = !alunKabar;

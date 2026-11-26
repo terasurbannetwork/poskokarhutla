@@ -5,6 +5,7 @@
 import { warnaToken } from "/inti/maplibre.js";
 export const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 import { nanti, ambil, bbox } from "/potensi/umum.js";
+import { PROV } from "/potensi/analisis.js";
 export { nanti, ambil, bbox };
 export const BELUM = "belum terukur";
 const tunda = () => (globalThis.scheduler?.yield ? scheduler.yield() : new Promise((r) => setTimeout(r, 0)));
@@ -12,7 +13,7 @@ const pasangSkrip = (src, kunci) => (globalThis[kunci] ? Promise.resolve() : new
 export const muatDP = () => pasangSkrip("/inti/dampak_peringatan.js", "DampakPeringatan");
 /* sementara sebelum <link> dipasang sesi induk di index.html */
 export function muatCss() {
-  if (!document.querySelector('link[href^="/potensi/peta2.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/potensi/peta2.css"; document.head.append(l); }
+  if (!document.querySelector('link[href^="/potensi/peta2.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/potensi/peta2.css?v=2"; document.head.append(l); }
 }
 export const kartu = (ey, judul, isi) => `<section class="ex ex-std p2-kartu"><header class="ex-hd"><span class="ex-ey">${esc(ey)}</span><div class="ex-jd"><h3>${esc(judul)}</h3></div></header><div class="ex-bd">${isi}</div></section>`;
 export const chip = (DP, j, t) => { const c = DP.chipFakta(j); return `<span class="p2-chip ${c.kelas}"${t ? ` title="${esc(t)}"` : ""}>${c.label}</span>`; };
@@ -62,39 +63,37 @@ export function pasang(ctx) {
     }
     lama = i;
     panel.querySelectorAll("details[data-pilih]").forEach((x) => x.removeAttribute("data-pilih"));
-    panel.querySelector(`details[data-i="${i}"]`)?.setAttribute("data-pilih", "");
-    const d = panel.querySelector(`details[data-i="${i}"]`);
-    if (d) { if (!daftar) { d.open = true; d.scrollIntoView({ block: "nearest" }); } else d.open = true; }
+    const ds = [...panel.querySelectorAll(`details[data-is~="${i}"]`)];
+    ds.forEach((x) => x.setAttribute("data-pilih", ""));
+    /* dari peta: buka provinsi dan kab/kota pertama yang kena peringatan ini; dari daftar: baris yang diklik sudah terbuka */
+    if (ds[0] && !daftar) { const pv = ds[0].closest(".p2-pv"); if (pv) pv.open = true; ds[0].open = true; ds[0].scrollIntoView({ block: "nearest" }); }
     const f = fc?.features.find((x) => x.id === i);
     if (f && peta) peta.fitBounds(bbox(f.geometry.coordinates), { padding: ctx.padPeta(), maxZoom: 11, duration: 500 });
   }
 
-  /* ---------- panel ---------- */
-  function isiPeringatan(p) {
+  /* ---------- panel: provinsi > kab/kota > peringatan ---------- */
+  /* keterpaparan satu kab/kota untuk satu peringatan */
+  function isiKab(k, p) {
     const kodes = (p.bahaya || []).map((c) => String(c).toUpperCase());
-    const kabs = (p.kab || []);
-    if (!kabs.length) return `<p class="p2-info">Peringatan ini belum terpetakan ke kab/kota: keterpaparan ${BELUM}.</p>`;
-    const blok = kabs.map((k) => {
-      if (!kodes.length) return `<div class="p2-kab"><h4>${esc(namaKab(k))}</h4><p class="p2-info">Penduduk dan fasilitas ${BELUM}: peringatan ini tidak dipetakan ke banjir atau longsor.</p></div>`;
-      const baris = kodes.map((c) => {
-        if (!R.kab?.[k]?.bahaya?.[c]) return `<li><b>${esc(namaB(c))}</b>: ${BELUM}</li>`;
-        const m = DP.modelKartu(k, c.toLowerCase(), { ringkas: R });
-        return `<li><b>${esc(namaB(c))}</b><span class="p2-sub">Penduduk di area peringatan: ${esc(m.penduduk.join("; "))}</span><span class="p2-sub">Fasilitas yang terpeta: ${esc(m.fasilitas.join("; "))}</span></li>`;
-      }).join("");
-      return `<div class="p2-kab"><h4>${esc(namaKab(k))}</h4><ul>${baris}</ul></div>`;
-    }).join("");
-    return `<p class="p2-cat">${chip(DP, "sumber", "Poligon dan waktu berlaku dari BMKG")} ${chip(DP, "hitung", "Penduduk dan fasilitas dihitung dari irisan area peringatan dengan desa")}</p>${blok}<p class="p2-cat">Tiga sumber jiwa ditampilkan berdampingan, tidak dijumlah, dan bukan jiwa terpapar aturan dampak.</p>`;
+    if (!kodes.length) return `<p class="p2-info">Penduduk dan fasilitas ${BELUM}: peringatan ini tidak dipetakan ke banjir atau longsor.</p>`;
+    return `<ul class="p2-bh">${kodes.map((c) => {
+      if (!R.kab?.[k]?.bahaya?.[c]) return `<li><b>${esc(namaB(c))}</b>: ${BELUM}</li>`;
+      const m = DP.modelKartu(k, c.toLowerCase(), { ringkas: R });
+      return `<li><b>${esc(namaB(c))}</b><span class="p2-sub" title="Tiga sumber jiwa berdampingan, tidak dijumlah, dan bukan jiwa terpapar aturan dampak">Penduduk di area peringatan: ${esc(m.penduduk.join("; "))}</span><span class="p2-sub">Fasilitas yang terpeta: ${esc(m.fasilitas.join("; "))}</span></li>`;
+    }).join("")}</ul>`;
   }
 
   const judul = (t) => String(t || "").toLocaleLowerCase("id-ID").replace(/(^|[\s(\-])(\p{L})/gu, (_, a, c) => a + c.toLocaleUpperCase("id-ID"));
-  const IKON = { petir: "\u26C8", hujan: "\u{1F327}" };
-  const jam = (iso) => { const t = new Date(iso); if (Number.isNaN(+t)) return BELUM; const m = String(iso).match(/([+-])(\d\d):/), z = m ? ({ "+07": "WIB", "+08": "WITA", "+09": "WIT" })[m[1] + m[2]] : ""; return "s.d. " + String(iso).slice(11, 16).replace(":", ".") + " " + (z || "WIB"); };
-  function kartuP(p, i) {
-    const kec = String(p.wilayah || "").split(",").map((x) => judul(x.trim())).filter(Boolean);
-    const kabN = (p.kab || []).map(namaKab), t = p.tingkat_bmkg, ts = DP.token(t), nt = DP.namaTingkat(t);
-    const ikon = /petir/i.test(p.event) ? IKON.petir : IKON.hujan;
-    const ringkasKec = kec.length > 3 ? `${esc(kec.slice(0, 3).join(", "))} dan ${kec.length - 3} lainnya` : esc(kec.join(", "));
-    return `<li><details data-i="${i}" style="--dp-w:var(${ts})"><summary><span class="p2-b1"><span class="p2-ik" aria-hidden="true">${ikon}</span><span class="p2-ev">${esc(p.event || "Peringatan BMKG")}</span>${Number.isInteger(t) ? `<span class="p2-tk">${esc(nt)}</span>` : ""}<span class="p2-jam">${esc(jam(p.berlaku_sampai))}</span></span>${kabN.length ? `<span class="p2-kb">${esc(kabN.slice(0, 2).join(", "))}${kabN.length > 2 ? ` dan ${kabN.length - 2} lainnya` : ""}</span>` : ""}${kec.length ? `<span class="p2-kc">Kecamatan: ${ringkasKec}</span>` : ""}</summary><div class="p2-isi" data-kosong="1">${kec.length > 3 ? `<p class="p2-info">Semua kecamatan: ${esc(kec.join(", "))}</p>` : ""}</div></details></li>`;
+  /* ikon garis 24px: awan petir dan awan hujan; warna ikut tingkat peringatan lewat --dp-w */
+  const IKON = { petir: "M7 16a4 4 0 0 1-.6-7.95A5.5 5.5 0 0 1 17 7a4.5 4.5 0 0 1 .5 8.97|M13 12l-3 5h4l-3 5", hujan: "M7 15a4 4 0 0 1-.6-7.95A5.5 5.5 0 0 1 17 6a4.5 4.5 0 0 1 .5 8.97|M8 18l-1 3M12 18l-1 3M16 18l-1 3" };
+  const svg = (d) => `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d.split("|").map((x) => `<path d="${x}"/>`).join("")}</svg>`;
+  const jam = (iso) => { const t = new Date(iso); if (Number.isNaN(+t)) return BELUM; const m = String(iso).match(/([+-])(\d\d):/), z = m ? ({ "+07": "WIB", "+08": "WITA", "+09": "WIT" })[m[1] + m[2]] : ""; return "Hingga " + String(iso).slice(11, 16).replace(":", ".") + " " + (z || "WIB"); };
+  const tk = (t) => Number.isInteger(t) ? `<span class="p2-tk" style="--dp-w:var(${DP.token(t)})">${esc(DP.namaTingkat(t))}</span>` : "";
+  const puncak = (is, P) => is.reduce((m, i) => (Number.isInteger(P[i].tingkat_bmkg) && P[i].tingkat_bmkg > (m ?? -1) ? P[i].tingkat_bmkg : m), null);
+  /* satu baris peringatan di dalam kab/kota: ikon, jenis, tingkat, jam; isi keterpaparan untuk kab ini bila k ada */
+  function barisP(P, i, k) {
+    const p = P[i], kec = String(p.wilayah || "").split(",").map((x) => judul(x.trim())).filter(Boolean);
+    return `<li class="p2-pr" style="--dp-w:var(${DP.token(p.tingkat_bmkg)})"><div class="p2-pr-a"><span class="p2-ik">${svg(/petir/i.test(p.event) ? IKON.petir : IKON.hujan)}</span><span class="p2-ev">${esc(p.event || "Peringatan BMKG")}</span>${tk(p.tingkat_bmkg)}<span class="p2-jam">${esc(jam(p.berlaku_sampai))}</span></div>${kec.length ? `<p class="p2-kc">Kecamatan dalam peringatan: ${esc(kec.join(", "))}</p>` : ""}${k ? isiKab(k, p) : ""}</li>`;
   }
   function daftar() {
     const P = R.peringatan || [];
@@ -102,16 +101,25 @@ export function pasang(ctx) {
     const cap = R.umpan_cap ? ` Umpan terakhir ${esc(waktu(R.umpan_cap))}.` : "";
     const catatan = basi ? `<p class="p2-info" role="status">Umpan peringatan BMKG belum segar.${cap}</p>` : "";
     const tak = R.tak_dipetakan?.n > 0 ? `<p class="p2-info">${R.tak_dipetakan.n} peringatan belum bisa dipetakan ke kab/kota.</p>` : "";
-    const grup = (jd, ids) => ids.length ? `<h4 class="p2-gr">${esc(jd)}</h4><ol class="p2-daftar">${ids.map((i) => kartuP(P[i], i)).join("")}</ol>` : "";
-    const ya = [], tidak = [];
-    P.forEach((p, i) => ((p.bahaya || []).length ? ya : tidak).push(i));
-    const isi = P.length ? grup("Dipetakan ke bahaya", ya) + grup("Belum dipetakan, keterpaparan belum terukur", tidak) : `<p class="p2-kosong">Tidak ada peringatan BMKG yang aktif saat ini.</p>`;
+    /* kab -> indeks peringatan; prov -> kab */
+    const perKab = new Map(), tanpaKab = [];
+    P.forEach((p, i) => { const ks = p.kab || []; if (!ks.length) tanpaKab.push(i); for (const k of ks) { if (!perKab.has(k)) perKab.set(k, []); perKab.get(k).push(i); } });
+    const perProv = new Map();
+    for (const k of perKab.keys()) { const pv = String(k).slice(0, 2); if (!perProv.has(pv)) perProv.set(pv, []); perProv.get(pv).push(k); }
+    const namaPv = (pv) => PROV[pv] || "Provinsi " + pv;
+    const urutKab = (a, b) => (puncak(perKab.get(b), P) ?? -1) - (puncak(perKab.get(a), P) ?? -1) || namaKab(a).localeCompare(namaKab(b), "id");
+    const provs = [...perProv.entries()].sort((a, b) => b[1].length - a[1].length || namaPv(a[0]).localeCompare(namaPv(b[0]), "id"));
+    const kabHtml = (k) => { const is = perKab.get(k); return `<li><details class="p2-kd" data-k="${esc(k)}" data-is="${is.join(" ")}"><summary><span class="p2-kn">${esc(namaKab(k))}</span>${tk(puncak(is, P))}<span class="p2-num">${is.length}</span></summary><ol class="p2-pl" data-kosong="1"></ol></details></li>`; };
+    const provHtml = ([pv, ks], n) => { const is = [...new Set(ks.flatMap((k) => perKab.get(k)))]; ks.sort(urutKab);
+      return `<li><details class="p2-pv" data-is="${is.join(" ")}"><summary><span class="p2-no">${n + 1}</span><span class="p2-pn">${esc(namaPv(pv))}</span><span class="p2-num">${ks.length}</span><span class="p2-num">${is.length}</span></summary><ol class="p2-kl">${ks.map(kabHtml).join("")}</ol></details></li>`; };
+    const lepas = tanpaKab.length ? `<h4 class="p2-gr">Belum terpetakan ke kab/kota <span>${tanpaKab.length}</span></h4><ol class="p2-pl p2-lepas">${tanpaKab.map((i) => barisP(P, i, null)).join("")}</ol>` : "";
+    const isi = P.length ? `<div class="p2-th" aria-hidden="true"><span></span><span>Provinsi</span><span title="Jumlah kab/kota dalam area peringatan">Kab/kota</span><span title="Jumlah peringatan BMKG aktif">Peringatan</span></div><ol class="p2-prov">${provs.map(provHtml).join("")}</ol>${lepas}` : `<p class="p2-kosong">Tidak ada peringatan BMKG yang aktif saat ini.</p>`;
     panel.innerHTML = `<section class="ex ex-std p2-kartu"><header class="ex-hd"><span class="ex-ey">BMKG</span><div class="ex-jd"><h3>Peringatan BMKG aktif${P.length ? ` <span class="p2-n">${P.length.toLocaleString("id-ID")}</span>` : ""}</h3></div></header><div class="ex-bd">${catatan + isi + tak}</div></section>`;
-    panel.querySelectorAll("details").forEach((d) => d.addEventListener("toggle", () => {
+    panel.querySelectorAll("details.p2-kd").forEach((d) => d.addEventListener("toggle", () => {
       if (!d.open) return;
-      const i = +d.dataset.i, w = d.querySelector(".p2-isi");
-      if (w.dataset.kosong) { w.removeAttribute("data-kosong"); w.insertAdjacentHTML("beforeend", isiPeringatan(P[i])); }
-      if (lama !== i) nanti(() => pilih(i, true));
+      const is = d.dataset.is.split(" ").map(Number), w = d.querySelector(".p2-pl");
+      if (w.dataset.kosong) { w.removeAttribute("data-kosong"); w.innerHTML = is.map((i) => barisP(P, i, d.dataset.k)).join(""); }
+      if (!is.includes(lama)) nanti(() => pilih(is[0], true));
     }));
   }
 

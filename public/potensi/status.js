@@ -28,19 +28,53 @@ const muatDP = () => globalThis.DampakPeringatan ? Promise.resolve() : new Promi
 
 export function pasang(ctx) {
   const { panel, bawah, state } = ctx;
+  const DEF = { prov: "", kls: "baseline", mode: "status" }, q0 = new URLSearchParams(location.hash.split("?")[1] || "");
+  const bacaEks = (q) => ({ prov: PROV[q.get("prov")] ? q.get("prov") : "", kls: q.get("kls") === "proyeksi" ? "proyeksi" : "baseline", mode: ["potensi", "pemicu"].includes(q.get("mode")) ? q.get("mode") : "status" });
+  Object.assign(state, bacaEks(q0));
+  if (!state.prov && state.kab) state.prov = state.kab.slice(0, 2);
+  /** ubah state bersama + simpan prov, kls, mode di hash (tulis() induk hanya mengenal b, h, kab) */
+  function ubahS(patch) {
+    ctx.ubah(patch);
+    const [u, qs = ""] = location.hash.split("?"), q = new URLSearchParams(qs);
+    for (const k of Object.keys(DEF)) state[k] && state[k] !== DEF[k] ? q.set(k, state[k]) : q.delete(k);
+    const url = u + (q.size ? "?" + q : "");
+    if (url !== location.hash) history.replaceState(null, "", url);
+  }
   let DP, D = null, fc = null, kodeKab = [], gm = new Map(), sTerap = new Map(), genD = 0, sBy = new Map(), kini = false, peta = null, main = null, putar = 0, pilihLama = "";
-  const kelasDesa = new Map(), debitBm = new Map();
+  const kelasDesa = new Map(), debitBm = new Map(), bar = document.createElement("div");
+  bar.className = "st-flt";
 
   panel.innerHTML = '<p class="st-info" role="status">Memuat status prakiraan</p>';
   bawah.innerHTML = `<div class="st-wkt" role="group" aria-label="Hari prakiraan"><button type="button" class="st-play" aria-pressed="false" aria-label="Putar empat hari" title="Putar empat hari">${ik('<path d="M7 5v14l12-7z"/>')}</button><div class="st-hari">${HARI.map((h, i) => `<button type="button" data-h="${i}" aria-pressed="false">${h}</button>`).join("")}<button type="button" data-h="ringkas" aria-pressed="false">Ringkas 3 hari</button></div></div>
-<div class="st-leg"><ul class="st-sw" aria-label="Warna status">${["Normal", "Waspada", "Siaga", "Awas"].map((t, i) => `<li><i class="st-k st-k${i}"></i>${t}</li>`).join("")}<li><i class="st-k st-kn"></i>${BELUM}</li></ul><button type="button" class="st-cara">Cara membaca status</button></div>
+<div class="st-leg"><ul class="st-sw" aria-label="Warna peta"></ul><button type="button" class="st-cara">Cara membaca status</button></div>
 <dialog class="st-dlg" aria-labelledby="st-dlg-j"><form method="dialog"><h3 id="st-dlg-j">Cara membaca status</h3><div class="st-dlg-isi" id="st-dlg-isi"></div><button class="st-tutup">Tutup</button></form></dialog>`;
   const dlg = bawah.querySelector("dialog");
+  /* legenda per mode peta; warna lapis dibaca dari swatch ini (token lewat CSS, tanpa literal) */
+  const TNG = ["Normal", "Waspada", "Siaga", "Awas"];
+  const MODE = {
+    status: { j: "Status prakiraan", lg: [[0, TNG[0], "st-k0"], [1, TNG[1], "st-k1"], [2, TNG[2], "st-k2"], [3, TNG[3], "st-k3"]] },
+    potensi: { j: "Kelas bahaya kab/kota", lg: [[1, "Rendah", "st-p1"], [2, "Sedang", "st-p2"], [3, "Tinggi", "st-p3"]] },
+    pemicu: { j: "Tingkat pemicu", lg: [[0, TNG[0], "st-e0"], [1, TNG[1], "st-e1"], [2, TNG[2], "st-e2"], [3, TNG[3], "st-e3"]] },
+  };
+  const sw = bawah.querySelector(".st-sw");
+  function legenda() {
+    const m = MODE[state.mode];
+    sw.innerHTML = `<li class="st-lgj">${m.j}</li>` + m.lg.map((l) => `<li><i class="st-k ${l[2]}"></i>${l[1]}</li>`).join("") + `<li><i class="st-k st-kn"></i>${BELUM}</li>`;
+  }
+  const kanvas = document.createElement("canvas"); kanvas.width = kanvas.height = 1;
+  const rgbEl = (el) => { const x = kanvas.getContext("2d", { willReadFrequently: true }); x.clearRect(0, 0, 1, 1); x.fillStyle = getComputedStyle(el).backgroundColor; x.fillRect(0, 0, 1, 1); const [r, g, b] = x.getImageData(0, 0, 1, 1).data; return `rgb(${r}, ${g}, ${b})`; };
+  function ekspresiMode() {
+    const sws = [...sw.querySelectorAll(".st-k")], ex = ["match", ["coalesce", ["feature-state", "s"], -1]];
+    MODE[state.mode].lg.forEach((l, i) => ex.push(l[0], rgbEl(sws[i])));
+    ex.push(rgbEl(sws[sws.length - 1]));
+    return ex;
+  }
+  legenda();
 
   /* ---------- garis waktu ---------- */
   const tandaiHari = () => bawah.querySelectorAll(".st-hari [data-h]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.h === state.h)));
   const berhenti = () => { clearInterval(putar); putar = 0; bawah.querySelector(".st-play").setAttribute("aria-pressed", "false"); };
-  function setHari(h) { state.h === h || ctx.ubah({ h }); tandaiHari(); nanti(segarkan); }
+  function setHari(h) { state.h === h || ubahS({ h }); tandaiHari(); nanti(segarkan); }
   bawah.addEventListener("click", (e) => {
     const t = e.target.closest("button"); if (!t) return;
     if (t.dataset.h) { berhenti(); setHari(t.dataset.h); }
@@ -76,15 +110,50 @@ export function pasang(ctx) {
   const chip = (j, t) => { const c = DP.chipFakta(j); return `<span class="st-chip ${c.kelas}"${t ? ` title="${esc(t)}"` : ""}>${c.label}</span>`; };
   const stp = (s, tip) => { const ok = Number.isInteger(s) && s >= 0; return `<span class="st-st st-${ok ? s : "n"}" title="${esc(tip || DP.tooltip(ok ? s : null))}">${ok ? DP.TINGKAT[s] : BELUM}</span>`; };
 
-  let rows = [];
+  let rows = [], sf = null;
+  /** status terfilter provinsi (daftar, angka ringkas); peta tetap nasional */
+  const statusF = () => {
+    const p = state.prov; if (!p) return D.status;
+    if (sf?.p !== p || sf.d !== D.status) sf = { p, d: D.status, s: { ...D.status, kab: Object.fromEntries(Object.entries(D.status.kab).filter(([k]) => k.startsWith(p))) } };
+    return sf.s;
+  };
   function hitung() {
-    rows = DP.urutKab(D.status, kodeB(), hVal(), D.kelas);
-    sBy = new Map(rows.map((r) => [r.kab, r.s]));
+    const semua = DP.urutKab(D.status, kodeB(), hVal(), D.kelas);
+    rows = state.prov ? semua.filter((r) => r.kab.startsWith(state.prov)) : semua;
+    sBy = new Map(semua.map((r) => [r.kab, r.s]));
   }
+  const RANKK = { rendah: 1, sedang: 2, tinggi: 3 };
+  /** kelas bahaya kab (1..3) menurut pilihan baseline atau proyeksi; tertinggi dari enam bahaya desa bila bahaya belum dipilih; -1 belum terukur */
+  function nilaiPotensi(k) {
+    const kk = D.kelas?.kab?.[k], K = kodeB(); if (!kk) return -1;
+    let m = -1;
+    for (const c of K ? (DESA6.includes(K.toLowerCase()) ? [K] : []) : DESA6.map((x) => x.toUpperCase())) {
+      const kl = state.kls === "proyeksi" ? DP.kelasKab(kk.proyeksi?.[c]) : (kk.K?.[c] ?? DP.kelasKab(kk.baseline?.[c]));
+      m = Math.max(m, RANKK[kl] || -1);
+    }
+    return m;
+  }
+  /** tingkat E (0..3) dari entri status; kosong bukan nol */
+  function nilaiPemicu(k) {
+    const a = D.status.kab[k], K = kodeB(), h = hVal(); if (!a) return -1;
+    let m = -1;
+    for (const c of K ? [K] : Object.keys(a)) {
+      const e = a[c]; if (!e || typeof e !== "object") continue;
+      const v = e.E ?? e.e, w = Array.isArray(v) ? (h === "ringkas" ? Math.max(...v.filter((x) => x != null && Number.isFinite(+x)).map(Number), -1) : v[h]) : v;
+      if (w != null && Number.isFinite(+w) && +w >= 0) m = Math.max(m, Math.min(3, Math.round(+w)));
+    }
+    return m;
+  }
+  const nilaiKab = (k) => (state.mode === "potensi" ? nilaiPotensi(k) : state.mode === "pemicu" ? nilaiPemicu(k) : sBy.get(k) ?? -1);
   function terapkan() {
     if (!peta || !peta.getSource("st-kab")) return;
-    for (const k of kodeKab) { const v = sBy.get(k) ?? -1; if (sTerap.get(k) !== v) { sTerap.set(k, v); peta.setFeatureState({ source: "st-kab", id: k }, { s: v }); } } // lewati kab yang statusnya tidak berubah
+    for (const k of kodeKab) { const v = nilaiKab(k); if (sTerap.get(k) !== v) { sTerap.set(k, v); peta.setFeatureState({ source: "st-kab", id: k }, { s: v }); } } // lewati kab yang nilainya tidak berubah
     tandaPilih();
+  }
+  /** ganti mode: warna lapis dari legenda baru, nilai kab dihitung ulang */
+  function gantiMode() {
+    if (peta?.getLayer("st-isi")) peta.setPaintProperty("st-isi", "fill-color", ekspresiMode());
+    sTerap.clear(); terapkan();
   }
   function tandaPilih() {
     if (!peta || !peta.getSource("st-kab")) return;
@@ -99,7 +168,7 @@ export function pasang(ctx) {
     const w = warnaToken;
     m.addSource("st-kab", { type: "geojson", data: fc, promoteId: "kab" });
     const vis = kini ? "visible" : "none";
-    m.addLayer({ id: "st-isi", type: "fill", source: "st-kab", layout: { visibility: vis }, paint: { "fill-color": ["match", ["coalesce", ["feature-state", "s"], -1], 0, w("--dp-0"), 1, w("--dp-1"), 2, w("--dp-2"), 3, w("--dp-3"), w("--dp-belum")], "fill-opacity": 0.62 } });
+    m.addLayer({ id: "st-isi", type: "fill", source: "st-kab", layout: { visibility: vis }, paint: { "fill-color": ekspresiMode(), "fill-opacity": 0.62 } });
     m.addLayer({ id: "st-garis", type: "line", source: "st-kab", layout: { visibility: vis }, paint: { "line-color": w("--ink2"), "line-width": ["case", ["boolean", ["feature-state", "pilih"], false], 3, 0.5] } });
     if (!m._stKlik) {
       m._stKlik = true;
@@ -129,6 +198,7 @@ export function pasang(ctx) {
     kodeKab = fitur.map((f) => f.properties.kab);
     fc = { type: "FeatureCollection", features: fitur };
     if (peta) pasangLapis(peta);
+    if (state.prov && !state.kab && kini) fitProv(state.prov);
   }
 
   /* ---------- panel: daftar ---------- */
@@ -136,16 +206,22 @@ export function pasang(ctx) {
   lst.className = "st-lst"; kv.className = "st-kv"; kv.hidden = true;
 
   const kotakHtml = (r) => [["Awas", r.awas, 3], ["Siaga", r.siaga, 2], ["Waspada", r.waspada, 1], ["Normal", r.normal, 0], [BELUM, r.belum, "n"]].map((k) => `<div class="st-ang"><b>${angka(k[1])}</b><span><i class="st-k st-k${k[2]}"></i>${k[0]}</span></div>`).join("");
+  /** kepala: status tertinggi di cakupan terpilih; hanya dari hitungan terukur, tanpa vonis */
+  function kepalaHtml(r) {
+    const t = r.awas ? 3 : r.siaga ? 2 : r.waspada ? 1 : r.normal ? 0 : null;
+    if (t == null) return `<p class="st-top-j st-top-n">Status prakiraan belum terukur</p><div class="st-baris-chip">${chip("hipotesis", "Status prakiraan dari model Centurisk97; belum lolos uji balik")}</div>`;
+    return `<p class="st-top-j" style="--w:var(--dp-${t})"><i class="st-k st-k${t}"></i>Status tertinggi ${TNG[t]}</p><p class="st-top-s">${angka(r.awas + r.siaga)} kab/kota Siaga sampai Awas, ${angka(r.waspada)} Waspada</p><div class="st-baris-chip">${chip("hipotesis", "Status prakiraan dari model Centurisk97; belum lolos uji balik")}</div>`;
+  }
   /** ringan = saat diputar: hanya angka kotak; daftar dan pil digambar sekali setelah putar berhenti */
   function renderDaftar(ringan) {
-    const K = kodeB(), h = hVal(), r = DP.ringkas(D.status, h, K ? [K] : undefined);
+    const K = kodeB(), h = hVal(), SF = statusF(), r = DP.ringkas(SF, h, K ? [K] : undefined);
     const ang = lst.querySelector(".st-angka");
-    if (ringan && ang) { ang.innerHTML = kotakHtml(r); return; }
-    const jml = (c) => Object.values(D.status.kab).filter((a) => DP.statusHari(a[c], h) >= 1).length;
-    const semua = Object.values(D.status.kab).filter((a) => BHY.some((b) => DP.statusHari(a[b[0].toUpperCase()], h) >= 1)).length;
+    if (ringan && ang) { ang.innerHTML = kotakHtml(r); lst.querySelector(".st-top").innerHTML = kepalaHtml(r); return; }
+    const jml = (c) => Object.values(SF.kab).filter((a) => DP.statusHari(a[c], h) >= 1).length;
+    const semua = Object.values(SF.kab).filter((a) => BHY.some((b) => DP.statusHari(a[b[0].toUpperCase()], h) >= 1)).length;
     const pil = [["", "Semua", '<path d="M4 6h16M4 12h16M4 18h16"/>', semua], ...BHY.map((b) => [b[0], b[1], b[2], jml(b[0].toUpperCase())])];
-    lst.innerHTML = `<div class="st-angka" role="group" aria-label="Jumlah kab/kota per status">${kotakHtml(r)}</div>
-<div class="st-baris-chip">${chip("hitung", "Jumlah kab/kota dihitung dari status per kab")}${chip("hipotesis", "Status prakiraan dari model Centurisk97; belum lolos uji balik")}</div>
+    lst.innerHTML = `<div class="st-top" role="status">${kepalaHtml(r)}</div><div class="st-angka" role="group" aria-label="Jumlah kab/kota per status">${kotakHtml(r)}</div>
+<div class="st-baris-chip">${chip("hitung", "Jumlah kab/kota dihitung dari status per kab")}</div>
 <div class="st-bhy" role="group" aria-label="Bahaya">${pil.map((p) => `<button type="button" data-b="${p[0]}" aria-pressed="${state.b === p[0]}" title="Jumlah kab/kota Waspada ke atas: ${angka(p[3])}">${ik(p[2])}<span>${p[1]}</span><em>${angka(p[3])}</em></button>`).join("")}</div>
 <ol class="st-daftar" aria-label="Kab/kota urut prioritas"></ol>`;
     const li = rows.map((x) => `<li><button type="button" class="st-br" data-kab="${esc(x.kab)}"><span class="st-nm"><b>${esc(x.nama)}</b><small>${esc(PROV[x.kab.slice(0, 2)] || "")}${K ? "" : ", " + NAMA[x.kode.toLowerCase()]}</small></span>${stp(x.s >= 0 ? x.s : null)}</button></li>`);
@@ -155,7 +231,7 @@ export function pasang(ctx) {
   }
 
   /* ---------- panel: kab ---------- */
-  const kartu = (ey, judul, isi) => `<section class="ex ex-std st-kartu"><header class="ex-hd"><span class="ex-ey">${ey}</span><div class="ex-jd"><h3>${judul}</h3></div></header><div class="ex-bd">${isi}</div></section>`;
+  const kartu = (ey, judul, isi, at = "") => `<section${at} class="ex ex-std st-kartu"><header class="ex-hd"><span class="ex-ey">${ey}</span><div class="ex-jd"><h3>${judul}</h3></div></header><div class="ex-bd">${isi}</div></section>`;
   const tabel = (kep, br, kls = "") => `<div class="ex-tabel ${kls}"><table><thead><tr>${kep.map((c) => `<th${c[1] ? ` title="${esc(c[1])}"` : ""}>${c[0]}</th>`).join("")}</tr></thead><tbody>${br.join("")}</tbody></table></div>`;
 
   function seksiStatus(k) {
@@ -171,16 +247,16 @@ export function pasang(ctx) {
   }
   function seksiKelas(k) {
     const kk = D.kelas?.kab?.[k];
-    if (!kk) return kartu("BNPB", "Kelas bahaya desa", `<p class="st-kosong">${BELUM}</p>${chip("belum")}`);
+    if (!kk) return kartu("BNPB", "Kelas bahaya desa", `<p class="st-kosong">${BELUM}</p>${chip("belum")}`, ' data-sek="kelas"');
+    const pr = state.kls === "proyeksi", cat = "Proyeksi, tahun dan skenario tidak tercantum di sumber";
     const br = DESA6.map((c) => {
-      const b = kk.baseline?.[c.toUpperCase()], p = kk.proyeksi?.[c.toUpperCase()];
-      const K = DP.kelasKab(b);
-      return `<tr><th scope="row">${NAMA[c]}${K ? `<small>kelas kab ${K}</small>` : ""}</th>${b ? `<td>${angka(b[3])}</td><td>${angka(b[2])}</td><td>${angka(b[1])}</td><td>${angka(b[0])}</td>` : '<td colspan="4" class="st-kosong">' + BELUM + "</td>"}<td>${p ? angka(p[3]) : BELUM}</td></tr>`;
+      const b = kk.baseline?.[c.toUpperCase()], p = kk.proyeksi?.[c.toUpperCase()], u = pr ? p : b, lain = pr ? b : p;
+      const K = DP.kelasKab(u);
+      return `<tr><th scope="row">${NAMA[c]}${K ? `<small>kelas kab ${K}</small>` : ""}</th>${u ? `<td>${angka(u[3])}</td><td>${angka(u[2])}</td><td>${angka(u[1])}</td><td>${angka(u[0])}</td>` : '<td colspan="4" class="st-kosong">' + BELUM + "</td>"}<td>${lain ? angka(lain[3]) : BELUM}</td></tr>`;
     });
-    const cat = "Proyeksi, tahun dan skenario tidak tercantum di sumber";
-    return kartu("BNPB", "Kelas bahaya desa", `<p class="st-cat">${chip("sumber", "BNPB InaRISK, kelas bahaya desa")} ${chip("hitung", "Kelas kab dihitung dari sebaran kelas desa")}</p>${tabel([["Bahaya"], ["Tinggi"], ["Sedang"], ["Rendah"], ["Belum terukur", "Desa tanpa kelas di sumber"], ["Proyeksi tinggi", cat]], br, "st-lebar")}
-<p class="st-cat">Jumlah desa per kelas baseline dari ${angka(kk.n)} desa. Kolom proyeksi: ${cat.toLowerCase()}.</p>
-<details class="st-desa" data-k="${k}"><summary>Daftar desa</summary><div class="st-desa-isi"></div></details>`);
+    return kartu("BNPB", "Kelas bahaya desa", `<p class="st-cat">${chip("sumber", "BNPB InaRISK, kelas bahaya desa")} ${chip("hitung", "Kelas kab dihitung dari sebaran kelas desa")}${pr ? chip("hipotesis", cat) : ""}</p>${tabel([["Bahaya"], ["Tinggi"], ["Sedang"], ["Rendah"], ["Belum terukur", "Desa tanpa kelas di sumber"], [pr ? "Baseline tinggi" : "Proyeksi tinggi", pr ? "Jumlah desa kelas tinggi pada baseline" : cat]], br, "st-lebar")}
+<p class="st-cat">Jumlah desa per kelas ${pr ? "proyeksi" : "baseline"} dari ${angka(kk.n)} desa. ${pr ? cat + "." : "Kolom proyeksi: " + cat.toLowerCase() + "."} Status prakiraan tetap memakai baseline.</p>
+<details class="st-desa" data-k="${k}"><summary>Daftar desa</summary><div class="st-desa-isi"></div></details>`, ' data-sek="kelas"');
   }
   function seksiBmkg() { return kartu("BMKG", "Prakiraan BMKG per desa", '<div class="st-bm" aria-live="polite"><p class="st-info">Memuat prakiraan desa</p></div>'); }
   function seksiDebit(k) {
@@ -192,10 +268,11 @@ export function pasang(ctx) {
   function bukaKab(k) {
     const kk = D.kelas?.kab?.[k];
     kv.innerHTML = `<div class="st-kep"><button type="button" class="st-balik" data-balik>${ik('<path d="M15 6l-6 6 6 6"/>')}<span>Kembali ke daftar</span></button><h3>${esc(nmKab(k))}</h3><small>${esc(PROV[k.slice(0, 2)] || "")}</small></div>${seksiStatus(k)}${seksiKelas(k)}${seksiBmkg()}${seksiDebit(k)}`;
-    kv.querySelector(".st-desa")?.addEventListener("toggle", (e) => { if (e.target.open) desaBuka(e.target); }, { once: true });
+    pasangDesa();
     muatBmkg(k, 1);
   }
 
+  const pasangDesa = () => kv.querySelector(".st-desa")?.addEventListener("toggle", (e) => { if (e.target.open) desaBuka(e.target); }, { once: true });
   /* daftar desa kab: dimuat saat dibuka, disaring dan dipotong 50 baris */
   async function desaBuka(det) {
     const k = det.dataset.k, p = k.slice(0, 2), isi = det.querySelector(".st-desa-isi");
@@ -208,9 +285,9 @@ export function pasang(ctx) {
     const tb = isi.querySelector(".st-desa-tb"), cari = isi.querySelector("input");
     const gambar = () => {
       const i = DESA6.indexOf(c), q = cari.value.trim().toLowerCase();
-      const ok = baris.filter((r) => !q || r[1].toLowerCase().includes(q) || r[2].toLowerCase().includes(q)).sort((a, b) => b[3][i] - a[3][i] || a[1].localeCompare(b[1], "id"));
+      const ok = baris.filter((r) => !q || r[1].toLowerCase().includes(q) || r[2].toLowerCase().includes(q)).sort((a, b) => b[state.kls === "proyeksi" ? 4 : 3][i] - a[state.kls === "proyeksi" ? 4 : 3][i] || a[1].localeCompare(b[1], "id"));
       const br = ok.slice(0, 50).map((r) => `<tr><th scope="row">${esc(r[1])}</th><td>${esc(r[2])}</td><td>${KELAS[+r[3][i]] || BELUM}</td><td>${KELAS[+r[4][i]] || BELUM}</td></tr>`);
-      tb.innerHTML = `<p class="st-cat">${chip("sumber", "BNPB InaRISK, kelas bahaya desa")}</p>` + (br.length ? tabel([["Desa"], ["Kecamatan"], ["Baseline"], ["Proyeksi", "Proyeksi, tahun dan skenario tidak tercantum di sumber"]], br, "st-lebar") : '<p class="st-kosong">Tidak ada desa yang cocok.</p>') + `<p class="st-cat">Menampilkan ${angka(Math.min(50, ok.length))} dari ${angka(ok.length)} desa; urut kelas tertinggi.</p>`;
+      tb.innerHTML = `<p class="st-cat">${chip("sumber", "BNPB InaRISK, kelas bahaya desa")}</p>` + (br.length ? tabel([["Desa"], ["Kecamatan"], ["Baseline"], ["Proyeksi", "Proyeksi, tahun dan skenario tidak tercantum di sumber"]], br, "st-lebar") : '<p class="st-kosong">Tidak ada desa yang cocok.</p>') + `<p class="st-cat">Menampilkan ${angka(Math.min(50, ok.length))} dari ${angka(ok.length)} desa; urut kelas ${state.kls === "proyeksi" ? "proyeksi" : "baseline"} tertinggi.</p>`;
     };
     isi.querySelector("select").addEventListener("change", (e) => { c = e.target.value; nanti(gambar); });
     let t = 0; cari.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => nanti(gambar), 150); });
@@ -246,13 +323,68 @@ export function pasang(ctx) {
 <p class="st-cat">Prakiraan ${lbl}.</p>${bm.sebagian || bm.galat ? '<p class="st-cat" role="status">Sebagian desa belum dimuat.</p>' : ""}${bm.lagi ? '<button type="button" class="st-ulang" data-lagi>Muat 50 desa berikutnya</button>' : ""}${bm.galat ? '<button type="button" class="st-ulang" data-ulang>Coba lagi</button>' : ""}`;
   }
 
+  /* ---------- filter, kelas, mode ---------- */
+  const SEG = (nama, attr, daftar, aktif) => `<div class="st-seg" role="group" aria-label="${nama}">${daftar.map((d) => `<button type="button" data-${attr}="${d[0]}" aria-pressed="${d[0] === aktif}" title="${esc(d[2] || "")}">${d[1]}</button>`).join("")}</div>`;
+  function opsiKab() {
+    const p = state.prov || state.kab.slice(0, 2), s = bar.querySelector('[data-f="kab"]');
+    const kab = p ? Object.keys(D.kelas?.kab || {}).filter((k) => k.startsWith(p)).sort((a, b) => nmKab(a).localeCompare(nmKab(b), "id")) : [];
+    s.disabled = !kab.length;
+    s.innerHTML = `<option value="">Semua kab/kota</option>` + kab.map((k) => `<option value="${k}">${esc(nmKab(k))}</option>`).join("");
+    s.value = kab.includes(state.kab) ? state.kab : "";
+  }
+  function tandaiBar() {
+    for (const b of bar.querySelectorAll("[data-kls]")) b.setAttribute("aria-pressed", String(b.dataset.kls === state.kls));
+    for (const b of bar.querySelectorAll("[data-mode]")) b.setAttribute("aria-pressed", String(b.dataset.mode === state.mode));
+    bar.querySelector('[data-f="prov"]').value = state.prov;
+    opsiKab();
+  }
+  function bangunBar() {
+    const prov = [...new Set(Object.keys(D.status.kab).map((k) => k.slice(0, 2)))].filter((p) => PROV[p]).sort();
+    bar.innerHTML = `<div class="st-flt-r"><label><span>Provinsi</span><select data-f="prov"><option value="">Semua provinsi</option>${prov.map((p) => `<option value="${p}">${PROV[p]}</option>`).join("")}</select></label><label><span>Kab/kota</span><select data-f="kab"></select></label></div>
+${SEG("Kelas bahaya", "kls", [["baseline", "Baseline", "Kelas bahaya desa BNPB saat ini"], ["proyeksi", "Proyeksi", "Proyeksi, tahun dan skenario tidak tercantum di sumber"]], state.kls)}
+${SEG("Mode peta", "mode", [["status", "Status", "Status prakiraan hari terpilih"], ["potensi", "Potensi", "Kelas bahaya kab/kota"], ["pemicu", "Pemicu", "Tingkat pemicu per hari"]], state.mode)}`;
+    tandaiBar();
+  }
+  function fitProv(p) {
+    if (!peta) return;
+    if (!p) return peta.fitBounds(ctx.kotakIndonesia(), { padding: ctx.padPeta(), duration: 500 });
+    let a = 180, b = 90, c = -180, d = -90;
+    for (const [k, g] of gm) if (k.startsWith(p)) { const [[x0, y0], [x1, y1]] = bbox(g.coordinates); a = Math.min(a, x0); b = Math.min(b, y0); c = Math.max(c, x1); d = Math.max(d, y1); }
+    if (c >= a) peta.fitBounds([[a, b], [c, d]], { padding: ctx.padPeta(), maxZoom: 9, duration: 500 });
+  }
+  bar.addEventListener("change", (e) => {
+    const f = e.target.dataset.f; if (!f || !D) return;
+    if (f === "prov") {
+      ubahS({ prov: e.target.value, kab: "" }); opsiKab(); // urgent: pilihan dan opsi kab; hitung dan gambar ditunda
+      nanti(() => { hitung(); terapkan(); tampil(); tandaPilih(); fitProv(state.prov); panel.scrollTop = 0; });
+    } else if (e.target.value) pilihKab(e.target.value, true);
+    else { ubahS({ kab: "" }); nanti(() => { tampil(); tandaPilih(); }); }
+  });
+  bar.addEventListener("click", (e) => {
+    const t = e.target.closest("button"); if (!t || !D) return;
+    if (t.dataset.kls) {
+      if (state.kls === t.dataset.kls) return;
+      ubahS({ kls: t.dataset.kls }); tandaiBar();
+      nanti(() => {
+        if (state.mode === "potensi") { sTerap.clear(); terapkan(); }
+        const sek = kv.querySelector('[data-sek="kelas"]');
+        if (sek && state.kab) { sek.outerHTML = seksiKelas(state.kab); pasangDesa(); }
+      });
+    } else if (t.dataset.mode) {
+      if (state.mode === t.dataset.mode) return;
+      ubahS({ mode: t.dataset.mode }); tandaiBar(); legenda();
+      nanti(gantiMode);
+    }
+  });
+
   /* ---------- tampilan, klik ---------- */
   function tampil() {
+    opsiKab();
     lst.hidden = !!state.kab; kv.hidden = !state.kab;
     if (state.kab) bukaKab(state.kab); else { renderDaftar(); }
   }
   function pilihKab(k, dariDaftar) {
-    ctx.ubah({ kab: k });
+    ubahS({ kab: k });
     lst.hidden = true; kv.hidden = false; kv.innerHTML = '<p class="st-info" role="status">Memuat kab/kota</p>'; // urgent: daftar hilang, kerangka tampil
     nanti(() => { tampil(); tandaPilih(); const g = dariDaftar && gm.get(k); if (g) peta?.fitBounds(bbox(g.coordinates), { padding: ctx.padPeta(), maxZoom: 9, duration: 500 }); kv.querySelector("[data-balik]")?.focus({ preventScroll: true }); panel.scrollTop = 0; });
   }
@@ -261,13 +393,17 @@ export function pasang(ctx) {
     const t = e.target.closest("button"); if (!t) return;
     if (t.dataset.b != null && t.closest(".st-bhy")) {
       for (const s of t.parentElement.children) s.setAttribute("aria-pressed", String(s === t));
-      ctx.ubah({ b: t.dataset.b }); nanti(segarkan);
+      ubahS({ b: t.dataset.b }); nanti(segarkan);
     } else if (t.dataset.kab) pilihKab(t.dataset.kab, true);
-    else if ("balik" in t.dataset) { ctx.ubah({ kab: "" }); nanti(() => { tampil(); tandaPilih(); }); }
+    else if ("balik" in t.dataset) { ubahS({ kab: "" }); nanti(() => { tampil(); tandaPilih(); }); }
     else if ("ulang" in t.dataset && bm) muatBmkg(bm.k, bm.hal || 1);
     else if ("lagi" in t.dataset && bm) muatBmkg(bm.k, bm.hal + 1);
   });
-  addEventListener("popstate", () => { if (D && kini) { tandaiHari(); nanti(() => { hitung(); terapkan(); tampil(); tandaPilih(); }); } });
+  addEventListener("popstate", () => {
+    if (!D || !kini) return;
+    Object.assign(state, bacaEks(new URLSearchParams(location.hash.split("?")[1] || ""))); tandaiHari(); tandaiBar(); legenda();
+    nanti(() => { hitung(); gantiMode(); tampil(); tandaPilih(); });
+  });
 
   async function muat() {
     try { await muatDP(); } catch { panel.innerHTML = '<p class="po-galat" role="alert">Bagian ini belum bisa dimuat. Muat ulang halaman untuk mencoba lagi.</p>'; return; }
@@ -275,8 +411,8 @@ export function pasang(ctx) {
     const [status, kelas, debit] = await Promise.all([ambil("/api/dampak-peringatan/status"), ambil("/data/kelas_desa_bnpb.json"), ambil("/banjir/data/debit_kab.json")]);
     if (!status?.kab) { panel.innerHTML = `<h3 class="st-j">${BELUM}</h3><p class="st-info" role="alert">Status prakiraan belum bisa dimuat. Tidak ada angka ditampilkan.</p>`; return; }
     D = { status, kelas, debit };
-    panel.replaceChildren(lst, kv);
-    hitung(); tampil(); tandaiHari();
+    panel.replaceChildren(bar, lst, kv);
+    bangunBar(); hitung(); tampil(); tandaiHari();
     if (kelas?.kab) muatGeo();
   }
   tandaiHari();
@@ -285,6 +421,7 @@ export function pasang(ctx) {
     kini = on;
     if (!on) berhenti();
     else { tandaiHari(); if (D) nanti(segarkan); }
+    if (on && peta?.getLayer("st-isi")) nanti(() => peta.setPaintProperty("st-isi", "fill-color", ekspresiMode())); // warna dibaca ulang: CSS bisa terlambat dimuat saat lapis dipasang
     if (peta?.getLayer("st-isi")) for (const i of ["st-isi", "st-garis"]) peta.setLayoutProperty(i, "visibility", on ? "visible" : "none");
   } };
   return main;

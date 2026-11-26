@@ -27,7 +27,7 @@ const obj = spek => v => {
 };
 const peta = (pola, f) => obj({[pola]: f});
 const KODE = "^[A-Z]{3}$", HITUNG = peta("^[a-z_]{1,40}$", N);   // hitungan per sumber/kelas: angka atau null, tidak pernah nama
-const STATUS = obj({s: N, nama: P, pemicu: P, sebagian: BOOL, hari: larik(N), hipotesis: BOOL, segar: BOOL, r_bmkg: N});
+const STATUS = obj({s: N, nama: P, pemicu: P, sebagian: BOOL, hari: larik(N), e: larik(N), hipotesis: BOOL, segar: BOOL, r_bmkg: N});   // e: tingkat pemicu per hari (kriteria v3), mode peta Pemicu
 const BAHAYA = obj({r_bmkg: N, penduduk_area_peringatan: HITUNG, jiwa_kelas: HITUNG, kelas_sampel: v => P(v) ?? HITUNG(v), alasan: P});
 const KAB = peta("^\\d{4}$", obj({nama: P, terliput: BOOL, segar: BOOL, sebagian: BOOL, pemicu: P, hari: larik(N), hipotesis: BOOL, catatan: P,
   status: peta(KODE, STATUS), bahaya: peta(KODE, BAHAYA), penduduk_area_peringatan: HITUNG, jiwa_kelas: HITUNG, fasilitas: HITUNG}));
