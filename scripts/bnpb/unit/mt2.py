@@ -4,7 +4,8 @@ Langkah jalan.py (bulanan). Skor satu rumus MB-4 (skor.py), komponen bawaan ALGO
   risiko          persentil +1  maks_b terpapar.json kab[k].h[b][2] (jiwa terpapar kelas tinggi)          proksi
   celah_kapasitas persentil +1  1 - ikd.json kab[k].c (raster, bukan IKD resmi)                         proksi
   kejadian        persentil +1  jumlah kejadian DIBI 5 tahun kalender lengkap terakhir, semua jenis       resmi, dijumlah kita
-Kab yang tidak pernah muncul di DIBI 2015-2025: kejadian None (kode tak cocok bukan nol kejadian).
+Kab yang tidak pernah muncul di DIBI 2015-2025: kejadian None, bukan nol. Kode BPS DIBI sudah dipadankan ke Kemendagri di
+dibi_kab_tahun.json (risiko_hvc.py, padanan_kab_dibi.py); sisa 26 Nov 2026: 9106, 9208, 9506.
 Kuartil atas = S >= persentil 75 (inklusif, ALGORITMA sec 0.6) dari S yang tidak None.
 Kegiatan 1 sampai 3 per kab dari mitigasi_peta.json, urut persentil H bahaya terkait (risiko_hvc.json H per jenis, H > 0);
 02.01.11 hanya bila longsor DIBI tercatat di >= tahun_min dari jendela tahun. Kegiatan tanpa kode 02.01.xx ditolak saat muat.
@@ -30,7 +31,7 @@ DATA = os.path.join(AKAR, "public", "data", "bnpb")
 PETA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mitigasi_peta.json")
 KRITERIA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "lab_kriteria", "mb4.json")  # dikunci, uji belum jalan
 ASUMSI = ["Asumsi: belum lulus uji balik", "Asumsi: bobot sementara"]  # ALGORITMA 5.4, 5.7
-KODE_WILAYAH = "kejadian belum ada data (kode wilayah)"
+KODE_WILAYAH = "kejadian tidak tercatat DIBI 2015-2025"
 KODE = re.compile(r"^02\.01\.\d{2}$")
 LABEL_WAJIB = "usulan analis, bukan rekomendasi resmi"
 STATUS_UJI = "belum diuji balik (ALGORITMA 5.7); hipotesis"
@@ -139,8 +140,8 @@ def _kartu(baris, p75, peta, nama):
                {"k": "p75", "label": "Batas kuartil atas skor", "nilai": p75, "desimal": 3},
                {"k": "data_kurang", "label": "Kab/kota data kurang", "nilai": sum(b["skor"] is None for b in baris)},
                {"k": "tanpa_kegiatan", "label": "Kuartil atas tanpa kegiatan terpetakan", "nilai": sum(not b["kegiatan"] for b in atas)},
-               {"k": "kode_wilayah", "label": "Kab/kota tanpa data kejadian (kode wilayah)", "nilai": sum(b["kejadian_kode_wilayah"] for b in baris),
-                "title": "kode kab tidak ada di DIBI; skor dihitung dari risiko dan celah kapasitas saja"},
+               {"k": "kode_wilayah", "label": "Kab/kota tanpa catatan kejadian DIBI", "nilai": sum(b["kejadian_kode_wilayah"] for b in baris),
+                "title": "kab tanpa satu pun baris DIBI 2015-2025 (bukan nol kejadian); skor dihitung dari risiko dan celah kapasitas saja"},
                {"k": "kode_wilayah_atas", "label": "Di antaranya di kuartil atas", "nilai": sum(b["kejadian_kode_wilayah"] for b in atas)}],
         kolom=[{"k": "no", "label": "No", "angka": True}, {"k": "kab", "label": "Kab/kota"},
                {"k": "skor", "label": "Skor MB-4", "title": "Rata-rata geometrik persentil risiko, celah kapasitas, kejadian; bobot sama rata (asumsi); " + STATUS_UJI, "angka": True, "desimal": 3},
@@ -233,6 +234,7 @@ def cek():
     assert k["asumsi"] == ASUMSI and d["uji_balik"]["kriteria_sha"] and d["uji_balik"]["lulus"] is None
     kw = [x for x in d["kab"] if x["kejadian_kode_wilayah"]]
     assert kw and all("kejadian" in x["hilang"] for x in kw)
+    assert docs["dibi_kab_tahun"].get("kode") == "kemendagri" and len(kw) <= 3, [x["kab"] for x in kw]   # kode BPS mentah = 35 kab
     sel = {x["kab"]: x["catatan"] for x in k["baris"]}
     assert all(sel[nama.get(x["kab"], x["kab"])] == KODE_WILAYAH for x in kw if x["kuartil_atas"])
     assert tahun_akhir_data(dibi) == 2024 and d["jendela_kejadian"][1] == tahun_akhir_data(docs["dibi_kab_tahun"]["baris"])

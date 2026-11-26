@@ -7,7 +7,8 @@ Versi S tanpa stok: stok INALOGPAL gudang_sumbar menyusul (RU-036), jadi tiap ka
 Uji balik (ALGORITMA sec 6.2, RU sec 2.3) adalah uji asumsi pasal, bukan klaim prediksi; tidak menggerbangi kartu.
   rasio_kt = mengungsi_kt / n_k, DIBI 2015-2025, penduduk 2026 untuk semua tahun (berlabel).
   Dua penyebut berdampingan: kab-tahun "0 bila tidak tercatat DIBI" dan kab-tahun berdata; kab tanpa kode DIBI cocok
-  (35 kab, Papua pemekaran) keluar dari keduanya. Penyebut riset/4 (514 kab x 11 tahun) hanya pembanding sidik beku.
+  (3 kab: 9106, 9208, 9506, tanpa satu pun baris DIBI 2015-2025) keluar dari keduanya; kode BPS DIBI sudah dipetakan ke
+  Kemendagri oleh risiko_hvc.py (padanan_kab_dibi.py), jadi sisa ini bukan salah kode. Penyebut riset/4 (514 kab x 11 tahun) hanya pembanding sidik beku.
   Rasio dipangkas di persentil 99 kab-tahun berdata (inklusif, interpolasi linear ALGORITMA sec 0.6) sebelum rasio_maks per kab.
   Masukan beku: sha256 dibi_kab_tahun.json dicatat; --cek mencocokkan reproduksi riset/4 hanya bila sha sama,
   selain itu mencetak "masukan berubah" (tidak merah diam-diam).
@@ -28,9 +29,12 @@ import rapor  # noqa: E402
 AKAR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 DATA = os.path.join(AKAR, "public", "data", "bnpb")
 TAHUN = range(2015, 2026)
-# reproduksi riset/4 P1 atas masukan beku ini (DT sec 5.7 uji_balik_nasional); data baru -> "masukan berubah"
-BEKU = {"sha256": "6c2a50bd5e28ed67d39b5b3bbac2ecd64c1fdd0e65343bb3c92a6d0d2fbd0d1f",
-        "kab_tahun": 5654, "lewat_1pct": 209, "lewat_4pct": 85, "p95": 0.0058, "p99": 0.071}
+# reproduksi riset/4 P1 atas masukan beku ini (DT sec 5.7 uji_balik_nasional); data baru -> "masukan berubah".
+# Sidik 26 Nov 2026: dibi_kab_tahun.json berkode Kemendagri. Angka riset/4 lama (sha 6c2a50bd5e28: lewat 1% 209, 4% 85, p95 0,0058,
+# p99 0,071, 35 kab tanpa kode) dihitung atas kode BPS mentah yang menaruh kejadian satu kab di kab lain; jangan dikutip lagi.
+BEKU = {"sha256": "80cd07b17be0e5f72a7fe3439f7a57ca9b62b8ae1752f39c30cccd7487fe9b33",
+        "kab_tahun": 5654, "lewat_1pct": 193, "lewat_4pct": 78, "p95": 0.0054, "p99": 0.0584,
+        "berdata": 4571, "tanpa_kode": ["9106", "9208", "9506"]}
 SKENARIO = ("pr1", "pr4", "pr_risiko")
 BARANG = ("pangan_orang_hari", "beras_kg", "air_minum_l", "sandang_harfiah", "sandang_keluarga", "balita_orang_hari")
 
@@ -65,8 +69,8 @@ def uji_balik(kab, baris):
     Dua penyebut berdampingan (RU sec 2.3):
       nol_isi  kab-tahun kab yang punya kode DIBI cocok; tahun tanpa baris = 0 (tidak tercatat DIBI)
       berdata  kab-tahun yang punya baris DIBI; p99 penyebut ini memangkas rasio per kab
-    Kab tanpa satu pun baris DIBI (kode wilayah tak cocok, mis. Papua pemekaran) keluar dari kedua penyebut, sampai padanan
-    kode lama ke baru ada di pembuat dibi_kab_tahun.json. riset4 = 514 kab x 11 tahun, hanya pembanding sidik beku."""
+    Kab tanpa satu pun baris DIBI keluar dari kedua penyebut (None, bukan 0); kode BPS sudah dipetakan ke Kemendagri di
+    pembuat dibi_kab_tahun.json (risiko_hvc.py lewat padanan_kab_dibi.py), jadi sisanya kab yang memang tak tercatat DIBI. riset4 = 514 kab x 11 tahun, hanya pembanding sidik beku."""
     ungsi, berdata, asing = {}, set(), set()
     for b in baris:
         k, th, meng = b[0], b[1], b[7]
@@ -147,7 +151,7 @@ def _kartu_skenario(sk, baris, nama):
                     "sandang_harfiah": None if s is None else s["sandang_harfiah"],
                     "sandang_keluarga": None if s is None else s["sandang_keluarga"],
                     "balita": None if s is None else s["balita_orang_hari"], "status": STATUS[b["status"]],
-                    "uji_balik": "belum ada data DIBI (kode wilayah)" if ub["lewat_1pct"] is None else
+                    "uji_balik": "tidak tercatat DIBI 2015-2025" if ub["lewat_1pct"] is None else
                     ("pernah di atas 1%, calon PR 4%" if ub["lewat_1pct"] else "tidak pernah di atas 1%")})
     belum = sum(b["status"] == "belum_dilaporkan" for b in baris)
     return rapor.kartu(
@@ -169,8 +173,8 @@ def _kartu_uji(nas, sha):
              for nama, st in (("0 bila tidak tercatat DIBI", nas["nol_isi"]), ("Kab-tahun berdata DIBI", nas["berdata"]))]
     return rapor.kartu(
         id="plp1-uji-balik", sistem="PLP-1", pil="Stok penyangga", ikon="timbang", judul="Uji balik PR 1% dengan DIBI",
-        angka=[{"k": "tanpa_kode", "label": "Kab/kota tanpa kode DIBI cocok, dikeluarkan", "nilai": nas["kab_tanpa_kode_dibi"],
-                "title": "kode wilayah DIBI lama (Papua pemekaran) belum dipadankan; kab-tahunnya tidak dihitung, bukan 0"},
+        angka=[{"k": "tanpa_kode", "label": "Kab/kota tanpa catatan DIBI, dikeluarkan", "nilai": nas["kab_tanpa_kode_dibi"],
+                "title": "kab tanpa satu pun baris DIBI 2015-2025 sesudah kode BPS dipadankan ke Kemendagri; kab-tahunnya tidak dihitung, bukan 0"},
                {"k": "kode_asing", "label": "Kode DIBI tak dikenal", "nilai": nas["kode_dibi_tak_dikenal"]}],
         kolom=[{"k": "penyebut", "label": "Penyebut", "title": nas["catatan"]},
                {"k": "kab_tahun", "label": "Kab-tahun", "angka": True},
@@ -248,8 +252,8 @@ def cek():
         assert r4["kab_tahun"] == BEKU["kab_tahun"] and r4["lewat_1pct"] == BEKU["lewat_1pct"], r4
         assert r4["lewat_4pct"] == BEKU["lewat_4pct"], r4
         assert abs(r4["p95"] - BEKU["p95"]) < 5e-5 and abs(r4["p99"] - BEKU["p99"]) < 5e-4, r4
-        assert nas["berdata"]["kab_tahun"] == 4434 and nas["kab_tanpa_kode_dibi"] == 35, nas
-        assert nas["nol_isi"]["kab_tahun"] == (514 - 35) * 11, nas["nol_isi"]
+        assert nas["berdata"]["kab_tahun"] == BEKU["berdata"] and nas["kab_tanpa_kode_dibi_daftar"] == BEKU["tanpa_kode"], nas
+        assert nas["nol_isi"]["kab_tahun"] == (514 - len(BEKU["tanpa_kode"])) * 11 and nas["kode_dibi_tak_dikenal"] == 0, nas["nol_isi"]
     else:
         print(f"plp1.py: masukan berubah (sha {sha[:12]} bukan {BEKU['sha256'][:12]}); reproduksi riset/4 dilewati")
     assert nas["berdata"]["kab_tahun"] <= nas["nol_isi"]["kab_tahun"] <= r4["kab_tahun"]
@@ -278,7 +282,7 @@ def cek():
     assert not re.search(r"\baman\b", json.dumps(b), re.I)
     print(f"plp1.py --cek: lulus (514 kab; di atas 1%: {nas['nol_isi']['lewat_1pct']} dari {nas['nol_isi']['kab_tahun']} kab-tahun "
           f"bernilai 0 bila tidak tercatat, {nas['berdata']['lewat_1pct']} dari {nas['berdata']['kab_tahun']} berdata; "
-          f"{nas['kab_tanpa_kode_dibi']} kab tanpa kode DIBI dikeluarkan)")
+          f"{nas['kab_tanpa_kode_dibi']} kab tanpa catatan DIBI dikeluarkan)")
 
 
 if __name__ == "__main__":
