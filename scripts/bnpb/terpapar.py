@@ -28,7 +28,7 @@ LAPISAN = {"banjir": "layer_bahaya_banjir", "longsor": "layer_bahaya_tanah_longs
            "kekeringan": "layer_bahaya_kekeringan", "gempa": "layer_bahaya_gempabumi"}
 AMBANG = (0.33, 0.66)
 KOLOM_H = ["jiwa_sedang_plus", "rentan_sedang_plus", "jiwa_tinggi", "rentan_tinggi"]
-FIELD = "objectid,no_prop,no_kab,no_kec,kode_desa_spatial,jumlah_penduduk,u0,u60,u65,u70,u75"
+FIELD = "objectid,no_prop,no_kab,no_kec,kode_desa_spatial,jumlah_penduduk,u0,u60,u65,u70,u75,pria,wanita"
 HALAMAN = 10000
 PER_PANGGIL = 200
 UMUR_CACHE_HARI = 30
@@ -41,7 +41,20 @@ def desa_dari_fitur(fitur):
         return None
     angka = lambda v: int(v) if v is not None else 0
     return {"oid": a["objectid"], "kab": D.kode_dukcapil(a["no_prop"], a["no_kab"]), "n": angka(a["jumlah_penduduk"]), "b": angka(a.get("u0")),
-            "l": sum(angka(a.get(k)) for k in ("u60", "u65", "u70", "u75")), "x": round(c["x"], 5), "y": round(c["y"], 5)}
+            "l": sum(angka(a.get(k)) for k in ("u60", "u65", "u70", "u75")), "x": round(c["x"], 5), "y": round(c["y"], 5),
+            "pria": a.get("pria"), "wanita": a.get("wanita")}   # DP-27: tidak dipakai agregasi; dikonsumsi paparan.py (DP-03)
+
+
+def jiwa_jk(terpapar, pria, wanita):
+    """P22: laki-laki dan perempuan terpapar = rasio desa x terpapar (PERKIRAAN, rasio dianggap merata). Kosong/nol -> (None, None)."""
+    if not pria and not wanita or pria is None or wanita is None or pria + wanita <= 0:
+        return None, None
+    return round(terpapar * pria / (pria + wanita)), round(terpapar * wanita / (pria + wanita))
+
+
+def selisih_jk(desa):
+    """Jumlah desa yang pria+wanita != n (hanya baris yang punya kedua kolom). Peringatan, bukan galat."""
+    return sum(1 for d in desa if d.get("pria") is not None and d.get("wanita") is not None and d["pria"] + d["wanita"] != d["n"])
 
 
 def tarik_desa():
@@ -115,6 +128,9 @@ def jalan():
     with ThreadPoolExecutor(3) as ex:   # 3 lapisan sekaligus, tiap utas tetap berjeda 1 dtk per panggilan
         hasil = list(ex.map(lambda h: hazard_desa(desa, h), LAPISAN))
     indeks = dict(zip(LAPISAN, hasil))
+    sj = selisih_jk(desa)
+    if sj:
+        print(f"PERINGATAN: {sj} desa pria+wanita != jumlah_penduduk", file=sys.stderr)
     kab = agregasi(desa, indeks)
     info = D.kab_info()
     tak = sorted(k for k in kab if k not in info)
@@ -133,7 +149,14 @@ def _cek():
     f = {"attributes": {"objectid": 5, "no_prop": 33, "no_kab": 1, "jumlah_penduduk": 1000, "u0": 60, "u60": 50, "u65": 40, "u70": 30, "u75": 20},
          "centroid": {"x": 109.12345678, "y": -7.5}}
     d = desa_dari_fitur(f)
-    assert d == {"oid": 5, "kab": "3301", "n": 1000, "b": 60, "l": 140, "x": 109.12346, "y": -7.5}, d
+    assert d == {"oid": 5, "kab": "3301", "n": 1000, "b": 60, "l": 140, "x": 109.12346, "y": -7.5, "pria": None, "wanita": None}, d
+    assert desa_dari_fitur(dict(f, attributes=dict(f["attributes"], pria=480, wanita=520)))["wanita"] == 520
+    assert jiwa_jk(1000, 3222, 3360) == (490, 510)                       # P22
+    assert jiwa_jk(1000, None, 3360) == (None, None) and jiwa_jk(1000, 0, 0) == (None, None) and jiwa_jk(1000, 3222, None) == (None, None)
+    assert selisih_jk([{"n": 10, "pria": 5, "wanita": 5}, {"n": 10, "pria": 5, "wanita": 4}, {"n": 10}]) == 1
+    # emas: agregasi tak membaca pria/wanita, hasil sama dengan baris tanpa kolom itu
+    g = {"kab": "3301", "n": 1000, "b": 60, "l": 140}
+    assert agregasi([g], {"banjir": [0.9]}) == agregasi([dict(g, pria=1, wanita=2)], {"banjir": [0.9]})
     assert desa_dari_fitur({"attributes": {"objectid": 1, "no_prop": 1, "no_kab": 1, "jumlah_penduduk": 0}, "centroid": {"x": 1, "y": 1}}) is None
     assert desa_dari_fitur({"attributes": {"jumlah_penduduk": 5}}) is None
     d2 = dict(d, kab="3301", n=500, b=10, l=40)
