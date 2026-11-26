@@ -31,7 +31,7 @@
   const waktuKata = ms => !Number.isFinite(ms) ? "" : hariWib(ms) === hariWib(Date.now()) ? "pukul " + jamWib(ms) : "pada " + jamTgl(ms);
   const waktu = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "";
   /* ?ke= dari halaman SIPPA (/pipa*, ADR-05), Atur drone gambut (/admin/drone, src/drone.js), atau command center (/command-center*, src/command_center.js): sesudah masuk staf, hanya jalur yang cocok diikuti (alamat sama asal; URL penuh atau jalur lain diabaikan) */
-  const KE_PIPA = /^\/(pipa|admin\/drone|command-center|direktori)(\/|$|\?)/;
+  const KE_PIPA = /^\/(pipa|admin\/drone|command-center|direktori|bnpb\/unit)(\/|$|\?)/;   // + Ruang Unit (/bnpb/unit*, src/unit.js)
   const keAsal = new URLSearchParams(location.search).get("ke") || "";
   const ke = KE_PIPA.test(keAsal) ? keAsal : null;
   const pergiPipa = () => { if (ke == null) return false; location.href = ke; return true; };
