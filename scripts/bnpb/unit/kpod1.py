@@ -33,8 +33,6 @@ MIN_TERPANTAU = 0.8
 MIN_PRESISI = 0.8
 MIN_RECALL = 0.8
 KELAS = ("dsp", "logistik", "personel", "udara")
-JENIS_SK = [("karhutla", r"kebakaran|karhutla|asap"), ("banjir", r"banjir"), ("longsor", r"longsor|gerakan tanah"), ("kekeringan", r"kekeringan"),
-            ("cuaca", r"cuaca|angin|puting|gelombang"), ("gempa", r"gempa|tsunami"), ("gunung api", r"gunung|erupsi")]
 NAMA_JENIS = {"karhutla": "Kebakaran hutan dan lahan", "banjir": "Banjir", "longsor": "Tanah longsor", "kekeringan": "Kekeringan",
               "cuaca": "Cuaca ekstrem", "gempa": "Gempa bumi dan tsunami", "gunung api": "Gunung api", "lainnya": "Jenis lain"}
 LAKIP = {"nilai": 100, "tahun": 2025, "sumber": "data/kajian-bnpb/pustaka/5-lakip.md, Bab 3 hal. 44"}
@@ -63,30 +61,54 @@ def ukur(klasifikasi, entri):
             "tp": tp, "fp": fp, "fn": fn}
 
 
-def jenis_sk(teks):
-    t = (teks or "").lower()
-    return next((k for k, p in JENIS_SK if re.search(p, t)), "lainnya")
+jenis_sk = wil1.jenis_sk   # satu kamus jenis untuk KPOD-1 dan WIL-1
 
 
-def pasangkan(sk, episode, hari=JARAK_HARI):
-    """SK kabupaten -> episode berpasangan: kab sama (nama dalam provinsi), selisih mulai paling lama `hari`. Satu daftar episode per SK."""
-    per = {}
-    for e in episode:
-        if e.get("kab") and e.get("mulai"):
-            p, n = e["kab"].split("|", 1)
-            per.setdefault((p, wil1.kunci_nama(n)), []).append(e)
-    t0 = date.fromisoformat(sk["mulai"][:10])
-    return [e for e in per.get((sk.get("prov_kode"), wil1.kunci_nama(sk.get("kab"))), []) if abs((date.fromisoformat(e["mulai"][:10]) - t0).days) <= hari]
+JENIS_EPISODE = wil1.JENIS_BAHAYA
+
+
+def _kunci_kab(prov, nama):
+    return (prov, wil1.kunci_nama(nama))
+
+
+def cocok(sk, e, hari=JARAK_HARI):
+    """Satu SK dan satu episode berpasangan: kab sama (nama dalam provinsi), jenis sama (SK berjenis tak dikenal tidak dipasangkan), selisih mulai paling lama `hari`."""
+    if not e.get("kab") or not e.get("mulai"):
+        return None
+    p, n = e["kab"].split("|", 1)
+    j = jenis_sk(sk.get("jenis"))
+    if _kunci_kab(p, n) != _kunci_kab(sk.get("prov_kode"), sk.get("kab")) or j == "lainnya" or JENIS_EPISODE.get(e.get("jenis")) != j:
+        return None
+    s = abs((date.fromisoformat(e["mulai"][:10]) - date.fromisoformat(sk["mulai"][:10])).days)
+    return s if s <= hari else None
+
+
+def pasangkan_semua(sks, episode, hari=JARAK_HARI):
+    """-> {indeks SK: indeks episode}. Satu-satu seperti pus2.pasangkan: tiap episode untuk satu SK saja, selisih terkecil dulu, lalu urutan SK, lalu urutan episode."""
+    cand = []
+    for i, x in enumerate(sks):
+        for j, e in enumerate(episode):
+            s = cocok(x, e, hari)
+            if s is not None:
+                cand.append((s, i, j))
+    cand.sort()
+    ps, pe = {}, set()
+    for s, i, j in cand:
+        if i not in ps and j not in pe:
+            ps[i] = j
+            pe.add(j)
+    return ps
 
 
 def hitung(sk_json, laphar, dit, hari_pasang=JARAK_HARI):
-    """-> dict hitungan; fungsi murni (tanpa gerbang tampil)."""
+    """-> dict hitungan; fungsi murni (tanpa gerbang tampil). Surat keputusan bertanggal janggal dan yang mulainya dalam `hari_pasang` hari dari tepi cakupan laporan harian
+    (episodenya bisa di luar cakupan) tidak masuk penyebut; jumlahnya dilaporkan."""
     c = laphar.get("cakupan") or {}
     awal, akhir = c.get("mulai"), c.get("sampai")
-    eps = laphar.get("episode") or []
+    eps = [e for e in laphar.get("episode") or []]
     ada_medan = [e for e in eps if "pendampingan" in e]
     pdit = wil1.peta_dit(dit)
-    daftar, luar, prov_skala = [], 0, 0
+    masuk, luar, prov_skala, janggal, tepi = [], 0, 0, 0, 0
     for x in sk_json.get("sk") or []:
         if x.get("skala") != "kabupaten":
             prov_skala += 1
@@ -94,12 +116,20 @@ def hitung(sk_json, laphar, dit, hari_pasang=JARAK_HARI):
         m = (x.get("mulai") or "")[:10]
         if not (awal and akhir and awal <= m <= akhir):
             luar += 1
-            continue
-        pas = pasangkan(x, eps, hari_pasang)
-        didampingi = None if not ada_medan else bool(pas) and any((e.get("pendampingan") or {}).get("isi") is True for e in pas)
-        daftar.append({"bulan": m[:7], "dit": pdit.get(x.get("prov_kode")), "jenis": jenis_sk(x.get("jenis")), "terpantau": bool(pas), "didampingi": didampingi})
+        elif x.get("tanggal_janggal"):
+            janggal += 1
+        elif (date.fromisoformat(m) - date.fromisoformat(awal)).days < hari_pasang or (date.fromisoformat(akhir) - date.fromisoformat(m)).days < hari_pasang:
+            tepi += 1
+        else:
+            masuk.append(x)
+    ps = pasangkan_semua(masuk, eps, hari_pasang)
+    daftar = []
+    for i, x in enumerate(masuk):
+        e = eps[ps[i]] if i in ps else None
+        didampingi = None if not ada_medan else bool(e) and (e.get("pendampingan") or {}).get("isi") is True
+        daftar.append({"bulan": x["mulai"][:7], "dit": pdit.get(x.get("prov_kode")), "jenis": jenis_sk(x.get("jenis")), "terpantau": e is not None, "didampingi": didampingi})
     n = len(daftar)
-    return {"sk": n, "luar_cakupan": luar, "skala_provinsi": prov_skala, "terpantau": sum(d["terpantau"] for d in daftar),
+    return {"sk": n, "luar_cakupan": luar, "skala_provinsi": prov_skala, "tanggal_janggal": janggal, "tepi_cakupan": tepi, "terpantau": sum(d["terpantau"] for d in daftar),
             "didampingi": None if not ada_medan or not n else sum(bool(d["didampingi"]) for d in daftar), "ada_medan": bool(ada_medan),
             "n_episode": len(eps), "n_episode_medan": len(ada_medan), "baris": daftar}
 
@@ -125,39 +155,41 @@ def bangun(sk_json, laphar, dit, ukuran, dibuat, hari_ini):
     lulus_kata = ukuran["presisi"] is not None and ukuran["recall"] is not None and ukuran["presisi"] >= MIN_PRESISI and ukuran["recall"] >= MIN_RECALL
     lulus_pasang = terpantau_p is not None and terpantau_p >= MIN_TERPANTAU
     tampil = h["ada_medan"] and lulus_kata and lulus_pasang and n > 0
-    iku = _persen(h["didampingi"], n) if tampil else None
+    iku = _persen(h["didampingi"], h["terpantau"]) if tampil else None
+    dari_semua = _persen(h["didampingi"], n) if tampil else None
     syarat = [
         {"syarat": "Medan pendampingan di arsip laporan harian", "nilai": (h["n_episode_medan"] / h["n_episode"]) if h["n_episode"] and h["ada_medan"] else None, "ambang": None,
          "status": "ada" if h["ada_medan"] else "belum ada data: arsip laporan harian belum menyimpan medan pendampingan BNPB"},
         {"syarat": "Presisi kata kunci pendampingan pada 50 entri berlabel tangan", "nilai": ukuran["presisi"], "ambang": MIN_PRESISI,
-         "status": "lulus" if ukuran["presisi"] is not None and ukuran["presisi"] >= MIN_PRESISI else "belum lulus, kartu capaian tidak tampil"},
+         "status": (f"lulus, {str(round(ukuran['presisi'], 3)).replace('.', ',')} pada sampel yang sama dengan penyusunan kata kunci, belum diuji pada sampel baru"
+                    if ukuran["presisi"] is not None and ukuran["presisi"] >= MIN_PRESISI else "belum lulus, kartu capaian tidak tampil")},
         {"syarat": "Recall kata kunci pendampingan pada 50 entri berlabel tangan", "nilai": ukuran["recall"], "ambang": MIN_RECALL,
          "status": "lulus" if ukuran["recall"] is not None and ukuran["recall"] >= MIN_RECALL else "belum lulus, kartu capaian tidak tampil"},
         {"syarat": "Surat keputusan kabupaten yang berpasangan dengan episode laporan harian", "nilai": terpantau_p, "ambang": MIN_TERPANTAU,
          "status": "lulus" if lulus_pasang else ("penjodohan wilayah belum cukup" if n else "belum ada data: tidak ada surat keputusan di cakupan laporan harian")}]
     k1 = rapor.kartu(
         id="kpod1-iku", sistem="KPOD-1", pil="Intervensi status", ikon="hitung", judul="Intervensi pada status darurat",
-        angka=[{"k": "sk", "label": "Surat keputusan kabupaten di cakupan laporan harian", "nilai": n if n else None, "title": f"surat keputusan kabupaten yang mulainya {laphar.get('cakupan', {}).get('mulai')} sampai {laphar.get('cakupan', {}).get('sampai')}; surat keputusan di luar rentang dan tingkat provinsi tidak dihitung"},
+        angka=[{"k": "sk", "label": "Surat keputusan kabupaten di cakupan laporan harian", "nilai": n if n else None, "title": f"surat keputusan kabupaten yang mulainya {laphar.get('cakupan', {}).get('mulai')} sampai {laphar.get('cakupan', {}).get('sampai')}; tidak dihitung: {h['luar_cakupan']} di luar rentang, {h['skala_provinsi']} tingkat provinsi, {h['tepi_cakupan']} terlalu dekat tepi cakupan, {h['tanggal_janggal']} bertanggal janggal"},
                {"k": "terpantau", "label": "Surat keputusan yang berpasangan dengan episode laporan harian", "nilai": h["terpantau"] if n else None,
-                "title": f"episode di kab yang sama dengan selisih mulai paling lama {JARAK_HARI} hari"},
-               {"k": "iku", "label": "Indikator Kinerja Utama dari data, persen yang didampingi", "nilai": iku, "desimal": 1,
-                "title": "surat keputusan didampingi dibagi seluruh surat keputusan; hanya tampil bila semua syarat di tabel terpenuhi"}],
+                "title": f"satu episode untuk satu surat keputusan: kab dan jenis bencana sama, selisih mulai paling lama {JARAK_HARI} hari"},
+               {"k": "iku", "label": "Indikator Kinerja Utama dari data, persen dari yang berpasangan", "nilai": iku, "desimal": 1,
+                "title": "surat keputusan didampingi dibagi surat keputusan yang berpasangan dengan episode (himpunan yang sama); hanya tampil bila semua syarat di tabel terpenuhi"}],
         kolom=[{"k": "syarat", "label": "Syarat tampil"}, {"k": "nilai", "label": "Nilai", "angka": True, "desimal": 2}, {"k": "ambang", "label": "Ambang", "angka": True, "desimal": 2},
                {"k": "status", "label": "Status"}],
-        baris=syarat, rumus="Indikator Kinerja Utama = surat keputusan didampingi dibagi seluruh surat keputusan; didampingi = ada episode laporan harian berpasangan yang medan pendampingannya terisi",
+        baris=syarat, rumus="Indikator Kinerja Utama = surat keputusan didampingi dibagi surat keputusan yang berpasangan; didampingi = ada episode laporan harian berpasangan yang medan pendampingannya terisi",
         sumber=["status_darurat", "laphar_riwayat", "pendampingan_50"], label=["hitungan_kita"],
-        asumsi=["Asumsi: ambang 0,8 dan jarak 3 hari"])
+        asumsi=["Asumsi: ambang 0,8 dan jarak 3 hari", "Asumsi: presisi diukur dalam sampel, belum uji tahan"])
     kartu = [k1]
     if tampil:
         def tabel(id_, judul, kunci, urut, namai):
             g = _grup(h["baris"], kunci)
-            baris = [{"grup": namai(k), "sk": v["sk"], "terpantau": v["terpantau"], "didampingi": v["didampingi"], "iku": _persen(v["didampingi"], v["sk"])} for k, v in
+            baris = [{"grup": namai(k), "sk": v["sk"], "terpantau": v["terpantau"], "didampingi": v["didampingi"], "iku": _persen(v["didampingi"], v["terpantau"])} for k, v in
                      sorted(g.items(), key=urut)]
             return rapor.kartu(id=id_, sistem="KPOD-1", pil="Intervensi status", ikon="data", judul=judul, angka=[],
                                kolom=[{"k": "grup", "label": "Kelompok"}, {"k": "sk", "label": "Surat keputusan", "angka": True}, {"k": "terpantau", "label": "Berpasangan", "angka": True},
-                                      {"k": "didampingi", "label": "Didampingi", "angka": True}, {"k": "iku", "label": "Capaian, persen", "angka": True, "desimal": 1}],
-                               baris=baris, rumus="capaian = surat keputusan didampingi dibagi seluruh surat keputusan dalam kelompok", sumber=["status_darurat", "laphar_riwayat"], label=["hitungan_kita"],
-                               asumsi=["Asumsi: ambang 0,8 dan jarak 3 hari"])
+                                      {"k": "didampingi", "label": "Didampingi", "angka": True}, {"k": "iku", "label": "Capaian, persen dari yang berpasangan", "angka": True, "desimal": 1}],
+                               baris=baris, rumus="capaian = surat keputusan didampingi dibagi surat keputusan yang berpasangan dalam kelompok", sumber=["status_darurat", "laphar_riwayat"], label=["hitungan_kita"],
+                               asumsi=["Asumsi: ambang 0,8 dan jarak 3 hari", "Asumsi: presisi diukur dalam sampel, belum uji tahan"])
         nama_dit = {d["id"]: d["direktorat"].replace("Direktorat Penanganan Darurat ", "") for d in dit["direktorat"]}
         kartu += [tabel("kpod1-bulan", "Capaian per bulan", "bulan", lambda kv: kv[0], lambda k: k),
                   tabel("kpod1-direktorat", "Capaian per direktorat wilayah", "dit", lambda kv: str(kv[0]), lambda k: nama_dit.get(k, "Tanpa direktorat")),
@@ -173,7 +205,7 @@ def bangun(sk_json, laphar, dit, ukuran, dibuat, hari_ini):
            {"nama": "Laporan Akuntabilitas Kinerja Instansi Pemerintah BNPB 2025", "url": "repo:data/kajian-bnpb/pustaka/5-lakip.md", "diambil": "2026-11-02", "lisensi": "dokumen publik BNPB"}]
     b = rapor.berkas(kartu, src)
     b["data"] = {"hari": hari_ini.isoformat(), "dibuat": dibuat, "sk": n, "terpantau": h["terpantau"], "didampingi": h["didampingi"], "sk_luar_cakupan": h["luar_cakupan"],
-                 "sk_provinsi_tidak_dihitung": h["skala_provinsi"], "terpantau_persen": None if terpantau_p is None else round(100 * terpantau_p, 1), "iku_persen": iku, "tampil": tampil,
+                 "sk_provinsi_tidak_dihitung": h["skala_provinsi"], "sk_tanggal_janggal": h["tanggal_janggal"], "sk_tepi_cakupan": h["tepi_cakupan"], "iku_dari_seluruh_sk_persen": dari_semua, "terpantau_persen": None if terpantau_p is None else round(100 * terpantau_p, 1), "iku_persen": iku, "tampil": tampil,
                  "ukuran": {k: (round(v, 3) if isinstance(v, float) else v) for k, v in ukuran.items()},
                  "tepat_waktu": "belum ada data: tanggal intervensi pertama ada di meja Dana Siap Pakai, belum dibaca pipeline"}
     return b
@@ -222,12 +254,26 @@ def cek():
     assert [k["id"] for k in b["kartu"]] == ["kpod1-iku", "kpod1-lakip"] and b["kartu"][-1]["angka"][0]["nilai"] == 100 and b["kartu"][-1]["label"] == ["resmi"]
     # episode berjarak 4 hari tidak dipasangkan, 3 hari dipasangkan
     x = {"skala": "kabupaten", "prov_kode": "11", "kab": "Kab0", "mulai": "2026-03-10"}
-    assert len(pasangkan(x, [{"kab": "11|Kab0", "mulai": "2026-03-13"}])) == 1 and pasangkan(x, [{"kab": "11|Kab0", "mulai": "2026-03-14"}]) == []
+    x["jenis"] = "Banjir"
+    assert cocok(x, {"kab": "11|Kab0", "mulai": "2026-03-13", "jenis": "banjir"}) == 3 and cocok(x, {"kab": "11|Kab0", "mulai": "2026-03-14", "jenis": "banjir"}) is None
+    # jenis harus sama: SK banjir tidak berpasangan dengan episode karhutla di kab dan hari yang sama; SK berjenis tak dikenal tidak dipasangkan
+    assert cocok(x, {"kab": "11|Kab0", "mulai": "2026-03-10", "jenis": "karhutla"}) is None and cocok({**x, "jenis": "Wabah"}, {"kab": "11|Kab0", "mulai": "2026-03-10", "jenis": "wabah"}) is None
+    assert cocok({**x, "jenis": "Banjir Bandang"}, {"kab": "11|Kab0", "mulai": "2026-03-10", "jenis": "banjir_bandang"}) == 0
+    # satu-satu: dua SK dan satu episode -> hanya SK dengan selisih terkecil yang berpasangan
+    sx = [{**x, "mulai": "2026-03-12"}, {**x, "mulai": "2026-03-10"}]
+    assert pasangkan_semua(sx, [{"kab": "11|Kab0", "mulai": "2026-03-10", "jenis": "banjir"}]) == {1: 0}
+    assert pasangkan_semua(sx, [{"kab": "11|Kab0", "mulai": "2026-03-10", "jenis": "banjir"}, {"kab": "11|Kab0", "mulai": "2026-03-13", "jenis": "banjir"}]) == {1: 0, 0: 1}
+    # penyebut: SK bertanggal janggal dan SK dekat tepi cakupan dikecualikan dan dihitung
+    hk = hitung({"sk": [{**x, "mulai": "2026-03-10", "tanggal_janggal": True}, {**x, "mulai": "2026-01-02"}, {**x, "mulai": "2026-10-27"}, {**x, "mulai": "2026-03-11"}]}, lap, dit)
+    assert (hk["sk"], hk["tanggal_janggal"], hk["tepi_cakupan"], hk["luar_cakupan"]) == (1, 1, 2, 0), hk
+    # SK banjir dan episode karhutla di kab dan hari yang sama: tidak terpantau
+    hb = hitung({"sk": [{**x, "mulai": "2026-05-05"}]}, {"cakupan": lap["cakupan"], "episode": [{"kab": "11|Kab0", "mulai": "2026-05-05", "jenis": "karhutla", "pendampingan": {"isi": True, "kelas": []}}]}, dit)
+    assert (hb["sk"], hb["terpantau"], hb["didampingi"]) == (1, 0, 0), hb
     # penjodohan cukup dan kata kunci lulus: IKU tampil dengan tiga tabel; presisi rendah menyembunyikan lagi
     for i in range(7, 10):
         ep.append({"kab": f"11|Kab{i}", "mulai": f"2026-03-{10 + i:02d}", "jenis": "banjir", "pendampingan": {"isi": False, "kelas": []}})
     b2 = bangun(sk, lap, dit, ok, "2026-11-26T00:00:00Z", date(2026, 11, 26))
-    assert b2["data"]["tampil"] and b2["data"]["iku_persen"] == 50.0 and len(b2["kartu"]) == 5, b2["data"]
+    assert b2["data"]["tampil"] and b2["data"]["iku_persen"] == 50.0 and b2["data"]["iku_dari_seluruh_sk_persen"] == 50.0 and len(b2["kartu"]) == 5, b2["data"]
     assert b2["kartu"][2]["baris"][0]["grup"] == "Wilayah I" and b2["kartu"][3]["baris"][0]["grup"] == "Banjir"
     b3 = bangun(sk, lap, dit, {**ok, "presisi": 0.79}, "2026-11-26T00:00:00Z", date(2026, 11, 26))
     assert not b3["data"]["tampil"] and b3["data"]["iku_persen"] is None and len(b3["kartu"]) == 2

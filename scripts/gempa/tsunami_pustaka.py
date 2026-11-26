@@ -240,6 +240,44 @@ def daftar_hitungan(kotak):
     return out
 
 
+def _berjalan(nama):
+    import subprocess
+    return subprocess.run(["pgrep", "-f", "run/%s/xgeoclaw" % nama], capture_output=True).returncode == 0
+
+
+def shutil_bebas():
+    import shutil
+    return shutil.disk_usage(AKAR).free
+
+
+def bersihkan(nama):
+    """Hapus keluaran mentah GeoClaw dan masukan topo besar (disk); sisa: spek, keluaran.json, fgmax.npz, log. Masukan dapat dibangun ulang oleh siapkan()."""
+    import shutil
+    import tsunami_hitung as H
+    d = os.path.join(H.RUN, nama)
+    if os.path.exists(os.path.join(d, "keluaran.json")) and os.path.exists(os.path.join(d, "fgmax.npz")):
+        shutil.rmtree(os.path.join(d, "_output"), ignore_errors=True)
+        shutil.rmtree(d + "_masukan", ignore_errors=True)
+
+
+def panen(nama):
+    """Run yatim (proses induk mati, xgeoclaw selesai): baca _output dan tulis keluaran.json. Waktu dari tabel Total time di run.log (dinding, cpu)."""
+    import re
+    import tsunami_hitung as H
+    d = os.path.join(H.RUN, nama)
+    log = open(os.path.join(d, "run.log")).read() if os.path.exists(os.path.join(d, "run.log")) else ""
+    m = re.search(r"Total time:\s+([\d.]+)\s+([\d.]+)", log)
+    if not m or os.path.exists(os.path.join(d, "keluaran.json")) or not os.path.isdir(os.path.join(d, "_output")):
+        return False
+    spec = json.load(open(os.path.join(d, "spec.json")))
+    out = H._baca(spec, d)
+    out.update(cpu_detik=float(m.group(2)), skema=H.SKEMA, mesin=H.VERSI_MESIN, hash_masukan=H.hash_masukan(spec), nama=nama,
+               waktu_detik=float(m.group(1)), memori_mb_puncak=None, dipanen_dari_run_yatim=True)
+    json.dump(out, open(os.path.join(d, "keluaran.json"), "w"))
+    print("dipanen:", nama, json.dumps(out["ringkasan"]), flush=True)
+    return True
+
+
 def antre(kotak, hanya=None):
     _venv()
     import tsunami_hitung as H
@@ -247,11 +285,22 @@ def antre(kotak, hanya=None):
     for nama, e, jenis in daftar_hitungan(kotak):
         if hanya and nama not in hanya:
             continue
+        if not os.path.exists(os.path.join(H.RUN, nama, "keluaran.json")) and os.path.exists(os.path.join(H.RUN, nama, "run.log")) and not _berjalan(nama):
+            panen(nama)
+            bersihkan(nama)
+        if _berjalan(nama):
+            print("sedang jalan di proses lain:", nama, flush=True)
+            continue
         if os.path.exists(os.path.join(H.RUN, nama, "keluaran.json")):
             print("lewati (sudah ada):", nama, flush=True)
             continue
+        sisa = shutil_bebas()
+        if sisa < 5 * 2 ** 30:
+            print("BERHENTI: sisa disk %.1f GiB < 5 GiB" % (sisa / 2 ** 30), flush=True)
+            return
         t0 = time.time()
         o = jalankan(nama, kotak, e, rc)
+        bersihkan(nama)
         print("selesai %s %s: dinding %.0f s, cpu %.0f s, mem %.0f MB, ringkasan %s" % (nama, jenis, time.time() - t0, o["cpu_detik"], o["memori_mb_puncak"],
                                                                                  json.dumps(o["ringkasan"])), flush=True)
 
@@ -356,6 +405,7 @@ def banding(kotak, c, nk, terdekat, rk, rl, sk, sl, pk):
     cek = [sel["ln_luas"] is not None and abs(sel["ln_luas"]) <= TOLERANSI["ln_luas"], sel["ln_d_maks"] is not None and abs(sel["ln_d_maks"]) <= TOLERANSI["ln_d_maks"],
            sel["tiba_menit"] is not None and abs(sel["tiba_menit"]) <= TOLERANSI["tiba_menit"]]
     out["lolos"] = all(cek)
+    out["lolos_tanpa_tiba"] = all(cek[:2])  # keterangan saja (bukan kriteria): tiba sering tak dapat dinilai karena awal pencatatan fgmax
     out["tak_dinilai"] = [q for q in ("ln_luas", "ln_d_maks", "tiba_menit") if sel[q] is None]
     return out
 
@@ -445,7 +495,7 @@ def uji():
     sp = {"fgmax": {"tstart": 600.0}}
     c = {"id": "k1", "m": 8.1}
     b = banding("ujung_kulon", c, "ks_uk_k1", ("mt_uk_m80", 8.0), R(10.0, 4.0, 1500.0), R(12.0, 3.5, 1400.0), sp, sp, (-9.95, 105.4))
-    assert b["lolos"] and b["tak_dinilai"] == [] and b["selisih_m"] == 0.1 and b["jarak_km"] == 0
+    assert b["lolos"] and b["lolos_tanpa_tiba"] and b["tak_dinilai"] == [] and b["selisih_m"] == 0.1 and b["jarak_km"] == 0
     b = banding("ujung_kulon", c, "ks_uk_k1", ("mt_uk_m80", 8.0), R(30.0, 4.0, 1500.0), R(12.0, 3.5, 1400.0), sp, sp, (-9.95, 105.4))
     assert not b["lolos"] and b["selisih"]["ln_luas"] > TOLERANSI["ln_luas"]
     b = banding("ujung_kulon", c, "ks_uk_k1", ("mt_uk_m80", 8.0), R(10.0, 4.0, 620.0), R(12.0, 3.5, 1400.0), sp, sp, (-9.95, 105.4))

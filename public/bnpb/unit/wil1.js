@@ -28,7 +28,7 @@
     const p = pilih(data, dit, tipe);
     const sumber = [...new Set(p.butir.flatMap(b => b.sumber || []))];
     return {id: "wil1-antrean", sistem: "WIL-1", pil: "Meja Wilayah", ikon: "orang", judul: TIPE[tipe] || "Antrean", label: ["hitungan_kita"],
-      sumber: sumber.length ? sumber : ["status_darurat", "laphar_riwayat", "saran_status", "prediksi"], rumus: "antrean menurut aturan tipe di wil1.py; urutan: tenggat terdekat, pengungsi terbanyak, kode wilayah", aturan: [], asumsi: [],
+      sumber: sumber.length ? sumber : ["status_darurat", "laphar_riwayat", "saran_status", "prediksi"], rumus: "antrean menurut aturan tipe di wil1.py; urutan: tenggat terdekat, pengungsi terbanyak, kode wilayah", aturan: [], asumsi: data?.tipe?.[String(tipe)]?.hipotesis ? ["Asumsi: hipotesis sampai kata kunci lolos uji"] : [],
       angka: [{k: "butir", label: "Butir di antrean ini", nilai: p.tersedia ? p.butir.length : null, title: p.tersedia ? "butir yang memenuhi syarat tipe ini" : (p.alasan || "belum ada data")}],
       kolom: p.tersedia && p.butir.length ? [{k: "no", label: "No", angka: true}, {k: "kab", label: "Kab/kota"}, {k: "jenis", label: "Kejadian"}, {k: "alasan", label: "Alasan", title: "satu kalimat; sumber ada di tooltip angka"},
         {k: "tenggat", label: "Tenggat", title: "tanggal batas menurut aturan tipe; kosong bila tidak ada"}] : [],

@@ -38,7 +38,7 @@ MEDAN = {"md": "jiwa meninggal (MD)", "hilang": "jiwa hilang", "luka": "jiwa luk
 
 
 # KPOD-3 medan pendampingan (ALGORITMA kedeputian 7.3): kelas kata kunci, teks penuh tidak disimpan
-TOLAK = re.compile(r"belum|tidak ada|nihil", re.I)
+TOLAK = re.compile(r"belum|tidak ada|nihil|^[\s\-–—]*$", re.I)   # penanda kosong ("-", "–", "—") = tidak ada pendampingan, bentuk paling sering di laporan WA
 KELAS_PEND = {"dsp": re.compile(r"dana siap pakai|\bDSP\b|\bRp", re.I), "logistik": re.compile(r"logistik|sembako|tenda|selimut", re.I),
               "personel": re.compile(r"\btim\b|\bTRC\b|personel|pendampingan", re.I), "udara": re.compile(r"\bOMC\b|heli|water bombing", re.I)}
 
@@ -385,6 +385,8 @@ def uji():
     assert ep[0]["pendampingan"] == {"isi": False, "kelas": []}
     assert pendampingan("Tim TRC BNPB dan DSP Rp100 juta, tenda") == (True, ["dsp", "logistik", "personel"])
     assert pendampingan("Belum ada pendampingan") == (False, []) and pendampingan("") == (False, []) and pendampingan("Nihil") == (False, [])
+    assert all(pendampingan(x) == (False, []) for x in ("-", " - ", "–", "—", "--", "- -")), "penanda kosong harus dianggap tidak ada pendampingan"
+    assert pendampingan("Tim BNPB - Riau") == (True, ["personel"]) and pendampingan("-Tim BNPB")[0] is True, "tanda strip di antara kata tidak menolak"
     h2 = [{"tanggal": "2026-02-01", "kejadian": [{"judul": "Banjir di Kab. Pati, Provinsi Jawa Tengah", "jenis": "banjir", "prov": "33",
                                                   "tempat": "Kab. Pati", "pendampingan": "Heli water bombing"}]},
           {"tanggal": "2026-02-02", "kejadian": [{"judul": "Banjir di Kab. Pati, Provinsi Jawa Tengah", "jenis": "banjir", "prov": "33",
