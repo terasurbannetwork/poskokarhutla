@@ -88,6 +88,8 @@ LISENSI = {
         "url": "https://coastwatch.pfeg.noaa.gov/erddap/griddap/GEBCO_2020",
     },
 }
+# ubin yang terverifikasi TIDAK ADA di sumber AWS (HTTP gagal, sesi induk 26 Nov 2026; readme AWS: ubin laut tidak dirilis) = laut
+TAK_ADA_DI_SUMBER = {"S07_00_E104"}
 # ukuran lengkap ubin GLO-30 (byte), dari sesi induk 26 Nov 2026; kurang dari ini = unduhan belum selesai
 UKURAN_UBIN = {"S07_00_E105": 13861219, "S08_00_E108": 37205267, "S08_00_E109": 37366881, "S09_00_E113": 20612661, "S09_00_E114": 20112934}
 
@@ -142,6 +144,11 @@ def baca_cog(path, np):
     sx, sy = T[33550][0], T[33550][1]
     tie = T[33922]
     assert abs(sx - 1 / DETIK) < 1e-9 and abs(sy - 1 / DETIK) < 1e-9
+    # GTRasterTypeGeoKey (1025): 1 = PixelIsArea, 2 = PixelIsPoint. GLO-30 bertanda 2 (readme AWS: baris/kolom bersama ubin tetangga
+    # dibuang, jadi sampel pertama tepat di sudut ubin). Tie point = pusat sampel, tidak ada koreksi setengah piksel; tipe lain = gagal keras.
+    gk = T[34735]
+    tipe = next((gk[i + 3] for i in range(4, len(gk) - 3, 4) if gk[i] == 1025), None)
+    assert tipe == 2, ("GTRasterTypeGeoKey bukan PixelIsPoint, koreksi setengah piksel belum ditulis", tipe)
     return z, tie[3], tie[4]
 
 
@@ -248,19 +255,16 @@ def siapkan(kunci, np):
     lat = np.arange(j1, j0 - 1, -1) / DETIK  # utara dulu
     ny, nx = len(lat), len(lon)
     glo = np.full((ny, nx), np.nan, dtype="f4")  # NaN = tak ada ubin (laut)
-    masuk, tunda = [], []
+    masuk = []
     for lat_atas in range(math.ceil(kt[3]), math.floor(kt[1]), -1):
         for lon_b in range(math.floor(kt[0]), math.floor(kt[2]) + 1):
             kode = "S%02d_00_E%03d" % (-lat_atas + 1, lon_b)
             pth = ubin_path(lat_atas, lon_b)
-            if kode not in UKURAN_UBIN:
-                if os.path.exists(pth):
-                    raise AssertionError(("ubin ada tetapi ukuran lengkapnya belum didaftarkan", kode))
+            if kode in TAK_ADA_DI_SUMBER:
                 masuk.append({"ubin": kode, "status": "tak_ada_di_sumber_dibaca_laut"})
                 continue
-            if not ubin_lengkap(pth, kode):
-                tunda.append(kode)
-                continue
+            assert kode in UKURAN_UBIN, ("ubin tidak terdaftar (bukan UKURAN_UBIN, bukan TAK_ADA_DI_SUMBER); daftarkan setelah diverifikasi", kode)
+            assert ubin_lengkap(pth, kode), ("ubin belum diunduh atau ukuran tidak cocok", kode)
             u, lo0, la0 = baca_cog(pth, np)
             # sampel (r,c) ada di lon = lo0 + c/3600, lat = la0 - r/3600; selaras kisi kotak
             c0, r0 = round((lo0 - lon_b) * DETIK), round((la0 - lat_atas) * DETIK)
@@ -271,9 +275,6 @@ def siapkan(kunci, np):
             if mc.any() and mr.any():
                 glo[np.ix_(ri[mr], ci[mc])] = u[np.ix_(np.nonzero(mr)[0], np.nonzero(mc)[0])]
             masuk.append({"ubin": kode, "berkas": os.path.basename(pth), "byte": os.path.getsize(pth), "sha256": _sidik(pth)})
-    if tunda:
-        print("TUNDA", kunci, "ubin belum lengkap:", ", ".join(tunda))
-        return None
     gpath = RAW + "gebco/%s.nc" % kunci
     glat, glon, ge = baca_gebco(gpath, np)
     geb = _bilinear(glat, glon, ge, lat, lon, np)
@@ -315,8 +316,57 @@ def tulis_indeks(metas):
            "batas": ["DSM GLO-30: atap dan kanopi ikut tinggi, genangan cenderung tersempitkan",
                      "datum GLO-30 EGM2008 lawan GEBCO MSL tidak dikoreksi dan selisihnya tidak diukur",
                      "GEBCO 15 detik kasar di dekat pantai; celah pantai diisi interpolasi tetangga laut, dicatat per kotak",
+                     "kedalaman sel celah dari interpolasi tetangga laut bisa lebih dalam dari aslinya, cenderung meremehkan shoaling di bibir pantai (diukur di TS-11)",
                      "tahun acuan DEM sekitar 2011-2015", "bukan peringatan; status tsunami resmi hanya BMKG"]}
     json.dump(ind, open(KELUAR + "indeks.json", "w"), indent=1, ensure_ascii=False)
+
+
+# titik acuan georeferensi: (kotak, nama, lat, lon, tinggi_perkiraan_m atau None, toleransi_m); nilai perkiraan = nilai mentah ubin
+# (Pangandaran 4,2 m dan Honje 62,6 m dari pembacaan ubin; Panaitan, Pancer dan Genteng tanpa nilai tertulis, hanya wajib darat)
+TITIK_GEOREF = [
+    ("pangandaran_cilacap", "Pangandaran", -7.685, 108.655, 4.2, 0.3),
+    ("ujung_kulon", "Honje", -6.75, 105.33, 62.6, 0.3),
+    ("ujung_kulon", "Panaitan", -6.60, 105.20, None, 0),
+    ("banyuwangi_rajegwesi", "Pancer", -8.589, 114.005, None, 0),
+    ("banyuwangi_rajegwesi", "Genteng pedalaman", -8.45, 114.2, None, 0),
+]
+
+
+def _ubin_mentah(kode, np):
+    lat_atas, lon_b = -(int(kode[1:3]) - 1), int(kode[8:11])
+    return baca_cog(ubin_path(lat_atas, lon_b), np)
+
+
+def _jendela_mentah(kode, m, np):
+    """Nilai mentah ubin yang jatuh di dalam kisi kotak, dihitung dari koordinat sampel (jalur terpisah dari siapkan)."""
+    u, lo0, la0 = _ubin_mentah(kode, np)
+    kt = m["kotak"]
+    c = np.arange(u.shape[1]); r = np.arange(u.shape[0])
+    mc = (lo0 + c / DETIK >= m["lon_barat"] - 1e-9) & (lo0 + c / DETIK <= m["lon_barat"] + (m["nx"] - 1) / DETIK + 1e-9)
+    mr = (la0 - r / DETIK <= m["lat_utara"] + 1e-9) & (la0 - r / DETIK >= m["lat_utara"] - (m["ny"] - 1) / DETIK - 1e-9)
+    return u[np.ix_(r[mr], c[mc])]
+
+
+def georef(kunci, m, z, np, geser=0):
+    """Banding nilai mentah ubin dengan sel kisi di jendela +-10 sel tiap titik acuan; -> jumlah sel tak cocok. geser=px menggeser kisi (untuk bukti uji peka)."""
+    zz = np.roll(z, (geser, geser), axis=(0, 1)) if geser else z
+    salah = 0
+    for kk, nama, la, lo, nilai, tol in TITIK_GEOREF:
+        if kk != kunci:
+            continue
+        u, lo0, la0 = _ubin_mentah("S%02d_00_E%03d" % (-math.ceil(la) + 1, math.floor(lo)), np)
+        r0, c0 = round((la0 - la) * DETIK), round((lo - lo0) * DETIK)
+        R, C = round((m["lat_utara"] - la) * DETIK), round((lo - m["lon_barat"]) * DETIK)
+        w_mentah = u[r0 - 10:r0 + 11, c0 - 10:c0 + 11]
+        w_kisi = zz[R - 10:R + 11, C - 10:C + 11]
+        darat = w_mentah > 0
+        salah += int((w_kisi[darat] != w_mentah[darat]).sum()) + int((w_kisi[~darat] > 0).sum())
+        if not geser:
+            v = float(z[R, C])
+            assert v > 0, (kunci, nama, "titik pedalaman/pantai acuan bukan darat", v)
+            if nilai is not None:
+                assert abs(v - nilai) <= tol and v == float(u[r0, c0]), (kunci, nama, v, nilai)
+    return salah
 
 
 def uji_medan(np):
@@ -332,7 +382,10 @@ def uji_medan(np):
         ada += 1
         assert np.isfinite(z).all(), (kunci, "ada sel kosong")
         assert m["darat_sel"] + m["laut_sel"] == z.size and m["darat_sel"] > 1000 and m["laut_sel"] > 1000
-        assert (z > 0).sum() == m["darat_sel"]
+        assert (z > 0).sum() == m["darat_sel"] and m["darat_sel"] + m["laut_sel"] == z.size
+        assert georef(kunci, m, z, np) == 0, (kunci, "georeferensi kisi tidak cocok dengan nilai mentah ubin")
+        if any(t[0] == kunci for t in TITIK_GEOREF):  # bukti uji peka: kisi digeser 3 sel HARUS gagal
+            assert georef(kunci, m, z, np, geser=3) > 0 and georef(kunci, m, z, np, geser=2) > 0, (kunci, "uji georef tidak peka pada geseran 2-3 sel")
 
         def di(la, lo):
             return float(z[round((m["lat_utara"] - la) * DETIK), round((lo - m["lon_barat"]) * DETIK)])
@@ -340,7 +393,9 @@ def uji_medan(np):
         # titik darat pasti: pedalaman tiap kotak (tinggi > 0 dan > 3 m); laut pasti: sudut selatan kotak jauh dari pantai
         lautp = di(k[1] + 0.01, (k[0] + k[2]) / 2)
         assert lautp < -5, (kunci, "titik laut acuan", lautp)
-        assert z.min() < -50 and z.max() > 20, (kunci, z.min(), z.max())
+        # puncak darat kisi = puncak nilai mentah ubin di dalam kotak (dibaca ulang dari berkas, bukan dari meta)
+        puncak = max(float(_jendela_mentah(u["ubin"], m, np).max()) for u in m["ubin"] if "sha256" in u)
+        assert float(z.max()) == puncak and float(z.min()) < -50, (kunci, float(z.max()), puncak, float(z.min()))
         for u in m["ubin"]:
             if "sha256" in u:
                 assert len(u["sha256"]) == 64 and u["byte"] == UKURAN_UBIN[u["ubin"]], u
