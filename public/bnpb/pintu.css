@@ -28,7 +28,7 @@
 .pt-hero-merek{display:flex;align-items:center;gap:14px;min-width:0}
 .pt-hero-lambang{flex:none;width:62px;height:62px;filter:drop-shadow(0 2px 8px color-mix(in oklch,var(--head-bg) 70%,transparent))}
 .pt-hero-kepala{display:grid;gap:6px;min-width:0}
-.pt-hero-ey{margin:0;font-size:.6875rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--head-hl)}
+.pt-hero-ey{margin:0;font-size:.6875rem;font-weight:800;letter-spacing:.01em;color:var(--head-hl)}
 .pt-hero-kepala h1{margin:0;font:800 1.75rem/1.05 var(--display,inherit);letter-spacing:-.03em;white-space:nowrap;color:var(--on-head)}
 .pt-hero-kepala h1::after{content:"";display:block;width:40px;height:3px;margin-top:8px;border-radius:2px;background:var(--head-hl)}
 .pt-hero-tgl{margin:0;font-size:var(--fs-3,.875rem);font-weight:600;color:var(--on-head-2)}
@@ -75,7 +75,7 @@
 .pt-tip-nilai span{font-size:.75rem;font-weight:600;color:var(--on-head-2)}
 .pt-tip-arti{margin:0;font-size:.75rem;color:var(--on-head)}
 .pt-tip-sumber{margin:0;padding-top:8px;border-top:1px solid color-mix(in oklch,var(--on-head) 14%,transparent);font-size:.6875rem;color:var(--on-head-2)}
-.pt-tip-sumber span{display:block;margin-bottom:1px;font-size:.625rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:color-mix(in oklch,var(--on-head-2) 80%,transparent)}
+.pt-tip-sumber span{display:block;margin-bottom:1px;font-size:.625rem;font-weight:800;letter-spacing:.01em;color:color-mix(in oklch,var(--on-head-2) 80%,transparent)}
 @keyframes pt-tip-masuk{from{opacity:0;translate:0 4px}to{opacity:1;translate:0 0}}
 
 /* pita terang angka lain, di bawah hero; grid 60 kolom, lebar tiap butir dari --span (pintu.js susun()) */
