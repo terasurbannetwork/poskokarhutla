@@ -24,3 +24,8 @@ test("Normal, tanpa data, atau kab tak dikenal: tidak ada baris (N9, tidak mengu
   assert.equal(barisPrakiraan("35|Pacitan", {status: null, ringkas, DP}), null);
   assert.equal(barisPrakiraan("99|Xyz", {status, ringkas, DP}), null);
 });
+test("bentuk nyata status.json (kab[k][KODE]) terbaca, bukan abu", () => {
+  const nyata = {kab: {"3501": {BNJ: st(2), LSR: st(0)}}};
+  const b = barisPrakiraan("35|Pacitan", {status: nyata, ringkas, DP});
+  assert.equal(b?.teks, "Status prakiraan: Siaga banjir");
+});

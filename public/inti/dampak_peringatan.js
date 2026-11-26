@@ -27,9 +27,13 @@
 
   /* GAGAL-TERTUTUP: hipotesis kecuali boleh_tampil === true persis (entri, lalu peta per bahaya, lalu satu bendera dokumen) */
   function bolehTampil(entri, status, kode) {
-    const b = entri?.boleh_tampil ?? (status?.boleh_tampil && typeof status.boleh_tampil === "object" ? status.boleh_tampil[String(kode).toUpperCase()] : status?.boleh_tampil);
+    const K = String(kode).toUpperCase(), bt = status?.boleh_tampil;
+    const b = entri?.boleh_tampil ?? status?.boleh_per_bahaya?.[K] ?? (bt && typeof bt === "object" ? bt[K] : bt);
     return b === true;
   }
+
+  /* bentuk nyata status.json (status_prakiraan.py): kab[k4][KODE] = {s, pemicu, sebagian, hari, hipotesis}; bentuk lama kab[k4].status[KODE] tetap terbaca */
+  const entriStatus = (status, k, kode) => { const K = String(kode).toUpperCase(), a = status?.kab?.[k]; return a?.[K] ?? a?.status?.[K]; };
 
   /* hijau Normal hanya bila semua sumber segar (D13): entri kosong, s tak sah, sebagian sumber, atau segar === false jadi abu "belum terukur" */
   function statusEfektif(entri, status, kode) {
@@ -38,7 +42,7 @@
     return {
       s: sahih ? s : null, belum: !sahih,
       sebagian: sahih && s > 0 && entri.sebagian === true,
-      hipotesis: !bolehTampil(entri, status, kode),
+      hipotesis: typeof entri?.hipotesis === "boolean" ? (entri.hipotesis || !bolehTampil(entri, status, kode)) : !bolehTampil(entri, status, kode),
       pemicu: PEMICU[entri?.pemicu] || null,
       hari: Array.isArray(entri?.hari) ? entri.hari.slice(0, 4) : [],
     };
@@ -69,18 +73,18 @@
   }
 
   const teksPeringatan = p => {
-    const b = {banjir: "Banjir", longsor: "Longsor"}[String(p?.bahaya || "").toLowerCase()] || String(p?.bahaya || "Peringatan");
+    const b = {banjir: "Banjir", longsor: "Longsor", banjir_longsor: "Banjir dan longsor"}[String(p?.bahaya || "").toLowerCase()] || String(p?.bahaya || "Peringatan");
     const sampai = p?.berlaku_sampai ? `, berlaku sampai ${String(p.berlaku_sampai).replace("T", " ").slice(0, 16)}` : "";
-    return `${b}${p?.wilayah ? " di " + p.wilayah : ""}${sampai}`;
+    return `${b}${p?.wilayah ? " di " + String(p.wilayah).toLowerCase().replace(/(^|[\s,(-])([a-z])/g, (_, a, b) => a + b.toUpperCase()) : ""}${sampai}`;
   };
 
   /* satu kartu kab: model data murni; tampilan membuatnya jadi DOM (kepala = nama kab, tanpa kalimat temuan, tanpa kaki sumber) */
   function modelKartu(kab, kode, {ringkas, status, nama} = {}) {
-    const r = ringkas?.kab?.[kab] || {}, st = status?.kab?.[kab] || r;
-    const e = statusEfektif(st?.status?.[kode.toUpperCase()], status, kode);
-    const pdd = r.penduduk_area_peringatan || {};
+    const r = ringkas?.kab?.[kab] || {}, st = status?.kab?.[kab] || r, K = kode.toUpperCase(), rb = r.bahaya?.[K] || {};
+    const e = statusEfektif(entriStatus(status, kab, kode), status, kode);
+    const pdd = rb.penduduk_area_peringatan || {};   /* tiga sumber berdampingan, tidak dijumlah; pembulatan sudah di hulu */
     const jiwa = Object.keys(SUMBER).filter(k => k in pdd).map(k => `${SUMBER[k]}: ${bulatJiwa(pdd[k])}`);
-    const kelas = r.jiwa_kelas && ["tinggi", "sedang", "rendah", "tak_terliput"].map(k => `${k.replace("_", " ")}: ${bulatJiwa(r.jiwa_kelas[k])}`);
+    const kelas = rb.jiwa_kelas && ["tinggi", "sedang", "rendah", "tak_terliput"].map(k => `${k.replace("_", " ")}: ${bulatJiwa(rb.jiwa_kelas[k])}`);
     const fas = Object.entries(r.fasilitas || {}).map(([k, v]) => `${FASILITAS[k] || k.replace(/_/g, " ")}: ${v == null ? BELUM : id.format(v)}`);
     return {
       judul: r.nama || st.nama || "",
@@ -88,7 +92,7 @@
       pil: [e.hipotesis && "Hipotesis", e.sebagian && "Sebagian sumber", r.terliput === false && "Kelas bahaya belum terukur"].filter(Boolean),
       pemicu: e.pemicu, hari: e.hari.map((s, i) => ({label: ["Hari ini", "Besok", "Lusa", "3 hari lagi"][i], teks: namaTingkat(s, nama), token: token(s)})),
       penduduk: jiwa.length ? jiwa : [BELUM], kelas: kelas || [], fasilitas: fas.length ? fas : [BELUM],
-      peringatan: peringatanUntuk(ringkas?.peringatan, kode).map(p => ({teks: teksPeringatan(p), url: tautanAman(p.web)})),
+      peringatan: (rb.r_bmkg > 0 ? peringatanUntuk(ringkas?.peringatan, kode).filter(p => String(p.wilayah || "").toUpperCase().includes(namaGeo(r.nama || st.nama).toUpperCase())) : []).map(p => ({teks: teksPeringatan(p), url: tautanAman(p.web)})),
     };
   }
 
@@ -164,7 +168,7 @@
         for (const f of g?.features || []) {
           const k = kab.find(c => c.startsWith(p) && nama.get(c) === namaGeo(f.properties?.kab));
           if (!k) continue;
-          const e = statusEfektif(status.kab[k]?.status?.[kode.toUpperCase()], status, kode);
+          const e = statusEfektif(entriStatus(status, k, kode), status, kode);
           fitur.push({type: "Feature", geometry: f.geometry, properties: {kab: k, dp_s: e.s ?? -1}});
         }
       }
@@ -202,6 +206,6 @@
     };
   }
 
-  globalThis.DampakPeringatan = {TINGKAT, BAHAYA, TIP_NORMAL, TIP_BELUM, token, warna, bolehTampil, statusEfektif, namaTingkat, tooltip, bulatJiwa, tautanAman,
+  globalThis.DampakPeringatan = {entriStatus, TINGKAT, BAHAYA, TIP_NORMAL, TIP_BELUM, token, warna, bolehTampil, statusEfektif, namaTingkat, tooltip, bulatJiwa, tautanAman,
     peringatanUntuk, teksPeringatan, modelKartu, namaGeo, ekspresiWarna, kartuDom, pasang};
 })();

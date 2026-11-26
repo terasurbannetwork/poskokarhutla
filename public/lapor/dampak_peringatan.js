@@ -19,7 +19,7 @@ export function barisPrakiraan(kabKode, {status, ringkas, DP, nama} = {}) {
   if (!k || !DP) return null;
   let terbaik = null;
   for (const [kode, label] of BAHAYA_ALUN) {
-    const e = DP.statusEfektif(status.kab[k]?.status?.[kode.toUpperCase()], status, kode);
+    const e = DP.statusEfektif(status.kab[k]?.[kode.toUpperCase()] ?? status.kab[k]?.status?.[kode.toUpperCase()], status, kode);
     if (e.s >= 1 && (!terbaik || e.s > terbaik.s)) terbaik = {s: e.s, kode, hipotesis: e.hipotesis, label};
   }
   if (!terbaik) return null;
