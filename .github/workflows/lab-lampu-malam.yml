@@ -33,6 +33,7 @@ jobs:
       - name: Jalankan ${{ inputs.tugas }}
         env:
           EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
+          LAMPU_SUMBER: laads
           TUGAS: ${{ inputs.tugas }}
         run: |
           case "$TUGAS" in laads_cek|validasi) ;; *) echo "tugas tidak dikenal: $TUGAS"; exit 1;; esac
