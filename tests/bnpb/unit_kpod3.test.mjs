@@ -77,7 +77,7 @@ test("skema lolos rapor.py, teks tanpa titik tengah dan kata aman, tautan dan un
     {cwd: AKAR, input: JSON.stringify(k), encoding: "utf8"});
   assert.equal(p.status, 0, p.stderr); assert.match(p.stdout, /ok/);
   assert.doesNotMatch(h, /·|\baman\b/i); assert.doesNotMatch(h, /Sumber: |ex-ft/);
-  assert.doesNotMatch(kepala(h), /class="hl"/); assert.match(kepala(h), /<h3 id="kpod3-laphar-j"><svg[^]*?<\/svg>Cakupan Laphar terurai<\/h3>/);
+  assert.doesNotMatch(kepala(h), /class="hl"/); assert.match(kepala(h), /<h3 id="kpod3-laphar-j"><svg[^]*?<\/svg>Cakupan laporan harian \(Laphar\) terurai<\/h3>/);
   assert.match(h, /data-label="Tanggal tanpa PDF"/);
   assert.match(h, /Hitungan kita/);
 });

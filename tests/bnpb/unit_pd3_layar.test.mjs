@@ -40,6 +40,10 @@ test("kodeKab: cocok menurut nama di provinsi yang sama, Kab. dan Kota dibedakan
   for (const p of PERINGATAN.slice(0, 2)) assert.ok(P.kodeKab(p, D.kab), `${p.kab} harus cocok`);
 });
 
+test("tingkatNama: angka dipetakan ke nama, nama tetap, kosong = belum ada data", () => {
+  assert.deepEqual([1, 2, 3, "awas", "Siaga", "", null].map(v => P.tingkatNama(v)), ["Waspada", "Siaga", "Awas", "Awas", "Siaga", "belum ada data", "belum ada data"]);
+});
+
 test("kelasBahaya memakai ambang terpapar.json: batas inklusif di ambang sedang, eksklusif di ambang tinggi", () => {
   const a = D.terpapar.ambang;
   assert.deepEqual([0.329, 0.33, 0.66, 0.661].map(v => P.kelasBahaya(v, a)), ["rendah", "sedang", "sedang", "tinggi"]);
@@ -102,6 +106,9 @@ test("PD-3 di Chrome: pilih peringatan, enam baris, salin, unduh PNG, tanpa POST
       await t.ukuran(w, hh);
       await t.buka(asal + "/bnpb/unit/pd", {tunggu: "#pd3-pilih"});
       assert.equal(await t.eval("document.querySelectorAll('#pd3-pilih option').length"), 4, "pilih + 3 peringatan");
+      assert.equal(await t.eval("document.querySelectorAll('#pd3-pilih option')[1].textContent"), "Awas, Banjir, Agam", "tingkat dan jenis berupa nama, bukan kunci mentah");
+      assert.equal(await t.eval("document.querySelectorAll('#pd3-pilih option')[2].textContent"), "Siaga, Kebakaran hutan & lahan, Merauke");
+      assert.equal(await t.eval("[...document.querySelectorAll('#pd3-pesan button')].some(b => /Salin pesan WhatsApp/.test(b.textContent))"), true);
       assert.equal(await t.eval("document.querySelector('#pd3-pesan .hl').textContent"), "59", "angka peringatan aktif = total API, bukan panjang daftar");
       assert.equal(await t.eval("document.querySelector('#pd3-pesan .ex-bd button[disabled]') !== null"), true, "tombol mati sebelum memilih");
       await t.pilih("#pd3-pilih", "0");

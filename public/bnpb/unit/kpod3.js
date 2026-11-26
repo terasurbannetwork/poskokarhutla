@@ -19,9 +19,9 @@
     const dalam = tanpa.filter(d => (!sahTgl(c.mulai) || d >= c.mulai) && d <= c.sampai);
     const tertinggal = Math.max(0, Math.round((ms(hariWib(sekarang)) - ms(c.sampai)) / HARI));
     const rentang = sahTgl(c.mulai) ? `${tgl(c.mulai)} sampai ${tgl(c.sampai)}` : `sampai ${tgl(c.sampai)}`;
-    return {id: "kpod3-laphar", sistem: "KPOD-3", pil: "Laphar terurai", ikon: "kalender", judul: "Cakupan Laphar terurai", label: ["hitungan_kita"],
+    return {id: "kpod3-laphar", sistem: "KPOD-3", pil: "Laporan harian terurai", ikon: "kalender", judul: "Cakupan laporan harian (Laphar) terurai", label: ["hitungan_kita"],
       sumber: ["laphar_riwayat"], rumus: "hari bolong = hari tanpa PDF di antara tanggal mulai dan sampai; tertinggal = hari ini (WIB) dikurangi tanggal sampai", aturan: [], asumsi: [],
-      angka: [{k: "hari", label: `Hari terurai, ${rentang}`, nilai: c.hari, title: "jumlah hari yang PDF-nya sudah diurai ke riwayat laporan harian"},
+      angka: [{k: "hari", label: `Hari terurai, ${rentang}`, nilai: c.hari, title: "jumlah hari yang berkas PDF laporan harian Pusdalops BNPB (Laphar)-nya sudah diurai ke riwayat"},
         {k: "bolong", label: "Hari bolong tanpa PDF di dalam rentang", nilai: dalam.length, title: "PDF laporan harian tidak tiba di arsip; hari itu belum bisa diurai"},
         {k: "tertinggal", label: "Hari tertinggal dari hari ini", nilai: tertinggal, title: "lebih dari 1 hari: pil basi di kepala kartu menyala"},
         {k: "sesudah", label: "Hari tanpa PDF sesudah tanggal sampai", nilai: tanpa.length - dalam.length, title: "belum diurai; bukan hari bolong sebelum PDF-nya tiba atau dipastikan tidak ada"}],

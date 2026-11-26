@@ -8,6 +8,8 @@
    Fungsi murni diuji tanpa DOM: UnitPd3 {kodeKab, konteks, kelasBahaya, sumberDaya}. Layar: UnitTampil["PD-3"](peringatanAktif) -> [elemen]. */
 (() => {
   const BELUM = "belum ada data";
+  const NAMA_TINGKAT = {1: "Waspada", 2: "Siaga", 3: "Awas"};   // Perban 2/2024 Pasal 20 ayat 4; API memberi nama, angka dipetakan di sini
+  const tingkatNama = t => NAMA_TINGKAT[t] || (typeof t === "string" && t ? t[0].toUpperCase() + t.slice(1) : BELUM);
   const norm = n => String(n || "").toLowerCase().replace(/^kabupaten\s+|^kab\.?\s+/, "").replace(/\s+/g, " ").trim();
 
   /* kode kab Kemendagri dari nama dan kode provinsi peringatan; tepat satu cocok, selain itu null */
@@ -35,7 +37,7 @@
     return {kode, turunan: null, kelas_bahaya: kelasBahaya(h, t?.ambang), jiwa_terpapar: typeof terpapar === "number" ? terpapar : null,
       sumber_daya: kode ? sumberDaya(p.jenis, kode, data?.siaga) : null};
   }
-  const api = {kodeKab, konteks, kelasBahaya, sumberDaya, norm, BELUM};
+  const api = {tingkatNama, kodeKab, konteks, kelasBahaya, sumberDaya, norm, BELUM};
   (typeof window !== "undefined" ? window : globalThis).UnitPd3 = api;
   if (typeof document === "undefined") return;
 
@@ -78,6 +80,7 @@
   }
 
   async function tampil(j) {
+    const m0 = await muatModul(), jenisNama = k => m0.BENCANA[k]?.nama || k;   // nama bencana dari katalog ews_tindakan.js, bukan kunci mentah
     const daftar = Array.isArray(j?.peringatan) ? j.peringatan : [];
     const skema = {id: "pd3-pesan", sistem: "PD-3", pil: "Pesan peringatan", ikon: "resmi", judul: "Penyusun pesan peringatan", label: ["resmi", "hitungan_kita"],
       sumber: ["peringatan_aktif", "terpapar", "siaga", "risiko_hvc"], aturan: [], asumsi: [],
@@ -89,14 +92,14 @@
     if (!daftar.length) { bd.append(h("p", {class: "ad-kosong", role: "status"}, ikon("kosong"), "Belum ada peringatan aktif untuk disusun.")); return [sec]; }
 
     const pilih = h("select", {id: "pd3-pilih", class: "un-g-in un-pd3-pilih"}, h("option", {value: "", teks: "Pilih peringatan aktif"}),
-      ...daftar.map((p, i) => h("option", {value: String(i), teks: `${p.tingkat}, ${p.jenis}, ${p.kab || "wilayah belum tertulis"}`})));
+      ...daftar.map((p, i) => h("option", {value: String(i), teks: `${tingkatNama(p.tingkat)}, ${jenisNama(p.jenis)}, ${p.kab || "wilayah belum tertulis"}`})));
     const nilai = {}, dd = k => (nilai[k] = h("dd", {teks: BELUM}));
     const masukan = h("dl", {class: "un-ringkas"},
       h("div", null, h("dt", {teks: "Jenis dan tingkat"}), dd("jenis")), h("div", null, h("dt", {teks: "Kab/kota"}), dd("kab")),
       h("div", null, h("dt", {teks: "Jiwa terpapar, sedang ke atas"}), dd("jiwa")), h("div", null, h("dt", {teks: "Kelas bahaya kab"}), dd("kelas")),
       h("div", null, h("dt", {teks: "Sumber daya"}), dd("sd")));
     const kotak = h("textarea", {id: "pd3-teks", class: "un-pd3-teks", readonly: true, rows: "7", "aria-label": "Pesan enam baris", placeholder: "Pesan muncul sesudah peringatan dipilih."});
-    const salin = h("button", {type: "button", class: "ad-tombol kecil", disabled: true}, ikon("data"), "Salin pesan WA");
+    const salin = h("button", {type: "button", class: "ad-tombol kecil", disabled: true}, ikon("data"), "Salin pesan WhatsApp");
     const png = h("button", {type: "button", class: "ad-tombol kecil", disabled: true}, ikon("unduh"), "Unduh kartu PNG");
     const status = h("p", {class: "un-g-cat", role: "status"});
     let kini = null;   // {p, baris}
@@ -109,7 +112,7 @@
       if (pilih.value !== i) return;   // pilihan sudah berganti selama memuat
       const k = konteks(p, d), pesan = m.pesanStandar(p, {turunan: k.turunan, kelas_bahaya: k.kelas_bahaya, jiwa_terpapar: k.jiwa_terpapar, sumber_daya: k.sumber_daya});
       kotak.value = pesan; kini = {p, baris: pesan.split("\n"), m};
-      nilai.jenis.textContent = `${m.BENCANA[p.jenis]?.nama || p.jenis}, ${p.tingkat}`; nilai.kab.textContent = putus(p.kab);
+      nilai.jenis.textContent = `${jenisNama(p.jenis)}, ${tingkatNama(p.tingkat)}`; nilai.kab.textContent = putus(p.kab);
       nilai.jiwa.textContent = k.jiwa_terpapar == null ? BELUM : `${k.jiwa_terpapar.toLocaleString("id-ID")} jiwa`; nilai.kelas.textContent = putus(k.kelas_bahaya);
       nilai.sd.textContent = putus(k.sumber_daya);
       if (!k.kode) status.textContent = "Kab/kota tidak bisa dicocokkan dengan daftar kita dari nama, jadi jiwa terpapar, kelas bahaya, dan sumber daya kosong.";
@@ -120,7 +123,7 @@
       status.textContent = await salinTeks(kotak.value, kotak) ? "Pesan disalin." : "Salin otomatis ditolak peramban; teks sudah terpilih, tekan salin sendiri."; });
     png.addEventListener("click", async () => { if (!kini) return;
       const {p, baris, m} = kini, tg = typeof p.tingkat === "number" ? p.tingkat : ({waspada: 1, siaga: 2, awas: 3})[String(p.tingkat).toLowerCase()];
-      const blob = await gambarPng(baris, `Peringatan ${p.tingkat}: ${m.BENCANA[p.jenis]?.nama || p.jenis}`, m.TINGKAT[tg] || {warna: "#555555", latar: "#f2f2f2"});
+      const blob = await gambarPng(baris, `Peringatan ${tingkatNama(p.tingkat)}: ${jenisNama(p.jenis)}`, m.TINGKAT[tg] || {warna: "#555555", latar: "#f2f2f2"});
       if (!blob) { status.textContent = "Kartu PNG gagal dibuat."; return; }
       const nama = `pesan-${p.jenis}-${norm(p.kab).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "wilayah"}.png`, url = URL.createObjectURL(blob);
       const a = h("a", {href: url, download: nama}); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);

@@ -26,7 +26,9 @@ JENDELA = 10
 SKALA = 100_000
 BERLAKU = ("berlaku", "sesuai_3_2026")
 ASUMSI = ["Asumsi: penduduk 2026 untuk semua tahun"]
-TITLE_TERDAMPAK = "kolom DIBI 'menderita'; definisi berbeda dari definisi terdampak UNDRR dan belum disetarakan"
+ASUMSI_JENIS = ["Asumsi: 7 kelompok jenis, batas bawah"]
+CATATAN_JENIS = "jenis bencana di luar 7 kelompok Data Informasi Bencana Indonesia (DIBI) dan kode kab yang tidak terpetakan tidak terhitung, jadi angka ini batas bawah"
+TITLE_TERDAMPAK = "kolom 'menderita' DIBI; definisi berbeda dari definisi terdampak Kantor Perserikatan Bangsa-Bangsa untuk Pengurangan Risiko Bencana (UNDRR) dan belum disetarakan"
 
 
 def penduduk(terpapar):
@@ -89,18 +91,19 @@ def bangun(dibi, terpapar, kerugian, rpbd, nama):
     r = lambda v, d=3: None if v is None else round(v, d)   # noqa: E731
     sampai = f"{h['tahun'][0]}-{h['tahun'][-1]}"
     k1 = rapor.kartu(
-        id="pspb3-nasional", sistem="PSPB-3", pil="Indikator Sendai", ikon="hitung", judul="Indikator nasional Sendai dan SDGs 11.b",
+        id="pspb3-nasional", sistem="PSPB-3", pil="Indikator Sendai", ikon="hitung", judul="Indikator Sendai dan Tujuan Pembangunan Berkelanjutan 11.b",
         angka=[{"k": "a1", "label": f"A-1 korban jiwa per 100.000 penduduk, rata-rata {sampai}", "nilai": r(nas["a1"]), "desimal": 2,
-                "title": f"(meninggal + hilang) rata-rata tahunan {sampai} / penduduk x 100.000; jumlah korban dibagi jumlah penduduk {nas['kab_berdata']} kab yang ada di DIBI"},
-               {"k": "b1", "label": f"B-1 terdampak per 100.000 penduduk, rata-rata {sampai}", "nilai": r(nas["b1"]), "desimal": 0, "title": TITLE_TERDAMPAK},
-               {"k": "c1", "label": "C-1 kerugian rumah lawan PDB (%)", "nilai": r(c1, 4), "desimal": 3,
-                "title": "dari PERB-2; kosong selama PERB-2 belum layak (hitungan 2025 belum mendekati angka resmi LAKIP)" if not layak else "dari PERB-2, batas bawah (hanya rumah)"},
+                "title": f"(meninggal + hilang) rata-rata tahunan {sampai} / penduduk x 100.000; jumlah korban dibagi jumlah penduduk {nas['kab_berdata']} kab yang ada di DIBI; " + CATATAN_JENIS},
+               {"k": "b1", "label": f"B-1 terdampak per 100.000 penduduk, rata-rata {sampai}", "nilai": r(nas["b1"]), "desimal": 0, "title": TITLE_TERDAMPAK + "; " + CATATAN_JENIS},
+               {"k": "c1", "label": "C-1 kerugian rumah lawan produk domestik bruto (PDB) (%)", "nilai": r(c1, 2), "desimal": 2,
+                "title": "dari PERB-2; kosong selama PERB-2 belum layak (hitungan 2025 belum lolos gerbang terhadap angka resmi Laporan Akuntabilitas Kinerja Instansi Pemerintah, LAKIP)" if not layak else "dari PERB-2, batas bawah (hanya rumah)"},
                {"k": "e1", "label": "E-1 strategi nasional", "nilai": None,
                 "title": "tidak dihitung dari data pipeline; PSPB-1 hanya mendata dokumen daerah"},
-               {"k": "e2", "label": f"E-2 pemda ber-RPBD berlaku, dari {dicek:,} yang bisa dicek (%)".replace(",", "."), "nilai": r(pe2, 1), "desimal": 1,
-                "title": f"proksi dari register JDIH (PSPB-1): {ber:,} berlaku dari {dicek:,} yang bisa dicek, {jml - dicek:,} pemda tidak bisa dicek; batas bawah, bukan angka Sendai Monitor".replace(",", ".")},
+               {"k": "e2", "label": f"E-2 pemda ber-RPBD berlaku (%), dari {dicek:,} yang bisa dinilai".replace(",", "."), "nilai": r(pe2, 1), "desimal": 1,
+                "title": (f"RPBD = Rencana Penanggulangan Bencana Daerah. Proksi dari register Jaringan Dokumentasi dan Informasi Hukum (JDIH, PSPB-1): {ber:,} berlaku dari {dicek:,} yang bisa dicek; {jml - dicek:,} pemda tidak bisa dinilai. "
+                          f"Rentang berlaku dari {jml:,} pemda: {100 * ber / jml:.1f}% sampai {100 * (ber + jml - dicek) / jml:.1f}% (bila semua yang tak bisa dinilai ternyata berlaku); bukan angka Sendai Monitor").replace(",", "x").replace(".", ",").replace("x", ".") if jml else "belum ada data"},
                {"k": "tanpa_dibi", "label": "Kab/kota tanpa data DIBI, tidak dihitung", "nilai": nas["kab_tanpa_dibi"],
-                "title": "kode kab tidak ada di DIBI 2015-2025 atau tidak terpetakan; ditulis tidak ada data, bukan nol"}],
+                "title": "kab tidak punya baris DIBI 2015-2025: tidak ada kejadian tercatat atau kodenya belum terpetakan (tidak bisa dibedakan dari data ini); ditulis tidak ada data, bukan nol"}],
         kolom=[{"k": "tahun", "label": "Tahun"},
                {"k": "md", "label": "Meninggal dan hilang", "angka": True, "title": "jumlah DIBI semua jenis bencana, kab yang penduduknya diketahui"},
                {"k": "td", "label": "Terdampak", "angka": True, "title": TITLE_TERDAMPAK},
@@ -110,22 +113,22 @@ def bangun(dibi, terpapar, kerugian, rpbd, nama):
                 "a1": r(v["md"] / nas["penduduk"] * SKALA) if nas["penduduk"] else None,
                 "b1": r(v["td"] / nas["penduduk"] * SKALA) if nas["penduduk"] else None} for t, v in h["per_tahun"].items()],
         rumus="indikator = korban / penduduk x 100.000; rata-rata bergulir 10 tahun (penyebut selalu 10); nasional = jumlah korban / jumlah penduduk kab berdata",
-        sumber=["dibi_kab_tahun", "terpapar", "perb2_kerugian", "pspb1_rpbd"], label=["hitungan_kita", "proksi"], asumsi=ASUMSI)
+        sumber=["dibi_kab_tahun", "terpapar", "perb2_kerugian", "pspb1_rpbd"], label=["hitungan_kita", "proksi"], asumsi=ASUMSI + ASUMSI_JENIS)
     urut = sorted(h["kab"].items(), key=lambda kv: (kv[1]["a1"] is None, -(kv[1]["a1"] or 0), kv[0]))
     k2 = rapor.kartu(
         id="pspb3-kab", sistem="PSPB-3", pil="Indikator Sendai", ikon="orang", judul="A-1 dan B-1 per kab/kota",
         angka=[{"k": "kab", "label": "Kab/kota berdata", "nilai": nas["kab_berdata"]}],
-        kolom=[{"k": "kab", "label": "Kab/kota"}, {"k": "n", "label": "Penduduk", "angka": True, "title": "Dukcapil per Okt 2026, dipakai untuk semua tahun"},
+        kolom=[{"k": "kab", "label": "Kab/kota"}, {"k": "n", "label": "Penduduk", "angka": True, "title": "Direktorat Jenderal Kependudukan dan Pencatatan Sipil (Dukcapil) per Okt 2026, dipakai untuk semua tahun"},
                {"k": "md", "label": f"Meninggal dan hilang {sampai}", "angka": True, "title": "jumlah 10 tahun"},
                {"k": "a1", "label": "A-1 per 100.000", "angka": True, "desimal": 2, "title": "rata-rata tahunan 10 tahun / penduduk x 100.000"},
                {"k": "b1", "label": "B-1 per 100.000", "angka": True, "desimal": 0, "title": TITLE_TERDAMPAK}],
         baris=[{"kab": nama.get(k) or k, "n": v["n"], "md": v["md"], "a1": r(v["a1"]), "b1": r(v["b1"])} for k, v in urut],
         rumus="A-1 = (jumlah meninggal + hilang 10 tahun / 10) / penduduk x 100.000; B-1 sama untuk terdampak",
-        sumber=["dibi_kab_tahun", "terpapar"], label=["hitungan_kita"], asumsi=ASUMSI, unduh="indikator_sendai_kab.csv")
+        sumber=["dibi_kab_tahun", "terpapar"], label=["hitungan_kita"], asumsi=ASUMSI + ASUMSI_JENIS, unduh="indikator_sendai_kab.csv")
     src = [{"nama": "DIBI BNPB, kab x tahun (dibi_kab_tahun.json)", "url": "repo:public/data/bnpb/dibi_kab_tahun.json", "diambil": str(dibi.get("dibuat") or "2026-11-26")[:10],
             "lisensi": "data publik dasbor DIBI; syarat pakai tidak tertulis"},
-           {"nama": "Penduduk Dukcapil (terpapar.json)", "url": "repo:public/data/bnpb/terpapar.json", "diambil": "2026-10-29", "lisensi": "layanan ArcGIS REST publik; syarat pakai tidak dinyatakan"},
-           {"nama": "PERB-2 kerugian rumah dan PSPB-1 register RPBD", "url": "repo:scripts/bnpb/unit/perb2.py", "diambil": "2026-11-26", "lisensi": "hitungan kita"}]
+           {"nama": "Penduduk Direktorat Jenderal Kependudukan dan Pencatatan Sipil (terpapar.json)", "url": "repo:public/data/bnpb/terpapar.json", "diambil": "2026-10-29", "lisensi": "layanan ArcGIS REST publik; syarat pakai tidak dinyatakan"},
+           {"nama": "PERB-2 kerugian rumah dan PSPB-1 register Rencana Penanggulangan Bencana Daerah", "url": "repo:scripts/bnpb/unit/perb2.py", "diambil": "2026-11-26", "lisensi": "hitungan kita"}]
     b = rapor.berkas([k1, k2], src)
     b["data"] = {"label_wajib": "hitungan kita; terdampak DIBI bukan definisi UNDRR", "tahun_akhir": h["tahun_akhir"], "jendela": JENDELA, "nasional": nas,
                  "per_tahun": {str(t): v for t, v in h["per_tahun"].items()}, "c1": {"nilai": c1, "layak": layak}, "e1": None, "e2": {"persen": pe2, "berlaku": ber, "dicek": dicek, "pemda": jml},

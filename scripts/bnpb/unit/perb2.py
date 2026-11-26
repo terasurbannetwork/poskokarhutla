@@ -55,7 +55,30 @@ def biaya(rb, rs, rr, tarif):
     return rb * tarif["RB"] + rs * tarif["RS"] + rr * tarif["RR"]
 
 
-def gerbang(dibi, tarif, resmi_juta):
+def sisi_ok(selisih):
+    """Gerbang satu sisi: hitungan kita hanya batas bawah, jadi harus <= angka resmi dan tidak lebih dari 30% di bawahnya."""
+    return -AMBANG_SELISIH <= selisih <= 0
+
+
+def gerbang_kejadian(kejadian, tarif, resmi_juta):
+    """Sumber yang SAMA dengan tampilan (dibi_kejadian.json): hitung 1 Jan sampai 31 Des 2025; berkas yang tidak menutup seluruh 2025 = tidak lolos."""
+    dari, sampai = str(kejadian.get("dari") or ""), str(kejadian.get("sampai") or "")
+    if not (dari and sampai and dari <= f"{TAHUN_UJI}-01-01" and sampai >= f"{TAHUN_UJI}-12-31"):
+        return {"lolos": False, "hitung_juta": None, "selisih": None, "alasan": f"berkas hanya mencakup {dari or '?'} sampai {sampai or '?'}, belum menutup 1 Januari sampai 31 Desember {TAHUN_UJI}"}
+    rb = rs = rr = 0
+    for r in kejadian["kejadian"]:
+        if r.get("bencana", 1) == 0 or not str(r.get("tanggal", "")).startswith(f"{TAHUN_UJI}-"):
+            continue
+        rb += r.get("rr_berat", 0)
+        rs += r.get("rr_sedang", 0)
+        rr += r.get("rr_ringan", 0)
+    hitung = rb * tarif["RB"] + rs * tarif["RS"] + rr * tarif["RR"]
+    selisih = (hitung - resmi_juta) / resmi_juta
+    return {"lolos": sisi_ok(selisih), "hitung_juta": hitung, "selisih": selisih,
+            "alasan": None if sisi_ok(selisih) else f"selisih {selisih * 100:+.0f}% dari angka resmi di luar rentang -{AMBANG_SELISIH * 100:.0f}% sampai 0%"}
+
+
+def gerbang(dibi, tarif, resmi_juta, kejadian=None):
     """Hitung 2025 dari dibi_kab_tahun.json dan bandingkan dengan angka resmi. -> dict (lengkap, layak, alasan)."""
     kol = {k: i for i, k in enumerate(dibi["kolom"])}
     sedang, ringan = kol.get("rumah_rusak_sedang"), kol.get("rumah_rusak_ringan")
@@ -70,18 +93,22 @@ def gerbang(dibi, tarif, resmi_juta):
             rr += b[ringan] or 0
     hitung = rb * tarif["RB"] + rs * tarif["RS"] + rr * tarif["RR"]
     selisih = (hitung - resmi_juta) / resmi_juta
-    layak = lengkap and abs(selisih) <= AMBANG_SELISIH
+    lolos1 = lengkap and sisi_ok(selisih)
+    g2 = gerbang_kejadian(kejadian, tarif, resmi_juta) if kejadian is not None else {"lolos": False, "hitung_juta": None, "selisih": None, "alasan": "dibi_kejadian.json tidak diberikan"}
+    layak = lolos1 and g2["lolos"]
     if layak:
         alasan = None
     else:
         sebab = []
         if not lengkap:
             sebab.append("kolom rumah rusak sedang dan ringan belum ada di dibi_kab_tahun.json (RU-058), hitungan 2025 hanya rumah rusak berat")
-        if abs(selisih) > AMBANG_SELISIH:
-            sebab.append(f"selisih {selisih * 100:+.0f}% dari angka resmi melebihi batas {AMBANG_SELISIH * 100:.0f}%")
+        elif not sisi_ok(selisih):
+            sebab.append(f"sumber kab x tahun: selisih {selisih * 100:+.0f}% dari angka resmi di luar rentang -{AMBANG_SELISIH * 100:.0f}% sampai 0%")
+        if not g2["lolos"]:
+            sebab.append("sumber kejadian harian: " + g2["alasan"])
         alasan = "belum layak: " + "; ".join(sebab)
     return {"tahun": TAHUN_UJI, "lengkap": lengkap, "rb": rb, "rs": rs if lengkap else None, "rr": rr if lengkap else None,
-            "hitung_juta": hitung, "resmi_juta": resmi_juta, "selisih": selisih, "layak": layak, "alasan": alasan}
+            "hitung_juta": hitung, "resmi_juta": resmi_juta, "selisih": selisih, "kejadian": g2, "layak": layak, "alasan": alasan}
 
 
 def tahun_berjalan(kejadian, tarif, petakan, layak):
@@ -109,7 +136,7 @@ def tahun_berjalan(kejadian, tarif, petakan, layak):
 
 def bangun(dibi, kejadian, tarif, lakip, nama, petakan=PAD.petakan):
     resmi, pdb = resmi_lakip(lakip)
-    g = gerbang(dibi, tarif, resmi)
+    g = gerbang(dibi, tarif, resmi, kejadian)
     kab, tak = tahun_berjalan(kejadian, tarif, petakan, g["layak"])
     jml = {k: sum(x[k] for x in kab.values()) for k in ("rb", "rs", "rr")}
     total = sum(x["kerugian_juta"] for x in kab.values()) if g["layak"] else None
@@ -117,12 +144,12 @@ def bangun(dibi, kejadian, tarif, lakip, nama, petakan=PAD.petakan):
               **({"kerugian": x["kerugian_juta"]} if g["layak"] else {})}
              for k, x in sorted(kab.items(), key=lambda kv: (-kv[1]["rb"], -kv[1]["rs"], kv[0]))]
     kolom = [{"k": "kab", "label": "Kab/kota"},
-             {"k": "rb", "label": "Rumah rusak berat", "angka": True, "title": "rr_berat DIBI, baris kejadian yang masuk angka resmi, 365 hari terakhir"},
-             {"k": "rs", "label": "Rumah rusak sedang", "angka": True, "title": "rr_sedang DIBI, 365 hari terakhir"},
-             {"k": "rr", "label": "Rumah rusak ringan", "angka": True, "title": "rr_ringan DIBI, 365 hari terakhir"}]
+             {"k": "rb", "label": "Rumah rusak berat", "angka": True, "title": "rumah rusak berat menurut Data Informasi Bencana Indonesia (DIBI), baris kejadian yang masuk angka resmi, 365 hari terakhir"},
+             {"k": "rs", "label": "Rumah rusak sedang", "angka": True, "title": "rumah rusak sedang menurut DIBI, 365 hari terakhir"},
+             {"k": "rr", "label": "Rumah rusak ringan", "angka": True, "title": "rumah rusak ringan menurut DIBI, 365 hari terakhir"}]
     if g["layak"]:
         kolom.append({"k": "kerugian", "label": "Kerugian rumah, juta Rp", "angka": True, "desimal": 0,
-                      "title": "RB x 60 + RS x 30 + RR x 15 juta (tarif stimulan, asumsi); batas bawah, kerugian non-rumah tidak tertangkap"})
+                      "title": "rumah rusak berat x 60 + rumah rusak sedang x 30 + rumah rusak ringan x 15 juta rupiah (tarif stimulan, asumsi); batas bawah, kerugian non-rumah tidak tertangkap"})
     sedang_resmi = f"{g['hitung_juta'] / JUTA_PER_TRILIUN:,.1f}".replace(",", "x").replace(".", ",").replace("x", ".")
     k1 = rapor.kartu(
         id="perb2-kerugian", sistem="PERB-2", pil="Kerugian ekonomi", ikon="uang", judul="Kerugian rumah tahun berjalan",
@@ -130,15 +157,15 @@ def bangun(dibi, kejadian, tarif, lakip, nama, petakan=PAD.petakan):
                {"k": "rs", "label": "Rumah rusak sedang", "nilai": jml["rs"]},
                {"k": "rr", "label": "Rumah rusak ringan", "nilai": jml["rr"]},
                {"k": "kerugian", "label": "Kerugian rumah, juta Rp (batas bawah)", "nilai": total, "desimal": 0,
-                "title": g["alasan"] or "RB x 60 + RS x 30 + RR x 15 juta; batas bawah"},
-               {"k": "gerbang", "label": f"Selisih hitungan {TAHUN_UJI} lawan angka resmi LAKIP (%)", "nilai": round(g["selisih"] * 100, 1), "desimal": 0,
-                "title": f"hitungan {TAHUN_UJI} dari DIBI = Rp{sedang_resmi} triliun lawan Rp{resmi / JUTA_PER_TRILIUN:,.1f} triliun (LAKIP 2025); layak bila kolom lengkap dan selisih paling banyak {AMBANG_SELISIH * 100:.0f}%".replace(",", "x").replace(".", ",").replace("x", ".")},
-               {"k": "proporsi", "label": "Kerugian rumah lawan PDB 2025 (%)", "nilai": round(total / pdb * 100, 4) if total is not None else None, "desimal": 3,
+                "title": g["alasan"] or "rumah rusak berat x 60 + rumah rusak sedang x 30 + rumah rusak ringan x 15 juta rupiah; batas bawah. Lolos gerbang bukan validasi akurasi; ambang 30% belum dikunci"},
+               {"k": "gerbang", "label": f"Selisih hitungan {TAHUN_UJI} lawan angka resmi laporan kinerja (%)", "nilai": round(g["selisih"] * 100, 1), "desimal": 0,
+                "title": f"hitungan {TAHUN_UJI} dari DIBI = Rp{sedang_resmi} triliun lawan Rp{resmi / JUTA_PER_TRILIUN:,.1f} triliun (Laporan Akuntabilitas Kinerja Instansi Pemerintah, LAKIP, 2025); layak bila kolom lengkap, kedua sumber DIBI (kab x tahun dan kejadian harian) lolos, hitungan tidak melebihi angka resmi dan tidak lebih dari {AMBANG_SELISIH * 100:.0f}% di bawahnya. Lolos gerbang bukan validasi akurasi; ambang 30% belum dikunci".replace(",", "x").replace(".", ",").replace("x", ".")},
+               {"k": "proporsi", "label": "Kerugian rumah lawan produk domestik bruto (PDB) 2025 (%)", "nilai": round(total / pdb * 100, 2) if total is not None else None, "desimal": 2,
                 "title": g["alasan"] or "penyebut PDB 2025 menurut LAKIP"},
                {"k": "tak_terpetakan", "label": "Baris DIBI dengan kode kab tak terpetakan", "nilai": tak,
                 "title": "tidak dibagi rata ke kab lain; ditulis supaya selisih jumlah terbaca"}],
         kolom=kolom, baris=baris,
-        rumus="kerugian kab = RB x c_rb + RS x c_rs + RR x c_rr (c = tarif stimulan Jam Aturan); tampil hanya bila hitungan 2025 selisih paling banyak 30% dari angka resmi",
+        rumus="kerugian kab = rumah rusak berat x tarif berat + rumah rusak sedang x tarif sedang + rumah rusak ringan x tarif ringan (tarif stimulan Jam Aturan); tampil hanya bila hitungan 2025 dari dua sumber DIBI tidak melebihi angka resmi dan tidak lebih dari 30% di bawahnya",
         sumber=["dibi_kejadian", "dibi_kab_tahun", "lakip_2025", "jam_aturan"], label=["resmi", "hitungan_kita"], aturan=["tarif_stimulan_juta"],
         asumsi=ASUMSI + ([] if g["layak"] else [ASUMSI_GAGAL]), unduh="rumah_rusak_365_hari.csv")
     src = [{"nama": "DIBI BNPB, kejadian harian 365 hari (dibi_kejadian.json)", "url": "repo:public/data/dibi_kejadian.json", "diambil": str(kejadian.get("dibuat") or "2026-11-26")[:10],
@@ -187,9 +214,21 @@ def cek():
     # kolom lengkap, selisih 29% lolos, 31% gagal (batas inklusif 30%)
     kolom2 = kolom + ["rumah_rusak_sedang", "rumah_rusak_ringan"]
     mk = lambda rb: {"kolom": kolom2, "baris": [["1101", 2025, "banjir", 1, 0, 0, 0, 0, rb, 0, 0]]}  # noqa: E731
-    assert gerbang(mk(int(51_300_000 * 0.71 / 60)), tarif, 51_300_000.0)["layak"]
-    assert not gerbang(mk(int(51_300_000 * 0.69 / 60)), tarif, 51_300_000.0)["layak"]
-    assert not gerbang(mk(int(51_300_000 * 1.40 / 60)), tarif, 51_300_000.0)["layak"]
+    # sumber kedua: dibi_kejadian harian yang menutup seluruh 2025; kedua sumber wajib lolos, gerbang satu sisi (tidak boleh melebihi angka resmi)
+    kj = lambda rb, dari="2024-12-31", sampai="2026-01-02": {"dari": dari, "sampai": sampai, "kejadian": [   # noqa: E731
+        {"tanggal": "2025-06-01", "kab_kode": "11.10", "rr_berat": rb}, {"tanggal": "2025-06-02", "kab_kode": "11.10", "rr_berat": 10 ** 9, "bencana": 0},
+        {"tanggal": "2026-01-01", "kab_kode": "11.10", "rr_berat": 10 ** 9}]}
+    nol = int(51_300_000 * 0.71 / 60)
+    assert gerbang(mk(nol), tarif, 51_300_000.0, kj(nol))["layak"]
+    assert not gerbang(mk(nol), tarif, 51_300_000.0)["layak"], "tanpa sumber kedua tidak layak"
+    assert not gerbang(mk(nol), tarif, 51_300_000.0, kj(nol, dari="2025-11-23", sampai="2026-11-23"))["layak"], "berkas harian tidak menutup 2025"
+    assert "belum menutup" in gerbang(mk(nol), tarif, 51_300_000.0, kj(nol, dari="2025-11-23"))["alasan"]
+    assert not gerbang(mk(nol), tarif, 51_300_000.0, kj(int(51_300_000 * 0.5 / 60)))["layak"], "sumber harian terlalu rendah"
+    assert not gerbang(mk(nol), tarif, 51_300_000.0, kj(int(51_300_000 * 1.1 / 60)))["layak"], "satu sisi: melebihi angka resmi ditolak"
+    assert not gerbang(mk(int(51_300_000 * 1.1 / 60)), tarif, 51_300_000.0, kj(nol))["layak"], "satu sisi pada sumber kab x tahun"
+    assert not gerbang(mk(int(51_300_000 * 0.69 / 60)), tarif, 51_300_000.0, kj(nol))["layak"]
+    assert not gerbang(mk(int(51_300_000 * 1.40 / 60)), tarif, 51_300_000.0, kj(nol))["layak"]
+    assert gerbang(mk(int(51_300_000 * 0.71 / 60)), tarif, 51_300_000.0, kj(nol))["kejadian"]["hitung_juta"] == nol * 60, "bencana 0 dan tahun lain tidak ikut"
     # tahun berjalan: bencana 0 tidak masuk, kode titik dipetakan, kode tak terpetakan dihitung terpisah, kab tanpa rumah rusak tidak muncul
     kej = {"dibuat": "2026-11-23", "dari": "2025-11-23", "sampai": "2026-11-23", "kejadian": [
         {"kab_kode": "11.10", "kab": "Bireuen", "rr_berat": 2, "rr_sedang": 3, "rr_ringan": 4},
@@ -212,9 +251,10 @@ def cek():
     assert a["rb"]["nilai"] == 3 and a["gerbang"]["nilai"] < -80 and b["data"]["layak"] is False and k["baris"][0]["kab"] == "Kab. Bireuen"
     # layak: rupiah dan proporsi tampil
     dibi_ok = {"kolom": kolom2, "baris": [["1101", 2025, "banjir", 1, 0, 0, 0, 0, 500000, 400000, 300000]]}   # 30+12+4,5 = Rp46,5 triliun
-    bl = bangun(dibi_ok, kej, tarif, lakip, {}, peta)
+    kej_ok = {**kej, "dari": "2024-12-31", "sampai": "2026-01-02", "kejadian": kej["kejadian"] + [{"tanggal": "2025-03-01", "kab_kode": "11.10", "kab": "Bireuen", "rr_berat": 770_000}]}   # 46,2 triliun
+    bl = bangun(dibi_ok, kej_ok, tarif, lakip, {}, peta)
     al = {x["k"]: x for x in bl["kartu"][0]["angka"]}
-    assert bl["data"]["layak"] and al["kerugian"]["nilai"] == 330 and al["proporsi"]["nilai"] is not None and "kerugian" in [c["k"] for c in bl["kartu"][0]["kolom"]]
+    assert bl["data"]["layak"] and al["kerugian"]["nilai"] == 770_000 * 60 + 330 and al["proporsi"]["nilai"] is not None and "kerugian" in [c["k"] for c in bl["kartu"][0]["kolom"]]
     assert bl["kartu"][0]["baris"][0]["kab"] == "Bireuen" and "asumsi" in bl["kartu"][0]
     nyata = jalan()["kerugian"]
     rapor.periksa_berkas({"dibuat": "2026-11-26T00:00:00Z", "basi_jam": 1080, **nyata})

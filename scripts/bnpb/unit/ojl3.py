@@ -1,4 +1,4 @@
-"""OJL-3 Rapor Klaster Logistik dari API publik INALOGPAL (DESAIN-TEKNIS sec 6.20; ALGORITMA sec 7.8; Juklak 16/2025; tiket RU-064).
+"""OJL-3 Rapor Klaster Logistik dari antarmuka data publik INALOGPAL (DESAIN-TEKNIS sec 6.20; ALGORITMA sec 7.8; Juklak 16/2025; tiket RU-064).
 
 Langkah jalan.py (harian). Masukan (lewat panen.ambil_json, MB-8: host izin, robots, jeda, cache): INALOGPAL Api/get_progress,
 get_count_cluster_all, get_count_cluster_sk_all; beban kejadian = jumlah kejadian DIBI 5 tahun lengkap terakhir per provinsi
@@ -31,7 +31,7 @@ FIXTURE = os.path.join(AKAR, "tests", "bnpb", "fixtures", "unit", "inalogpal")
 SITUS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "jdih_situs.json")
 AMBANG_CAPAIAN = 25.0   # asumsi riset/4 O3
 TAHUN_BEBAN = 5
-ASUMSI = ["Asumsi: batas capaian 25 persen", "Asumsi: ber-SK bila ada di get_progress"]
+ASUMSI = ["Asumsi: batas capaian 25 persen", "Asumsi: ber-SK bila tercatat di sumber", "Asumsi: merah masih hipotesis"]
 KUNCI_BARIS = ("wilayah_id", "wilayah", "pra_bencana", "darurat_bencana", "pasca_bencana", "total_capaian", "tahapan")
 
 
@@ -119,29 +119,33 @@ def bangun(progress, hit_semua, hit_sk, dibi, situs, sumber_atribusi):
     ber_sk = [b for b in baris if b["sk"]]
     merah = [b for b in baris if b["merah"]]
     capaian = [max(b["pra"], b["darurat"], b["pasca"]) for b in ber_sk]
+    top = [b for b in baris if b["persentil"] is not None and b["persentil"] >= 2 / 3]
+    merah_title = (f"Hipotesis. Beban kejadian {tahun} di sepertiga teratas dan (capaian maksimum di bawah 25% atau tanpa surat keputusan tercatat). "
+                   f"Ambang 25% asumsi riset; saat ini {len(merah)} dari {len(top)} provinsi di sepertiga beban tertinggi berstatus merah" +
+                   (", jadi merah setara peringkat beban dan belum menyaring apa pun" if len(merah) == len(top) else "") + ".")
     ya = lambda v: "belum diketahui" if v is None else "ya" if v else "tidak tercatat"   # noqa: E731
     k1 = rapor.kartu(
         id="ojl3-klaster", sistem="OJL-3", pil="Klaster Logistik", ikon="gudang", judul="Klaster Logistik per provinsi",
-        angka=[{"k": "ber_sk", "label": "Provinsi ber-SK klaster, dari 38", "nilai": len(ber_sk) if sk_dikenal else None,
-                "title": "ber-SK = ada di get_progress selama jumlahnya sama dengan get_count_cluster_sk_all"},
+        angka=[{"k": "ber_sk", "label": "Provinsi ber-surat keputusan (SK) klaster, dari 38", "nilai": len(ber_sk) if sk_dikenal else None,
+                "title": "ber-SK = tercatat di daftar progres INALOGPAL (get_progress) selama jumlahnya sama dengan hitungan SK klaster (get_count_cluster_sk_all)"},
                {"k": "tertinggi", "label": "Capaian provinsi tertinggi (%)", "nilai": max(capaian) if capaian else None, "desimal": 2,
                 "title": "capaian pra, darurat, pasca terbesar di antara provinsi ber-SK, angka INALOGPAL"},
                {"k": "merah", "label": "Provinsi merah", "nilai": len(merah),
-                "title": f"beban kejadian {tahun} di sepertiga teratas dan (capaian maksimum di bawah 25% atau tanpa SK tercatat)"},
+                "title": merah_title},
                {"k": "kab_sk", "label": "Kab/kota ber-SK klaster", "nilai": kab_sk if sk_dikenal else None},
-               {"k": "klaster_prov", "label": "Hitungan klaster provinsi (get_count_cluster_all)", "nilai": hit_semua.get("Provinsi"),
-                "title": "angka mentah dari API; satuannya tidak dijelaskan sumber"},
+               {"k": "klaster_prov", "label": "Hitungan klaster provinsi (sumber INALOGPAL)", "nilai": hit_semua.get("Provinsi"),
+                "title": "angka mentah dari get_count_cluster_all; satuannya tidak dijelaskan sumber"},
                {"k": "tak", "label": "Nama provinsi INALOGPAL tak cocok dengan daftar kita", "nilai": len(tak),
                 "title": "dicocokkan menurut nama, tidak ditebak: " + (", ".join(tak) if tak else "semua cocok")},
                {"k": "mutakhir", "label": "Hari sejak pemutakhiran terakhir", "nilai": None,
-                "title": "API tidak menyertakan tanggal pemutakhiran; batas basi 3 bulan (Juklak 16/2025) belum bisa diperiksa"}],
+                "title": "sumber data tidak menyertakan tanggal pemutakhiran; batas basi 3 bulan (Juklak 16/2025) belum bisa diperiksa"}],
         kolom=[{"k": "provinsi", "label": "Provinsi", "title": "nama INALOGPAL dicocokkan menurut nama; cakupan Papua sebelum dan sesudah pemekaran 2022 tidak dibagi"},
-               {"k": "sk", "label": "Ber-SK klaster", "title": "tidak tercatat = tidak ada di get_progress; bukan bukti klaster tidak ada"},
-               {"k": "pra", "label": "Pra bencana (%)", "angka": True, "desimal": 2, "title": "capaian e-monev INALOGPAL"},
+               {"k": "sk", "label": "Ber-SK klaster", "title": "tidak tercatat = tidak ada di daftar progres INALOGPAL; bukan bukti klaster tidak ada"},
+               {"k": "pra", "label": "Pra bencana (%)", "angka": True, "desimal": 2, "title": "capaian pemantauan dan evaluasi elektronik INALOGPAL"},
                {"k": "darurat", "label": "Darurat (%)", "angka": True, "desimal": 2}, {"k": "pasca", "label": "Pasca bencana (%)", "angka": True, "desimal": 2},
                {"k": "tahapan", "label": "Tahapan"},
                {"k": "beban", "label": f"Kejadian DIBI {tahun}", "angka": True, "title": "jumlah kejadian semua jenis, kab di provinsi itu"},
-               {"k": "status", "label": "Status", "title": "merah: beban di sepertiga teratas dan (capaian maksimum < 25% atau tanpa SK tercatat); asumsi batas 25%"}],
+               {"k": "status", "label": "Status", "title": merah_title}],
         baris=[{"provinsi": b["provinsi"], "sk": ya(b["sk"]), "pra": b["pra"], "darurat": b["darurat"], "pasca": b["pasca"], "tahapan": b["tahapan"],
                 "beban": b["beban"], "status": "merah" if b["merah"] else "tidak merah"} for b in baris],
         rumus="merah = beban kejadian DIBI di persentil >= 2/3 DAN (capaian maksimum < 25% ATAU tanpa SK tercatat)",
@@ -230,6 +234,7 @@ def cek():
     d = b["data"]
     assert d["sk_dikenal"] and a["ber_sk"] == 16 and a["kab_sk"] == 12 and a["mutakhir"] is None, a
     assert abs(a["tertinggi"] - 11.87) < 1e-9, a   # Aceh
+    assert "setara peringkat beban" in b["kartu"][0]["angka"][2]["title"] and "Asumsi: merah masih hipotesis" in b["kartu"][0]["asumsi"], "merah tanpa saringan wajib diakui"
     aceh = next(x for x in d["provinsi"] if x["provinsi"] == "Aceh")
     assert aceh["sk"] and aceh["pra"] == 11.87 and aceh["beban"] is not None, aceh
     assert len(d["provinsi"]) == 38 and all((x["beban"] is None) == (x["persentil"] is None) for x in d["provinsi"])
