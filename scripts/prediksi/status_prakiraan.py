@@ -155,13 +155,16 @@ def ambil_K(kelas, kab4, nama_kelas):
 
 
 def hitung(kr, prediksi, lalu, kelas, h, kini, gerbang=None):
-    boleh = bool((gerbang or {}).get("boleh_tampil") is True)
+    pb = (gerbang or {}).get("boleh_per_bahaya") or {}
+    per = {k: pb.get(k) is True for k in kr["bahaya"]}     # hilang = false (gagal-tertutup); KHT punya vonis sendiri (status_kht)
+    boleh = all(per.values())
     out = {"versi": 1, "dibuat": kini.astimezone(WIB).isoformat(timespec="seconds"), "boleh_tampil": boleh, "hipotesis": not boleh,
+           "boleh_per_bahaya": per,
            "sumber": {"prediksi": (prediksi or {}).get("dibuat"), "umpan_bmkg": (h or {}).get("umpan", {}).get("status", "mati"),
                       "kelas_kab": bool(kelas)}, "kab": {}}
     for kab in (prediksi or {}).get("kab") or []:
-        out["kab"][kab["id"]] = {kode: status_kab(kr, kode, ambil_K(kelas, kab["id"], kr["kelas_kab"][kode]),
-                                                  ambil_P(kr, prediksi, lalu, kab, kode, kini), ambil_R(h, kode, kab["id"]))
+        out["kab"][kab["id"]] = {kode: dict(hipotesis=not per[kode], **status_kab(kr, kode, ambil_K(kelas, kab["id"], kr["kelas_kab"][kode]),
+                                                  ambil_P(kr, prediksi, lalu, kab, kode, kini), ambil_R(h, kode, kab["id"])))
                                  for kode in kr["bahaya"]}
     return out
 
@@ -214,6 +217,8 @@ def jalankan(umpan=None, kini=None, keluar=KELUAR):
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     os.replace(tmp, keluar)
+    if keluar == KELUAR:   # arsip harian append-only (DP-07, D36); uji tulis ke jalur lain tak mengarsipkan
+        _muat("sp_uji_status", "scripts/prediksi/status_prakiraan_uji.py").arsipkan(out, kini)
     return out
 
 
@@ -337,7 +342,11 @@ def _cek():
     # Normal kini bisa tercapai bila hari0 ada
     assert status_kab(kr, "CEX", None, [0, 0, 0, 0], 0)["s"] == 0
     # boleh_tampil hanya bila gerbang menyatakan true
-    assert hitung(kr, pred, lalu, kelas, h, kini, {"boleh_tampil": True})["hipotesis"] is False
+    assert hitung(kr, pred, lalu, kelas, h, kini, {"boleh_tampil": True})["hipotesis"] is True      # tanpa boleh_per_bahaya: false
+    g = hitung(kr, pred, lalu, kelas, h, kini, {"boleh_per_bahaya": {"BNJ": True, "LSR": False, "CEX": False}})
+    k1 = g["kab"]["1101"]
+    assert g["boleh_per_bahaya"] == {"BNJ": True, "LSR": False, "CEX": False} and g["hipotesis"] is True
+    assert k1["BNJ"]["hipotesis"] is False and k1["LSR"]["hipotesis"] is True and k1["CEX"]["hipotesis"] is True
 
     # P17: karhutla KHT
     nm = {0: "Pencegahan rutin", 1: "Patroli terpadu", 2: "Siaga pemadaman awal", 3: "Prioritas pemadaman"}
@@ -359,7 +368,8 @@ def _cek():
         r = status_kht(kr, kl, m, lw, nm, kk, lambda p, n: cari((p, n)), kini)
         assert all(v["s"] is None and v["nama"] is None and v["hipotesis"] for v in r.values())
     assert status_kht(kr, None, meta, lw, nm, kk, lambda p, n: None, kini)["1101"]["s"] is None
-    print("status_prakiraan: cek hijau (P10, P11, P12, P17 + fixture)")
+    _muat("sp_uji_status", "scripts/prediksi/status_prakiraan_uji.py").cek()      # P19, P20
+    print("status_prakiraan: cek hijau (P10, P11, P12, P17, P19, P20 + fixture)")
 
 
 if __name__ == "__main__":
