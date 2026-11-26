@@ -957,6 +957,66 @@
       "pemakai": "calon lapisan wilayah terisolir di Kaji Cepat dan /banjir (belum dibangun)",
       "job": "mingguan",
       "jeda": 2
+    },
+    {
+      "id": "ews-mhews-bnpb",
+      "nama": "MHEWS BNPB Gunung Ibu (lidar muka air dan hujan lahar, geofon, CCTV, sirene)",
+      "lembaga": "BNPB (Pusdatinkom)",
+      "url": "https://mhews.bnpb.go.id/gunung/ibu/",
+      "jenis": "api",
+      "lisensi": "tidak dinyatakan; data milik pengelola, dipakai hanya dengan izin tertulis",
+      "atribusi": "Sumber: MHEWS BNPB",
+      "jadwal": "waktu nyata (sensor per menit, CCTV langsung)",
+      "fitur": [
+        "F3"
+      ],
+      "status": "bersyarat",
+      "uji": "2026-11-26",
+      "catatan": "Aplikasi Nuxt di bawah /gunung/ibu/: 4 pos lidar, geofon (mm/s, Hz, seri waktu), 9 CCTV; pemberitahuan sensor tanpa data terkini (koneksi Starlink). Belum diuji tarik (sengaja). Tidak diambil tanpa izin tertulis (KEPUTUSAN-EWS Q1, bawaan diterima pemilik 25 Nov 2026). Tidak ada adapter, jadi panen.py melewatinya. Adapter EW-06/EW-07 baru dibangun sesudah izin tertulis dicatat di kolom ini. Izin diminta pemilik ke Pusdatinkom BNPB.",
+      "pemilik": "warga-api",
+      "pemakai": "calon: panel pemantauan alat /gunungapi (public/inti/pantau_alat.*, src/alat.js) lewat EW-06",
+      "job": "kaji",
+      "jeda": 2
+    },
+    {
+      "id": "ews-banjir-banda-aceh",
+      "nama": "EWS banjir Kota Banda Aceh (5 pos sensor, 5 CCTV)",
+      "lembaga": "BPBD Kota Banda Aceh",
+      "url": "https://ews.bandaacehkota.go.id/",
+      "jenis": "api",
+      "lisensi": "tidak dinyatakan; data milik pengelola, dipakai hanya dengan izin tertulis",
+      "atribusi": "Sumber: EWS Banjir Kota Banda Aceh",
+      "jadwal": "waktu nyata (sensor per menit, CCTV langsung)",
+      "fitur": [
+        "F3"
+      ],
+      "status": "bersyarat",
+      "uji": "2026-11-26",
+      "catatan": "Backend Directus /panel/items/* (data_subscriptions, cctv, alarm, chart/akumulasi_hujan), CCTV HLS restream2.blitztechnology.tech. Belum diuji tarik (sengaja). Tidak diambil tanpa izin tertulis (KEPUTUSAN-EWS Q1, bawaan diterima pemilik 25 Nov 2026). Tidak ada adapter, jadi panen.py melewatinya. Adapter EW-06/EW-07 baru dibangun sesudah izin tertulis dicatat di kolom ini. Izin diminta pemilik ke BPBD Kota Banda Aceh.",
+      "pemilik": "warga-api",
+      "pemakai": "calon: panel pemantauan alat /banjir (public/inti/pantau_alat.*, src/alat.js) lewat EW-07",
+      "job": "kaji",
+      "jeda": 2
+    },
+    {
+      "id": "ews-geodashboard",
+      "nama": "EWS banjir geodashboard.io (Pondok Gede Permai, Cikeas, Cibongas, Cileungsi, Prisdo)",
+      "lembaga": "geodashboard.io (vendor)",
+      "url": "https://geodashboard.io/",
+      "jenis": "api",
+      "lisensi": "tidak dinyatakan; data milik pengelola, dipakai hanya dengan izin tertulis",
+      "atribusi": "Sumber: geodashboard.io",
+      "jadwal": "waktu nyata (sensor per menit, CCTV langsung)",
+      "fitur": [
+        "F3"
+      ],
+      "status": "bersyarat",
+      "uji": "2026-11-26",
+      "catatan": "5 sensor radar dan penakar hujan, 5 kamera; backend Directus /panel/items/*; pemberitahuan lewat Telegram. Belum diuji tarik (sengaja). Tidak diambil tanpa izin tertulis (KEPUTUSAN-EWS Q1, bawaan diterima pemilik 25 Nov 2026). Tidak ada adapter, jadi panen.py melewatinya. Adapter EW-06/EW-07 baru dibangun sesudah izin tertulis dicatat di kolom ini. Izin diminta pemilik ke vendornya.",
+      "pemilik": "warga-api",
+      "pemakai": "calon: panel pemantauan alat /banjir (public/inti/pantau_alat.*, src/alat.js) lewat EW-07",
+      "job": "kaji",
+      "jeda": 2
     }
   ],
   "anggaran": {
