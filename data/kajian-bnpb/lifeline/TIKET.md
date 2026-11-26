@@ -15,3 +15,9 @@ Kerjakan urut; ambil satu tiket, kerjakan hanya cakupannya.
 | LF-09 | Tabel Laporan Berkala | pipa-data + layar-peta | paket Laporan Berkala | Q5 |
 | LF-10 | Jalur VNP46A2 di `lampu_malam.py`, uji balik ulang Palu 2018 dan Bali 2025; isyarat listrik bila lulus | pipa-umum (+ validasi-model) | `python3 scripts/umum/lampu_malam.py validasi` lulus | Q6, token Earthdata |
 | LF-11 | Pemilik menerapkan migrasi di D1 produksi | pemilik | `wrangler d1 migrations apply` | LF-01 |
+
+## Status LF-09 (26 Nov 2026)
+
+Dikerjakan di sisi Laporan Berkala, tertahan di jalur data. `scripts/berkala/hitung.py` (`lifeline()`) menyusun satu tabel per kejadian aktif untuk laporan bulanan dan tahunan: kab/kota x delapan layanan (`LAYANAN` sama dengan `src/lifeline_usulan.js`, diuji di `tests/berkala/kontrak.test.mjs`), warna dari status yang ditetapkan staf apa adanya, sel tanpa status atau berwarna asing tetap abu, usulan mesin tidak dibawa. Halaman cetak menulisnya di Bab 1 (`public/laporan_berkala.js`, `blokLifeline`) dengan label warna yang sama dengan `public/siklus/lifeline.js`.
+
+Penahan: laporan dirakit `rakit.py` di CI tanpa D1 dan tanpa sesi staf. Status hanya terbaca lewat rute berkuki staf per kejadian (`src/lifeline.js` kisi), tidak ada berkas yang diekspor, jadi masukan `lifeline` tidak pernah terisi dan bagian itu tertulis "status layanan dasar belum tersedia". Jalur yang perlu diputuskan (bukan dibuat di tiket ini): (a) ekspor harian status ke R2 privat, misalnya `berkala/sumber/lifeline.json`, oleh Worker atau langkah CI ber-token; atau (b) `wrangler d1 execute` dari CI, yang menyalin SQL `lfKisi` dan menambah baca D1. Bentuk masukan yang dibaca `hitung.py` tertulis di docstring berkas itu.

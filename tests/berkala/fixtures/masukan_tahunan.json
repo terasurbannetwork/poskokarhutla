@@ -1,0 +1,3422 @@
+{
+ "catatan": "Masukan sintetis laporan tahunan 2025 (LB-12, LF-09, KU-10). H19: versi beku bulanan Oktober 324, tarikan tahunan Oktober 331. H20: dibi_tren memuat baris 2025 (1.449 kejadian resmi) yang TIDAK boleh dipakai untuk titik tahun lapor. Januari sampai November dari lapis Siklus (bencana None), Desember dari dibi_kejadian.json.",
+ "periode": "tahunan",
+ "kode": "2025",
+ "hari_ini": "2026-01-20",
+ "dirakit": "2026-01-20T03:10:00Z",
+ "dibi": {
+  "tarik": "2026-01-15",
+  "dari": "2025-01-01",
+  "sampai": "2026-01-14",
+  "sambung": "2025-12-01",
+  "kejadian": [
+   {
+    "tanggal": "2025-01-14",
+    "jenis": "Banjir",
+    "prov_kode": "12",
+    "prov": "Sumatera Utara",
+    "kab_kode": "12.71",
+    "kab": "Kota Medan",
+    "kejadian": 3,
+    "bencana": null,
+    "asal": "siklus_bersih",
+    "meninggal": 1,
+    "terdampak": null
+   },
+   {
+    "tanggal": "2025-01-20",
+    "jenis": "Tanah Longsor",
+    "prov_kode": "32",
+    "prov": "Jawa Barat",
+    "kab_kode": "32.04",
+    "kab": "Bandung",
+    "kejadian": 2,
+    "bencana": null,
+    "asal": "siklus_bersih",
+    "meninggal": 2
+   },
+   {
+    "tanggal": "2025-03-05",
+    "jenis": "Banjir",
+    "prov_kode": "12",
+    "prov": "Sumatera Utara",
+    "kab_kode": "12.71",
+    "kab": "Kota Medan",
+    "kejadian": 1,
+    "bencana": null,
+    "asal": "siklus_bersih"
+   },
+   {
+    "tanggal": "2025-08-11",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.71",
+    "kab": "Kota Pekanbaru",
+    "kejadian": 20,
+    "bencana": null,
+    "asal": "siklus_bersih"
+   },
+   {
+    "tanggal": "2025-08-20",
+    "jenis": "Kekeringan",
+    "prov_kode": "53",
+    "prov": "Nusa Tenggara Timur",
+    "kab_kode": "53.01",
+    "kab": "Kupang",
+    "kejadian": 4,
+    "bencana": null,
+    "asal": "siklus_bersih",
+    "terdampak": null
+   },
+   {
+    "tanggal": "2025-09-02",
+    "jenis": "Erupsi Gunung Api",
+    "prov_kode": "82",
+    "prov": "Maluku Utara",
+    "kab_kode": "82.01",
+    "kab": "Halmahera Barat",
+    "kejadian": 1,
+    "bencana": null,
+    "asal": "siklus_bersih"
+   },
+   {
+    "tanggal": "2025-10-02",
+    "jenis": "Banjir",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.71",
+    "kab": "Kota Pekanbaru",
+    "kejadian": 330,
+    "bencana": null,
+    "asal": "siklus_bersih",
+    "terdampak": null
+   },
+   {
+    "tanggal": "2025-10-20",
+    "jenis": "Gempabumi",
+    "prov_kode": "32",
+    "prov": "Jawa Barat",
+    "kab_kode": "32.02",
+    "kab": "Sukabumi",
+    "kejadian": 1,
+    "bencana": null,
+    "asal": "siklus_bersih",
+    "rr_ringan": 3
+   },
+   {
+    "tanggal": "2025-11-10",
+    "jenis": "Banjir",
+    "prov_kode": "11",
+    "prov": "Aceh",
+    "kab_kode": "11.08",
+    "kab": "Nagan Raya",
+    "kejadian": 5,
+    "bencana": null,
+    "asal": "siklus_bersih"
+   },
+   {
+    "tanggal": "2025-12-03",
+    "jenis": "Banjir",
+    "prov_kode": "11",
+    "prov": "Aceh",
+    "kab_kode": "11.08",
+    "kab": "Nagan Raya",
+    "kejadian": 2,
+    "terdampak": 40
+   },
+   {
+    "tanggal": "2025-12-09",
+    "jenis": "Banjir",
+    "prov_kode": "12",
+    "prov": "Sumatera Utara",
+    "kab_kode": "12.71",
+    "kab": "Kota Medan",
+    "kejadian": 1,
+    "bencana": 0
+   },
+   {
+    "tanggal": "2025-12-20",
+    "jenis": "Kebakaran Gedung dan Permukiman",
+    "prov_kode": "31",
+    "prov": "DKI Jakarta",
+    "kab_kode": "31.71",
+    "kab": "Kota Jakarta Selatan",
+    "kejadian": 2,
+    "meninggal": 1
+   },
+   {
+    "tanggal": "2026-01-05",
+    "jenis": "Banjir",
+    "prov_kode": "12",
+    "prov": "Sumatera Utara",
+    "kab_kode": "12.71",
+    "kab": "Kota Medan",
+    "kejadian": 1
+   }
+  ]
+ },
+ "dibi_lalu": {
+  "tarik": "2026-01-15",
+  "asal": "siklus_bersih",
+  "dari": "2024-01-01",
+  "sampai": "2024-12-31",
+  "kejadian": [
+   {
+    "tanggal": "2024-10-02",
+    "jenis": "Banjir",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.71",
+    "kab": "Kota Pekanbaru",
+    "kejadian": 300,
+    "bencana": null,
+    "asal": "siklus_bersih"
+   },
+   {
+    "tanggal": "2024-03-01",
+    "jenis": "Tanah Longsor",
+    "prov_kode": "32",
+    "prov": "Jawa Barat",
+    "kab_kode": "32.04",
+    "kab": "Bandung",
+    "kejadian": 30,
+    "bencana": null,
+    "asal": "siklus_bersih"
+   }
+  ]
+ },
+ "karhutla": {
+  "tarik": "2026-01-01",
+  "asal": "potong",
+  "hari": {
+   "2025-01-01": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-02": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-03": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-04": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-05": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-06": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-07": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-08": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-09": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-10": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-11": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-12": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-13": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-14": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-15": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-16": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-17": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-18": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-19": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-20": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-21": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-22": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-23": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-24": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-25": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-26": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-27": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-28": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-29": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-30": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-01-31": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-01": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-02": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-03": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-04": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-05": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-06": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-07": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-08": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-09": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-10": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-11": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-12": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-13": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-14": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-15": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-16": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-17": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-18": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-19": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-20": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-21": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-22": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-23": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-24": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-25": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-26": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-27": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-02-28": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-01": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-02": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-03": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-04": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-05": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-06": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-07": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-08": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-09": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-10": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-11": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-12": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-13": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-14": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-15": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-16": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-17": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-18": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-19": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-20": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-21": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-22": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-23": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-24": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-25": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-26": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-27": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-28": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-29": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-30": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-03-31": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-01": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-02": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-03": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-04": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-05": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-06": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-07": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-08": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-09": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-10": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-11": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-12": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-13": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-14": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-15": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-16": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-17": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-18": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-19": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-20": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-21": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-22": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-23": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-24": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-25": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-26": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-27": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-28": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-29": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-04-30": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-01": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-02": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-03": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-04": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-05": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-06": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-07": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-08": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-09": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-10": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-11": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-12": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-13": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-14": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-15": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-16": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-17": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-18": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-19": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-20": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-21": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-22": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-23": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-24": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-25": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-26": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-27": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-28": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-29": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-30": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-05-31": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-01": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-02": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-03": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-04": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-05": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-06": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-07": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-08": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-09": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-10": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-11": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-12": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-13": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-14": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-15": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-16": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-17": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-18": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-19": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-20": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-21": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-22": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-23": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-24": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-25": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-26": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-27": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-28": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-29": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-06-30": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-01": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-02": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-03": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-04": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-05": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-06": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-07": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-08": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-09": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-10": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-11": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-12": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-13": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-14": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-15": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-16": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-17": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-18": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-19": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-20": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-21": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-22": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-23": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-24": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-25": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-26": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-27": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-28": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-29": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-30": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-07-31": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-01": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-02": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-03": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-04": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-05": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-06": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-07": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-08": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-09": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-10": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-11": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-12": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-13": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-14": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-15": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-16": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-17": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-18": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-19": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-20": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-21": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-22": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-23": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-24": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-25": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-26": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-27": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-28": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-29": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-30": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-08-31": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-01": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-02": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-03": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-04": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-05": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-06": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-07": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-08": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-09": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-10": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-11": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-12": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-13": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-14": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-15": {
+    "14": {
+     "nama": "Riau",
+     "hot": 900,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-16": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-17": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-18": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-19": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-20": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-21": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-22": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-23": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-24": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-25": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-26": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-27": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-28": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-29": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-09-30": {
+    "14": {
+     "nama": "Riau",
+     "hot": 40,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-01": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-02": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-03": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-04": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-05": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-06": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-07": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-08": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-09": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-10": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-11": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-12": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-13": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-14": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-15": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-16": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-17": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-18": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-19": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-20": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-21": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-22": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-23": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-24": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-25": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-26": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-27": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-28": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-29": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-30": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-10-31": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-01": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-02": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-03": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-04": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-05": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-06": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-07": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-08": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-09": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-10": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-11": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-12": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-13": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-14": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-15": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-16": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-17": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-18": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-19": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-20": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-21": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-22": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-23": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-24": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-25": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-26": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-27": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-28": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-29": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-11-30": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-01": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-02": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-03": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-04": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-05": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-06": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-07": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-08": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-09": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-10": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-11": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-12": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-13": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-14": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-15": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-16": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-17": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-18": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-19": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-20": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-21": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-22": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-23": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-24": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-25": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-26": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-27": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-28": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-29": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-30": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0
+    }
+   },
+   "2025-12-31": {
+    "14": {
+     "nama": "Riau",
+     "hot": 3,
+     "luas": 0.5,
+     "belum": 0.1
+    }
+   }
+  }
+ },
+ "gunungapi": {
+  "tanggal": "2026-01-01",
+  "level": {
+   "Semeru": 3,
+   "Ibu": 3,
+   "Dieng": 1,
+   "Gamkonora": 2
+  }
+ },
+ "perubahan_level": [
+  {
+   "gunung": "Ibu",
+   "tanggal": "2025-05-16",
+   "dari": 2,
+   "ke": 3
+  },
+  {
+   "gunung": "Dieng",
+   "tanggal": "2024-12-01",
+   "dari": 2,
+   "ke": 1
+  }
+ ],
+ "luas_resmi": {
+  "sumber": "KLHK SiPongi (sintetis)",
+  "tahun": [
+   "2024",
+   "2025"
+  ],
+  "sampai": {},
+  "ha": {
+   "14": [
+    1200.5,
+    800.25
+   ],
+   "61": [
+    300,
+    null
+   ]
+  }
+ },
+ "luas_satelit": {
+  "sumber": "GWIS (sintetis)",
+  "tahun": [
+   "2024",
+   "2025"
+  ],
+  "sampai": {
+   "2025": "2025-11"
+  },
+  "ha": {
+   "14": [
+    5000,
+    4000
+   ],
+   "62": [
+    100,
+    250
+   ]
+  }
+ },
+ "beku_bulanan": {
+  "2025-10": {
+   "versi": 2,
+   "tarik": "2025-11-05",
+   "alam": 324,
+   "jenis": {
+    "banjir": 323,
+    "gempa": 1
+   }
+  },
+  "2025-12": {
+   "versi": 1,
+   "tarik": "2026-01-06",
+   "alam": 3,
+   "jenis": {
+    "banjir": 3
+   }
+  }
+ },
+ "lifeline": {
+  "tarik": "2026-01-15",
+  "kejadian": [
+   {
+    "id": "KJ-2512-0001",
+    "nama": "Banjir Aceh Desember 2025",
+    "jenis": "banjir",
+    "kab": [
+     {
+      "kab4": "1108",
+      "nama": "Nagan Raya",
+      "layanan": {
+       "listrik": {
+        "warna": "merah",
+        "diubah": 1767000000000
+       },
+       "air": {
+        "warna": "kuning",
+        "diubah": 1767000000000
+       },
+       "jalan": {
+        "warna": "ungu"
+       }
+      }
+     },
+     {
+      "kab4": "1107",
+      "nama": "Aceh Barat",
+      "layanan": {
+       "listrik": {
+        "warna": "hijau",
+        "diubah": 1767000000000
+       }
+      }
+     }
+    ]
+   }
+  ]
+ },
+ "kaji_ulang": {
+  "hari": "2026-01-15",
+  "ringkas": {
+   "total": 7,
+   "terbuka": 4,
+   "lewat_tenggat": 1,
+   "tertutup": 3
+  },
+  "terpotong": false
+ },
+ "tren": {
+  "dibuat": "2026-01-10T12:30+07:00",
+  "sementara": 2025,
+  "kategori": [
+   "Cuaca ekstrem",
+   "Kekeringan",
+   "Longsor",
+   "Banjir",
+   "Kebakaran hutan dan lahan",
+   "Erupsi gunung api",
+   "Gempabumi",
+   "Gelombang pasang / Abrasi",
+   "Kebakaran permukiman",
+   "Konflik sosial",
+   "Tsunami",
+   "Gagal teknologi",
+   "Lainnya",
+   "Epidemi - Wabah penyakit"
+  ],
+  "kolom_tahun": [
+   "tahun",
+   "kategori",
+   "kab",
+   "kejadian"
+  ],
+  "tahun_kab": [
+   [
+    2015,
+    3,
+    0,
+    300
+   ],
+   [
+    2016,
+    3,
+    0,
+    310
+   ],
+   [
+    2017,
+    3,
+    0,
+    320
+   ],
+   [
+    2018,
+    3,
+    0,
+    330
+   ],
+   [
+    2019,
+    3,
+    0,
+    340
+   ],
+   [
+    2020,
+    3,
+    0,
+    350
+   ],
+   [
+    2021,
+    3,
+    0,
+    360
+   ],
+   [
+    2022,
+    3,
+    0,
+    370
+   ],
+   [
+    2023,
+    3,
+    0,
+    380
+   ],
+   [
+    2024,
+    3,
+    0,
+    390
+   ],
+   [
+    2025,
+    3,
+    0,
+    400
+   ],
+   [
+    2015,
+    2,
+    1,
+    50
+   ],
+   [
+    2016,
+    2,
+    1,
+    50
+   ],
+   [
+    2017,
+    2,
+    1,
+    50
+   ],
+   [
+    2018,
+    2,
+    1,
+    50
+   ],
+   [
+    2019,
+    2,
+    1,
+    50
+   ],
+   [
+    2020,
+    2,
+    1,
+    50
+   ],
+   [
+    2021,
+    2,
+    1,
+    50
+   ],
+   [
+    2022,
+    2,
+    1,
+    50
+   ],
+   [
+    2023,
+    2,
+    1,
+    50
+   ],
+   [
+    2024,
+    2,
+    1,
+    50
+   ],
+   [
+    2025,
+    2,
+    1,
+    50
+   ],
+   [
+    2025,
+    3,
+    0,
+    999
+   ],
+   [
+    2020,
+    5,
+    2,
+    40
+   ],
+   [
+    2020,
+    10,
+    2,
+    7
+   ]
+  ]
+ }
+}

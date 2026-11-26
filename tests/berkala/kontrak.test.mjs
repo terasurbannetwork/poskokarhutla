@@ -12,6 +12,7 @@ const cetak = (m = fx("masukan_bulanan.json")) => JSON.parse(execFileSync("pytho
 const angka = cetak();
 /* LB-11: satu fixture per periode (D11), dari masukan_bulanan.json + masukan_ringkas.json */
 const RINGKAS = { harian: cetak("harian"), mingguan: cetak("mingguan") };
+const TAHUNAN = cetak("tahunan");
 
 const WAJIB = {
   bab1: ["alam", "kelompok", "jenis", "prov", "prov_teratas", "riwayat", "sebelumnya", "tahun_lalu", "bukan_alam"],
@@ -68,6 +69,31 @@ test("fixture angka_harian.json dan angka_mingguan.json segar (python3 -I script
   for (const p of ["harian", "mingguan"]) assert.deepEqual(JSON.parse(readFileSync(fx(`angka_${p}.json`), "utf8")), RINGKAS[p], p);
 });
 
+test("tahunan (LB-12): selisih lawan versi beku (H19), riwayat 11 titik (H20), luas berdampingan, fixture segar", () => {
+  const a = TAHUNAN, sb = Object.fromEntries(a.lampiran.selisih_bulanan.bulan.map(x => [x.kode, x]));
+  assert.deepEqual([a.periode, a.kode, a.rentang], ["tahunan", "2025", ["2025-01-01", "2025-12-31"]]);
+  for (const [bab, ks] of Object.entries({ ...WAJIB, bab1: [...WAJIB.bab1, "riwayat_10_tahun"], bab2: ["status", "luas_pembanding", "per_bulan", "bulan_puncak"], siklus: ["lifeline", "kaji_ulang"] }))
+    for (const k of ks) assert.ok(k in a[bab], `tahunan ${bab}.${k} hilang`);
+  assert.equal(sb["2025-10"].selisih, 7); assert.equal(sb["2025-10"].status, "beda_sumber"); assert.equal(sb["2025-12"].status, "ok"); assert.equal(sb["2025-10"].beku.alam, 324); assert.equal(sb["2025-10"].tahunan, 331);
+  assert.equal(sb["2025-01"].selisih, null, "bulan tanpa versi beku: null, bukan 0");
+  const r = a.bab1.riwayat_10_tahun.titik;
+  assert.equal(r.length, 11); assert.equal(r.at(-1).asal, "tarikan_tahunan"); assert.notEqual(r.at(-1).kejadian, 1449);
+  const lp = a.bab2.luas_pembanding;
+  assert.ok(["perkiraan", "resmi", "satelit"].every(k => k in lp) && !("jumlah" in lp), "tiga luas berdampingan, tanpa jumlah");
+  for (const s of Object.values(a.sumber)) assert.ok("tarik" in s && ["ok", "sebagian", "belum_ada", "gagal", "basi"].includes(s.status));
+  assert.doesNotMatch(JSON.stringify(a), /\baman\b/i);
+  assert.deepEqual(JSON.parse(readFileSync(fx("angka_tahunan.json"), "utf8")), a);
+});
+
+test("LF-09: layanan lifeline sama dengan src/lifeline_usulan.js; warna hanya empat, abu tanpa status; bulanan tanpa masukan belum tersedia", async () => {
+  const { LAYANAN, WARNA } = await import(akar + "src/lifeline_usulan.js");
+  const lf = TAHUNAN.siklus.lifeline;
+  assert.deepEqual(lf.layanan, LAYANAN);
+  for (const e of lf.kejadian) for (const k of e.kab) for (const l of LAYANAN) assert.ok(WARNA.includes(k.warna[l]), `${k.kab4} ${l} ${k.warna[l]}`);
+  assert.deepEqual(angka.siklus, { lifeline: { status: "belum_tersedia" }, kaji_ulang: { status: "belum_tersedia" } });
+  assert.deepEqual(Object.keys(TAHUNAN.siklus.kaji_ulang).sort(), ["hari", "lewat_tenggat", "status", "terbuka", "tertutup", "total"], "KU Q9: hanya hitungan");
+});
+
 test("kunci wajib per bab bulanan", () => {
   for (const [bab, ks] of Object.entries(WAJIB)) for (const k of ks) assert.ok(k in angka[bab], `${bab}.${k} hilang`);
   for (const j of JENIS) assert.equal(typeof angka.bab1.jenis[j].kejadian, "number");
@@ -75,11 +101,11 @@ test("kunci wajib per bab bulanan", () => {
 
 test("angka bilangan, bukan string; tidak ada string berbentuk angka", () => {
   const jalan = (v, jalur) => {
-    if (typeof v === "string") assert.ok(!/^-?\d+([.,]\d+)?$/.test(v) || /kode|tanggal|tarik|tgl|\.id$|\.kab\[|prov_teratas|prov_terbanyak|label|tabel/.test(jalur), `string angka di ${jalur}: ${v}`);
+    if (typeof v === "string") assert.ok(!/^-?\d+([.,]\d+)?$/.test(v) || /kode|tanggal|tarik|tgl|\.id$|\.kab\[|prov_teratas|prov_terbanyak|label|tabel|^\.nama$/.test(jalur), `string angka di ${jalur}: ${v}`);
     else if (Array.isArray(v)) v.forEach((x, i) => jalan(x, `${jalur}[${i}]`));
     else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) jalan(x, `${jalur}.${k}`);
   };
-  jalan(angka, ""); jalan(RINGKAS.harian, ""); jalan(RINGKAS.mingguan, "");
+  jalan(angka, ""); jalan(RINGKAS.harian, ""); jalan(RINGKAS.mingguan, ""); jalan(TAHUNAN, "");
 });
 
 test("kering + basah + geologi = bencana alam; bukan alam tidak dijumlah", () => {

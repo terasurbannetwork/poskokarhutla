@@ -182,3 +182,10 @@
   .lbk-kertas{margin:0;box-shadow:none;break-after:page}
   .lbk-kertas:last-child{break-after:auto}
 }
+/* LF-09 sel status layanan dasar: warna status staf; abu = belum ada status (tanpa bukti) */
+.lbk-t td.lf-hijau,.lbk-lf.lf-hijau{background:color-mix(in oklab,var(--ok) 26%,var(--lb-kertas))}
+.lbk-t td.lf-kuning,.lbk-lf.lf-kuning{background:color-mix(in oklab,var(--warn) 34%,var(--lb-kertas))}
+.lbk-t td.lf-merah,.lbk-lf.lf-merah{background:color-mix(in oklab,var(--bad) 28%,var(--lb-kertas))}
+.lbk-t td.lf-abu,.lbk-lf.lf-abu{background:var(--lb-abu);color:var(--lb-ink2)}
+.lbk-t td[class^="lf-"]{text-align:center}
+.lbk-lf{display:inline-block;padding:.3mm 2mm;border-radius:99px;font-size:7.5pt}

@@ -19,7 +19,7 @@ const ANGKA = JSON.parse(readFileSync(path.join(AKAR, "tests/berkala/fixtures/an
 const KEPALA = "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)";
 const TERLARANG = /\bNaN\b|\bundefined\b|\bnull\b|\[object|·|\bAnda\b|\baman\b/g;
 /* singkatan resmi dan angka Romawi yang boleh kapital (Q5) */
-const SINGKATAN = new Set(["BNPB", "BPBD", "DIBI", "OMC", "BMKG", "PVMBG", "MAGMA", "KRIS", "TNI", "DKI", "DI", "NTT", "WIB", "GIS", "ENSO", "CHIRPS", "NOAA", "RONI", "DMI", "PDF", "JSON", "SK", "II", "III", "IV", "U", "A4", "ASO", "OND", "CPC", "HTH"]);   // ASO, OND: kode musim tiga bulan dari iklim_outlook.json; HTH: hari tanpa hujan (tangga.json)
+const SINGKATAN = new Set(["BNPB", "BPBD", "DIBI", "OMC", "BMKG", "PVMBG", "MAGMA", "KRIS", "TNI", "DKI", "DI", "NTT", "WIB", "GIS", "ENSO", "CHIRPS", "NOAA", "RONI", "DMI", "PDF", "JSON", "SK", "II", "III", "IV", "U", "A4", "ASO", "OND", "CPC", "HTH", "KLHK", "GWIS", "MODIS", "BBM"]);   // ASO, OND: kode musim tiga bulan dari iklim_outlook.json; HTH: hari tanpa hujan (tangga.json); KLHK, GWIS, MODIS: sumber luas tahunan; BBM: layanan lifeline
 const CHROME = cariChrome();
 const salin = o => JSON.parse(JSON.stringify(o));
 
@@ -153,6 +153,29 @@ else {
       assert.deepEqual(tab.galat().filter(g => !/favicon|status of 404/.test(g)), []);
     });
   }
+
+  /* LB-12: tahunan memakai halaman cetak bulanan (sampul lengkap, daftar isi) ditambah riwayat 10 tahun, luas tiga sumber, lampiran selisih (D13);
+     LF-09 dan KU-10: tabel status layanan dasar dan ringkasan rekomendasi kaji ulang, belum tersedia di bulanan tanpa masukan */
+  test("tahunan: A4 tanpa luapan, PDF sama banyak, riwayat 10 tahun, luas berdampingan, selisih lawan versi beku, lifeline dan kaji ulang", async () => {
+    mode = {angka: fxR("tahunan"), baris: null}; await buka(1440, "/laporan-bnpb?jenis=berkala&periode=tahunan&kode=2025");
+    const jml = await tab.eval("document.querySelectorAll('.lbk-kertas').length");
+    assert.deepEqual(await luap(), [], "kertas meluap");
+    assert.equal((await halamanPdf("tahunan.pdf")).n, jml);
+    const teks = await tab.eval("[...document.querySelectorAll('.lbk-kertas')].map(k => k.innerText).join('\\n')");
+    assert.deepEqual([...new Set(teks.match(TERLARANG) || [])], []);
+    const kapital = [...new Set((teks.replaceAll(KEPALA, "").match(/\b[A-Z][A-Z.]+\b/g) || []).filter(x => x.length > 1))].filter(x => !SINGKATAN.has(x));
+    assert.deepEqual(kapital, [], "kata kapital di luar daftar singkatan (Q5)");
+    assert.match(teks, /Laporan tahunan Kepala BNPB/); assert.match(teks, /Daftar isi/); assert.match(teks, /Riwayat 10 tahun/);
+    assert.match(teks, /KLHK SiPongi/); assert.match(teks, /GWIS satelit/); assert.match(teks, /tidak dijumlah/);
+    assert.match(teks, /324 \(versi 2\)/, "H19 versi beku Oktober"); assert.match(teks, /beda sumber/, "status beda sumber tampil"); assert.match(teks, /angka resmi tahun ini tidak diketahui/, "H20b"); assert.match(teks, /belum ada versi beku/, "bulan tanpa beku bukan 0");
+    assert.match(teks, /Banjir Aceh Desember 2025/); assert.match(teks, /lumpuh/); assert.match(teks, /belum diketahui/, "abu tanpa status");
+    assert.match(teks, /rekomendasi lewat tenggat/); assert.match(teks, /rekap kegiatan 12 bulan/i);
+    assert.match(teks, /Dukungan yang dimohon/, "Q27: bagian kebijakan ada di tahunan");
+    assert.deepEqual(tab.galat().filter(g => !/favicon|status of 404/.test(g)), []);
+    mode = {angka: ANGKA, baris: null}; await buka();
+    const tb = await tab.eval("[...document.querySelectorAll('.lbk-kertas')].map(k => k.innerText).join('\\n')");
+    assert.match(tb, /status layanan dasar belum tersedia/); assert.match(tb, /ringkasan rekomendasi kaji ulang belum tersedia/);
+  });
 
   test("tanpa berkas angka di server: pesan jelas, tanpa kertas, tanpa galat", async () => {
     mode = {angka: null, baris: null}; await tab.ukuran(1440, 900); await tab.buka(base + URL_LB);

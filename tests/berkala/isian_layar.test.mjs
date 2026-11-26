@@ -90,7 +90,7 @@ else {
     assert.deepEqual(galatHalaman(), []);
   });
 
-  test("tanpa kode: halaman membuka bulan lengkap terakhir; mingguan tanpa berkas angka menulis belum tersedia; tahunan menyusul", async () => {
+  test("tanpa kode: halaman membuka bulan lengkap terakhir; mingguan dan tahunan tanpa berkas angka menulis belum tersedia", async () => {
     mode = {angka: null, baris: null}; await tab.ukuran(1440, 900); await tab.buka(base + "/laporan-bnpb?jenis=berkala");
     await tab.tungguFungsi("/belum tersedia/.test(document.querySelector('#lbkSt')?.textContent || '')");
     assert.equal(await tab.eval("new URLSearchParams(location.search).get('kode')"), H.kodeTerakhir("bulanan", kiniWib()));
@@ -99,7 +99,7 @@ else {
     assert.equal(await tab.eval("document.querySelector('.lbk-isian').hidden"), true);
     assert.equal(await tab.eval("document.querySelector('#lbkJudul').textContent"), "Laporan Mingguan 2026-W45 (2 November 2026 sampai 8 November 2026)");
     await tab.buka(base + "/laporan-bnpb?jenis=berkala&periode=tahunan&kode=2025");
-    await tab.tungguFungsi("/menyusul/.test(document.querySelector('#lbkSt')?.textContent || '')");
+    await tab.tungguFungsi("/belum tersedia/.test(document.querySelector('#lbkSt')?.textContent || '')");
     assert.equal(await tab.eval("document.querySelector('.lbk-isian').hidden"), true);
   });
 

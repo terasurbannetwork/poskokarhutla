@@ -2486,6 +2486,14 @@
   "2026-10-01",
   "2026-10-31"
  ],
+ "siklus": {
+  "kaji_ulang": {
+   "status": "belum_tersedia"
+  },
+  "lifeline": {
+   "status": "belum_tersedia"
+  }
+ },
  "sumber": {
   "dalops_banjir": {
    "asal": "potong",
@@ -2539,6 +2547,10 @@
    "tanggal": "2026-11-01",
    "tarik": "2026-11-01"
   },
+  "kaji_ulang": {
+   "status": "belum_ada",
+   "tarik": null
+  },
   "karhutla": {
    "asal": "potong",
    "hari": 31,
@@ -2546,6 +2558,10 @@
    "hari_rentang": 31,
    "status": "ok",
    "tarik": "2026-11-01"
+  },
+  "lifeline": {
+   "status": "belum_ada",
+   "tarik": null
   },
   "peluang": {
    "asal": "logbook_riwayat",
