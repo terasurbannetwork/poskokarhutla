@@ -137,7 +137,7 @@ Kolom "Status paket": dibuat = ADA, diadaptasi = ADA dengan bentuk beda karena d
 | E07 | Beban | dibuat | ADA | tests/beban/ukur_muat.mjs; tests/beban/beban.mjs:26,30 | /banjir/k/ belum diukur |
 | E08 | i18n | sebagian | SEBAGIAN | kumpul.mjs:104; laporan.json 15 Okt | Laporan crawl tak diperbarui |
 | E09 | Kepemilikan berkas | dibuat | ADA | roster.json:54-70 | Hijau |
-| E10 | Model agent | dibuat | ADA | roster banjir model sonnet | Hijau |
+| E10 | Model agent | dibuat | ADA | roster banjir model sonnet (`scripts/agents/roster.json`, `.claude/agents/banjir.md`) | Hijau |
 | F01 | Pengerja agent | dibuat | ADA | roster.json:54; ilmu-agent/banjir.md | - |
 | F02 | Dokumen spesifikasi | dibuat | ADA | docs/multi-bencana/bencana/banjir.md (audit 15 Nov, 113 + 11 baris) | - |
 | F03 | Dokumen riset | dibuat | ADA | scripts/banjir/RISET-*.md (14), PRAREG-*.md (18) | - |

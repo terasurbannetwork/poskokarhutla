@@ -81,12 +81,12 @@ Dengan G01-G11 (124): **ADA 70 / SEBAGIAN 32 / BELUM 9 / TIDAK BERLAKU 13**.
 | C03 | Tema terang/gelap | dibuat | `#tema` + kunci `pb-tema` (`tab.js:28`), `peta.setStyle` saat ganti. |
 | C04 | Waktu data | dibuat | `#upd` 'Data <jam WIB>' dari `/api/gempa/terbaru` (`mulai.js:9-14`). |
 | C05 | Panel kiri | diadaptasi | Crumb, cari provinsi/lokasi, daftar urut (`peta.js`); tanpa seg Real Time/Riwayat/Kompleks (riwayat = overlay 'Gempa besar sejak 1900'). |
-| C06 | Rentang waktu | dibuat | Garis waktu 24 jam / 72 jam / 7 hari (`#garisWaktu`, `renderRentang`). |
+| C06 | Rentang waktu | dibuat | Garis waktu 24 jam / 72 jam / 7 hari (`#garisWaktu`, `renderRentang`). (`public/gempa/peta.js:232`) |
 | C07 | Garis waktu prakiraan | tidak berlaku | Gempa tidak punya prakiraan harian indeks; jendela waktu pengamatan ada di C06. |
 | C08 | Panel lapisan | dibuat | Overlay 3 grup, 8 ubin (wilayah, gempa, riwayat, kekerapan, InaRISK, lempeng, sesar, satelit) + lapisan konteks, muat malas (`peta.js:24-29`). |
 | C09 | Choropleth wilayah + kartu hover | dibuat | Choropleth `prov-fill` + kartu hover bersama (`inti/peta/lapis.js`). |
 | C10 | Gelembung cluster | diadaptasi | Lingkaran berukuran menurut M dan berwarna menurut kedalaman (`peta.js:34-36`); tanpa gelembung klaster. |
-| C11 | Popup titik | dibuat | Kartu hover `Peta.kartuGempa` + laci saat klik: jam, M, kedalaman, sumber. |
+| C11 | Popup titik | dibuat | Kartu hover `Peta.kartuGempa` + laci saat klik: jam, M, kedalaman, sumber. (`public/gempa/peta.js:146`) |
 | C12 | Laci kejadian | diadaptasi | Laci `#laci`: status tsunami resmi, kekuatan, dirasakan, peluang susulan, penduduk per MMI, gelombang pantai, risiko provinsi, BPBD (tersembunyi), tautan Simulasi, bagikan `/gempa/k/<G>` (`laci.js`). Belum: cuaca, lahan, riwayat radius. |
 | C13 | Legenda | dibuat | `renderLegenda` inti (`peta.js:213`), hanya lapisan yang terlihat. |
 | C14 | Insight | dibuat | Insight (`insight.js:14-16`): kartu terkini, dirasakan, susulan, peluang, provinsi, riwayat, tsunami, bukti, tabel. |
@@ -118,10 +118,10 @@ Dengan G01-G11 (124): **ADA 70 / SEBAGIAN 32 / BELUM 9 / TIDAK BERLAKU 13**.
 | D01 | Rute HTML | dibuat | `ruteBencana()` dari registry (`src/worker.js:474`); live 200 untuk `/gempa/`, `/gempa/peta`, `/gempa/kejadian`, `/gempa/sim`, `/gempa/k/G0001`. |
 | D02 | Route data cepat | dibuat | `/api/gempa/terbaru/kejadian/status` cache tepi 60 dtk (`src/gempa.js:260-282`), tercatat di `tests/warga/cakupan.json`. |
 | D03 | Cron | dibuat | `perbaruiGempa` dipanggil `src/worker.js:615` dari cron tiap menit; uji `cron gempa`. |
-| D04 | Status kesegaran | dibuat | Registry `sumber_status`: gempa_terbaru 0,5 jam + berita_gempa 30 jam; live `/api/status` ok, basi kosong. |
+| D04 | Status kesegaran | dibuat | Registry `sumber_status`: gempa_terbaru 0,5 jam + berita_gempa 30 jam; live `/api/status` ok, basi kosong. (`public/bencana.json`) |
 | D05 | Lapor warga | sebagian | Jenis gempa/tsunami sudah di katalog dan skema (migrasi 0020, `tests/warga/skema.test.mjs` hijau); layar gempa tidak memakainya dan 0020 produksi belum terverifikasi. |
 | D06 | Foto | dibuat | `foto.bencana` + kategori dari registry (`src/foto.js:22-24,87`); live `/api/foto?bencana=gempa` 200 dengan 5 kategori. |
-| D07 | Statistik | dibuat | `stat_hari.hal` dari registry (migrasi 0017), `data-halaman="gempa"`. |
+| D07 | Statistik | dibuat | `stat_hari.hal` dari registry (migrasi 0017), `data-halaman="gempa"`. (`migrations/0017_statistik_bencana.sql`, `src/statistik.js`) |
 | D08 | OG meta | sebagian | Lihat C28: rute ber-og, tetapi gambar kejadian salah (karhutla) dan deskripsi basi. |
 | D09 | Dummy | tidak berlaku | Pemilik pensiunkan data dummy 11 Nov 2026. |
 | D10 | Privasi | dibuat | Bersama: hash IP bergaram harian, DNT/GPC (`src/publik.js`, `tests/warga/klien.test.mjs`). |
@@ -135,8 +135,8 @@ Dengan G01-G11 (124): **ADA 70 / SEBAGIAN 32 / BELUM 9 / TIDAK BERLAKU 13**.
 | E08 | i18n | sebagian | `kumpul.mjs` meng-crawl `/gempa/`; di `public/i18n/en.json` hanya 1 dari 3 judul laci uji ('Perkiraan gelombang di pantai terdekat'); 'Peluang susulan 7 hari ke depan' dan 'Indeks risiko riwayat provinsi' tidak ada. |
 | E09 | Kepemilikan berkas | dibuat | Agen `gempa` memiliki `scripts/gempa/**` dan `public/gempa/**` (`ilmu.mjs pemilik`); `gerbang-ilmu-agent` hijau. |
 | E10 | Model agent | dibuat | `.claude/agents/gempa.md` `model: sonnet`; `gerbang-model-agent` hijau. |
-| F01 | Pengerja agent | dibuat | Agen `gempa` di roster; ilmu 16 KB. |
-| F02 | Dokumen spesifikasi | dibuat | Berkas ini; 113 baris + G01-G11 terisi 15 Nov. |
+| F01 | Pengerja agent | dibuat | Agen `gempa` di roster; ilmu 16 KB. (`scripts/agents/roster.json`, `.claude/agents/gempa.md`) |
+| F02 | Dokumen spesifikasi | dibuat | Berkas ini; 113 baris + G01-G11 terisi 15 Nov. (`docs/multi-bencana/bencana/gempa.md`) |
 | F03 | Dokumen riset | sebagian | Lihat B10. |
 | F04 | Kredit dan lisensi | sebagian | Kredit foto dummy ada; atribusi peta di `bahaya_meta.json` tampil di peta. Halaman Tentang (Sumber data) tidak menyebut USGS, GEM sesar (CC BY-SA), PB2002, NOAA ETOPO; tidak ada `public/gempa/kredit.json`. |
 

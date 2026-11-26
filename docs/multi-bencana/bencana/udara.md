@@ -111,14 +111,14 @@ Status: `dibuat` dan `diadaptasi` = ADA (diadaptasi = bentuk berbeda karena doma
 | C03 | Tema terang/gelap | dibuat | Tema `pb-tema` bersama (`app.js`). |
 | C04 | Waktu data | dibuat | `#upd` dari `prakiraan.json` (live 15 Nov: dibuat 03.04Z, `/api/status` kualitas umur 3,8 jam, ambang 18). |
 | C05 | Panel kiri | diadaptasi | Crumb + pil model + cari provinsi + tabel 39 baris provinsi yang bisa diurut (`public/udara/index.html:62-82`); tanpa mode. |
-| C06 | Rentang waktu | diadaptasi | Seg 3 hari + geser jam 72 jam per kota (`#jamKota`); tanpa chip rentang. |
+| C06 | Rentang waktu | diadaptasi | Seg 3 hari + geser jam 72 jam per kota (`#jamKota`); tanpa chip rentang. (`public/udara/prakiraan.js:55`) |
 | C07 | Garis waktu prakiraan | dibuat | `#garisWaktu` hari, `#jamKota` geser jam, pilihan lapis angin (`public/udara/prakiraan.js`). |
 | C08 | Panel lapisan | diadaptasi | Ubin Status kota, Lintasan asap, PM2,5, Satelit, Penduduk, Sekolah & faskes, Jarak pandang bandara (hanya bila METAR segar); CO AIRS lewat `nasa.js`. Jumlah ubin tidak dihitung ulang 15 Nov. |
 | C09 | Choropleth wilayah + kartu hover | dibuat | Raster PM2,5 interpolasi (`peta.js:44`), `prov-fill` untuk hover/klik provinsi (`:46`), kartu hover bersama. |
 | C10 | Gelembung cluster | diadaptasi | 514 titik kota berwarna status dengan `circle-sort-key` sehingga yang terparah di atas (`prakiraan.js:38`); bukan klaster angka. |
-| C11 | Popup titik | dibuat | Hover/klik titik kota (PM2,5, status) dan METAR (jarak pandang, kelas). |
+| C11 | Popup titik | dibuat | Hover/klik titik kota (PM2,5, status) dan METAR (jarak pandang, kelas). (`public/udara/app.js:37`) |
 | C12 | Laci kejadian | sebagian | Laci provinsi (PM2,5 per hari, jiwa per kategori, kab paling terpapar) dan laci kota (4 hari, grafik 72 jam, atribusi api/PLTU/latar, tautan kompleks karhutla; `prakiraan.js:92-98`); laci kejadian ringkas (`kejadian.js:laci`). Tanpa saran kesehatan, sekolah/RS terdekat, riwayat, tautan simulasi. |
-| C13 | Legenda | dibuat | `#legenda` dok (kelas PM2,5 24 jam, jarak pandang). |
+| C13 | Legenda | dibuat | `#legenda` dok (kelas PM2,5 24 jam, jarak pandang). (`public/udara/index.html`) |
 | C14 | Insight | diadaptasi | `public/udara/insight.js:13` mendaftar 9 kartu (jiwa, kab, pel, asal, jarak, bmkg, kualitas, tropo, rapor) ditambah kartu dari `public/udara/prakiraan.js` (Prakiraan 72 jam, Galat model, Sumber asap). Tanpa "hari Tidak Sehat per kota per tahun" (data multi-tahun tidak ada). Beberapa kepala kartu masih kalimat temuan dan memakai kaki "Sumber:" (`insight.js:40`), melanggar `AGENTS.md` 3.5. |
 | C15 | Tabel kejadian | dibuat | Tab Kejadian lengkap (`public/udara/kejadian.js`) dengan data live `kejadian_udara_awal.json` (6 kejadian) dan `_geo.json`. |
 | C16 | Cerita | belum | Tidak ada `cerita_udara.js`. |
@@ -139,11 +139,11 @@ Status: `dibuat` dan `diadaptasi` = ADA (diadaptasi = bentuk berbeda karena doma
 | C31 | Muat / kosong / galat / luring | sebagian | Spinner muat, pesan kosong per tab, kartu tanpa data dibuang; Simulasi punya cadangan "Simulasi belum tersedia" (`prakiraan.js:Simulasi.render`); keadaan luring tidak ada. |
 | C32 | Mobile 375 px | sebagian | Terakhir diukur manual 19 Okt (emulasi 375x812, `scrollWidth` 375, delapan tab); tidak diukur ulang 15 Nov, tidak ada uji otomatis, dan kartu bertambah. Diturunkan sampai ada uji. |
 | C33 | Klik tidak membekukan | dibuat | `nanti()` (`public/udara/app.js:4`); simulasi berat berjalan bertahap di `requestAnimationFrame` (`public/udara/sim/sim.js:1`); jejak `inp-reviewer`. Tidak diukur ulang hari ini. |
-| C34 | Halaman Tentang dan kartu bencana | dibuat | Tab Tentang (iframe) dan kartu bencana di Tentang. |
+| C34 | Halaman Tentang dan kartu bencana | dibuat | Tab Tentang (iframe) dan kartu bencana di Tentang. (`public/udara/app.js:73`) |
 | C35 | Statistik publik | dibuat | `src/statistik.js:18` `HAL` dari registry. |
 | C36 | Admin moderasi | sebagian | Admin foto memakai pemilah bencana dari registry, tetapi `public/admin/foto.js:1,21` masih memuat tombol dummy padahal pemilik mensyaratkan disembunyikan (11 Nov). Pemilik berkas: `warga-api`. |
 | C37 | Bagikan lanjutan | diadaptasi | `bagi.js` (QR, WhatsApp, UTM) terunduh di live; "Bagikan video" tidak ada. |
-| C38 | Lapisan tambahan | diadaptasi | Lapisan konteks registry (penduduk, sekolah+faskes) + GIBS CO; tanpa lapisan khas karhutla. |
+| C38 | Lapisan tambahan | diadaptasi | Lapisan konteks registry (penduduk, sekolah+faskes) + GIBS CO; tanpa lapisan khas karhutla. (`public/udara/peta.js:29`) |
 | C39 | Kaki dan Tentang | dibuat | `kaki.js` dan halaman Tentang bersama. |
 | D01 | Rute HTML | dibuat | Rute `/udara/`, `/udara/k/…` dari `src/bencana.generated.js`; live 200. |
 | D02 | Route data cepat | tidak berlaku | Tidak ada route cepat: data statis `/udara/data/*.json` yang terbit dua kali sehari. |
@@ -151,10 +151,10 @@ Status: `dibuat` dan `diadaptasi` = ADA (diadaptasi = bentuk berbeda karena doma
 | D04 | Status kesegaran | dibuat | `sumber_status`: kualitas = `prakiraan.json` (ambang 18 jam), berita_udara (30 jam) (registry blok udara); live 15 Nov `/api/status` `basi: []`, kualitas umur 3,8 jam, berita_udara 20,9 jam. |
 | D05 | Lapor warga | dibuat | `laporan.bahaya='udara'` + 3 jenis (migrasi 0020, `src/worker.js`); antarmuka belum terpasang (C24). |
 | D06 | Foto | dibuat | `foto.bencana` (migrasi 0013), `KAT_BENCANA`; `tests/warga/foto_bencana.test.mjs`. |
-| D07 | Statistik | dibuat | `stat_hari.hal` dari registry (migrasi 0017). |
+| D07 | Statistik | dibuat | `stat_hari.hal` dari registry (migrasi 0017). (`migrations/0017_statistik_bencana.sql`, `src/statistik.js`) |
 | D08 | OG meta | dibuat | `src/og_meta.js` membaca registry. |
 | D09 | Dummy | tidak berlaku | Pemilik mempensiunkan data dummy dan tombol 🧪/🧹 pada 11 Nov 2026. |
-| D10 | Privasi | dibuat | Mesin bersama (hash IP bergaram, DNT/GPC); jalur udara tidak menyimpan data pribadi baru. |
+| D10 | Privasi | dibuat | Mesin bersama (hash IP bergaram, DNT/GPC); jalur udara tidak menyimpan data pribadi baru. (`src/statistik.js:3`) |
 | E01 | Self-check per skrip | dibuat | 15 Nov: `python3 scripts/udara/<skrip>.py uji` hijau untuk 20 skrip (alat, angin, asal, atribusi, bmkg_pm25, dampak_udara, geoscf, kota, kualitas, kualitas_bmkg, laporan_udara, lintasan, musim_asap, openaq_mos, peluang_udara, pltu, prakiraan, rentan, riwayat, tropomi); `udara.yml` menjalankan `uji` tiap skrip sebelum pipeline (`:57-61`). Belum dijalankan ulang hari ini: `berita`, `isi_riwayat`, `openaq_arsip`, `pm25_1km`, `pm25_mos`, `uji_panen`. |
 | E02 | Cakupan route/tabel | tidak berlaku | Udara tidak menambah route atau tabel Worker; `cakupan.json` tidak punya baris udara. |
 | E03 | Skema D1 | dibuat | Katalog jenis laporan vs migrasi 0020 dijaga dua arah oleh `tests/warga/skema.test.mjs`. |
@@ -166,7 +166,7 @@ Status: `dibuat` dan `diadaptasi` = ADA (diadaptasi = bentuk berbeda karena doma
 | E09 | Kepemilikan berkas | dibuat | Semua berkas dimiliki agen `cuaca-udara` (`gerbang-ilmu-agent` hijau). Catatan: `.claude/ilmu-agent/cuaca-udara.md` 41.159 byte, di atas plafon 40 KB `AGENTS.md` 1.5. |
 | E10 | Model agent | dibuat | `.claude/agents/cuaca-udara.md` `model: sonnet`. |
 | F01 | Pengerja agent | dibuat | Satu pengerja `cuaca-udara` untuk dua modul (`scripts/agents/roster.json:473`); registry kini `pengerja: "cuaca-udara"` dan `workflow: "udara.yml"` (cocok; ketidakcocokan 19 Okt sudah dibereskan). |
-| F02 | Dokumen spesifikasi | dibuat | Dokumen ini, daftar periksa A01-F04 dan G01-G11 terisi dari audit 15 Nov 2026. |
+| F02 | Dokumen spesifikasi | dibuat | Dokumen ini, daftar periksa A01-F04 dan G01-G11 terisi dari audit 15 Nov 2026. (`docs/multi-bencana/bencana/udara.md`) |
 | F03 | Dokumen riset | belum | Tidak ada `scripts/udara/RISET-*.md`. |
 | F04 | Kredit dan lisensi | sebagian | Atribusi OpenAQ, penyedia asal, GMAO, dan BMKG tertulis di dalam berkas data (`openaq_mos.json` `atribusi`, `bmkg_pm25.json` `sumber`). Tidak ada `public/udara/kredit.json`; tidak terbukti Tentang menyebut WRI GPPD (CC BY 4.0), METAR/IEM, Dapodik, NASA GMAO GEOS-CF. |
 

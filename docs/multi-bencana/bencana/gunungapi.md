@@ -77,7 +77,7 @@ Komponen baru G01-G11 (di luar 113): ADA 0 / SEBAGIAN 5 / BELUM 4 / TIDAK BERLAK
 | A38 | Data statis bulanan | dibuat | `paparan.py` dan `citra.py` kini dijalankan `statis.yml:109-110` dan `lintas.yml:205-207`; `paparan.json` terbit 5, 6, 7 Nov (komit bot "data: paparan gunung api"). |
 | A39 | Seri jangka pendek bergulir | sebagian | Riwayat level + erupsi 4 hari (`gunungapi_status.json` riwayat), `laporan_gunungapi.json` 10 hari per provinsi; belum 100 hari atau per kabupaten. |
 | A40 | Data respons dan kontak | sebagian | Kontak resmi hanya dari teks rekomendasi (`magma.py:93` urai_kontak): 2 dari 27 gunung Level >= II pada data lokal, 0 pada data live 19 Okt (belum terbit); tidak ada daftar pos terstruktur. |
-| B01 | Model prakiraan | diadaptasi | Model abu Lagrangian 5000 partikel + lahar LAHARZ; skenario 'jika meletus sekarang', bukan prakiraan letusan; stdlib. |
+| B01 | Model prakiraan | diadaptasi | Model abu Lagrangian 5000 partikel + lahar LAHARZ; skenario 'jika meletus sekarang', bukan prakiraan letusan; stdlib. (`public/gunungapi/abu_model.js`, `public/gunungapi/sim_lahar.js:1`) |
 | B02 | Uji balik aturan status | sebagian | `uji_abu.py`: arah abu vs VONA. Berambang: 4 kejadian, 25% dalam 45 derajat, p = 0,68 (tak lebih baik dari acak); sebaran mentah: 29 kejadian, 72%, p ~ 1e-7. Hubungan level-letusan belum diuji. |
 | B03 | Prospektif | sebagian | `prospektif.py` dirantai `magma.py:693-696`, `prospektif_abu.json` di-commit `lintas.yml:371` (507 dicatat, 481 dinilai, 7 Nov, append-only, ambang 45 derajat). Tidak ada kartu di layar gunung api yang membacanya (tanpa `prospektif_abu` di `public/gunungapi/*.js`) dan belum masuk /prediksi. |
 | B04 | Kasus historis | sebagian | Citra sebelum/sesudah 5 peristiwa pilihan + BNPB tahunan 2010-2024; galeri kejadian besar belum. |
@@ -89,15 +89,15 @@ Komponen baru G01-G11 (di luar 113): ADA 0 / SEBAGIAN 5 / BELUM 4 / TIDAK BERLAK
 | B10 | Dokumen riset | sebagian | Sitasi dan alasan di docstring skrip dan bab Metode; berkas `RISET-*.md` terpisah belum ada. |
 | C01 | Kepala + menu bencana | dibuat | Kepala + menu bencana dari registry (`inti/kepala.js`). |
 | C02 | Tab dan URL bersih | dibuat | Tab (`app.js:49,52`) dan `/gunungapi/k/V0001` (`peta.js:236`); live 200 untuk `/gunungapi/`, `/gunungapi/simulasi`, `/gunungapi/k/V0001`. |
-| C03 | Tema terang/gelap | dibuat | `#tema` + `pb-tema`. |
+| C03 | Tema terang/gelap | dibuat | `#tema` + `pb-tema`. (`public/gunungapi/app.js:97`) |
 | C04 | Waktu data | dibuat | `#upd` dari `gunungapi_status.json` dibuat. |
 | C05 | Panel kiri | diadaptasi | Seg Level, cari gunung/provinsi, daftar urut (`index.html:80-86`); tanpa crumb atau mode Real Time/Riwayat. |
 | C06 | Rentang waktu | tidak berlaku | Status gunung adalah potret terkini; satu-satunya jendela waktu (jam ke-24/48/72 skenario) ada di C07. |
 | C07 | Garis waktu prakiraan | diadaptasi | Seg jam ke-24/48/72 untuk jejak abu skenario di legenda (`peta.js:193-196`). |
 | C08 | Panel lapisan | dibuat | Overlay 3 grup, 10 ubin (gunung, radius, nama, abu, bandara, KRB, rute, sekolah, tambang, satelit), muat malas (`peta.js:5-11`) + lapisan konteks (`peta.js:38`). |
 | C09 | Choropleth wilayah + kartu hover | tidak berlaku | Gunung adalah titik; zona rawan berupa poligon KRB, bukan area administratif. |
-| C10 | Gelembung cluster | diadaptasi | Segitiga berwarna level PVMBG dan nama gunung; 69 titik tetap, tanpa klaster. |
-| C11 | Popup titik | dibuat | Kartu hover + dialog klik dengan level, radius, rekomendasi. |
+| C10 | Gelembung cluster | diadaptasi | Segitiga berwarna level PVMBG dan nama gunung; 69 titik tetap, tanpa klaster. (`public/gunungapi/peta.js:2`) |
+| C11 | Popup titik | dibuat | Kartu hover + dialog klik dengan level, radius, rekomendasi. (`public/gunungapi/peta.js:278`) |
 | C12 | Laci kejadian | diadaptasi | Dialog modal gunung (`peta.js:214-232`): level, radius, rekomendasi PVMBG, kontak, erupsi terbaru, skenario abu 72 jam, paparan KRB, evakuasi, citra, Simulasi, bagikan, kode V. Bukan laci samping. |
 | C13 | Legenda | dibuat | `renderLegenda` (`peta.js:189-203`): level, radius, abu, bandara, KRB, paparan. |
 | C14 | Insight | dibuat | 9 kartu (`insight.js:11`): status, letusan, perubahan, bandara, peluang, KRB, tambang, kinerja, daftar. |
@@ -117,7 +117,7 @@ Komponen baru G01-G11 (di luar 113): ADA 0 / SEBAGIAN 5 / BELUM 4 / TIDAK BERLAK
 | C28 | OG per rute | sebagian | `/gunungapi/` ber-og khas (`gunungapi.png`, live 200) tetapi `/gunungapi/k/V0001` memakai `ringkasan.png` (gambar karhutla); per gunung/provinsi belum. |
 | C29 | i18n EN | sebagian | `en.json` memuat kosakata gunung api (komit `0f2ecb1`). Judul dialog/Insight seperti 'Skenario abu 72 jam', 'Kontak resmi', 'Paparan per zona KRB', 'Citra satelit sebelum dan sesudah', 'Jejak abu skenario' tidak ada di `en.json`; `laporan.json` i18n bertanggal 15 Okt. |
 | C30 | Persetujuan, jejak, pesan, kaki | dibuat | `persetujuan.js`, `jejak.js data-halaman="gunungapi"`, `pesan.js`, `kaki.js` (`index.html:152-155`). |
-| C31 | Muat / kosong / galat / luring | dibuat | `#muat` 'Memuat status gunung api…', pesan kosong per tab ('Belum ada tren.', 'Data kejadian gunung api belum tersedia.'). |
+| C31 | Muat / kosong / galat / luring | dibuat | `#muat` 'Memuat status gunung api…', pesan kosong per tab ('Belum ada tren.', 'Data kejadian gunung api belum tersedia.'). (`public/gunungapi/index.html:85`, `public/gunungapi/tren.js:160`) |
 | C32 | Mobile 375 px | sebagian | Belum ada audit 375/390 px ulang sejak 16 Okt; tab Kejadian dan dialog baru tak diukur, tidak ada uji otomatis. |
 | C33 | Klik tidak membekukan | dibuat | `nanti()` (`angka.js:3`), simulasi di Web Worker (`sim_kerja.js`), lapisan paparan dimuat malas; INP gunung api belum diukur ulang sejak 16 Okt. |
 | C34 | Halaman Tentang dan kartu bencana | dibuat | `tentang.html` kartu Letusan Gunung Api aktif (`bencana-gunungapi.jpg`). |
@@ -131,11 +131,11 @@ Komponen baru G01-G11 (di luar 113): ADA 0 / SEBAGIAN 5 / BELUM 4 / TIDAK BERLAK
 | D03 | Cron | dibuat | `perbaruiGunungapi` dari cron tiap menit, menit%30==7, satu permintaan MAGMA per putaran, galat = data lama utuh (`src/gunungapi.js:38`, `tests/warga/gunungapi_arsip.test.mjs`). |
 | D04 | Status kesegaran | dibuat | Registry `sumber_status` gunungapi 30 jam (live umur 2,4 jam) + berita. Catatan: yang diawasi berkas CI `gunungapi_status.json`, bukan `umur_menit` D1, jadi cron MAGMA mati tidak menandai `/api/status` basi. |
 | D05 | Lapor warga | dibuat | Jenis abu/lahar/gemuruh di katalog dan skema (migrasi 0020, `skema.test.mjs`); layar memakainya lewat tab informasi (C24). 0020 di produksi tidak diperiksa ulang 15 Nov (tanpa jaringan). |
-| D06 | Foto | dibuat | `foto.bencana` + 4 kategori registry; live `/api/foto?bencana=gunungapi` 200. |
-| D07 | Statistik | dibuat | `stat_hari.hal` dari registry, `data-halaman="gunungapi"`. |
+| D06 | Foto | dibuat | `foto.bencana` + 4 kategori registry; live `/api/foto?bencana=gunungapi` 200. (`public/gunungapi/foto.js:1`) |
+| D07 | Statistik | dibuat | `stat_hari.hal` dari registry, `data-halaman="gunungapi"`. (`migrations/0017_statistik_bencana.sql`, `src/statistik.js`) |
 | D08 | OG meta | sebagian | Lihat C28: kejadian V memakai gambar karhutla; deskripsi OG memakai data hari ini (19 Okt: 3 siaga, 24 waspada) dan benar. |
 | D09 | Dummy | tidak berlaku | Data dummy dipensiunkan pemilik 11 Nov 2026. `JUMLAH_DUMMY` masih ada di `src/foto.js` (milik warga-api, bukan wilayah ini), `public/img/dummy/gunungapi/` masih berisi foto. |
-| D10 | Privasi | dibuat | Bersama: hash IP bergaram harian, DNT/GPC. |
+| D10 | Privasi | dibuat | Bersama: hash IP bergaram harian, DNT/GPC. (`src/statistik.js:3`) |
 | E01 | Self-check per skrip | sebagian | `lintas.yml:100-104,162,205-207,224,245`: `uji_setara`, `uji_lahar`, `uji_abu`, `abu`, `laporan`, `magma`, `paparan`, `citra`, `peluang_abu`, `mirova`; `berita`/`dampak` lewat loop `:268-274`. Tanpa uji di workflow: `risiko`, `tren`, `factsheet`, `arsip_magma`, `riwayat_level`, `pop_grid`, `panen_*` (`prospektif.py` dirantai `magma.py`, tanpa `uji`). Lokal 15 Nov hijau: magma, risiko, tren, prospektif, factsheet. |
 | E02 | Cakupan route/tabel | dibuat | `cakupan.json`: tabel gunungapi_level/ubah, GET `/api/gunungapi/terbaru`, cron gunungapi. |
 | E03 | Skema D1 | dibuat | `skema.test.mjs` + `gunungapi_arsip.test.mjs` hijau 19 Okt. |
@@ -146,8 +146,8 @@ Komponen baru G01-G11 (di luar 113): ADA 0 / SEBAGIAN 5 / BELUM 4 / TIDAK BERLAK
 | E08 | i18n | sebagian | `kumpul.mjs` meng-crawl `/gunungapi/`; hasil 19 Okt hanya di pesan komit; `laporan.json` i18n 15 Okt. |
 | E09 | Kepemilikan berkas | dibuat | Agen `gunungapi-kering` memiliki `scripts/gunungapi/**` dan `public/gunungapi/**`; registry `pengerja` masih tertulis `gunungapi` (nama lama). |
 | E10 | Model agent | dibuat | `.claude/agents/gunungapi-kering.md` `model: sonnet`. |
-| F01 | Pengerja agent | dibuat | Agen `gunungapi-kering` (berbagi dengan kekeringan); ilmu 25,7 KB, di bawah plafon 40 KB. |
-| F02 | Dokumen spesifikasi | dibuat | Berkas ini; 113 baris terisi. |
+| F01 | Pengerja agent | dibuat | Agen `gunungapi-kering` (berbagi dengan kekeringan); ilmu 25,7 KB, di bawah plafon 40 KB. (`scripts/agents/roster.json`, `.claude/agents/gunungapi-kering.md`) |
+| F02 | Dokumen spesifikasi | dibuat | Berkas ini; 113 baris terisi. (`docs/multi-bencana/bencana/gunungapi.md`) |
 | F03 | Dokumen riset | sebagian | Lihat B10. |
 | F04 | Kredit dan lisensi | sebagian | Kredit foto dummy ada; laci memuat atribusi (ODbL, WorldPop, KRB PVMBG 2018). Halaman Tentang (Sumber data) tidak menyebut MAGMA/PVMBG/ESDM; tidak ada `public/gunungapi/kredit.json`. |
 

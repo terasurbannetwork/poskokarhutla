@@ -113,7 +113,7 @@ Status: `dibuat` dan `diadaptasi` = ADA (diadaptasi = bentuk berbeda karena doma
 | C03 | Tema terang/gelap | dibuat | `#tema`, kunci `pb-tema`, `peta.setStyle` (`cuaca.js:82`). |
 | C04 | Waktu data | dibuat | `#upd` dari `cuaca_meta.json` (live 15 Nov: `dibuat` 2026-11-14T14:15+07:00). |
 | C05 | Panel kiri | diadaptasi | Crumb + seg "Nowcast / Gelombang / Status 72 jam" + cari + daftar (`public/cuaca/peta.js:149`); bukan mode Real Time/Riwayat/Kompleks. |
-| C06 | Rentang waktu | diadaptasi | Seg hari 4 hari (`#hariSeg`); tidak ada chip Kemarin/72 jam/7 hari karena nowcast hidup 2-3 jam. |
+| C06 | Rentang waktu | diadaptasi | Seg hari 4 hari (`#hariSeg`); tidak ada chip Kemarin/72 jam/7 hari karena nowcast hidup 2-3 jam. (`public/cuaca/index.html:104`) |
 | C07 | Garis waktu prakiraan | dibuat | Kartu "Prakiraan cuaca (hari)" `#garisWaktu` dan hari 72 jam kecamatan (`kIdx`, `cuaca.js:40`). |
 | C08 | Panel lapisan | diadaptasi | 12 ubin Overlay live (BMKG, Ombak, Satelit; Kecamatan, Ombak, Sarana, Siklon; Hujan satelit, Suhu; Penduduk, Sekolah & faskes, Jalan & sungai), konteks dimuat malas (`konteks.js`); jauh di bawah ±25 lapisan karhutla. |
 | C09 | Choropleth wilayah + kartu hover | diadaptasi | Poligon CAP dan provinsi bergelombang berwarna (`peta.js:47-51`), kecamatan sebagai titik berwarna tingkat; tidak ada choropleth wilayah berskala. Kartu hover `kartuTip` bersama. |
@@ -156,7 +156,7 @@ Status: `dibuat` dan `diadaptasi` = ADA (diadaptasi = bentuk berbeda karena doma
 | D07 | Statistik | dibuat | `stat_hari.hal` dari registry (migrasi 0017, `src/statistik.js:18`). |
 | D08 | OG meta | dibuat | `src/og_meta.js` membaca registry; `tests/warga/og.test.mjs`. |
 | D09 | Dummy | tidak berlaku | Pemilik mempensiunkan data dummy dan tombol 🧪/🧹 pada 11 Nov 2026; tidak ada yang perlu disediakan. |
-| D10 | Privasi | dibuat | Memakai mesin bersama (hash IP bergaram, DNT/GPC); jalur cuaca tidak menyimpan data pribadi baru (CAP publik). |
+| D10 | Privasi | dibuat | Memakai mesin bersama (hash IP bergaram, DNT/GPC); jalur cuaca tidak menyimpan data pribadi baru (CAP publik). (`src/statistik.js:3`) |
 | E01 | Self-check per skrip | dibuat | 15 Nov: `python3 scripts/cuaca/<skrip>.py uji` hijau untuk 35 skrip (`dasar.py`, `bangun_bnpb.py`, `uji_alur.py` adalah pustaka atau pembangun tanpa mode `uji`); `cuaca.py:198-199` merantai uji tiap modul 72 jam; dijalankan di `lintas.yml` sebelum `cuaca.py`; `tests/cuaca/sim_dampak.test.mjs` dan `tests/udara/*.test.mjs`: 54 lulus, 0 gagal. |
 | E02 | Cakupan route/tabel | dibuat | `tests/warga/cakupan.json:7-11`: tabel cuaca_nowcast, cuaca_sumber, cuaca_arsip dan route `/api/cuaca/nowcast`, `/api/cuaca/arsip`. |
 | E03 | Skema D1 | dibuat | Migrasi 0014 dan 0021 diuji idempoten (`cakupan.json:7,10`); katalog jenis laporan vs migrasi 0020 dijaga dua arah oleh `skema.test.mjs`. |
@@ -168,7 +168,7 @@ Status: `dibuat` dan `diadaptasi` = ADA (diadaptasi = bentuk berbeda karena doma
 | E09 | Kepemilikan berkas | dibuat | Semua berkas dimiliki agen `cuaca-udara` (`gerbang-ilmu-agent` hijau). Catatan: `.claude/ilmu-agent/cuaca-udara.md` 41.159 byte, di atas plafon 40 KB `AGENTS.md` 1.5; perlu dipangkas atau dipecah (pemilik: `mekanik-mesin`). |
 | E10 | Model agent | dibuat | `.claude/agents/cuaca-udara.md` `model: sonnet` (`gerbang-model-agent` hijau). |
 | F01 | Pengerja agent | dibuat | Satu pengerja `cuaca-udara` untuk dua modul (`scripts/agents/roster.json:473`); registry kini `pengerja: "cuaca-udara"` dan `workflow: "lintas.yml"` (cocok dengan kenyataan; ketidakcocokan 19 Okt sudah dibereskan). |
-| F02 | Dokumen spesifikasi | dibuat | Dokumen ini, daftar periksa A01-F04 dan G01-G11 terisi dari audit 15 Nov 2026. |
+| F02 | Dokumen spesifikasi | dibuat | Dokumen ini, daftar periksa A01-F04 dan G01-G11 terisi dari audit 15 Nov 2026. (`docs/multi-bencana/bencana/cuaca.md`) |
 | F03 | Dokumen riset | sebagian | Tidak ada `scripts/cuaca/RISET-*.md`; yang ada rancangan `docs/multi-bencana/RENCANA-CUACA-NOV.md` (1 Nov, tiga audit dan rencana koreksi silang logbook) dan docstring modul. Bukan dokumen riset ambang bersumber. |
 | F04 | Kredit dan lisensi | sebagian | Kredit foto dummy per bencana ada (`public/img/dummy/cuaca/kredit.json`). Tidak ada `public/cuaca/kredit.json`; Tentang tidak menyebut JTWC, GDACS, OurAirports, atau OSM pelabuhan. |
 

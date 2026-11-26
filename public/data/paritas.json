@@ -4,8 +4,8 @@
  "bencana": {
   "banjir": {
    "a_f": {
-    "ada": 74,
-    "sebagian": 33,
+    "ada": 75,
+    "sebagian": 32,
     "belum": 3,
     "tb": 3,
     "berlaku": 110
@@ -20,8 +20,8 @@
   },
   "longsor": {
    "a_f": {
-    "ada": 31,
-    "sebagian": 66,
+    "ada": 33,
+    "sebagian": 64,
     "belum": 11,
     "tb": 5,
     "berlaku": 108
@@ -36,8 +36,8 @@
   },
   "pesisir": {
    "a_f": {
-    "ada": 36,
-    "sebagian": 52,
+    "ada": 37,
+    "sebagian": 51,
     "belum": 21,
     "tb": 4,
     "berlaku": 109
@@ -52,8 +52,8 @@
   },
   "cuaca": {
    "a_f": {
-    "ada": 66,
-    "sebagian": 31,
+    "ada": 69,
+    "sebagian": 28,
     "belum": 10,
     "tb": 6,
     "berlaku": 107
@@ -68,8 +68,8 @@
   },
   "udara": {
    "a_f": {
-    "ada": 61,
-    "sebagian": 33,
+    "ada": 69,
+    "sebagian": 25,
     "belum": 14,
     "tb": 5,
     "berlaku": 108
@@ -84,8 +84,8 @@
   },
   "gempa": {
    "a_f": {
-    "ada": 61,
-    "sebagian": 38,
+    "ada": 67,
+    "sebagian": 32,
     "belum": 5,
     "tb": 9,
     "berlaku": 104
@@ -100,8 +100,8 @@
   },
   "gunungapi": {
    "a_f": {
-    "ada": 68,
-    "sebagian": 33,
+    "ada": 78,
+    "sebagian": 23,
     "belum": 6,
     "tb": 6,
     "berlaku": 107
@@ -131,165 +131,9 @@
    }
   }
  },
- "diturunkan": [
-  {
-   "id": "banjir",
-   "kode": "E10",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "longsor",
-   "kode": "C13",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "longsor",
-   "kode": "E10",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "pesisir",
-   "kode": "E10",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "cuaca",
-   "kode": "C06",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "cuaca",
-   "kode": "D10",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "cuaca",
-   "kode": "F02",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "udara",
-   "kode": "C06",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "udara",
-   "kode": "C11",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "udara",
-   "kode": "C13",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "udara",
-   "kode": "C34",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "udara",
-   "kode": "C38",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "udara",
-   "kode": "D07",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "udara",
-   "kode": "D10",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "udara",
-   "kode": "F02",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gempa",
-   "kode": "C06",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gempa",
-   "kode": "C11",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gempa",
-   "kode": "D04",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gempa",
-   "kode": "D07",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gempa",
-   "kode": "F01",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gempa",
-   "kode": "F02",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gunungapi",
-   "kode": "B01",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gunungapi",
-   "kode": "C03",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gunungapi",
-   "kode": "C10",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gunungapi",
-   "kode": "C11",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gunungapi",
-   "kode": "C31",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gunungapi",
-   "kode": "D06",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gunungapi",
-   "kode": "D07",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gunungapi",
-   "kode": "D10",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gunungapi",
-   "kode": "F01",
-   "alasan": "tanpa_jalur"
-  },
-  {
-   "id": "gunungapi",
-   "kode": "F02",
-   "alasan": "tanpa_jalur"
-  }
- ],
+ "diturunkan": [],
  "jumlah_diturunkan": {
-  "tanpa_jalur": 31,
+  "tanpa_jalur": 0,
   "jalur_tidak_ada": 0
  }
 }
