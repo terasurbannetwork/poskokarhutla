@@ -1167,3 +1167,21 @@ dialog.mj-oc{height:auto!important;max-height:calc(100dvh - 48px)!important}
 .mj-oc-kosong b{font:800 1.0625rem var(--display);color:var(--ink)}
 .mj-oc-kosong p{max-width:52ch;margin:0;color:var(--ink2);font-size:.875rem;line-height:1.55}
 .mj-oc .mj-chip-j b{min-width:22px;padding:1px 7px;border-radius:999px;background:color-mix(in oklab,currentColor 14%,transparent);text-align:center}
+/* kabar warga di kartu Alun-alun (LA-88) */
+.mj-komen{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.mj-komen > li{display:grid;gap:6px;padding:10px 12px;border-radius:var(--r-sm,10px);background:var(--surface);border-inline-start:3px solid var(--line)}
+.mj-komen > li.dilaporkan{border-inline-start-color:var(--warn)}
+.mj-komen > li.tersembunyi{opacity:.72}
+.mj-komen > li > .mj-tombol{justify-self:start}
+.mj-komen-kep{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.mj-komen-kep small{color:var(--ink2)}
+.mj-komen-pil{padding:1px 8px;border-radius:999px;font-size:.75rem;font-weight:600;background:color-mix(in oklab,var(--ok) 14%,var(--card));color:var(--ink)}
+.mj-komen-pil.dilaporkan{background:color-mix(in oklab,var(--warn) 18%,var(--card))}
+.mj-komen-pil.tersembunyi{background:var(--line)}
+.mj-komen-teks{margin:0;font-size:.875rem;line-height:1.5}
+.mj-usul{display:grid;gap:6px;padding:8px 10px;border-radius:var(--r-sm,10px);background:var(--card);border:1px solid var(--line)}
+.mj-usul > div:first-child{display:grid;gap:2px}
+.mj-usul small{color:var(--ink2)}
+.mj-usul.terima{border-color:color-mix(in oklab,var(--ok) 45%,var(--line))}
+.mj-usul.tolak{opacity:.72}
+.mj-usul select{min-height:36px}

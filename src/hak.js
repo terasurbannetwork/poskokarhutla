@@ -1818,6 +1818,7 @@ Object.assign(MATRIKS, {
   lp_komen:            {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"]},   // migrasi 0180: komentar kartu Alun-alun (K95, D136); publik hanya kolom id, teks, dibuat
   lp_komen_aduan:      {lp_pelapor: ["baca", "tambah"], lp_staf: ["baca"]},
   lp_komen_usul:       {lp_mesin: ["tambah"], lp_staf: ["baca", "ubah"]},   // LA-86 menulis, LA-88 memutus
+  lp_komen_putus:      {lp_staf: ["baca", "tambah"]},   // migrasi 0183: riwayat keputusan meja (LA-88), append-only
 });
 /* peringatan dini warga Pantau Bencana (migrasi 0163, paket pwa-peringatan PW-01). pw_publik = rute langganan tanpa akun (endpoint push = rahasia pemegangnya);
    pw_cron = pemicu dan pengirim tiap menit plus bersih-bersih; lp_staf = ringkasan staf. Tidak ada data orang selain endpoint push dan kode kecamatan. */
@@ -1890,7 +1891,7 @@ export const crTambah = (env, p, b, kini) => sedia(env, p, "lapor_cari", "tambah
   "INSERT INTO lapor_cari (id, nomor_pencari, nama_dicari, ciri, lokasi_terakhir, waktu_terakhir, nomor_dicari, hubungan, kab, dibuat) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)")
   .bind(b.id, b.nomor_pencari, b.nama_dicari, b.ciri, b.lokasi_terakhir, b.waktu_terakhir, b.nomor_dicari, b.hubungan, b.kab, kini).run();
 /* wilayah disaring di SQL (awalan kode kab/prov) supaya LIMIT 500 global tidak menyembunyikan laporan wilayah akun; prefiks null = semua (BNPB) */
-/* komentar kartu Alun-alun (migrasi 0178, LA-85). Jawaban publik hanya id, teks, dibuat; nomor penulis tidak pernah dibaca jalur publik. */
+/* komentar kartu Alun-alun (migrasi 0180, LA-85). Jawaban publik hanya id, teks, dibuat; nomor penulis tidak pernah dibaca jalur publik. */
 export const kmDaftarPublik = async (env, p, kartu) => (await sedia(env, p, "lp_komen", "baca",
   "SELECT id, teks, dibuat FROM lp_komen WHERE kartu = ?1 AND status = 'tampil' ORDER BY dibuat LIMIT 200").bind(kartu).all()).results;
 export const kmTambah = (env, p, b) => sedia(env, p, "lp_komen", "tambah",
@@ -1904,6 +1905,24 @@ export const kmAdu = async (env, p, id, pengadu, kini, ambang) => { izin(p, "lp_
   const [a] = await env.DB.batch([env.DB.prepare("INSERT OR IGNORE INTO lp_komen_aduan (komen, pengadu, waktu) VALUES (?1, ?2, ?3)").bind(id, pengadu, kini),
     env.DB.prepare("UPDATE lp_komen SET aduan = aduan + 1, status = CASE WHEN status = 'tampil' AND aduan + 1 >= ?2 THEN 'dilaporkan' ELSE status END WHERE id = ?1 AND changes() > 0").bind(id, ambang)]);
   return a.meta.changes > 0; };
+/* meja (LA-88): semua komentar satu kartu dengan nomor penulis (penyaring identitas di pemanggil), usulan, riwayat keputusan, dan jumlah komentar tersembunyi per nomor (Q74) */
+export const kmMejaDaftar = async (env, p, kartu) => (await sedia(env, p, "lp_komen", "baca",
+  "SELECT id, wa, teks, status, aduan, dibuat FROM lp_komen WHERE kartu = ?1 ORDER BY dibuat LIMIT 200").bind(kartu).all()).results;
+export const kmUsulKomen = async (env, p, ids) => ids.length ? (await sedia(env, p, "lp_komen_usul", "baca",
+  "SELECT id, komen, kolom, nilai, kutipan, status, diputus_oleh, diputus FROM lp_komen_usul WHERE komen IN (SELECT value FROM json_each(?1)) ORDER BY id").bind(JSON.stringify(ids)).all()).results : [];
+export const kmPutusKomen = async (env, p, ids) => ids.length ? (await sedia(env, p, "lp_komen_putus", "baca",
+  "SELECT komen, usul, aksi, nomor, isian, alasan, oleh, waktu FROM lp_komen_putus WHERE komen IN (SELECT value FROM json_each(?1)) ORDER BY id").bind(JSON.stringify(ids)).all()).results : [];
+/* kartu null = semua kejadian (staf BNPB); akun BPBD hanya kartu yang sedang dibuka (ulasan keamanan LA-88) */
+export const kmTersembunyiWa = async (env, p, was, kartu = null) => was.length ? (await sedia(env, p, "lp_komen", "baca",
+  "SELECT wa, count(*) n FROM lp_komen WHERE wa IN (SELECT value FROM json_each(?1)) AND status = 'tersembunyi' AND (?2 IS NULL OR kartu = ?2) GROUP BY wa").bind(JSON.stringify(was), kartu).all()).results : [];
+export const kmUsulById = (env, p, id) => sedia(env, p, "lp_komen_usul", "baca",
+  "SELECT u.id, u.komen, u.kolom, u.nilai, u.kutipan, u.status, k.kartu FROM lp_komen_usul u JOIN lp_komen k ON k.id = u.komen WHERE u.id = ?1").bind(id).first();
+/* keputusan: usulan hanya berpindah dari usul (sekali); g = jalan hanya bila pernyataan sebelumnya mengubah baris (rantai batch) */
+export const kmStmtUsulPutus = (env, p, id, status, oleh, kini, g = false) => sedia(env, p, "lp_komen_usul", "ubah",
+  `UPDATE lp_komen_usul SET status = ?2, diputus_oleh = ?3, diputus = ?4 WHERE id = ?1 AND status = 'usul'${g ? " AND changes() > 0" : ""}`).bind(id, status, oleh, kini);
+export const kmStmtStatus = (env, p, id, status) => sedia(env, p, "lp_komen", "ubah", "UPDATE lp_komen SET status = ?2 WHERE id = ?1 AND status <> ?2").bind(id, status);
+export const kmStmtPutus = (env, p, b, g = false) => sedia(env, p, "lp_komen_putus", "tambah", lpIns(g, "", "lp_komen_putus", "komen, usul, aksi, nomor, isian, alasan, oleh, waktu"))
+  .bind(b.komen, b.usul ?? null, b.aksi, b.nomor ?? null, b.isian ?? null, b.alasan ?? null, b.oleh, b.waktu);
 export const crDaftar = async (env, p, prefiks = null) => (await sedia(env, p, "lapor_cari", "baca",
   "SELECT id, nomor_pencari, nama_dicari, ciri, lokasi_terakhir, waktu_terakhir, nomor_dicari, hubungan, kab, status, dibuat, ditutup_oleh, ditutup FROM lapor_cari WHERE (?1 IS NULL OR substr(kab, 1, length(?1)) = ?1) ORDER BY dibuat DESC LIMIT 500").bind(prefiks).all()).results;
 /* Q67 (BAWAAN SEMENTARA): masa simpan 2 tahun sejak ditutup. Anonim, bukan hapus: id, kab, status, waktu tetap; kolom pribadi diganti nilai yang lolos CHECK 0173 (nomor_pencari NOT NULL, nama_dicari NOT NULL). Laporan "buka" tidak pernah tersentuh; riwayat append-only tidak disentuh. */

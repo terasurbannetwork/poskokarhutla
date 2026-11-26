@@ -6,11 +6,15 @@
    Aduan (D137): satu suara per pengadu; pengadu nomor ketikan dihitung per alamat IP, sebab satu perangkat bisa mengetik banyak nomor. Penulis tidak bisa mengadu komentarnya sendiri.
    Angka dari komentar (LA-86, D138): sesudah tersimpan, komentar diurai model (src/lapor_model.js) di latar; tiap angka wajib berkutipan persis dari komentar dan
    angkanya ada di kutipan itu, selebihnya dibuang. Hasilnya baris lp_komen_usul berstatus usul; kartu tidak berubah sampai meja menerima (LA-88). Tanpa kunci model: tanpa usulan.
-   Keputusan meja (LA-88) belum di berkas ini. */
+   Meja (LA-88, D139): buatKomenMeja di bawah. Terima menulis angka ke laporan terbaru gugus (yang dibaca kartu) lewat revisi petugas yang sama dengan
+   pengecekan lapangan (versi baru berlabel petugas, src/lapor_periksa.js), karena simpanSusulan hanya jalur pemilik laporan. Riwayat keputusan di lp_komen_putus, append-only. */
 import {json, bacaBody, acak, sha, ipHash, bersihTeks, cacheTepi} from "./worker.js";
 import {laju, lajuIP} from "./bnpb.js";
 import {angkaDalam, kecil, NEGASI} from "./lapor_mesin.js";
 import * as H from "./hak.js";
+import {dalamWilayah} from "./lapor_meja_hak.js";
+import {revisiTampil, terapkanRevisi} from "./lapor_periksa.js";
+import {pelakuLabel} from "./lapor_tampil.js";
 
 const JAM = 3600e3, MENIT = 60e3, MAKS = 500, AMBANG_ADUAN = 3, UMUR_KARTU = 60e3;
 const HDR = {"cache-control": "private, no-store", "x-robots-tag": "noindex", "referrer-policy": "no-referrer"};
@@ -126,4 +130,98 @@ export function buatKomen({pelapor, kartuTampil, model = () => null}) {
     } catch (e) { if (tabelBelum(e)) return galat(503, "Komentar belum aktif (migrasi 0178 belum diterapkan)."); throw e; }
   }
   return {rute: {"GET /api/lapor/komen/:x": daftar, "POST /api/lapor/komen/:x": tulis}};
+}
+
+/* ---------- meja (LA-88, D139; Q74 bawaan: jumlah komentar tersembunyi per nomor, tanpa blokir otomatis) ---------- */
+/* kolom usulan -> isian laporan (ISIAN_REVISI); rumah rusak tanpa tingkat dipilih petugas saat menerima */
+export const ISIAN_USUL = {meninggal: ["meninggal"], hilang: ["hilang"], luka: ["luka"], mengungsi: ["mengungsi_jiwa"], terendam: ["rumah_terendam"], rumah: ["rumah_berat", "rumah_sedang", "rumah_ringan"]};
+const AKSI_MEJA = new Set(["terima", "tolak", "sembunyi", "tampil"]);
+const bersihAlasan = t => String(t ?? "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 300) || null;
+/* dep: hakMeja, kartuPeta (id kartu -> {jangkar, anggota, sasaran}), stmtRevisi, dariBaris, wilayahBaris dari src/lapor_ai.js */
+export function buatKomenMeja({hakMeja, kartuPeta, stmtRevisi, dariBaris, wilayahBaris}) {
+  const STAF = H.pelakuLpStaf;
+  const baca = async (f, awal) => { try { return await f(); } catch (e) { if (tabelBelum(e)) return awal; throw e; } };
+  async function kartuDari(env, nomor, kini) { for (const [id, v] of await kartuPeta(env, kini)) if (v.anggota.includes(nomor)) return {id, ...v}; return null; }
+  /* laporan yang dibuka di meja harus di wilayah akun (D95: di luar wilayah = tidak ada); kartu = kartu Alun-alun tempat laporan itu tampil */
+  async function konteks(env, h, nomor, kini) {
+    const baris = await H.lpSesiNomor(env, STAF, nomor);
+    if (!baris || !dalamWilayah(h.c, wilayahBaris(baris))) return {r: galat(404, "Laporan tidak ditemukan.")};
+    return {baris, kartu: await kartuDari(env, nomor, kini)};
+  }
+  async function isi(env, h, kartu) {
+    if (!kartu) return {kartu: null, komen: []};
+    /* gugus bisa melintasi batas kab: laporan tujuan di luar wilayah akun BPBD tidak dibuka (nomor dan angkanya), D95 */
+    const sasaran = await H.lpSesiNomor(env, STAF, kartu.sasaran), bnpb = h.c.jenis === "bnpb", sah = !!sasaran && dalamWilayah(h.c, wilayahBaris(sasaran)), s = sah && dariBaris(sasaran);
+    const komen = await baca(() => H.kmMejaDaftar(env, STAF, kartu.id), []), ids = komen.map(k => k.id);
+    const [usul, putus, sembunyi] = await Promise.all([baca(() => H.kmUsulKomen(env, STAF, ids), []), baca(() => H.kmPutusKomen(env, STAF, ids), []),
+      baca(() => H.kmTersembunyiWa(env, STAF, [...new Set(komen.map(k => k.wa))], bnpb ? null : kartu.id), [])]);
+    const nS = new Map(sembunyi.map(x => [x.wa, x.n])), per = (xs, k) => { const m = new Map(); for (const x of xs) (m.get(x[k]) || m.set(x[k], []).get(x[k])).push(x); return m; };
+    const U = per(usul, "komen"), R = per(putus, "komen");
+    return {kartu: {id: kartu.id, sasaran: sah ? kartu.sasaran : null, luarWilayah: !sah, anggota: kartu.anggota.length, isian: s ? revisiTampil(s) : []},
+      komen: komen.map(k => ({id: k.id, teks: k.teks, status: k.status, aduan: k.aduan, waktu: k.dibuat,
+        penulis: {...(bnpb ? {wa: k.wa} : {}), tersembunyi: nS.get(k.wa) || 0},   // BPBD: nomor penulis tidak dibuka (D95), jumlahnya saja
+        usulan: (U.get(k.id) || []).map(u => ({id: u.id, kolom: u.kolom, label: KOLOM_USUL[u.kolom], nilai: u.nilai, kutipan: u.kutipan, status: u.status, isian: ISIAN_USUL[u.kolom], oleh: u.diputus_oleh && pelakuLabel(u.diputus_oleh), waktu: u.diputus})),
+        riwayat: (R.get(k.id) || []).map(({komen: _k, oleh, nomor, ...x}) => ({...x, oleh: pelakuLabel(oleh), ...(sah ? {nomor} : {})}))}))};
+  }
+  async function lihat(env, h, nomor, kini) {
+    const k = await konteks(env, h, nomor, kini); if (k.r) return k.r;
+    return kirim(200, await isi(env, h, k.kartu));
+  }
+  async function putus(env, req, nomor, kini) {
+    const h = await hakMeja(env, req, kini); if (!h) return galat(403, "perlu masuk sebagai admin, staf Pusdalops/Koordalops, atau akun lembaga pemda"); if (h.tolak) return h.tolak;
+    const lj = await laju(env, h.kunci, "lapor.meja", [[JAM, 120]], kini); if (lj) return lj;
+    const b = await bacaBody(req, 2048); if (b.galat) return galat(b.status || 400, b.galat);
+    const {aksi, id} = b.o || {};
+    if (!AKSI_MEJA.has(aksi)) return galat(400, "aksi harus terima, tolak, sembunyi, atau tampil.");
+    const k = await konteks(env, h, nomor, kini); if (k.r) return k.r;
+    if (!k.kartu) return galat(409, "Laporan ini tidak sedang tampil di Alun-alun.");
+    const oleh = String(h.oleh).slice(0, 300), alasan = bersihAlasan(b.o.alasan);
+    /* kartu milik kejadian yang angkanya tampil dari laporan tujuan; akun BPBD hanya memutus kartu yang laporan tujuannya di wilayahnya (ulasan keamanan LA-88) */
+    const tb = await H.lpSesiNomor(env, STAF, k.kartu.sasaran);
+    if (!tb || !dalamWilayah(h.c, wilayahBaris(tb))) return galat(403, "Kejadian ini dikelola wilayah lain: laporan yang angkanya tampil di kartu ada di luar wilayah akun ini.");
+    try {
+      if (aksi === "sembunyi" || aksi === "tampil") {
+        if (typeof id !== "string" || !/^[0-9a-f]{16}$/.test(id)) return galat(400, "id komentar tidak sah.");
+        const km = await H.kmById(env, STAF, id); if (!km || km.kartu !== k.kartu.id) return galat(404, "Komentar tidak ada di kejadian ini.");
+        const ke = aksi === "sembunyi" ? "tersembunyi" : "tampil";
+        if (km.status === ke) return galat(409, aksi === "sembunyi" ? "Komentar sudah tersembunyi." : "Komentar sudah tampil.");
+        const r = await H.lpBatch(env, STAF, [H.kmStmtStatus(env, STAF, id, ke), H.kmStmtPutus(env, STAF, {komen: id, aksi, alasan, oleh, waktu: kini}, true)]);
+        if (!r[0].meta.changes) return galat(409, "Komentar baru saja berubah. Muat ulang.");
+      } else {
+        if (!Number.isInteger(id) || id < 1) return galat(400, "id usulan tidak sah.");
+        const u = await H.kmUsulById(env, STAF, id); if (!u || u.kartu !== k.kartu.id) return galat(404, "Usulan tidak ada di kejadian ini.");
+        if (u.status !== "usul") return galat(409, "Usulan ini sudah diputus.");
+        if (aksi === "tolak") {
+          const r = await H.lpBatch(env, STAF, [H.kmStmtUsulPutus(env, STAF, u.id, "tolak", oleh, kini), H.kmStmtPutus(env, STAF, {komen: u.komen, usul: u.id, aksi, alasan, oleh, waktu: kini}, true)]);
+          if (!r[0].meta.changes) return galat(409, "Usulan ini baru saja diputus.");
+        } else {
+          const pilih = ISIAN_USUL[u.kolom], isian = pilih.length === 1 ? pilih[0] : b.o.isian;
+          if (!pilih.includes(isian)) return galat(400, "Pilih tingkat kerusakan rumah: berat, sedang, atau ringan.");
+          /* tujuan = laporan terbaru gugus (yang angkanya tampil di kartu), juga harus di wilayah akun */
+          const t = await H.lpTiket(env, STAF, k.kartu.sasaran); if (!t || ["selesai", "tidak_valid"].includes(t.status)) return galat(409, "Laporan tujuan sudah ditutup.");
+          const s = dariBaris(tb), berlaku = revisiTampil(s);
+          if (!berlaku.some(x => x.nama === isian)) return galat(409, "Isian ini tidak dipakai untuk jenis kejadian laporan itu.");
+          const rv = terapkanRevisi(s.isian, {[isian]: u.nilai}, {pelaku: oleh, catatan: "", waktu: kini});
+          if (rv.isian[isian]?.asal) rv.isian[isian].asal.kutipan = `Kabar warga diterima ${oleh}: "${u.kutipan}"`.slice(0, 300);
+          const catat = {komen: u.komen, usul: u.id, aksi, nomor: s.nomor, isian, alasan, oleh, waktu: kini};
+          let r;
+          if (!rv.perubahan.length) r = await H.lpBatch(env, STAF, [H.kmStmtUsulPutus(env, STAF, u.id, "terima", oleh, kini), H.kmStmtPutus(env, STAF, catat, true)]);   // angka sudah sama: diputus tanpa versi baru
+          else {
+            const v = await stmtRevisi(env, tb, s, rv, oleh, kini), label = v.label[isian] || isian, p = rv.perubahan[0];
+            const ket = `Angka dari kabar warga diterima: ${label} ${p.dari ?? "belum didata"} menjadi ${p.ke}`;
+            r = await H.lpBatch(env, STAF, [...v.stmts, H.lpStmtRiwayat(env, STAF, s.nomor, t.status, t.status, ket, oleh, kini, true),
+              H.kmStmtUsulPutus(env, STAF, u.id, "terima", oleh, kini, true), H.kmStmtPutus(env, STAF, catat, true), H.lpStmtPdfAntre(env, STAF, s.nomor, v.versi, kini, true)]);
+            if (!r[0].meta.changes || !r[3].meta.changes) return galat(409, "Laporan atau usulan baru saja berubah. Muat ulang.");
+          }
+          if (!r[0].meta.changes) return galat(409, "Usulan ini baru saja diputus.");
+        }
+      }
+    } catch (e) {
+      if (tabelBelum(e)) return galat(503, "Keputusan komentar belum aktif (migrasi 0183 belum diterapkan).");
+      if (/UNIQUE|constraint/i.test(String(e?.message))) return galat(409, "Laporan baru saja berubah. Muat ulang.");
+      throw e;
+    }
+    return kirim(200, await isi(env, h, await kartuDari(env, nomor, kini) || k.kartu));
+  }
+  return {lihat, putus};
 }

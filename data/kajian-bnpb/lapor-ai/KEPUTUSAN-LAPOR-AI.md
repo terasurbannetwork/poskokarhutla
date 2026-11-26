@@ -656,6 +656,17 @@ Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya b
 - Ulasan `security-reviewer`: kutipan wajib memuat kata kunci kolomnya (angka rumah tidak bisa masuk kolom meninggal), nol hanya bila kata ingkar paling jauh tiga kata sebelum kata kunci kolom itu, tutup global panggilan model 200 per jam dan 2.000 per hari di atas batas per nomor dan IP (lewat tutup: komentar tersimpan tanpa usulan), dan hak tambah usulan hanya untuk mesin.
 - Batasnya: kutipan yang memuat dua kolom ("3 rumah rusak, 2 orang luka" untuk luka 3) masih bisa lolos kode bila model salah; itu sebabnya angka hanya usulan dan petugas yang menerima (D139).
 
+### Catatan pelaksanaan LA-88 (26 Nov 2026)
+
+- Rute meja `GET` dan `POST /api/lapor/meja/<nomor>/komen` (`buatKomenMeja` di `src/lapor_komen.js`), lewat `hakMeja`: staf BNPB semua wilayah, akun BPBD hanya laporan di wilayahnya (di luar wilayah = 404). Kartu = kartu Alun-alun tempat laporan itu tampil; laporan yang tidak tampil di Alun-alun memberi daftar kosong.
+- Terima tidak memakai `simpanSusulan` seperti tertulis di D139: fungsi itu jalur pemilik laporan (cek nomor pengirim, batas 72 jam). Yang dipakai mesin revisi petugas yang sama dengan pengecekan lapangan (`terapkanRevisi`, versi baru berlabel petugas, PDF antre, satu baris riwayat tiket), jadi tetap tanpa jalur angka kedua. Asal isian mencatat kutipan kabar warga dan nama petugas.
+- Angka ditulis ke laporan terbaru di gugus kejadian, karena kartu Alun-alun membaca angka laporan terbaru (D28, tidak dijumlah). Bila laporan itu di luar wilayah akun BPBD, Terima ditolak 403. Tiket tujuan yang sudah ditutup ditolak 409.
+- Kolom usulan ke isian: meninggal, hilang, luka sama; mengungsi ke `mengungsi_jiwa`; terendam ke `rumah_terendam`; rumah rusak tanpa tingkat dipilih petugas (berat, sedang, ringan). Isian yang tidak berlaku untuk jenis laporan tujuan ditolak 409. Nol dari kata ingkar tersimpan sebagai "tidak ada", bukan kosong.
+- Riwayat keputusan di tabel baru `lp_komen_putus` (migrasi 0183, trigger menolak UPDATE dan DELETE). Usulan hanya berpindah sekali dari `usul`. Sembunyikan dan Tampilkan mengubah status komentar dan tercatat di tabel yang sama.
+- Q74 (bawaan): tiap komentar memuat jumlah komentar tersembunyi dari nomor penulisnya; tanpa blokir otomatis. Nomor penulis hanya untuk staf BNPB; akun BPBD melihat jumlahnya saja (D95).
+- Q75 tetap terbuka: bersih-bersih `lp_komen` belum dipasang.
+- Pemilik menerapkan migrasi 0180 (komentar) dan 0183 (riwayat keputusan) ke D1 produksi sebelum fitur ini hidup; tanpa 0183 keputusan menjawab 503.
+
 > Catatan gabung 25 Nov 2026: dua sesi memakai nomor K94-K95 bersamaan. Di bawah ini K94-K104 bagian pertanyaan lanjut; K94-K95 di atas adalah bagian Alun-alun.
 
 ## Keputusan pemilik 25 Nov 2026: pertanyaan lanjut dari riset

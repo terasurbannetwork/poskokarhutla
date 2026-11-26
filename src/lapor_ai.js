@@ -29,7 +29,7 @@ import {jalanOsm} from "./lapor_jalan.js";
 import {buatRutePeringatan, jalankanPeringatan, bersihPeringatan} from "./pw_peringatan.js";
 import * as H from "./hak.js";
 import {buatSelamat} from "./lapor_selamat.js";
-import {buatKomen} from "./lapor_komen.js";
+import {buatKomen, buatKomenMeja} from "./lapor_komen.js";
 import {bukaBerkas, pesanTim, fotoTim, bersihSesiLanjut, sapuDrafYatim, hapusPribadiLama} from "./lapor_lanjut.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
 import {penandaPemeriksa, waktuVerifikasi, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik, usulanDari, usulanTerakhir, statusUsulan} from "./lapor_kejadian.js";
@@ -182,6 +182,7 @@ const muatAset = env => async jalur => { const r = await env.ASSETS.fetch(new Re
 const wilayahDari = env => WIL ||= buatWilayah(muatAset(env));
 const SEL = buatSelamat(wilayahDari);
 const KOMEN = buatKomen({pelapor: (...a) => pelapor(...a), kartuTampil: (...a) => kartuTampil(...a), model: env => modelDari(env)});   // komentar kartu Alun-alun (LA-85); fungsi dibungkus karena didefinisikan di bawah   // kabar selamat dan orang dicari (LA-80)
+const KOMEN_MEJA = buatKomenMeja({hakMeja: (...a) => hakMeja(...a), kartuPeta: (...a) => kartuPeta(...a), stmtRevisi: (...a) => stmtRevisi(...a), dariBaris: r => dariBaris(r), wilayahBaris: b => wilayahBaris(b)});   // meja komentar (LA-88)
 const registriDari = env => REG ||= muatAset(env)("/bencana.json").catch(e => { REG = null; throw e; });   // katalog tindakan (AGENTS 2.28, D112)
 // nomor BPBD dari panen situs resmi (K88); gagal muat = 117, laporan tetap tersimpan
 let KONTAK;
@@ -916,6 +917,17 @@ async function bacaJsonBesar(req, maks) {
   const r = await bacaBytes(req, maks); if (r.galat) return r;
   try { const o = JSON.parse(new TextDecoder().decode(r.b) || "{}"); return o && typeof o === "object" && !Array.isArray(o) ? {o} : {galat: "body harus objek JSON"}; } catch { return {galat: "body bukan JSON"}; }
 }
+/* revisi petugas jadi versi baru (pola susulan A12): sesi dengan rev sama, lalu versi berlabel petugas. Dipakai pengecekan lapangan dan terima angka kabar warga (LA-88).
+   r = hasil terapkanRevisi; s diubah di tempat. Antrean PDF ditambah pemanggil di ujung rantai, karena INSERT OR IGNORE-nya bisa 0 baris. */
+async function stmtRevisi(env, baris, s, r, oleh, kini) {
+  const vi = await H.lpVersiInfo(env, STAF, s.nomor), label = Object.fromEntries(revisiTampil(s).map(x => [x.nama, x.label])), versi = vi.versi + 1;
+  s.isian = r.isian;
+  const w = s.isian.lokasi?.nilai, {id: _i, wa: _w, nomor: _n, terkirim: _t, ...kerja} = s;
+  let ringkas = JSON.stringify(ringkasSesi(s)); if (ringkas.length > 4000) ringkas = JSON.stringify({lengkap: lengkap(s), foto: (s.foto || []).length, wilayah: wilayahKecil(s)});
+  return {versi, label, stmts: [H.lpStmtSesiUbah(env, STAF, {id: baris.id, status: s.status, tingkat: s.tingkat, jenis: s.isian.jenis?.nilai ?? null, kab: w?.wilayah?.kabKode ?? null, lat: w?.lat ?? null, lon: w?.lon ?? null,
+      kerja: JSON.stringify(kerja), ringkas}, baris.rev, kini),
+    H.lpStmtVersi(env, STAF, s.nomor, versi, JSON.stringify(s.isian), JSON.stringify(r.perubahan.map(x => ({...x, label: label[x.nama], petugas: oleh}))), kini, true)]};
+}
 async function mejaUbah(env, req, url, nomor, aksi, kini) {
   const h = await hakMeja(env, req, kini); if (!h) return tolakStaf(); if (h.tolak) return h.tolak;
   const {c, oleh} = h;
@@ -978,16 +990,7 @@ async function mejaUbah(env, req, url, nomor, aksi, kini) {
     if (v.galat) return galat(400, v.galat);
     const r = terapkanRevisi(s.isian, v.ubah, {pelaku: oleh, catatan: v.catatan, waktu: kini}), ke = statusDariHasil(v.hasil, t.status, PINDAH), stmts = [];
     let versiBaru = null;
-    if (r.perubahan.length) {
-      const vi = await H.lpVersiInfo(env, STAF, nomor), label = Object.fromEntries(revisiTampil(s).map(x => [x.nama, x.label]));
-      versiBaru = vi.versi + 1; s.isian = r.isian;
-      const w = s.isian.lokasi?.nilai, {id: _i, wa: _w, nomor: _n, terkirim: _t, ...kerja} = s;
-      let ringkas = JSON.stringify(ringkasSesi(s)); if (ringkas.length > 4000) ringkas = JSON.stringify({lengkap: lengkap(s), foto: (s.foto || []).length, wilayah: wilayahKecil(s)});
-      stmts.push(H.lpStmtSesiUbah(env, STAF, {id: baris.id, status: s.status, tingkat: s.tingkat, jenis: s.isian.jenis?.nilai ?? null, kab: w?.wilayah?.kabKode ?? null, lat: w?.lat ?? null, lon: w?.lon ?? null,
-        kerja: JSON.stringify(kerja), ringkas}, baris.rev, kini),
-        H.lpStmtVersi(env, STAF, nomor, versiBaru, JSON.stringify(s.isian), JSON.stringify(r.perubahan.map(x => ({...x, label: label[x.nama], petugas: oleh}))), kini, true),
-        H.lpStmtPdfAntre(env, STAF, nomor, versiBaru, kini, true));
-    }
+    if (r.perubahan.length) { const rv = await stmtRevisi(env, baris, s, r, oleh, kini); versiBaru = rv.versi; stmts.push(...rv.stmts, H.lpStmtPdfAntre(env, STAF, nomor, versiBaru, kini, true)); }
     const ket = `Pengecekan lapangan: ${HASIL_PERIKSA[v.hasil]}. ${v.catatan}${versiBaru ? `. Revisi versi ${versiBaru}: ${r.perubahan.map(x => `${x.nama.replace(/_/g, " ")} ${x.dari ?? "belum didata"} menjadi ${x.ke}`).join(", ")}` : ""}`.slice(0, 1000);
     const g = stmts.length > 0;   // dengan revisi: semua baris berikut hanya jalan bila sesi berhasil diubah (rev sama)
     if (ke) stmts.push(H.lpStmtTiketPindah(env, STAF, nomor, t.status, ke, kini), H.lpStmtRiwayatJikaBerubah(env, STAF, nomor, t.status, ke, ket, oleh, kini),
@@ -1129,6 +1132,7 @@ async function mejaGet(env, req, url, kini, ctx, x) {
   if (x === "rekon") return rekonGet(env, h.c, url);
   if (x === "cari") return SEL.cariMeja(env, h, url, kini);   // orang dicari (LA-80)
   const pc = /^(LA-\d{6}-\d{2,3})\/pic$/.exec(x); if (pc) return picGet(env, req, url, kini, pc[1]);
+  const km = /^(LA-\d{6}-\d{2,3})\/komen$/.exec(x); if (km) return KOMEN_MEJA.lihat(env, h, km[1], kini);
   const mj = /^(LA-\d{6}-\d{2,3})\/jalan$/.exec(x);   // ruas jalan rusak untuk peta meja (K83); nama diambil dari laporan, bukan dari peminta
   if (mj) { const baris = await H.lpSesiNomor(env, STAF, mj[1]); if (!baris || !dalamWilayah(h.c, wilayahBaris(baris))) return galat(404, "Laporan tidak ditemukan.");
     const b = barisMeja(baris); return kirim(200, await jalanOsm(b.lat, b.lon, b.tempat?.jalan || [])); }
@@ -1138,6 +1142,7 @@ async function mejaGet(env, req, url, kini, ctx, x) {
 async function mejaPost(env, req, url, kini, ctx, x) {
   if (x.startsWith("cari/")) { const h = await hakMeja(env, req, kini); if (!h) return tolakStaf(); if (h.tolak) return h.tolak; return SEL.cariStatus(env, req, h, x, kini); }
   const pc = /^(LA-\d{6}-\d{2,3})\/pic$/.exec(x); if (pc) return picPost(env, req, url, kini, pc[1]);
+  const km = /^(LA-\d{6}-\d{2,3})\/komen$/.exec(x); if (km) return KOMEN_MEJA.putus(env, req, km[1], kini);
   const m = /^(LA-\d{6}-\d{2,3})\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas|periksa|tindakan|ambil|tarik|usulkan)$/.exec(x);
   if (m?.[2] === "usulkan" && env.LAPOR_USUL !== "1") return galat(404, "Usulan ke Buku Besar belum dibuka.");   // saklar dibaca di rute (D12)
   return m ? mejaUbah(env, req, url, m[1], m[2], kini) : galat(404, "rute lapor tidak ada");
@@ -1171,16 +1176,19 @@ async function gugusDasar(env, kini) {
     return {nomor: r.nomor, jenis: r.jenis, lat: r.lat ?? null, lon: r.lon ?? null, kab: w.kab || null, desa: w.kode || null, t: k.waktuMs || r.terkirim, wa: r.wa, fotoSah: !!r.foto_sah, status: r.status}; }));
   return {per, G, gk: new Map(G.gugus.map(g => [g.kode, g]))};
 }
-/* id kartu Alun-alun yang bisa tampil -> id laporan jangkar (rumus id sama dengan alunBuat, tanpa saringan jenis dan provinsi); dipakai komentar (LA-85).
-   ponytail: membaca ulang gugus 30 hari tiap komentar ditulis; komentar dibatasi 10 per nomor per jam, tambahkan cache bila baca D1 jadi masalah */
-async function kartuTampil(env, kini) {
+/* kartu Alun-alun yang bisa tampil (rumus id sama dengan alunBuat, tanpa saringan jenis dan provinsi): id kartu -> {jangkar: id laporan paling awal gugus,
+   anggota: nomor yang tampil, sasaran: nomor laporan terbaru yang angkanya dibaca kartu (alunBuat, D28)}. Dipakai komentar (LA-85) dan meja komentar (LA-88).
+   ponytail: membaca ulang gugus 30 hari tiap komentar ditulis atau dibuka di meja; komentar dibatasi 10 per nomor per jam, tambahkan cache bila baca D1 jadi masalah */
+async function kartuPeta(env, kini) {
   const [tampil, {per, G, gk}] = await Promise.all([H.lpAlunBaris(env, PUBLIK, null, null), gugusDasar(env, kini)]), peta = new Map();
   for (const r of tampil.filter(x => TAMPIL_ALUN.has(x.status))) {
-    const kunci = G.per[r.nomor] || r.nomor, g = gk.get(kunci), jangkar = (g ? per.get(g.anggota[0]) : null)?.id || r.id;
-    if (!g || !peta.has(kunci)) peta.set(kunci, jangkar);
+    const kunci = G.per[r.nomor] || r.nomor, g = gk.get(kunci), ms = barisAlun(r).ms, x = peta.get(kunci);
+    if (!x) peta.set(kunci, {jangkar: (g ? per.get(g.anggota[0]) : null)?.id || r.id, anggota: [r.nomor], sasaran: r.nomor, ms});
+    else { x.anggota.push(r.nomor); if (ms > x.ms) { x.ms = ms; x.sasaran = r.nomor; } }
   }
-  return new Map(await Promise.all([...peta.values()].map(async j => [(await sha(j)).slice(0, 10), j])));
+  return new Map(await Promise.all([...peta.values()].map(async v => [(await sha(v.jangkar)).slice(0, 10), v])));
 }
+const kartuTampil = async (env, kini) => new Map([...await kartuPeta(env, kini)].map(([k, v]) => [k, v.jangkar]));
 async function alunBuat(env, req, url, kini) {
   const batas = await lajuIP(env, req, "lapor.alun", [[JAM, 120]], kini); if (batas) return batas;
   const q = url.searchParams, prov = /^\d{2}$/.test(q.get("prov") || "") ? q.get("prov") : null, jenis = /^[a-z_]{1,40}$/.test(q.get("jenis") || "") ? q.get("jenis") : null;
