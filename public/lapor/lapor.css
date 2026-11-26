@@ -3129,7 +3129,7 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-kb-berita li{display:grid;gap:2px;min-width:0}
 .lp-kb-berita a{color:var(--brand2);font-weight:700;font-size:.8125rem;line-height:1.4;overflow-wrap:anywhere}
 .lp-kb-catatan{margin:0;padding:12px 16px 0;font-size:.75rem}
-.lp-alun-legenda{position:absolute;z-index:2;bottom:28px;left:calc(440px + (100% - 440px) / 2);transform:translateX(-50%);width:min(520px,calc(100% - 480px));margin:0;padding:8px 16px 12px;border-radius:16px;background:color-mix(in oklab,var(--card) 95%,transparent);box-shadow:var(--shadow);color:var(--ink)}
+.lp-alun-legenda{position:absolute;z-index:2;bottom:28px;left:calc(440px + (100% - 440px) / 2);transform:translateX(-50%);width:min(620px,calc(100% - 480px));margin:0;padding:8px 16px 12px;border-radius:16px;background:color-mix(in oklab,var(--card) 95%,transparent);box-shadow:var(--shadow);color:var(--ink)}
 .lp-alun-legenda[hidden]{display:none}
 .lp-alun-legenda-t{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;min-height:28px;padding:0;border:0;background:none;color:var(--ink2);font:800 .6875rem var(--font);letter-spacing:.04em;cursor:pointer}
 .lp-alun-legenda-t svg{width:12px;height:12px;transform:rotate(90deg);transition:transform var(--dur-1,.15s) ease}
@@ -3300,3 +3300,11 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-langkah-wadah > .lp-langkah + .lp-langkah,.lp-sekali .lp-langkah-penting{margin-top:20px}
 /* di kolom obrolan dan jendela darurat kartu Nomor penting lebih sempit dari layar Info: kolom fasilitas mengalir, tidak dipaksa 4 berjajar */
 .lp-langkah-wadah .lp-kontak-kolom,.lp-sekali .lp-kontak-kolom{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))!important}
+/* legenda jenis bencana di peta Alun-alun: bentuk dan warna sama dengan tanda di peta (token --kat-*) */
+.lp-alun-legenda-isi:has(.lp-alun-legenda-jenis){grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+.lp-alun-legenda-jenis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;margin:0;padding:0;list-style:none;font:600 .75rem var(--font)}
+.lp-alun-legenda-jenis li{display:flex;align-items:center;gap:8px}
+.lp-jn-tanda{width:12px;height:12px;flex:none;border-radius:50%;background:var(--k,var(--kat-lain));box-shadow:0 0 0 2px var(--card)}
+.lp-jn-tanda.lp-jenis-gempa{border-radius:3px}
+.lp-jn-tanda.lp-jenis-erupsi{border-radius:0;clip-path:polygon(50% 0,100% 100%,0 100%);box-shadow:none}
+.lp-alun-legenda-isi small{font-size:.6875rem}
