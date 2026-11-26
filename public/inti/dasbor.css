@@ -106,6 +106,7 @@ thead th{text-transform:none!important;letter-spacing:0!important}
 
 /* ---- admin model A (public/inti/dasbor_admin.js) ---- */
 .ad-wrap.db-a{max-width:none;padding:12px 16px}
+.ad-wrap.db-a-satu{grid-template-columns:minmax(0,1fr)}
 .db-nav-admin .db-nav-isi{gap:1px;overflow:auto}
 .db-nav-sub{margin:8px 0 2px;padding:0 8px;font-size:.6875rem;font-weight:800;color:var(--ink2)}
 .db-nav-sub:first-child{margin-top:0}

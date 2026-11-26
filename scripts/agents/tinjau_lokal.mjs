@@ -137,8 +137,12 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
         isi = Buffer.from(h); keluar["cache-control"] = "no-store"; keluar["x-tinjau"] = "lokal";
       } else if (r.ok && jalur.startsWith("/admin") && (r.headers.get("content-type") || "").includes("text/html")) {
         /* halaman admin dirender Worker: sisipkan lapisan dashboard lokal supaya perubahan public/inti/dasbor.css terlihat sebelum deploy */
-        const h = isi.toString("utf8");
-        if (!h.includes("/inti/dasbor.css")) { isi = Buffer.from(h.replace("</head>", '<link href="/inti/dasbor.css" rel="stylesheet">\n<script src="/inti/dasbor_admin.js" defer></script>\n</head>')); keluar["cache-control"] = "no-store"; }
+        let h = isi.toString("utf8");
+        if (!h.includes("/inti/dasbor.css")) h = h.replace("</head>", '<link href="/inti/dasbor.css" rel="stylesheet">\n<script src="/inti/dasbor_admin.js" defer></script>\n</head>');
+        /* tiru kerangka admin src/admin_halaman.js sebelum Worker baru terbit: satu menu = panel kiri Pusdalops, tanpa sub-nav grup (pemilik 26 Nov 2026) */
+        if (h.includes('<header class="ad-top">') && !h.includes("/bnpb/menu_pusdalops.js")) h = h.replace(/<nav class="ad-sub"[\s\S]*?<\/nav>/, "")
+          .replace("</header>", '</header><link href="/bnpb/menu_pusdalops.css" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js"></script>');
+        isi = Buffer.from(h); keluar["cache-control"] = "no-store";
       }
       /* tiru pasangKeluar src/worker.js: tombol Keluar di semua HTML sebelum Worker baru terbit (halaman tanpa sesi tidak dibedakan di sini) */
       if ((keluar["content-type"] || r.headers.get("content-type") || "").includes("text/html") && !/^\/(admin\/)?masuk\/?$/.test(jalur)) {

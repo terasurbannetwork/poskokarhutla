@@ -18,8 +18,8 @@ const kepala = judul => `<!doctype html>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/admin/admin.css?v=14" rel="stylesheet">
 <link href="/inti/kartu.css?v=2" rel="stylesheet">
-<link href="/inti/dasbor.css?v=24" rel="stylesheet">
-<script src="/inti/dasbor_admin.js?v=2" defer></script>
+<link href="/inti/dasbor.css?v=29" rel="stylesheet">
+<script src="/inti/dasbor_admin.js?v=3" defer></script>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {segel: ["🔏", "Segel dokumen"], statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
@@ -59,9 +59,6 @@ const menuSesi = ctx => { const sesi = ctx ? {jenis: "staf", peran: ctx.peran} :
 export const grupNav = ctx => menuSesi(ctx).find(p => p.pintu === "staf")?.grup || [];
 const butirReg = e => { const k = kunciHal(e); return [k || e.rute, k ? HAL[k][0] : EMOJI[e.ikon] || "📋", e.nama, e.rute]; };
 const navReg = ctx => grupNav(ctx).map(g => [g.nama, IKON_GRUP[g.id] || "📋", g.butir.map(butirReg)]);
-/* sub-nav (admin saja): deretan halaman satu grup dengan halaman ini; public/inti/dasbor_admin.js menyusunnya jadi panel kiri */
-const subNav = (aktif, ctx) => { const g = !ctx && grupNav().find(g => g.butir.some(e => kunciHal(e) === aktif));
-  return g && g.butir.length > 1 ? `<nav class="ad-sub" aria-label="${esc(g.nama)}">${g.butir.map(butirReg).map(([k, ik, l, href]) => `<a href="${href}" ${aktif === k ? 'aria-current="page"' : ""}>${ik} ${esc(l)}</a>`).join("")}</nav>` : ""; };
 /* Nav atas berkelompok (pemilik, 3 Nov 2026): tautan sejenis disatukan dalam satu menu tarik-turun seperti Direktori dan Dalops.
    Butir: [k, ikon, label, href]. Kelompok berisi satu butir tampil sebagai tautan biasa. <details name> = hanya satu menu terbuka, tanpa JS (CSP). */
 const butirNav = ([k, ik, l, href], kini) => `<a href="${href}" ${kini(k) ? 'aria-current="page"' : ""}>${ik} ${esc(l)}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`;
@@ -76,16 +73,15 @@ const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
   <nav aria-label="Halaman admin">${navGrup(navReg(), k => k === aktif)}</nav>
   <form method="post" action="/admin/keluar"><button class="ad-keluar" type="submit">Keluar</button></form>
 </header>`;
-/* halaman admin yang ada di menu Pusdalops: kepalanya memakai menu Pusdalops (public/bnpb/menu_pusdalops.js), tanpa sub-menu Ruang Koordinasi,
-   supaya pindah dari Pantau Banjir ke sini tidak terasa pindah situs (pemilik 4 Nov 2026) */
-const MENU_PUSDALOPS = new Set(["pantau", "laporan-karhutla", "omc"]);
-const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=14" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=25"></script>';
+/* semua halaman kerangka admin memakai menu Pusdalops (public/bnpb/menu_pusdalops.js) sebagai satu-satunya menu: panel kiri tetap sama di semua
+   halaman staf, tanpa menu atas berkelompok dan tanpa sub-nav grup (pemilik 4 Nov 2026; diperluas ke semua halaman admin 26 Nov 2026
+   "di atas ada menu di samping ada menu. Bingung"). Menu atas atas() tetap dikirim sebagai cadangan layar sempit dan tanpa JS; menu_pusdalops.js menggantinya. */
+const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=15" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=26"></script>';
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
 const halaman = (k, memuat, ekor, ctx) => `${kepala(`${HAL[k][1]} · Centurisk97`)}
 <body${ctx ? ` data-staf="1" data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
-${atas(k, ctx)}${MENU_PUSDALOPS.has(k) ? menuPusdalops : ""}
+${atas(k, ctx)}${menuPusdalops}
 <main class="ad-wrap">
-  ${MENU_PUSDALOPS.has(k) ? "" : subNav(k, ctx)}
   <div class="ad-judul"><span class="ad-ikon" aria-hidden="true">${HAL[k][0]}</span><h1>${HAL[k][1]}</h1><div class="ad-judul-aksi" id="aksiJudul"></div></div>
   <div class="ad-isi" id="app"><p class="ad-redup">${memuat}</p></div>
 </main>
