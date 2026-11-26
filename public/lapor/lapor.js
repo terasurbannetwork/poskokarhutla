@@ -43,6 +43,7 @@ function ke(tab) {
   $("lChat").hidden = tab !== "chat"; $("lMasuk").hidden = tab !== "masuk"; $("lPrivasi").hidden = tab !== "privasi"; $("lInfo").hidden = tab !== "info";
   app.classList.toggle("di-chat", ["chat", "masuk", "info", "privasi"].includes(tab));
   app.classList.toggle("di-lapor", tab === "chat");   // obrolan lapor: tombol Lapor kejadian di menu samping disembunyikan (pemilik 24 Nov 2026)
+  app.classList.toggle("di-alun", tab === "alun");   // peta Alun-alun: menu samping ciut sendiri, melebar saat disorot (pemilik 26 Nov 2026)
   for (const b of document.querySelectorAll("#tab button")) b.toggleAttribute("aria-current", b.dataset.ke === tab) || b.removeAttribute("aria-current");
   for (const b of document.querySelectorAll("#tab button")) { if (b.dataset.ke === tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); }
   if (tab === "laporan") { $("titikBaru").hidden = true; tampilDaftarLaporan(); muatCari(); }
@@ -1720,32 +1721,56 @@ function gambarAlun() {
   w.replaceChildren(...daftar.map(x => kartuAlun(x, ikut)));
   if (alunPeta) requestAnimationFrame(() => alunPeta.resize());
 }
+const ZOOM_KAB = 6.5;   // di bawah ini gelembung provinsi, di atas titik kab/kota
+let alunGrup = new Map(), alunTempat = new Map();
+/* ruang untuk panel daftar (kiri di layar lebar, bawah di HP), saringan di atas, dan legenda di bawah */
+const padPeta = () => matchMedia("(min-width:900px)").matches ? {top: 110, bottom: 150, left: 440, right: 60} : {top: 100, bottom: 48 + innerHeight * .42, left: 32, right: 32};
 async function gambarPetaAlun(daftar) {
   const wp = $("petaAlun"), titik = daftar.filter(x => x.titik), W = {selesai: tok("--ok"), belum: tok("--info"), tanpa: tok("--ink2")}, warnaWarn = tok("--warn");   // peta selalu tampil penuh; tanpa titik = seluruh Indonesia. tok() membaca piksel kanvas: sekali per gambar, bukan per titik
   try { await muatMaplibre(); } catch { return; }
-  const fc = {type: "FeatureCollection", features: titik.map(x => ({type: "Feature", geometry: {type: "Point", coordinates: [x.titik.lon, x.titik.lat]},
-    properties: {id: x.id, judul: x.jenis, tempat: [x.lokasi.desa && `Desa ${x.lokasi.desa}`, x.lokasi.kab].filter(Boolean).join(", "), status: x.statusLabel, warna: W[x.status] || warnaWarn}}))};
+  /* kejadian di kab/kota yang sama berbagi titik pusat: disatukan jadi satu titik bernomor, pop-up mendaftar semuanya; warna = status paling mendesak di titik itu */
+  const URUT = {berjalan: 0, belum: 1, tanpa: 2, selesai: 3}, tempat = new Map();
+  for (const x of titik) { const kunci = `${x.titik.lon.toFixed(4)},${x.titik.lat.toFixed(4)}`; const t = tempat.get(kunci) || {lon: x.titik.lon, lat: x.titik.lat, prov: x.prov || `t-${kunci}`, isi: []}; t.isi.push(x); tempat.set(kunci, t); }
+  alunTempat = tempat;
+  const fc = {type: "FeatureCollection", features: [...tempat].map(([kunci, t]) => { const u = t.isi.reduce((a, b) => (URUT[b.status] ?? 0) < (URUT[a.status] ?? 0) ? b : a);
+    return {type: "Feature", geometry: {type: "Point", coordinates: [t.lon, t.lat]}, properties: {kunci, n: t.isi.length, warna: W[u.status] || warnaWarn, prov: t.prov}}; })};
+  /* gelembung per provinsi seperti peta karhutla (pemilik 26 Nov 2026): skala kecil = satu gelembung per provinsi berisi jumlah kejadian, diperbesar = titik kab/kota */
+  const grup = new Map(); for (const f of fc.features) { const g = grup.get(f.properties.prov) || {n: 0, k: 0, x: 0, y: 0, b: new maplibregl.LngLatBounds()}; g.n += f.properties.n; g.k++; g.x += f.geometry.coordinates[0]; g.y += f.geometry.coordinates[1]; g.b.extend(f.geometry.coordinates); grup.set(f.properties.prov, g); }
+  alunGrup = grup;
+  const fp = {type: "FeatureCollection", features: [...grup].map(([kunci, g]) => ({type: "Feature", geometry: {type: "Point", coordinates: [g.x / g.k, g.y / g.k]}, properties: {kunci, n: g.n}}))};
   const pas = () => { if (!fc.features.length) return alunPeta.jumpTo({center: [118, -2], zoom: 4});
     const b = new maplibregl.LngLatBounds(); for (const f of fc.features) b.extend(f.geometry.coordinates);
-    const lebar = matchMedia("(min-width:900px)").matches;   // ruang untuk panel daftar (kiri di layar lebar, bawah di HP) dan saringan di atas
-    alunPeta.fitBounds(b, {padding: lebar ? {top: 110, bottom: 48, left: 440, right: 48} : {top: 100, bottom: 48 + innerHeight * .42, left: 32, right: 32}, maxZoom: 11, duration: 0}); };
-  if (alunPeta) { alunPeta.getSource("alun")?.setData(fc); pas(); return; }
+    alunPeta.fitBounds(b, {padding: padPeta(), maxZoom: 11, duration: 0}); };
+  if (alunPeta) { alunPeta.getSource("alun")?.setData(fc); alunPeta.getSource("alun-prov")?.setData(fp); pas(); return; }
   alunPeta = new maplibregl.Map({container: wp.querySelector(".lp-peta-alun"), style: "https://tiles.openfreemap.org/styles/positron", center: [118, -2], zoom: 4, attributionControl: {compact: true}});
   alunPeta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
-  // legenda warna titik: label sama dengan status di kartu (alun_kabar.js STATUS_LABEL), warna sama dengan W di atas
-  const lg = el("ul", "lp-alun-legenda"); lg.id = "legendaAlun"; lg.setAttribute("aria-label", "Arti warna titik");
+  // legenda di bawah peta seperti peta karhutla, bisa dilipat; label sama dengan status di kartu (alun_kabar.js STATUS_LABEL), warna sama dengan W di atas
+  const lg = el("section", "lp-alun-legenda"); lg.id = "legendaAlun"; lg.setAttribute("aria-label", "Legenda peta");
+  const lgT = el("button", "lp-alun-legenda-t"); lgT.type = "button"; lgT.setAttribute("aria-expanded", "true"); lgT.append("Legenda", ikon("i-panah", "lp-kb-panah"));
+  const lgI = el("div", "lp-alun-legenda-isi"), g1 = el("div"), g2 = el("div"), st = el("ul");
   for (const [teks, warna] of [["Berjalan", warnaWarn], ["Belum", W.belum], ["Selesai", W.selesai], ["Belum ada laporan resmi", W.tanpa]]) {
-    const li = el("li", null, teks), t = el("i"); t.style.background = warna; li.prepend(t); lg.append(li); }
-  wp.append(lg);
+    const li = el("li", null, teks), t = el("i"); t.style.background = warna; li.prepend(t); st.append(li); }
+  g1.append(el("b", null, "Status kejadian"), st);
+  const cth = el("p"); cth.append(el("i", "lp-alun-legenda-prov", "3"), "Jumlah kejadian per provinsi. Ketuk untuk melihat kab/kota.");
+  g2.append(el("b", null, "Per provinsi"), cth); lgI.append(g1, g2);
+  lgT.addEventListener("click", () => { const buka = lgI.hidden; lgI.hidden = !buka; lgT.setAttribute("aria-expanded", String(buka)); });
+  if (!matchMedia("(min-width:900px)").matches) { lgI.hidden = true; lgT.setAttribute("aria-expanded", "false"); }   // HP: terlipat, peta tetap lega
+  lg.append(lgT, lgI); wp.append(lg);
   alunPeta.on("load", () => {
-    alunPeta.addSource("alun", {type: "geojson", data: fc, cluster: true, clusterRadius: 40, clusterMaxZoom: 10});
-    alunPeta.addLayer({id: "kelompok", type: "circle", source: "alun", filter: ["has", "point_count"], paint: {"circle-color": tok("--head-bg"), "circle-radius": ["step", ["get", "point_count"], 16, 10, 22, 50, 28], "circle-stroke-width": 3, "circle-stroke-color": tok("--card")}});
-    alunPeta.addLayer({id: "kelompok-n", type: "symbol", source: "alun", filter: ["has", "point_count"], layout: {"text-field": ["get", "point_count_abbreviated"], "text-size": 13, "text-font": ["Noto Sans Bold"]}, paint: {"text-color": tok("--on-head")}});
-    alunPeta.addLayer({id: "titik", type: "circle", source: "alun", filter: ["!", ["has", "point_count"]], paint: {"circle-color": ["get", "warna"], "circle-radius": 8, "circle-stroke-width": 2, "circle-stroke-color": tok("--card")}});
-    alunPeta.on("click", "kelompok", e => { const f = e.features[0]; alunPeta.getSource("alun").getClusterExpansionZoom(f.properties.cluster_id).then(z => alunPeta.easeTo({center: f.geometry.coordinates, zoom: z})); });
-    alunPeta.on("click", "titik", e => { const p = e.features[0].properties, box = el("div", "lp-alun-pop"); box.append(el("b", null, p.judul), el("small", null, p.tempat), el("small", null, p.status));
-      const lihat = el("button", "lp-teks-tombol", "Lihat kartu"); lihat.type = "button"; lihat.addEventListener("click", () => { const k = document.getElementById(`alun-${p.id}`); if (!k) return; k.scrollIntoView({behavior: "smooth", block: "nearest"}); k.classList.remove("sorot"); void k.offsetWidth; k.classList.add("sorot"); }); box.append(lihat);
-      new maplibregl.Popup({offset: 10, closeButton: false}).setLngLat(e.features[0].geometry.coordinates).setDOMContent(box).addTo(alunPeta); });
+    alunPeta.addSource("alun", {type: "geojson", data: fc});
+    alunPeta.addSource("alun-prov", {type: "geojson", data: fp});
+    alunPeta.addLayer({id: "kelompok", type: "circle", source: "alun-prov", maxzoom: ZOOM_KAB, paint: {"circle-color": tok("--head-bg"), "circle-radius": ["step", ["get", "n"], 15, 5, 19, 15, 24, 40, 29], "circle-stroke-width": 3, "circle-stroke-color": tok("--card")}});
+    alunPeta.addLayer({id: "kelompok-n", type: "symbol", source: "alun-prov", maxzoom: ZOOM_KAB, layout: {"text-field": ["to-string", ["get", "n"]], "text-size": 13, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true}, paint: {"text-color": tok("--on-head")}});
+    alunPeta.addLayer({id: "titik", type: "circle", source: "alun", minzoom: ZOOM_KAB, paint: {"circle-color": ["get", "warna"], "circle-radius": ["step", ["get", "n"], 8, 2, 12], "circle-stroke-width": 2, "circle-stroke-color": tok("--card")}});
+    alunPeta.addLayer({id: "titik-n", type: "symbol", source: "alun", minzoom: ZOOM_KAB, filter: [">", ["get", "n"], 1], layout: {"text-field": ["to-string", ["get", "n"]], "text-size": 11, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true}, paint: {"text-color": tok("--card")}});
+    alunPeta.on("click", "kelompok", e => { const g = alunGrup.get(e.features[0].properties.kunci); if (!g) return;
+      alunPeta.fitBounds(g.b, {padding: padPeta(), maxZoom: 9, minZoom: ZOOM_KAB + .01}); });   // satu provinsi: langsung ke tingkat kab/kota
+    alunPeta.on("click", "titik", e => { const t = alunTempat.get(e.features[0].properties.kunci); if (!t) return; const box = el("div", "lp-alun-pop");
+      box.append(el("small", "lp-redup", t.isi[0].lokasi.kab || ""));
+      for (const x of t.isi) { const r = el("div", "lp-alun-pop-baris"), lihat = el("button", "lp-teks-tombol", "Lihat kartu"); lihat.type = "button";
+        lihat.addEventListener("click", () => { const k = document.getElementById(`alun-${x.id}`); if (!k) return; const bk = k.querySelector(".lp-kb-buka"); if (bk?.getAttribute("aria-expanded") === "false") bk.click(); k.scrollIntoView({behavior: "smooth", block: "nearest"}); k.classList.remove("sorot"); void k.offsetWidth; k.classList.add("sorot"); });
+        r.append(el("b", null, x.jenis), el("small", null, x.statusLabel), lihat); box.append(r); }
+      new maplibregl.Popup({offset: 12, closeButton: false, maxWidth: "280px"}).setLngLat(e.features[0].geometry.coordinates).setDOMContent(box).addTo(alunPeta); });
     for (const l of ["kelompok", "titik"]) { alunPeta.on("mouseenter", l, () => { alunPeta.getCanvas().style.cursor = "pointer"; }); alunPeta.on("mouseleave", l, () => { alunPeta.getCanvas().style.cursor = ""; }); }
     pas();
   });
@@ -1763,7 +1788,10 @@ const kosongKabar = t => el("p", "lp-redup lp-kb-kosong", t);
 function kartuKejadian(x, ikut) {
   const t = teksKartu(x, Date.now()), k = el("section", "ex ex-std lp-kabar"); k.id = `alun-${x.id}`;
   const hd = el("header", "ex-hd"), ey = el("span", "ex-ey"), jd = el("div", "ex-jd");
-  ey.append(ikon(IKON_JENIS[x.jenis] || "i-kejadian"), x.jenisLabel); jd.append(el("h3", null, x.kab || "Lokasi belum diketahui")); hd.append(ey, jd);
+  // kartu terlipat: kepala jadi tombol buka-tutup, isi baru tampil saat diketuk (pemilik 26 Nov 2026: "jangan langsung muncul")
+  const h3 = el("h3"), buka = el("button", "lp-kb-buka"); buka.type = "button"; buka.setAttribute("aria-expanded", "false"); buka.setAttribute("aria-controls", `alun-isi-${x.id}`);
+  buka.append(el("span", null, x.kab || "Lokasi belum diketahui"), ikon("i-panah", "lp-kb-panah")); h3.append(buka);
+  ey.append(ikon(IKON_JENIS[x.jenis] || "i-kejadian"), x.jenisLabel); jd.append(h3); hd.append(ey, jd);
   if (x.titikKet) hd.append(el("small", "lp-redup", x.titikKet.charAt(0).toUpperCase() + x.titikKet.slice(1)));
   const bd = el("div", "ex-bd"), belum = [], pita = [];   // pita kosong tidak digambar; sumber yang kosong disebut sekali di baris "Belum ada ..." (pemilik 26 Nov 2026: "Bagusin")
   // Resmi BNPB
@@ -1792,12 +1820,23 @@ function kartuKejadian(x, ikut) {
   const pb = pitaKabar("Berita", "i-pesan");
   if (!t.berita.baris.length) { if (/^Belum ada berita/.test(t.berita.kosong)) belum.push("berita"); else { pb.append(kosongKabar(t.berita.kosong)); pita.push(pb); } }   // "berita belum bisa diambil" tetap tampil: itu gangguan, bukan kosong
   else { pita.push(pb); const ul = el("ul", "lp-kb-berita");
-    for (const b of t.berita.baris) { const li = el("li"), judul = b.url ? Object.assign(el("a", null, b.judul), {href: b.url, target: "_blank", rel: "noopener noreferrer"}) : el("span", null, b.judul);
-      li.append(judul, el("small", "lp-redup", [b.media, b.tgl].filter(Boolean).join(", "))); ul.append(li); }
+    for (const b of t.berita.baris) { const li = el("li"), judul = b.url ? Object.assign(el("a", null, b.judul), {href: b.url, target: "_blank", rel: "noopener noreferrer"}) : el("span", null, b.judul), tx = el("div");
+      tx.append(judul, el("small", "lp-redup", [b.media, b.tgl].filter(Boolean).join(", ")));
+      if (b.gambar) { li.className = "ada-gambar"; const img = Object.assign(el("img", "lp-kb-thumb"), {src: b.gambar, alt: "", loading: "lazy", decoding: "async", width: 96, height: 64}); img.addEventListener("error", () => { img.remove(); li.className = ""; }); li.append(img); }   // thumbnail dari folder kita (K6); gagal muat = tanpa gambar
+      li.append(tx); ul.append(li); }
     pb.append(ul); if (t.berita.lebih) pb.append(el("small", "lp-redup", `Dan ${t.berita.lebih.toLocaleString("id-ID")} berita lain yang cocok.`)); }
   // Media sosial (KA-07) belum tersambung: tidak diulang di tiap kartu; keterangannya tampil sekali lewat saringan Medsos
   if (belum.length) bd.append(el("p", "lp-kb-belum", `Belum ada ${belum.length > 2 ? belum.slice(0, -1).join(", ") + ", dan " + belum.at(-1) : belum.join(" dan ")}.`));
-  bd.prepend(...pita); k.append(hd, bd); return k;
+  bd.prepend(...pita);
+  // ringkasan di kepala kartu terlipat: status resmi dan jumlah tiap sumber, tanpa menjumlah angka antarsumber (D3)
+  const nBerita = t.berita.baris.length + (t.berita.lebih || 0), ring = el("p", "lp-kb-ringkas");
+  ring.append(el("b", null, r.ada ? r.status : "Belum ada laporan resmi"));
+  if (t.warga.baris.length) ring.append(el("span", "lp-pil", `${t.warga.baris.length.toLocaleString("id-ID")} laporan warga`));
+  if (nBerita) ring.append(el("span", "lp-pil", `${nBerita.toLocaleString("id-ID")} berita`));
+  hd.append(ring);
+  bd.id = `alun-isi-${x.id}`; bd.hidden = true;
+  buka.addEventListener("click", () => { const b = bd.hidden; bd.hidden = !b; buka.setAttribute("aria-expanded", String(b)); k.classList.toggle("buka", b); });
+  k.append(hd, bd); return k;
 }
 function gambarKabar(ikut) {
   const sm = $("sumberAlun"); sm.hidden = false;
@@ -1809,7 +1848,7 @@ function gambarKabar(ikut) {
     const JENIS = ["banjir", "longsor", "cuaca", "gempa", "karhutla", "erupsi", "abrasi", "kekeringan"];
     let daftar = saring(gabung(alunKabar, alunData, Date.now()), {jenis: JENIS.includes(alunJenis) ? alunJenis : "", sumber: alunSumber, selesai: alunJenis === "selesai"});
     if (alunJenis === "diikuti") { daftar = daftar.filter(x => x.warga.some(g => ikut[g.id])); const m = ikutiBaca(); for (const x of daftar) for (const g of x.warga) if (m[g.id]) m[g.id] = g.status; ikutiTulis(m); }
-    gambarPetaAlun(daftar.map(x => ({id: x.id, titik: x.titik, jenis: x.jenisLabel, lokasi: {kab: x.kab}, statusLabel: x.statusLabel, status: x.status})));
+    gambarPetaAlun(daftar.map(x => ({id: x.id, titik: x.titik, jenis: x.jenisLabel, lokasi: {kab: x.kab}, statusLabel: x.statusLabel, status: x.status, prov: x.prov})));
     if (!daftar.length) {
       const k = el("div", "lp-kosong-besar"), m = el("div", "lp-kosong-maskot"); m.innerHTML = maskot("berpikir");
       const tx = el("div", "lp-kosong-teks"); tx.append(el("h2", null, alunJenis === "diikuti" ? "Belum ada kejadian yang Anda ikuti" : alunSumber === "medsos" ? "Media sosial belum tersambung" : "Belum ada kejadian untuk saringan ini"),

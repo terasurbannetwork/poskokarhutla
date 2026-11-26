@@ -24,6 +24,7 @@ Pemilik (25 Nov 2026): "Gw juga mau masukkan berita-berita bencana dari medsos g
 | K3 | Satu kejadian memuat semua kabarnya sekaligus: laporan resmi, laporan warga, berita, dan media sosial ("all in disitu"). |
 | K4 | Paket dokumen lengkap dulu, baru kode (AGENTS.md 3.7). |
 | K5 | (26 Nov 2026, jawaban Q2) Angka Laporan Kejadian Bencana Harian boleh tampil publik: pemilik memilih "Yes, publish". `public/data/alun/kabar.json` di-commit dan terbit. Daftar izin kolom D4 tetap berlaku. |
+| K6 | (26 Nov 2026) Tiap berita di kartu kejadian punya thumbnail: pemilik memilih "Gambar asli berita". Menimpa D8 hanya untuk thumbnail: `og:image` artikel asli diperkecil (lebar 240 px, <= 30 KB) dan disimpan di `public/data/alun/thumb/`, bukan hotlink. Teks artikel tetap tidak diterbitkan, kredit nama media tetap tampil, berita tanpa gambar tetap tampil tanpa gambar. |
 
 ### Keputusan lama yang digantikan
 

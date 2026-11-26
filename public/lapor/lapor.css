@@ -3116,11 +3116,38 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-kb-berita li{display:grid;gap:2px;min-width:0}
 .lp-kb-berita a{color:var(--brand2);font-weight:700;font-size:.8125rem;line-height:1.4;overflow-wrap:anywhere}
 .lp-kb-catatan{margin:0;padding:12px 16px 0;font-size:.75rem}
-.lp-alun-legenda{position:absolute;right:12px;bottom:34px;z-index:2;display:grid;gap:4px;margin:0;padding:8px 12px;list-style:none;border-radius:12px;background:color-mix(in oklab,var(--card) 92%,transparent);box-shadow:var(--shadow);font:700 .6875rem var(--font);color:var(--ink)}
+.lp-alun-legenda{position:absolute;z-index:2;bottom:28px;left:calc(440px + (100% - 440px) / 2);transform:translateX(-50%);width:min(520px,calc(100% - 480px));margin:0;padding:8px 16px 12px;border-radius:16px;background:color-mix(in oklab,var(--card) 95%,transparent);box-shadow:var(--shadow);color:var(--ink)}
 .lp-alun-legenda[hidden]{display:none}
+.lp-alun-legenda-t{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;min-height:28px;padding:0;border:0;background:none;color:var(--ink2);font:800 .6875rem var(--font);letter-spacing:.04em;cursor:pointer}
+.lp-alun-legenda-t svg{width:12px;height:12px;transform:rotate(90deg);transition:transform var(--dur-1,.15s) ease}
+.lp-alun-legenda-t[aria-expanded="false"] svg{transform:rotate(-90deg)}
+.lp-alun-legenda-isi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding-top:4px}
+.lp-alun-legenda-isi[hidden]{display:none}
+.lp-alun-legenda-isi > div{display:grid;gap:6px;align-content:start}
+.lp-alun-legenda-isi b{font:800 .6875rem var(--font);color:var(--ink2)}
+.lp-alun-legenda ul{display:grid;gap:4px;margin:0;padding:0;list-style:none;font:600 .75rem var(--font)}
 .lp-alun-legenda li{display:flex;align-items:center;gap:8px}
-.lp-alun-legenda i{width:10px;height:10px;border-radius:50%;flex:none;box-shadow:0 0 0 2px var(--card)}
-@media (max-width:899px){.lp-alun-legenda{top:110px;bottom:auto;right:auto;left:12px}}
+.lp-alun-legenda li i{width:10px;height:10px;border-radius:50%;flex:none;box-shadow:0 0 0 2px var(--card)}
+.lp-alun-legenda p{display:flex;align-items:center;gap:8px;margin:0;font:600 .75rem/1.35 var(--font)}
+.lp-alun-legenda-prov{display:grid;place-items:center;flex:none;width:26px;height:26px;border-radius:50%;background:var(--head-bg);color:var(--on-head);font:800 .75rem var(--font);font-style:normal;box-shadow:0 0 0 2px var(--card)}
+@media (max-width:899px){.lp-alun-legenda{top:110px;bottom:auto;left:12px;transform:none;width:auto;max-width:calc(100% - 80px);padding:4px 12px}.lp-alun-legenda-isi{grid-template-columns:minmax(0,1fr);gap:10px;padding-bottom:6px}}
+@media (prefers-reduced-motion:reduce){.lp-alun-legenda-t svg,.lp-kb-panah{transition:none}}
+/* kartu kejadian terlipat (pemilik 26 Nov 2026: "jangan langsung muncul") */
+.lp-kb-buka{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.lp-kb-buka:focus-visible{outline:2px solid var(--brand2);outline-offset:4px;border-radius:6px}
+.lp-kb-panah{width:18px;height:18px;flex:none;color:var(--ink2);transition:transform var(--dur-1,.15s) ease}
+.lp-kabar.buka .lp-kb-panah{transform:rotate(90deg)}
+.lp-kb-ringkas{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 0;font-size:.8125rem}
+.lp-kb-ringkas .lp-pil{font-size:.6875rem}
+.lp-kabar:not(.buka) > .ex-hd{border-bottom:0}
+/* thumbnail berita (K6): gambar kecil di kiri judul */
+.lp-kb-berita li.ada-gambar{grid-template-columns:96px minmax(0,1fr);column-gap:10px;align-items:start}
+.lp-kb-berita li > div{display:grid;gap:2px;min-width:0}
+.lp-kb-thumb{width:96px;height:64px;object-fit:cover;border-radius:8px;background:var(--surface)}
+.lp-alun-pop-baris{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:10px;padding:6px 0;border-top:1px solid var(--line)}
+.lp-alun-pop-baris small{grid-column:1}
+.lp-alun-pop-baris .lp-teks-tombol{grid-column:2;grid-row:1 / span 2;font-size:.75rem}
+.lp-kabar .ex-jd h3{width:100%}
 .lp-kb-belum{margin:0;padding-top:12px;border-top:1px dashed var(--line);font-size:.75rem;color:var(--ink2)}
 .lp-kb-belum:first-child{padding-top:0;border-top:0}
 .lp-alun:has(.lp-kabar){display:grid;grid-template-columns:minmax(0,1fr)}
@@ -3151,15 +3178,19 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
   .lp-tab-ciut svg{width:16px;height:16px;transition:transform var(--dur-1,.15s) ease}
   .lp-tab-ciut:hover{color:var(--ink);background:var(--card)!important}
   .lp-tab-ciut:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
-  .lp-app.menu-ciut{grid-template-columns:76px minmax(0,1fr)}
-  .lp-app.menu-ciut .lp-tab{padding:20px 10px;align-items:center}
-  .lp-app.menu-ciut .lp-tab-ciut svg{transform:rotate(180deg)}
-  .lp-app.menu-ciut .lp-tab-merek{padding:4px 0 20px}
-  .lp-app.menu-ciut .lp-tab-merek > span,.lp-app.menu-ciut .lp-tab-merek .lp-logo-pantau{display:none}
-  .lp-app.menu-ciut .lp-tab button:not(.lp-tab-ciut){width:52px;justify-content:center;padding:0!important;font-size:0;gap:0}
-  .lp-app.menu-ciut .lp-tab button:not(.lp-tab-ciut) > span:not(.lp-titik-baru){display:none}
-  .lp-app.menu-ciut .lp-tab hr,.lp-app.menu-ciut .lp-tab .lp-sigap,.lp-app.menu-ciut .lp-tab-profil{display:none!important}
-  .lp-app.menu-ciut .lp-tab-aksi{justify-items:center}
-  .lp-app.menu-ciut .lp-titik-baru{position:absolute;margin:0;transform:translate(10px,-10px)}
+  .lp-app:is(.menu-ciut,.di-alun){grid-template-columns:76px minmax(0,1fr)}
+  /* peta Alun-alun: menu melayang di atas peta saat disorot, peta tidak bergeser */
+  .lp-app.di-alun .lp-tab{position:relative;z-index:30;width:76px}
+  .lp-app.di-alun .lp-tab:is(:hover,:focus-within){width:248px;box-shadow:var(--shadow-lg)}
+  .lp-app.di-alun .lp-tab > .lp-tab-ciut{display:none}
+  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:focus-within)))) .lp-tab{padding:20px 10px;align-items:center}
+  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:focus-within)))) .lp-tab-ciut svg{transform:rotate(180deg)}
+  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:focus-within)))) .lp-tab-merek{padding:4px 0 20px}
+  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:focus-within)))) .lp-tab-merek > span,:is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:focus-within)))) .lp-tab-merek .lp-logo-pantau{display:none}
+  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:focus-within)))) .lp-tab button:not(.lp-tab-ciut){width:52px;justify-content:center;padding:0!important;font-size:0;gap:0}
+  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:focus-within)))) .lp-tab button:not(.lp-tab-ciut) > span:not(.lp-titik-baru){display:none}
+  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:focus-within)))) .lp-tab hr,:is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:focus-within)))) .lp-tab .lp-sigap,:is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:focus-within)))) .lp-tab-profil{display:none!important}
+  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:focus-within)))) .lp-tab-aksi{justify-items:center}
+  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:focus-within)))) .lp-titik-baru{position:absolute;margin:0;transform:translate(10px,-10px)}
 }
 @media (min-width:900px) and (prefers-reduced-motion:reduce){.lp-tab-ciut svg{transition:none}}

@@ -272,6 +272,8 @@ def main(argv):
     DK = _muat_modul("dalops_kabar", "scripts/data/dalops_kabar.py")
     pusat = _muat_modul("berita_geo", "scripts/umum/berita.py").Geo.hitung_pusat()["kab"]
     dok, dobel = bangun(hari, HARIAN, pusat, DK.cocok, DK.muat_bahan, kini)
+    if "--tanpa-gambar" not in argv:
+        _muat_modul("alun_gambar", "scripts/data/alun_gambar.py").pasang(dok, os.path.join(os.path.dirname(KELUAR), "thumb"))
     tulis(dok, KELUAR)
     kej = dok["kejadian"]
     print(f"alun_kabar {hari}: {len(kej)} kejadian, {sum(1 for k in kej if k['titik'])} bertitik, "
