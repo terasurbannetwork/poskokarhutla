@@ -463,7 +463,7 @@ def ioc(titik, prakiraan):
     except Exception as e:
         print(f"  IOC daftar stasiun gagal: {e}", file=sys.stderr)
         return hasil
-    stasiun = {s["code"]: s for s in daftar if s.get("country") == "IDN" and s.get("lat") is not None}
+    stasiun = {s["code"]: s for s in daftar if s.get("code") and s.get("country") == "IDN" and s.get("lat") is not None}   # IOC kadang memuat stasiun tanpa kode (26 Nov 2026)
     sekarang = dt.datetime.now(dt.timezone.utc)
     mulai = (sekarang - dt.timedelta(days=3)).strftime("%Y-%m-%dT%H:%M")
     for kode, s in sorted(stasiun.items()):
