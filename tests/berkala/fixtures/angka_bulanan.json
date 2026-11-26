@@ -1058,6 +1058,12 @@
    }
   ],
   "sebelumnya": {
+   "banding": {
+    "arah": "naik",
+    "kini": 58,
+    "lalu": 31,
+    "persen": 87.1
+   },
    "kejadian": {
     "alam": 31,
     "alam_resmi": 31,

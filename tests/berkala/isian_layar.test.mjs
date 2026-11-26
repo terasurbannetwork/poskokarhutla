@@ -90,14 +90,31 @@ else {
     assert.deepEqual(galatHalaman(), []);
   });
 
-  test("tanpa kode: halaman membuka bulan lengkap terakhir; periode selain bulanan menulis menyusul tanpa isian", async () => {
+  test("tanpa kode: halaman membuka bulan lengkap terakhir; mingguan tanpa berkas angka menulis belum tersedia; tahunan menyusul", async () => {
     mode = {angka: null, baris: null}; await tab.ukuran(1440, 900); await tab.buka(base + "/laporan-bnpb?jenis=berkala");
     await tab.tungguFungsi("/belum tersedia/.test(document.querySelector('#lbkSt')?.textContent || '')");
     assert.equal(await tab.eval("new URLSearchParams(location.search).get('kode')"), H.kodeTerakhir("bulanan", kiniWib()));
     await tab.buka(base + "/laporan-bnpb?jenis=berkala&periode=mingguan&kode=2026-W45");
-    await tab.tungguFungsi("/menyusul/.test(document.querySelector('#lbkSt')?.textContent || '')");
+    await tab.tungguFungsi("/belum tersedia/.test(document.querySelector('#lbkSt')?.textContent || '')");
     assert.equal(await tab.eval("document.querySelector('.lbk-isian').hidden"), true);
     assert.equal(await tab.eval("document.querySelector('#lbkJudul').textContent"), "Laporan Mingguan 2026-W45 (2 November 2026 sampai 8 November 2026)");
+    await tab.buka(base + "/laporan-bnpb?jenis=berkala&periode=tahunan&kode=2025");
+    await tab.tungguFungsi("/menyusul/.test(document.querySelector('#lbkSt')?.textContent || '')");
+    assert.equal(await tab.eval("document.querySelector('.lbk-isian').hidden"), true);
+  });
+
+  test("LB-11 kartu isian harian dan mingguan: tanpa dukungan dan arahan (Q27), harian satu action plan", async () => {
+    const fx = p => JSON.parse(readFileSync(path.join(AKAR, `tests/berkala/fixtures/angka_${p}.json`), "utf8"));
+    const kepala = () => tab.eval("[...document.querySelectorAll('.lbk-isian details.ex-std')].map(d => d.querySelector('h3').textContent)");
+    mode = {angka: fx("harian"), baris: null}; await buka("/laporan-bnpb?jenis=berkala&periode=harian&kode=2026-10-31");
+    assert.deepEqual(await kepala(), ["Ringkasan", "Action plan"]);
+    assert.equal(await tab.eval("document.querySelectorAll('[data-p^=\"action.\"]').length"), 3, "satu kotak action plan: sudah, sedang, akan");
+    assert.equal(await tab.eval("document.querySelectorAll('[data-p=arahan],[data-daftar=dukungan],[data-daftar=temuan_ringkas]').length"), 0);
+    mode = {angka: fx("mingguan"), baris: null}; await buka("/laporan-bnpb?jenis=berkala&periode=mingguan&kode=2026-W43");
+    assert.deepEqual(await kepala(), ["Ringkasan", "Gambaran umum", "Karhutla", "Banjir dan tanah longsor", "Cuaca ekstrem dan kekeringan", "Geologi dan vulkanologi", "Kegiatan minggu ini"]);
+    assert.equal(await tab.eval("document.querySelectorAll('[data-p=arahan],[data-daftar=dukungan]').length"), 0);
+    assert.ok(await tab.eval("!!document.querySelector('[data-daftar=temuan_ringkas]')"));
+    assert.deepEqual(galatHalaman(), []);
   });
 
   test("kartu per bab: angka mesin baca saja, kolom staf kosong berpil belum diisi, tanpa kalimat kesimpulan di kepala", async () => {

@@ -62,6 +62,13 @@ test("L4b kelengkapan per periode: harian tanpa dukungan tidak menahan, bulanan 
   const kosongAngka = {sumber: {dibi: {status: "ok"}}};
   assert.ok(!H.kelengkapan(kosongAngka, isian, "harian").includes("Bab 7.2: dukungan yang dimohon"));
   assert.ok(H.kelengkapan(kosongAngka, isian, "bulanan").includes("Bab 7.2: dukungan yang dimohon"));
+  /* LB-11: berkas angka harian dan mingguan nyata dari fixture; harian satu kotak action plan, tanpa temuan dan dukungan (Q27) */
+  const fx = p => JSON.parse(readFileSync(new URL(`./fixtures/angka_${p}.json`, import.meta.url), "utf8"));
+  const har = fx("harian"), ming = fx("mingguan");
+  assert.deepEqual(H.kelengkapan(har, {}, "harian"), ["Ringkasan Eksekutif: kalimat pembuka", "Laporan harian: action plan"]);
+  assert.deepEqual(H.kelengkapan(har, {pembuka: "x", action: {bab1: {sudah: "x"}}}, "harian"), [], "harian lengkap dengan satu kotak action plan");
+  const km = H.kelengkapan(ming, {pembuka: "x"}, "mingguan");
+  assert.ok(km.includes("Ringkasan Eksekutif: temuan utama") && !km.includes("Bab 7.2: dukungan yang dimohon"), km.join("; "));
 });
 
 test("L10 beda versi: hanya jalur yang berubah, urut perubahan relatif", () => {

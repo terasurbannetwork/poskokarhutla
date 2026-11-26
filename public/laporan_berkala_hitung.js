@@ -51,7 +51,7 @@ export function kelengkapan(angkaBerkas, isian = {}, periode = angkaBerkas?.peri
   if (a.sumber?.dibi?.status !== "ok") kurang.push("Sumber DIBI belum lengkap");
   if (!isi(s.pembuka)) kurang.push("Ringkasan Eksekutif: kalimat pembuka");
   if (periode !== "harian" && !isi(s.temuan_ringkas)) kurang.push("Ringkasan Eksekutif: temuan utama");
-  for (const [k, nama, n] of BAB) {
+  for (const [k, nama, n] of periode === "harian" ? [["bab1", "Laporan harian", BAB[0][2]]] : BAB) {   // harian: satu kotak action plan (PRD 2)
     if (!(a[k] || k === "bab1") || !(n(a) > 0)) continue;
     const ap = s.action?.[k] || {};
     if (!isi(ap.sudah) && !isi(ap.sedang) && !isi(ap.akan)) kurang.push(nama + ": action plan");

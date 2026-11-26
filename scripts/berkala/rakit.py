@@ -49,7 +49,8 @@ W = _muat("data_wilayah", "scripts/data/wilayah.py")
 
 BERKAS = {"dibi": "data/dibi_kejadian.json", "karhutla": "data/peta_karhutla.json", "gunungapi": "banjir/data/gunungapi_status.json",
           "perubahan_level": "gunungapi/data/perubahan_level.json", "gempa": "gempa/data/inatews_detail_{bulan}.json",
-          "riwayat": "data/logbook_riwayat.json", "iklim": "data/iklim_outlook.json"}
+          "riwayat": "data/logbook_riwayat.json", "iklim": "data/iklim_outlook.json",
+          "prediksi": "prediksi/data/prediksi.json", "tangga": "prediksi/data/tangga.json"}   # milik modul prediksi; hanya dibaca
 R2_DALOPS = "dalops/banjir.json"
 R2_SIKLUS = "siklus/bersih/dibi/{tahun}.jsonl.gz"
 R2_SIKLUS_LAPORAN = "siklus/bersih/dibi/laporan.json"
@@ -223,6 +224,25 @@ def level_pada(gs, pl, tanggal):
     return lv
 
 
+BATAS_PERUBAHAN = 90   # hari ke belakang dari berkas status yang dianggap tercakup daftar perubahan
+
+
+def perubahan_dalam(gs, pl, a, b):
+    """perubahan level gunung api a..b dari perubahan_level.json dan daftar perubahan berkas status (ALGORITMA 12, harian dan mingguan).
+    None (tidak diketahui, bukan []) bila a..b di luar cakupan: awal cakupan = riwayat[0].tgl gunungapi_status atau dibuat - 90 hari,
+    mana yang lebih akhir; akhir cakupan = tanggal dibuat berkas status."""
+    dibuat = str((gs or {}).get("dibuat") or "")[:10]
+    if not dibuat:
+        return None
+    rw = [x.get("tgl") for x in (gs.get("riwayat") or []) if x.get("tgl")]
+    awal = max(min(rw, default=""), (dt.date.fromisoformat(dibuat) - dt.timedelta(days=BATAS_PERUBAHAN)).isoformat())
+    if a.isoformat() < awal or b.isoformat() > dibuat:
+        return None
+    ch = {(x["tanggal"], x["gunung"], x.get("dari"), x.get("ke")) for x in (pl or {}).get("baris", []) if x.get("jenis") == "perubahan"}
+    ch |= {(x["tgl"], x["nama"], x.get("dari"), x.get("ke")) for x in (gs or {}).get("perubahan", [])}
+    return [{"gunung": g, "tanggal": t, "dari": d, "ke": k} for t, g, d, k in sorted(ch, key=lambda x: (x[0], x[1])) if a.isoformat() <= t <= b.isoformat()]
+
+
 # ------------------------------------------------------------------ gempa
 def gempa_peristiwa(src, a, b):
     """kejadian ber-buletin BMKG (dirasakan atau M5+) di inatews_detail_<bulan>.json, a .. b+1 hari; prov dari kab yang memuat titik
@@ -301,7 +321,7 @@ def kumpul(periode, kode, src, be, hari_ini):
         except Exception as e:
             gagal["dibi_tahun_lalu"] = type(e).__name__
     # karhutla: berkas terbaru dulu, potongan R2 untuk hari yang sudah keluar dari berkas (pergantian tahun)
-    hari = H._hari(min(dt.date(a.year, 1, 1), H.rentang(periode, H.geser(periode, kode, -1))[0]), b)
+    hari = H._hari(min(dt.date(a.year, 1, 1), H.rentang(periode, H.geser(periode, kode, -1))[0], a - dt.timedelta(days=7)), b)   # 7 hari: rerata harian (H21)
     try:
         pk = src.baca(BERKAS["karhutla"]) or {}
         kh = {h: x for h in hari if (x := karhutla_hari(pk, h)) is not None} if pk else {}
@@ -348,6 +368,9 @@ def kumpul(periode, kode, src, be, hari_ini):
                 m["gunungapi"] = {"tanggal": t, "level": lv}
                 catatan.append(f"Status gunung api per {H.tgl(t)} dihitung mundur dari status MAGMA {H.tgl(str(gs['dibuat'])[:10])} dengan membatalkan "
                                "perubahan level sesudah tanggal itu (perubahan_level.json); belum ada potongan harian tanggal itu.")
+        if periode in ("harian", "mingguan"):
+            gs, pl = src.baca(BERKAS["gunungapi"]), src.baca(BERKAS["perubahan_level"])
+            m["perubahan_level"] = perubahan_dalam(gs, pl, a, b)   # None = belum tercakup data
     except Exception as e:
         gagal["gunungapi"] = type(e).__name__
     try:
@@ -359,6 +382,17 @@ def kumpul(periode, kode, src, be, hari_ini):
     except Exception as e:
         gagal["gempa"] = type(e).__name__
     catatan.append("Data erupsi per peristiwa belum diarsipkan, jadi tiap laporan DIBI erupsi dihitung satu peristiwa.")
+    # prakiraan harian (besok, prediksi.json +1) dan mingguan (sepekan, tangga.json): dibaca apa adanya dari modul prediksi
+    k = {"harian": "prediksi", "mingguan": "tangga"}.get(periode)
+    if k:
+        try:
+            x = src.baca(BERKAS[k])
+            if x:
+                m[k] = x
+        except Exception as e:
+            gagal["prakiraan_besok" if k == "prediksi" else "prakiraan_sepekan"] = type(e).__name__
+    if periode == "harian":
+        catatan.append("Angka DIBI hari kemarin masih bertambah pada pagi hari laporan dirakit (10.10 WIB); versi baru bisa dibekukan kapan saja (Q26).")
     # Bab 4.4 dan 7.1 (LB-04): hanya keluaran yang sudah terbit dibaca, tanpa model baru (D8, K6)
     if periode == "bulanan":
         for k in ("riwayat", "iklim"):
@@ -495,6 +529,21 @@ def uji():
            and out["sumber"]["peluang"]["status"] == "ok", f"LB-04 {b7}")
         ok({u["kode"] for u in out["usulan_temuan"]} >= {"T6", "T7"} and any("iklim_outlook" in c for c in out["lampiran"]["metode"]["catatan"]), "T6 T7 dan catatan LB-04")
         ok(be.get("berkala/bulanan/2026-10/angka/2026-11-12.json") and be.get("berkala/bulanan/2026-10/angka/terbaru.json"), "tulis R2")
+        # LB-11: harian dan mingguan lewat perakit yang sama; prediksi.json dibaca apa adanya, tangga.json tidak ada = belum_tersedia
+        simpan(BERKAS["prediksi"], {"dibuat": "2026-11-06T04:46+07:00", "kode": {"HJN": {"hari": ["2026-11-07"]}}, "kab": [{"id": "1471", "nama": "Kota Pekanbaru", "prov": "14", "pn": "Riau"}],
+                                    "waspada": [{"kab": "1471", "tenggang": 1, "aturan": "asap", "maka": "Imbauan masker", "dampak": {"jiwa": 5}}]})
+        oh = rakit("harian", "2026-11-05", src, be, hari_ini=dt.date(2026, 11, 12), dirakit="2026-11-12T03:10:00Z")
+        ok(oh["bab5"]["perubahan_level"] == [{"gunung": "Dieng", "tanggal": "2026-11-05", "dari": 2, "ke": 1}] and oh["prakiraan"]["aturan"][0]["kab_n"] == 1
+           and oh["bab2"]["rerata_7"]["hot"] == 5.0 and any("Q26" in c for c in oh["lampiran"]["metode"]["catatan"]), f"harian {oh['bab5'].get('perubahan_level')}")
+        gs0 = {"dibuat": "2026-11-10T15:00+07:00", "riwayat": [{"tgl": "2026-10-16"}], "perubahan": [{"nama": "Gamkonora", "dari": 1, "ke": 2, "tgl": "2026-11-10"}]}
+        ok(perubahan_dalam(gs0, None, dt.date(2026, 11, 10), dt.date(2026, 11, 10)) == [{"gunung": "Gamkonora", "tanggal": "2026-11-10", "dari": 1, "ke": 2}]
+           and perubahan_dalam(gs0, None, dt.date(2026, 10, 20), dt.date(2026, 10, 20)) == [], "perubahan dalam cakupan, kosong = []")
+        ok(perubahan_dalam(gs0, None, dt.date(2026, 10, 15), dt.date(2026, 10, 15)) is None and perubahan_dalam(gs0, None, dt.date(2026, 11, 11), dt.date(2026, 11, 11)) is None
+           and perubahan_dalam(None, None, dt.date(2026, 11, 1), dt.date(2026, 11, 1)) is None, "di luar cakupan = None, bukan []")
+        ok(perubahan_dalam({"dibuat": "2026-11-10", "riwayat": [{"tgl": "2026-01-01"}]}, None, dt.date(2026, 8, 1), dt.date(2026, 8, 1)) is None, "batas 90 hari")
+        ow = rakit("mingguan", "2026-W41", src, be, hari_ini=dt.date(2026, 11, 12), dirakit="2026-11-12T03:10:00Z")
+        ok(ow["rentang"] == ["2026-10-05", "2026-10-11"] and ow["bab1"]["alam"]["kejadian"] == 4 and ow["prakiraan"] == {"status": "belum_tersedia"}
+           and ow["bab2"]["hot"] == 35 and be.get("berkala/mingguan/2026-W41/angka/terbaru.json"), f"mingguan {ow['bab1']['alam']}")
         for k in ("berkala/bulanan/2026-10/beku/v1.json", "berkala/../dalops/banjir.json", "public/data/x.json"):
             try:
                 tulis(be, k, {})

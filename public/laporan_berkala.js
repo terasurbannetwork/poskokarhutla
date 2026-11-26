@@ -16,9 +16,10 @@ const w = k => `--w:var(${WARNA[k] || "--lb-navy"})`;
 const SURUT = {sudah: "Sudah surut", belum: "Belum surut", belum_dilaporkan: "Belum dilaporkan"};
 const ALAMAT = "Graha BNPB, Jl. Pramuka Kav. 38, Jakarta Timur 13120";
 const NAMA_SUMBER = {dibi: "DIBI BNPB", dibi_tahun_lalu: "DIBI tahun lalu (lapis Siklus)", karhutla: "Sistem karhutla Centurisk97", dalops_banjir: "Laporan banjir harian Pusdalops",
-  gunungapi: "MAGMA Indonesia (PVMBG)", gempa: "Katalog gempa BMKG", prakiraan_hujan: "Model statistik GIS BNPB", peluang: "Logbook Pusdalops"};
+  gunungapi: "MAGMA Indonesia (PVMBG)", gempa: "Katalog gempa BMKG", prakiraan_hujan: "Model statistik GIS BNPB", peluang: "Logbook Pusdalops",
+  prakiraan_besok: "Prediksi model Centurisk97 (/prediksi)", prakiraan_sepekan: "Tangga Peringatan (/prediksi)"};
 const MUTU = {hipotesis: "hipotesis", uji_balik_lulus: "lulus uji balik"};
-const KEADAAN = {ok: "lengkap", sebagian: "sebagian", belum_ada: "belum ada", gagal: "gagal ditarik"};
+const KEADAAN = {ok: "lengkap", sebagian: "sebagian", belum_ada: "belum ada", gagal: "gagal ditarik", basi: "terbit bukan untuk periode ini"};
 
 const kosong = (t = "belum diisi") => `<span class="lbk-kosong">${esc(t)}</span>`;
 const isi = v => typeof v === "string" ? v.trim() !== "" : Array.isArray(v) ? v.length > 0 : v != null;
@@ -353,6 +354,164 @@ function blokBulanan(A, I, ctx) {
   return bab;
 }
 
+/* ---------------------------------------------------------------- isi laporan harian dan mingguan (LB-11, PRD 2, ALGORITMA 12)
+   Harian: satu halaman gabungan yang mengalir, tanpa daftar isi; mingguan: satu bagian per bab dengan daftar isi. Bagian kebijakan
+   (dukungan, arahan) hanya bulanan dan tahunan (Q27). Prakiraan dibaca apa adanya dari modul prediksi; BMKG dan prediksi kita terpisah. */
+const TK = {v: "tidak diketahui", cls: "tk"}, tk = v => v ?? TK;
+const LEVEL = {1: "Level I (Normal)", 2: "Level II (Waspada)", 3: "Level III (Siaga)", 4: "Level IV (Awas)"};
+const PRAK = {belum_tersedia: "prakiraan belum tersedia", basi: "prakiraan yang terbit bukan untuk periode ini"};
+const ha = v => typeof v === "number" ? H.luas(v) + " ha" : "tidak diketahui";
+export const namaRingkas = (periode, kode) => { const r = H.rentang(periode, kode); return !r ? "" : periode === "harian" ? tgl(kode) : `${kode} (${tgl(r[0])} sampai ${tgl(r[1])})`; };
+
+function blokRingkas(A, I) {
+  const harian = A.periode === "harian", No = Penomor(), b1 = A.bab1, b2 = A.bab2, b3 = A.bab3, b4 = A.bab4, b5 = A.bab5, L = A.label_jenis || {};
+  const nama = namaRingkas(A.periode, A.kode), ini = harian ? "angka hari itu" : "angka minggu itu", seb = harian ? "hari sebelumnya" : "minggu sebelumnya", prov = namaProv(A);
+  const s = A.sumber || {}, tarik = k => s[k]?.tarik ? `, tarik ${tgl(s[k].tarik)}` : "";
+  const SDIBI = `DIBI BNPB${tarik("dibi")}`, SKAR = `Sistem karhutla Centurisk97${tarik("karhutla")}`;
+  const alam = b1.alam, resmi = b1.resmi?.alam, d = alam.dampak || {}, r7 = b1.rerata_7, K = ["Meninggal dan hilang", "Luka", "Terdampak dan mengungsi", "Rumah rusak"];
+  const baris = k => [L[k.jenis] || k.jenis, k.nama, k.prov, k.kejadian, ...dampakSel(k.dampak).map(tk)];
+  const bab = [], B = (no, judul, warna, alir = false) => { const x = {bab: [no, judul, warna], blok: [], alir}; bab.push(x); return h => x.blok.push(h); };
+
+  /* Ringkasan */
+  let t = B(null, "Ringkasan", "data");
+  t(teksStaf(I.pembuka, "belum diisi: kalimat pembuka"));
+  t(kartu([{w: "data", v: n(alam.kejadian), ket: "kejadian bencana alam, semua laporan DIBI termasuk di bawah ambang"},
+    {w: "data", v: n(resmi?.kejadian), ket: "kejadian resmi DIBI, tanpa laporan di bawah ambang"},
+    {w: "erupsi", v: n(d.meninggal_hilang), ket: "orang meninggal dan hilang"}, {w: "banjir", v: n(d.terdampak_mengungsi), ket: "orang terdampak dan mengungsi"}]));
+  /* Q26: banding harian berstatus sementara karena DIBI hari itu masih bertambah saat dirakit */
+  const smt = b => b?.status === "sementara" ? " (sementara, angka DIBI hari itu masih bertambah)" : "";
+  const rerata = harian ? ` Rerata 7 hari sebelumnya (${tgl(r7?.dari)} sampai ${tgl(r7?.sampai)}) ${H.angka(r7?.alam, 1)} kejadian per hari, jadi ${ini} ${H.banding(r7?.banding)}${smt(r7?.banding)}.` : "";
+  t(`<p>Selama ${esc(nama)} tercatat <b>${n(alam.kejadian)}</b> kejadian bencana alam di <b>${n(alam.prov)}</b> provinsi dan <b>${n(alam.kab)}</b> kabupaten/kota, termasuk ${n(b1.di_bawah_ambang?.alam)} laporan di bawah ambang bencana.
+    Angka resmi DIBI tanpa laporan itu ${n(resmi?.kejadian)} kejadian. Pada ${esc(seb)} tercatat ${n(b1.sebelumnya?.kejadian?.alam)} kejadian, jadi ${ini} ${esc(H.banding(b1.sebelumnya?.banding) + smt(b1.sebelumnya?.banding))}.${esc(rerata)}
+    ${typeof b2.hot === "number" ? `Sistem karhutla mencatat <b>${n(b2.hot)}</b> <i>hotspot</i>${harian ? "" : `, dengan puncak harian ${n(b2.puncak?.hot)} pada ${esc(tgl(b2.puncak?.tanggal))}`}.` : ""}</p>`);
+  if (harian) {
+    t(sub("Kejadian menonjol"));
+    t((b1.menonjol || []).length ? tabel(No.tabel(), `Lima kejadian bencana alam dengan korban dan terdampak terbanyak, ${nama}`, ["Jenis", "Kab/kota", "Provinsi", "Kejadian", ...K], b1.menonjol.map(baris), {sumber: SDIBI})
+      : `<p>DIBI tidak mencatat kejadian bencana alam pada ${esc(nama)}.</p>`);
+  } else {
+    t(sub("Temuan utama"));
+    const pilih = Array.isArray(I.temuan_ringkas) && I.temuan_ringkas.length ? I.temuan_ringkas : null;
+    t(temuan((pilih || A.usulan_temuan || []).slice(0, 4), !pilih));
+  }
+
+  /* kejadian per jenis, riwayat, per kab */
+  t = harian ? B(null, "Kejadian per jenis dan kabupaten/kota", "data") : B(1, "Gambaran umum", "data");
+  t(tabel(No.tabel(), `Kejadian bencana alam per jenis, ${nama}`, ["Jenis", "Semua laporan", "Resmi DIBI", harian ? "Kemarin" : "Minggu sebelumnya", ...(harian ? ["Rerata 7 hari"] : []), "Meninggal dan hilang", "Terdampak dan mengungsi"],
+    JENIS.map(j => [L[j] || j, b1.jenis[j]?.kejadian, tk(b1.resmi?.jenis?.[j]), tk(b1.sebelumnya?.kejadian?.[j]), ...(harian ? [{v: H.angka(r7?.jenis?.[j], 1), n: true}] : []),
+      tk(b1.jenis[j]?.dampak?.meninggal_hilang), tk(b1.jenis[j]?.dampak?.terdampak_mengungsi)]),
+    {jumlah: ["Jumlah", alam.kejadian, tk(resmi?.kejadian), tk(b1.sebelumnya?.kejadian?.alam), ...(harian ? [{v: H.angka(r7?.alam, 1), n: true}] : []), tk(d.meninggal_hilang), tk(d.terdampak_mengungsi)],
+      sumber: `${SDIBI}. Semua laporan: ${b1.label_angka?.alam || ""}`}));
+  t(gambar(No.gambar(), harian ? "Kejadian bencana alam per hari, 14 hari terakhir" : "Kejadian bencana alam per minggu, 8 minggu terakhir",
+    batang((b1.riwayat || []).map(r => ({x: harian ? String(+r.kode.slice(8)) : r.kode.slice(5), judul: harian ? tgl(r.kode) : r.kode, v: r.kejadian?.alam ?? null, kosong: "tanpa data",
+      warna: r.kode === A.kode ? "--lb-oranye" : "--lb-navy"}))), {sumber: `${SDIBI}, semua laporan termasuk di bawah ambang`}));
+  if (harian) {
+    if ((b1.kab || []).length) t(tabel(No.tabel(), `Kejadian per kabupaten/kota, ${nama}`, ["Jenis", "Kab/kota", "Provinsi", "Kejadian", ...K], b1.kab.map(baris),
+      {sumber: `${SDIBI}. Kejadian non-alam dan sosial ikut sebagai baris dan tidak dijumlah ke angka bencana alam`}));
+  } else {
+    const tp = (b1.prov || []).slice(0, 10);
+    if (tp.length) t(tabel(No.tabel(), `Provinsi dengan kejadian bencana alam terbanyak, ${nama}`, ["Provinsi", "Kering", "Basah", "Geologi", "Jumlah"],
+      tp.map(p => [p.nama, p.kelompok?.kering, p.kelompok?.basah, p.kelompok?.geologi, p.kejadian]), {sumber: SDIBI}));
+    const ba = b1.bukan_alam;
+    t(tabel(No.tabel(), `Kejadian non-alam dan sosial, ${nama}`, ["Jenis", "Kejadian", ...K], NONALAM.map(j => { const x = ba.jenis[j] || {}; return [L[j] || j, x.kejadian, ...dampakSel(x.dampak).map(tk)]; }),
+      {sumber: `${SDIBI}. Tidak dijumlah ke angka bencana alam. ${ba.catatan_lainnya || ""}`}));
+    t(sub("Action plan")); t(actionPlan(I, "bab1")); t(catatanStaf(I, "bab1"));
+  }
+
+  /* karhutla */
+  t = harian ? B(null, "Karhutla, banjir, cuaca, dan geologi", "karhutla") : B(2, "Kebakaran hutan dan lahan", "karhutla");
+  if (harian) t(sub("Karhutla"));
+  t(kartu([{w: "karhutla", v: n(b2.hot), ket: harian ? "hotspot hari itu" : "hotspot selama minggu itu"},
+    harian ? {w: "data", v: n(b2.sebelumnya?.hot), ket: "hotspot kemarin"} : {w: "karhutla", v: n(b2.puncak?.hot), ket: `puncak harian, ${tgl(b2.puncak?.tanggal)}`},
+    harian ? {w: "data", v: H.angka(b2.rerata_7?.hot, 1), ket: "rerata hotspot per hari, 7 hari sebelumnya"} : {w: "data", v: n(b2.sebelumnya?.hot), ket: "hotspot minggu sebelumnya"},
+    {w: "erupsi", v: ha(b2.belum), ket: `belum padam pada ${tgl(b2.akhir?.tanggal)}`}]));
+  if (!harian) t(gambar(No.gambar(), `Hotspot harian, ${nama}`, batang((b2.harian || []).map(h => ({x: String(+h.tanggal.slice(8)), judul: tgl(h.tanggal), v: h.hot ?? null, kosong: "-",
+    warna: h.tanggal === b2.puncak?.tanggal ? "--lb-merah" : "--lb-oranye"}))), {sumber: SKAR}));
+  const pk = (b2.prov || []).filter(p => p.hot > 0).slice(0, harian ? 8 : 10);
+  if (pk.length) t(tabel(No.tabel(), `Hotspot, belum padam, dan laporan karhutla DIBI per provinsi, ${nama}`, ["Provinsi", "Hotspot", "Belum padam (ha)", "Laporan karhutla DIBI"],
+    pk.map(p => [p.nama, p.hot, {v: H.luas(p.belum), n: true}, p.dibi_karhutla]), {sumber: `${SKAR}; ${SDIBI}. Dua sumber berdampingan, tidak dijumlah; luas adalah perkiraan sistem`}));
+  else if (b2.status === "belum_ada") t(`<p>${kosong("data hotspot periode ini belum ada")}</p>`);
+  if (!harian) { t(sub("Action plan")); t(actionPlan(I, "bab2")); t(catatanStaf(I, "bab2")); }
+
+  /* banjir dan longsor */
+  if (harian) t(sub("Banjir dan tanah longsor")); else t = B(3, "Banjir dan tanah longsor", "banjir");
+  const bj = b3.banjir, st = bj.status || {};
+  t(kartu([{w: "banjir", v: n(bj.ringkas?.kejadian), ket: `kejadian banjir di ${n(bj.kab_n)} kabupaten/kota`}, {w: "banjir", v: n(st.sudah), ket: "kabupaten/kota sudah surut"},
+    {w: "erupsi", v: n(st.belum), ket: "kabupaten/kota belum surut"}, {w: "data", v: n(st.belum_dilaporkan), ket: "kabupaten/kota belum dilaporkan"}]));
+  t(`<p>Status surut pada ${esc(tgl(A.rentang?.[1]))}. Tanah longsor tercatat <b>${n(b3.longsor?.ringkas?.kejadian)}</b> kali, ${esc(H.banding(b3.sebelumnya?.longsor))} dibanding ${esc(seb)}.</p>`);
+  const kabB = new Map((bj.kab || []).map(k => [k.kode, k]));
+  const tb = (bj.tabel || []).map(c => kabB.get(c)).filter(Boolean);
+  if (tb.length) t(tabel(No.tabel(), `Kabupaten/kota terdampak banjir dan status surut, ${nama}`, ["Provinsi", "Kab/kota", "Kejadian", "Terdampak dan mengungsi", "Status surut"],
+    tb.map(k => [k.prov, k.nama, k.kejadian, tk(k.dampak?.terdampak_mengungsi), SURUT[k.surut] || "tidak diketahui"]), {sumber: `${SDIBI}; status surut dari ${NAMA_SUMBER.dalops_banjir}${tarik("dalops_banjir")}`}));
+  if (!harian) {
+    if ((b3.longsor?.kab || []).length) t(tabel(No.tabel(), `Kabupaten/kota terdampak tanah longsor, ${nama}`, ["Provinsi", "Kab/kota", "Kejadian", "Meninggal dan hilang", "Rumah rusak"],
+      b3.longsor.kab.slice(0, 14).map(k => [k.prov, k.nama, k.kejadian, tk(k.dampak?.meninggal_hilang), tk(k.dampak?.rumah_rusak)]), {sumber: SDIBI}));
+    t(sub("Action plan")); t(actionPlan(I, "bab3")); t(catatanStaf(I, "bab3"));
+  }
+
+  /* cuaca ekstrem dan kekeringan */
+  if (harian) t(sub("Cuaca ekstrem dan kekeringan")); else t = B(4, "Cuaca ekstrem dan kekeringan", "cuaca_ekstrem", true);   // bab pendek mengalir (PRD 2: mingguan 6 sampai 10 halaman)
+  const ce = b4.cuaca_ekstrem, kk = b4.kekeringan;
+  t(`<p>Cuaca ekstrem tercatat <b>${n(ce.ringkas?.kejadian)}</b> kali, ${esc(H.banding(b4.sebelumnya?.cuaca_ekstrem))} dibanding ${esc(seb)}. Kekeringan tercatat <b>${n(kk.ringkas?.kejadian)}</b> kali, ${esc(H.banding(b4.sebelumnya?.kekeringan))} dibanding ${esc(seb)}.</p>`);
+  if (!harian) {
+    const kab4 = new Map([...(ce.kab || []), ...(kk.kab || [])].map(k => [k.jenis + "|" + k.kode, k]));
+    const r4 = (b4.tabel || []).map(r => kab4.get(r.jenis + "|" + r.kode)).filter(Boolean);
+    if (r4.length) t(tabel(No.tabel(), `Kabupaten/kota dengan dampak cuaca ekstrem dan kekeringan terbesar, ${nama}`, ["Jenis", "Provinsi", "Kab/kota", "Kejadian", "Terdampak dan mengungsi", "Rumah rusak"],
+      r4.map(k => [L[k.jenis] || k.jenis, k.prov, k.nama, k.kejadian, tk(k.dampak?.terdampak_mengungsi), tk(k.dampak?.rumah_rusak)]), {sumber: SDIBI}));
+    t(sub("Action plan")); t(actionPlan(I, "bab4")); t(catatanStaf(I, "bab4"));
+  }
+
+  /* geologi */
+  if (harian) t(sub("Geologi dan vulkanologi")); else t = B(5, "Geologi dan vulkanologi", "gempa");
+  const ga = b5.gunungapi || {}, pl = ga.per_level || {}, ch = b5.perubahan_level;
+  t(kartu([{w: "gempa", v: n(b5.peristiwa?.gempa), ket: `peristiwa gempa dari ${n(b5.laporan?.gempa)} laporan kabupaten/kota`},
+    {w: "erupsi", v: n(b5.peristiwa?.erupsi), ket: `peristiwa erupsi dari ${n(b5.laporan?.erupsi)} laporan kabupaten/kota`},
+    {w: "karhutla", v: n(pl["3"]), ket: `gunung api Level III (Siaga) per ${tgl(ga.tanggal)}`}, {w: "erupsi", v: n(pl["4"]), ket: `gunung api Level IV (Awas) per ${tgl(ga.tanggal)}`}]));
+  t(ch == null ? `<p>${kosong("perubahan level gunung api belum tercakup data")}</p>`
+    : ch.length ? tabel(No.tabel(), `Perubahan level gunung api, ${nama}`, ["Tanggal", "Gunung", "Dari", "Menjadi"], ch.map(x => [tgl(x.tanggal), x.gunung, LEVEL[x.dari] || TK, LEVEL[x.ke] || TK]), {sumber: `${NAMA_SUMBER.gunungapi}${tarik("gunungapi")}`})
+    : `<p>Tidak ada perubahan level gunung api ${harian ? "pada hari itu" : "selama minggu itu"}.</p>`);
+  if ((b5.gempa || []).length) t(tabel(No.tabel(), `Peristiwa gempa bumi, ${nama}`, ["Tanggal", "Magnitudo", "Provinsi", "Laporan kab/kota", "Luka", "Rumah rusak"],
+    b5.gempa.map(g => [tgl(g.tanggal), {v: H.angka(g.mag, 1), n: true}, prov(g.prov_kode), g.laporan, tk(g.dampak?.luka), tk(g.dampak?.rumah_rusak)]), {sumber: `${NAMA_SUMBER.gempa}${tarik("gempa")}; ${SDIBI}`}));
+  if (!harian) { t(sub("Action plan")); t(actionPlan(I, "bab5")); t(catatanStaf(I, "bab5")); }
+
+  /* prakiraan, dibaca apa adanya */
+  const p = A.prakiraan || {};
+  t = B(null, harian ? (p.status === "ok" && p.untuk ? `Prakiraan untuk ${tgl(p.untuk)}` : "Prakiraan hari berikutnya") : "Prakiraan sepekan", "prediksi", true);
+  if (p.status !== "ok") t(`<p>${kosong(PRAK[p.status] || PRAK.belum_tersedia)}</p>${p.catatan ? `<div class="lbk-catat"><p>${esc(p.catatan)}</p></div>` : ""}`);
+  else if (harian) {
+    t(`<p>${esc(p.label)}. Terbit ${esc(tgl(p.terbit))}, untuk ${esc(tgl(p.untuk))}. Peringatan resmi tetap dari BMKG.</p>`);
+    t((p.aturan || []).length ? tabel(No.tabel(), `Kabupaten/kota yang memenuhi aturan prakiraan, ${tgl(p.untuk)}`, ["Aturan", "Kab/kota", "Daftar kab/kota"],
+      p.aturan.map(e => [e.maka, e.kab_n, e.kab.slice(0, 12).map(k => k.nama).join(", ") + (e.kab_n > 12 ? `, dan ${n(e.kab_n - 12)} lainnya` : "")]), {sumber: "Prediksi model Centurisk97 (/prediksi), belum teruji"})
+      : `<p>Tidak ada kabupaten/kota yang memenuhi aturan prakiraan untuk ${esc(tgl(p.untuk))}.</p>`);
+    if ((p.batasan || []).length) t(`<div class="lbk-catat">${p.batasan.map(x => `<p>${esc(x)}</p>`).join("")}</div>`);
+  } else {
+    const bm = Array.isArray(p.bmkg) ? p.bmkg : [];
+    t(sub("BMKG"));
+    if (!bm.length) t(`<p>${kosong("pernyataan sepekan BMKG belum ada")}</p>`);
+    for (const g of bm) t(tabel(No.tabel(), g.nama || "Pernyataan BMKG", ["Wilayah", "Tingkat", "Masa", "Pernyataan"], (g.pernyataan || []).map(x => [x.nama || prov(x.kode), x.label || "", x.masa || "", x.kalimat || ""]),
+      {sumber: `${g.lembaga || "BMKG"}${g.terbit ? `, terbit ${tgl(g.terbit)}` : ""}`}));
+    t(sub("Prediksi model Centurisk97"));
+    const kt = p.kita || {};
+    t((kt.ringkas || []).length ? tabel(No.tabel(), "Prediksi model, banyak kabupaten/kota per keadaan", ["Prediksi", "Keadaan", "Kab/kota", "Mutu"], kt.ringkas.map(e => [e.nama_sumber || e.sumber || "", e.label || "", e.kab_n, e.mutu || ""]),
+      {sumber: kt.label}) : `<p>${kosong("prediksi model sepekan belum ada")}</p>`);
+    if ((p.catatan || []).length) t(`<div class="lbk-catat">${p.catatan.map(x => `<p>${esc(x)}</p>`).join("")}</div>`);
+  }
+
+  if (harian) { t = B(null, "Action plan", "data"); t(actionPlan(I, "bab1")); t(catatanStaf(I, "bab1")); return bab; }
+
+  /* mingguan: kegiatan, lampiran */
+  t = B(null, "Kegiatan minggu ini", "data", true);   // mengalir sesudah prakiraan, tanpa kertas baru
+  t(isi(I.kegiatan) ? tabel(No.tabel(), `Kegiatan BNPB, ${nama}`, ["Tanggal", "Kegiatan", "Lokasi", "Pelaksana"], I.kegiatan.map(k => [tgl(k.tanggal) || k.tanggal || "", k.kegiatan || "", k.lokasi || "", k.pelaksana || ""]))
+    : `<p>${kosong("belum ada kegiatan dipilih")}</p>`);
+  t = B(null, "Lampiran", "data");
+  t(tabel(No.tabel(), `Kejadian bencana alam per provinsi dan jenis, ${nama}`, ["Provinsi", ...JENIS.map(j => ({karhutla: "Karhutla", cuaca_ekstrem: "Cuaca ekstrem", gelombang: "Gelombang pasang", erupsi: "Erupsi"}[j] || L[j] || j)), "Jumlah"],
+    (A.lampiran?.prov_jenis || []).map(x => [x.nama, ...JENIS.map(j => x.jenis?.[j] ?? ""), x.kejadian]),
+    {jumlah: ["Jumlah", ...JENIS.map(j => b1.jenis[j]?.kejadian), alam.kejadian], sumber: `${SDIBI}. Sel kosong: tidak ada laporan jenis itu`}));
+  const m = A.lampiran?.metode || {};
+  t(sub("Catatan metode"));
+  t(`<div class="lbk-catat">${(m.catatan || []).map(c => `<p>${esc(c)}</p>`).join("")}<p>Baris yang mencatat dampak sama di beberapa kabupaten/kota dihitung sekali: ${n(m.duplikat_dampak)} baris.</p></div>`);
+  return bab;
+}
+
 /* ---------------------------------------------------------------- kertas dan pengaliran */
 function kertas(ctx, {sampul = false} = {}) {
   const k = document.createElement("section");
@@ -403,8 +562,10 @@ function pecahTabel(ctx, el) {
 }
 
 export async function susun(akar, A, I = {}, {versi = 0, periode = "bulanan", kode = A?.kode, geo = null} = {}) {
-  const ctx = {akar, versi, periode, kode, geo, nama: A.nama || tgl(A.kode), badan: null};
+  const ringkas = periode === "harian" || periode === "mingguan";
+  const ctx = {akar, versi, periode, kode, geo, nama: ringkas ? namaRingkas(periode, kode) : A.nama || tgl(A.kode), badan: null};
   akar.textContent = "";
+  if (ringkas) return susunRingkas(ctx, A, I);
   /* sampul */
   const s = kertas(ctx, {sampul: true}), fotoS = (I.foto || []).find(f => f?.bab === "sampul" && /^[0-9a-f]{64}$/.test(f.id || ""));
   s.innerHTML = `<div style="display:flex;flex-direction:column;gap:4mm"><div class="lbk-logo"><img src="/img/logo-kris.png" alt="KRIS" width="220" height="51"><img src="/lapor/lambang-bnpb.png" alt="BNPB" width="51" height="51"></div>
@@ -435,6 +596,40 @@ export async function susun(akar, A, I = {}, {versi = 0, periode = "bulanan", ko
   const hal = [...akar.querySelectorAll(".lbk-kertas")];
   hal.forEach((k, i) => { k.querySelector(".lbk-hal").textContent = `Halaman ${i + 1} dari ${hal.length}`; });
   akar.querySelector("#lbDi").innerHTML = toc.map(([j, h]) => `<li><span>${esc(j)}</span><b>${h}</b></li>`).join("");
+  return hal.length;
+}
+
+/* harian dan mingguan: sampul ringkas tanpa foto (Q23: kepada Kepala BNPB, disusun Pusdatinkom); harian tanpa daftar isi dan mengalir,
+   mingguan dengan daftar isi dan satu kertas per bagian. "Tentang laporan ini" di akhir; harian menyebut DIBI masih bertambah (Q26). */
+function susunRingkas(ctx, A, I) {
+  const harian = ctx.periode === "harian", akar = ctx.akar, src = A.sumber || {};
+  ctx.badan = kertas(ctx);
+  taruh(ctx, `<div class="lbk-sampul-r"><span class="lbk-pil">Laporan ${harian ? "harian" : "mingguan"} kepada Kepala BNPB</span><h1>Laporan Bencana ${esc(ctx.nama)}</h1>
+    <dl class="lbk-dl"><dt>Kepada</dt><dd>Kepala Badan Nasional Penanggulangan Bencana,<br><span class="lbk-kepala">${esc(H.KEPALA_BNPB)}</span></dd>
+    <dt>Disusun</dt><dd>Pusat Data, Informasi, dan Komunikasi Kebencanaan BNPB</dd>
+    <dt>Periode</dt><dd>${esc(harian ? tgl(A.rentang?.[0]) : `${tgl(A.rentang?.[0])} sampai ${tgl(A.rentang?.[1])}`)}</dd>
+    <dt>Versi</dt><dd>${ctx.versi > 0 ? `Versi ${n(ctx.versi)}, dibekukan` : "Draf, belum dibekukan"}</dd></dl></div>`);
+  const bagian = blokRingkas(A, I), judulB = ([no, judul]) => no ? `Bab ${no} ${judul}` : judul;
+  /* daftar isi diisi baris sementara sebanyak bagian dulu, supaya tingginya sudah terhitung saat isi dialirkan */
+  if (!harian) { taruh(ctx, `<h2>Daftar isi</h2>`); taruh(ctx, `<ol class="lbk-di" id="lbDi">${[...bagian.map(b => judulB(b.bab)), "Tentang laporan ini"].map(j => `<li><span>${esc(j)}</span><b>0</b></li>`).join("")}</ol>`); }
+  const toc = [];
+  for (const b of bagian) {
+    const [no, judul, warna] = b.bab;
+    if (!harian && toc.length && !b.alir) ctx.badan = kertas(ctx);
+    toc.push([judulB(b.bab), akar.children.length]);
+    taruh(ctx, pembukaBab(no, judul, warna));
+    for (const h of b.blok) taruh(ctx, h);
+  }
+  taruh(ctx, pembukaBab(null, "Tentang laporan ini", "data"));   // mengalir sesudah bagian terakhir, tanpa kertas baru
+  toc.push(["Tentang laporan ini", akar.children.length]);
+  taruh(ctx, `<p>Angka di laporan ini dihitung mesin dari sumber di tabel berikut, dirakit ${esc(waktu(A.dirakit))}. Kalimat pembuka, <i>action plan</i>${harian ? "" : ", temuan, dan kegiatan"} ditulis atau dipilih staf BNPB.
+    ${harian ? "Angka DIBI hari kemarin masih bertambah pada pagi hari laporan dirakit, jadi versi baru bisa dibekukan kapan saja. " : ""}${ctx.versi > 0 ? `Ini versi ${n(ctx.versi)} yang sudah dibekukan.` : "Ini draf yang belum dibekukan; angkanya masih bisa berubah bila sumber diperbarui."}</p>`);
+  taruh(ctx, tabel(null, "Sumber data dan tanggal tarik", ["Sumber", "Tanggal tarik", "Keadaan"], Object.entries(src).map(([k, v]) => [NAMA_SUMBER[k] || k, tgl(v.tarik) || TK,
+    (KEADAAN[v.status] || v.status || "") + (v.status === "sebagian" && v.hari != null ? `, ${n(v.hari)} dari ${n(v.hari_rentang)} hari` : "")])));
+  const hal = [...akar.querySelectorAll(".lbk-kertas")];
+  hal.forEach((k, i) => { k.querySelector(".lbk-hal").textContent = `Halaman ${i + 1} dari ${hal.length}`; });
+  const di = akar.querySelector("#lbDi");
+  if (di) di.innerHTML = toc.map(([j, h]) => `<li><span>${esc(j)}</span><b>${h}</b></li>`).join("");
   return hal.length;
 }
 
@@ -506,11 +701,29 @@ function temuanIsian(A, I, nama) {
     <button type="button" class="lbk-tambah" data-tambah="${nama}"${penuhT ? " disabled" : ""}>${ikon(IK.tambah)}Tambah temuan sendiri</button></div>`;
 }
 
-function kartuIsian(A, I) {
+function kartuIsian(A, I, periode = "bulanan") {
   const b1 = A.bab1 || {}, b2 = A.bab2 || {}, b3 = A.bab3 || {}, b4 = A.bab4 || {}, b5 = A.bab5 || {}, en = A.bab7?.enso, d = b1.alam?.dampak || {};
   const st = b3.banjir?.status || {}, pl = b5.gunungapi?.per_level || {}, kel = b1.kelompok || {};
   const K = (ik, ey, judul, isi, buka = false) => `<details class="ex ex-std lbk-k"${buka ? " open" : ""}><summary class="ex-hd"><span class="ex-ey">${ikon(ik)}${esc(ey)}</span>
     <div class="ex-jd"><h3>${esc(judul)}</h3></div></summary><div class="ex-bd">${isi}</div></details>`;
+  const pembuka = teks(I, "pembuka", "Kalimat pembuka", {baris: 4, bantu: "Ditulis staf. Angka tidak perlu diketik ulang; paragraf fakta berangka sudah disusun mesin."});
+  const ringkasM = mesin([["Kejadian, semua laporan", n(b1.alam?.kejadian)], ["Kejadian, resmi DIBI", n(b1.resmi?.alam?.kejadian)],
+    ["Meninggal dan hilang", n(d.meninggal_hilang)], ["Terdampak dan mengungsi", n(d.terdampak_mengungsi)], ["Hotspot", n(b2.hot)]]);
+  if (periode === "harian") return [   // Q27: harian cukup action plan singkat, tanpa dukungan dan arahan
+    K(IK.ringkas, "Ringkasan", "Ringkasan", ringkasM + pembuka, true),
+    K(IK.umum, "Action plan", "Action plan", mesin([["Kab/kota", n(b1.alam?.kab)], ["Kab/kota banjir belum surut", n(st.belum)], ["Gunung api Level III", n(pl["3"])]]) +
+      apIsian(I, "bab1") + catatanIsian(I, "bab1"))].join("");
+  if (periode === "mingguan") return [
+    K(IK.ringkas, "Ringkasan", "Ringkasan", ringkasM + pembuka + `<p class="lbk-lbl">Temuan utama</p>` + temuanIsian(A, I, "temuan_ringkas"), true),
+    K(IK.umum, "Bab 1", "Gambaran umum", mesin([["Kelompok kering", n(kel.kering?.kejadian)], ["Kelompok basah", n(kel.basah?.kejadian)], ["Kelompok geologi", n(kel.geologi?.kejadian)]]) + apIsian(I, "bab1") + catatanIsian(I, "bab1")),
+    K(IK.api, "Bab 2", "Karhutla", mesin([["Hotspot", n(b2.hot)], ["Puncak harian", n(b2.puncak?.hot)], ["Belum padam (ha)", H.luas(b2.belum)]]) + apIsian(I, "bab2") + catatanIsian(I, "bab2")),
+    K(IK.air, "Bab 3", "Banjir dan tanah longsor", mesin([["Kejadian banjir", n(b3.banjir?.ringkas?.kejadian)], ["Kab/kota belum surut", n(st.belum)], ["Kejadian tanah longsor", n(b3.longsor?.ringkas?.kejadian)]]) +
+      apIsian(I, "bab3") + catatanIsian(I, "bab3")),
+    K(IK.awan, "Bab 4", "Cuaca ekstrem dan kekeringan", mesin([["Kejadian cuaca ekstrem", n(b4.cuaca_ekstrem?.ringkas?.kejadian)], ["Kejadian kekeringan", n(b4.kekeringan?.ringkas?.kejadian)]]) +
+      apIsian(I, "bab4") + catatanIsian(I, "bab4")),
+    K(IK.gunung, "Bab 5", "Geologi dan vulkanologi", mesin([["Peristiwa gempa", n(b5.peristiwa?.gempa)], ["Gunung api Level III", n(pl["3"])], ["Perubahan level", n(b5.perubahan_level?.length)]]) +
+      apIsian(I, "bab5") + catatanIsian(I, "bab5")),
+    K(IK.program, "Kegiatan", "Kegiatan minggu ini", daftarIsian(I, "kegiatan"))].join("");
   return [
     K(IK.ringkas, "Ringkasan", "Ringkasan Eksekutif", mesin([["Kejadian, semua laporan", n(b1.alam?.kejadian)], ["Kejadian, resmi DIBI", n(b1.resmi?.alam?.kejadian)],
       ["Meninggal dan hilang", n(d.meninggal_hilang)], ["Terdampak dan mengungsi", n(d.terdampak_mengungsi)], ["Rumah rusak", n(d.rumah_rusak)]]) +
@@ -602,7 +815,7 @@ async function mulai() {
   const S = {A: null, I: {}, versi: 0, versiBeku: 0, diubah: null, tarik: "terbaru", kotor: false};
   if (!H.kodeSah(periode, kode)) { st(`Kode periode tidak sah. Pilih periode lalu tekan Buka.`); return; }
   if (!H.selesai(periode, kode, hariIni)) { st("Periode ini belum selesai. Pilih periode yang sudah lewat."); return; }
-  if (periode !== "bulanan") { st("Isian dan halaman cetak laporan harian, mingguan, dan tahunan menyusul. Saat ini baru laporan bulanan."); return; }
+  if (periode === "tahunan") { st("Isian dan halaman cetak laporan tahunan menyusul. Saat ini laporan harian, mingguan, dan bulanan."); return; }
 
   const geoJanji = ambil("/geo/provinsi.json"), fs = $("#lbkIsianFs"), form = $("#lbkIsian");
   const tandaServer = () => { $("#lbkServer").hidden = !(S.kotor && S.versi === 0); };
@@ -631,14 +844,14 @@ async function mulai() {
       const jml = await susun($("#lbkKertas"), A, S.I, {versi: S.versi, periode, kode, geo: await geoJanji});
       const kurang = daftarKurang(), hs = hariSejak();
       tampilKurang(kurang);
-      st(`${S.versi > 0 ? `Beku versi ${S.versi}` : "Draf"}, angka DIBI tarik ${tgl(A.sumber?.dibi?.tarik) || "tidak diketahui"}${hs != null ? ` (${n(hs)} hari sesudah akhir bulan)` : ""}, dirakit ${waktu(A.dirakit)}. ${jml} halaman A4.` +
-        (S.versi === 0 && hs != null && hs < 7 ? " DIBI ditarik kurang dari 7 hari sesudah akhir bulan, jadi angkanya masih bisa bertambah." : ""));
+      st(`${S.versi > 0 ? `Beku versi ${S.versi}` : "Draf"}, angka DIBI tarik ${tgl(A.sumber?.dibi?.tarik) || "tidak diketahui"}${hs != null ? ` (${n(hs)} hari sesudah akhir periode)` : ""}, dirakit ${waktu(A.dirakit)}. ${jml} halaman A4.` +
+        (S.versi === 0 && hs != null && hs < 7 ? " DIBI ditarik kurang dari 7 hari sesudah akhir periode, jadi angkanya masih bisa bertambah." : ""));
       $("#lbkCetak").disabled = false;
     } finally { sedang = false; if (lagi) { lagi = false; gambarUlang(); } }
   };
   const jadwal = () => { clearTimeout(tunda); tunda = setTimeout(gambarUlang, 700); };
   const ubah = () => { S.kotor = true; tandaServer(); jadwal(); };
-  const gambarIsian = () => { fs.querySelectorAll(":scope > :not(legend)").forEach(x => x.remove()); fs.insertAdjacentHTML("beforeend", kartuIsian(S.A, S.I)); $(".lbk-isian").hidden = false; aturMode(); };
+  const gambarIsian = () => { fs.querySelectorAll(":scope > :not(legend)").forEach(x => x.remove()); fs.insertAdjacentHTML("beforeend", kartuIsian(S.A, S.I, periode)); $(".lbk-isian").hidden = false; aturMode(); };
   const gambarDaftar = nama => {
     const lamaEl = fs.querySelector(`[data-daftar="${nama}"]`); if (!lamaEl) return;
     const t = document.createElement("template"); t.innerHTML = nama.startsWith("temuan") ? temuanIsian(S.A, S.I, nama) : daftarIsian(S.I, nama);
