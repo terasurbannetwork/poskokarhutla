@@ -1881,11 +1881,11 @@ function gambarDonat() {
   if (!alunPeta || alunPeta.getZoom() >= ZOOM_KAB || alunMode === "peringatan") return;
   const sk = skalaDonat(alunPeta.getZoom()), ukur = n => Math.max(21, Math.round(diameterDonat(n) * sk)), deret = c => Object.assign(c, ukuranDeret(c.j, ukur));
   let gs = [...alunGrup].map(([kunci, g]) => { const ll = [g.x / g.k, g.y / g.k], p = alunPeta.project(ll);
-    return {kunci: [kunci], n: g.n, j: new Map(g.j), lngLat: ll, px: p.x, py: p.y, b: new maplibregl.LngLatBounds(g.b.getSouthWest(), g.b.getNorthEast()), d: ukur(g.n)}; });
+    return {kunci: [kunci], n: g.n, j: new Map(g.j), lngLat: ll, px: p.x, py: p.y, b: new maplibregl.LngLatBounds(g.b.getSouthWest(), g.b.getNorthEast())}; }).map(deret);
   for (let ubah = true; ubah;) { ubah = false;   // gabung cincin yang bersentuhan (jarak tepi < 8 px, termasuk tepi putih) sampai tidak ada lagi
     gs.sort((a, b) => b.n - a.n);
     luar: for (let i = 0; i < gs.length; i++) for (let k = i + 1; k < gs.length; k++) { const a = gs[i], c = gs[k];
-      if (Math.hypot(a.px - c.px, a.py - c.py) < (a.d + c.d) / 2 + 8) { const n = a.n + c.n;
+      if (Math.abs(a.px - c.px) < (a.w + c.w) / 2 + 2 && Math.abs(a.py - c.py) < (a.h + c.h) / 2 + 2) { const n = a.n + c.n;   // deretan bersentuhan: digabung
         for (const [jj, v] of c.j) a.j.set(jj, (a.j.get(jj) || 0) + v);
         a.px = (a.px * a.n + c.px * c.n) / n; a.py = (a.py * a.n + c.py * c.n) / n; a.lngLat = alunPeta.unproject([a.px, a.py]).toArray();
         a.b.extend(c.b); a.kunci.push(...c.kunci); a.n = n; deret(a); gs.splice(k, 1); ubah = true; break luar; } } }
@@ -1979,12 +1979,12 @@ async function gambarPetaAlun(daftar) {
   if (!matchMedia("(min-width:900px)").matches) { lgI.hidden = true; lgT.setAttribute("aria-expanded", "false"); }   // HP: terlipat, peta tetap lega
   lg.append(lgT, lgI); wp.append(lg); segarChipJenis();
   alunPeta.on("load", () => {
-    alunPeta.addSource("alun", {type: "geojson", data: fc});
-    alunPeta.addSource("alun-prov", {type: "geojson", data: fp});
     // peta dasar polos seperti peta Laporan Harian: label negara, laut, dan kota bawaan disembunyikan; nama yang tampil hanya nama provinsi kita
     for (const l of alunPeta.getStyle().layers) if (l.type === "symbol") alunPeta.setLayoutProperty(l.id, "visibility", "none");
     // gambar tanda per jenis sekali: lingkaran, gempa persegi, erupsi segitiga; tepi putih supaya terpisah dari peta
     const putih = tok("--card"), gelap = tok("--ink");
+    alunPeta.addSource("alun", {type: "geojson", data: fc});
+    alunPeta.addSource("alun-prov", {type: "geojson", data: fp});
     for (const j of [...Object.keys(KAT_JENIS), "lainnya"]) { const w = tok(KAT_JENIS[j] || "--kat-lain"), c = document.createElement("canvas"); c.width = c.height = 64; const x = c.getContext("2d");
       x.beginPath(); if (j === "gempa") x.roundRect(6, 6, 52, 52, 8); else if (j === "erupsi") { x.moveTo(32, 3); x.lineTo(61, 58); x.lineTo(3, 58); x.closePath(); } else x.arc(32, 32, 27, 0, 7);
       x.fillStyle = w; x.fill(); x.lineWidth = 6; x.strokeStyle = putih; x.stroke();
