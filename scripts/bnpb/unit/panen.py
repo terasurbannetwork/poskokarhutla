@@ -16,6 +16,7 @@ Aturan yang dijaga di sini, sebelum dan sesudah tiap permintaan:
 Keluaran panen hanya masuk berkas R2 unit/ lewat jalan.py (/tmp/unit), tidak pernah ke public/data.
 
   ambil_json(url, sumber, umur_jam=20, jeda=1.0)  -> (data, {nama, url, diambil, lisensi})
+  ambil_html(url, sumber, umur_jam=20, jeda=1.0)  -> (teks, {nama, url, diambil, lisensi})  halaman hasil cari JDIH (MB-3)
   ckan_paket(rows=1000)                          -> {"paket": [...], "jumlah": n, "sumber": [...]}  kolom daftar putih, tanpa email dan nama orang
   ckan_organisasi()                              -> {"organisasi": [{id, name, title, package_count}], "sumber": [...]}
   (_ckan mentah privat: satu-satunya pintu keluar CKAN adalah dua fungsi daftar putih di atas)
@@ -52,6 +53,24 @@ CKAN = "https://data.bnpb.go.id/api/3/action/"
 CKAN_AKSI = {"organization_list", "package_search"}
 CKAN_NAMA = "Portal Satu Data BNPB, data.bnpb.go.id"
 HOST_IZIN = {"data.bnpb.go.id", "gis.bnpb.go.id", "inalogpal.bnpb.go.id", "jdihn.go.id", "sirup.inaproc.id", "spse.inaproc.id"}
+JDIH_SITUS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "jdih_situs.json")
+
+
+def _host_jdih(path=JDIH_SITUS):
+    """Host situs JDIH provinsi dari daftar tulis tangan (RU-025); hanya *.go.id, selain itu galat (bukan diam-diam lolos)."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            daftar = json.load(f)
+    except FileNotFoundError:
+        return set()
+    host = {urllib.parse.urlsplit(s["url"]).hostname for s in daftar if s.get("url")}
+    liar = sorted(h for h in host if not h or not h.endswith(".go.id"))
+    if liar:
+        raise ValueError(f"jdih_situs.json: host di luar .go.id {liar}")
+    return host
+
+
+HOST_IZIN |= _host_jdih()
 # KEAMANAN-PRIVASI sec 4 dan DT sec 8. Ditambah pada hari pemilik data menolak (KP sec 8 butir 2), dengan kasus di cek().
 # Tiap aturan menerima URL terurai u = {host, jalur (didekode, huruf kecil, // dirapatkan), kueri {kunci kecil: [nilai]}, teks}.
 
@@ -79,6 +98,7 @@ PAKET_KOLOM = ("id", "name", "title", "metadata_created", "metadata_modified", "
 
 _tidur = time.sleep
 _jam = time.monotonic
+_sekarang = lambda: datetime.now(timezone.utc)  # noqa: E731  diganti jam palsu di cek (umur cache)
 _robots = {}
 
 
@@ -95,7 +115,7 @@ class GagalAmbil(RuntimeError):
 
 
 def _kini():
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return _sekarang().strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _dekode(t):
@@ -140,7 +160,8 @@ class _Alih(urllib.request.HTTPRedirectHandler):
         asal = urllib.parse.urlsplit(req.full_url).hostname
         if diizinkan(newurl) != asal:
             raise Dilarang(f"{req.full_url}: dialihkan ke host lain {newurl}")
-        if urllib.parse.urlsplit(newurl).path != "/robots.txt" and not _robots_boleh(newurl, 0):
+        robots = "/robots.txt" in (urllib.parse.urlsplit(req.full_url).path, urllib.parse.urlsplit(newurl).path)
+        if not robots and not _robots_boleh(newurl, 0):  # pengalihan robots.txt sendiri tidak memicu robots lagi (rekursi)
             raise jaring.Ditolak(f"{req.full_url}: pengalihan ke {newurl} dilarang robots.txt")
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
@@ -163,11 +184,11 @@ def _baca(r, url):
             raise GagalAmbil(f"{url}: respons melewati batas {BATAS_BYTE} byte")
 
 
-def _minta(url, jeda):
+def _minta(url, jeda, terima="application/json"):
     """Satu permintaan mentah dengan batas ukuran dan pemeriksaan host akhir. -> (kode, bytes)."""
     host = diizinkan(url)
     jaring.jeda(host, jeda)
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": terima})
     with _buka(req, timeout=BATAS_DETIK) as r:
         akhir = r.geturl()
         if urllib.parse.urlsplit(akhir).hostname != host:
@@ -179,31 +200,84 @@ def _minta(url, jeda):
         return getattr(r, "status", 200), _baca(r, url)
 
 
+def _wildcard(rp):
+    """robotparser stdlib tidak mengenal * dan $ (RFC 9309 2.2.3) dan memakai aturan pertama yang cocok, bukan yang terpanjang:
+    'Allow: /' lalu 'Disallow: /cari?q=*' akan lolos. Aturan diurut terpanjang dulu (seri: Allow menang) dan diberi pencocok pola."""
+    for e in rp.entries + ([rp.default_entry] if rp.default_entry else []):
+        e.rulelines.sort(key=lambda r: (-len(urllib.parse.unquote(r.path)), not r.allowance))
+        for r in e.rulelines:
+            pola = urllib.parse.unquote(r.path)
+            if "*" in pola or pola.endswith("$"):
+                r.applies_to = lambda f, pola=pola: _glob(pola, urllib.parse.unquote(f))
+
+
+def _glob(pola, s):
+    """Pencocok pola robots (* = apa saja, $ di akhir = jangkar) dengan dua penunjuk dan titik balik di * terakhir.
+    Tanpa regex: pola dari situs luar tidak bisa memicu backtracking eksponensial (ReDoS). Paling buruk O(len(pola) x len(s))."""
+    if pola.endswith("$"):
+        pola = pola[:-1]
+    else:
+        pola += "*"  # tanpa $ cocok sebagai awalan
+    i = j = 0
+    bintang, balik = -1, 0
+    while j < len(s):
+        if i < len(pola) and pola[i] != "*" and pola[i] == s[j]:
+            i, j = i + 1, j + 1
+        elif i < len(pola) and pola[i] == "*":
+            bintang, balik, i = i, j, i + 1
+        elif bintang >= 0:
+            balik += 1
+            i, j = bintang + 1, balik
+        else:
+            return False
+    while i < len(pola) and pola[i] == "*":
+        i += 1
+    return i == len(pola)
+
+
 def _robots_boleh(url, jeda):
     p = urllib.parse.urlsplit(url)
     rp = _robots.get(p.hostname)
     if rp is None:
+        tunggu = urllib.robotparser.RobotFileParser()
+        tunggu.disallow_all, tunggu.sebab = True, "robots.txt sedang diambil"
+        _robots[p.hostname] = tunggu  # tempat diisi dulu: pengalihan berlapis dari robots.txt tidak memanggil ulang tanpa akhir
         rp = urllib.robotparser.RobotFileParser()
+        rp.sebab = None
         try:
-            _, isi = _minta(f"https://{p.hostname}/robots.txt", jeda)
+            _, isi = _minta(f"https://{p.hostname}/robots.txt", jeda, "text/plain, */*")
             rp.parse(isi.decode("utf-8", "replace").splitlines())
+            _wildcard(rp)
         except urllib.error.HTTPError as e:
             if e.code in (401, 403) or e.code >= 500:
                 rp.disallow_all = True   # RFC 9309: tak terjangkau atau ditolak = jangan ambil
+                rp.sebab = f"robots.txt HTTP {e.code}"
             else:
                 rp.allow_all = True      # 404 dan 4xx lain: tanpa aturan
-        except (OSError, GagalAmbil):
+        except (OSError, GagalAmbil) as e:
             rp.disallow_all = True
+            rp.sebab = f"robots.txt tak terjangkau ({type(e).__name__})"
+        except jaring.Ditolak:
+            rp.disallow_all = True  # robots.txt dialihkan berlapis ke halaman yang diperiksa robots-nya sendiri: jangan ambil
+            rp.sebab = "robots.txt dialihkan berlapis"
         _robots[p.hostname] = rp
     return rp.can_fetch(UA, url)
 
 
-def _jalur(sumber, url):
+def _robots_tolak(url):
+    """Galat saat robots melarang: robots tak terjangkau = GagalAmbil (sumber gagal), selain itu Ditolak (penolakan dihormati)."""
+    sebab = getattr(_robots.get(urllib.parse.urlsplit(url).hostname), "sebab", None)
+    if sebab and "tak terjangkau" in sebab:
+        return GagalAmbil(f"{url}: {sebab}, tidak diambil")
+    return jaring.Ditolak(f"{url}: {sebab or 'robots.txt melarang'}, dihormati")
+
+
+def _jalur(sumber, url, akhiran=".json"):
     if not re.match(r"^[a-z0-9_]+$", sumber):
         raise ValueError(f"nama sumber {sumber!r} tidak sah")
     h = hashlib.sha1(url.encode()).hexdigest()
     d = os.path.join(CACHE, sumber)
-    return os.path.join(d, h + ".json"), os.path.join(d, h + ".meta")
+    return os.path.join(d, h + akhiran), os.path.join(d, h + ".meta")
 
 
 def _tulis(path, isi):
@@ -214,26 +288,25 @@ def _tulis(path, isi):
     os.replace(tmp, path)
 
 
-def ambil_json(url, sumber, umur_jam=20, jeda=1.0, nama=None, lisensi="tidak tertulis"):
-    """-> (data JSON, atribusi). Cache segar dikembalikan tanpa jaringan."""
+def _ambil(url, sumber, umur_jam, jeda, akhiran, terima, urai):
+    """Pintu bersama ambil_json/ambil_html: cache, robots, coba ulang, tulis cache. -> (urai(bytes), diambil)."""
     diizinkan(url)
-    jd, jm = _jalur(sumber, url)
-    atr = lambda diambil: {"nama": nama or sumber, "url": url, "diambil": diambil, "lisensi": lisensi}  # noqa: E731
+    jd, jm = _jalur(sumber, url, akhiran)
     try:
         with open(jm, encoding="utf-8") as f:
             meta = json.load(f)
-        umur = (datetime.now(timezone.utc) - datetime.strptime(meta["diambil"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)).total_seconds()
+        umur = (_sekarang() - datetime.strptime(meta["diambil"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)).total_seconds()
         if meta.get("url") == url and 0 <= umur < umur_jam * 3600:
-            with open(jd, encoding="utf-8") as f:
-                return json.load(f), atr(meta["diambil"])
+            with open(jd, "rb") as f:
+                return urai(f.read()), meta["diambil"]
     except (OSError, ValueError, KeyError):
         pass
     if not _robots_boleh(url, jeda):
-        raise jaring.Ditolak(f"{url}: robots.txt melarang, dihormati")
+        raise _robots_tolak(url)
     galat = None
     for i in range(len(JEDA_ULANG) + 1):
         try:
-            kode, isi = _minta(url, jeda)
+            kode, isi = _minta(url, jeda, terima)
             break
         except urllib.error.HTTPError as e:
             if e.code in (401, 403, 429):
@@ -250,14 +323,36 @@ def ambil_json(url, sumber, umur_jam=20, jeda=1.0, nama=None, lisensi="tidak ter
             _tidur(JEDA_ULANG[i])
     else:
         raise GagalAmbil(f"{url}: gagal sesudah {len(JEDA_ULANG)} kali ulang, terakhir {galat}")
-    try:
-        data = json.loads(isi)
-    except ValueError as e:
-        raise BentukBerubah(f"{url}: bukan JSON ({e})") from None
+    data = urai(isi)
     diambil = _kini()
     _tulis(jd, isi)
     _tulis(jm, json.dumps({"url": url, "diambil": diambil, "status": kode}).encode())
-    return data, atr(diambil)
+    return data, diambil
+
+
+def _json(isi, url):
+    try:
+        return json.loads(isi)
+    except ValueError as e:
+        raise BentukBerubah(f"{url}: bukan JSON ({e})") from None
+
+
+def ambil_json(url, sumber, umur_jam=20, jeda=1.0, nama=None, lisensi="tidak tertulis"):
+    """-> (data JSON, atribusi). Cache segar dikembalikan tanpa jaringan."""
+    data, diambil = _ambil(url, sumber, umur_jam, jeda, ".json", "application/json", lambda b: _json(b, url))
+    return data, {"nama": nama or sumber, "url": url, "diambil": diambil, "lisensi": lisensi}
+
+
+def _html(isi, url):
+    if isi.lstrip()[:1] in (b"{", b"["):
+        raise BentukBerubah(f"{url}: diharapkan HTML, terima JSON")
+    return isi.decode("utf-8", "replace")
+
+
+def ambil_html(url, sumber, umur_jam=20, jeda=1.0, nama=None, lisensi="tidak tertulis"):
+    """-> (teks HTML, atribusi). Aturan sama dengan ambil_json (izin, robots, pengalihan, batas, cache); Accept text/html."""
+    teks, diambil = _ambil(url, sumber, umur_jam, jeda, ".html", "text/html", lambda b: _html(b, url))
+    return teks, {"nama": nama or sumber, "url": url, "diambil": diambil, "lisensi": lisensi}
 
 
 def _ckan(aksi, **param):
@@ -349,19 +444,20 @@ def _galat(url, kode):
 
 def cek():
     import tempfile
-    global CACHE, _buka, _tidur, _jam
-    asli = (CACHE, _buka, _tidur, jaring.jeda, _jam)
+    global CACHE, _buka, _tidur, _jam, _sekarang
+    asli = (CACHE, _buka, _tidur, jaring.jeda, _jam, _sekarang)
     with open(os.path.join(FIXTURE, "organization_list.json"), "rb") as f:
         ol = f.read()
     with open(os.path.join(FIXTURE, "package_search.json"), "rb") as f:
         ps = f.read()
-    panggil, tidur = [], []
+    panggil, tidur, terima = [], [], []
     skenario = {}
     G = "https://gis.bnpb.go.id/server/rest/services/x/FeatureServer/0/query"
 
     def buka(req, timeout=None):
         url = req.full_url
         panggil.append(url)
+        terima.append(req.get_header("Accept"))
         assert req.get_header("User-agent") == UA, "User-Agent harus tetap UA"
         f = skenario.get(url)
         if f is None:
@@ -481,6 +577,51 @@ def cek():
                 raise AssertionError("robots 403 diabaikan")
             except jaring.Ditolak:
                 pass
+            # 6b. pola * dan $ di robots dihormati (stdlib tidak); robots.txt yang dialihkan tidak berulang tanpa akhir
+            skenario["https://jdihn.go.id/robots.txt"] = lambda u: _Jawab(b"User-agent: *\nAllow: /\nDisallow: /dokumen/cari%3Fq%3D%2A\nDisallow: /*.pdf$\nAllow: /a/izin.pdf\n", u)
+            for u, boleh in (("https://jdihn.go.id/dokumen/cari?q=rencana", False), ("https://jdihn.go.id/a/b.pdf", False),
+                             ("https://jdihn.go.id/dokumen/lihat/1", True), ("https://jdihn.go.id/a/b.pdf?x=1", True),
+                             ("https://jdihn.go.id/a/izin.pdf", True)):
+                assert _robots_boleh(u, 0) is boleh, (u, boleh)
+            try:
+                ambil_json("https://jdihn.go.id/dokumen/cari?q=rencana", "uji")
+                raise AssertionError("robots wildcard diabaikan")
+            except jaring.Ditolak:
+                pass
+            # robots.txt dialihkan dua langkah (/robots.txt -> /a -> /b): berhenti, tidak rekursi, host dianggap melarang
+            G2 = "https://sirup.inaproc.id"
+
+            class _Lapis:
+                def __init__(self, url):
+                    self.url = url
+
+                def __enter__(self):
+                    if self.url.endswith("/robots.txt"):
+                        _ALIH.redirect_request(urllib.request.Request(self.url), None, 302, "Found", {}, "/a")
+                    _ALIH.redirect_request(urllib.request.Request(G2 + "/a"), None, 302, "Found", {}, "/b")
+                    raise AssertionError("pengalihan kedua lolos")
+
+                def __exit__(self, *a):
+                    return False
+            skenario[G2 + "/robots.txt"] = _Lapis
+            assert _robots_boleh(G2 + "/x", 0) is False and _robots[urllib.parse.urlsplit(G2).hostname].sebab == "robots.txt dialihkan berlapis"
+            # ReDoS: pola penuh * dari situs luar selesai cepat (regex .* butuh > 20 detik pada n=40)
+            jahat = "/" + "*a" * 40 + "*Z"
+            t0 = time.monotonic()
+            assert _glob(jahat, "/" + "a" * 4000) is False and time.monotonic() - t0 < 2, "pencocok robots tidak linear"
+            for pola, teks, harap in (("/a*b$", "/axxb", True), ("/a*b$", "/axxbc", False), ("/a*b", "/axxbc", True), ("/a", "/b", False),
+                                      ("/*.pdf$", "/x/y.pdf", True), ("*", "", True), ("/a$", "/a", True), ("/a$", "/ab", False)):
+                assert _glob(pola, teks) is harap, (pola, teks)
+            asal_r = urllib.request.Request("https://jdihn.go.id/robots.txt")
+            ok = _ALIH.redirect_request(asal_r, None, 302, "Found", {}, "/beranda")
+            assert ok is not None and ok.full_url == "https://jdihn.go.id/beranda", ok
+            # robots tak terjangkau = GagalAmbil (tidak_bisa_dicek), bukan Ditolak
+            skenario["https://inalogpal.bnpb.go.id/robots.txt"] = lambda u: (_ for _ in ()).throw(OSError("dns"))
+            try:
+                ambil_json("https://inalogpal.bnpb.go.id/Api/x", "uji")
+                raise AssertionError("robots tak terjangkau lolos")
+            except GagalAmbil as e:
+                assert "tak terjangkau" in str(e), e
             # 7. host akhir: pengalihan ke host lain atau ke pola dilarang ditolak, tidak di-cache
             u = CKAN + "package_search?rows=3"
             skenario[u] = lambda u: _Jawab(b"{}", "https://contoh.org/ambil")
@@ -552,11 +693,44 @@ def cek():
             except GagalAmbil as e:
                 assert "tenggat" in str(e), e
             _jam = asli[4]
+            # 13. ambil_html: Accept text/html, cache segar tanpa jaringan, JSON ditolak, aturan izin/robots sama
+            h = sorted(HOST_IZIN - {"data.bnpb.go.id", "gis.bnpb.go.id", "inalogpal.bnpb.go.id", "jdihn.go.id", "sirup.inaproc.id", "spse.inaproc.id"})
+            assert h and all(x.endswith(".go.id") for x in h), "host JDIH dari jdih_situs.json tidak masuk HOST_IZIN"
+            u = f"https://{h[0]}/cari?q=rencana"
+            skenario[u] = lambda u: _Jawab(b"<html><a href='/d/1'>Judul</a></html>", u)
+            n = len(panggil)
+            teks, atr = ambil_html(u, "uji_html", nama="JDIH uji")
+            assert "Judul" in teks and atr["url"] == u and atr["nama"] == "JDIH uji", atr
+            assert terima[-1] == "text/html", terima[-1]
+            assert ambil_html(u, "uji_html")[0] == teks and len(panggil) == n + 2, "cache html segar memanggil jaringan"  # +robots +halaman
+            assert os.path.exists(_jalur("uji_html", u, ".html")[0])
+            # jam palsu: cache 30 hari lewat -> minta ulang
+            kini = _sekarang()
+            _sekarang = lambda: kini + __import__("datetime").timedelta(hours=721)  # noqa: E731
+            ambil_html(u, "uji_html", umur_jam=720)
+            assert len(panggil) == n + 3, "cache basi tidak memanggil jaringan"
+            _sekarang = asli[5]
+            u2 = f"https://{h[0]}/cari?q=json"
+            skenario[u2] = lambda u: _Jawab(b'{"a": 1}', u)
+            try:
+                ambil_html(u2, "uji_html")
+                raise AssertionError("JSON diterima sebagai HTML")
+            except BentukBerubah:
+                pass
+            for liar in ('[{"url": "https://jdih.contoh.com/"}]', '[{"url": "https://evil.org/"}]'):
+                f = os.path.join(d, "situs.json")
+                with open(f, "w") as g:
+                    g.write(liar)
+                try:
+                    _host_jdih(f)
+                    raise AssertionError(f"host liar diterima: {liar}")
+                except ValueError:
+                    pass
         # 12. cache hanya di data/raw (di-gitignore), bukan public/
         assert asli[0].startswith(os.path.join(AKAR, "data", "raw") + os.sep), asli[0]
         assert "public" not in os.path.relpath(asli[0], AKAR).split(os.sep)
     finally:
-        CACHE, _buka, _tidur, jaring.jeda, _jam = asli
+        CACHE, _buka, _tidur, jaring.jeda, _jam, _sekarang = asli
         _robots.clear()
     print("panen.py --cek: lulus")
 

@@ -26,6 +26,7 @@ LANGKAH = [
     ("PERB-1", "perb1", "bulanan"),  # RU-043 unit/pendampingan_ikd.json
     ("MT-2", "mt2", "bulanan"),     # RU-061 unit/mitigasi_prioritas.json
     ("PUS-1", "pus1", "harian"),    # RU-044 unit/satu_data.json (jaringan: data.bnpb.go.id lewat panen.py)
+    ("MB-3", "jdih_daerah", "mingguan"),  # RU-026 unit/jdih_daerah.json (jaringan: situs JDIH provinsi lewat panen.py)
 ]
 
 BASI_JAM = {"harian": 48, "mingguan": 240, "bulanan": 1080}  # DT sec 9.4
