@@ -62,6 +62,8 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
       ...MODUL.map(([j, f]) => [{test: p => p === j || p === j + "/"}, f]),
       [{test: p => /^\/siklus\/[a-z-]+\/?$/.test(p)}, "/siklus/index.html"],   // bagian Siklus satu ruas (/siklus/kejadian, /siklus/paparan, ...) = cangkang yang sama; /siklus/kejadian/KJ-... tetap hulu
       [{test: p => p === "/rumah-rusak" || p === "/rumah-rusak/"}, "/rumah_rusak.html"], [{test: p => p === "/meja" || p === "/meja/"}, "/bnpb/meja.html"],
+      /* Ruang Unit (src/unit.js): pintu = unit/index.html, /bnpb/unit/<kode> = cangkang unit/unit.html; data /api/unit/* tetap dari hulu */
+      [{test: p => p === "/bnpb/unit" || p === "/bnpb/unit/"}, "/bnpb/unit/index.html"], [{test: p => /^\/bnpb\/unit\/[a-z0-9-]+\/?$/.test(p)}, "/bnpb/unit/unit.html"],
       /* halaman /bnpb/<nama> yang dilayani Worker lewat halamanBnpbPublik (mis. /bnpb/inarisk): berkas public/bnpb/<nama>.html bila ada, selain itu HTML hulu */
       [{test: p => /^\/bnpb\/[a-z0-9-]+\/?$/.test(p)}, null, null, p => p.replace(/\/$/, "") + ".html"]]; } catch { rute = []; } }
   const H = new URL(hulu);
