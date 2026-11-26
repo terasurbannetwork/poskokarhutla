@@ -15,6 +15,7 @@ Paket Dampak Peringatan baru mengambil tiga hal dari dashboard hidromet InaRISK 
 | K3 | Status banjir bandang masuk (bagian dari K2). Ini menggantikan `dampak-peringatan` D4 ("banjir bandang di luar fase pertama") dan memperluas K15 paket itu, hanya untuk banjir bandang. |
 | K4 | Rancangan awal memasukkan semuanya ke mode Peringatan Alun-alun. Pemilik lalu mengubah arah: "Atau lu tiru gini deh dia ga perlu di satu halaman. Bisa di halaman lain ya. Lu tiru dari platform meti" (rujukan Foundry IDN-GRID dan layar `/jaringan` repo `platformmeti`). Jadi semuanya masuk satu halaman baru bertab, bukan Alun-alun. |
 | K5 | "Lu analisa lagi mana yang bisa lu ambil dari sini" (dashboard hidromet InaRISK) dan "tetap sesuaikan dengan konteks dan kebutuhan kita". Yang diambil hanya yang kita belum punya atau yang lebih baik dari punya kita; sisanya cara kita (prinsip induk K8). Hasil analisis ulang ada di RISET bagian 1. |
+| K6 | (26 Nov 2026, jawaban D23) Aturan pinjaman membuat banjir tinggi di 61 persen dan banjir bandang di 68 persen kab terukur. Pemilik memilih "Ketatkan aturannya": kelas tinggi hanya bila porsi desa kelas tinggi paling sedikit 40 persen; syarat "30 desa dan 10 persen" yang memihak kab berdesa banyak dibuang. Dikunci sesudah sebaran baru dilihat. |
 
 ### Keputusan lama yang bersinggungan
 

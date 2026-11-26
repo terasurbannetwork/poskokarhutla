@@ -51,6 +51,7 @@ const _HALAMAN = [
     ["/udara", "Kualitas udara", "awan", B],
     ["/udara/laporan.html", "Laporan harian kualitas udara", "simpan", B, "sesi", null, "/udara"],
     ["/prediksi", "Prediksi", "grafik", "prediksi"],
+    ["/potensi", "Potensi bencana hidrometeorologi", "grafik", "prediksi"],
     ["/prediksi/ringkas", "Siaga 3 hari", "daftar", "prediksi", "sesi", null, "/prediksi"],
     ["/peringatan", "Peringatan dini untuk lokasimu", "peringatan", "peringatan"],
     ["/monitor", "Monitor bencana", "sinyal", "peringatan", "sesi", null, "/peringatan"],

@@ -218,7 +218,7 @@
   function kelasKab(n) {
     const [n0, n1, n2, n3] = (Array.isArray(n) ? n : []).map(x => Number.isFinite(+x) ? +x : 0), N = n0 + n1 + n2 + n3;
     if (N === 0 || n1 + n2 + n3 === 0) return null;
-    if (n3 * 100 >= N * 40 || (n3 >= 30 && n3 * 10 >= N)) return "tinggi";
+    if (n3 * 100 >= N * 40) return "tinggi"; // K6: tanpa syarat 30 desa
     if (n3 * 10 >= N || n3 >= 10 || (n2 + n3) * 10 >= N * 6) return "sedang";
     return "rendah";
   }

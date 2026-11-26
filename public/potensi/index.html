@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Potensi bencana hidrometeorologi, Centurisk97</title>
+<meta name="description" content="Status prakiraan banjir, banjir bandang, longsor, dan bahaya hidrometeorologi lain per kab/kota, dampaknya, dan iklim yang melatarinya.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b2545">
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<script src="/halaman_awal.js" data-tema></script>
+<script src="/i18n.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/inti/kepala.css">
+<link rel="stylesheet" href="/inti/tema.css">
+<link rel="stylesheet" href="/inti/gaya.css">
+<link rel="stylesheet" href="/inti/kartu.css">
+<link rel="stylesheet" href="/potensi/potensi.css">
+</head>
+<body>
+<header class="top">
+  <div class="mark">
+    <a class="logo" href="/" title="Centurisk97, BNPB"><img src="/img/logo.svg?v=2" alt="Centurisk97" width="30" height="30"><img class="logo-bnpb" src="/lapor/lambang-bnpb.png" alt="BNPB" width="30" height="30"><b class="logo-nama" aria-hidden="true">Centurisk97</b></a><details class="bencana" data-bencana="semua" data-tanpa-segera><summary><span>Semua bencana</span></summary><div class="menu"><a href="/semua">Semua bencana</a><a href="/">Karhutla</a><a href="/banjir/">Banjir &amp; Longsor</a></div></details>
+  </div>
+</header>
+
+<main id="po-app" class="po-app" data-mode="peta">
+  <h1 class="po-sr">Potensi bencana hidrometeorologi</h1>
+  <div class="po-pil"><div id="po-tab" class="po-pil-tab" role="tablist" aria-label="Bagian Potensi bencana"></div></div>
+  <div id="po-stage" class="po-stage" data-panel="buka">
+    <div id="po-kanvas" class="po-kanvas" role="application" aria-label="Peta potensi bencana per kab/kota"></div>
+    <aside id="po-panel" class="po-panel" aria-label="Panel peta">
+      <button type="button" id="po-grip" class="po-grip" aria-label="Tarik untuk mengubah tinggi panel"><i aria-hidden="true"></i></button>
+      <div class="po-pnl-kep"><h2 id="po-pnl-j"></h2></div>
+      <div id="po-pnl-isi" class="po-pnl-isi">
+        <section id="p-status" class="po-pt" role="tabpanel" aria-labelledby="tab-status" hidden></section>
+        <section id="p-dampak" class="po-pt" role="tabpanel" aria-labelledby="tab-dampak" hidden></section>
+        <section id="p-iklim" class="po-pt" role="tabpanel" aria-labelledby="tab-iklim" hidden></section>
+      </div>
+    </aside>
+    <button type="button" id="po-tgl" class="po-tgl" aria-expanded="true" aria-controls="po-panel" aria-label="Tutup panel" title="Tutup panel"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <div id="po-bawah" class="po-bawah" role="group" aria-label="Garis waktu dan legenda">
+      <div id="bw-status" class="po-bw" hidden></div>
+      <div id="bw-dampak" class="po-bw" hidden></div>
+      <div id="bw-iklim" class="po-bw" hidden></div>
+    </div>
+  </div>
+  <div id="po-baca" class="po-baca" hidden>
+    <section id="p-analisis" class="po-pb" role="tabpanel" aria-labelledby="tab-analisis" hidden></section>
+    <section id="p-lapisan" class="po-pb" role="tabpanel" aria-labelledby="tab-lapisan" hidden></section>
+    <section id="p-ringkasan" class="po-pb" role="tabpanel" aria-labelledby="tab-ringkasan" hidden></section>
+    <section id="p-sumber" class="po-pb" role="tabpanel" aria-labelledby="tab-sumber" hidden></section>
+  </div>
+</main>
+<script type="module" src="/inti/kepala.js"></script>
+<script type="module" src="/potensi/app.js"></script>
+</body>
+</html>

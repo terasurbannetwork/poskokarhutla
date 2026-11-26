@@ -79,6 +79,7 @@ import {RUTE_MEDSOS} from "./medsos_antre.js";
 import {RUTE_SENSOR} from "./sensor.js";
 import {RUTE_ALAT} from "./alat.js";
 import {RUTE_DAMPAK_PERINGATAN} from "./dampak_peringatan.js";
+import {RUTE_POTENSI} from "./potensi.js";
 import {RUTE_MONITOR} from "./monitor.js";
 import {layaniApiV1, RUTE_KUNCI_API} from "./api_v1.js";
 import {layaniMcp} from "./mcp.js";
@@ -661,6 +662,7 @@ const RUTE = {
   ...RUTE_BERANTAI,   // peringatan berantai banjir/cuaca ke longsor/banjir susulan 3 hari, pola deskriptif (src/berantai.js, migrasi 0098)
   ...RUTE_MEDSOS,   // antrean verifikasi pantauan medsos/TV ke logbook dan jeda ukur (src/medsos_antre.js, migrasi 0098)
   ...RUTE_SENSOR,   // sensor lapangan: ingest HMAC per alat + status staf (src/sensor.js)
+  ...RUTE_POTENSI,   // Potensi Bencana Hidromet: analisis, rekomendasi staf, BMKG per desa (src/potensi.js, PH-07)
   ...RUTE_DAMPAK_PERINGATAN,   // status prakiraan dan dampak peringatan BMKG (src/dampak_peringatan.js, DP-09)
   ...RUTE_ALAT,   // panel EWS banjir dan gunung api: pos dan seri (src/alat.js, EW-04)
   ...RUTE_DALOPS,   // Pantau Banjir Dalops: layar + JSON logbook privat dari R2, staf Pusdalops saja (src/dalops.js)

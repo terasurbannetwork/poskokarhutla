@@ -31,7 +31,7 @@ Kelas desa per bahaya = digit ke-i string kelas baseline berkas BNPB (urutan: ba
 
 Kelas kab per bahaya dari jumlah desa [n0 tanpa kelas, n1 rendah, n2 sedang, n3 tinggi], total N = n0+n1+n2+n3:
 - N = 0 atau n1+n2+n3 = 0: null (belum terukur).
-- tinggi bila n3/N paling sedikit 0,40, atau n3 paling sedikit 30 dan n3/N paling sedikit 0,10;
+- tinggi bila n3/N paling sedikit 0,40 (syarat "paling sedikit 30 desa dan 10 persen" dari sumber dibuang, K6);
 - sedang bila n3/N paling sedikit 0,10, atau n3 paling sedikit 10, atau (n2+n3)/N paling sedikit 0,60;
 - selain itu rendah.
 

@@ -229,6 +229,14 @@
    "induk": null
   },
   {
+   "rute": "/potensi",
+   "nama": "Potensi bencana hidrometeorologi",
+   "ikon": "grafik",
+   "pintu": "publik",
+   "grup": "prediksi",
+   "induk": null
+  },
+  {
    "rute": "/prediksi/ringkas",
    "nama": "Siaga 3 hari",
    "ikon": "daftar",

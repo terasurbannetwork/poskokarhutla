@@ -19,8 +19,8 @@ test("kelasKab: batas aturan ALGORITMA 5", () => {
   assert.equal(D.kelasKab([0, 6, 0, 4]), "tinggi");        // n3/N = 40%
   assert.equal(D.kelasKab([0, 6, 0, 3]), "sedang");        // 33% -> sedang
 });
-test("kelasKab: 30 desa dan 10 persen tepat", () => {
-  assert.equal(D.kelasKab([0, 270, 0, 30]), "tinggi");
+test("kelasKab: 30 desa dan 10 persen bukan tinggi (K6)", () => {
+  assert.equal(D.kelasKab([0, 270, 0, 30]), "sedang");
   assert.equal(D.kelasKab([0, 271, 0, 30]), "sedang");     // 30/301 < 10%: sedang karena n3 >= 10
 });
 test("kelasKab: 10 persen, 10 desa, 60 persen kelas 2-3, rendah", () => {
