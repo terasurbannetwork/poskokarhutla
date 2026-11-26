@@ -47,10 +47,10 @@
   const kosong = t => h("p", {class: "ad-kosong", role: "status"}, svg("kosong"), t);
 
   function layarMasuk(kode) {
-    const jalur = location.pathname + location.search;
+    const jalur = location.pathname + location.search, tanpaHak = kode === 403;   // akun masuk tapi tak berhak: tanpa tautan masuk (pantulan tak berujung)
     pasang(h("div", {class: "bn-blok un-masuk"}, h("h2", {teks: "Masuk staf"}),
-      h("p", {teks: kode === 403 ? "Akunmu belum berhak membuka halaman unit ini. Minta Super Admin menambah perannya." : "Ruang Unit hanya untuk staf BNPB. Masuk dulu dengan akun staf, lalu buka halaman ini lagi."}),
-      kode === 403 ? null : h("a", {class: "bn-tombol", href: "/admin/masuk?ke=" + encodeURIComponent(jalur), teks: "Masuk staf"})));
+      h("p", {teks: tanpaHak ? "Akunmu belum berhak membuka halaman unit ini. Minta Super Admin menambah perannya." : "Ruang Unit hanya untuk staf BNPB. Masuk dulu dengan akun staf, lalu buka halaman ini lagi."}),
+      tanpaHak ? null : h("a", {class: "bn-tombol", href: "/admin/masuk?ke=" + encodeURIComponent(jalur), teks: "Masuk staf"})));
   }
 
   async function muatIndeks() {
