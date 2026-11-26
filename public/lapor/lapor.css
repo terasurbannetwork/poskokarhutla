@@ -3071,6 +3071,10 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-pita-ucap::after{content:"";position:absolute;left:calc(50% - 7px);bottom:-6px;width:14px;height:14px;background:inherit;transform:rotate(45deg);border-radius:0 0 3px 0}
 @media (prefers-reduced-motion:no-preference){.lp-pita-ucap{animation:lp-ucap-naik .5s var(--ease) .4s both}}
 @keyframes lp-ucap-naik{from{opacity:0;transform:translate(-50%,12px)}}
+/* gelembung maskot di kepala dua kolom selebar kolom maskot saja, supaya selalu berjarak dari kartu di kanannya (pemilik 26 Nov 2026: "Ini kenapa nempel"; jarak antarkartu minimal 20 px) */
+.lp-pita-dua .lp-pita-ucap{width:auto;left:0;right:0;transform:none}
+@keyframes lp-ucap-naik-dua{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion:no-preference){.lp-pita-dua .lp-pita-ucap{animation-name:lp-ucap-naik-dua}}
 @media (min-width:900px){.lp-pita-dua:has(.lp-pita-maskot){padding-top:56px!important}.lp-legal-kepala .lp-pita-ucap{width:200px;bottom:calc(100% - 4px)}.lp-legal-kepala:has(.lp-pita-maskot){overflow:visible}}
 /* kebijakan privasi satu kolom kartu (pemilik 25 Nov 2026: "gw ga mau dia dua kolom") */
 @media (min-width:900px){
