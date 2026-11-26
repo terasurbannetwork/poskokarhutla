@@ -38,8 +38,9 @@ const Panel = {
     const d = dalamRentang(), pil = this.pil.kini, dF = d.filter(SARING[pil]), rentang = S.rentang === 168 ? "7 hari" : S.rentang + " jam";
     const label = S.tanggal ? new Date(S.tanggal + "T12:00:00+07:00").toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", weekday: "short", day: "numeric", month: "short", year: "numeric"}).replace(",", "")
       : `${S.rentang * 36e5 > Date.now() - ARSIP ? "sejak " + KG.tgl(ARSIP) : rentang + " terakhir"}, ${this.hariIni()}`;
-    const uk = !j.length && typeof segmenUkuran === "function" ? segmenUkuran(S.ukuranIzin || [], ukAktif().slug) : "";
-    const atas = this.seg("Saringan gempa", PIL_KINI, pil) + (uk ? `<div class="tr-sw">${uk}</div>` : "") + this.baris(label);
+    /* segmen ukuran (Gempa, Dirasakan, Terbesar) tidak digambar (pemilik, 26 Nov 2026): kolomnya sudah tampil semua; ukuran peta
+       tetap berganti lewat klik kepala kolom (peta.js, [data-s]) */
+    const atas = this.seg("Saringan gempa", PIL_KINI, pil) + this.baris(label);
     if (!dF.length) { this.csv = null; box.innerHTML = atas + `<div class="kosong">${S.tersedia && S.tanggal ? `Tidak ada gempa ${pil === "semua" ? "" : "dengan saringan ini "}${esc(periodeTeks())}.` : S.tersedia ? `Tidak ada gempa ${pil === "semua" ? "" : "dengan saringan ini "}${S.rentang * 36e5 > Date.now() - ARSIP ? "sejak " + KG.tgl(ARSIP) : "dalam " + rentang + " terakhir"}.` : "Data gempa belum tersedia."}</div>`; return; }
     box.innerHTML = j.length ? this.kartu(j[0]) + atas + this.daftarProv(dF, j[0]) : atas + this.tabelKini(dF) + this.kartu(null);
   },
