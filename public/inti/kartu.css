@@ -95,7 +95,7 @@
 .ex-std .ex-jd{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
 .ex-std .ex-jd>h3{margin:0;font:800 1.3125rem/1.3 var(--display,inherit);letter-spacing:-.01em;color:var(--ink,#0b2545);max-width:none}
 .ex-std .hl{color:var(--bad,#c9503a)}
-.ex-std>.ex-bd{padding:16px 22px 12px;display:grid;gap:14px;min-width:0}
+.ex-std>.ex-bd{padding:16px 22px 12px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0}
 .ex-std>.ex-bd:has(>.ex-tabel:only-child){padding:0}
 .ex-std .ex-tabel{border:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}
 /* tabel menempel di bawah kepala navy: sudut bulat global th (index.html) membuat takik putih */

@@ -21,7 +21,6 @@
 .ag-kartu .ex-tabel td:last-child{text-align:center;font-variant-numeric:tabular-nums}
 .ag-kartu .ex-tabel th:first-child{text-align:center}
 @media (max-width:1023px){.ag-kartu{position:fixed;z-index:30;left:12px;right:12px;bottom:12px;width:auto;max-height:45vh;overflow:auto;overscroll-behavior:contain}}
-.ag-kartu .ex-bd{grid-template-columns:minmax(0,1fr)}
 .ag-kartu .ex-tabel th,.ag-kartu .ex-tabel td{padding:8px 7px;font-size:var(--fs-2)}
 .ag-kartu .tw{overflow-x:hidden}
 .ag-kartu .ex-tabel table{width:100%}
