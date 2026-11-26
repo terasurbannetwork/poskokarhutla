@@ -4,7 +4,7 @@ import {Besok} from "./lapor_besok.js";
 import {kirimKe, mati} from "./push.js";
 import * as H from "./hak.js";
 import {lajuIP} from "./bnpb.js";
-import {JENIS_PW, MAKS_KEC, MAKS_LANGGANAN, PER_MENIT, endpointSah, tglWib, tahanSampai, hitungPeristiwa, teksNotif, penerima, idLangganan, titikTerdekat, NAMA_HARI, label} from "./pw_inti.js";
+import {JENIS_PW, MAKS_KEC, MAKS_LANGGANAN, PER_MENIT, endpointSah, tglWib, tahanSampai, hitungPeristiwa, hitungDariStatus, teksNotif, penerima, idLangganan, titikTerdekat, NAMA_HARI, label} from "./pw_inti.js";
 const kunciSah = (p256dh, auth) => /^[A-Za-z0-9_-]{80,100}$/.test(p256dh || "") && /^[A-Za-z0-9_-]{20,30}$/.test(auth || "");
 
 /* ---------------- rute /api/lapor/peringatan/* (dipetakan dari src/lapor_ai.js) ---------------- */
@@ -84,6 +84,7 @@ export function buatRutePeringatan({wilayah, muat}) {
 }
 
 /* ---------------- cron tiap menit (dipanggil scheduled() di src/worker.js) ---------------- */
+const bacaStatus = async env => { try { const o = await env.MEDIA?.get("dampak_peringatan/status.json"); return o ? JSON.parse(await o.text()) : null; } catch { return null; } };
 const TEMBOLOK = {d: null, t: 0};
 export async function jalankanPeringatan(env, kini, muat) {
   if (!siap(env)) return {lewat: "kunci VAPID warga belum terpasang"};
@@ -92,26 +93,48 @@ export async function jalankanPeringatan(env, kini, muat) {
   const hasil = {};
   if (!TEMBOLOK.d || kini - TEMBOLOK.t > 10 * 60e3) { const d = await muat(env)("/prediksi/data/prediksi.json").catch(() => null); if (d) Object.assign(TEMBOLOK, {d, t: kini}); }   // 200 KB: dibaca ulang tiap 10 menit
   const Pr = TEMBOLOK.d;
-  if (Pr?.dibuat && Pr.dibuat !== ken.dibuat_terakhir) {
-    const tercatat = new Map((await H.pwStatusSemua(env, C, tglWib(kini))).map(r => [`${r.kab_kode}|${r.jenis}|${r.tanggal}`, r.level]));
-    const {perKab, status, nama} = hitungPeristiwa(Pr, tercatat, kini), stmts = [];
+  const catat = (hitung, dibuat, penanda) => {
+    const {perKab, status, nama} = hitung, stmts = [];
     for (const [kab, kab_ts, tgl, lv] of status) stmts.push(H.pwStatusStmt(env, C, kab, kab_ts, tgl, lv));
-    for (const [kab, daftar] of perKab) stmts.push(H.pwPeristiwaStmt(env, C, Pr.dibuat, kab, JSON.stringify({nama: nama.get(kab), daftar}), kini, tahanSampai(kini, Math.max(...daftar.map(x => x.lv)))));
-    stmts.push(H.pwKendaliStmt(env, C, "dibuat_terakhir", Pr.dibuat));
-    await H.pwBatch(env, C, stmts); hasil.peristiwa = perKab.size;
+    for (const [kab, daftar] of perKab) stmts.push(H.pwPeristiwaStmt(env, C, dibuat, kab, JSON.stringify({nama: nama.get(kab), daftar}), kini, tahanSampai(kini, Math.max(...daftar.map(x => x.lv)))));
+    stmts.push(penanda); return {stmts, n: perKab.size};
+  };
+  let tercatat = null;
+  const muatTercatat = async () => tercatat ||= new Map((await H.pwStatusSemua(env, C, tglWib(kini))).map(r => [`${r.kab_kode}|${r.jenis}|${r.tanggal}`, r.level]));
+  if (Pr?.dibuat && Pr.dibuat !== ken.dibuat_terakhir) {
+    const {stmts, n} = catat(hitungPeristiwa(Pr, await muatTercatat(), kini), Pr.dibuat, H.pwKendaliStmt(env, C, "dibuat_terakhir", Pr.dibuat));
+    await H.pwBatch(env, C, stmts); hasil.peristiwa = n;
+  }
+  // DP-13: pemicu kedua dari status prakiraan (R2 dampak_peringatan/status.json); berkas hilang atau rusak = tanpa push
+  const tanda = await H.pwStatusDibuat(env, C).catch(e => /no such table/i.test(String(e?.message)) ? null : Promise.reject(e));   // null = migrasi 0184 belum ada
+  const ada0184 = tanda !== null;
+  if (!ada0184 && !TEMBOLOK.log) { TEMBOLOK.log = 1; console.error("migrasi 0184 belum diterapkan: pemicu status dan penjaga harian dilewati"); }
+  const S = ada0184 ? await bacaStatus(env) : null;
+  if (S?.dibuat && S.dibuat !== tanda) {
+    const namaKab = new Map((Pr?.kab || []).map(k => [k.id, k.nama]));
+    const {stmts, n} = catat(hitungDariStatus(S, await muatTercatat(), kini, namaKab), `status:${S.dibuat}`, H.pwStatusDibuatStmt(env, C, S.dibuat));
+    await H.pwBatch(env, C, stmts); hasil.peristiwa_status = n;
   }
   const ev = await H.pwPeristiwaBerikut(env, C, kini); if (!ev) return hasil;
   const {nama, daftar} = JSON.parse(ev.ringkas), berlaku = daftar.filter(x => x.tanggal >= tglWib(kini));
   const baris = berlaku.length ? await H.pwPenerima(env, C, ev.kab_kode, ev.kursor, env.PW_UJI === "1") : [];
   const ambil = baris.slice(0, PER_MENIT), sisa = baris.length > PER_MENIT;
   const kirim = penerima(ambil, berlaku), envW = {...env, VAPID_PUBLIK: env.VAPID_PUBLIK_WARGA, VAPID_PRIVAT: env.VAPID_PRIVAT_WARGA};
-  let ok = 0, gagal = 0, matiN = 0; const stmts = [];
+  let ok = 0, gagal = 0, matiN = 0; const stmts = [], hariIni = tglWib(kini);
+  const sudah = new Set((ada0184 ? await H.pwKirimHarian(env, C, ev.kab_kode, hariIni) : []).map(r => `${r.perangkat}|${r.jenis}`));   // penjaga harian lintas kedua pemicu (D30)
   for (const g of kirim) {
-    const [r] = await kirimKe(envW, [g.sub], teksNotif(nama, g.daftar, g.kec), `pw${ev.kab_kode}`, kini);
+    const dev = await idLangganan(g.sub.endpoint, ""), daftarG = g.daftar.filter(x => !sudah.has(`${dev}|${x.jenis}`));
+    if (!daftarG.length) continue;
+    const [r] = await kirimKe(envW, [g.sub], teksNotif(nama, daftarG, g.kec), `pw${ev.kab_kode}`, kini);
+    if (ada0184 && r.status >= 200 && r.status < 300) { for (const j of new Set(daftarG.map(x => x.jenis))) stmts.push(H.pwKirimHarianStmt(env, C, dev, ev.kab_kode, j, hariIni)); }
     if (r.status >= 200 && r.status < 300) ok++; else if (mati(r.status)) { matiN++; for (const b of ambil.filter(x => x.endpoint === g.sub.endpoint)) stmts.push(H.pwHapusIdStmt(env, C, b.id)); } else gagal++;
   }
   stmts.push(H.pwPeristiwaMajuStmt(env, C, ev.id, ambil.at(-1)?.id || ev.kursor, !sisa, ok, gagal, matiN));
   await H.pwBatch(env, C, stmts);
   return {...hasil, kirim: {kab: ev.kab_kode, ok, gagal, mati: matiN, sisa}};
 }
-export const bersihPeringatan = (env, kini) => H.pwBersih(env, C, kini, tglWib(kini - 30 * 864e5)).catch(e => { if (!/no such table/i.test(String(e?.message))) throw e; });
+const tolerir = e => { if (!/no such table/i.test(String(e?.message))) throw e; };
+export const bersihPeringatan = async (env, kini) => {
+  await H.pwBersih(env, C, kini, tglWib(kini - 30 * 864e5)).catch(tolerir);
+  await H.pwBersihHarian(env, C, tglWib(kini - 30 * 864e5)).catch(tolerir);   // tabel 0184 boleh belum ada
+};

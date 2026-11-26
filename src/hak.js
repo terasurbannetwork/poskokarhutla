@@ -1814,7 +1814,8 @@ Object.assign(MATRIKS, {
   lapor_selamat:       {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_cron: ["hapus"]},   // migrasi 0173: kabar selamat (K91, D126-D130); publik hanya lewat token
   lapor_cari:          {lp_pelapor: ["baca", "tambah"], lp_staf: ["baca", "ubah"], lp_cron: ["ubah"]},   // migrasi 0173: orang dicari, tidak pernah publik (D129); pelapor baca hanya miliknya (crMilik)
   lapor_cari_riwayat:  {lp_staf: ["baca", "tambah"]},   // migrasi 0173: append-only
-  lapor_cari_temu:     {lp_pelapor: ["tambah"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},   // migrasi 0177: panggilan, nomor kontak, tempat tunggu (pemilik 25 Nov 2026); dihapus bersama anonim Q67
+  lapor_cari_temu:     {lp_pelapor: ["tambah"], lp_staf: ["baca"], lp_cron: ["hapus"]},   // migrasi 0177: panggilan, nomor kontak, tempat tunggu (pemilik 25 Nov 2026); dihapus bersama anonim Q67
+  lapor_cari_foto:     {lp_pelapor: ["tambah"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},   // migrasi 0183: foto orang dicari (pemilik 26 Nov 2026); berkas R2 dan baris dihapus bersama anonim Q67
   lp_komen:            {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"]},   // migrasi 0180: komentar kartu Alun-alun (K95, D136); publik hanya kolom id, teks, dibuat
   lp_komen_aduan:      {lp_pelapor: ["baca", "tambah"], lp_staf: ["baca"]},
   lp_komen_usul:       {lp_mesin: ["tambah"], lp_staf: ["baca", "ubah"]},   // LA-86 menulis, LA-88 memutus
@@ -1827,6 +1828,8 @@ Object.assign(MATRIKS, {
   pw_status:    {pw_cron: ["baca", "tambah", "ubah", "hapus"]},
   pw_peristiwa: {pw_cron: ["baca", "tambah", "ubah", "hapus"], lp_staf: ["baca"]},
   pw_kendali:   {pw_cron: ["baca", "tambah", "ubah"], lp_staf: ["baca", "tambah", "ubah"]},
+  pw_kendali_status: {pw_cron: ["baca", "tambah", "ubah"]},   // migrasi 0184 (DP-13)
+  pw_kirim_harian:   {pw_cron: ["baca", "tambah", "hapus"]},
 });
 export const pelakuPwPublik = {peran: "pw_publik"}, pelakuPwCron = {peran: "pw_cron"};
 const PW_KOL = "id, endpoint, p256dh, auth, kec_kode, kab_kode, kec_nama, jenis, ambang, bahasa, uji";
@@ -1843,6 +1846,12 @@ export const pwBatch = (env, p, stmts) => { if (!String(p?.peran).startsWith("pw
 export const pwKendali = async (env, p) => Object.fromEntries((await sedia(env, p, "pw_kendali", "baca", "SELECT kunci, nilai FROM pw_kendali").all()).results.map(r => [r.kunci, r.nilai]));
 export const pwKendaliStmt = (env, p, kunci, nilai) => sedia(env, p, "pw_kendali", "ubah",
   "INSERT INTO pw_kendali (kunci, nilai) VALUES (?1, ?2) ON CONFLICT(kunci) DO UPDATE SET nilai = excluded.nilai").bind(kunci, String(nilai));
+export const pwStatusDibuat = async (env, p) => (await sedia(env, p, "pw_kendali_status", "baca", "SELECT nilai FROM pw_kendali_status WHERE kunci = 'status_dibuat'").first())?.nilai ?? "";
+export const pwStatusDibuatStmt = (env, p, nilai) => sedia(env, p, "pw_kendali_status", "ubah",
+  "INSERT INTO pw_kendali_status (kunci, nilai) VALUES ('status_dibuat', ?1) ON CONFLICT(kunci) DO UPDATE SET nilai = excluded.nilai").bind(String(nilai));
+export const pwKirimHarian = async (env, p, kab, tgl) => (await sedia(env, p, "pw_kirim_harian", "baca", "SELECT perangkat, jenis FROM pw_kirim_harian WHERE kab_kode = ?1 AND tanggal = ?2").bind(kab, tgl).all()).results;
+export const pwKirimHarianStmt = (env, p, perangkat, kab, jenis, tgl) => sedia(env, p, "pw_kirim_harian", "tambah",
+  "INSERT OR IGNORE INTO pw_kirim_harian (perangkat, kab_kode, jenis, tanggal) VALUES (?1, ?2, ?3, ?4)").bind(perangkat, kab, jenis, tgl);
 export const pwStatusKab = async (env, p, kab, sejak) => (await sedia(env, p, "pw_status", "baca", "SELECT jenis, tanggal, level FROM pw_status WHERE kab_kode = ?1 AND tanggal >= ?2").bind(kab, sejak).all()).results;
 export const pwStatusSemua = async (env, p, sejak) => (await sedia(env, p, "pw_status", "baca", "SELECT kab_kode, jenis, tanggal, level FROM pw_status WHERE tanggal >= ?1").bind(sejak).all()).results;
 export const pwStatusStmt = (env, p, kab, jenis, tanggal, level) => sedia(env, p, "pw_status", "tambah",
@@ -1860,6 +1869,7 @@ export const pwBersih = (env, p, kini, tglBatas) => env.DB.batch([
   sedia(env, p, "pw_peristiwa", "hapus", "DELETE FROM pw_peristiwa WHERE dibuat < ?1").bind(kini - 30 * 864e5),
   sedia(env, p, "pw_status", "hapus", "DELETE FROM pw_status WHERE tanggal < ?1").bind(tglBatas),
   sedia(env, p, "pw_langganan", "hapus", "DELETE FROM pw_langganan WHERE terakhir_aktif < ?1").bind(kini - 180 * 864e5)]);
+export const pwBersihHarian = (env, p, tglBatas) => sedia(env, p, "pw_kirim_harian", "hapus", "DELETE FROM pw_kirim_harian WHERE tanggal < ?1").bind(tglBatas).run();
 export const pwRingkasStaf = async (env, p, kini) => ({
   langganan: (await sedia(env, p, "pw_langganan", "baca", "SELECT kab_kode, count(*) n FROM pw_langganan GROUP BY kab_kode ORDER BY n DESC LIMIT 50").all()).results,
   peristiwa: (await sedia(env, p, "pw_peristiwa", "baca", "SELECT id, kab_kode, ringkas, dibuat, selesai, ok, gagal, mati FROM pw_peristiwa WHERE dibuat >= ?1 ORDER BY id DESC LIMIT 100").bind(kini - 7 * 864e5).all()).results});
@@ -1932,11 +1942,17 @@ export const crAnonimkan = (env, p, batas) => sedia(env, p, "lapor_cari", "ubah"
   .bind(batas, CARI_NOMOR_ANONIM, CARI_NAMA_ANONIM).run();
 /* tambahan 0177 ditulis sesudah batch sesi (bukan di dalamnya) supaya laporan tetap masuk selama migrasi belum diterapkan di produksi */
 export const ctTambah = (env, p, b) => sedia(env, p, "lapor_cari_temu", "tambah",
-  "INSERT OR IGNORE INTO lapor_cari_temu (cari_id, panggilan, nomor_kontak, tempat_tunggu, foto_id) VALUES (?1, ?2, ?3, ?4, ?5)").bind(b.cari_id, b.panggilan, b.nomor_kontak, b.tempat_tunggu, b.foto_id ?? null).run();
+  "INSERT OR IGNORE INTO lapor_cari_temu (cari_id, panggilan, nomor_kontak, tempat_tunggu) VALUES (?1, ?2, ?3, ?4)").bind(b.cari_id, b.panggilan, b.nomor_kontak, b.tempat_tunggu).run();
 export const ctBaca = async (env, p, ids) => ids.length ? (await sedia(env, p, "lapor_cari_temu", "baca",
-  "SELECT cari_id, panggilan, nomor_kontak, tempat_tunggu, foto_id FROM lapor_cari_temu WHERE cari_id IN (SELECT value FROM json_each(?1))").bind(JSON.stringify(ids)).all()).results : [];
-export const ctFotoAnonim = async (env, p) => (await sedia(env, p, "lapor_cari_temu", "baca",
-  "SELECT foto_id FROM lapor_cari_temu WHERE foto_id IS NOT NULL AND cari_id IN (SELECT id FROM lapor_cari WHERE nomor_pencari = ?1)").bind(CARI_NOMOR_ANONIM).all()).results.map(r => r.foto_id);
+  "SELECT cari_id, panggilan, nomor_kontak, tempat_tunggu FROM lapor_cari_temu WHERE cari_id IN (SELECT value FROM json_each(?1))").bind(JSON.stringify(ids)).all()).results : [];
+export const cfTambah = (env, p, cari_id, foto_id) => sedia(env, p, "lapor_cari_foto", "tambah",
+  "INSERT OR IGNORE INTO lapor_cari_foto (cari_id, foto_id) VALUES (?1, ?2)").bind(cari_id, foto_id).run();
+export const cfBaca = async (env, p, ids) => ids.length ? (await sedia(env, p, "lapor_cari_foto", "baca",
+  "SELECT cari_id, foto_id FROM lapor_cari_foto WHERE cari_id IN (SELECT value FROM json_each(?1))").bind(JSON.stringify(ids)).all()).results : [];
+export const cfAnonimFoto = async (env, p) => (await sedia(env, p, "lapor_cari_foto", "baca",
+  "SELECT foto_id FROM lapor_cari_foto WHERE cari_id IN (SELECT id FROM lapor_cari WHERE nomor_pencari = ?1)").bind(CARI_NOMOR_ANONIM).all()).results.map(r => r.foto_id);
+export const cfAnonim = (env, p) => sedia(env, p, "lapor_cari_foto", "hapus",
+  "DELETE FROM lapor_cari_foto WHERE cari_id IN (SELECT id FROM lapor_cari WHERE nomor_pencari = ?1)").bind(CARI_NOMOR_ANONIM).run();
 export const ctAnonim = (env, p) => sedia(env, p, "lapor_cari_temu", "hapus",
   "DELETE FROM lapor_cari_temu WHERE cari_id IN (SELECT id FROM lapor_cari WHERE nomor_pencari = ?1)").bind(CARI_NOMOR_ANONIM).run();
 /* orang dicari lewat obrolan (K105): satu pernyataan di batch sesi supaya sesi "cari_terkirim" dan baris lapor_cari tersimpan bersama (g = hanya bila pernyataan sebelumnya mengubah baris) */

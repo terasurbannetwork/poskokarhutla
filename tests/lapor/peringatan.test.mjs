@@ -1,7 +1,7 @@
 /* Peringatan dini warga (paket pwa-peringatan, ALGORITMA 2 sampai 8): fungsi murni src/pw_peringatan.js dijalankan nyata */
 import test from "node:test";
 import assert from "node:assert/strict";
-import {hitungPeristiwa, teksNotif, penerima, endpointSah, tahanSampai, titikTerdekat, idLangganan, tglWib} from "../../src/pw_inti.js";
+import {hitungPeristiwa, hitungDariStatus, teksNotif, penerima, endpointSah, tahanSampai, titikTerdekat, idLangganan, tglWib} from "../../src/pw_inti.js";
 
 const kini = Date.parse("2026-11-21T03:00:00Z");   // 10.00 WIB
 const P = (bnj, dibuat = "2026-11-21T00:00:00Z") => ({dibuat, kode: {HJN: {kol: ["tot"], hari: ["2026-11-21", "2026-11-22", "2026-11-23"]}, BNJ: {kol: ["lv", "ps"], vonis: {a: ["mengalahkan baseline"]}},
@@ -74,4 +74,31 @@ test("KI-01: push LSR, CEX, ASP berlabel Hipotesis; BNJ tidak", () => {
   const b = teksNotif("Kab. A", ev("BNJ"), ""); assert.ok(!/Hipotesis|belum lolos/.test(b.judul + b.isi), "BNJ tanpa label");
   const campur = teksNotif("Kab. A", [{jenis: "BNJ", lv: 3, tanggal: "2026-11-25", teruji: true}, ...ev("LSR")], "");
   assert.ok(!campur.judul.includes("Hipotesis") && campur.isi.includes("Hipotesis"), "judul BNJ bersih, isi menandai LSR");
+});
+
+/* DP-13: pemicu dari status prakiraan (R2 dampak_peringatan/status.json) */
+const ST = (BNJ, dibuat = "2026-11-21T06:00:00+07:00") => ({dibuat, kab: {"3175": {BNJ: {s: Math.max(...BNJ.filter(x => x != null), 0), hari: BNJ, hipotesis: true}, LSR: {s: null, hari: [null, null, null, null], hipotesis: true}}}});
+const NAMA = new Map([["3175", "Kota Administrasi Jakarta Timur"]]);
+
+test("N5: status Normal ke Waspada, ke Siaga, lalu turun: dua peristiwa, turun tidak mengirim; null bukan 0", () => {
+  const t = new Map();
+  let h = hitungDariStatus(ST([0, 1, 0, 0]), t, kini, NAMA);
+  assert.deepEqual(h.perKab.get("3175").map(x => [x.tanggal, x.lv]), [["2026-11-22", 1]]);
+  h = hitungDariStatus(ST([0, 2, 0, 0]), t, kini, NAMA);
+  assert.deepEqual(h.perKab.get("3175").map(x => x.lv), [2]);
+  assert.equal(hitungDariStatus(ST([0, 1, 0, 0]), t, kini, NAMA).perKab.size, 0, "turun");
+  assert.equal(hitungDariStatus(ST([null, null, null, null]), new Map(), kini, NAMA).perKab.size, 0, "null");
+  assert.equal(hitungDariStatus(ST([0, 3, 0, 0], "2026-11-19T06:00:00+07:00"), new Map(), kini, NAMA).perKab.size, 0, "basi");
+  assert.equal(hitungDariStatus(ST([0, 3, 0, 0]), new Map(), kini, new Map()).perKab.size, 0, "tanpa nama kab tidak dikirim");
+});
+
+test("status dan prakiraan berbagi tercatat: naik yang sudah dicatat prediksi tidak memicu lagi dari status", () => {
+  const t = new Map(); hitungPeristiwa(P([[0, 0], [1, 0], [0, 0]]), t, kini);   // BNJ 2026-11-22 Waspada tercatat
+  assert.equal(hitungDariStatus(ST([0, 1, 0, 0]), t, kini, NAMA).perKab.size, 0);
+});
+
+test("N4: teks push dari status memuat nama kab, label hipotesis, tanpa angka penduduk dan tanpa kata aman", () => {
+  const h = hitungDariStatus(ST([0, 2, 0, 0]), new Map(), kini, NAMA), t = teksNotif(h.nama.get("3175"), h.perKab.get("3175"), "Cakung");
+  const s = `${t.judul} ${t.isi}`;
+  assert.match(s, /Jakarta Timur/); assert.match(s, /hipotesis/i); assert.doesNotMatch(s, /\baman\b/i); assert.doesNotMatch(s, /\b3175\b|penduduk|jiwa|\d{3,}/i);
 });

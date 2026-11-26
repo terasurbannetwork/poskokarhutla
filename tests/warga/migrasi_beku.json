@@ -184,5 +184,6 @@
   "0180_lp_komen.sql": "d00bce13b33deb866922987df6902d74316b1cbe23c415a4a3a6d6b5a32d4890",
   "0181_semai_sasaran.sql": "237ffd18d373a111d7202a548a90dad21a5a6710ec39fbf969669eedb5ccaaa2",
   "0182_semai_sasaran_indeks.sql": "8ae278b6ef766e78dcea0603b4cd11a76858cb523945db5f8573cecb2dbb974e",
-  "0183_lp_komen_putus.sql": "b5ecf86e5d8ca38e1a083a000f0bcfa2b6f2ee69eec7a940ffbcea4d26fba7e1"
+  "0183_lp_komen_putus.sql": "b5ecf86e5d8ca38e1a083a000f0bcfa2b6f2ee69eec7a940ffbcea4d26fba7e1",
+  "0184_pw_status_prakiraan.sql": "504b6805053602ff52438e241a91128f3d58fb9f14617b6053a96bd92e2feb16"
 }
