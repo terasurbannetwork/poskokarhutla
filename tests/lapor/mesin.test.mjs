@@ -402,7 +402,9 @@ test("lapor orang hilang lewat obrolan (pemilik 25 Nov 2026): identitas, lokasi 
   await kirim({form: {tanggal: "1970-02-30", jam: ""}, saluran: "web"}); assert.match(h.balasan, /tidak sah/, "tanggal yang tidak ada ditolak");
   await kirim({form: {tanggal: "1970-01-01", jam: ""}, saluran: "web"}); assert.equal(sesi.cari.waktu, "1 Januari 1970");
   assert.equal((await kirim("123")).sesi.status, "cari_nomor", "nomor tidak sah ditanya ulang");
-  await kirim("0812 3456 7890"); assert.equal(sesi.cari.nomor, "6281234567890"); assert.equal(sesi.status, "cari_kontak"); assert.deepEqual(h.pilihan, ["Pakai nomor saya"]);
+  assert.equal((await kirim("0812 3456 7890")).sesi.status, "cari_nomor", "nomor contoh berderet 1234567 dinilai aneh (pemilik 26 Nov 2026)");
+  assert.equal((await kirim("0813 9509 8825 21")).sesi.status, "cari_nomor", "terlalu panjang dinilai aneh");
+  await kirim("0813 1122 4455"); assert.equal(sesi.cari.nomor, "6281311224455"); assert.equal(sesi.status, "cari_kontak"); assert.deepEqual(h.pilihan, ["Pakai nomor saya"]);
   assert.equal((await kirim("12")).sesi.status, "cari_kontak", "nomor kontak tidak sah ditanya ulang");
   await kirim("1"); assert.equal(sesi.cari.kontak, "6280000000000", "pakai nomor pelapor"); assert.equal(sesi.status, "cari_tempat"); assert.match(h.balasan, /nama jalan/);
   assert.equal((await kirim("ok")).sesi.status, "cari_tempat", "tempat terlalu pendek ditanya ulang");
@@ -411,7 +413,7 @@ test("lapor orang hilang lewat obrolan (pemilik 25 Nov 2026): identitas, lokasi 
   await kirim("1");
   assert.equal(sesi.status, "cari_terkirim"); assert.ok(!h.kirim, "bukan laporan bertiket");
   assert.deepEqual(sesi.cari, {nama: "Siti Aminah"}, "ciri, nomor, hubungan tidak tertinggal di salinan sesi");
-  assert.deepEqual(h.kirimCari, {nama_dicari: "Siti Aminah", ciri: "Perempuan, 9 tahun, tinggi 150 cm, pakaian terakhir kaos merah", lokasi_terakhir: "Desa/Kel. Sukamaju, Kec. Cibinong", waktu_terakhir: "1 Januari 1970", nomor_dicari: "6281234567890", hubungan: "Anak", kab: "32.01"});
+  assert.deepEqual(h.kirimCari, {nama_dicari: "Siti Aminah", ciri: "Perempuan, 9 tahun, tinggi 150 cm, pakaian terakhir kaos merah", lokasi_terakhir: "Desa/Kel. Sukamaju, Kec. Cibinong", waktu_terakhir: "1 Januari 1970", nomor_dicari: "6281311224455", hubungan: "Anak", kab: "32.01"});
   assert.deepEqual(h.kirimTemu, {panggilan: "Ami", nomor_kontak: "6280000000000", tempat_tunggu: "Posko Masjid Al Ikhlas, Jl. Raya Cibinong No 12", foto_id: "f".repeat(16),
     foto_ids: ["f".repeat(16), "e".repeat(16), ...Array.from({length: 8}, (_, i) => String(i + 3).padStart(16, "0"))]});
   assert.match(h.balasan, /mengantar ke Posko Masjid Al Ikhlas/);
@@ -422,4 +424,23 @@ test("lapor orang hilang lewat obrolan (pemilik 25 Nov 2026): identitas, lokasi 
   assert.equal(draf.sesi.cari, undefined, "jawaban 'orang hilang' di tengah laporan lain tidak menimpa draf"); assert.equal(draf.sesi.status, "darurat_korban");
   const tombol = await obrol(["darurat", "1", "1", "Budi Santoso", L, "1", "lapor orang hilang"]);
   assert.ok(tombol.sesi.cari, "tombol Lapor orang hilang membuka obrolan baru");
+});
+
+test("lapor orang hilang di web (pemilik 26 Nov 2026): nama, panggilan, kelamin, umur satu kartu; tinggi dan berat satu kartu; kosong tetap null", async () => {
+  const W = async () => ({desa: "Sukamaju", kec: "Cibinong", kab: "Kab. Bogor", kabKode: "32.01", provKode: "32", kode: "32.01.01.2001", sekitar: []});
+  let sesi = null, pelapor = null, h;
+  const kirim = async teks => { h = await putaran({sesi, pelapor, pesan: {...(typeof teks === "string" ? {teks} : teks), wa: "6280000000000", saluran: "web"}, wilayah: W, kini: ++jam}); sesi = h.sesi; pelapor = h.pelapor; return h; };
+  for (const t of ["orang hilang", "1", "1", "Budi Santoso"]) await kirim(t);
+  await kirim({lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}}); await kirim("1");
+  assert.equal(sesi.status, "cari_nama"); assert.equal(h.form?.jenis, "isian");
+  assert.deepEqual(h.form.isian.map(x => x.nama), ["nama", "panggilan", "kelamin", "umur"]);
+  await kirim({form: {nama: "Siti Aminah", panggilan: "", kelamin: "Perempuan", umur: "9"}});
+  assert.equal(sesi.status, "cari_nama", "panggilan wajib"); assert.equal(h.form.isian[0].nilai, "Siti Aminah", "isian yang sudah diketik kembali terisi");
+  await kirim({form: {nama: "Siti Aminah", panggilan: "Ami", kelamin: "Perempuan", umur: "200"}}); assert.equal(sesi.status, "cari_nama", "umur di luar batas");
+  await kirim({form: {nama: "Siti Aminah", panggilan: "Ami", kelamin: "Perempuan", umur: ""}});
+  assert.equal(sesi.status, "cari_hubungan"); assert.deepEqual(sesi.cari.cr, {kelamin: "Perempuan", umur: null}, "umur kosong = null, bukan 0");
+  await kirim("1"); assert.equal(sesi.status, "cari_tinggi", "kelamin dan umur tidak ditanya lagi"); assert.deepEqual(h.form.isian.map(x => x.nama), ["tinggi", "berat"]);
+  await kirim({form: {tinggi: "20", berat: ""}}); assert.equal(sesi.status, "cari_tinggi", "tinggi di luar batas");
+  await kirim({form: {tinggi: "120", berat: ""}}); assert.equal(sesi.status, "cari_pakaian");
+  assert.equal(sesi.cari.cr.tinggi, 120); assert.equal(sesi.cari.cr.berat, null);
 });

@@ -354,3 +354,7 @@ export const langkahKronologi = jenis => (KRONOLOGI[jenis] || []).map(l => {
   opsi.splice(akhir < 0 ? opsi.length : akhir, 0, ["Lainnya", null]);
   return {...l, opsi};
 });
+
+/* nomor seluler Indonesia yang masuk akal: 62 8x lalu 7 sampai 10 angka (08xx 10 sampai 13 angka); angka sama 7 kali beruntun
+   atau deret naik/turun 7 angka (nomor contoh 0812 3456 7890) dianggap aneh dan diminta ulang (pemilik 26 Nov 2026) */
+export const nomorSeluler = n => /^628[1-9]\d{6,9}$/.test(String(n || "")) && !/(\d)\1{6}/.test(n) && !/0123456|1234567|2345678|3456789|9876543|8765432|7654321|6543210/.test(String(n).slice(2));

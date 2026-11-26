@@ -238,22 +238,25 @@ function tombolOpsi(label, ket, aksi, kelas = "") {
 const RE_LEWATI = /^(lewati|lewat)\b/i;
 /* isian bebas satu jawaban (pemilik 26 Nov 2026 "bagusin"): kotak bertoken, bukan textarea bawaan peramban; angka = satu baris papan angka;
    Lewati/Tidak tahu tombol kedua sejajar Kirim; hitungan huruf hanya muncul dekat batas */
+/* nomor tanpa awalan 62 yang masuk akal; sama dengan nomorSeluler di src/lapor_spek.js (pemilik 26 Nov 2026: "kalo dinilai aneh minta ulang") */
+const nomorSah = v => /^8[1-9]\d{6,9}$/.test(v) && !/(\d)\1{6}/.test(v) && !/0123456|1234567|2345678|3456789|9876543|8765432|7654321|6543210/.test(v);
+const NOMOR_ANEH = "Nomor WhatsApp itu tampaknya keliru. Periksa lagi, dimulai dengan 8, 9 sampai 12 angka.";
 const isiTeksBebas = (isi, j) => { const angka = j.minta === "angka", tel = j.minta === "telepon", maks = angka ? 3 : tel ? 20 : 300, dua = j.pilihan?.[0];
   const t = el(angka || tel ? "input" : "textarea", "lp-isian"); t.maxLength = maks; t.autocomplete = "off"; t.setAttribute("aria-label", "Jawaban");
   if (angka) { t.type = "text"; t.inputMode = "numeric"; t.pattern = "[0-9]*"; t.placeholder = "0"; }
-  else if (tel) { t.type = "tel"; t.inputMode = "tel"; t.placeholder = "0812 3456 7890"; }
+  else if (tel) { t.type = "tel"; t.inputMode = "numeric"; t.autocomplete = "tel-national"; t.maxLength = 13; t.placeholder = "812 3456 7890"; t.setAttribute("aria-label", "Nomor WhatsApp tanpa awalan +62"); }   // awalan +62 tetap seperti kartu Data pelapor (pemilik 26 Nov 2026)
   else { t.rows = 1; t.autocapitalize = "sentences"; t.placeholder = "Ketik di sini"; }
   const h = el("small", "lp-hitung"), k = el("button", "lp-utama", "Kirim"), bawah = el("div", `lp-isian-aksi${dua ? "" : " tunggal"}`); k.type = "button"; h.hidden = true;
   // kosong tidak pernah dikirim sebagai 0; validasi akhir (rentang, pola nomor) tetap di mesin Worker
-  const sah = () => angka ? /^\d{1,3}$/.test(t.value.trim()) : tel ? t.value.replace(/\D/g, "").length >= 9 : t.value.trim().length >= 1;
-  t.addEventListener("input", () => { if (angka) t.value = t.value.replace(/\D/g, ""); if (tel) t.value = t.value.replace(/[^\d+ -]/g, ""); const n = t.value.length; h.hidden = angka || tel || n < maks - 60; h.textContent = `${n}/${maks}`; t.removeAttribute("aria-invalid"); });
+  const sah = () => angka ? /^\d{1,3}$/.test(t.value.trim()) : tel ? nomorSah(t.value) : t.value.trim().length >= 1;
+  t.addEventListener("input", () => { if (angka) t.value = t.value.replace(/\D/g, ""); if (tel) { let v = t.value.replace(/\D/g, ""); if (v.startsWith("62")) v = v.slice(2); if (v.startsWith("0")) v = v.slice(1); t.value = v.slice(0, 13); } const n = t.value.length; h.hidden = angka || tel || n < maks - 60; h.textContent = `${n}/${maks}`; t.removeAttribute("aria-invalid"); });
   t.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing && sah()) { e.preventDefault(); k.click(); } });
-  k.addEventListener("click", () => { if (!sah()) { t.setAttribute("aria-invalid", "true"); t.focus(); return; } const v = t.value.trim(); kirim({teks: v, tampil: angka && j.satuan ? `${v} ${j.satuan}` : v}); });   // Kirim tetap tombol utama; kosong = kursor kembali ke kotak
+  k.addEventListener("click", () => { if (!sah()) { t.setAttribute("aria-invalid", "true"); if (tel) statusEl.textContent = NOMOR_ANEH; t.focus(); return; } const v = t.value.trim(); kirim({teks: v, tampil: angka && j.satuan ? `${v} ${j.satuan}` : tel ? `+62 ${v}` : v}); });   // Kirim tetap tombol utama; kosong = kursor kembali ke kotak
   if (dua) { const l = el("button", "lp-kedua", dua); l.type = "button"; l.addEventListener("click", () => kirim({teks: "1", tampil: dua})); bawah.append(l); }
   bawah.append(k);
   // satuan di kanan kotak angka (pemilik 26 Nov 2026: "di sebelah box nya ada kata tahun"); satuan dari mesin, bukan ditebak
   // angka dan telepon satu baris: kotak (dan satuannya) lalu tombol, tanpa ruang kosong di kanan (pemilik 26 Nov 2026: "kenapa dia hanya sendiri disitu")
-  if (angka || tel) { const baris = el("div", `lp-isian-baris${angka ? " angka" : ""}`), kotak = el("div", "lp-isian-satuan"); kotak.append(t); if (angka && j.satuan) kotak.append(el("span", null, j.satuan));
+  if (angka || tel) { const baris = el("div", `lp-isian-baris${angka ? " angka" : ""}`), kotak = el("div", tel ? "lp-nomor-isi lp-isian-tel" : "lp-isian-satuan"); if (tel) { t.className = ""; kotak.append(el("span", "lp-awalan", "+62")); } kotak.append(t); if (angka && j.satuan) kotak.append(el("span", null, j.satuan));
     baris.append(kotak, ...bawah.children); isi.append(baris, h); } else isi.append(t, h, bawah); };
 /* pilihan tinggi air: orang dewasa 170 cm dengan air setinggi pilihannya (pemilik 19 Nov 2026: "bagusin") */
 /* pilihan bertingkat tanpa ikon: batang naik, yang terisi sebanyak urutan pilihannya (besar kecilnya terlihat sekilas) */
@@ -278,9 +281,9 @@ function kartuPilihan(j) {
     let bawah = el("small", null, sub);
     if (lk) { bawah = el("span", "lp-langkah-label"); const t = el("b", null, `${lk[2]}/${lk[3]}`), r = el("span", "lp-langkah-rantai"); r.setAttribute("aria-hidden", "true");
       t.setAttribute("aria-label", `langkah ${lk[2]} dari ${lk[3]}`);
-      for (let x = 1; x <= Number(lk[3]); x++) r.append(el("i", x <= Number(lk[2]) ? "isi" : ""));
+      for (let x = 1; x <= Number(lk[3]); x++) r.append(el("i", x < Number(lk[2]) ? "isi" : x === Number(lk[2]) ? "kini" : ""));
       // sebaris dengan judul, "Cerita kejadian" jadi "Kronologis", "4 dari 8" jadi "4/8" (pemilik 25 Nov 2026)
-      bawah.append(el("span", "lp-langkah-nama", lk[1].replace(/^cerita kejadian$/i, "Kronologis")), t, r); jd.classList.add("sebaris"); }
+      bawah.append(el("span", "lp-langkah-nama", lk[1].replace(/^cerita kejadian$/i, "Kronologis")), r, t); jd.classList.add("sebaris"); }   // nama, bilah, hitungan (pemilik 26 Nov 2026: "bagusin lagi")
     jd.append(el("b", null, judulT), bawah); kp?.querySelector("svg")?.after(jd); } // judul = judul pertanyaan, di baris mana pun
   if (j.minta === "jenis" && j.kunci) { // kartu bergambar
     const g = el("div", "lp-jenis");
@@ -349,10 +352,12 @@ function kartuSetuju(j) {
   for (const [ik, t] of [["i-pesan", "Percakapan, nomor WhatsApp, lokasi, dan foto Anda dicatat untuk penanganan bencana."],
     ["i-orang", "Hanya petugas BNPB dan BPBD yang menangani yang bisa membacanya."], ["i-status", "Data Anda tidak ditampilkan ke publik."]]) { const li = el("li"); li.append(ikon(ik), t); ul.append(li); }
   atas.append(m, ul);
-  const d = el("div", "lp-opsi dua");
-  j.pilihan.forEach((o, i) => d.append(tombolOpsi(o, null, () => kirim({teks: String(i + 1), tampil: o}), i === 0 ? "utama" : "")));
-  const priv = el("button", "lp-catatan-kecil lp-tautan-polos", "Baca kebijakan privasi lengkap"); priv.type = "button"; priv.addEventListener("click", bukaPrivasi);
-  isi.append(atas, d, priv);
+  const d = el("div", "lp-opsi dua lp-setuju-aksi");
+  j.pilihan.forEach((o, i) => { const b = tombolOpsi(o, null, () => kirim({teks: String(i + 1), tampil: o}), i === 0 ? "utama" : ""); b.prepend(ikon(i === 0 ? "i-centang" : "i-tutup")); d.append(b); });
+  // kebijakan privasi: ikon seru berlingkar di kanan atas kartu, tanpa kalimat tautan (pemilik 26 Nov 2026)
+  const priv = el("button", "lp-setuju-info"); priv.type = "button"; priv.append(ikon("i-info")); priv.title = "Kebijakan privasi"; priv.setAttribute("aria-label", "Baca kebijakan privasi lengkap"); priv.addEventListener("click", bukaPrivasi);
+  isi.closest(".lp-langkah").classList.add("lp-langkah-setuju"); isi.closest(".lp-langkah").querySelector(".lp-langkah-kepala").append(priv);
+  isi.append(atas, d);
 }
 
 /* lanjutAwal: dipanggil dari tanyaNomor sebelum nomor dikenal (K65). Kolom WhatsApp bisa diisi; isian disimpan di idAwal dan
@@ -384,7 +389,7 @@ function kartuIdentitas(lanjutAwal = null) {
     if (peran === "bpbd" && (kab.value.trim().length < 3 || jab.value.trim().length < 2)) { statusEl.textContent = "Petugas BPBD, isi kabupaten/kota dan jabatan Anda."; return; }
     const form = {nama: nama.value.trim(), peran, kab: kab.value.trim(), jabatan: jab.value.trim()}, tampil = `${form.nama}, ${peran === "bpbd" ? `Petugas BPBD ${form.kab}` : "warga"}`;
     if (!lanjutAwal) return kirim({form, tampil});
-    if (!/^8\d{8,12}$/.test(ino.value)) { ino.focus(); statusEl.textContent = "Nomor WhatsApp dimulai dengan 8, misalnya 812 3456 7890."; return; }
+    if (!nomorSah(ino.value)) { ino.focus(); ino.setAttribute("aria-invalid", "true"); statusEl.textContent = NOMOR_ANEH; return; }
     idAwal = form; wadah.replaceChildren(); tambah("saya", `${tampil}\n+62 ${ino.value}`, {simpanKe: false});
     mulai(`62${ino.value}`, {diChat: true}).then(lanjutAwal);
   });
@@ -540,6 +545,41 @@ function kartuAngka(j) {
   const n = f.isian.length; daftar.style.setProperty("--kol", n === 4 ? 2 : Math.min(n, 3)); // kolom sesuai jumlah isian: tanpa sel kosong
   isi.closest(".lp-langkah").classList.add("lp-langkah-angka", n === 1 ? "satu" : "banyak"); // satu isian: kartu ringkas, tombol sebaris
   isi.append(daftar, el("p", "lp-catatan-kecil", "Biarkan ? bila belum tahu."), aksi);
+}
+
+/* kartu isian gabungan (lapor orang hilang): teks, pilihan, angka dalam satu kartu; kosong dikirim kosong, mesin membacanya "tidak tahu" (pemilik 26 Nov 2026: "digabung") */
+function kartuIsian(j) {
+  const f = j.form, judul = (j.inti || j.balasan)?.match(/\*([^*]+)\*/)?.[1]?.replace(/[.?]$/, "") || "Isi data";
+  const isi = kartu("i-orang", judul); isi.closest(".lp-langkah").classList.add("lp-langkah-gabung");
+  const kisi = el("div", "lp-gabung"), nilai = {}, pertama = [];
+  for (const x of f.isian) {
+    const lb = el(x.tipe === "pilihan" ? "div" : "label", `lp-isi${x.tipe === "pilihan" ? " lebar" : ""}`), atas = el("span", "lp-gabung-label");
+    atas.append(x.label, ...(x.wajib ? [] : [el("small", null, "boleh kosong")])); lb.append(atas);
+    nilai[x.nama] = x.nilai == null ? "" : String(x.nilai);
+    if (x.tipe === "pilihan") {
+      const seg = el("div", "lp-segmen lp-gabung-opsi"); seg.setAttribute("role", "group"); seg.setAttribute("aria-label", x.label);
+      for (const o of x.opsi) { const b = el("button", null, o); b.type = "button"; b.setAttribute("aria-pressed", String(nilai[x.nama] === o));
+        b.addEventListener("click", () => { nilai[x.nama] = o; seg.querySelectorAll("button").forEach(y => y.setAttribute("aria-pressed", String(y === b))); }); seg.append(b); }
+      lb.append(seg); pertama.push(seg.firstChild);
+    } else {
+      const inp = el("input"); inp.type = "text"; inp.value = nilai[x.nama]; inp.maxLength = x.maks && x.tipe === "teks" ? x.maks : 3;
+      if (x.tipe === "angka") { inp.inputMode = "numeric"; inp.placeholder = x.ket ? "?" : ""; inp.addEventListener("input", () => { inp.value = inp.value.replace(/\D/g, "").slice(0, 3); nilai[x.nama] = inp.value; }); }
+      else { inp.autocomplete = "off"; inp.addEventListener("input", () => { nilai[x.nama] = inp.value; }); }
+      if (x.satuan) { const w = el("span", "lp-gabung-satuan"); w.append(inp, el("span", null, x.satuan)); lb.append(w); } else lb.append(inp);
+      if (x.ket && x.tipe === "teks") lb.append(el("small", "lp-gabung-ket", x.ket));
+      pertama.push(inp);
+    }
+    kisi.append(lb);
+  }
+  const s = el("button", "lp-utama", f.kirim || "Lanjut"); s.type = "button"; s.append(ikon("i-panah"));
+  s.addEventListener("click", () => {
+    const kurang = f.isian.find(x => x.wajib && !String(nilai[x.nama]).trim());
+    if (kurang) { statusEl.textContent = `${kurang.label} wajib diisi.`; pertama[f.isian.indexOf(kurang)]?.focus(); return; }
+    const ringkas = f.isian.map(x => String(nilai[x.nama]).trim() ? `${x.label} ${nilai[x.nama]}${x.satuan ? ` ${x.satuan}` : ""}` : `${x.label} tidak tahu`).join(", ");
+    kirim({form: {...nilai}, tampil: ringkas});
+  });
+  isi.append(kisi, s);
+  (pertama.find(e => e.tagName === "INPUT" && !e.value) || pertama[0])?.focus();
 }
 
 function kartuWaktu(j) {
@@ -702,18 +742,25 @@ function kartuFoto(j) {
 
 /* foto orang dicari (pemilik 26 Nov 2026): satu foto wajah, boleh dari galeri atau foto lama; tanpa syarat kamera, waktu, atau lokasi, dan tanpa GPS dikirim */
 function kartuFotoCari(j) {
-  // sampai 10 foto (pemilik 26 Nov 2026), kisi pratinjau seperti kartuFoto; Lewati sebelum ada foto, Lanjut sesudahnya. Batas juga di mesin dan rute unggah
+  // sampai 10 foto (pemilik 26 Nov 2026); susunan meniru kartu foto laporan kejadian: hitungan berketerangan, kisi, satu baris aksi (pemilik 26 Nov 2026: "tiru yang laporan kejadian")
   if (j.pilihan?.[0] === "Lewati") { cache.fotoCari = []; simpanCache(); }   // mesin belum menerima foto: pratinjau lama dari laporan lain dibuang
   const MAKS = 10, ada = cache.fotoCari || [], isi = kartu("foto", "Foto orang yang dicari"), kisi = el("div", "lp-foto-kisi");
-  const masukan = el("input"); masukan.type = "file"; masukan.accept = "image/jpeg,image/*"; masukan.hidden = true;
-  for (const src of ada) { const fig = el("figure", "lp-foto tanpa-titik"), g = el("div", "lp-foto-gambar"), im = el("img"); im.src = src; im.alt = "Foto orang yang dicari"; g.append(im); fig.append(g); kisi.append(fig); }
+  isi.closest(".lp-langkah").classList.add("lp-langkah-foto");
+  const masukan = el("input"); masukan.type = "file"; masukan.accept = "image/jpeg,image/*"; masukan.hidden = true;   // galeri boleh: foto lama orang yang dicari
+  const kamera = el("input"); kamera.type = "file"; kamera.accept = "image/jpeg,image/*"; kamera.capture = "user"; kamera.hidden = true;
+  ada.forEach((src, i) => { const fig = el("figure", "lp-foto tanpa-titik"), g = el("div", "lp-foto-gambar"), im = el("img"); im.src = src; im.alt = `Foto ${i + 1} orang yang dicari`;
+    g.append(im); const ket = el("div", "lp-foto-ket"); ket.append(el("span", "lp-pil selesai", `Foto ${i + 1}`), el("small", null, "Hanya dilihat petugas")); fig.append(g, ket); kisi.append(fig); });
   if (ada.length < MAKS) { const z = el("button", `lp-foto-ajak${ada.length ? " kecil" : ""}`); z.type = "button";
-    z.append(ikon(ada.length ? "i-plus" : "i-kamera"), el("b", null, ada.length ? "Tambah foto" : "Pilih foto"), el("small", null, ada.length ? `Sisa ${MAKS - ada.length} foto` : "Dari galeri atau kamera. Pilih yang wajahnya terlihat jelas."));
+    z.append(ikon(ada.length ? "i-plus" : "i-kamera"), el("b", null, ada.length ? "Tambah foto" : "Foto wajah yang jelas"), el("small", null, ada.length ? `Sisa ${MAKS - ada.length} foto` : "Foto lama dari galeri boleh. Pilih yang wajahnya terlihat jelas."));
     z.addEventListener("click", () => masukan.click()); kisi.append(z); }
-  masukan.addEventListener("change", () => { if (masukan.files[0]) unggahFoto(masukan.files[0], {cari: true}); });
-  const hitung = el("p", "lp-foto-hitung"); hitung.append(ikon("i-kamera"), `${ada.length} dari ${MAKS} foto`);
-  const lanjut = el("div", "lp-opsi"); (j.pilihan || []).forEach((o, i) => { const b = tombolOpsi(o, j.ket?.[i], () => kirim({teks: String(i + 1), tampil: o}), ada.length ? "utama" : ""); lanjut.append(b); });
-  isi.append(hitung, kisi, lanjut, masukan);
+  for (const m of [masukan, kamera]) m.addEventListener("change", () => { if (m.files[0]) unggahFoto(m.files[0], {cari: true}); });
+  const hitung = el("p", "lp-foto-hitung"); hitung.append(ikon("i-kamera"), `${ada.length} dari ${MAKS} foto`, el("small", null, "Foto memudahkan petugas dan relawan mengenali orang yang Anda cari."));
+  const galeri = el("button", "lp-utama"); galeri.type = "button"; galeri.append(ikon("i-plus"), "Pilih dari galeri"); galeri.addEventListener("click", () => masukan.click());
+  const potret = el("button", "lp-kedua"); potret.type = "button"; potret.append(ikon("i-kamera"), "Ambil foto"); potret.addEventListener("click", () => kamera.click());
+  if (ada.length >= MAKS) galeri.disabled = potret.disabled = true;
+  const aksi = el("div", "lp-aksi-dua lp-foto-aksi"); aksi.append(galeri, potret);
+  (j.pilihan || []).forEach((o, i) => { const b = tombolOpsi(o, j.ket?.[i], () => kirim({teks: String(i + 1), tampil: o}), "lp-foto-lanjut"); b.prepend(ikon("i-panah")); aksi.append(b); });
+  isi.append(hitung, kisi, aksi, masukan, kamera);
 }
 
 /* layar terima kasih sesudah laporan terkirim (pemilik 19 Nov 2026: "harusnya ada animasi terima kasih, kaya waktu pertama kali buka"):
@@ -824,6 +871,7 @@ function terapkan(j, {dariCache = false} = {}) {
   else if (j.minta === "foto_cari") kartuFotoCari(j);
   else if (j.minta?.startsWith("tempat")) kartuTempat(j);
   else if (j.minta === "antar") kartuAntar(j);
+  else if (j.form?.jenis === "isian") kartuIsian(j);
   else if (j.form?.isian?.[0]?.tipe === "tanggal") kartuWaktu(j);
   else if (j.form?.isian?.[0]?.nama === "rt") kartuRtRw(j);
   else if (j.form) kartuAngka(j);
@@ -1749,7 +1797,7 @@ function kabarWarga(kartu) {
     f.append(ta, nomor, bawah, pesan);
     f.addEventListener("submit", async e => {
       e.preventDefault(); pesan.textContent = "";
-      if (!wa && !/^8\d{8,12}$/.test(iN.value)) { pesan.textContent = "Isi nomor WhatsApp yang dimulai dengan 8, misalnya 812 3456 7890."; return iN.focus(); }
+      if (!wa && !nomorSah(iN.value)) { pesan.textContent = NOMOR_ANEH; return iN.focus(); }
       const pakai = wa ? nomorKetik() : {wa: `62${iN.value}`};
       kirimB.disabled = true;
       try {
@@ -2525,7 +2573,7 @@ iNomor.addEventListener("input", () => { let v = iNomor.value.replace(/\D/g, "")
 iNomor.addEventListener("beforeinput", e => { if (e.inputType === "insertText" && e.data && /\D/.test(e.data)) e.preventDefault(); });
 $("fNomor").addEventListener("submit", e => {
   e.preventDefault();
-  if (!/^8\d{8,12}$/.test(iNomor.value)) { iNomor.setCustomValidity("Nomor WhatsApp dimulai dengan 8, misalnya 812 3456 7890"); iNomor.reportValidity(); return; }
+  if (!nomorSah(iNomor.value)) { iNomor.setCustomValidity(NOMOR_ANEH); iNomor.reportValidity(); return; }
   mulai(`62${iNomor.value}`);
 });
 const tersimpan = simpan.baca("lapor-wa");

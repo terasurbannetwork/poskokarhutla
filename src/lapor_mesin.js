@@ -4,7 +4,7 @@
    putaran({sesi, pelapor, pesan: {teks?, lokasi?}, model, kini}) -> {sesi, pelapor, balasan, inti, pilihan, kirim}
    - sesi null/selesai = sesi baru. pelapor = identitas per nomor ({wa, nama, peran, kab, jabatan}) atau null.
    - kirim = true saat laporan baru saja dikirim (penyimpan menerbitkan nomor, tiket, PDF). */
-import {JENIS, KELOMPOK, ISIAN, isianNama, berlaku, berlakuSesi, KRONOLOGI, rangkaiKronologi, opsiBerlaku, langkahKronologi} from "./lapor_spek.js";
+import {JENIS, KELOMPOK, ISIAN, isianNama, berlaku, berlakuSesi, KRONOLOGI, rangkaiKronologi, opsiBerlaku, langkahKronologi, nomorSeluler} from "./lapor_spek.js";
 import {samarkan} from "./samarkan.js";
 import {waktuKlienSah, BATAS as BATAS_LURING} from "../public/inti/luring_spek.js";   // Lapor tanpa sinyal (LR-09)
 /* pilihan jenis tanpa "Lainnya" (pemilik 21 Nov 2026: "Hilangkan lainnya"); id lainnya tetap di JENIS untuk laporan lama */
@@ -526,8 +526,22 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     return jawab(`${kepala}*${i.label}*\n${i.tanyaJenis?.[jn] || i.tanya}`, ob.map(o => o[0]), false, null, ob.map(o => o[1])); };
   const CARI_KELAMIN = ["Laki-laki", "Perempuan", "Tidak tahu"];
   const CARI_HUB = ["Anak", "Orang tua", "Suami atau istri", "Saudara", "Teman atau tetangga", "Lainnya"], CARI_WAKTU = ["Hari ini", "Kemarin", "2 sampai 3 hari lalu", "Lebih dari 3 hari lalu"];
-  const tanyaCari = (langkah, kepala = "") => {
+  const tanyaCari = (langkah, kepala = "", isi = null) => {
     sesi.status = `cari_${langkah}`; const k = kepala ? `${kepala}\n\n` : "";
+    // web: nama lengkap, panggilan, jenis kelamin, umur satu kartu; tinggi dan berat satu kartu (pemilik 26 Nov 2026: "digabung"); WA tetap satu per satu
+    const web = pesan?.saluran === "web", v = n => isi ? isi[n] ?? null : null;
+    if (web && langkah === "nama") { const h = jawab(`${k}*Siapa orang yang Anda cari?*\nTulis nama sesuai KTP atau kartu keluarga bila tahu.`);
+      sesi.form = h.form = {jenis: "isian", kirim: "Lanjut", isian: [
+        {nama: "nama", label: "Nama lengkap", tipe: "teks", wajib: true, maks: 80, nilai: v("nama")},
+        {nama: "panggilan", label: "Nama panggilan", tipe: "teks", wajib: true, maks: 40, ket: "Nama yang biasa dipakai keluarga atau tetangga", nilai: v("panggilan")},
+        {nama: "kelamin", label: "Jenis kelamin", tipe: "pilihan", opsi: ["Laki-laki", "Perempuan", "Tidak tahu"], wajib: true, nilai: v("kelamin")},
+        {nama: "umur", label: "Umur", tipe: "angka", satuan: "tahun", min: 0, maks: 120, ket: "Kosongkan bila tidak tahu", nilai: v("umur")}]};
+      sesi.isiAwal = h.isiAwal = null; return h; }
+    if (web && langkah === "tinggi") { const h = jawab(`${k}*Tinggi dan berat badan ${sesi.cari.nama}*\nPerkiraan saja. Kosongkan bila tidak tahu.`);
+      sesi.form = h.form = {jenis: "isian", kirim: "Lanjut", isian: [
+        {nama: "tinggi", label: "Tinggi badan", tipe: "angka", satuan: "cm", min: 30, maks: 250, nilai: v("tinggi")},
+        {nama: "berat", label: "Berat badan", tipe: "angka", satuan: "kg", min: 2, maks: 300, nilai: v("berat")}]};
+      sesi.isiAwal = h.isiAwal = null; return h; }
     // isian teks wajib tampil sebagai kartu isian di web (minta "teks"), tanpa Lewati (pemilik 26 Nov 2026)
     if (langkah === "nama") return jawab(`${k}*Siapa nama lengkap orang yang Anda cari?*\nTulis sesuai KTP atau kartu keluarga bila tahu.`, null, false, "teks");
     if (langkah === "panggilan") return jawab(`${k}*Nama panggilan ${sesi.cari.nama}*\nNama yang biasa dipakai keluarga atau tetangga.`, null, false, "teks");   // wajib, tanpa Lewati (K-baru, pemilik 26 Nov 2026: "Jangan ada lewati ya cukup kirim ya. Wajib.")   // pemilik 25 Nov 2026: "Nama lengkap dulu... baru nama panggilan"
@@ -641,6 +655,25 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
   /* ----- lapor orang hilang ----- */
   if (sesi.status?.startsWith("cari_")) {
     const p = pilih(), c = sesi.cari;
+    if (sesi.status === "cari_nama" && pesan?.form) {   // kartu web: semua isian sekaligus, kosong tetap null
+      const f = pesan.form, bersih = (x, m) => samarkan(String(x ?? "")).replace(/\[[^\]]*\]/g, "").trim().slice(0, m);
+      const nama = bersih(f.nama, 80), pg = bersih(f.panggilan, 40), kel = ["Laki-laki", "Perempuan", "Tidak tahu"].includes(f.kelamin) ? f.kelamin : null;
+      const um = String(f.umur ?? "").trim(), n = um === "" ? null : /^\d{1,3}$/.test(um) ? Number(um) : NaN, isi = {nama, panggilan: pg, kelamin: kel, umur: um};
+      if (nama.length < 2 || /\d/.test(nama) || KATA_CARI.test(nama) || /^lapor\b/i.test(nama)) return tanyaCari("nama", "Tulis nama lengkap orang yang dicari, tanpa angka.", isi);
+      if (pg.length < 2 || /\d/.test(pg)) return tanyaCari("nama", "Nama panggilan wajib diisi, tanpa angka. Bila sama, tulis nama yang sama.", isi);
+      if (!kel) return tanyaCari("nama", "Pilih jenis kelamin.", isi);
+      if (n !== null && !(n >= 0 && n <= 120)) return tanyaCari("nama", "Umur ditulis dengan angka 0 sampai 120, atau dikosongkan.", isi);
+      c.nama = nama; c.panggilan = pg.toLowerCase() !== nama.toLowerCase() ? pg : null; c.cr = {kelamin: kel === "Tidak tahu" ? null : kel, umur: n};
+      return tanyaCari("hubungan");
+    }
+    if (sesi.status === "cari_tinggi" && pesan?.form) {
+      const isi = {tinggi: String(pesan.form.tinggi ?? "").trim(), berat: String(pesan.form.berat ?? "").trim()}, cr = (c.cr ||= {});
+      const baca = (x, lo, hi) => x === "" ? null : /^\d{1,3}$/.test(x) && +x >= lo && +x <= hi ? +x : NaN;
+      const tg = baca(isi.tinggi, 30, 250), br = baca(isi.berat, 2, 300);
+      if (Number.isNaN(tg)) return tanyaCari("tinggi", "Tinggi badan antara 30 dan 250 cm, atau dikosongkan.", isi);
+      if (Number.isNaN(br)) return tanyaCari("tinggi", "Berat badan antara 2 dan 300 kg, atau dikosongkan.", isi);
+      cr.tinggi = tg; cr.berat = br; return tanyaCari("pakaian");
+    }
     if (sesi.status === "cari_nama") {
       const nama = samarkan(teks).replace(/\[[^\]]*\]/g, "").trim().slice(0, 80);
       if (nama.length < 2 || /\d/.test(nama)) return tanyaCari("nama", "Tulis namanya tanpa angka.");
@@ -654,7 +687,8 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     }
     if (sesi.status === "cari_hubungan") {
       const h = p >= 0 ? CARI_HUB[p] : teks.trim().slice(0, 60); if (h.length < 2) return tanyaCari("hubungan", "Pilih salah satu.");
-      c.hubungan = h; c.cr = {}; return tanyaCari("kelamin");
+      c.hubungan = h; if (c.cr && "kelamin" in c.cr) return tanyaCari("tinggi");   // web: kelamin dan umur sudah di kartu nama
+      c.cr = {}; return tanyaCari("kelamin");
     }
     if (sesi.status === "cari_kelamin") {
       const g = p === 0 || /^(laki|pria|cowo|l$)/i.test(teks.trim()) ? "Laki-laki" : p === 1 || /^(perempuan|wanita|cewe|p$)/i.test(teks.trim()) ? "Perempuan" : p === 2 || KATA_BELUM.test(teks) ? null : undefined;
@@ -708,13 +742,13 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     if (sesi.status === "cari_nomor") {
       if (p === 0 || KATA_BELUM.test(teks)) { c.nomor = null; return tanyaCari("kontak"); }
       const d = teks.replace(/\D/g, ""), n = d.startsWith("62") ? d : d.startsWith("0") ? `62${d.slice(1)}` : d.startsWith("8") ? `62${d}` : "";
-      if (!/^628\d{7,12}$/.test(n)) return tanyaCari("nomor", "Nomor belum sah. Contoh 0812 3456 7890, atau pilih *Tidak tahu*.");
+      if (!nomorSeluler(n)) return tanyaCari("nomor", "Nomor itu tampaknya keliru. Periksa lagi dan tulis ulang, misalnya 0813 1122 4455, atau pilih *Tidak tahu*.");
       c.nomor = n; return tanyaCari("kontak");
     }
     if (sesi.status === "cari_kontak") {
-      if ((p === 0 || /^(pakai )?nomor saya$/i.test(teks.trim())) && /^628\d{7,12}$/.test(String(pesan?.wa || ""))) { c.kontak = pesan.wa; return tanyaCari("tempat"); }
+      if ((p === 0 || /^(pakai )?nomor saya$/i.test(teks.trim())) && /^628\d{7,12}$/.test(String(pesan?.wa || ""))) { c.kontak = pesan.wa; return tanyaCari("tempat"); }   // nomor pelapor sudah dikenali sesi, tidak dinilai ulang
       const d = teks.replace(/\D/g, ""), n = d.startsWith("62") ? d : d.startsWith("0") ? `62${d.slice(1)}` : d.startsWith("8") ? `62${d}` : "";
-      if (!/^628\d{7,12}$/.test(n)) return tanyaCari("kontak", "Nomor belum sah. Contoh 0812 3456 7890, atau pilih *Pakai nomor saya*.");
+      if (!nomorSeluler(n)) return tanyaCari("kontak", "Nomor itu tampaknya keliru. Periksa lagi dan tulis ulang, misalnya 0813 1122 4455, atau pilih *Pakai nomor saya*.");
       c.kontak = n; return tanyaCari("tempat");
     }
     if (sesi.status === "cari_tempat") {

@@ -3578,3 +3578,38 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 .lp-isian-baris .lp-kedua,.lp-isian-baris .lp-utama{min-height:48px;margin:0}
 .lp-isian-baris:not(.angka) .lp-isian-satuan input.lp-isian{width:100%}
 @media (max-width:560px){.lp-isian-baris,.lp-isian-baris:not(.angka){grid-template-columns:auto minmax(0,1fr)}.lp-isian-baris > .lp-isian-satuan{grid-column:1 / -1}}
+/* kartu isian gabungan lapor orang hilang: dua kolom di layar lebar, pilihan selebar kartu (pemilik 26 Nov 2026) */
+.lp-gabung{display:grid;gap:12px;margin-bottom:12px}
+@media (min-width:700px){.lp-gabung{grid-template-columns:repeat(2,minmax(0,1fr))}.lp-gabung .lebar{grid-column:1 / -1}}
+.lp-gabung-label{display:flex;align-items:baseline;gap:6px}
+.lp-gabung-label small{font-weight:500;color:var(--ink2)}
+.lp-gabung-ket{font-weight:500;color:var(--ink2)}
+.lp-gabung-opsi{grid-template-columns:repeat(3,minmax(0,1fr))}
+.lp-gabung-satuan{display:flex;align-items:center;gap:8px;border-radius:10px;background:var(--surface);padding-right:12px}
+.lp-gabung-satuan input{flex:1;min-width:0}
+.lp-gabung-satuan span{font-weight:600;color:var(--ink2)}
+.lp-langkah-gabung .lp-utama{width:100%}
+/* isian nomor WhatsApp di chat: awalan +62 seperti kartu Data pelapor (pemilik 26 Nov 2026) */
+.lp-isian-tel{flex:1;min-width:0;min-height:52px}
+.lp-isian-tel input{font-size:1.125rem}
+/* kartu Persetujuan data (pemilik 26 Nov 2026: "bagusin"): tiga butir jadi ubin berikon, tombol berikon, privasi ikon di kanan atas */
+.lp-setuju-info{margin-left:auto;display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:50%;background:none;color:var(--brand2);cursor:pointer}
+.lp-setuju-info svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.lp-setuju-info:hover{background:var(--surface)}
+.lp-setuju-info:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.lp-langkah-setuju .lp-setuju{grid-template-columns:88px minmax(0,1fr);gap:16px;margin-bottom:14px}
+.lp-langkah-setuju .lp-setuju ul{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.lp-langkah-setuju .lp-setuju li{flex-direction:row;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:var(--surface);font-size:.8125rem}
+.lp-langkah-setuju .lp-setuju li svg{width:32px;height:32px;padding:7px;border-radius:10px;background:var(--card);margin:0}
+.lp-setuju-aksi button{display:flex;align-items:center;justify-content:center;gap:8px}
+.lp-setuju-aksi button svg{width:18px;height:18px;flex:none}
+@media (max-width:560px){.lp-langkah-setuju .lp-setuju{grid-template-columns:1fr}.lp-langkah-setuju .lp-setuju > div:first-child{display:none}}
+/* penanda langkah kronologis (pemilik 26 Nov 2026: "bagusin lagi"): nama, bilah ruas, hitungan; langkah yang sedang diisi lebih panjang */
+.lp-kepala-teks.sebaris .lp-langkah-label{gap:10px;padding:6px 12px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.lp-langkah-label .lp-langkah-nama{font-weight:700;color:var(--ink)}
+.lp-langkah-label b{padding-inline-start:0;border:0;color:var(--ink2);font-weight:700}
+.lp-langkah-rantai{gap:4px}
+.lp-langkah-rantai i{width:12px;height:6px;border-radius:3px;background:var(--line);transition:width .2s ease}
+.lp-langkah-rantai i.isi{background:var(--brand2)}
+.lp-langkah-rantai i.kini{width:22px;background:var(--brand-accent)}
+@media (prefers-reduced-motion:reduce){.lp-langkah-rantai i{transition:none}}
