@@ -8,7 +8,9 @@ import { berkas, baca, muatDaftar, banding, tegas, buangKomentarJs } from './fix
 
 const PETA = /new\s+maplibregl\.Map\b/
 const PANEL = /\b[a-z0-9]+-(?:panel|lapis|peringkat|legenda)\b|data-panel\b|["'#]lapis\b/
-const MEKANISME = /geser_lapis|geserLapis|geserPanel|panel_geser|\btarik\w*\s*\(|banjir\/tarik|\/tarik\.js|\bgeser\w*\s*\(/
+/* Mekanisme yang diakui disebut namanya, bukan pola nama fungsi: 26 Nov 2026 `tarikKotak()` (menarik pesan masuk di /lapor) lolos sebagai
+   "tarik" sehingga panel Alun-alun tanpa pegangan tidak tertangkap. */
+const MEKANISME = /geser_lapis|geserLapis|geserPanel|panel_geser|tarik_lebar|TarikLebar|data-tarik-lebar-kunci|banjir\/tarik|\/tarik\.js|\bpasangTarik\s*\(|class(?:Name)?\s*=\s*["'`][^"'`]*\btarik\b/
 const PETA_TANPA_MEKANISME = (js, htmlPemuat) => {
   const s = buangKomentarJs(js)
   return PETA.test(s) && PANEL.test(s) && !MEKANISME.test(s) && !htmlPemuat.some((h) => MEKANISME.test(h))
@@ -37,4 +39,6 @@ test('fixture jahat tertangkap, sah lolos', () => {
   assert.ok(!PETA_TANPA_MEKANISME(jahat + ' geserPanel(el)', []))
   assert.ok(!PETA_TANPA_MEKANISME('new maplibregl.Map({})', []), 'peta tanpa panel tidak diwajibkan')
   assert.ok(!PETA_TANPA_MEKANISME('// new maplibregl.Map x-panel', []))
+  assert.ok(PETA_TANPA_MEKANISME(jahat + ' async function tarikKotak() {} tarikKotak()', []), 'nama fungsi berawalan tarik bukan pegangan tarik')
+  assert.ok(!PETA_TANPA_MEKANISME(jahat, ['<aside data-tarik-lebar-kunci="x"><script src="/inti/tarik_lebar.js">']), 'modul tarik_lebar bersama')
 })

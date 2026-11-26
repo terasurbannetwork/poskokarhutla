@@ -18,7 +18,7 @@
 <script src="/halaman_awal.js" data-tema></script>
 <link href="/bnpb/bnpb.css" rel="stylesheet">
 <link href="/inti/kartu.css?v=2" rel="stylesheet">
-<link href="/lapor/lapor.css?v=214" rel="stylesheet">
+<link href="/lapor/lapor.css?v=215" rel="stylesheet">
 <link href="/lapor/selamat.css?v=3" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
@@ -242,7 +242,7 @@
     <div class="lp-alun-peta" id="petaAlun">
       <div class="lp-peta-alun"></div>
       <div class="lp-saring" id="saringAlun" role="tablist" aria-label="Jenis bencana"></div>
-      <aside class="lp-alun-panel" aria-label="Daftar kejadian dan status prakiraan">
+      <aside class="lp-alun-panel" aria-label="Daftar kejadian dan status prakiraan" data-tarik-lebar-kunci="lapor-alun">
         <div class="lp-alun-mode" id="modeAlun" role="tablist" aria-label="Tampilan peta">
           <button type="button" role="tab" data-mode="kejadian" aria-selected="true"><svg aria-hidden="true"><use href="#i-kejadian"/></svg><span>Kejadian</span></button>
           <button type="button" role="tab" data-mode="peringatan" aria-selected="false"><svg aria-hidden="true"><use href="#i-sirene"/></svg><span>Peringatan</span></button>
@@ -424,6 +424,7 @@
 <script src="/inti/exif.js" defer></script>
 <script src="/inti/foto_kecil.js" defer></script>
 <script src="/inti/antre.js" defer></script>
+<script src="/inti/tarik_lebar.js?v=1" defer></script>
 <script src="/bagi.js" defer></script>
 <script type="module" src="/lapor/lapor.js?v=173"></script>
 <script type="module" src="/lapor/peringatan.js?v=5"></script>

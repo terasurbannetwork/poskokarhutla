@@ -658,7 +658,7 @@ input.lp-isian{font-weight:700;font-size:1.125rem;font-variant-numeric:tabular-n
 .lp-alun-kartu.sorot{animation:lp-sorot 1.6s ease-out}
 @keyframes lp-sorot{0%,40%{box-shadow:0 0 0 3px var(--head-bg)}}
 @media (min-width:900px){
-  #lAlun #saringAlun{left:452px;right:16px;top:16px}
+  #lAlun #saringAlun{left:calc(var(--tarik-lebar,420px) + 32px);right:16px;top:16px}   /* ikut lebar panel yang ditarik (public/inti/tarik_lebar.js) */
   .lp-alun-panel{top:16px;left:16px;right:auto;bottom:auto;width:420px;max-height:calc(100% - 32px)}   /* setinggi isinya */
 }
 .lp-alun-warga{display:inline-flex;align-items:center;gap:6px;margin:4px 0 0;padding:4px 10px;justify-self:start;border-radius:999px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2);font-size:.75rem;font-weight:800}
