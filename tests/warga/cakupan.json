@@ -1290,6 +1290,7 @@
     "POST /api/siklus/kejadian/:id/lifeline": "T2 tetapkan: bukti atau catatan wajib",
     "GET /api/siklus/kaji-ulang/kandidat": "T17 kandidat Q1",
     "GET /api/siklus/kaji-ulang/rekomendasi": "T16 daftar F-7",
+    "GET /api/siklus/kaji-ulang/disahkan": "KU-08 BP baca: daftar disahkan per kab wilayah",
     "GET /api/siklus/kejadian/:id/kaji-ulang": "T14 BP: hanya kab wilayahnya",
     "POST /api/siklus/kejadian/:id/kaji-ulang": "mulai: 201, kedua kali 409",
     "POST /api/siklus/kejadian/:id/kaji-ulang/pelajaran": "pelajaran dan rekomendasi: oleh dari sesi",

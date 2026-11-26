@@ -2,13 +2,13 @@
    TIDAK menyentuh env.DB: SQL ada di bagian Kaji ulang src/hak.js. Digabung ke RUTE_SIKLUS (src/siklus.js); BPBD lewat /api/instansi/siklus/...
    `oleh` selalu dari sesi (c.h.oleh, staf:<16 heks> atau admin:<12 heks>, muat batas 40 dl_tindak), tidak pernah dari badan.
    Pemetaan pelaku: Super Admin, Pusdalops, Koordalops = ku_tulis (melihat nama pengisi); Pimpinan, moderator biasa, BP = ku_baca (tanpa kolom oleh).
-   BP hanya kab wilayahnya dan hanya kaji ulang yang disahkan, tanpa potret (potret memuat semua kab); di luar itu 404 sama dengan tidak ada.
+   BP hanya kab wilayahnya dan hanya kaji ulang yang disahkan: pelajaran dan rekomendasi dari potret beku, tanpa draf linimasa (memuat semua kab); di luar itu 404 sama dengan tidak ada.
    Impor: tests harus mengimpor src/worker.js SEBELUM modul ini (siklus.js dan worker.js melingkar lewat sla.js). */
 import {json, gagal} from "./worker.js";
 import {tolak} from "./pusdalops_umum.js";
 import * as H from "./hak.js";
 import {rakitKajiUlang, KU_MAKS_POTRET} from "./kaji_ulang_rakit.js";
-import {kab4Dari} from "./siklus_kab.js";
+import {kab4Dari, daftarKab4} from "./siklus_kab.js";
 import {NO, bodi, masukan, lihat, lihatTulis, dalamBP, ujiLaju, polos} from "./siklus_kejadian.js";
 
 const HARI = 864e5, MAKS_LAJU = 120, JENDELA_LAJU = 10 * 60e3, MIN_TENGGAT = 7, MAKS_TENGGAT = 365, MIN_SISA_POTRET = 5000;
@@ -69,7 +69,13 @@ async function lihatKaji(c) {
   return aman(async () => {
     const p = pelaku(c), q = c.url.searchParams;
     const d = await H.kuBaca(c.env, p, id);
-    if (c.h.tipe === "bp") return d?.kaji.status === "disahkan" ? json(await namai(c, {kejadian_id: id, ...d, boleh: {tulis: false, sahkan: false}})) : NO();
+    if (c.h.tipe === "bp") {   // Q6: isi dari potret beku versi terkini (tambahan sesudah pengesahan belum disahkan, jadi tidak terbaca); status rekomendasi tetap terkini
+      if (d?.kaji.status !== "disahkan") return NO();
+      const pt = (await H.kuPotret(c.env, p, id))?.potret; if (!pt) return NO();
+      const st = new Map(d.rekomendasi.map(r => [r.nomor, r.status?.status ?? null]));   // hanya kata status: catatan staf sesudah pengesahan tidak dibekukan, jadi tidak dikirim ke BPBD
+      return json(await namai(c, {kejadian_id: id, kaji: {status: "disahkan", versi: d.kaji.versi, disahkan_pada: d.kaji.disahkan_pada},
+        pelajaran: pt.pelajaran ?? [], rekomendasi: (pt.rekomendasi ?? []).map(r => ({...r, status: st.get(r.nomor) ?? null})), boleh: {tulis: false, sahkan: false}}));
+    }
     const v = q.get("versi");
     if (v != null) {   // versi beku (potret), bukan draf hidup
       const n = Number(v); masukan(() => { if (!Number.isInteger(n) || n < 1 || n > 999) tolak("versi 1-999"); });
@@ -87,6 +93,9 @@ async function lihatKaji(c) {
       boleh: {tulis: tulisLevel(c.h), sahkan: !!(c.h.sa || c.h.ko)}}));
   });
 }
+
+/* KU-08 BPBD: daftar kaji ulang yang sudah disahkan di kab wilayah akun (Q6); staf memakai kandidat */
+const disahkan = c => aman(async () => json({baris: await H.kuDisahkanLingkup(c.env, H.pelakuKuBaca, daftarKab4(c.h.akun), c.h.dummyOk)}));
 
 async function riwayat(c) {
   if (!(await kejadian(c))) return NO();
@@ -196,6 +205,7 @@ const K = "/api/siklus/kejadian/:id/kaji-ulang";
 export const RUTE_KAJI_ULANG = {
   "GET /api/siklus/kaji-ulang/kandidat": {izin: ["STAF"], f: kandidat},
   "GET /api/siklus/kaji-ulang/rekomendasi": {izin: ["STAF"], f: daftar},
+  "GET /api/siklus/kaji-ulang/disahkan": {izin: ["BP"], f: disahkan},
   [`GET ${K}`]: {izin: ["STAF", "BP"], f: lihatKaji},
   [`POST ${K}`]: {izin: ["PDKO"], f: mulaiKaji},
   [`POST ${K}/pelajaran`]: {izin: ["PDKO"], f: tambahPelajaran},

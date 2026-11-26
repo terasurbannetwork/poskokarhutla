@@ -85,6 +85,7 @@ const RUTE = [   // [kunci, jalur uji, aktor yang BOLEH]
   ["POST /api/siklus/kejadian/:id/tiga-w/token/cabut", `/kejadian/${ID}/tiga-w/token/cabut`, "PD KO SA"],
   ["GET /api/siklus/kaji-ulang/kandidat", "/kaji-ulang/kandidat", "PD KO PM SA MOD"],
   ["GET /api/siklus/kaji-ulang/rekomendasi", "/kaji-ulang/rekomendasi", "PD KO PM SA MOD"],
+  ["GET /api/siklus/kaji-ulang/disahkan", "/kaji-ulang/disahkan", "BP"],
   ["GET /api/siklus/kejadian/:id/kaji-ulang", `/kejadian/${ID}/kaji-ulang`, "PD KO PM SA MOD BP"],
   ["POST /api/siklus/kejadian/:id/kaji-ulang", `/kejadian/${ID}/kaji-ulang`, "PD KO SA"],
   ["POST /api/siklus/kejadian/:id/kaji-ulang/pelajaran", `/kejadian/${ID}/kaji-ulang/pelajaran`, "PD KO SA"],

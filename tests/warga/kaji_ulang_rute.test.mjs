@@ -176,6 +176,27 @@ uji("T14 BP: hanya kab wilayahnya dan hanya yang disahkan, tanpa potret dan tanp
   assert.equal((await GET(BP, "/kaji-ulang/rekomendasi")).s, 403);
 });
 
+uji("KU-08 BP baca: daftar disahkan per kab wilayah, isi dari potret beku (tambahan sesudah sahkan tidak terbaca), tanpa sesi profil 401, staf tetap jalan", async () => {
+  const id = await kj(), draf = await kj(), luar = await kj("selesai", {kab: ["3204"]});
+  for (const x of [id, draf, luar]) { await mulaiKaji(x, KO); assert.equal((await POST(KO, `${base(x)}/pelajaran`, PEL)).s, 201); }
+  assert.equal((await POST(KO, `${base(id)}/rekomendasi`, REK())).s, 201);
+  for (const x of [id, luar]) assert.equal((await POST(SA, `${base(x)}/sahkan`, {})).s, 201);
+  assert.equal((await POST(KO, `${base(id)}/pelajaran`, {kategori: "baik", teks: "Tambahan sesudah pengesahan belum disahkan"})).s, 201);
+  assert.equal((await POST(KO, `${base(id)}/rekomendasi/status`, {nomor: 1, status: "proses", catatan: "Catatan staf sesudah pengesahan"})).s, 201);
+  const d = await GET(BP, "/kaji-ulang/disahkan"); assert.equal(d.s, 200, d.t);
+  const ids = d.j.baris.map(b => b.id); assert.ok(ids.includes(id)); assert.ok(!ids.includes(draf), "draf tidak terdaftar"); assert.ok(!ids.includes(luar), "kab lain tidak terdaftar");
+  assert.doesNotMatch(d.t, /oleh|staf:/); assert.match(d.h.get("cache-control"), /no-store/);
+  assert.ok(!(await GET(BP2, "/kaji-ulang/disahkan")).j.baris.some(b => b.id === id), "akun Garut tidak melihat kejadian Bogor");
+  const r = await GET(BP, base(id)); assert.equal(r.s, 200, r.t);
+  assert.deepEqual(r.j.pelajaran.map(p => p.teks), [PEL.teks], "hanya isi potret beku"); assert.equal(r.j.rekomendasi[0].status, "proses", "status terkini, hanya katanya"); assert.doesNotMatch(r.t, /catatan|Catatan staf/, "catatan staf sesudah pengesahan tidak ke BPBD");
+  assert.doesNotMatch(r.t, /"(mulai_|disahkan_)?oleh|staf:|Tambahan sesudah/);
+  assert.equal((await GET(BP, base(luar))).s, 404, "kab lain"); assert.equal((await GET(BP, base(draf))).s, 404, "belum disahkan");
+  const tanpa = await U.bp({}, {profil: false});
+  for (const j of ["/kaji-ulang/disahkan", base(id)]) { const x = await GET(tanpa, j); assert.equal(x.s, 401, x.t); assert.equal(x.j.profil_perlu, true); }
+  assert.equal((await GET(KO, "/kaji-ulang/disahkan")).s, 403, "rute daftar khusus BP; staf memakai kandidat");
+  const st = await GET(PM, base(id)); assert.equal(st.s, 200, st.t); assert.ok(st.j.pelajaran.some(p => p.teks.startsWith("Tambahan")), "staf melihat isi hidup");
+});
+
 uji("T16 daftar F-7: lewat tenggat dihitung tanpa mengubah status; selesai tertutup", async () => {
   const id = await kj(); await mulaiKaji(id, KO);
   for (const i of [1, 2, 3]) assert.equal((await POST(KO, `${base(id)}/rekomendasi`, REK({teks: `Rekomendasi nomor ${i} untuk uji tenggat`}))).s, 201);

@@ -84,6 +84,7 @@
     if (saya.akun.wajib_ganti && saya.profil_mode) { $("vGanti").hidden = false; return; }   // akun BPBD: sandi lembaga baru lebih dulu, baru daftar PIC
     if (saya.profil_mode && !tampilProfil()) return;
     tautData();
+    { const b = document.querySelector('#tab [data-tab="kaji"]'); if (b) b.hidden = !saya.profil_mode; }   // KU-08: rute kaji ulang hanya untuk BPBD
     if (saya.akun.status === "aktif") { $("vUtama").hidden = false; pasangMenu(); pasangUndang(); siapIsi(); gantiTab(tab, true); pindahLama().finally(() => { prosesAntrean(); muatDraf(); }); return; }
     $("vVerif").hidden = false; isiVerif();
   }
@@ -131,7 +132,7 @@
     const p = document.createElement("p"); p.className = "lp-kecil"; p.append(a, " untuk mengundang rekan."); w.append(p);
   }
   /* wadah tab dibuat SEKALI dan hanya disembunyikan/ditampilkan: pindah tab, muat ulang, atau kirim tidak menghancurkan peta maupun isian form yang belum terkirim */
-  function siapIsi() { if (!$("tabTugas")) $("isi").innerHTML = `<div id="tabTugas"></div><div id="tabKontak" hidden></div>`; }
+  function siapIsi() { if (!$("tabTugas")) $("isi").innerHTML = `<div id="tabTugas"></div><div id="tabKontak" hidden></div><div id="tabKaji" hidden></div>`; }
   /* ---- buat sandi baru: sandi awal (CSV) atau hasil reset diketahui admin, jadi wajib diganti; sandi baru tampil SEKALI ---- */
   $("gBuat").addEventListener("click", async () => {
     const t = $("gBuat"); t.disabled = true; pesan("Membuat sandi baru…");
@@ -215,7 +216,7 @@
   function gantiTab(k, paksa) {
     tab = k;
     for (const b of $("tab").children) b.setAttribute("aria-pressed", String(b.dataset.tab === k));   // chrome urgent
-    for (const [id, w] of [["tabTugas", "tugas"], ["tabKontak", "kontak"]]) if ($(id)) $(id).hidden = w !== k;
+    for (const [id, w] of [["tabTugas", "tugas"], ["tabKontak", "kontak"], ["tabKaji", "kaji"]]) if ($(id)) $(id).hidden = w !== k;
     if (!paksa) $("isi").setAttribute("aria-busy", "true");
     sesudahCat(async () => { await TAMPIL[k](); $("isi").removeAttribute("aria-busy"); });
   }
@@ -927,7 +928,7 @@
     pesan("Usulan terkirim, menunggu admin.", "ok"); gantiTab("kontak");
   }
 
-  const TAMPIL = {tugas: tampilTugas, kontak: tampilKontak};
+  const TAMPIL = {tugas: tampilTugas, kontak: tampilKontak, kaji: () => window.KajiUlangBp?.tampil($("tabKaji"), api)};   // kaji ulang: baca saja, hanya akun BPBD (instansi_kaji_ulang.js)
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && saya) api("GET", "/api/instansi/saya"); });   // akun lain masuk di tab lain: 401 menutup tampilan basi
   bersihkanSimpanan();   // draf dan antrean basi dibuang tanpa menunggu siapa pun masuk
   try { for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (/^pb_pic:[^|]*\|[^|]*$/.test(k)) localStorage.removeItem(k); } } catch (e) {}   // PIC lama tanpa id akun
