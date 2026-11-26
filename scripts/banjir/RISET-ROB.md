@@ -156,7 +156,7 @@ Fitur: skor bahaya statis per kecamatan (rata-rata sampel grid), satu komponen r
   - API file 4TU: `https://data.4tu.nl/v2/articles/21997565/files`, 200.
   - Berkas: `Asia.zip` 17,3 GB, `deltadtm_tiles.gpkg` 2,9 MB.
   - Unduh sekali, ambil tile pantura, lalu turunkan ke statistik per kecamatan (luas di bawah 1/2/3 m).
-  - Ini DEM terbaik yang terbuka. **Tidak diunduh di riset ini.**
+  - Ini DEM terbaik yang terbuka. Riset ini tidak mengunduhnya; PT-10 (26 Nov 2026) mengambil 6 ubin pesisir (54 MB, bukan 17,3 GB) lewat HTTP Range dengan `scripts/banjir/elevasi_tanah.py ambil`.
 - Uji titik cepat dengan Open-Meteo Elevation (GLO-90, bilangan bulat):
   - Muara Baru 4 / **-3** / 4 m.
   - Semarang Tj. Emas 2–3 m.
