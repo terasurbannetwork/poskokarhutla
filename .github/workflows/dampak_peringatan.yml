@@ -1,0 +1,98 @@
+name: Dampak peringatan dan status prakiraan
+
+# DP-08 (data/kajian-bnpb/dampak-peringatan). Jam-jaman menit 20 UTC (Q3, menghindari menit sibuk): peringatan BMKG -> keterpaparan
+# (dampak_peringatan.py) dan status prakiraan (status_prakiraan.py), diunggah ke R2 poskokarhutla-foto/dampak_peringatan/ (tanpa commit
+# per jam). Hanya arsip harian status (append-only, satu baris per tanggal WIB sesudah 07.00 WIB) dan berkas gerbang yang di-commit, itu pun
+# hanya bila berubah. Bulanan tgl 1: kelas_kab.py --bangun (bisa dilanjutkan; cache data/raw/siklus/kelas_kab lewat actions/cache),
+# commit public/data/kelas_bahaya_kab.json. Rahasia: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID (sudah ada); tidak ada rahasia baru.
+# Grup sendiri (bukan `data`) supaya putaran tiap jam tidak mengantre di belakang job data harian. Tiap job punya timeout-minutes.
+on:
+  schedule:
+    - cron: "20 * * * *"
+    - cron: "40 3 1 * *"
+  workflow_dispatch:
+    inputs:
+      bulanan:
+        description: "jalankan kelas_kab.py --bangun (bulanan) alih-alih putaran jam-jaman"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  BASIS: https://centurisk97.id
+  DAMPAK_BASE: https://centurisk97.id
+
+jobs:
+  jam:
+    if: github.event_name == 'schedule' && github.event.schedule == '20 * * * *' || github.event_name == 'workflow_dispatch' && !inputs.bulanan
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    concurrency: {group: dampak-peringatan, cancel-in-progress: false}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Pasang wrangler
+        run: |
+          npm i --prefix "$RUNNER_TEMP/w" wrangler@4.42.0
+          echo "W=$RUNNER_TEMP/w/node_modules/.bin/wrangler" >> "$GITHUB_ENV"
+      - name: Keterpaparan peringatan (umpan CAP, batas waktu per panggilan ada di skrip)
+        run: |
+          mkdir -p data/raw/dampak_peringatan
+          python3 -I scripts/siklus/dampak_peringatan.py --base "$BASIS" \
+            --lama data/raw/dampak_peringatan/hasil.json --keluar data/raw/dampak_peringatan/hasil.json
+      - name: Status prakiraan dan arsip harian
+        run: python3 -I scripts/prediksi/status_prakiraan.py
+      - name: Unggah ke R2 dampak_peringatan/ (hanya berkas yang ada)
+        run: |
+          set -e
+          put() { [ -f "$1" ] && "$W" r2 object put "poskokarhutla-foto/dampak_peringatan/$2" --file "$1" --content-type application/json --remote >/dev/null || echo "::warning::$1 tidak ada, dilewati"; }
+          put data/raw/prediksi/status.json status.json
+          put data/raw/dampak_peringatan/ringkas.json ringkas.json
+          (cd data/raw/dampak_peringatan && find desa -type f -name '*.json' 2>/dev/null) | while read -r f; do put "data/raw/dampak_peringatan/$f" "$f"; done
+      - name: Commit arsip harian dan berkas gerbang (hanya bila berubah)
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          P="public/prediksi/data/status_arsip public/data/gerbang/status_prakiraan.json"
+          git add -f $P 2>/dev/null || true
+          git diff --cached --quiet -- $P && { echo "tidak ada perubahan arsip/gerbang"; exit 0; }
+          git commit -q -m "data: arsip status prakiraan $(TZ=Asia/Jakarta date +%F)" -- $P
+          git pull -q --rebase --autostash && git push -q || { sleep 20; git pull -q --rebase --autostash && git push -q; }
+
+  bulanan:
+    if: github.event_name == 'schedule' && github.event.schedule == '40 3 1 * *' || github.event_name == 'workflow_dispatch' && inputs.bulanan
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    concurrency: {group: dampak-peringatan-bulanan, cancel-in-progress: false}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Pulihkan cache kelas_kab (dilanjutkan, bukan dari nol)
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/siklus/kelas_kab
+          key: kelas-kab-${{ github.run_id }}
+          restore-keys: kelas-kab-
+      - name: Bangun tabel kelas bahaya (514 kab)
+        run: python3 -I scripts/siklus/kelas_kab.py --bangun
+      - name: Simpan cache kelas_kab
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/siklus/kelas_kab
+          key: kelas-kab-${{ github.run_id }}
+      - name: Commit kelas_bahaya_kab.json
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          F=public/data/kelas_bahaya_kab.json
+          git add -f $F
+          git diff --cached --quiet -- $F && { echo "tabel tidak berubah"; exit 0; }
+          git commit -q -m "data: kelas bahaya kab bulanan $(TZ=Asia/Jakarta date +%F)" -- $F
+          git pull -q --rebase --autostash && git push -q || { sleep 20; git pull -q --rebase --autostash && git push -q; }
