@@ -206,6 +206,59 @@
     };
   }
 
+  /* ---------- PH-08: status per hari, urutan daftar, ringkas, kelas kab, chip fakta (potensi-hidromet ALGORITMA 1, 2, 3, 5; D16) ---------- */
+  /* h 0..3 = hari[h]; "ringkas" = maksimum hari[0..3] yang bukan null; semua null = null (belum terukur) */
+  function statusHari(entri, h) {
+    const a = Array.isArray(entri?.hari) ? entri.hari.slice(0, 4) : [];
+    if (h === "ringkas") { const v = a.filter(tingkatSah); return v.length ? Math.max(...v) : null; }
+    return tingkatSah(a[h]) ? a[h] : null;
+  }
+
+  /* kelas kab dari [n0 tanpa kelas, n1 rendah, n2 sedang, n3 tinggi]; bilangan bulat, tanpa pembulatan pecahan */
+  function kelasKab(n) {
+    const [n0, n1, n2, n3] = (Array.isArray(n) ? n : []).map(x => Number.isFinite(+x) ? +x : 0), N = n0 + n1 + n2 + n3;
+    if (N === 0 || n1 + n2 + n3 === 0) return null;
+    if (n3 * 100 >= N * 40 || (n3 >= 30 && n3 * 10 >= N)) return "tinggi";
+    if (n3 * 10 >= N || n3 >= 10 || (n2 + n3) * 10 >= N * 6) return "sedang";
+    return "rendah";
+  }
+
+  const RANK_K = {tinggi: 3, sedang: 2, rendah: 1};
+  const eHari = (entri, h) => { const e = entri?.E; const v = Array.isArray(e) ? e[h === "ringkas" ? 0 : h] : e; return Number.isFinite(+v) && v != null ? +v : -1; };
+  const kodeBahaya = status => [...new Set(Object.values(status?.kab || {}).flatMap(a => Object.keys(a || {}).filter(k => /^[A-Z]{3}$/.test(k))))];
+
+  /* ALGORITMA 2: urut menurun status, E, K, porsi desa kelas tinggi, lalu nama; kode null = bahaya tertinggi per kab */
+  function urutKab(status, kode, h, kelas) {
+    const K0 = kode ? String(kode).toUpperCase() : null, semua = kodeBahaya(status), out = [];
+    for (const [k, a] of Object.entries(status?.kab || {})) {
+      const calon = (K0 ? [K0] : semua).filter(c => a?.[c]).map(c => {
+        const e = a[c], kk = kelas?.kab?.[k], n = kk?.n || 0, b = kk?.baseline?.[c];
+        return {kab: k, kode: c, s: statusHari(e, h) ?? -1, E: eHari(e, h), K: RANK_K[kk?.K?.[c]] || 0, porsi: n && b ? (+b[3] || 0) / n : 0, nama: kk?.nama || a.nama || k};
+      });
+      calon.sort((x, y) => y.s - x.s || y.E - x.E || y.K - x.K || y.porsi - x.porsi);
+      if (calon[0]) out.push(calon[0]);
+    }
+    return out.sort((x, y) => y.s - x.s || y.E - x.E || y.K - x.K || y.porsi - x.porsi || x.nama.localeCompare(y.nama, "id"));
+  }
+
+  /* ALGORITMA 3: Normal hanya bila SEMUA bahaya yang tampil bernilai 0 dan segar (sebagian = belum segar); selainnya tanpa nilai lebih tinggi = belum */
+  function ringkas(status, h, bahayaTampil) {
+    const r = {awas: 0, siaga: 0, waspada: 0, normal: 0, belum: 0}, daftar = (bahayaTampil || kodeBahaya(status)).map(c => String(c).toUpperCase());
+    for (const a of Object.values(status?.kab || {})) {
+      const v = daftar.map(c => { const e = a?.[c], s = statusHari(e, h); return s === 0 && e.sebagian === true ? null : s; });
+      const m = Math.max(-1, ...v.filter(x => x != null));
+      if (m >= 1) r[["", "waspada", "siaga", "awas"][m]]++;
+      else if (m === 0 && v.every(x => x === 0)) r.normal++;
+      else r.belum++;
+    }
+    return r;
+  }
+
+  /* D16 */
+  const CHIP = {sumber: ["Bersumber", "chip-sumber"], hitung: ["Dihitung", "chip-hitung"], hipotesis: ["Hipotesis", "chip-hipotesis"], belum: ["Belum terukur", "chip-belum"]};
+  const chipFakta = jenis => { const c = CHIP[jenis] || CHIP.belum; return {label: c[0], kelas: c[1]}; };
+
   globalThis.DampakPeringatan = {entriStatus, TINGKAT, BAHAYA, TIP_NORMAL, TIP_BELUM, token, warna, bolehTampil, statusEfektif, namaTingkat, tooltip, bulatJiwa, tautanAman,
-    peringatanUntuk, teksPeringatan, modelKartu, namaGeo, ekspresiWarna, kartuDom, pasang};
+    peringatanUntuk, teksPeringatan, modelKartu, namaGeo, ekspresiWarna, kartuDom, pasang,
+    statusHari, urutKab, ringkas, kelasKab, chipFakta};
 })();
