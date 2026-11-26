@@ -5,7 +5,7 @@ import {halamanAdmin} from "./statistik.js";
 import {halamanSegel} from "./admin_halaman.js";
 import {stafPeran} from "./staf.js";
 import {laju} from "./bnpb.js";
-import {adaTabelSegel, segelCari, segelDaftar, segelCabut, segelUntuk, segelIsiLk, segelIsiLkb, segelIsiLj, pbDokById, pelakuPbBaca, stmtSegel, batchTulis} from "./hak.js";
+import {adaTabelSegel, segelCari, segelDaftar, segelCabut, segelUntuk, segelIsiLk, segelIsiLkb, segelIsiLj, segelIsiBerkala, pbDokById, pelakuPbBaca, stmtSegel, batchTulis} from "./hak.js";
 import {kunciBeku} from "./pb_dokumen.js";
 
 export const ABJAD = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";   // Crockford base32: tanpa I, L, O, U
@@ -45,6 +45,9 @@ export async function batchBersegel(env, st, s, dummy = 0, {batch = x => batchTu
   }
 }
 
+/* Laporan Berkala (LB-07): sidik segel = sha256 dari sidik berkas angka beku dan isian staf; satu definisi untuk pembeku dan halaman verifikasi */
+export const isiBerkala = (shaAngka, isian) => shaAngka + "\n" + isian;
+
 /* kode segel satu dokumen untuk jawaban snapshot staf (QR slide akhir, KEPUTUSAN K5); null bila tabel belum ada atau dokumen tak bersegel */
 export const segelDokumen = async (env, jenis, rujukan) => await adaTabelSegel(env) ? await segelUntuk(env, jenis, rujukan) : null;
 
@@ -69,6 +72,11 @@ async function isiSumber(env, s) {
   if (s.jenis === "lj") {   // SG-13: <berkas>#<versi>, sidik = sha256 isi lj_beku (isiBeku, src/lapor_lanjut_spek.js)
     const j = s.rujukan.match(/^([^#]{16})#(\d+)$/);
     return j ? (await segelIsiLj(env, j[1], Number(j[2])))?.isi ?? null : null;
+  }
+  if (s.jenis === "berkala") {   // LB-07: <periode>/<kode>#<versi>; isi = sidik objek beku R2 (dihitung ulang) + isian staf versi itu (isiBerkala)
+    const b = s.rujukan.match(/^(harian|mingguan|bulanan|tahunan)\/([0-9W-]{4,10})#(\d+)$/), r = b && await segelIsiBerkala(env, b[1], b[2], Number(b[3]));
+    const o = r && await env.MEDIA?.get(r.angka_kunci);
+    return o ? isiBerkala(await sha(await o.text()), r.isian) : null;
   }
   return null;
 }

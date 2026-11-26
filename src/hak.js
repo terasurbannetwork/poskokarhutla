@@ -2677,6 +2677,49 @@ export const stmtSegelLj = (env, s) => env.DB.prepare(`INSERT INTO segel (kode, 
   .bind(s.kode, s.rujukan, s.judul, s.wilayah ?? null, s.periode, s.penerbit, s.terbit, s.sidik);
 export const segelIsiLj = (env, berkas, versi) => env.DB.prepare("SELECT isi FROM lj_beku WHERE berkas = ?1 AND versi = ?2").bind(berkas, versi).first();
 
+/* ---------- Laporan Berkala (LB-07, migrasi 0178; rute src/laporan_berkala.js, segel jenis 'berkala' migrasi 0179) ----------
+   Hak dicek di rute (K4: admin menulis; admin, staf, dan pemirsa bertab pusdalops membaca), di sini hanya SQL. Versi 0 = draf, 1.. = beku (trigger 0178).
+   Semua kueri lewat PK (periode, kode, versi): SEARCH, satu tabel kecil (sekitar 400 baris per tahun). */
+export const LBR_SQL = {
+  daftar: "SELECT kode, versi, diubah, oleh FROM laporan_berkala WHERE periode = ?1 ORDER BY kode DESC, versi DESC LIMIT 400",
+  /* tanpa versi (?3 NULL): draf bila ada, bila tidak versi beku terakhir; beku = versi tertinggi (0 bila hanya draf) */
+  baris: `SELECT versi, isian, diubah, angka_kunci, angka_sha256, oleh, (SELECT max(versi) FROM laporan_berkala WHERE periode = ?1 AND kode = ?2) beku
+    FROM laporan_berkala WHERE periode = ?1 AND kode = ?2 AND (?3 IS NULL OR versi = ?3) ORDER BY versi = 0 DESC, versi DESC LIMIT 1`,
+  /* draf satu pernyataan: baris baru selalu masuk; baris lama hanya bila diubah klien = diubah tersimpan (?8 NULL = tidak pernah, jadi 409) */
+  simpan: `INSERT INTO laporan_berkala (periode, kode, versi, isian, angka_kunci, angka_sha256, diubah, oleh) VALUES (?1, ?2, 0, ?3, ?4, ?5, ?6, ?7)
+    ON CONFLICT (periode, kode, versi) DO UPDATE SET isian = excluded.isian, angka_kunci = excluded.angka_kunci, angka_sha256 = excluded.angka_sha256,
+    diubah = excluded.diubah, oleh = excluded.oleh WHERE laporan_berkala.diubah = ?8`,
+  jejakBila: "INSERT INTO laporan_berkala_jejak (periode, kode, versi, aksi, oleh, waktu) SELECT ?1, ?2, ?3, ?4, ?5, ?6 WHERE changes() > 0",
+  jejak: "INSERT INTO laporan_berkala_jejak (periode, kode, versi, aksi, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+  /* Bekukan: versi ?3 hanya bila = max + 1 dan draf masih ber-diubah ?8; isian disalin dari draf di SQL (bukan dari klien) */
+  beku: `INSERT INTO laporan_berkala (periode, kode, versi, isian, angka_kunci, angka_sha256, diubah, oleh)
+    SELECT periode, kode, ?3, isian, ?4, ?5, ?6, ?7 FROM laporan_berkala WHERE periode = ?1 AND kode = ?2 AND versi = 0 AND diubah = ?8
+    AND ?3 = (SELECT max(versi) + 1 FROM laporan_berkala WHERE periode = ?1 AND kode = ?2)`,
+  /* draf dibuang hanya bila versi beku baru benar-benar tertulis di batch ini (bukan lewat changes(): rantai penanda rapuh) */
+  bekuBuangDraf: `DELETE FROM laporan_berkala WHERE periode = ?1 AND kode = ?2 AND versi = 0
+    AND EXISTS (SELECT 1 FROM laporan_berkala WHERE periode = ?1 AND kode = ?2 AND versi = ?3 AND diubah = ?4 AND angka_sha256 = ?5)`,
+  bekuJejak: `INSERT INTO laporan_berkala_jejak (periode, kode, versi, aksi, oleh, waktu) SELECT ?1, ?2, ?3, 'bekukan', ?6, ?4
+    WHERE EXISTS (SELECT 1 FROM laporan_berkala WHERE periode = ?1 AND kode = ?2 AND versi = ?3 AND diubah = ?4 AND angka_sha256 = ?5)`,
+  segel: `INSERT INTO segel (kode, jenis, rujukan, dasar, versi, sidik, sidik_berkas, judul, wilayah, periode, penerbit, terbit)
+    SELECT ?1, 'berkala', periode || '/' || kode || '#' || versi, periode || '/' || kode, versi, ?2, NULL, ?3, NULL, kode, ?4, ?5
+    FROM laporan_berkala WHERE periode = ?6 AND kode = ?7 AND versi = ?8 AND diubah = ?5 AND angka_sha256 = ?9`,
+};
+export const lbrDaftar = async (env, periode) => (await env.DB.prepare(LBR_SQL.daftar).bind(periode).all()).results;
+export const lbrBaris = (env, periode, kode, versi = null) => env.DB.prepare(LBR_SQL.baris).bind(periode, kode, versi).first();
+export const lbrJejak = (env, periode, kode, versi, aksi, oleh, kini) => env.DB.prepare(LBR_SQL.jejak).bind(periode, kode, versi, aksi, oleh, kini).run();
+/* kembalian: true tersimpan, false kalah (diubah beda) */
+export const lbrSimpan = async (env, d, kini) => (await env.DB.batch([
+  env.DB.prepare(LBR_SQL.simpan).bind(d.periode, d.kode, d.isian, d.angka_kunci, d.angka_sha256, kini, d.oleh, d.dasar ?? null),
+  env.DB.prepare(LBR_SQL.jejakBila).bind(d.periode, d.kode, 0, "simpan", d.oleh, kini)]))[0].meta.changes > 0;
+/* pernyataan pembeku (tanpa segel; segel dirangkai src/segel.js batchBersegel) */
+export const lbrStmtBeku = (env, d, kini) => [
+  env.DB.prepare(LBR_SQL.beku).bind(d.periode, d.kode, d.versi, d.angka_kunci, d.angka_sha256, kini, d.oleh, d.dasar),
+  env.DB.prepare(LBR_SQL.bekuBuangDraf).bind(d.periode, d.kode, d.versi, kini, d.angka_sha256),
+  env.DB.prepare(LBR_SQL.bekuJejak).bind(d.periode, d.kode, d.versi, kini, d.angka_sha256, d.oleh)];
+/* s.lbr = {periode, kode, versi, angka_sha256}; s.terbit = kini (sama dengan diubah baris beku) */
+export const stmtSegelBerkala = (env, s) => env.DB.prepare(LBR_SQL.segel).bind(s.kode, s.sidik, s.judul, s.penerbit, s.terbit, s.lbr.periode, s.lbr.kode, s.lbr.versi, s.lbr.angka_sha256);
+export const segelIsiBerkala = (env, periode, kode, versi) => env.DB.prepare("SELECT isian, angka_kunci, angka_sha256 FROM laporan_berkala WHERE periode = ?1 AND kode = ?2 AND versi = ?3 AND versi > 0").bind(periode, kode, versi).first();
+
 /* ---------- ews: kanal resmi (KI-50, Q8) ---------- */
 /* Penanda "putaran resmi pertama sudah lewat": satu baris ews_terkirim dengan langganan_id tetap (bukan id pelanggan; id asli 16 hex dari acak, tak pernah semua nol) dan kunci 'x|awal'.
    Dibaca lewat kunci utama (SEARCH, bukan LIKE). bersihkanEws mengecualikan langganan_id ini. */

@@ -178,5 +178,7 @@
   "0174_sk_kaji_gfm.sql": "11105f40d6baa7b15dd759a7c8155c985a598bc96fa6e45edb659f0e3f4a78f2",
   "0175_lapor_selamat_kunci.sql": "08fe0d667fa609d576c60da1f4ce489dd9c46f37fcd8c0e9d71a59ee78c9a81e",
   "0176_sensor_geofon.sql": "0e75bbfd347cd3717f07877a7302ae0af2d8873171555ae4f71dd4feb4e69d92",
-  "0177_lapor_cari_temu.sql": "70e68db4e6a4fd7a668e279eaf089203705ab10a564771623a8820de71a301d9"
+  "0177_lapor_cari_temu.sql": "70e68db4e6a4fd7a668e279eaf089203705ab10a564771623a8820de71a301d9",
+  "0178_laporan_berkala.sql": "30a0aef603cf8ee488e3dda6fb86098c0fc7d4a062a10917dc55dff0f3971a75",
+  "0179_segel_berkala.sql": "a496e729ccbefd1f33b2cc8d0577f4f508a809336c844984a1fbdd492b8f98c3"
 }

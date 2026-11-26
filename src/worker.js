@@ -28,6 +28,7 @@ import {RUTE_LAPANGAN, bersihkanLapangan, petugas as petugasSesi} from "./lapang
 import {tanyaKondisi} from "./lapangan_wa.js";
 import {layaniKm, hakKm} from "./kemitraan.js";
 import {RUTE_LAPORAN_BNPB} from "./laporan_bnpb.js";
+import {RUTE_LAPORAN_BERKALA} from "./laporan_berkala.js";
 import {RUTE_RUMAH_RUSAK} from "./rumah_rusak.js";
 import {RUTE_BANGUNAN} from "./bangunan.js";
 import {RUTE_RISIKO7} from "./risiko7.js";
@@ -681,6 +682,7 @@ const RUTE = {
   ...RUTE_OPS,   // operasi pemadaman lapangan (src/operasi_lapangan.js)
   ...RUTE_PENGINGAT,   // antrean pengingat harian Ruang Koordinasi (src/pengingat.js)
   ...RUTE_LAPORAN_BNPB,   // Laporan Harian & Paparan Presiden BNPB yang diketik tim (public/laporan_bnpb*)
+  ...RUTE_LAPORAN_BERKALA,   // Laporan Berkala harian/mingguan/bulanan/tahunan: draf, berkas angka, Bekukan bersegel, cetak (src/laporan_berkala.js, LB-07)
   ...RUTE_RUMAH_RUSAK,   // rumah rusak RB/RS/RR per rumah, akun atau regu berkode (public/rumah_rusak*)
   ...RUTE_KUNCI_API,   // penerbitan kunci API mitra (/api/v1/*, src/api_v1.js); API-nya sendiri ditangani langsung di fetch()
   "GET /admin/kunci-api": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanKunciApi()),
@@ -699,7 +701,7 @@ pasangTabelRute(tabelRute);
    Origin "null". Itu diterima HANYA bila Sec-Fetch-Site = same-origin (header terlarang, tak bisa dipalsukan halaman; iframe tersandbox mengirim cross-site). */
 export const tolakOrigin = (req, url) => {
   /* form sandi (POST /masuk, /admin/masuk) diperlakukan seperti kiriman bersesi: Origin kosong atau "null" ditolak kecuali Sec-Fetch-Site same-origin (cegah login-CSRF) */
-  const o = req.headers.get("origin"), sesi = /^\/(?:admin\/)?masuk\/?$/.test(url.pathname) || /(?:^|;\s*)(?:sesi_admin|sesi_pendataan|sesi_staf|sesi_kemitraan|sesi_masuk|sesi_instansi|sesi_profil|lapor_perangkat|lapor_data)=/.test(req.headers.get("cookie") || "");
+  const o = req.headers.get("origin"), sesi = /^\/(?:admin\/)?masuk\/?$/.test(url.pathname) || /(?:^|;\s*)(?:sesi_admin|sesi_pendataan|sesi_staf|sesi_pemirsa|sesi_kemitraan|sesi_masuk|sesi_instansi|sesi_profil|lapor_perangkat|lapor_data)=/.test(req.headers.get("cookie") || "");
   const kosong = !o || o === "null", samaPeramban = kosong && req.headers.get("sec-fetch-site") === "same-origin";
   if (sesi ? (!samaPeramban && (kosong || !URL.canParse(o) || new URL(o).host !== url.host)) : (!kosong && (!URL.canParse(o) || new URL(o).host !== url.host))) return gagal(403, "origin lain ditolak");
   return null;
