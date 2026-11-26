@@ -108,21 +108,21 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-011 | Layar meja `/bnpb` untuk F0-2 dan F0-3 | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 3 | S | selesai 5 Nov |
 | RU-012 | [induk] Commit F0, terap produksi, terbit | sesi induk | `higiene-repo` | 3 | S | belum |
 | RU-013 | `migrasi_beku.json` sesudah 0110 diterapkan | `warga-api` | `migrasi-idempoten` | 4 | S | selesai 5 Nov |
-| RU-014 | MB-1 status `tidak_bisa_dicek` | `ruang-bnpb` | `penulis-gerbang` | 4 | S | belum |
-| RU-015 | MB-2 lengkap: semua kunci dan `tenggat()` | `inti-layar` | `penulis-gerbang` | 4 | M | belum |
-| RU-016 | MB-2 pembaca Python dan uji kembar | `ruang-bnpb` | `penulis-gerbang` | 5 | S | belum |
-| RU-017 | Uji layar masuk `uji` dan `terbit.yml` | `mekanik-mesin` | `higiene-repo` | 1 | S | belum |
-| RU-018 | Migrasi 0111 peran `unit` | `warga-api` | `migrasi-idempoten` | 4 | S | belum |
+| RU-014 | MB-1 status `tidak_bisa_dicek` | `ruang-bnpb` | `penulis-gerbang` | 4 | S | selesai 6 Nov (a2ed1d5d5; seed produksi bersama RU-057) |
+| RU-015 | MB-2 lengkap: semua kunci dan `tenggat()` | `inti-layar` | `penulis-gerbang` | 4 | M | selesai 6 Nov (30c771b1d) |
+| RU-016 | MB-2 pembaca Python dan uji kembar | `ruang-bnpb` | `penulis-gerbang` | 5 | S | tinjau 26 Nov (belum di-commit; 3 kasus cap waktu bertanggal tidak ada ditandai todo di JS, perbaikan `jam_aturan.js` milik `inti-layar`) |
+| RU-017 | Uji layar masuk `uji` dan `terbit.yml` | `mekanik-mesin` | `higiene-repo` | 1 | S | jalan (1204033d2 hanya timeout terbit.yml; `uji:layar` belum dirangkai ke `uji` dan terbit.yml) |
+| RU-018 | Migrasi 0111 peran `unit` | `warga-api` | `migrasi-idempoten` | 4 | S | kode selesai 23 Nov (c616a7d17, migrasi jadi 0168); terap produksi oleh pemilik |
 | RU-019 | Rute baca `src/unit.js` dan gerbang host | `warga-api` | `guard-api`, `security-reviewer` | 5 | M | belum |
 | RU-020 | Cangkang `/bnpb/unit`, katalog 70 ID, registri | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 5 | M | belum |
-| RU-021 | Pelari pipeline `jalan.py` dan `indeks.json` | `ruang-bnpb` | `higiene-repo` | 4 | S | belum |
+| RU-021 | Pelari pipeline `jalan.py` dan `indeks.json` | `ruang-bnpb` | `higiene-repo` | 4 | S | selesai 6 Nov (42333fdc1) |
 | RU-022 | Langkah "Ruang Unit" di `data.yml` | `mekanik-mesin` | `higiene-repo` | 5 | S | belum |
 | RU-023 | G-4 dan G-6 gerbang Ruang Unit | `penulis-gerbang` | `general-purpose` baru | 6 | M | belum |
 | RU-024 | G-5 gerbang privasi unit | `penulis-gerbang` | `security-reviewer` | 6 | S | belum |
 | RU-025 | MB-3 uji JDIHN dan daftar situs JDIH provinsi | `ruang-bnpb` | `higiene-repo` | 10 | S | belum |
 | RU-026 | MB-3 `jdih_daerah.py` | `ruang-bnpb` | `security-reviewer` | 10 | M | belum |
-| RU-027 | MB-4 `skor.py` | `ruang-bnpb` | `validasi-model` | 4 | S | belum |
-| RU-028 | MB-5 `neraca.py` | `ruang-bnpb` | `selera-angka` | 4 | S | belum |
+| RU-027 | MB-4 `skor.py` | `ruang-bnpb` | `validasi-model` | 4 | S | selesai 6 Nov (42333fdc1) |
+| RU-028 | MB-5 `neraca.py` | `ruang-bnpb` | `selera-angka` | 4 | S | tinjau 26 Nov (belum di-commit; uji balik PR dan 514 baris PLP-1 ikut tiket sistem PLP-1) |
 | RU-029 | MB-5 `kebutuhanDasar` JS dan uji kembar | `inti-layar` | `penulis-gerbang` | 9 | S | belum |
 | RU-030 | MB-6 `rapor.py` dan perender `rapor.js` | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 4 | M | belum |
 | RU-031 | G-3 perluasan gerbang kartu standar | `penulis-gerbang` | `general-purpose` baru | 5 | S | belum |
@@ -475,9 +475,9 @@ Kerangka (RU-017 sampai RU-024) bukan mesin bernomor, tetapi dipakai semua mesin
 - **Dependensi:** RU-015.
 - **Pengerja / pemeriksa:** `ruang-bnpb` / `penulis-gerbang`.
 - **Langkah:**
-  - [ ] Tulis `acuan.json` dari tabel RU §2.1; uji kembar memanggil `python3 -I scripts/bnpb/unit/aturan.py --kembar <kasus>` lewat `execFileSync`.
-  - [ ] Tulis `aturan.py` dengan `assert` atas kasus yang sama.
-  - [ ] Jalankan bukti.
+  - [x] Tulis `acuan.json` dari tabel RU §2.1; uji kembar memanggil `python3 -I scripts/bnpb/unit/aturan.py --kembar <kasus>` lewat `execFileSync`.
+  - [x] Tulis `aturan.py` dengan `assert` atas kasus yang sama.
+  - [x] Jalankan bukti.
 - **Bukti:** `python3 -I scripts/bnpb/unit/aturan.py --cek && node --test tests/bnpb/unit_kembar.test.mjs`.
 - **Pemilik:** tidak ada.
 - **Rujukan:** DT §4.2 "Pemakai"; RU §1.1 L3, §4 baris MB-2. **Ukuran:** S
@@ -648,9 +648,9 @@ Kerangka (RU-017 sampai RU-024) bukan mesin bernomor, tetapi dipakai semua mesin
 - **Dependensi:** RU-016.
 - **Pengerja / pemeriksa:** `ruang-bnpb` / `selera-angka`.
 - **Langkah:**
-  - [ ] `--cek` atas kasus RU §2.3 (PLP-1 S1 sampai S10, WIL-2 K1 sampai K5, RRP-1 R1 sampai R4 bagian neraca).
-  - [ ] Standar hanya dari Jam Aturan lewat `aturan.py`.
-  - [ ] Jalankan bukti.
+  - [x] `--cek` atas kasus RU §2.3 (PLP-1 S1 sampai S10, WIL-2 K1 sampai K5, RRP-1 R1 sampai R4 bagian neraca).
+  - [x] Standar hanya dari Jam Aturan lewat `aturan.py`.
+  - [x] Jalankan bukti.
 - **Bukti:** `python3 -I scripts/bnpb/unit/neraca.py --cek`.
 - **Pemilik:** tidak ada.
 - **Rujukan:** DT §4.5; RU §2.3. **Ukuran:** S

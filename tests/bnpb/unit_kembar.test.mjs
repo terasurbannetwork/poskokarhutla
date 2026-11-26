@@ -1,9 +1,10 @@
 // RU-006: kasus acuan fungsi murni Jam Aturan (RU §2.1, ALGORITMA §3.2).
-// Sisi Python dan acuan.json menyusul di RU-016; berkas ini hanya sisi JS.
+// RU-016: kembar Python scripts/bnpb/unit/aturan.py, kasus sama di tests/bnpb/fixtures/unit/acuan.json.
 import test from "node:test";
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { ATURAN, aturan, hariKerja, nilai, periksa, standar, tenggat } from "../../public/inti/jam_aturan.js";
+import { ATURAN, SATUAN, aturan, hariKerja, nilai, periksa, standar, tenggat } from "../../public/inti/jam_aturan.js";
 
 const h = (k, m) => tenggat(k, m).hasil;
 
@@ -179,4 +180,36 @@ test("kunci ALGORITMA 3.1 lengkap; asumsi wajib bertanda, bersitasi wajib berpas
   assert.equal(nilai("ews_radius_sirine_km"), 2);
   assert.deepEqual(tenggat("masa_status_nas", "2025-11-30"), { hasil: "2026-02-28", alasan: null, asumsi: true });
   assert.equal(tenggat("hibah_logpal_lapor", "2025-11-30").hasil, "2026-11-30"); // RU 2.1
+});
+
+// ---- RU-016: uji kembar JS lawan Python atas acuan.json ----
+
+const ACUAN = JSON.parse(readFileSync(new URL("./fixtures/unit/acuan.json", import.meta.url), "utf8"));
+const PY = new URL("../../scripts/bnpb/unit/aturan.py", import.meta.url).pathname;
+const py = (...a) => JSON.parse(execFileSync("python3", ["-I", PY, ...a], { encoding: "utf8" }));
+
+test("acuan.json: minimal 20 kasus Jam Aturan, id unik", () => {
+  const id = ACUAN.jam_aturan.map((k) => k.id);
+  assert.ok(id.length >= 20, `baru ${id.length} kasus`);
+  assert.equal(new Set(id).size, id.length);
+});
+
+for (const k of ACUAN.jam_aturan) {
+  test(`kembar ${k.id} ${k.kunci} ${JSON.stringify(k.mulai)}: JS = harapan = Python`, () => {
+    const js = tenggat(k.kunci, k.mulai);
+    for (const [kk, v] of Object.entries(k.harap)) assert.deepEqual(js[kk], v, `JS ${kk}`);
+    if (js.hasil === null) assert.ok(js.alasan, "hasil kosong tanpa alasan");
+    assert.deepEqual(py("--kembar", k.id), js, "Python beda dengan JS");
+  });
+}
+
+// Python menolak tanggal/jam yang tidak ada di dalam cap waktu; Date.parse JS menggulirkannya. Pemilik jam_aturan.js: inti-layar.
+for (const k of ACUAN.jam_aturan_beda_js) {
+  test(`kembar ${k.id} ${k.kunci} ${k.mulai}: tanggal tidak ada di cap waktu ditolak`, { todo: "jam_aturan.js capMs belum memeriksa tanggal (inti-layar)" }, () => {
+    assert.equal(tenggat(k.kunci, k.mulai).hasil, k.harap.hasil);
+  });
+}
+
+test("SATUAN Python sama dengan JS", () => {
+  assert.deepEqual(py("--satuan"), SATUAN);
 });
