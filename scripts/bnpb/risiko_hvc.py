@@ -55,7 +55,9 @@ PETA_JENIS = {
 JENIS_DARI_NAMA = {n: j for j, ns in PETA_JENIS.items() for n in ns}
 LAPISAN_TAMBAH = {"karhutla": "layer_bahaya_kebakaran_hutan_dan_lahan", "cuaca": "layer_bahaya_cuaca_ekstrim"}
 METRIK_DIBI = [("jumlah_kejadian", "jumlah_kejadian"), ("meninggal", "meninggal"), ("hilang", "hilang"), ("luka_sakit", "luka"),
-               ("menderita", "terdampak"), ("mengungsi", "mengungsi"), ("rumah_rusak_berat", "rr_berat")]
+               ("menderita", "terdampak"), ("mengungsi", "mengungsi"), ("rumah_rusak_berat", "rr_berat"),
+               ("rumah_rusak_sedang", "rr_sedang"), ("rumah_rusak_ringan", "rr_ringan")]   # tujuh pertama dipakai model; dua terakhir hanya dibawa ke berkas (RU-058)
+N_MODEL = 7
 MODEL = {"M0": "jenis saja (naif)", "M1": "jenis + H", "M2": "jenis + H + V + C", "M3": "jenis + ln R"}
 
 
@@ -74,9 +76,11 @@ def agregasi_dibi(baris, tahun):
         if j is None or kab is None:
             dibuang += 1
             continue
-        a = out.setdefault((kab, tahun, j), [0] * len(METRIK_DIBI))
+        a = out.setdefault((kab, tahun, j), [0] * N_MODEL + [None] * (len(METRIK_DIBI) - N_MODEL))
         for i, (kol, _) in enumerate(METRIK_DIBI):
-            a[i] += int(round(float(r.get(kol) or 0)))
+            if i >= N_MODEL and r.get(kol) is None:
+                continue                       # rusak sedang/ringan tanpa isi di sumber tetap null, bukan 0
+            a[i] = (a[i] or 0) + int(round(float(r.get(kol) or 0)))
     return out, dibuang
 
 
@@ -278,6 +282,7 @@ def dari_berkas(baris, kode):
         if (k, r[1], r[2]) in out:
             raise RuntimeError(f"dua baris jatuh ke {k} {r[1]} {r[2]}: padanan tidak satu ke satu")
         kej, mh, *lain = r[3:]
+        lain += [None] * (6 - len(lain))   # berkas lama (RU-058 belum): sedang dan ringan = null
         out[(k, r[1], r[2])] = [kej, mh, 0, *lain]   # berkas menyimpan meninggal+hilang sekali; urutan sama dengan agregasi_dibi
     return out, dibuang
 
@@ -286,6 +291,28 @@ def h_dari_hvc():
     """H per jenis dari risiko_hvc.json yang ada (sudah dibulatkan 4 angka, sama dengan ke_fit) -> {jenis: {kab: H}}."""
     kab = json.load(open(os.path.join(D.KELUAR, "risiko_hvc.json")))["kab"]
     return {j: {k: v["H"][j] for k, v in kab.items() if j in v["H"]} for j in JENIS_H}
+
+
+def baris_dari(agr):
+    return [{"kab": k, "tahun": t, "j": j, "kej": a[0], "y": a[1] + a[2], "lk": a[3], "td": a[4], "ng": a[5], "rb": a[6], "rs": a[7], "rr": a[8]} for (k, t, j), a in sorted(agr.items())]
+
+
+def simpan_dibi(rows):
+    D.simpan_plafon("dibi_kab_tahun.json", {
+        "kode": "kemendagri",
+        "kode_catatan": "id_kab_bps DIBI dipetakan ke kode Kemendagri (scripts/udara/kota.json) lewat scripts/data/padanan_kab_dibi.py; kode tak terpetakan dibuang",
+        "sumber": "DIBI BNPB (dibi.bnpb.go.id, Superset dasbor publik, tidak resmi lewat API)", "atribusi": "BNPB, Data Informasi Bencana Indonesia",
+        "lisensi": "data publik dasbor DIBI; syarat pakai tidak tertulis",
+        "catatan": "baris = kabupaten x tahun x kelompok jenis; kelompok: " + json.dumps(PETA_JENIS, ensure_ascii=False) + "; jenis di luar kelompok dibuang",
+        "kolom": ["kab", "tahun", "jenis", "kejadian", "meninggal_hilang", "luka", "terdampak", "mengungsi", "rumah_rusak_berat", "rumah_rusak_sedang", "rumah_rusak_ringan"],
+        "baris": [[r["kab"], r["tahun"], r["j"], r["kej"], r["y"], r["lk"], r["td"], r["ng"], r["rb"], r["rs"], r["rr"]] for r in rows]})
+
+
+def hanya_dibi():
+    """Tarik DIBI dan tulis HANYA dibi_kab_tahun.json (tanpa cuplik InaRISK dan tanpa uji balik)."""
+    agr, dibuang = tarik_dibi(dt.date.today().year - 1)
+    simpan_dibi(baris_dari(agr))
+    print(f"dibi_kab_tahun: {len(agr)} baris, {dibuang} dibuang", file=sys.stderr)
 
 
 def jalan(tanpa_jaringan=False):
@@ -303,7 +330,7 @@ def jalan(tanpa_jaringan=False):
         tahun_akhir = dt.date.today().year - 1
         fit = ke_fit(muat_h(), ker, ikd)
         agr, dibuang = tarik_dibi(tahun_akhir)
-    rows = [{"kab": k, "tahun": t, "j": j, "kej": a[0], "y": a[1] + a[2], "lk": a[3], "td": a[4], "ng": a[5], "rb": a[6]} for (k, t, j), a in sorted(agr.items())]
+    rows = baris_dari(agr)
     tanpa_fit = sum(1 for r in rows if baris_fitur(r, fit) is None)
     uji = uji_balik(rows, fit, tahun_akhir)
     irbi = irbi_total_2025()
@@ -324,14 +351,7 @@ def jalan(tanpa_jaringan=False):
     info = D.kab_info()
     for k in ringkas:
         ringkas[k]["nama"] = info.get(k, {}).get("nama")
-    D.simpan_plafon("dibi_kab_tahun.json", {
-        "kode": "kemendagri",
-        "kode_catatan": "id_kab_bps DIBI dipetakan ke kode Kemendagri (scripts/udara/kota.json) lewat scripts/data/padanan_kab_dibi.py; kode tak terpetakan dibuang",
-        "sumber": "DIBI BNPB (dibi.bnpb.go.id, Superset dasbor publik, tidak resmi lewat API)", "atribusi": "BNPB, Data Informasi Bencana Indonesia",
-        "lisensi": "data publik dasbor DIBI; syarat pakai tidak tertulis",
-        "catatan": "baris = kabupaten x tahun x kelompok jenis; kelompok: " + json.dumps(PETA_JENIS, ensure_ascii=False) + "; jenis di luar kelompok dibuang",
-        "kolom": ["kab", "tahun", "jenis", "kejadian", "meninggal_hilang", "luka", "terdampak", "mengungsi", "rumah_rusak_berat"],
-        "baris": [[r["kab"], r["tahun"], r["j"], r["kej"], r["y"], r["lk"], r["td"], r["ng"], r["rb"]] for r in rows]})
+    simpan_dibi(rows)
     D.simpan_plafon("risiko_hvc.json", {
         "sumber": "InaRISK BNPB (H), kerentanan.json (V), ikd.json (C), DIBI BNPB (label)", "atribusi": "BNPB (InaRISK, DIBI); Dukcapil; Meta RWI (CC BY-NC 4.0)",
         "rumus": "R_j = H01_j x Phi(V_z) / max(C, 0,05); R_kab = Sum_j R_j (Perka BNPB 2/2012: R = H x V / C)",
@@ -385,14 +405,17 @@ def _cek():
     a, dbg = agregasi_dibi([{"id_kab_bps": 3301, "jenis_bencana": "Banjir ", "jumlah_kejadian": 2.0, "meninggal": 1, "hilang": 2, "luka_sakit": 3},
                             {"id_kab_bps": 3301, "jenis_bencana": "Banjir Bandang", "jumlah_kejadian": 1.0, "meninggal": 4},
                             {"id_kab_bps": 3301, "jenis_bencana": "Konflik Sosial", "meninggal": 9}, {"id_kab_bps": None, "jenis_bencana": "Banjir"}], 2020)
-    assert a == {("3301", 2020, "banjir"): [3, 5, 2, 3, 0, 0, 0]} and dbg == 2, (a, dbg)
+    assert a == {("3301", 2020, "banjir"): [3, 5, 2, 3, 0, 0, 0, None, None]} and dbg == 2, (a, dbg)
     # kode BPS -> Kemendagri: Bireuen BPS 1110 bukan Aceh Singkil (Kemendagri 1110); Mimika BPS 9412 -> 9404; tak terpetakan dibuang
     a, dbg = agregasi_dibi([{"id_kab_bps": 1110, "jenis_bencana": "Banjir", "jumlah_kejadian": 1}, {"id_kab_bps": "9412", "jenis_bencana": "Banjir", "jumlah_kejadian": 2},
                             {"id_kab_bps": 1, "jenis_bencana": "Banjir", "jumlah_kejadian": 5}], 2020)
     assert set(a) == {("1111", 2020, "banjir"), ("9404", 2020, "banjir")} and dbg == 1, (a, dbg)
     b, dbg = dari_berkas([["1110", 2020, "banjir", 1, 4, 3, 2, 1, 0], ["0001", 2020, "banjir", 9, 0, 0, 0, 0, 0]], None)
-    assert b == {("1111", 2020, "banjir"): [1, 4, 0, 3, 2, 1, 0]} and dbg == 1, (b, dbg)
-    assert dari_berkas([["1110", 2020, "banjir", 1, 0, 0, 0, 0, 0]], "kemendagri")[0] == {("1110", 2020, "banjir"): [1, 0, 0, 0, 0, 0, 0]}
+    assert b == {("1111", 2020, "banjir"): [1, 4, 0, 3, 2, 1, 0, None, None]} and dbg == 1, (b, dbg)
+    assert dari_berkas([["1110", 2020, "banjir", 1, 0, 0, 0, 0, 0, 7, None]], "kemendagri")[0] == {("1110", 2020, "banjir"): [1, 0, 0, 0, 0, 0, 0, 7, None]}
+    a, _ = agregasi_dibi([{"id_kab_bps": 3301, "jenis_bencana": "Banjir", "rumah_rusak_sedang": 4, "rumah_rusak_ringan": None},
+                          {"id_kab_bps": 3301, "jenis_bencana": "Banjir Bandang", "rumah_rusak_sedang": 1.0}], 2020)
+    assert a[("3301", 2020, "banjir")][7:] == [5, None], a     # null tetap null, bukan 0
     berkas = json.load(open(os.path.join(D.KELUAR, "dibi_kab_tahun.json")))
     assert berkas.get("kode") == "kemendagri", "dibi_kab_tahun.json masih kode BPS: jalankan risiko_hvc.py --tanpa-jaringan"
     kota = set(D.kab_info())
@@ -432,4 +455,4 @@ def _cek():
 
 
 if __name__ == "__main__":
-    _cek() if "--cek" in sys.argv else jalan("--tanpa-jaringan" in sys.argv)
+    _cek() if "--cek" in sys.argv else hanya_dibi() if "--hanya-dibi" in sys.argv else jalan("--tanpa-jaringan" in sys.argv)
