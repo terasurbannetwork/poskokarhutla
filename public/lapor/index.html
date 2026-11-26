@@ -18,7 +18,7 @@
 <script src="/halaman_awal.js" data-tema></script>
 <link href="/bnpb/bnpb.css" rel="stylesheet">
 <link href="/inti/kartu.css?v=2" rel="stylesheet">
-<link href="/lapor/lapor.css?v=205" rel="stylesheet">
+<link href="/lapor/lapor.css?v=207" rel="stylesheet">
 <link href="/lapor/selamat.css?v=3" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
@@ -242,7 +242,19 @@
     <div class="lp-alun-peta" id="petaAlun">
       <div class="lp-peta-alun"></div>
       <div class="lp-saring" id="saringAlun" role="tablist" aria-label="Jenis bencana"></div>
-      <aside class="lp-alun-panel" aria-label="Daftar kejadian"><div class="lp-alun-sumber" id="sumberAlun" role="tablist" aria-label="Sumber kabar" hidden></div><div class="lp-alun" id="daftarAlun"></div></aside>
+      <aside class="lp-alun-panel" aria-label="Daftar kejadian dan status prakiraan">
+        <div class="lp-alun-mode" id="modeAlun" role="tablist" aria-label="Tampilan peta">
+          <button type="button" role="tab" data-mode="kejadian" aria-selected="true"><svg aria-hidden="true"><use href="#i-kejadian"/></svg><span>Kejadian</span></button>
+          <button type="button" role="tab" data-mode="peringatan" aria-selected="false"><svg aria-hidden="true"><use href="#i-sirene"/></svg><span>Peringatan</span></button>
+        </div>
+        <div class="lp-alun-sumber" id="sumberAlun" role="tablist" aria-label="Sumber kabar" hidden></div><div class="lp-alun" id="daftarAlun"></div>
+        <div class="lp-alun-per" id="isiPeringatan" hidden>
+          <div class="lp-alun-sumber" id="bahayaAlun" role="tablist" aria-label="Jenis bahaya"></div>
+          <ul class="lp-dp-legenda" aria-label="Arti warna"><li style="--w:var(--dp-0)">Normal</li><li style="--w:var(--dp-1)">Waspada</li><li style="--w:var(--dp-2)">Siaga</li><li style="--w:var(--dp-3)">Awas</li><li style="--w:var(--dp-belum)">Belum terukur</li></ul>
+          <p class="lp-redup lp-kecil" id="catatPeringatan" role="status"></p>
+          <div id="kartuPeringatan" hidden></div>
+        </div>
+      </aside>
     </div>
   </section>
 
@@ -413,7 +425,7 @@
 <script src="/inti/foto_kecil.js" defer></script>
 <script src="/inti/antre.js" defer></script>
 <script src="/bagi.js" defer></script>
-<script type="module" src="/lapor/lapor.js?v=163"></script>
+<script type="module" src="/lapor/lapor.js?v=165"></script>
 <script type="module" src="/lapor/peringatan.js?v=5"></script>
 <script type="module" src="/lapor/luring.js?v=4"></script>
 <script src="/bnpb/turnstile.js" defer></script>

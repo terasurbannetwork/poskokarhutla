@@ -3170,6 +3170,23 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-resi b{font-weight:600}.lp-resi small{display:block}
 .lp-hitung{display:block;text-align:right;color:var(--ink2)}
 
+/* Alun-alun: saklar Kejadian | Peringatan dan tampilan status prakiraan (DP-11, dampak-peringatan D22 sampai D24) */
+.lp-alun-mode{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:10px 12px 8px;position:sticky;top:0;z-index:2;background:color-mix(in oklab,var(--card) 94%,transparent)}
+.lp-alun-mode button{min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 10px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:800 .8125rem var(--font)}
+.lp-alun-mode button svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lp-alun-mode button[aria-selected="true"]{background:var(--head-bg);border-color:var(--head-bg);color:var(--on-head)}
+.lp-alun-panel .lp-alun-sumber{top:58px}
+.lp-alun-per{display:grid;gap:10px;padding:0 12px 14px}
+.lp-alun-per[hidden]{display:none}
+.lp-alun-per .lp-alun-sumber{padding:0 0 4px;position:static;background:none}
+.lp-dp-legenda{display:flex;flex-wrap:wrap;gap:6px 12px;margin:0;padding:0;list-style:none;font:700 .75rem var(--font)}
+.lp-dp-legenda li{display:inline-flex;align-items:center;gap:6px}
+.lp-dp-legenda li::before{content:"";width:12px;height:12px;border-radius:4px;background:var(--w);border:1px solid var(--ink2)}
+.lp-kb-prakiraan{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:2px}
+.lp-kb-prakiraan .lp-teks-tombol{font-weight:800;text-align:left}
+.lp-kb-prakiraan .lp-pil{font-size:.6875rem}
+#saringAlun[hidden],.lp-alun[hidden]{display:none!important}
+
 /* menu samping bisa diciutkan (pemilik 26 Nov 2026): hanya layar lebar; di HP menu tetap bilah bawah */
 .lp-tab > .lp-tab-ciut{display:none}
 @media (min-width:900px){
