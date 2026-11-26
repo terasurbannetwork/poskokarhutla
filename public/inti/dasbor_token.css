@@ -1,0 +1,3 @@
+/* Token dashboard bersama (DB-01): satu-satunya tempat nilai biru/navy dashboard. Dimuat langsung oleh layar yang belum memakai dasbor.css (mis. /operasi), dan lewat @import oleh dasbor.css. */
+:root{--db-navy:#0b2545;--db-tx:var(--db-navy);--db-ikon:var(--db-navy);--db-ikon-tx:#fff;--db-biru:#2f6fd6;--db-h2:color-mix(in srgb,#2f6fd6 5%,var(--card));--db-h2-garis:color-mix(in srgb,#2f6fd6 16%,var(--card));
+  --db-isi:color-mix(in srgb,#2f6fd6 2%,var(--card));--db-merah-h2:color-mix(in srgb,#c0392b 5%,var(--card));--db-merah-isi:color-mix(in srgb,#c9503a 2%,var(--card))}

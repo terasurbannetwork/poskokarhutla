@@ -1767,7 +1767,7 @@ function muatSatelit() {
    sendiri bila tab Operasi sedang terbuka. Ditunda sampai DOMContentLoaded supaya operasi_peta.js (window.OpsUdara) pasti sudah jalan. */
 function muatOperasiLaporan() {
   return muatOperasiLaporan._p ||= new Promise(ok => document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", ok, {once: true}) : ok())
-    .then(() => new Promise((ok, no) => { const s = document.createElement("script"); s.src = "/operasi_laporan.js"; s.onload = ok; s.onerror = () => { s.remove(); no(new Error("operasi_laporan.js")); }; document.head.appendChild(s); }))
+    .then(() => ["/inti/dasbor.js?v=7", "/operasi_laporan.js"].reduce((p, src) => p.then(() => new Promise((ok, no) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => { s.remove(); no(new Error(src)); }; document.head.appendChild(s); })), Promise.resolve()))   // dasbor.js = pembantu bersama (DB-02) harus ada sebelum operasi_laporan.js merender
     .catch(e => { muatOperasiLaporan._p = null; console.warn("Operasi:", e.message); });
 }
 /* akun pemirsa (src/pemirsa.js): worker menulis tab yang boleh dilihat di <html data-pemirsa-tab>; tab lain disembunyikan dan dialihkan ke tab pertamanya */

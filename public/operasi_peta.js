@@ -246,6 +246,7 @@
     OP.data = d;
     /* menu Operasi di navbar: tersembunyi untuk tamu, muncul begitu /api/operasi/peta boleh dibaca */
     const nav = $('#tabs [data-t="operasi"]'); if (nav) nav.hidden = false;
+    if (!document.querySelector('link[href^="/inti/dasbor_token.css"]')) { const t = document.createElement("link"); t.rel = "stylesheet"; t.href = "/inti/dasbor_token.css?v=1"; document.head.append(t); }   // token dashboard bersama (DB-01), dipakai operasi_peta.css
     if (!document.querySelector('link[href^="/operasi_peta.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/operasi_peta.css?v=207"; document.head.append(l); }
     const dari7 = new Date(Date.parse(t) - 6 * 864e5).toISOString().slice(0, 10);
     [OP.mon, OP.rekap, OP.vis, OP.metar, OP.nilai] = await Promise.all([ambil(`/api/operasi/monitor?dari=${t}&sampai=${t}`), ambil("/data/operasi/rekap_udara.json"), ambil("/api/jarak-pandang"), ambil("/data/metar.json"),
