@@ -6,7 +6,7 @@
    - Suara (id-ID) bila peramban mendukung; foto dikecilkan di peramban (foto_kecil.js), EXIF dibaca dulu (exif.js). */
 import {maskot} from "/lapor/maskot.js?v=24"; // bervesi: berkas .js disajikan immutable
 import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
-import {BAHAYA_ALUN, barisPrakiraan} from "/lapor/dampak_peringatan.js?v=1";   // Alun-alun tampilan Peringatan (DP-11)
+import {BAHAYA_ALUN, barisPrakiraan} from "/lapor/dampak_peringatan.js?v=2";   // Alun-alun tampilan Peringatan (DP-11)
 import {gabung, saring, teksKartu} from "/lapor/alun_kabar.js?v=1";   // Kabar Alun-alun (KA-05): gabung resmi, warga, berita
 /* Pelapor mengetik nomor WhatsApp tanpa kode (KEPUTUSAN-LAPOR-AI K65, D99-D102); di situs, nomor ketikan diikat ke perangkat lewat kuki HttpOnly
    dari Worker. Sesi /masuk yang sudah ada tetap dipakai bila ada. Kiriman POST wajib x-pb: 1. */
@@ -2203,7 +2203,7 @@ let alunMode = "kejadian", dpBahaya = "bnj", dpDok;   // dpDok: undefined = belu
 const dpAlat = {}, dpJson = u => fetch(u, {signal: AbortSignal.timeout(10000)}).then(r => r.ok ? r.json() : null).catch(() => null);
 const dpModul = () => dpModul.j ||= new Promise(ok => { if (window.DampakPeringatan) return ok();
   document.head.append(Object.assign(document.createElement("link"), {rel: "stylesheet", href: "/inti/dampak_peringatan.css?v=1"}));
-  document.head.append(Object.assign(document.createElement("script"), {src: "/inti/dampak_peringatan.js?v=1", onload: ok, onerror: ok})); });
+  document.head.append(Object.assign(document.createElement("script"), {src: "/inti/dampak_peringatan.js?v=2", onload: ok, onerror: ok})); });
 const muatDp = () => muatDp.j ||= Promise.all([dpModul(), dpJson("/api/dampak-peringatan/status"), dpJson("/api/dampak-peringatan/ringkas")]).then(([, status, ringkas]) => {
   dpDok = window.DampakPeringatan && status?.kab && !status.belum_terukur ? {status, ringkas} : null; });
 const LABEL_BAHAYA = {bnj: "Banjir", lsr: "Longsor", cex: "Cuaca", kht: "Karhutla"};

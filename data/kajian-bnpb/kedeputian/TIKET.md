@@ -111,34 +111,34 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-014 | MB-1 status `tidak_bisa_dicek` | `ruang-bnpb` | `penulis-gerbang` | 4 | S | selesai 6 Nov (a2ed1d5d5; seed produksi bersama RU-057) |
 | RU-015 | MB-2 lengkap: semua kunci dan `tenggat()` | `inti-layar` | `penulis-gerbang` | 4 | M | selesai 6 Nov (30c771b1d) |
 | RU-016 | MB-2 pembaca Python dan uji kembar | `ruang-bnpb` | `penulis-gerbang` | 5 | S | tinjau 26 Nov (belum di-commit; 3 kasus cap waktu bertanggal tidak ada ditandai todo di JS, perbaikan `jam_aturan.js` milik `inti-layar`) |
-| RU-017 | Uji layar masuk `uji` dan `terbit.yml` | `mekanik-mesin` | `higiene-repo` | 1 | S | BERHENTI 26 Nov 2026 (langkah 1): `uji:layar` merah di checkout kerja, 8 dari 71 gagal (`/bnpb`, `/alun-alun`, `/admin/pimpinan` di 1440 dan 390 px, interaksi alun-alun, pil status utas). Tidak dirangkai sampai pemilik layar (`layar-peta`, `ruang-bnpb`, `warga-api`) membetulkan; gerbang tidak dilonggarkan. Skip tanpa Chrome sudah ada (`cariChrome()` null dilewati dengan pesan). Waktu `uji:layar` penuh 6 mnt 57 dtk di mesin ini (pembanding: terbit.yml sudah 59 mnt langkah uji dari batas job 70, jadi merangkai butuh langkah 8-10 mnt dan batas job naik) |
+| RU-017 | Uji layar masuk `uji` dan `terbit.yml` | `mekanik-mesin` | `higiene-repo` | 1 | S | selesai 26 Nov 2026: `uji:layar` (424/424, 6 mnt 42 dtk lokal) dirangkai ke `uji` (variabel l) dan terbit.yml (langkah 12 mnt, batas job 70 jadi 82); tanpa Chrome uji melewati diri dengan pesan; waktu CI nyata menunggu run pertama |
 | RU-018 | Migrasi 0111 peran `unit` | `warga-api` | `migrasi-idempoten` | 4 | S | kode selesai 23 Nov (c616a7d17, migrasi jadi 0168); terap produksi oleh pemilik |
-| RU-019 | Rute baca `src/unit.js` dan gerbang host | `warga-api` | `guard-api`, `security-reviewer` | 5 | M | belum |
+| RU-019 | Rute baca `src/unit.js` dan gerbang host | `warga-api` | `guard-api`, `security-reviewer` | 5 | M | tinjau 26 Nov (belum di-commit; 4 rute GET, `/bnpb/unit*` dikecualikan dari gerbang host di `src/gerbang_halaman.js`; `tests/warga/unit.test.mjs` 14 uji hijau S1-S6, S8 baca, kuota hanya stafOK, basi dari `MEDIA.head`; S7 dan S8 POST menunggu rute tulis RU-033; `DATA_UNIT` 5 berkas + `pengadaan` kelas T; cangkang HTML RU-020 belum ada, halaman 404 sampai itu) |
 | RU-020 | Cangkang `/bnpb/unit`, katalog 70 ID, registri | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 5 | M | belum |
 | RU-021 | Pelari pipeline `jalan.py` dan `indeks.json` | `ruang-bnpb` | `higiene-repo` | 4 | S | selesai 6 Nov (42333fdc1) |
-| RU-022 | Langkah "Ruang Unit" di `data.yml` | `mekanik-mesin` | `higiene-repo` | 5 | S | belum |
-| RU-023 | G-4 dan G-6 gerbang Ruang Unit | `penulis-gerbang` | `general-purpose` baru | 6 | M | belum |
-| RU-024 | G-5 gerbang privasi unit | `penulis-gerbang` | `security-reviewer` | 6 | S | belum |
-| RU-025 | MB-3 uji JDIHN dan daftar situs JDIH provinsi | `ruang-bnpb` | `higiene-repo` | 10 | S | belum |
-| RU-026 | MB-3 `jdih_daerah.py` | `ruang-bnpb` | `security-reviewer` | 10 | M | belum |
+| RU-022 | Langkah "Ruang Unit" di `data.yml` | `mekanik-mesin` | `higiene-repo` | 5 | S | tinjau 26 Nov (belum di-commit; tiga langkah DT 2.3 di data.yml sesudah IKU BNPB; jalan.py --cek lulus; YAML terbaca; uji tests/agen terkait hijau; pemilik perlu menambah secret BPS_KEY; workflow_dispatch oleh sesi induk) |
+| RU-023 | G-4 dan G-6 gerbang Ruang Unit | `penulis-gerbang` | `general-purpose` baru | 6 | M | tinjau 26 Nov (belum di-commit; `tests/agen/gerbang-ruang-unit.test.mjs` 13 uji hijau, butir a-f dengan uji diri, mutasi kode nyata merah; butir a menegakkan kebalikan RU §6.1: `/bnpb/unit*` TIDAK di `HTML_RUTE` dan `halamanTerkunci` false, mengikuti DT §1.4 butir 1, karena jalur di `HTML_RUTE` selalu dikunci gerbang host dan staf berperan `unit` terpantul; hak dijaga `stafOK`/`modAtauStaf` di `src/unit.js`; butir d memuat `KATA_TUDUH` KEAMANAN-PRIVASI §9.3; gerbang titik tengah kini memindai `public/bnpb/unit/**` termasuk `.css` dan berkas belum dilacak) |
+| RU-024 | G-5 gerbang privasi unit | `penulis-gerbang` | `security-reviewer` | 6 | S | tinjau 26 Nov (belum di-commit; 9 uji hijau, menjalankan `panen.py --cek` dan pemanen CKAN nyata atas fixture, mutasi panen terdeteksi merah; butir e dan pola `.gitignore` KEU-1/IRT-1 belum digerbangi) |
+| RU-025 | MB-3 uji JDIHN dan daftar situs JDIH provinsi | `ruang-bnpb` | `higiene-repo` | 10 | S | tinjau 26 Nov (belum di-commit; JDIHN tanpa pencarian mesin: `/search` dirender di peramban dari `/search-api/` yang dilarang robots; probe 38 provinsi: 24 beranda terbaca, 8 diblokir (403 atau robots), 6 tak terjangkau; 16 punya formulir cari GET yang terbaca; 5 fixture HTML buatan sendiri; usul tiket `scraper-antibot` untuk 8 situs diblokir ke sesi induk) |
+| RU-026 | MB-3 `jdih_daerah.py` | `ruang-bnpb` | `security-reviewer` | 10 | M | tinjau 26 Nov (belum di-commit; `--cek` hijau atas fixture dan jam palsu; panen nyata 15 situs terbaca, 10 dokumen dikenali (6 RPBD, 4 renkon), RPBD provinsi 2 berlaku, 2 habis, 11 tidak ditemukan, 23 tidak bisa dicek; belum didaftarkan di `jalan.py` LANGKAH karena berkas itu sedang disunting sesi lain; wilayah.json 513 kab, Fakfak 9201 hilang) |
 | RU-027 | MB-4 `skor.py` | `ruang-bnpb` | `validasi-model` | 4 | S | selesai 6 Nov (42333fdc1) |
 | RU-028 | MB-5 `neraca.py` | `ruang-bnpb` | `selera-angka` | 4 | S | tinjau 26 Nov (belum di-commit; uji balik PR dan 514 baris PLP-1 ikut tiket sistem PLP-1) |
 | RU-029 | MB-5 `kebutuhanDasar` JS dan uji kembar | `inti-layar` | `penulis-gerbang` | 9 | S | selesai 26 Nov (belum di-commit; pemeriksa penulis-gerbang menyusul) |
 | RU-030 | MB-6 `rapor.py` dan perender `rapor.js` | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 4 | M | tinjau 26 Nov (belum di-commit; kepala kartu nama seksi berikon per AGENTS.md 3.5, angka temuan di baris ringkas isi; `unit.css` baru berisi `.un-lbl`, `.un-per`; cangkang RU-020 dan entri `LAYAR` RU-031 belum) |
-| RU-031 | G-3 perluasan gerbang kartu standar | `penulis-gerbang` | `general-purpose` baru | 5 | S | belum |
+| RU-031 | G-3 perluasan gerbang kartu standar | `penulis-gerbang` | `general-purpose` baru | 5 | S | tinjau 26 Nov (belum di-commit; `rapor.js` di `LAYAR`, `SCOPE`, `WAJIB_BERSIH`; `unit.html` menunggu RU-020; meta-uji direktori dan uji diri `contoh.js` hijau) |
 | RU-032 | MB-7 migrasi 0112 dan uji skema | `warga-api` | `migrasi-idempoten` | 7 | M | belum |
 | RU-033 | MB-7 rute ketuk | `warga-api` | `guard-api`, `security-reviewer` | 7 | S | belum |
 | RU-034 | MB-7 `terima.py` dan layar `ketuk.js` | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 7 | M | belum |
-| RU-035 | MB-8 `panen.py` inti dan CKAN | `ruang-bnpb` | `security-reviewer` | 4 | M | tinjau 26 Nov (belum di-commit; `--cek` hijau; fixture CKAN disusun tangan karena data.bnpb.go.id tidak terjangkau, ganti tangkapan bersih saat tarikan pertama; bukti G-5 tertahan RU-024) |
+| RU-035 | MB-8 `panen.py` inti dan CKAN | `ruang-bnpb` | `security-reviewer` | 4 | M | tinjau 26 Nov (belum di-commit; `--cek` hijau; fixture CKAN disusun tangan karena data.bnpb.go.id tidak terjangkau, ganti tangkapan bersih saat tarikan pertama; bukti G-5 hijau 26 Nov lewat RU-024) |
 | RU-036 | MB-8 ArcGIS, INALOGPAL, SIRUP | `ruang-bnpb` | `security-reviewer` | 10 | M | belum |
 | RU-037 | HUK-1 kartu status peraturan | `ruang-bnpb` | `selera-angka` | 6 | S | belum |
 | RU-038 | KPOD-2 kartu Jam Aturan | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 6 | S | belum |
 | RU-039 | KPOD-2 masa status dari Jam Aturan | `inti-layar` | `penulis-gerbang` | 6 | S | belum |
 | RU-040 | RRX-1 `rrx1.py` dan kartu jam pascabencana | `ruang-bnpb` | `selera-angka` | 6 | M | belum |
 | RU-041 | RRX-1 kolom `tgl_r3p` dan uji alur | `warga-api` | `guard-api` | 6 | S | belum |
-| RU-042 | PLP-1 neraca stok penyangga | `ruang-bnpb` | `validasi-model`, `selera-angka` | 7 | M | belum |
-| RU-043 | PERB-1 pemilih daerah pendampingan IKD | `ruang-bnpb` | `validasi-model`, `selera-angka` | 7 | M | belum |
-| RU-044 | PUS-1 rapor walidata Satu Data | `ruang-bnpb` | `selera-angka` | 7 | S | belum |
+| RU-042 | PLP-1 neraca stok penyangga | `ruang-bnpb` | `validasi-model`, `selera-angka` | 7 | M | tinjau 26 Nov (belum di-commit; 514 kab, dua penyebut: 209 dari 5.269 kab-tahun (0 bila tidak tercatat) dan 209 dari 4.434 berdata, 35 kab tanpa kode DIBI dikeluarkan, reproduksi riset/4 5.654 tetap pembanding sidik beku; stok `belum_dilaporkan` sampai RU-036; SISA `pipa-data`: padanan kode kab lama ke baru di pembuat `dibi_kab_tahun.json`; nama `src/unit.js` `DATA_UNIT` oleh warga-api) |
+| RU-043 | PERB-1 pemilih daerah pendampingan IKD | `ruang-bnpb` | `validasi-model`, `selera-angka` | 7 | M | tinjau 26 Nov (belum di-commit; V = Phi(skor z) karena `v` di `risiko_hvc.json` skor z; biaya = maks(jarak, 100 km) bawaan U13; gerbang G-4 RU-023 belum ada) |
+| RU-044 | PUS-1 rapor walidata Satu Data | `ruang-bnpb` | `selera-angka` | 7 | S | tinjau 26 Nov (belum di-commit; daftar 37 data prioritas belum diketik: judulnya tidak ada di `5-lakip.md` §6 maupun repo, persen tertulis null; jalan nyata gagal karena data.bnpb.go.id tidak terjangkau dari mesin pengerja) |
 | RU-045 | KPOD-3 arsip Laphar mode satu hari | `pipa-umum` | `security-reviewer` | 8 | S | belum |
 | RU-046 | KPOD-3 entri `arsip_laphar` di pengatur WA | `wa-bot` | `security-reviewer` | 8 | S | tertahan (gateway WA mati sejak 4 Nov, OUTSTANDING E1) |
 | RU-047 | KPOD-3 kartu cakupan Laphar | `ruang-bnpb` | `selera-angka` | 8 | S | belum |
@@ -155,7 +155,7 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-058 | PERB-2 kolom rusak sedang dan ringan DIBI | `banjir` | `validasi-model` | 10 | S | belum |
 | RU-059 | PERB-2 kerugian ekonomi berjalan | `ruang-bnpb` | `validasi-model` | 10 | M | belum |
 | RU-060 | PSPB-3 rapor Sendai dan SDGs 11.b | `ruang-bnpb` | `validasi-model` | 10 | S | belum |
-| RU-061 | MT-2 daerah prioritas mitigasi | `ruang-bnpb` | `validasi-model` | 10 | S | belum |
+| RU-061 | MT-2 daerah prioritas mitigasi | `ruang-bnpb` | `validasi-model` | 10 | S | tinjau 26 Nov (belum di-commit; hipotesis, judul "urutan skor", pil "Asumsi: belum lulus uji balik"; kriteria `lab_kriteria/mb4.json` dikunci, uji balik belum dijalankan dan belum bertiket; 35 kab tanpa kode DIBI ditandai, 15 di kuartil atas) |
 | RU-062 | PLP-2 daftar pendek hibah logpal | `ruang-bnpb` | `validasi-model` | 10 | M | belum |
 | RU-063 | OJL-2 penempatan stok | `ruang-bnpb` | `validasi-model` | 10 | M | belum |
 | RU-064 | OJL-3 rapor Klaster Logistik | `ruang-bnpb` | `security-reviewer`, `selera-angka` | 10 | S | belum |
@@ -534,13 +534,14 @@ Kerangka (RU-017 sampai RU-024) bukan mesin bernomor, tetapi dipakai semua mesin
 - **Dependensi:** RU-019 (kontrak rute), DS §3, §7.0 sampai §7.2, §8.
 - **Pengerja / pemeriksa:** `ruang-bnpb` / `selera-angka`, `inp-reviewer`.
 - **Langkah:**
-  - [ ] Urutan muat dan cangkang persis DS §3 (`tema.css` sebelum `bnpb.css`, tanpa skrip inline, kepala `.ad-top`).
-  - [ ] Keadaan layar DS §8.1 sampai §8.6 (memeriksa akses, kosong, galat, basi, tanpa hak, dijalankan lokal); ponsel DS §9; aksesibilitas DS §10.
-  - [ ] Uji render dengan `tests/bnpb/_peramban.mjs`: pintu menampilkan 22 unit; `/bnpb/unit/plp` tanpa data menampilkan keadaan kosong, tanpa angka nol palsu.
-  - [ ] Kartu tiap sistem memuat tautan ke berkas skrip di repo dan ke DT (U1 bawaan, DT §9.1).
-  - [ ] Jalankan bukti.
+  - [x] Urutan muat dan cangkang persis DS §3 (`tema.css` sebelum `bnpb.css`, tanpa skrip inline, kepala `.ad-top`).
+  - [x] Keadaan layar DS §8.1 sampai §8.6 (memeriksa akses, kosong, galat, basi, tanpa hak, dijalankan lokal); ponsel DS §9; aksesibilitas DS §10.
+  - [x] Uji render dengan `tests/bnpb/_peramban.mjs`: pintu menampilkan 22 unit; `/bnpb/unit/plp` tanpa data menampilkan keadaan kosong, tanpa angka nol palsu.
+  - [x] Kartu tiap sistem memuat tautan ke berkas skrip di repo dan ke DT (U1 bawaan, DT §9.1).
+  - [x] Jalankan bukti.
 - **Bukti:** `node --test tests/bnpb/unit_layar.test.mjs && npm run uji:agen`.
 - **Pemilik:** tidak ada.
+- **Selesai 26 Nov 2026:** katalog 70 ID di `public/bnpb/unit/katalog.js`, cangkang `unit.js`, uji `tests/bnpb/unit_layar.test.mjs` (katalog lawan KA 5.1, KODE_UNIT, cakupan) dan `tests/bnpb/unit_peramban.test.mjs` (Chrome 1440 dan 390). Sisa: tab direktorat `?dit=` WIL menunggu sistem WIL tayang; paginasi 25 baris di tabel kartu milik perender RU-030.
 - **Rujukan:** DS §3, §5, §7.0 sampai §7.2, §8 sampai §10; DT §2.1; PRD §7.1, §7.2; RU §0.1 butir 2. **Ukuran:** M
 
 #### RU-021 Pelari pipeline `jalan.py` dan `indeks.json`
@@ -592,8 +593,8 @@ Kerangka (RU-017 sampai RU-024) bukan mesin bernomor, tetapi dipakai semua mesin
 - **Dependensi:** RU-020.
 - **Pengerja / pemeriksa:** `penulis-gerbang` / `security-reviewer`.
 - **Langkah:**
-  - [ ] Butir a sampai e RU §7.1; uji dirinya menolak migrasi fixture `no_wa TEXT`, skrip fixture `outFields=*`, JSON fixture berkunci `nik`, dengan pesan menyebut berkas dan nama kolom.
-  - [ ] Jalankan bukti.
+  - [x] Butir a sampai d RU §7.1 (d lewat pola butir a); uji dirinya menolak migrasi fixture `no_wa TEXT`, skrip fixture `outFields=*`, JSON fixture berkunci `nik`, dengan pesan menyebut berkas dan nama kolom. Butir e belum digerbangi: `unit/pengungsian.json` dan fixture-nya belum ada (WIL-2).
+  - [x] Jalankan bukti.
 - **Bukti:** `node --test tests/agen/gerbang-privasi-unit.test.mjs && npm run uji:agen`.
 - **Pemilik:** tidak ada.
 - **Rujukan:** RU §7.1; DT §8 "Dilarang dipanen", §9.2. **Ukuran:** S
@@ -605,9 +606,9 @@ Kerangka (RU-017 sampai RU-024) bukan mesin bernomor, tetapi dipakai semua mesin
 - **Dependensi:** RU-000 (U5 bawaan ya).
 - **Pengerja / pemeriksa:** `ruang-bnpb` / `higiene-repo`.
 - **Langkah:**
-  - [ ] Probe `https://jdihn.go.id` dengan User-Agent DT §8 dan jeda 1 detik; catat titik pencarian dan bentuk jawabannya.
-  - [ ] Bila tidak ada pencarian mesin, probe situs JDIH 38 provinsi; situs yang menolak dicatat `diblokir` dan diajukan sebagai tiket `scraper-antibot` terpisah ke sesi induk.
-  - [ ] Simpan 5 halaman fixture untuk RU-026.
+  - [x] Probe `https://jdihn.go.id` dengan User-Agent DT §8 dan jeda 1 detik; catat titik pencarian dan bentuk jawabannya.
+  - [x] Bila tidak ada pencarian mesin, probe situs JDIH 38 provinsi; situs yang menolak dicatat `diblokir` dan diajukan sebagai tiket `scraper-antibot` terpisah ke sesi induk.
+  - [x] Simpan 5 halaman fixture untuk RU-026.
 - **Bukti:** `python3 -I -c "import json; d=json.load(open('scripts/bnpb/unit/jdih_situs.json')); assert len(d) == 38, len(d)"`.
 - **Pemilik:** tidak ada (U5 bawaan berlaku).
 - **Rujukan:** DT §4.3 "Urutan sumber", §10 butir 9. **Ukuran:** S
@@ -619,10 +620,10 @@ Kerangka (RU-017 sampai RU-024) bukan mesin bernomor, tetapi dipakai semua mesin
 - **Dependensi:** RU-025, RU-021.
 - **Pengerja / pemeriksa:** `ruang-bnpb` / `security-reviewer` (`esc` hilir, jeda, User-Agent).
 - **Langkah:**
-  - [ ] `--cek` atas fixture RU §4 baris MB-3: periode 2025-2029 `berlaku`; tanpa periode = penetapan + 5 tahun `diduga`; jeda 1 detik dan cache 30 hari dibuktikan jam palsu; 5xx memberi `tidak_bisa_dicek`.
-  - [ ] Tulis modul; `cocok_pemda` lewat `scripts/bnpb/wilayah_kab.py`.
-  - [ ] Periksa selisih 513 lawan 514 kab di `public/data/bnpb/wilayah.json` (DT §10 butir 10) dan laporkan kab yang hilang.
-  - [ ] Jalankan bukti.
+  - [x] `--cek` atas fixture RU §4 baris MB-3: periode 2025-2029 `berlaku`; tanpa periode = penetapan + 5 tahun `diduga`; jeda 1 detik dan cache 30 hari dibuktikan jam palsu; 5xx memberi `tidak_bisa_dicek`.
+  - [x] Tulis modul; `cocok_pemda` lewat `scripts/bnpb/wilayah_kab.py` (keluarannya `public/data/bnpb/wilayah.json`; berkas itu tidak punya `norm()`, normalisasi nama ada di `jdih_daerah.py`).
+  - [x] Periksa selisih 513 lawan 514 kab di `public/data/bnpb/wilayah.json` (DT §10 butir 10) dan laporkan kab yang hilang. (Hilang: Fakfak, 9201, Papua Barat; provinsi 92 berisi 6 dari 7.)
+  - [x] Jalankan bukti.
 - **Bukti:** `python3 -I scripts/bnpb/unit/jdih_daerah.py --cek && python3 -I scripts/bnpb/unit/jalan.py --cek`.
 - **Pemilik:** tidak ada.
 - **Rujukan:** DT §4.3; RU §4 baris MB-3. **Ukuran:** M
@@ -691,8 +692,8 @@ Kerangka (RU-017 sampai RU-024) bukan mesin bernomor, tetapi dipakai semua mesin
 - **Dependensi:** RU-030.
 - **Pengerja / pemeriksa:** `penulis-gerbang` / `general-purpose` baru.
 - **Langkah:**
-  - [ ] Uji diri menolak berkas fiktif `public/bnpb/unit/contoh.js` yang tidak terdaftar.
-  - [ ] Jalankan bukti.
+  - [x] Uji diri menolak berkas fiktif `public/bnpb/unit/contoh.js` yang tidak terdaftar.
+  - [x] Jalankan bukti (berkas uji hijau; `npm run uji:agen` merah hanya di tipografi dan pre-push, di luar tiket ini).
 - **Bukti:** `node --test tests/agen/gerbang-kartu-std.test.mjs && npm run uji:agen`.
 - **Pemilik:** tidak ada.
 - **Rujukan:** RU §6.1 G-3, §6.2; DT §4.6 "Gerbang". **Ukuran:** S
@@ -749,7 +750,7 @@ Kerangka (RU-017 sampai RU-024) bukan mesin bernomor, tetapi dipakai semua mesin
 - **Langkah:**
   - [x] `--cek` dengan `urlopen` tiruan: cache segar tidak memanggil jaringan; coba ulang 2, 4, 8 detik; gagal keras menyebut URL dan kode HTTP; `DILARANG` menolak `survey123`; sumber berubah bentuk keluar bukan 0.
   - [x] Tiap keluaran membawa `sumber: [{nama, url, diambil, lisensi}]`.
-  - [ ] Jalankan bukti: `panen.py --cek` hijau; `gerbang-privasi-unit.test.mjs` belum ada (RU-024, `penulis-gerbang`).
+  - [x] Jalankan bukti: `panen.py --cek` hijau; `gerbang-privasi-unit.test.mjs` hijau 26 Nov (RU-024).
 - **Bukti:** `python3 -I scripts/bnpb/unit/panen.py --cek && node --test tests/agen/gerbang-privasi-unit.test.mjs`.
 - **Pemilik:** tidak ada (U4 bawaan: ya, agregat, layar staf saja).
 - **Rujukan:** DT §4.8, §8; RU §4 baris MB-8. **Ukuran:** M
@@ -847,10 +848,11 @@ Pola tiap tiket sistem pipeline: skrip `scripts/bnpb/unit/<nama>.py` dengan `--c
 - **Dependensi:** RU-028, RU-030.
 - **Pengerja / pemeriksa:** `ruang-bnpb` / `validasi-model` (uji balik, pemangkasan persentil 99), `selera-angka`.
 - **Langkah:**
-  - [ ] `--cek` menghitung ulang contoh Purbalingga DT §5.7 dan kasus RU §2.3 S1 sampai S10; 514 baris, tiap kab tepat sekali; stok kosong tidak pernah 0.
-  - [ ] Uji balik DIBI dengan sha256 masukan di keluaran.
-  - [ ] Kartu rupa DS §7.4; label `hitungan_kita` dan dua bacaan Pasal 11 berlabel.
-  - [ ] Jalankan bukti.
+  - [x] `--cek` menghitung ulang contoh Purbalingga DT §5.7 dan kasus RU §2.3 S1 sampai S10; 514 baris, tiap kab tepat sekali; stok kosong tidak pernah 0.
+  - [x] Uji balik DIBI dengan sha256 masukan di keluaran. Dua penyebut berdampingan: kab-tahun bernilai 0 bila tidak tercatat DIBI (5.269) dan kab-tahun berdata (4.434, pemberi p95 dan p99); 35 kab tanpa kode DIBI cocok dikeluarkan dan jumlahnya tampil di kartu; 5.654 riset/4 hanya pembanding sidik beku.
+  - [ ] SISA `pipa-data`: padanan kode kab DIBI lama ke kode baru (31 kab Papua pemekaran dan 4 lainnya) di pembuat `dibi_kab_tahun.json`; sesudahnya 35 kab itu masuk penyebut lagi.
+  - [x] Kartu rupa DS §7.4; label `hitungan_kita` dan dua bacaan Pasal 11 berlabel. Tab skenario PR jadi tiga kartu (rapor.js belum punya tab di kartu).
+  - [x] Jalankan bukti.
 - **Bukti:** `python3 -I scripts/bnpb/unit/plp1.py --cek`.
 - **Pemilik:** tidak ada.
 - **Rujukan:** DT §5.7; RU §2.3, §5.1 baris PLP-1; DS §7.4. **Ukuran:** M
@@ -862,10 +864,10 @@ Pola tiap tiket sistem pipeline: skrip `scripts/bnpb/unit/<nama>.py` dengan `--c
 - **Dependensi:** RU-027, RU-015 (`ikd_ambang_kelas`), RU-030.
 - **Pengerja / pemeriksa:** `ruang-bnpb` / `validasi-model`, `selera-angka`.
 - **Langkah:**
-  - [ ] `--cek` atas kasus RU §2.4 (cocok 1e-5) dan DT §5.1 (C di atas 0,80 tidak masuk; manfaat tidak negatif; C lebih rendah memberi d lebih besar).
-  - [ ] Batas kelas sedang 0,40 ≤ C < 0,80 (RU §9 butir 4), agregasi H = maks berlabel asumsi.
-  - [ ] Kartu rupa DS §7.3; label wajib G-4 butir d.
-  - [ ] Jalankan bukti.
+  - [x] `--cek` atas kasus RU §2.4 (cocok 1e-5) dan DT §5.1 (C di atas 0,80 tidak masuk; manfaat tidak negatif; C lebih rendah memberi d lebih besar).
+  - [x] Batas kelas sedang 0,40 ≤ C < 0,80 (RU §9 butir 4), agregasi H = maks berlabel asumsi.
+  - [x] Kartu rupa DS §7.3; label wajib G-4 butir d. Uji render `tests/bnpb/unit_perb1.test.mjs` (RU §5.1).
+  - [ ] Jalankan bukti: `perb1.py --cek` hijau; `tests/agen/gerbang-ruang-unit.test.mjs` belum ada (RU-023, `penulis-gerbang`).
 - **Bukti:** `python3 -I scripts/bnpb/unit/perb1.py --cek && node --test tests/agen/gerbang-ruang-unit.test.mjs`.
 - **Pemilik:** U10: nilai IKD 2025 per kab bila bisa diminta ke Dit. PERB (bawaan: tidak tersedia, proksi raster).
 - **Rujukan:** DT §5.1, §10 butir 7; RU §2.4, §5.1 baris PERB-1; DS §7.3. **Ukuran:** M
@@ -877,8 +879,9 @@ Pola tiap tiket sistem pipeline: skrip `scripts/bnpb/unit/<nama>.py` dengan `--c
 - **Dependensi:** RU-035, RU-030.
 - **Pengerja / pemeriksa:** `ruang-bnpb` / `selera-angka`.
 - **Langkah:**
-  - [ ] `--cek` atas fixture CKAN: paket tanpa `frequency` tidak dihitung basi; produsen 0 dataset tampil (nilai `null` untuk median dan persen); kasus basi RU §2.7.
-  - [ ] Jalankan bukti.
+  - [x] `--cek` atas fixture CKAN: paket tanpa `frequency` tidak dihitung basi; produsen 0 dataset tampil (nilai `null` untuk median dan persen); kasus basi RU §2.7.
+  - [ ] `data_prioritas.json` berisi 37 entri: TERTAHAN, judul Lampiran 9 LAKIP hal. 129-131 tidak ada di repo; berkas memuat `daftar: []` dan `pus1.py` menulis `terbit`/`persen` null. Pemilik atau sesi induk menyalin 37 judul dari PDF LAKIP.
+  - [x] Jalankan bukti.
 - **Bukti:** `python3 -I scripts/bnpb/unit/pus1.py --cek`.
 - **Pemilik:** tidak ada (U4 bawaan).
 - **Rujukan:** DT §5.2; RU §5.1 baris PUS-1, §2.7. **Ukuran:** S
@@ -1111,8 +1114,8 @@ Pola tiap tiket sistem pipeline: skrip `scripts/bnpb/unit/<nama>.py` dengan `--c
 - **Dependensi:** RU-027, RU-030.
 - **Pengerja / pemeriksa:** `ruang-bnpb` / `validasi-model`.
 - **Langkah:**
-  - [ ] `--cek`: kegiatan tanpa kode ditolak; label "usulan analis".
-  - [ ] Jalankan bukti.
+  - [x] `--cek`: kegiatan tanpa kode ditolak; label "usulan analis".
+  - [x] Jalankan bukti.
 - **Bukti:** `python3 -I scripts/bnpb/unit/mt2.py --cek`.
 - **Pemilik:** tidak ada.
 - **Rujukan:** DT §6.11; RU §5.2 baris MT-2. **Ukuran:** S

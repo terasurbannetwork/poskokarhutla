@@ -5,13 +5,16 @@ lalu paparan (paparan.zona_gfm + hitung_kab), lalu menyusun kaji_banjir.banjir_g
   siklus/saji/kaji/<kj>_banjir_gfm_v<n>.json, siklus/saji/kaji_berkas/<kj>/banjir_gfm/v<n>/<kab4>_sel.geojson dan <kab4>_<citra>.png.
 Versi v<n> naik hanya bila lintasan satu kab berubah; versi lama tidak ditimpa. Tidak mengunggah ke R2 atau D1 (rute Worker dan migrasi = GS-08).
 Provinsi tanpa data/terkunci/bangunan/halus_<prov>.json: penduduk "data bangunan belum tersedia", kab itu keluar dari jiwa_kab_sah, tidak pernah 0.
-Pakai: python3 scripts/siklus/genangan_kaji.py jalan --kj KJ --mulai TGL --kab 1116 1201 [--kering] [--ulang] [--keluar DIR] | prasyarat | uji | vonis
+Pakai: python3 scripts/siklus/genangan_kaji.py jalan --kj KJ --mulai TGL --kab 1116 1201 [--kering] [--ulang] [--keluar DIR] | prasyarat | uji
+       python3 scripts/siklus/genangan_kaji.py vonis [--paralel 2] [--kering]   (GS-13: baca 300 sampel terkunci lewat jalur produksi, cache data/raw/siklus/vonis_gs13.jsonl,
+         vonis ke genangan_sidik.json lalu dijangkar dengan commit; ringkasan public/banjir/data/lab/genangan_kaji_ringkas.md)
        python3 scripts/siklus/genangan_kaji.py kirim --keluar AKAR_SAJI [--kj KJ] [--wrangler W] [--basis URL] [--kirim]   (GS-12, siklus.yml; env PIPA_TOKEN)
   kirim: kejadian Q2 dari Buku Besar (banjir, fase tanggap, mulai <= JENDELA_HARI hari lalu; atau --kj yang dibuka staf), versi terakhir ditarik dari R2,
   langkah banjir dijalankan ulang, versi baru dikirim ke /api/siklus/ingest/kaji; berkasnya disalin ke --keluar (diunggah gudang.py) HANYA bila D1 menerima
   versi yang sama, jadi versi di R2 dan baris D1 tetap selangkah.
 """
-import argparse, datetime as dt, glob, hashlib, importlib.util, json, math, os, re, shutil, subprocess, sys, tempfile
+import argparse, datetime as dt, fcntl, glob, hashlib, importlib.util, json, math, os, random, re, shutil, subprocess, sys, tempfile, threading
+from concurrent.futures import ThreadPoolExecutor
 
 AB = os.path.dirname(os.path.abspath(__file__))
 AKAR = os.path.normpath(os.path.join(AB, "../.."))
@@ -318,8 +321,239 @@ def _jalan(a):
     return 1 if masalah else 0
 
 
+# ---------------------------------------------------------------- GS-13 uji balik (ALGORITMA bagian 7, kriteria terkunci GS-02 v2)
+VONIS_CACHE = os.path.join(AKAR, "data/raw/siklus/vonis_gs13.jsonl")   # gitignored; satu baris per pasangan sampel, bisa dilanjutkan
+RINGKAS = os.path.join(AKAR, "public/banjir/data/lab/genangan_kaji_ringkas.md")
+SID = os.path.join(AB, "genangan_sidik.json")
+COBA = 3   # percobaan per pasangan dalam satu jalan; sesudahnya `gagal` dan tetap di penyebut
+GAGAL_MAKS = 30   # dikunci 26 Nov 2026 SEBELUM ada pasangan sah terbaca (6 dari 300, semua tak sah): lebih dari 10 persen gagal baca = jalan rusak
+                  # (jaringan, GFM mati, bug), vonis tidak ditulis; ulangi dengan --ulang-gagal. Tidak bergantung pada rho.
+
+
+def peringkat(v):
+    """peringkat rata-rata untuk nilai seri (1-based)"""
+    u = sorted(range(len(v)), key=lambda i: v[i])
+    r = [0.0] * len(v)
+    i = 0
+    while i < len(u):
+        j = i
+        while j + 1 < len(u) and v[u[j + 1]] == v[u[i]]:
+            j += 1
+        for k in range(i, j + 1):
+            r[u[k]] = (i + j) / 2 + 1
+        i = j + 1
+    return r
+
+
+def spearman(x, y):
+    """Spearman dengan seri; None bila salah satu sisi tanpa ragam (tak terdefinisi, bukan 0)."""
+    rx, ry = peringkat(x), peringkat(y)
+    mx, my = sum(rx) / len(rx), sum(ry) / len(ry)
+    sxy = sum((a - mx) * (b - my) for a, b in zip(rx, ry))
+    sx, sy = sum((a - mx) ** 2 for a in rx), sum((b - my) ** 2 for b in ry)
+    return sxy / math.sqrt(sx * sy) if sx and sy else None
+
+
+def kuantil(s, q):
+    s = sorted(s)
+    p = q * (len(s) - 1)
+    i = int(p)
+    return s[i] + (s[min(i + 1, len(s) - 1)] - s[i]) * (p - i)
+
+
+def nilai_vonis(baris, K, dipilih):
+    """baris sah [{x, y, naif_1, naif_2, naif_3, blok}] -> dict vonis menurut kriteria terkunci (tanpa membaca apa pun lagi)."""
+    L, B, T = K["lulus"], K["bootstrap"], K["tak_dapat_dinilai"]
+    blok = {}
+    for b in baris:
+        blok.setdefault(b["blok"], []).append(b)
+    kode = sorted(blok)
+    naif = [n["id"] for n in K["naif"]]
+    out = {"dipilih": dipilih, "sah": len(baris), "blok_sah": len(kode), "sah_per_dipilih": round(len(baris) / dipilih, 3) if dipilih else 0}
+    if len(kode) < L["n_blok_sah_min"] or not dipilih or len(baris) / dipilih < 0.30:
+        return {**out, "label": T["label"], "alasan": T["bila"]}
+    col = lambda bs, k: [b[k] for b in bs]
+    rho = spearman(col(baris, "x"), col(baris, "y"))
+    rn = {k: spearman(col(baris, k), col(baris, "y")) for k in naif}
+    if rho is None:   # kriteria tidak mengatur rho tak terdefinisi: tidak dinilai, bukan gagal
+        return {**out, "label": T["label"], "alasan": "Spearman model tak terdefinisi (x atau y tanpa ragam)"}
+    rng = random.Random(B["seed"])
+    sel, buang = {k: [] for k in naif}, 0
+    for _ in range(B["ulang"]):
+        bs = [b for c in (rng.choice(kode) for _ in kode) for b in blok[c]]
+        r0 = spearman(col(bs, "x"), col(bs, "y"))
+        rk = {k: spearman(col(bs, k), col(bs, "y")) for k in naif}
+        if r0 is None or None in rk.values():   # ulangan tanpa ragam: dicatat, tidak diisi 0
+            buang += 1
+            continue
+        for k in naif:
+            sel[k].append(r0 - rk[k])
+    a = (100 - B["ci_persen"]) / 200
+    ci = {k: [round(kuantil(v, a), 4), round(kuantil(v, 1 - a), 4)] if v else None for k, v in sel.items()}
+    lulus = rho >= L["rho_min"] and all(ci[k] and ci[k][0] > L["batas_bawah_ci_selisih_min_eksklusif"] for k in L["terhadap"])
+    return {**out, "rho": round(rho, 4), "rho_naif": {k: None if v is None else round(v, 4) for k, v in rn.items()},
+            "ci_selisih": ci, "ulangan_tanpa_ragam": buang, "label": L["label_bila_lulus"] if lulus else "gagal"}
+
+
+def baca_pasangan(gn, kat, amb, m, kk, wp, prov, nama, tgl):
+    """Satu pasangan sampel lewat jalur produksi: hitung_pasangan riwayat (jendela 6 hari, pra <= DIBI - margin, UTC Q14), sah dari ambang
+    terkunci, penduduk dari paparan_kab (WorldPop, tanpa Dukcapil). -> baris cache tanpa titik dan tanpa data orang."""
+    kab4 = kk.get(f"{prov}|{nama}")
+    kec = gn.kec_kab(prov, nama)
+    if not kec:
+        return {"status": "tanpa_poligon", "sah": False}
+    pt = gn.Titik(kec)
+    h = gn.hitung_pasangan(pt, kat, tgl_(tgl), gn.JENDELA["dibi"], prov=prov, pra_sebelum=gn.pra_batas({"acuan": tgl, "sumber": "dibi"}, m), titik=True)
+    r = gn.rekam_kab(kab4, prov, nama, pt, h, amb)
+    w = [v for k, v in wp.items() if k.startswith(f"{prov}|{nama}|")]
+    d = {"status": r["status"], "sah": r["sah"], "alasan": r["tampil"].get("alasan"), "lintasan": r.get("lintasan"), "pra": r.get("pra"),
+         "cakupan_pct": r["mentah"]["cakupan_pct"], "naif_1": r["mentah"]["luas_ha"], "naif_3": r["mentah"]["baru_ha"],
+         "naif_2": sum(w) if w and None not in w else None, "x": None}
+    if r["sah"]:
+        if not kab4:
+            return {**d, "alasan_x": "kode kab tidak dikenal"}
+        pap, why = paparan_kab(r, desa_fn=lambda *a: [])
+        z = ((pap or {}).get("zona", {}).get("banjir") or {}).get("per_zona", {})
+        wb, wa = ((z.get(k) or {}).get("jiwa", {}).get("worldpop") for k in ("gfm_bawah", "gfm_atas"))
+        d.update(x=(wb + wa) / 2 if None not in (wb, wa) else None, wp_bawah=wb, wp_atas=wa, alasan_x=why)
+    return d
+
+
+def tgl_(s):
+    return dt.date.fromisoformat(s[:10])
+
+
+def _vonis(a):
+    GK = _muat("scripts/siklus/genangan_kriteria.py")
+    K = GK.periksa_kunci()   # menolak bila kunci rusak atau berkas vonis pernah ada
+    s = json.load(open(SID))
+    os.makedirs(os.path.dirname(VONIS_CACHE), exist_ok=True)
+    kunci_f = open(VONIS_CACHE + ".kunci", "w")
+    try:
+        fcntl.flock(kunci_f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        sys.exit("vonis lain sedang jalan (cache terkunci)")
+    if s.get("vonis"):
+        sys.exit("sidik sudah memuat vonis GS-13: uji balik tidak diulang")
+    gn = GK._gn()
+    pas = K["sampel_uji"]["pasangan"]
+    y = {(p, n, t): td for p, n, t, td, *_ in K["pasangan"]}
+    sudah = {}
+    if os.path.exists(VONIS_CACHE):
+        for g in open(VONIS_CACHE):
+            try:
+                r = json.loads(g)
+            except ValueError:
+                continue
+            if r.get("kriteria_sidik") != s["sidik"] or r.get("margin_pra_hari") != K["margin_pra_hari"]:
+                continue   # baris dari kriteria atau margin lain tidak dipakai ulang
+            if a.ulang_gagal and r["status"] == "gagal":
+                continue   # galat infrastruktur dibaca ulang; baris baru di ujung berkas menimpa yang lama
+            sudah[r["kunci"]] = r
+    todo = [q for q in pas if "|".join(q) not in sudah]
+    print(f"sampel {len(pas)}, sudah {len(pas) - len(todo)}, dibaca sekarang {len(todo)}", flush=True)
+    if todo:
+        kat = gn.Katalog(gn.muat_item())
+        amb, m = gn.ambang(), gn.margin_pra()
+        assert m == K["margin_pra_hari"], "margin genangan_nasional beda dari kriteria terkunci"
+        kk = _muat("scripts/bnpb/hvc_dasar.py").kab_kode()
+        wp = _baca(os.path.join(AKAR, "public/data/penduduk.json"))["kec"]
+        kunci = threading.Lock()
+
+        def kerja(q):
+            prov, nama, tgl = q
+            for c in range(COBA):
+                try:
+                    d = baca_pasangan(gn, kat, amb, m, kk, wp, prov, nama, tgl)
+                    break
+                except Exception as e:   # jaringan: coba lagi; sesudah COBA kali tercatat gagal (tetap di penyebut)
+                    d = {"status": "gagal", "sah": False, "galat": f"{type(e).__name__}: {e}"[:300]}
+                    print(f"  coba {c + 1} {prov}|{nama}|{tgl}: {d['galat']}", file=sys.stderr, flush=True)
+            d.update(kunci="|".join(q), margin_pra_hari=m, kriteria_sidik=s["sidik"])
+            with kunci:
+                with open(VONIS_CACHE, "a") as g:
+                    g.write(json.dumps(d, ensure_ascii=False) + "\n")
+                sudah[d["kunci"]] = d
+                print(f"  [{len(sudah)}/{len(pas)}] {d['kunci']}: {d['status']} sah={d['sah']} x={d.get('x')} cakupan={d.get('cakupan_pct')}", flush=True)
+        with ThreadPoolExecutor(a.paralel) as ex:
+            list(ex.map(kerja, todo))
+    baris = [sudah["|".join(q)] for q in pas if "|".join(q) in sudah]
+    if len(baris) < len(pas):
+        sys.exit(f"belum lengkap: {len(baris)} dari {len(pas)} pasangan terbaca; jalankan ulang (cache dilanjutkan), vonis belum ditulis")
+    pakai = [{"x": r["x"], "y": y[tuple(q)], "naif_1": r["naif_1"], "naif_2": r["naif_2"], "naif_3": r["naif_3"], "blok": GK.blok(q[0], q[2])}
+             for q, r in zip(pas, baris) if r["sah"] and None not in (r.get("x"), r["naif_1"], r["naif_2"], r["naif_3"])]
+    hit = lambda f: sum(1 for r in baris if f(r))
+    rin = {"gagal_baca": hit(lambda r: r["status"] == "gagal"), "tanpa_poligon": hit(lambda r: r["status"] == "tanpa_poligon"),
+           "tak_sah_radar": hit(lambda r: r["status"] not in ("gagal", "tanpa_poligon") and not r["sah"]),
+           "sah_radar_tanpa_penduduk": hit(lambda r: r["sah"] and r.get("x") is None),
+           "sah_radar_tanpa_naif": hit(lambda r: r["sah"] and r.get("x") is not None and None in (r["naif_1"], r["naif_2"], r["naif_3"])),
+           "sah_radar": hit(lambda r: r["sah"]), "status": {k: hit(lambda r, k=k: r["status"] == k) for k in sorted({r["status"] for r in baris})}}
+    assert rin["gagal_baca"] + rin["tanpa_poligon"] + rin["tak_sah_radar"] + rin["sah_radar"] == len(pas)
+    assert rin["sah_radar"] - rin["sah_radar_tanpa_penduduk"] - rin["sah_radar_tanpa_naif"] == len(pakai)
+    if rin["gagal_baca"] > GAGAL_MAKS:
+        sys.exit(f"gagal baca {rin['gagal_baca']} dari {len(pas)} melebihi {GAGAL_MAKS}: jalan dianggap rusak, vonis tidak ditulis; ulangi dengan --ulang-gagal")
+    v = nilai_vonis(pakai, K, len(pas))
+    v["rincian"] = rin
+    v.update(tiket="GS-13", tanggal=dt.date.today().isoformat(), kriteria_versi=K["versi"], kriteria_sidik=s["sidik"], cache_sidik=hashlib.sha256(
+        "".join(json.dumps(r, sort_keys=True) for r in baris).encode()).hexdigest())
+    print(json.dumps(v, ensure_ascii=False, indent=1))
+    if a.kering:
+        return
+    s["vonis"] = v
+    open(SID, "w").write(json.dumps(s, indent=1, ensure_ascii=False) + "\n")
+    # berkas vonis menutup prasyarat dan versi-baru lewat mesin kunci yang sudah teruji (genangan_kriteria.periksa_kunci: ada atau pernah di git)
+    open(GK.VONIS, "w").write(json.dumps(v, indent=1, ensure_ascii=False) + "\n")
+    os.makedirs(os.path.dirname(RINGKAS), exist_ok=True)
+    open(RINGKAS, "w").write(ringkas_md(v, K))
+    print(f"vonis {v['label']} ditulis ke {os.path.relpath(SID, AKAR)} dan {os.path.relpath(RINGKAS, AKAR)}; jangkar dengan commit")
+
+
+def ringkas_md(v, K):
+    f = lambda x: "tidak terdefinisi" if x is None else f"{x:.2f}".replace(".", ",")
+    nm = {n["id"]: n["nama"] for n in K["naif"]}
+    t = [f"# Uji balik genangan satelit per kejadian (GS-13)", "",
+         f"Vonis: **{v['label'].replace('_', ' ')}**. Kriteria versi {v['kriteria_versi']}, dikunci sebelum hitungan (GS-02), dijalankan {v['tanggal']}.", "",
+         "Yang diuji: apakah peringkat kabupaten menurut penduduk di area genangan (Copernicus GFM, WorldPop, rentang tengah) sejalan dengan "
+         "peringkat terdampak menurut DIBI, pada pasangan kab-hari banjir 2024 dan sesudahnya. Bukan angka mutlak, dan bukan kemampuan membedakan banjir dari tidak banjir.", "",
+         "| Ukuran | Nilai |", "| --- | --- |",
+         f"| Pasangan sampel dipilih | {v['dipilih']} |", f"| Pasangan sah dari radar | {v['rincian']['sah_radar']} |", f"| Pasangan dipakai menilai | {v['sah']} |", f"| Blok sah (provinsi x minggu) | {v['blok_sah']} |",
+         f"| Gagal baca | {v['rincian']['gagal_baca']} |", f"| Tak sah dari radar | {v['rincian']['tak_sah_radar']} |",
+         f"| Tanpa poligon kab | {v['rincian']['tanpa_poligon']} |",
+         f"| Sah dari radar, penduduk tidak tersedia | {v['rincian']['sah_radar_tanpa_penduduk']} |",
+         f"| Sah dari radar, pembanding tidak tersedia | {v['rincian']['sah_radar_tanpa_naif']} |"]
+    if "rho" in v:
+        t += [f"| Spearman model | {f(v['rho'])} (syarat paling sedikit 0,40) |"]
+        t += [f"| Spearman {nm[k]} | {f(r)}; selisih CI 90 persen {f(v['ci_selisih'][k][0]) if v['ci_selisih'][k] else 'tidak terdefinisi'} sampai "
+              f"{f(v['ci_selisih'][k][1]) if v['ci_selisih'][k] else 'tidak terdefinisi'} |" for k, r in v["rho_naif"].items()]
+    else:
+        t += ["", f"Tidak dinilai: {v['alasan']}."]
+    t += ["", "Keterbatasan:", "",
+          "- Tanggal DIBI adalah tanggal lapor. Citra pembanding dipilih paling lambat 7 hari sebelum tanggal itu (K6), tapi wilayah bisa sudah tergenang lebih awal (Q11).",
+          "- Batas 7 hari dibandingkan pada tanggal UTC lintasan, bawaan sementara Q14.",
+          "- Penduduk hanya WorldPop yang dibagi ke bangunan; Dukcapil tidak dipakai di uji ini.",
+          "- Pil hipotesis tetap kecuali vonis lulus.", "",
+          "Sumber: Copernicus Emergency Management Service, Global Flood Monitoring (GFM), EODC; DIBI BNPB; WorldPop; bangunan Google Open Buildings v3 dan Overture Maps.", ""]
+    return "\n".join(t)
+
+
 def _uji():
     P, KB = _P(), _muat("scripts/siklus/kaji_banjir.py")
+    # GS-13: Spearman dengan seri, tanpa ragam = None (bukan 0), vonis menurut kriteria
+    assert peringkat([3, 1, 3]) == [2.5, 1.0, 2.5] and abs(spearman([1, 2, 3, 4], [10, 20, 30, 40]) - 1) < 1e-12
+    assert abs(spearman([1, 2, 3, 4], [4, 3, 2, 1]) + 1) < 1e-12 and spearman([1, 1, 1], [1, 2, 3]) is None
+    assert kuantil([0, 10], 0.05) == 0.5
+    Kd = {"lulus": {"n_blok_sah_min": 20, "rho_min": 0.4, "batas_bawah_ci_selisih_min_eksklusif": 0.0, "terhadap": ["naif_1"], "label_bila_lulus": "lulus"},
+          "bootstrap": {"seed": 1, "ulang": 200, "ci_persen": 90}, "tak_dapat_dinilai": {"label": "tak_dapat_dinilai", "bila": "x"}, "naif": [{"id": "naif_1"}]}
+    bar = [{"x": i, "y": i * 2 + (i % 3), "naif_1": (i * 7) % 13, "blok": f"b{i % 30}"} for i in range(90)]
+    assert nilai_vonis(bar, Kd, 300)["label"] == "lulus"
+    assert nilai_vonis(bar[:19], Kd, 30)["label"] == "tak_dapat_dinilai", "blok < 20"
+    assert nilai_vonis(bar, Kd, 400)["label"] == "tak_dapat_dinilai", "sah/dipilih < 0,30"
+    rata = [{**b, "x": 5} for b in bar]
+    assert nilai_vonis(rata, Kd, 300)["label"] == "tak_dapat_dinilai", "rho tak terdefinisi bukan gagal"
+    acak = [{**b, "x": (b["x"] * 37) % 11} for b in bar]
+    assert nilai_vonis(acak, Kd, 300)["label"] == "gagal"
+    assert "Vonis: **lulus**" in ringkas_md({**nilai_vonis(bar, Kd, 300), "rincian": {"gagal_baca": 0, "tanpa_poligon": 0, "tak_sah_radar": 1, "sah_radar": 90, "sah_radar_tanpa_penduduk": 0, "sah_radar_tanpa_naif": 0},
+                                             "tanggal": "2026-11-26", "kriteria_versi": 2}, {"naif": [{"id": "naif_1", "nama": "luas kab"}]})
     # versi: kosong -> 1; lintasan sama -> tetap; beda -> n+1; yang lama tidak ditimpa
     with tempfile.TemporaryDirectory() as t:
         kj, d = "KJ-UJI", os.path.join(t, "siklus/saji/kaji")
@@ -406,7 +640,9 @@ if __name__ == "__main__":
     ap.add_argument("--kab", nargs="*")
     ap.add_argument("--keluar", default=KELUAR)
     ap.add_argument("--ulang", action="store_true")
-    ap.add_argument("--kering", action="store_true", help="cache saja, tanpa unduh langkah banjir")
+    ap.add_argument("--kering", action="store_true", help="jalan: cache saja, tanpa unduh langkah banjir; vonis: cetak tanpa menulis sidik dan ringkasan")
+    ap.add_argument("--paralel", type=int, default=2, help="vonis: pasangan dibaca bersamaan")
+    ap.add_argument("--ulang-gagal", action="store_true", help="vonis: baca ulang pasangan berstatus gagal (galat infrastruktur)")
     a = ap.parse_args()
     if a.mode == "uji":
         _uji()
@@ -415,7 +651,7 @@ if __name__ == "__main__":
     elif a.mode == "kirim":
         sys.exit(_kirim(a))
     elif a.mode == "vonis":
-        print("vonis: belum dijalankan (GS-13)")
+        _vonis(a)
     else:
         if not (a.kj and a.mulai and a.kab):
             sys.exit("jalan butuh --kj, --mulai, --kab")
