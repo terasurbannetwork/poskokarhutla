@@ -60,6 +60,7 @@ export function gaya() {
 .mk .mk-ba{animation:mk-geser 9s ease-in-out infinite}.mk .mk-kaki{animation:mk-geserk 9s ease-in-out infinite}
 .mk.mk-a-lompat .mk-gb{animation:mk-lompat .7s ease-out}.mk.mk-a-kaget .mk-gb{animation:mk-kaget .5s ease-out}.mk.mk-a-geli .mk-gb{animation:mk-geli .3s ease-in-out 2}
 .mk.mk-a-lambai .mk-rk{animation:mk-lb 1s ease-in-out}img.lp-logo-pantau.mk-logo-pop{animation:mk-logo .6s ease-out}}
+.mk .mk-vol{pointer-events:none}
 @media (prefers-reduced-motion:reduce){.mk *{transition:none!important}}
 @keyframes mk-nafas{50%{transform:scaleY(1.015)}}@keyframes mk-kb{50%{transform:translateY(-1px)}}
 @keyframes mk-geser{50%{transform:rotate(.8deg) translateX(1px)}}@keyframes mk-geserk{50%{transform:skewX(-1.5deg)}}
@@ -121,13 +122,25 @@ function aksi(m, a) {
     if (b) { const g = arahPandang(b.left + b.width / 2 - r.left - r.width / 2, b.top + b.height / 2 - r.top - r.height * .39, 300); fokus(m, g.x, g.y, 1500); }
   }
 }
+/* lirikan sendiri (pemilik 26 Nov 2026: "matanya lihat ke depan terus"): tanpa kursor (HP) mata tetap melirik kiri, kanan, atas, bawah tiap 1-3 dtk */
+function lirik(m) {
+  clearTimeout(m.tl); if (!m.lihat || D.hidden || kurang()) return;
+  m.tl = setTimeout(() => {
+    const segar = pt && performance.now() - pt.t < 2500;
+    if (m.el.isConnected && m.lihat && !segar && m.sibuk < performance.now()) {
+      if (Math.random() < .3) fokus(m, 0, 0, 900);
+      else fokus(m, (Math.random() < .5 ? -1 : 1) * (2 + Math.random() * 2), (Math.random() - .55) * 5, 700 + Math.random() * 1100);
+    }
+    lirik(m);
+  }, 1200 + Math.random() * 1800);
+}
 function jadwal(m) {
   clearTimeout(m.ti); if (!m.lihat || D.hidden || kurang()) return;
   m.ti = setTimeout(() => {
     if (!m.el.isConnected) { daftar.delete(m.el); io.unobserve(m.el); if (m.lihat) nLihat--; return; }
     if (m.lihat && !D.hidden && m.sibuk < performance.now()) { const o = {kurang: kurang(), gelembung: !!D.querySelector(".lp-hg-gelembung")}; let a = pilihAksi(m.pose, Math.random(), o); if (a === m.ak) a = pilihAksi(m.pose, Math.random(), o); m.ak = a; aksi(m, a); }
     jadwal(m);
-  }, 3000 + Math.random() * 5000);
+  }, 2200 + Math.random() * 3000);
 }
 function pasang(el) {
   if (daftar.has(el)) return;
@@ -151,7 +164,7 @@ if (D) {
   gaya$();
   io = new IntersectionObserver(es => {
     for (const e of es) { const m = daftar.get(e.target); if (!m) continue; const v = e.isIntersecting; if (v === m.lihat) continue;
-      m.lihat = v; nLihat += v ? 1 : -1; m.kotor = true; e.target.classList.toggle("mk-jeda", !v); v ? (jadwal(m), kedipAcak(m)) : (clearTimeout(m.ti), clearTimeout(m.tk)); }
+      m.lihat = v; nLihat += v ? 1 : -1; m.kotor = true; e.target.classList.toggle("mk-jeda", !v); v ? (jadwal(m), kedipAcak(m), lirik(m)) : (clearTimeout(m.ti), clearTimeout(m.tk), clearTimeout(m.tl)); }
   });
   const cari = r => { if (r.nodeType !== 1) return; if (r.matches(".mk.sg")) pasang(r); for (const e of r.querySelectorAll(".mk.sg")) pasang(e); };
   const mulai = () => { cari(D.body); new MutationObserver(ms => { for (const x of ms) x.addedNodes.forEach(cari); }).observe(D.body, {childList: true, subtree: true}); };
@@ -173,7 +186,7 @@ if (D) {
     if (l && !kurang() && !l.classList.contains("mk-logo-pop")) { l.classList.add("mk-logo-pop"); setTimeout(() => l.classList.remove("mk-logo-pop"), 650); }
   }, {passive: true});
   D.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("mk")) { const m = daftar.get(e.target); if (m) reaksi(m); } });
-  D.addEventListener("visibilitychange", () => { for (const m of daftar.values()) D.hidden ? (clearTimeout(m.ti), clearTimeout(m.tk)) : (jadwal(m), kedipAcak(m)); kick(); });
+  D.addEventListener("visibilitychange", () => { for (const m of daftar.values()) D.hidden ? (clearTimeout(m.ti), clearTimeout(m.tk), clearTimeout(m.tl)) : (jadwal(m), kedipAcak(m), lirik(m)); kick(); });
 }
 const ALIS_K = "M86 88c5-4 12-5 18-3", ALIS_R = "M136 85c6-2 13-1 18 3", BUSUR = ["M89 113q9-10 18 0", "M133 113q9-10 18 0"];
 const G = "stroke-width=\"4\" stroke-linecap=\"round\" fill=\"none\"";
@@ -242,6 +255,7 @@ export function maskot(pose = "sapa", judul = "", aksi = "") {
   const rim = (d, o = .4, w = 2.5) => `<path d="${d}" style="stroke:var(--on-head)" opacity="${o}" stroke-width="${w}" stroke-linecap="round" fill="none"/>`;
   const lengan = LENGAN[aksi]?.(u("kulit")) || "", ik = PAPAN[aksi];
   const st = (o, c) => `<stop offset="${o}" style="stop-color:${c}"/>`;
+  const vol = (b, o = 1) => `${b} fill="${u("vol")}"${o < 1 ? ` opacity="${o}"` : ""} class="mk-vol"/>`;   // bayangan bola: terang kiri atas, gelap kanan bawah (pemilik 26 Nov 2026: "harusnya 3D")
   return `<svg class="mk sg" data-pose="${pose}" data-mimik="${DASAR[pose] || "sapa"}"${ik ? ` data-aksi="${aksi}"` : ""} viewBox="0 0 240 280" ${judul ? `role="img" aria-label="${judul}"` : 'aria-hidden="true"'}>
   <defs>
     <radialGradient id="${i}kulit" cx=".38" cy=".3" r=".8"><stop offset="0" class="sg-g-kulit-a" stop-color="#fde4cf"/><stop offset="1" class="sg-g-kulit-b" stop-color="#f6c79f"/></radialGradient>
@@ -250,6 +264,7 @@ export function maskot(pose = "sapa", judul = "", aksi = "") {
     <radialGradient id="${i}bayang" cx=".5" cy=".5" r=".5"><stop offset="0" class="sg-g-bayang-a" stop-color="#13254a" stop-opacity=".35"/><stop offset="1" class="sg-g-bayang-b" stop-color="#13254a" stop-opacity="0"/></radialGradient>
     <linearGradient id="${i}iris" x1="0" y1="0" x2="0" y2="1">${st(0, "color-mix(in oklab,var(--brand2) 60%,var(--head-bg))")}${st(1, "color-mix(in oklab,var(--brand2) 45%,var(--on-head))")}</linearGradient>
     <linearGradient id="${i}kilap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--on-head);stop-opacity:.75"/><stop offset="1" style="stop-color:var(--on-head);stop-opacity:0"/></linearGradient>
+    <radialGradient id="${i}vol" cx=".34" cy=".26" r=".9"><stop offset="0" style="stop-color:var(--on-head);stop-opacity:.32"/><stop offset=".5" style="stop-color:var(--on-head);stop-opacity:0"/><stop offset="1" style="stop-color:var(--head-bg);stop-opacity:.4"/></radialGradient>
     <clipPath id="${i}cl"><ellipse cx="98" cy="110" rx="10.5" ry="13"/><ellipse cx="142" cy="110" rx="10.5" ry="13"/></clipPath>
   </defs>
   <ellipse cx="120" cy="268" rx="66" ry="8" fill="${u("bayang")}" class="mk-bayang"/>
@@ -265,7 +280,7 @@ export function maskot(pose = "sapa", judul = "", aksi = "") {
     <g class="mk-lk"><path d="M84 172c-10 10-12 26-8 40" class="sg-lengan" stroke-width="18" stroke-linecap="round" fill="none"/></g>
     <g class="mk-nf">
       <path d="M76 186c0-18 18-30 44-30s44 12 44 30v34c0 10-8 16-18 16H94c-10 0-18-6-18-16Z" fill="${u("baju")}"/>
-      <path d="M86 168c8-6 20-10 34-10s26 4 34 10l-3 62H89Z" class="sg-rompi"/>
+      <path d="M86 168c8-6 20-10 34-10s26 4 34 10l-3 62H89Z" class="sg-rompi"/>${vol('<path d="M76 186c0-18 18-30 44-30s44 12 44 30v34c0 10-8 16-18 16H94c-10 0-18-6-18-16Z"')}
       ${ao(150, 200, 16, 34, .35)}${ao(90, 196, 8, 24, .45)}${ao(150, 196, 8, 24, .45)}
       <path d="M120 162v66" class="sg-ritsleting" stroke-width="2.5" stroke-linecap="round"/>
       <path d="M89 196h62M88 216h64" class="sg-reflektor" stroke-width="5"/>
@@ -297,7 +312,7 @@ export function maskot(pose = "sapa", judul = "", aksi = "") {
     <g class="mk-kt"><g class="mk-kp"><g class="mk-kb"><g class="mk-kepala">
       <circle cx="69" cy="106" r="10" fill="${u("kulit")}" class="sg-o"/><circle cx="171" cy="106" r="10" fill="${u("kulit")}" class="sg-o"/>
       <path d="M66 106h5M169 106h5" class="sg-ruas" stroke-width="2" stroke-linecap="round"/>
-      <ellipse cx="120" cy="102" rx="54" ry="55" fill="${u("kulit")}"/>
+      <ellipse cx="120" cy="102" rx="54" ry="55" fill="${u("kulit")}"/>${vol('<ellipse cx="120" cy="102" rx="54" ry="55"', .55)}
       ${ao(158, 112, 15, 40, .3)}${rim("M171 94c2 10 1 22-4 32", .45)}
       <path d="M68 104c3-6 9-9 15-8 2 5 7 7 12 5 4-6 12-8 18-4 4 4 10 5 14 1 6-5 15-4 19 2 5 2 10 1 14-3 6 0 10 3 12 7l-2-14H70Z" class="sg-rambut"/>
       ${ao(120, 98, 48, 7, .5)}
@@ -319,7 +334,7 @@ export function maskot(pose = "sapa", judul = "", aksi = "") {
         ${Object.entries(MULUT).map(([k, v]) => `<g class="mk-mu mk-mu-${k}">${v}</g>`).join("")}
       </g>
       <g class="mk-hm">
-        <path d="M63 86c0-37 25-63 57-63s57 26 57 63Z" fill="${u("helm")}"/>
+        <path d="M63 86c0-37 25-63 57-63s57 26 57 63Z" fill="${u("helm")}"/>${vol('<path d="M63 86c0-37 25-63 57-63s57 26 57 63Z"')}
         ${ao(150, 62, 26, 28, .35)}
         <path d="M111 25c4-2 14-2 18 0l2 60h-22Z" class="sg-helm-gigir"/>
         <circle cx="120" cy="58" r="17" class="sg-lencana"/><image href="/lapor/lambang-bnpb.png" x="105" y="43" width="30" height="30" class="sg-lambang"/>
