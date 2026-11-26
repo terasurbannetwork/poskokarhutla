@@ -159,7 +159,9 @@
   /* panel kiri TETAP di semua halaman Pusdalops (pemilik 25 Nov 2026, pilihan A: "terlalu dinamis, jadinya pusing sendiri"): halaman tidak lagi mengisi panel;
      pakaiSlot mengembalikan null sehingga tiap halaman memakai tab di halamannya sendiri (cadangan layar sempit yang sudah ada) */
   /* ikon dan dalam dipakai pintu /bnpb (pintu.js): ikon butir dan tanda "membuka dashboard lain" sama persis dengan panel kiri */
-  window.MenuPusdalops = {peta, ikon: n => ikon(ikonAman(n) ? n : "daftar"), dalam: DALAM, pakaiSlot: () => null, slot: () => slot, grup: kepalaGrup, kaki: baris => { kaki.replaceChildren(kepalaGrup("Pembaruan data", "kalender"), ...baris.map(([w, label, nilai]) => { const r = el("div", "db-nav-pb"), d = el("i", "db-nav-dot"); d.style.setProperty("--w", w); r.append(d, el("span", null, label), el("b", null, nilai)); r.style.setProperty("--w", w); return r; })); }};
+  window.MenuPusdalops = {peta, ikon: n => ikon(ikonAman(n) ? n : "daftar"), dalam: DALAM, pakaiSlot: () => null, slot: () => slot, grup: kepalaGrup, kaki: baris => { simpanSesi("mp-kaki:" + kini, baris); kaki.replaceChildren(kepalaGrup("Pembaruan data", "kalender"), ...baris.map(([w, label, nilai]) => { const r = el("div", "db-nav-pb"), d = el("i", "db-nav-dot"); d.style.setProperty("--w", w); r.append(d, el("span", null, label), el("b", null, nilai)); r.style.setProperty("--w", w); return r; })); }};
+  /* kaki "Pembaruan data" halaman ini digambar dari simpanan tab sejak awal, supaya menu tidak memendek dan melompat saat data halaman tiba (pemilik 26 Nov 2026) */
+  { const kk = bacaSesi("mp-kaki:" + kini, null); if (Array.isArray(kk) && kk.length && kk.every(r => Array.isArray(r) && /^#[0-9a-f]{3,8}$/i.test(r[0]) && typeof r[1] === "string" && typeof r[2] === "string")) window.MenuPusdalops.kaki(kk); }
   const pasangSamping = () => { const main = document.querySelector("body > main"); if (!main || main.closest(".mp-a")) return;
     const w = el("div", "mp-a"); main.before(w); w.append(samping, main); document.body.classList.add("mp-model-a"); taruhKeluar(); tarik(w);
     pulihGulir(); requestAnimationFrame(pulihGulir); };

@@ -34,7 +34,7 @@ export const halamanDrone = ctx => `<!doctype html>
   <nav aria-label="Halaman"><a href="/">🗺️ Peta</a><a href="/admin/drone" aria-current="page">🛸 Atur drone gambut</a><a href="/panduan/sop-drone-gambut.pdf" download>📄 SOP lapangan (PDF)</a></nav>
   ${ctx.nama ? `<span class="ad-staf-nama">${esc(ctx.nama)}</span>` : ""}
 </header>
-<link href="/inti/dasbor.css?v=31" rel="stylesheet"><link href="/bnpb/menu_pusdalops.css?v=17" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=29"></script>
+<link href="/inti/dasbor.css?v=31" rel="stylesheet"><link href="/bnpb/menu_pusdalops.css?v=17" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=30"></script>
 <main class="ad-wrap dr-wrap">
   <div class="ad-judul"><span class="ad-ikon" aria-hidden="true">🛸</span><h1>Atur drone gambut</h1><div class="ad-judul-aksi" id="aksiJudul"></div></div>
   <div class="ad-isi" id="app"><p class="ad-redup">Memuat cluster gambut membara…</p></div>
