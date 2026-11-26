@@ -163,10 +163,10 @@ uji("bersih-bersih: orang dicari ditutup lebih dari 2 tahun dianonimkan, yang la
   await DB.prepare("INSERT INTO lapor_cari_riwayat (cari_id, status, catatan, oleh, waktu) VALUES ('q67lama000000001', 'tutup', 'rahasia', 'uji', ?)").bind(kini).run();
   const MEDIA = await U.mf.getR2Bucket("MEDIA"), kf = id => `lapor/foto/${id}.jpg`;
   for (const [c, fo] of [["q67lama000000001", "c".repeat(16)], ["q67satu000000001", "d".repeat(16)]]) {
-    await DB.prepare("INSERT INTO lapor_cari_temu (cari_id, nomor_kontak, tempat_tunggu, foto_id) VALUES (?, ?, 'Posko uji', ?)").bind(c, WA, fo).run(); await MEDIA.put(kf(fo), "x"); }
+    await DB.prepare("INSERT INTO lapor_cari_foto (cari_id, foto_id) VALUES (?, ?)").bind(c, fo).run(); await MEDIA.put(kf(fo), "x"); }
   await bersihkanLapor({DB, MEDIA}, kini);
   assert.equal(await MEDIA.head(kf("c".repeat(16))), null, "foto orang dicari yang dianonimkan ikut dihapus"); assert.ok(await MEDIA.head(kf("d".repeat(16))), "foto laporan lain tetap");
-  assert.equal(await n("lapor_cari_temu", "cari_id = 'q67lama000000001'"), 0);
+  assert.equal(await n("lapor_cari_foto", "cari_id = 'q67lama000000001'"), 0); assert.equal(await n("lapor_cari_foto", "cari_id = 'q67satu000000001'"), 1);
   const g = id => DB.prepare("SELECT * FROM lapor_cari WHERE id = ?").bind(id).first();
   const a = await g("q67lama000000001");
   assert.equal(a.nama_dicari, "dihapus"); assert.equal(a.nomor_pencari, "62000000000");
@@ -226,6 +226,7 @@ uji("orang dicari lewat obrolan (pemilik 25 Nov 2026): tanpa kode, baris lapor_c
   assert.equal(await n("lapor_cari"), cari0 + 1); assert.equal(await n("lapor_tiket"), tiket0, "tidak membuat tiket");
   const b = await DB.prepare("SELECT nomor_pencari, nama_dicari, hubungan, waktu_terakhir, nomor_dicari, status FROM lapor_cari ORDER BY dibuat DESC LIMIT 1").first();
   assert.deepEqual(b, {nomor_pencari: WA_CHAT, nama_dicari: "Joko", hubungan: "Saudara", waktu_terakhir: "Hari ini", nomor_dicari: null, status: "buka"});
-  const t = await DB.prepare("SELECT panggilan, nomor_kontak, tempat_tunggu, foto_id FROM lapor_cari_temu ORDER BY rowid DESC LIMIT 1").first();
-  assert.deepEqual(t, {panggilan: null, nomor_kontak: WA_CHAT, tempat_tunggu: "Posko SDN 1 Paledang, Jl. Paledang", foto_id: fid}, "nomor kontak, tempat tunggu, dan foto tersimpan (0177)");
+  const t = await DB.prepare("SELECT cari_id, panggilan, nomor_kontak, tempat_tunggu FROM lapor_cari_temu ORDER BY rowid DESC LIMIT 1").first();
+  assert.deepEqual({...t, cari_id: undefined}, {cari_id: undefined, panggilan: null, nomor_kontak: WA_CHAT, tempat_tunggu: "Posko SDN 1 Paledang, Jl. Paledang"}, "nomor kontak dan tempat tunggu tersimpan (0177)");
+  assert.equal((await DB.prepare("SELECT foto_id FROM lapor_cari_foto WHERE cari_id = ?").bind(t.cari_id).first())?.foto_id, fid, "foto tertaut ke laporan (0183)");
 });
