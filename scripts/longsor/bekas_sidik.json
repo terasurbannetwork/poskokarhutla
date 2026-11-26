@@ -4,6 +4,6 @@
  "cara": "sha256 atas isi berkas kriteria tanpa satu baris baru penutup (byte per byte)",
  "ditulis": "2026-11-26",
  "versi": 1,
- "jangkar_commit": null,
+ "jangkar_commit": "304b896838050973791eade17c972bf7f9673c00",
  "catatan": "Isi jangkar_commit dengan hash commit yang memuat kedua berkas, sesudah di-push, SEBELUM data apa pun ditarik atau kejadian uji dihitung. bekas.py prasyarat menolak selama kosong."
 }
