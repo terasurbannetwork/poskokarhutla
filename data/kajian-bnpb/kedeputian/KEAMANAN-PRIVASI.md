@@ -133,7 +133,7 @@ Ketetapan untuk Ruang Unit:
 | `kib_cocok.json` | PUS-2 | S | agregat, tanpa teks bebas logbook |
 | `rapor_peringatan.json` | PD-1 | S | |
 | `belanja_risiko.json` | REN-2 | S | agregat per kab, tanpa nama penyedia |
-| `usulan_laphar.json`, `usulan_rpbd.json`, `usulan_dokumen_siaga.json`, `usulan_pemulihan.json` | MB-7 | S | baris usulan dari dokumen; medan nama orang dibuang pengurai sebelum ditulis |
+| `usulan_laphar.json`, `usulan_rpbd.json`, `usulan_dokumen_siaga.json`, `usulan_pemulihan.json`, `usulan_amanat.json` | MB-7 | S | baris usulan dari dokumen; medan nama orang dibuang pengurai sebelum ditulis |
 | `ikk.json` | RRP-3 | S | angka BPS |
 | `pengajar.json` | DIK-4 | T | calon pengajar; lihat §4 butir 12 |
 | `pengadaan.json` | SDU-1 | T | agregat, tanpa nama penyedia, bahasa §9.3 |

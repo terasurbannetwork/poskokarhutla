@@ -1,0 +1,186 @@
+{
+ "sumber": "Peraturan BNPB Nomor 11 Tahun 2025 (perubahan Perban 6/2025), Pasal 74, 77, 79A; teks dari data/hukum/seed.sql",
+ "catatan": "Pembagian provinsi mengikuti teks pasal, bukan letak geografis. Kode = kode Kemendagri 2 angka; Daerah Ibu Kota Nusantara belum punya kode provinsi sendiri di data repo ini (kode null).",
+ "direktorat": [
+  {
+   "id": "wil1",
+   "direktorat": "Direktorat Penanganan Darurat Wilayah I",
+   "pasal": "Pasal 74",
+   "kutipan": "Direktorat Penanganan Darurat Wilayah I mempunyai tugas melaksanakan penyusunan kebijakan teknis, pelaksanaan, pemantauan, evaluasi, dan analisis pelaporan penanganan darurat di Provinsi Aceh, Provinsi Riau, Provinsi Kepulauan Riau, Provinsi Jawa Tengah, Provinsi Daerah Istimewa Yogyakarta, Provinsi Bali, Provinsi Kalimantan Tengah, Provinsi Kalimantan Utara, Provinsi Sulawesi Tenggara, Provinsi Sulawesi Tengah, Provinsi Maluku Utara, Provinsi Papua, dan Provinsi Papua Selatan.",
+   "provinsi": [
+    {
+     "kode": "11",
+     "provinsi": "Aceh"
+    },
+    {
+     "kode": "14",
+     "provinsi": "Riau"
+    },
+    {
+     "kode": "21",
+     "provinsi": "Kepulauan Riau"
+    },
+    {
+     "kode": "33",
+     "provinsi": "Jawa Tengah"
+    },
+    {
+     "kode": "34",
+     "provinsi": "Daerah Istimewa Yogyakarta"
+    },
+    {
+     "kode": "51",
+     "provinsi": "Bali"
+    },
+    {
+     "kode": "62",
+     "provinsi": "Kalimantan Tengah"
+    },
+    {
+     "kode": "65",
+     "provinsi": "Kalimantan Utara"
+    },
+    {
+     "kode": "74",
+     "provinsi": "Sulawesi Tenggara"
+    },
+    {
+     "kode": "72",
+     "provinsi": "Sulawesi Tengah"
+    },
+    {
+     "kode": "82",
+     "provinsi": "Maluku Utara"
+    },
+    {
+     "kode": "91",
+     "provinsi": "Papua"
+    },
+    {
+     "kode": "93",
+     "provinsi": "Papua Selatan"
+    }
+   ]
+  },
+  {
+   "id": "wil2",
+   "direktorat": "Direktorat Penanganan Darurat Wilayah II",
+   "pasal": "Pasal 77",
+   "kutipan": "Direktorat Penanganan Darurat Wilayah II mempunyai tugas melaksanakan penyusunan kebijakan teknis, pelaksanaan pemantauan, evaluasi, dan analisis pelaporan penanganan darurat di Provinsi Sumatera Utara, Provinsi Jambi, Provinsi Sumatera Selatan, Provinsi Lampung, Provinsi Daerah Khusus Jakarta, Provinsi Banten, Provinsi Jawa Barat, Provinsi Nusa Tenggara Barat, Provinsi Kalimantan Timur, Daerah Ibu Kota Nusantara, Provinsi Sulawesi Utara, Provinsi Gorontalo, Provinsi Papua Barat, dan Provinsi Papua Tengah.",
+   "provinsi": [
+    {
+     "kode": "12",
+     "provinsi": "Sumatera Utara"
+    },
+    {
+     "kode": "15",
+     "provinsi": "Jambi"
+    },
+    {
+     "kode": "16",
+     "provinsi": "Sumatera Selatan"
+    },
+    {
+     "kode": "18",
+     "provinsi": "Lampung"
+    },
+    {
+     "kode": "31",
+     "provinsi": "Daerah Khusus Jakarta"
+    },
+    {
+     "kode": "36",
+     "provinsi": "Banten"
+    },
+    {
+     "kode": "32",
+     "provinsi": "Jawa Barat"
+    },
+    {
+     "kode": "52",
+     "provinsi": "Nusa Tenggara Barat"
+    },
+    {
+     "kode": "64",
+     "provinsi": "Kalimantan Timur"
+    },
+    {
+     "kode": null,
+     "provinsi": "Daerah Ibu Kota Nusantara"
+    },
+    {
+     "kode": "71",
+     "provinsi": "Sulawesi Utara"
+    },
+    {
+     "kode": "75",
+     "provinsi": "Gorontalo"
+    },
+    {
+     "kode": "92",
+     "provinsi": "Papua Barat"
+    },
+    {
+     "kode": "94",
+     "provinsi": "Papua Tengah"
+    }
+   ]
+  },
+  {
+   "id": "wil3",
+   "direktorat": "Direktorat Penanganan Darurat Wilayah III",
+   "pasal": "Pasal 79A",
+   "kutipan": "Direktorat Penanganan Darurat Wilayah III mempunyai tugas melaksanakan penyusunan kebijakan teknis, pelaksanaan pemantauan, evaluasi, dan analisis pelaporan penanganan darurat di Provinsi Bengkulu, Provinsi Sumatera Barat, Provinsi Kepulauan Bangka Belitung, Provinsi Jawa Timur, Provinsi Kalimantan Barat, Provinsi Kalimantan Selatan, Provinsi Sulawesi Selatan, Provinsi Sulawesi Barat, Provinsi Nusa Tenggara Timur, Provinsi Maluku, Provinsi Papua Barat Daya, dan Provinsi Papua Pegunungan.",
+   "provinsi": [
+    {
+     "kode": "17",
+     "provinsi": "Bengkulu"
+    },
+    {
+     "kode": "13",
+     "provinsi": "Sumatera Barat"
+    },
+    {
+     "kode": "19",
+     "provinsi": "Kepulauan Bangka Belitung"
+    },
+    {
+     "kode": "35",
+     "provinsi": "Jawa Timur"
+    },
+    {
+     "kode": "61",
+     "provinsi": "Kalimantan Barat"
+    },
+    {
+     "kode": "63",
+     "provinsi": "Kalimantan Selatan"
+    },
+    {
+     "kode": "73",
+     "provinsi": "Sulawesi Selatan"
+    },
+    {
+     "kode": "76",
+     "provinsi": "Sulawesi Barat"
+    },
+    {
+     "kode": "53",
+     "provinsi": "Nusa Tenggara Timur"
+    },
+    {
+     "kode": "81",
+     "provinsi": "Maluku"
+    },
+    {
+     "kode": "96",
+     "provinsi": "Papua Barat Daya"
+    },
+    {
+     "kode": "95",
+     "provinsi": "Papua Pegunungan"
+    }
+   ]
+  }
+ ]
+}

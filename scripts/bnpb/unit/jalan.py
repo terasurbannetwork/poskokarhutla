@@ -47,6 +47,11 @@ LANGKAH = [
     ("DIK-1", "dik1", "bulanan"),    # RU-069 unit/diklat_sasaran.json (MB-4 x unggahan angkatan data/raw/unit/diklat_ringkas.json bila ada)
     ("REN-2", "ren2", "bulanan"),    # RU-070 unit/belanja_risiko.json (cache SIRUP BNPB x terpapar x ikd)
     ("SDU-1", "sdu1", "bulanan"),    # RU-071 unit/pengadaan.json (kelas T; cache SIRUP BNPB jalur penyedia)
+    ("HUK-2", "huk2", "harian"),    # RU-076 unit/amanat.json, unit/usulan_amanat.json (data/hukum/seed.sql x katalog hukum)
+    ("KPOD-1", "kpod1", "harian"),    # RU-077 unit/rapor_darurat.json (status_darurat x laphar_riwayat; IKU hanya bila gerbang tampil lulus)
+    ("WIL-1", "wil1", "harian"),    # RU-079 unit/meja_wilayah.json (status_darurat, saran_status, laphar_riwayat, prediksi; tipe tanpa sumber segar tidak dihitung)
+    ("RRI-1", "rri1", "harian"),    # RU-082 unit/akses_putus.json (layer ArcGIS BNPB via panen.py; jaringan; status dari D1 akses_status bila terbaca)
+    ("PUS-2", "pus2", "harian"),    # RU-085 unit/kib_cocok.json (logbook D1 lewat wrangler x dibi_kejadian.json; D1 gagal = langkah gagal)
 ]
 
 BASI_JAM = {"harian": 48, "mingguan": 240, "bulanan": 1080}  # DT sec 9.4

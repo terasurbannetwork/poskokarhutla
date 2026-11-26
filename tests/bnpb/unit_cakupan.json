@@ -27,30 +27,30 @@
   "RRS-1": "rrs1.py --cek",
   "DIK-1": "dik1.py --cek",
   "REN-2": "ren2.py --cek",
-  "SDU-1": "sdu1.py --cek"
+  "SDU-1": "sdu1.py --cek",
+  "HUK-2": "huk2.py --cek",
+  "KPOD-1": "kpod1.py --cek",
+  "WIL-1": "wil1.py --cek; tests/bnpb/unit_wil1.test.mjs",
+  "RRI-1": "rri1.py --cek",
+  "PUS-2": "pus2.py --cek"
  },
  "dikecualikan": {
   "KEU-1": "berjalan di mesin pemilik atas data internal (U9); keu1.py --cek menguji aturannya atas selisih 5-lakip.md"
  },
  "antre": [
-  "PUS-2",
   "PD-1",
   "PD-2",
   "KS-3",
   "MT-1",
   "MT-3",
-  "KPOD-1",
-  "WIL-1",
   "WIL-2",
   "WIL-3",
   "PLP-3",
   "RRX-1",
   "RRP-2",
-  "RRI-1",
-  "HUK-2",
   "IRT-1",
   "DIK-4",
   "JF-2"
  ],
- "antre_maks": 18
+ "antre_maks": 13
 }

@@ -101,3 +101,6 @@ select.un-g-in{max-width:320px}
 .un-antre-sudah{margin-top:12px}
 .un-antre-sudah>summary{cursor:pointer;font-weight:600}
 @media (max-width:760px){.un-antre-aksi .ad-tombol{min-height:44px}}
+.un-wil-pemilih{display:grid;gap:12px;margin:0}
+.un-wil-pemilih .ad-tabs button[aria-pressed="true"]{background:var(--gradien);color:var(--on-head)}
+.un-wil-antre{display:grid;gap:12px;min-width:0}

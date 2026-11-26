@@ -17,8 +17,8 @@ export const P_UNIT_BACA = ["unit", "pimpinan", "koordalops", "pusdalops", "oper
 export const P_UNIT_TULIS = ["unit", "pimpinan", "koordalops", "pusdalops"];
 export const KODE_UNIT = ["perb", "pspb", "spb", "pus", "pd", "ks", "mt", "kpod", "wil", "plp", "ojl", "rrx", "rrp", "rri", "rrs", "ren", "keu", "sdu", "huk", "irt", "dik", "jf"];
 /* nama tetap R2 unit/<nama>.json; tiap nama wajib tercatat kelasnya di KEAMANAN-PRIVASI §3.2 di commit yang sama (tak tercatat = kelas T) */
-export const DATA_UNIT = ["stok_penyangga", "pendampingan_ikd", "mitigasi_prioritas", "satu_data", "jdih_daerah", "pengadaan", "status_peraturan", "fasilitas_sosial", "kalender_gladi", "kompetensi", "kalender_monev", "rb", "ikk", "hibah_prioritas", "prepositioning", "rpbd", "usulan_rpbd", "dokumen_siaga", "usulan_dokumen_siaga", "peta_nspk", "kerugian", "sendai", "klaster_logistik", "neraca_rumah", "rugi_tani", "diklat_sasaran", "belanja_risiko"];
-export const DATA_UNIT_TERBATAS = ["pengadaan"];   // kelas T: modAtauStaf, akun gerbang AKUN_SITUS* ditolak
+export const DATA_UNIT = ["stok_penyangga", "pendampingan_ikd", "mitigasi_prioritas", "satu_data", "jdih_daerah", "pengadaan", "status_peraturan", "fasilitas_sosial", "kalender_gladi", "kompetensi", "kalender_monev", "rb", "ikk", "hibah_prioritas", "prepositioning", "rpbd", "usulan_rpbd", "dokumen_siaga", "usulan_dokumen_siaga", "peta_nspk", "kerugian", "sendai", "klaster_logistik", "neraca_rumah", "rugi_tani", "diklat_sasaran", "belanja_risiko", "amanat", "usulan_amanat", "rapor_darurat", "meja_wilayah", "akses_putus", "kib_cocok"];
+export const DATA_UNIT_TERBATAS = ["pengadaan", "rapor_darurat"];   // kelas T: modAtauStaf, akun gerbang AKUN_SITUS* ditolak
 const JAM = 3600e3, MAKS_BYTE = 8 * 1024 * 1024;
 const H_DATA = {"cache-control": "private, max-age=300", vary: "cookie"};
 
@@ -82,8 +82,7 @@ async function ketukBaca(env, req, url) {
 }
 
 /* hak tulis bersama: akun gerbang AKUN_SITUS* tidak lolos; hak SEBELUM body dan D1. Mengembalikan nama pelaku atau Response galat */
-async function hakTulis(env, req) {
-  const oleh = await modAtauStaf(env, req, P_UNIT_TULIS);
+async function hakTulis(env, req, oleh) {   // oleh = hasil modAtauStaf di handler (gerbang-ruang-unit butir a membaca panggilan hak di handler itu sendiri)
   if (!oleh || String(oleh).startsWith("pemirsa:")) {   // pemirsa pimpinan lolos modAtauStaf tetapi hanya membaca
     const masuk = await stafPeran(env, req, P_UNIT_BACA) || await pemirsaSesi(env, req);
     return masuk ? gagal(403, "peranmu tidak boleh menulis di Ruang Unit") : gagal(401, "perlu masuk sebagai staf BNPB");
@@ -92,7 +91,7 @@ async function hakTulis(env, req) {
 }
 
 async function ketukTulis(env, req, url, kini) {
-  const oleh = await hakTulis(env, req); if (oleh instanceof Response) return oleh;
+  const oleh = await hakTulis(env, req, await modAtauStaf(env, req, P_UNIT_TULIS)); if (oleh instanceof Response) return oleh;
   const b = await bacaBody(req, 4096); if (b.galat) return gagal(b.status || 400, b.galat);
   const o = b.o, x = Object.keys(o).find(k => !["berkas", "usulan_id", "keputusan", "koreksi", "catatan"].includes(k)); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
   const berkas = berkasKetuk(o.berkas); if (!berkas) return gagal(400, "berkas harus salah satu usulan_* yang dikenal");
@@ -133,7 +132,7 @@ function cekDiklat(r) {
   return null;
 }
 async function diklatUnggah(env, req, url, kini) {
-  const oleh = await hakTulis(env, req); if (oleh instanceof Response) return oleh;
+  const oleh = await hakTulis(env, req, await modAtauStaf(env, req, P_UNIT_TULIS)); if (oleh instanceof Response) return oleh;
   const b = await bacaBody(req, MAKS_CSV + 1024); if (b.galat) return gagal(b.status || 400, b.galat);
   const x = Object.keys(b.o).find(k => k !== "csv"); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
   if (typeof b.o.csv !== "string" || !b.o.csv.trim()) return gagal(400, "csv wajib (teks CSV dengan baris kepala)");
@@ -161,7 +160,7 @@ async function diklatRingkasRute(env, req, url, kini) {
 
 /* RU-083 RRI-1: status titik akses. titik_id harus ada di R2 unit/akses_putus.json ({titik: [{id}]} atau larik); tgl tidak lewat hari ini WIB. Hanya ditambah. */
 async function aksesTulis(env, req, url, kini) {
-  const oleh = await hakTulis(env, req); if (oleh instanceof Response) return oleh;
+  const oleh = await hakTulis(env, req, await modAtauStaf(env, req, P_UNIT_TULIS)); if (oleh instanceof Response) return oleh;
   const b = await bacaBody(req, 2048); if (b.galat) return gagal(b.status || 400, b.galat);
   const o = b.o, x = Object.keys(o).find(k => !["titik_id", "tgl", "status", "catatan"].includes(k)); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
   if (typeof o.titik_id !== "string" || !RE_USULAN.test(o.titik_id)) return gagal(400, "titik_id harus 16 heks");

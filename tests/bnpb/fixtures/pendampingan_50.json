@@ -1,0 +1,367 @@
+{
+ "_tentang": "50 entri medan Pendampingan BNPB diberi label tangan SEBELUM kata kunci diuji (riset/3 A1; ALGORITMA 7.3). asal wa = bentuk nyata di laporan WA Koordalops, disusun = variasi tulisan lazim; tanpa nama orang atau lokasi. Label menurut arti: belum atau tidak ada pendampingan = false.",
+ "entri": [
+  {
+   "teks": "-",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "wa"
+  },
+  {
+   "teks": "-",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "wa"
+  },
+  {
+   "teks": "-",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "wa"
+  },
+  {
+   "teks": "-",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "wa"
+  },
+  {
+   "teks": "-",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "wa"
+  },
+  {
+   "teks": "- ",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "wa"
+  },
+  {
+   "teks": "–",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Belum ada",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "belum ada pendampingan",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Nihil",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Tidak ada pendampingan BNPB",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Tidak ada",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Belum ada pendampingan, tim akan diberangkatkan",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Belum terlaksana",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Menunggu permohonan dari BPBD",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Masih koordinasi dengan BPBD",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Belum ada laporan",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Tidak ada permintaan bantuan",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Belum diterima laporan pendampingan",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Tim BNPB",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "wa"
+  },
+  {
+   "teks": "Tim BNPB",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "wa"
+  },
+  {
+   "teks": "Tim BNPB",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "wa"
+  },
+  {
+   "teks": "Tim BNPB",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "wa"
+  },
+  {
+   "teks": "Tim BNPB (OMC)",
+   "didampingi": true,
+   "kelas": [
+    "personel",
+    "udara"
+   ],
+   "asal": "wa"
+  },
+  {
+   "teks": "Tim Gabungan BNPB",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "wa"
+  },
+  {
+   "teks": "Tim Kordalops BNPB",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "wa"
+  },
+  {
+   "teks": "Tim TRC BNPB",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Pendampingan oleh TRC BNPB",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "DSP Rp250.000.000",
+   "didampingi": true,
+   "kelas": [
+    "dsp"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Dana Siap Pakai Rp 100 juta",
+   "didampingi": true,
+   "kelas": [
+    "dsp"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Bantuan logistik berupa tenda dan selimut",
+   "didampingi": true,
+   "kelas": [
+    "logistik"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Sembako dan tenda pengungsi",
+   "didampingi": true,
+   "kelas": [
+    "logistik"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Water bombing helikopter",
+   "didampingi": true,
+   "kelas": [
+    "udara"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "OMC dan water bombing",
+   "didampingi": true,
+   "kelas": [
+    "udara"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Heli water bombing",
+   "didampingi": true,
+   "kelas": [
+    "udara"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Tim TRC dan DSP Rp100 juta",
+   "didampingi": true,
+   "kelas": [
+    "personel",
+    "dsp"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Tim BNPB, logistik, dan DSP",
+   "didampingi": true,
+   "kelas": [
+    "personel",
+    "logistik",
+    "dsp"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Personel Tim Reaksi Cepat",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Posko pendamping nasional",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Bantuan logistik dari gudang regional",
+   "didampingi": true,
+   "kelas": [
+    "logistik"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Dukungan personel dan peralatan",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Pengiriman tenda keluarga 20 unit",
+   "didampingi": true,
+   "kelas": [
+    "logistik"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "DSP tahap I Rp500 juta",
+   "didampingi": true,
+   "kelas": [
+    "dsp"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Tim BNPB bersama TNI dan Polri",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Selimut dan paket sembako",
+   "didampingi": true,
+   "kelas": [
+    "logistik"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Pendampingan penyusunan SK status",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Bantuan OMC 3 sorti",
+   "didampingi": true,
+   "kelas": [
+    "udara"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Tim kaji cepat BNPB",
+   "didampingi": true,
+   "kelas": [
+    "personel"
+   ],
+   "asal": "disusun"
+  },
+  {
+   "teks": "Pendampingan belum dilakukan",
+   "didampingi": false,
+   "kelas": [],
+   "asal": "disusun"
+  }
+ ]
+}
