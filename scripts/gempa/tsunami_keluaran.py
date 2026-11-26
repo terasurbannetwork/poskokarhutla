@@ -42,6 +42,7 @@ BATAS_MESIN = [
     "tanpa gesekan dasar (manning 0, K10 dan K12): genangan dan run-up cenderung lebih jauh dan lebih tinggi dari kenyataan",
     "BP04 tak pecah tanpa gesekan +12,2% lawan lab (batas mesin, bukan lulus 5%, bukan tervalidasi NOAA)",
     "DSM: atap dan kanopi ikut tinggi, genangan di bawah kanopi cenderung tersempitkan",
+    "hanya awal gelombang yang dihitung: maksimum kedalaman dan luas belum tentu final",
     "simulasi bukan peringatan; status tsunami resmi hanya BMKG dan PTWC",
 ]
 
@@ -260,7 +261,7 @@ def tulis_skenario(akar, kotak, nama, rast, meta, pustaka=False):
         raise KeluaranSalah("nama kotak/skenario tidak sah")
     meta = dict(meta)
     meta["raster"] = {"nx": rast["nx"], "ny": rast["ny"], "x_barat": round(rast["x_barat"], 6), "y_utara": round(rast["y_utara"], 6),
-                      "dx_derajat": rast["dx"], "baris": "utara ke selatan", "kolom": "barat ke timur",
+                      "dx_derajat": round(rast["dx"], 7), "baris": "utara ke selatan", "kolom": "barat ke timur",
                       "berkas_d": nama + "_d.png", "berkas_t": nama + "_t.png"}
     meta["kuantisasi"] = {"langkah_d_m": LANGKAH_D, "batas_d_m": BATAS_D, "kode_kering": K_KERING, "kode_lebih": K_LEBIH, "kode_laut": K_LAUT,
                           "kode_belum_dihitung": K_NODATA, "catatan": "kedalaman di bawah %.2f m digabung ke kering; 255 = belum dihitung, bukan nol; "
@@ -308,7 +309,7 @@ def bangun_indeks(akar=PUBLIK):
         "catatan": "simulasi, bukan peringatan; status tsunami resmi hanya BMKG dan PTWC",
         "dem_diizinkan": sorted(DEM_IZIN),
         "atribusi": {"glo30": _medan.LISENSI["glo30"]["atribusi"], "gebco": _medan.LISENSI["gebco"]["atribusi"], "demnas": "BIG (DEMNAS)"},
-        "anggaran": {"skenario_b": ANGGARAN_SKENARIO_B, "pustaka_b": ANGGARAN_PUSTAKA_B, "animasi_bingkai": ANIMASI_BINGKAI_MAKS, "animasi_b": ANIMASI_B_MAKS},
+        "anggaran": {"skenario_byte": ANGGARAN_SKENARIO_B, "pustaka_byte": ANGGARAN_PUSTAKA_B, "animasi_bingkai": ANIMASI_BINGKAI_MAKS, "animasi_byte": ANIMASI_B_MAKS},
         "batas_mesin": BATAS_MESIN,
         "pantai": {k: {"nama": v["nama"], "kotak": v["kotak"], "dem": dem_k.get(k), "dem_atribusi": DEM_IZIN.get(dem_k.get(k)), "resolusi_m": 30 if dem_k.get(k) else None,
                        "status": "hipotesis" if per_kotak[k] else "belum dihitung", "skenario": per_kotak[k]}

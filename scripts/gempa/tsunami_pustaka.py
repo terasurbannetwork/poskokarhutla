@@ -317,26 +317,49 @@ def _raster_run(nama):
     return r, kel, spec
 
 
-def _meta_pustaka(kotak, nama, r, kel, spec, rc):
+def _tiga_sig(x):
+    return float("%.2g" % x)
+
+
+def _meta_pustaka(kotak, nama, r, kel, spec, rc, darat_km2):
+    """Meta publik pustaka. Angka dibulatkan untuk tampil (luas, d_maks, persen 1 desimal; pembagi luas darat satu per kotak, bilangan bulat)."""
     src = spec["sumber"]
     tstart = spec["fgmax"]["tstart"]
     tiba = r["angka"]["tiba_pertama_s"]
-    artefak = tiba is not None and tiba <= tstart + 60
-    batas = ("skenario pustaka: megathrust sintetis M %.1f di selatan kotak, slip seragam, BUKAN hitungan gempa yang sedang dilihat; tanpa gesekan; "
-             "hanya %d detik pertama (maksimum belum tentu final); tingkat B tetap hipotesis, tidak ada kata teruji" % (src["m"], spec["tfinal"]))
+    ang = r["angka"]
+    luas = ang["luas_tergenang_km2"]
+    rr = spec.get("sumber_rupture") or {}
+    menit = int(round(spec["tfinal"] / 60))
+    mk = ("%.1f" % src["m"]).replace(".", ",")
+    batas = ("skenario pustaka: megathrust sintetis M %s di selatan kotak, slip seragam, bukan hitungan gempa yang sedang dilihat; tanpa gesekan; "
+             "hanya %d menit pertama (maksimum belum tentu final); tingkat B tetap hipotesis, tidak ada kata teruji" % (mk, menit))
+    geom = {8.0: "tepi atas bidang berhenti sekitar 0,2 derajat di utara palung", 8.5: "tepi atas bidang jatuh di palung",
+            8.8: "tepi atas bidang melewati palung sekitar 0,15 derajat ke selatan"}.get(src["m"])
     return {
-        "nama": "Megathrust sintetis M %.1f selatan %s" % (src["m"], MED.KOTAK[kotak]["nama"]), "kotak": kotak, "uji_ongkos": False,
-        "m": src["m"], "jenis": src["jenis"], "pusat": [src["lat"], src["lon"]], "strike": src["strike"], "dalam_km": src["dalam"],
+        "nama": "Megathrust sintetis M %s selatan %s" % (mk, MED.KOTAK[kotak]["nama"]), "kotak": kotak, "uji_ongkos": False,
+        "m": src["m"], "jenis": src["jenis"], "pusat": [round(src["lat"], 2), round(src["lon"], 2)], "strike_derajat": src["strike"], "dalam_pusat_km": src["dalam"],
         "tingkat": "B", "label": {"tingkat": "B", "status": "hipotesis", "catatan_batas": batas},
         "dem": "glo30", "dem_atribusi": MED.LISENSI["glo30"]["atribusi"], "dem_cadangan_dsm": "GLO-30 adalah DSM (atap dan kanopi ikut)",
         "gebco_atribusi": MED.LISENSI["gebco"]["atribusi"],
         "mesin": kel["mesin"], "hash_masukan": kel["hash_masukan"], "manning": spec["manning"],
-        "batas_mesin": K.BATAS_MESIN, "tfinal_s": spec["tfinal"], "res_detik": spec.get("res_detik"),
-        "ambang_tiba_m": spec["fgmax"].get("arrival_tol", 1e-2), "tstart_fgmax_s": tstart, "tiba_perkiraan_dijkstra_s": rc["tiba_perkiraan_s"],
-        "tiba_catatan": ("tiba %.0f s hanya sekitar awal pencatatan (%g s): batas bawah, bukan waktu tiba" % (tiba, tstart)) if artefak else None,
-        "sumber": {"rupture": spec.get("sumber_rupture"), "kisi": "ditetapkan sebelum hitung (tsunami_pustaka.KISI), tidak disetel ke kejadian atau data NCEI"},
-        "waktu_hitung_s": kel.get("waktu_detik"), "cpu_detik": kel.get("cpu_detik"),
-        "runup_hitung": r["runup_hitung"], **r["angka"],
+        "batas_mesin": K.BATAS_MESIN, "tfinal_menit": menit, "res_detik_busur": spec.get("res_detik"),
+        "ambang_tiba_m": spec["fgmax"].get("arrival_tol", 1e-2), "awal_pencatatan_menit": round(tstart / 60, 1),
+        "tiba_andal": False,
+        "tiba_catatan": ("waktu tiba dari pustaka tidak andal dan tidak boleh ditampilkan: lapis halus dan pencatatan fgmax mulai terlambat (di dekat awal gelombang), "
+                         "dan nilainya diambil dari sel basah mana pun di kotak termasuk laut, bukan tiba di darat"),
+        "tiba_pertama_menit_batas_bawah": round(tiba / 60) if tiba is not None else None,
+        "tiba_perkiraan_dijkstra_menit": round(rc["tiba_perkiraan_s"] / 60),
+        "geometri_catatan": geom,
+        "sumber": {"rupture": {"L_km": round(rr["L"]), "W_km": round(rr["W"]), "slip_m": round(rr["slip"], 1), "dip_derajat": rr["dip"], "strike_derajat": rr["strike"],
+                                "M0_Nm": _tiga_sig(rr["M0"])} if rr else None,
+                   "kisi": "ditetapkan sebelum hitung (tsunami_pustaka.KISI), tidak disetel ke kejadian atau data NCEI"},
+        "waktu_hitung_menit": round(kel["waktu_detik"] / 60) if kel.get("waktu_detik") else None, "cpu_menit": round(kel["cpu_detik"] / 60) if kel.get("cpu_detik") else None,
+        "runup_hitung": [], "runup_catatan": "dibuang: run-up satu sel rawan derau (sel tertinggi yang basah, mis. tepi kotak atau tebing DSM), tidak andal",
+        "luas_tergenang_km2": round(luas, 1) if luas is not None else None, "luas_darat_kotak_km2": darat_km2,
+        "persen_tergenang": round(100 * luas / darat_km2, 1) if luas is not None and darat_km2 else None,
+        "d_maks_m": round(ang["d_maks_m"], 1) if ang["d_maks_m"] is not None else None,
+        "sel_darat": ang["sel_darat"], "sel_darat_basah_dry_tol": ang["sel_darat_basah_dry_tol"], "sel_tergenang_ambang": ang["sel_tergenang_ambang"],
+        "sel_tanpa_dasar": ang["sel_tanpa_dasar"],
         "animasi": None, "animasi_catatan": "belum dibuat (tanpa fgout); anggaran tertulis di indeks",
     }
 
@@ -350,13 +373,16 @@ def rakit():
             if os.path.exists(os.path.join(H.RUN, nama, "fgmax.npz")):
                 ada[nama] = (kotak, jenis)
     rcs = {k: rencana(k) for k in KISI}
-    ukur = {}
+    ukur, darat = {}, {}
+    for nama, (kotak, jenis) in sorted(ada.items()):  # satu pembagi luas darat per kotak: dari skenario pustaka pertama (nama terurut), bilangan bulat
+        if jenis == "pustaka" and kotak not in darat:
+            darat[kotak] = int(round(_raster_run(nama)[0]["angka"]["luas_darat_kotak_km2"]))
     for nama, (kotak, jenis) in sorted(ada.items()):
         r, kel, spec = _raster_run(nama)
         if jenis == "pustaka":
-            ukur[nama] = K.tulis_skenario(PUBLIK, kotak, nama, r, _meta_pustaka(kotak, nama, r, kel, spec, rcs[kotak]), pustaka=True)
+            ukur[nama] = K.tulis_skenario(PUBLIK, kotak, nama, r, _meta_pustaka(kotak, nama, r, kel, spec, rcs[kotak], darat[kotak]), pustaka=True)
     # kepekaan
-    kasus, ambang = [], {}
+    kasus, ambang, ambang_tt = [], {}, {}
     for kotak in KISI:
         hasil = []
         for c in KEPEKAAN:
@@ -374,18 +400,28 @@ def rakit():
             hasil.append(banding(kotak, c, nk, terdekat, rk, rl, sk, sl, pk))
         kasus += hasil
         ambang[kotak] = turunkan(hasil)
+        ambang_tt[kotak] = turunkan(hasil, "lolos_tanpa_tiba")
     kep = {"dibuat": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "skema": 1, "status": "hipotesis",
            "catatan": "kepekaan tingkat B: skenario terdekat lawan hitungan langsung gempa buatan; bukan uji balik; ambang hanya berlaku pada kasus yang diuji",
            "toleransi": TOLERANSI, "kasus": kasus, "ambang": ambang,
+           "ambang_tanpa_tiba_keterangan": ambang_tt,
+           "catatan_tiba": "waktu tiba hanya dapat dinilai bila lebih dari 60 s sesudah awal pencatatan fgmax; kebanyakan kasus tidak memenuhi, jadi menurut aturan terdaftar mereka tak dapat dinilai dan tidak lolos. ambang_tanpa_tiba_keterangan hanya keterangan (kriteria luas dan d_maks saja), TIDAK dibaca pemilih.",
            "aturan_ambang": "per kotak, urut kasus dari yang terkecil; ambang = kasus terbesar yang lolos bersama semua kasus lebih kecil; kasus terkecil gagal atau tak dapat dinilai = tanpa ambang (hanya skenario sama persis); tidak diekstrapolasi di luar yang diuji"}
     b = json.dumps(kep, ensure_ascii=False, indent=1).encode()
     open(os.path.join(PUBLIK, "kepekaan.json"), "wb").write(b)
     n = K.tulis_indeks(PUBLIK)
-    print(json.dumps({"skenario": ukur, "kepekaan_b": len(b), "indeks_b": n, "total_pustaka_b": K.ukuran_pustaka(PUBLIK), "ambang": ambang}, indent=1))
+    print(json.dumps({"ambang_tanpa_tiba_keterangan": ambang_tt, "skenario": ukur, "kepekaan_b": len(b), "indeks_b": n, "total_pustaka_b": K.ukuran_pustaka(PUBLIK), "ambang": ambang}, indent=1))
 
 
 def _mask(r):
-    return {i for i, v in enumerate(r["d"]) if 1 <= v <= K.K_LEBIH}
+    return {i for i, v in enumerate(r["d"]) if 1 <= v <= K.K_LEBIH and v != K.K_LAUT}  # kelas kedalaman 1..252 dan 254; 253 = laut
+
+
+def _tampil(a):
+    """Angka tampil: luas dan d_maks 1 desimal; tiba dalam menit bulat (tidak andal, hanya keterangan)."""
+    r1 = lambda v: round(v, 1) if v is not None else None
+    return {"luas_tergenang_km2": r1(a["luas_tergenang_km2"]), "d_maks_m": r1(a["d_maks_m"]),
+            "tiba_pertama_menit": round(a["tiba_pertama_s"] / 60) if a["tiba_pertama_s"] is not None else None}
 
 
 def banding(kotak, c, nk, terdekat, rk, rl, sk, sl, pk):
@@ -393,15 +429,17 @@ def banding(kotak, c, nk, terdekat, rk, rl, sk, sl, pk):
     pl = sumber_kisi(kotak, terdekat[1])
     t_ok = lambda a, s: a["tiba_pertama_s"] is not None and a["tiba_pertama_s"] > s["fgmax"]["tstart"] + 60
     out = {"kotak": kotak, "kasus": nk, "pustaka": terdekat[0], "m_buatan": c["m"], "m_pustaka": terdekat[1],
-           "selisih_m": round(abs(c["m"] - terdekat[1]), 2), "jarak_km": round(jarak_km(pk, (pl["lat"], pl["lon"])), 1),
-           "langsung": {q: ak[q] for q in ("luas_tergenang_km2", "d_maks_m", "tiba_pertama_s")},
-           "skenario_terdekat": {q: al[q] for q in ("luas_tergenang_km2", "d_maks_m", "tiba_pertama_s")}}
+           "selisih_m": round(abs(c["m"] - terdekat[1]), 1), "jarak_km": int(round(jarak_km(pk, (pl["lat"], pl["lon"])))),
+           "langsung": _tampil(ak), "skenario_terdekat": _tampil(al)}
     ln = lambda a, b: round(math.log(a / b), 3) if a and b and a > 0 and b > 0 else None
     sel = {"ln_luas": ln(ak["luas_tergenang_km2"], al["luas_tergenang_km2"]), "ln_d_maks": ln(ak["d_maks_m"], al["d_maks_m"]),
            "tiba_menit": round((ak["tiba_pertama_s"] - al["tiba_pertama_s"]) / 60, 1) if t_ok(ak, sk) and t_ok(al, sl) else None}
     mk, ml = _mask(rk), _mask(rl)
     sel["jaccard_tergenang"] = round(len(mk & ml) / len(mk | ml), 3) if (mk | ml) else None  # keterangan saja, bukan kriteria
     out["selisih"] = sel
+    rasio = lambda x: round(math.exp(x), 1) if x is not None else None
+    out["tampil"] = {"rasio_luas_langsung_per_pustaka": rasio(sel["ln_luas"]), "rasio_d_maks_langsung_per_pustaka": rasio(sel["ln_d_maks"]),
+                     "kecocokan_area_tergenang_persen": round(100 * sel["jaccard_tergenang"]) if sel["jaccard_tergenang"] is not None else None}
     cek = [sel["ln_luas"] is not None and abs(sel["ln_luas"]) <= TOLERANSI["ln_luas"], sel["ln_d_maks"] is not None and abs(sel["ln_d_maks"]) <= TOLERANSI["ln_d_maks"],
            sel["tiba_menit"] is not None and abs(sel["tiba_menit"]) <= TOLERANSI["tiba_menit"]]
     out["lolos"] = all(cek)
@@ -410,11 +448,11 @@ def banding(kotak, c, nk, terdekat, rk, rl, sk, sl, pk):
     return out
 
 
-def turunkan(hasil):
+def turunkan(hasil, kunci="lolos"):
     """Ambang per kotak dari kasus terurut (selisih_m, jarak_km) menaik: kasus terbesar yang lolos bersama semua yang lebih kecil."""
     am = None
     for k in sorted(hasil, key=lambda h: (h["selisih_m"], h["jarak_km"])):
-        if not k["lolos"]:
+        if not k[kunci]:
             break
         am = {"selisih_m": k["selisih_m"], "jarak_km": k["jarak_km"], "dasar": k["kasus"]}
     return am
@@ -502,6 +540,18 @@ def uji():
     assert not b["lolos"] and b["tak_dinilai"] == ["tiba_menit"]              # tiba sekitar tstart = artefak, tak dinilai bukan lolos
     b = banding("ujung_kulon", c, "ks_uk_k1", ("mt_uk_m80", 8.0), R(None, None, None), R(12.0, 3.5, 1400.0), sp, sp, (-9.95, 105.4))
     assert not b["lolos"] and len(b["tak_dinilai"]) == 3                       # tak ada genangan: tak dapat dinilai, bukan nol
+    assert _mask({"d": bytes([0, 1, 252, 253, 254, 255])}) == {1, 2, 4}   # laut (253) dan belum dihitung (255) bukan genangan
+    if os.path.exists(os.path.join(PUBLIK, "kepekaan.json")):               # berkas publik hasil rakit, bila ada
+        ind, kep = json.load(open(os.path.join(PUBLIK, "indeks.json"))), json.load(open(os.path.join(PUBLIK, "kepekaan.json")))
+        assert K.ukuran_pustaka(PUBLIK) <= K.ANGGARAN_PUSTAKA_B
+        for n, sk in ind["skenario"].items():
+            assert sk["jenis"] == "subduksi" and n.startswith("mt_") and "tidak pernah" not in n
+        for kt, p in ind["pantai"].items():
+            assert (p["status"] == "hipotesis") == bool(p["skenario"])
+        for kt, am in kep["ambang"].items():
+            if am:
+                e = {"lat": ind["skenario"][ind["pantai"][kt]["skenario"][0]]["pusat"][0], "lon": ind["skenario"][ind["pantai"][kt]["skenario"][0]]["pusat"][1], "m": 8.0, "jenis": "subduksi", "dalam": 20}
+                assert pilih(e, ind, kep) and pilih(dict(e, m=9.5), ind, kep) == []
     print("uji tsunami_pustaka: kisi, domain, tiba perkiraan, ambang, pemilih, banding hijau")
 
 

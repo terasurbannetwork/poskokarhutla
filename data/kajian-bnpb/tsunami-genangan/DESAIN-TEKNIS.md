@@ -52,16 +52,19 @@ Per pantai dan skenario:
   "kuantisasi_m": 0.05,
   "ambang_tiba_m": 0.2,
   "luas_tergenang_km2": 0.0,
-  "luas_darat_kotak_km2": 0.0,
+  "luas_darat_kotak_km2": 0,
+  "persen_tergenang": 0.0,
   "d_maks_m": 0.0,
-  "tiba_pertama_menit": 0,
-  "runup_hitung": [{"lat": 0, "lon": 0, "m": 0}],
+  "tiba_andal": false,
+  "tiba_pertama_menit_batas_bawah": 0,
+  "runup_hitung": [],
+  "runup_catatan": "...",
   "label": {"tingkat": "B", "status": "hipotesis", "catatan_batas": "..."},
-  "sumber": {"okada": {"strike": 0, "dip": 0, "rake": 0, "slip_m": 0, "L_km": 0, "W_km": 0, "atas_km": 0}}
+  "sumber": {"okada": {"strike_derajat": 0, "dip_derajat": 0, "rake": 0, "slip_m": 0, "L_km": 0, "W_km": 0, "M0_Nm": 0, "atas_km": 0}}
 }
 ```
 
-Nilai di contoh hanyalah penanda bentuk, bukan hasil. Raster kedalaman: satu byte per sel (kelas 0,05 m sampai 8 m; nilai di bawah 0,05 m SENGAJA digabung ke kelas kering dan itu ditulis di legenda dan berkas;  satu nilai khusus untuk "lebih dari 8 m" dan satu untuk "di luar kotak"), dikompres; ukuran dan format akhir (PNG tanpa penghalusan atau biner dengan kompresi) diputuskan di TS-12 dari ukuran nyata. Animasi: bingkai muka air kotak halus pada selang waktu tetap, jumlah dan ukuran menurut Q12.
+Nilai di contoh hanyalah penanda bentuk, bukan hasil. Pustaka skema 1 (TS-13): luas, kedalaman, dan persen dibulatkan 1 desimal, pembagi luas darat bulat satu per kotak; waktu tiba dan run-up pustaka tidak andal dan tidak ditampilkan (lihat RISET 4.4). Raster kedalaman: satu byte per sel (kelas 0,05 m sampai 8 m; nilai di bawah 0,05 m SENGAJA digabung ke kelas kering dan itu ditulis di legenda dan berkas;  satu nilai khusus untuk "lebih dari 8 m" dan satu untuk "di luar kotak"), dikompres; ukuran dan format akhir (PNG tanpa penghalusan atau biner dengan kompresi) diputuskan di TS-12 dari ukuran nyata. Animasi: bingkai muka air kotak halus pada selang waktu tetap, jumlah dan ukuran menurut Q12.
 
 ## 3. Alur data
 

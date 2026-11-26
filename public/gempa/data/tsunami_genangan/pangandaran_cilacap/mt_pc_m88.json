@@ -1,0 +1,89 @@
+{
+ "nama": "Megathrust sintetis M 8,8 selatan Pangandaran sampai Cilacap",
+ "kotak": "pangandaran_cilacap",
+ "uji_ongkos": false,
+ "m": 8.8,
+ "jenis": "subduksi",
+ "pusat": [
+  -9.65,
+  108.8
+ ],
+ "strike_derajat": 265,
+ "dalam_pusat_km": 20,
+ "tingkat": "B",
+ "label": {
+  "tingkat": "B",
+  "status": "hipotesis",
+  "catatan_batas": "skenario pustaka: megathrust sintetis M 8,8 di selatan kotak, slip seragam, bukan hitungan gempa yang sedang dilihat; tanpa gesekan; hanya 45 menit pertama (maksimum belum tentu final); tingkat B tetap hipotesis, tidak ada kata teruji"
+ },
+ "dem": "glo30",
+ "dem_atribusi": "Produced using Copernicus WorldDEM-30 (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved.",
+ "dem_cadangan_dsm": "GLO-30 adalah DSM (atap dan kanopi ikut)",
+ "gebco_atribusi": "GEBCO Compilation Group (2020) GEBCO 2020 Grid, doi:10.5285/a29c5465-b138-234d-e053-6c86abc040b9",
+ "mesin": "geoclaw-5.14.0",
+ "hash_masukan": "df6d903f76750e2dc8cd648dd6e238bc94cbbfa145205b06a4bd2047c72cb9ba",
+ "manning": 0.0,
+ "batas_mesin": [
+  "tanpa gesekan dasar (manning 0, K10 dan K12): genangan dan run-up cenderung lebih jauh dan lebih tinggi dari kenyataan",
+  "BP04 tak pecah tanpa gesekan +12,2% lawan lab (batas mesin, bukan lulus 5%, bukan tervalidasi NOAA)",
+  "DSM: atap dan kanopi ikut tinggi, genangan di bawah kanopi cenderung tersempitkan",
+  "hanya awal gelombang yang dihitung: maksimum kedalaman dan luas belum tentu final",
+  "simulasi bukan peringatan; status tsunami resmi hanya BMKG dan PTWC"
+ ],
+ "tfinal_menit": 45,
+ "res_detik_busur": 3,
+ "ambang_tiba_m": 0.01,
+ "awal_pencatatan_menit": 18.0,
+ "tiba_andal": false,
+ "tiba_catatan": "waktu tiba dari pustaka tidak andal dan tidak boleh ditampilkan: lapis halus dan pencatatan fgmax mulai terlambat (di dekat awal gelombang), dan nilainya diambil dari sel basah mana pun di kotak termasuk laut, bukan tiba di darat",
+ "tiba_pertama_menit_batas_bawah": 18,
+ "tiba_perkiraan_dijkstra_menit": 24,
+ "geometri_catatan": "tepi atas bidang melewati palung sekitar 0,15 derajat ke selatan",
+ "sumber": {
+  "rupture": {
+   "L_km": 469,
+   "W_km": 161,
+   "slip_m": 8.8,
+   "dip_derajat": 15,
+   "strike_derajat": 265,
+   "M0_Nm": 2e+22
+  },
+  "kisi": "ditetapkan sebelum hitung (tsunami_pustaka.KISI), tidak disetel ke kejadian atau data NCEI"
+ },
+ "waktu_hitung_menit": 33,
+ "cpu_menit": 29,
+ "runup_hitung": [],
+ "runup_catatan": "dibuang: run-up satu sel rawan derau (sel tertinggi yang basah, mis. tepi kotak atau tebing DSM), tidak andal",
+ "luas_tergenang_km2": 15.1,
+ "luas_darat_kotak_km2": 4940,
+ "persen_tergenang": 0.3,
+ "d_maks_m": 11.4,
+ "sel_darat": 580299,
+ "sel_darat_basah_dry_tol": 2005,
+ "sel_tergenang_ambang": 1772,
+ "sel_tanpa_dasar": 0,
+ "animasi": null,
+ "animasi_catatan": "belum dibuat (tanpa fgout); anggaran tertulis di indeks",
+ "raster": {
+  "nx": 1260,
+  "ny": 720,
+  "x_barat": 108.25,
+  "y_utara": -7.35,
+  "dx_derajat": 0.0008333,
+  "baris": "utara ke selatan",
+  "kolom": "barat ke timur",
+  "berkas_d": "mt_pc_m88_d.png",
+  "berkas_t": "mt_pc_m88_t.png"
+ },
+ "kuantisasi": {
+  "langkah_d_m": 0.05,
+  "batas_d_m": 8.0,
+  "kode_kering": 0,
+  "kode_lebih": 254,
+  "kode_laut": 253,
+  "kode_belum_dihitung": 255,
+  "catatan": "kedalaman di bawah 0.05 m digabung ke kering; 255 = belum dihitung, bukan nol; waktu tiba: kode 0 tidak tiba, k = 1 + menit penuh, dipotong 250"
+ },
+ "ambang_luas_m": 0.05,
+ "skema": 1
+}
