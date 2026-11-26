@@ -179,7 +179,9 @@
   "0175_lapor_selamat_kunci.sql": "08fe0d667fa609d576c60da1f4ce489dd9c46f37fcd8c0e9d71a59ee78c9a81e",
   "0176_sensor_geofon.sql": "0e75bbfd347cd3717f07877a7302ae0af2d8873171555ae4f71dd4feb4e69d92",
   "0177_lapor_cari_temu.sql": "70e68db4e6a4fd7a668e279eaf089203705ab10a564771623a8820de71a301d9",
-  "0178_lp_komen.sql": "d00bce13b33deb866922987df6902d74316b1cbe23c415a4a3a6d6b5a32d4890",
-  "0179_semai_sasaran.sql": "237ffd18d373a111d7202a548a90dad21a5a6710ec39fbf969669eedb5ccaaa2",
-  "0180_semai_sasaran_indeks.sql": "8ae278b6ef766e78dcea0603b4cd11a76858cb523945db5f8573cecb2dbb974e"
+  "0178_laporan_berkala.sql": "30a0aef603cf8ee488e3dda6fb86098c0fc7d4a062a10917dc55dff0f3971a75",
+  "0179_segel_berkala.sql": "a496e729ccbefd1f33b2cc8d0577f4f508a809336c844984a1fbdd492b8f98c3",
+  "0180_lp_komen.sql": "d00bce13b33deb866922987df6902d74316b1cbe23c415a4a3a6d6b5a32d4890",
+  "0181_semai_sasaran.sql": "237ffd18d373a111d7202a548a90dad21a5a6710ec39fbf969669eedb5ccaaa2",
+  "0182_semai_sasaran_indeks.sql": "8ae278b6ef766e78dcea0603b4cd11a76858cb523945db5f8573cecb2dbb974e"
 }

@@ -27,13 +27,13 @@ export async function mulai(nama, {ikat = {}, r2 = true} = {}) {
     return {h: {cookie, ...ip()}, hp: {cookie, ...PB, ...ip()}, via: "/api/siklus"};
   };
   let akunN = 0;
-  const bp = async (o = {}) => {
+  const bp = async (o = {}, {profil = true} = {}) => {   // profil:false = sesi akun saja, tanpa pilih profil dan PIN (uji penolakan)
     const username = "bpuji" + ++akunN, garam = "c".repeat(32), id = id16(), t = Date.now();
     const baris = {id, username, jenis: "pemkab", tingkat: "kab", wilayah: "BPBD Kabupaten " + username, kunci_wilayah: "k" + id, cakupan: '["32"]', prov: "32", kab: "Bogor", garam, sandi_sha: sha256(garam + "SandiUji123456"),
       status: "aktif", nama: "Budi", nip: "198001012005011001", jabatan: "Kalak", unit: "BPBD", email: "budi@contoh.go.id", wa: "628123456789", surat: 1, kartu: 1, dikirim: 1, diputus: 1, wajib_ganti: 0, dibuat: t, ...o};
     await DB.prepare(`INSERT INTO instansi_akun (${Object.keys(baris).join(", ")}) VALUES (${Object.keys(baris).map(() => "?").join(", ")})`).bind(...Object.values(baris)).run();
     const m = await api("POST", "/api/instansi/masuk", {username, sandi: "SandiUji123456"}, {...PB, ...ip()}); assert.equal(m.s, 200, m.t);
-    const {cookie} = await denganProfil(DB, id, {cookie: m.h.get("set-cookie").split(";")[0]});   // akun BPBD: sesi profil (paket profil-bpbd)
+    const akun = m.h.get("set-cookie").split(";")[0], {cookie} = profil ? await denganProfil(DB, id, {cookie: akun}) : {cookie: akun};   // akun BPBD: sesi profil (paket profil-bpbd)
     return {h: {cookie, ...ip()}, hp: {cookie, ...PB, ...ip()}, via: "/api/instansi/siklus", id};
   };
   const SA = {h: {...ADMIN}, hp: {...ADMIN, ...PB}, via: "/api/siklus"}, MOD = {h: {...MOD2}, hp: {...MOD2, ...PB}, via: "/api/siklus"}, TAMU = {h: {...ip()}, hp: {...PB, ...ip()}, via: "/api/siklus"};

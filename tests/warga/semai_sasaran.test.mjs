@@ -1,4 +1,4 @@
-/* Migrasi op_semai_sasaran (migrations/0179_semai_sasaran.sql, SB-06; semula 0176, dinomori ulang 26 Nov 2026 karena bentrok dengan 0176_sensor_geofon) di D1 Miniflare: dua kali tanpa galat, baris salah ditolak.
+/* Migrasi op_semai_sasaran (migrations/0181_semai_sasaran.sql, SB-06; semula 0176 lalu 0179, dinomori ulang 26 Nov 2026 karena bentrok dengan 0176_sensor_geofon dan 0178-0179 Laporan Berkala) di D1 Miniflare: dua kali tanpa galat, baris salah ditolak.
    Jalankan: node --test tests/warga/semai_sasaran.test.mjs */
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
@@ -12,9 +12,9 @@ const {DB, n} = await siapkan("uji-semai-sasaran");
 const ins = (kolom, nilai) => DB.prepare(`INSERT INTO op_semai_sasaran (${kolom}) VALUES (${nilai.map(() => "?").join(",")})`).bind(...nilai).run();
 const W = "id,kab,tanggal,oleh,dibuat";
 
-uji("migrasi 0179 dijalankan dua kali tanpa galat dan tanpa menyentuh op_semai_target", async () => {
+uji("migrasi 0181 dijalankan dua kali tanpa galat dan tanpa menyentuh op_semai_target", async () => {
   const sebelum = (await DB.prepare("SELECT sql FROM sqlite_master WHERE name='op_semai_target'").first()).sql;
-  for (let i = 0; i < 2; i++) for (const s of pecah(readFileSync(path.join(AKAR, "migrations/0179_semai_sasaran.sql"), "utf8"))) await DB.prepare(s).run();
+  for (let i = 0; i < 2; i++) for (const s of pecah(readFileSync(path.join(AKAR, "migrations/0181_semai_sasaran.sql"), "utf8"))) await DB.prepare(s).run();
   assert.equal(await n("op_semai_sasaran"), 0);
   assert.equal((await DB.prepare("SELECT sql FROM sqlite_master WHERE name='op_semai_target'").first()).sql, sebelum, "op_semai_target tidak boleh berubah");
   assert.equal((await DB.prepare("SELECT count(*) n FROM sqlite_master WHERE type='trigger' AND tbl_name='op_semai_sasaran'").first()).n, 0, "tanpa trigger");

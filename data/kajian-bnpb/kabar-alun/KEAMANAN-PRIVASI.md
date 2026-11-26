@@ -9,7 +9,7 @@ Repo ini publik. `data.json` laporan harian hari itu dan deck `Laporan Kejadian 
 | Data | Sifat | Tempat |
 | --- | --- | --- |
 | `data.json` laporan harian (memuat teks bebas Koordalops) | sudah di git publik | folder laporan harian; hanya kolom daftar izin yang dipindah ke `kabar.json` |
-| `public/data/alun/kabar.json` | turunan, angka resmi | tidak di-commit dan tidak terbit sebelum Q2 dijawab; hanya di localhost |
+| `public/data/alun/kabar.json` | turunan, angka resmi | di-commit dan terbit sejak K5 (26 Nov 2026); hanya kolom daftar izin D4 |
 | Berita | publik | dibaca dari berkas berita situs sendiri |
 | Laporan warga | publik terkurasi | `GET /api/lapor/alun` yang sudah ada; tidak diubah |
 | Media sosial | belum ada | belum tersambung (D9) |
@@ -20,7 +20,7 @@ Repo ini publik. `data.json` laporan harian hari itu dan deck `Laporan Kejadian 
 
 ## Aturan
 
-- Gerbang Q2: sebelum pemilik menjawab, `public/data/alun/kabar.json` TIDAK di-commit (`.gitignore`) dan tidak terbit (`public/.assetsignore`); terlihat hanya di localhost. Tidak ada "staf masuk boleh melihat", karena berkas statis tidak punya pintu masuk.
+- Q2 terjawab K5 (26 Nov 2026): `public/data/alun/kabar.json` di-commit dan terbit publik. Yang menahan isi sekarang hanya daftar izin kolom D4 (P3, P4, P11 di `--cek`); teks bebas Koordalops tetap tidak pernah masuk berkas.
 - Pelindungan data pribadi (UU 27/2022): bila medsos tersambung, hanya jumlah unggahan per kejadian dan tautan pencarian platform; tanpa nama akun, isi unggahan, atau foto warga (D10). `medsos_tiktok.json` tidak dipakai.
 - Berita hanya judul, nama media, tanggal, tautan (hak cipta). Tanpa gambar dan cuplikan panjang.
 - Laporan warga tidak diubah: hanya yang ditindaklanjuti atau selesai, titik pusat desa, tanpa nama, nomor WA, atau koordinat pelapor (`lapor-ai` K30).
@@ -35,6 +35,6 @@ Repo ini publik. `data.json` laporan harian hari itu dan deck `Laporan Kejadian 
 | Angka resmi dan warga tampak setara atau dijumlah | pita terpisah, label sumber, uji tanpa penjumlahan |
 | Berita salah kab menempel pada kejadian | hanya lewat `cocok()`; tanpa kab tidak menempel |
 | Titik salah dari nama kab yang mirip | kecocokan persis nama dan provinsi, selain itu tanpa titik |
-| Teks bebas laporan harian bocor lewat berkas turunan | daftar izin kolom diuji; berkas tidak di-commit dan tidak terbit sebelum Q2 |
+| Teks bebas laporan harian bocor lewat berkas turunan | daftar izin kolom diuji tiap ekspor (`--cek`) |
 | Angka warga 0 dibaca sebagai terukur nol | 0 dari warga tidak ditampilkan (ALGORITMA 4) |
 | Kartu dibaca sebagai kejadian sudah selesai atau aman | status hanya dari laporan resmi, kesegaran per kejadian, kata "aman" diuji |

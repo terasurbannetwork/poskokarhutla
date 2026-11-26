@@ -697,7 +697,7 @@ Sebelum menyentuh kabar resmi harian di Alun-alun, penempel berita atau laporan 
 2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`KA-*`), `GLOSARIUM.md`.
 
-Aturan berhentinya sama dengan §2.1. Angka antarsumber tidak pernah dijumlah atau tampak setara; status hanya dari laporan resmi; berita hanya judul, media, jam, tautan; medsos belum tersambung sampai Q1 dan sesudahnya hanya jumlah dan tautan tanpa nama akun; kabar resmi hanya localhost (tidak di-commit, tidak terbit) sampai Q2; tidak pernah menulis "aman"; tinjau di `http://localhost:8800/lapor/`.
+Aturan berhentinya sama dengan §2.1. Angka antarsumber tidak pernah dijumlah atau tampak setara; status hanya dari laporan resmi; berita hanya judul, media, jam, tautan; medsos belum tersambung sampai Q1 dan sesudahnya hanya jumlah dan tautan tanpa nama akun; kabar resmi terbit publik sejak K5 (26 Nov 2026), tetap hanya kolom daftar izin; tidak pernah menulis "aman"; tinjau di `http://localhost:8800/lapor/`.
 
 ### 2.50 Docs Centurisk97 (`/docs`, panduan pengguna dan pengembang, metode di dalam sistem): baca dulu, baru bangun
 

@@ -33,7 +33,8 @@ Kuota baca D1 (Free 5 juta per hari): tidak ada cron dan tidak ada pindai. Angga
 | Rute | Hak |
 | --- | --- |
 | `GET /api/siklus/kaji-ulang/kandidat` | STAF (Pimpinan baca) |
-| `GET /api/siklus/kejadian/:id/kaji-ulang` | STAF, BP (kab wilayahnya, hanya yang disahkan, Q6) |
+| `GET /api/siklus/kejadian/:id/kaji-ulang` | STAF, BP (kab wilayahnya, hanya yang disahkan, isi dari potret beku versi terkini, Q6) |
+| `GET /api/siklus/kaji-ulang/disahkan` | BP saja: daftar kaji ulang disahkan di kab wilayah akun (lewat `/api/instansi/siklus/...`, dibaca tab Kaji ulang `/instansi`) |
 | `POST /api/siklus/kejadian/:id/kaji-ulang` (mulai) | PDKO |
 | `POST /api/siklus/kejadian/:id/kaji-ulang/pelajaran` | PDKO (BP baca-saja: MATRIKS_SK `sk_instansi`, Q13) |
 | `POST /api/siklus/kejadian/:id/kaji-ulang/rekomendasi` | PDKO |

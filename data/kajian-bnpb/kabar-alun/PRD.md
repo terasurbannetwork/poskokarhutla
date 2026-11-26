@@ -6,7 +6,7 @@ Pembaca Alun-alun `/lapor` melihat satu kejadian bencana sebagai satu kartu yang
 
 ## Pengguna
 
-Publik pembaca Alun-alun. Sampai Q2 dijawab, kabar resmi hanya terlihat di localhost (berkasnya tidak di-commit dan tidak terbit).
+Publik pembaca Alun-alun. Sejak K5 (26 Nov 2026) kabar resmi tampil publik.
 
 ## Fitur
 
@@ -42,7 +42,7 @@ Peringatan dini dan status gunung api dari halaman 1 dan 4 deck (Q7). Menu baru 
 | No | Hal | Keadaan |
 | --- | --- | --- |
 | Q1 | Platform dan anggaran media sosial | belum diputuskan (bawaan sementara: belum tersambung, F-7) |
-| Q2 | Angka laporan harian boleh publik | belum diputuskan (bawaan sementara: hanya di localhost; berkas dibangun tetapi tidak di-commit dan tidak terbit) |
+| Q2 | Angka laporan harian boleh publik | terjawab K5: boleh publik |
 | Q3 | Siapa menerbitkan data resmi harian | belum diputuskan (bawaan sementara: langkah ekspor ikut `jalan.py` hari itu dan ikut commit laporan harian) |
 | Q4 | Nama tab | belum diputuskan (bawaan sementara: tetap "Alun-alun") |
 | Q5 | Sumber berita | belum diputuskan (bawaan sementara: Google News RSS lewat `berita.py`) |

@@ -58,7 +58,7 @@ def diambil(d):
 def _uji():
     d = muat()
     assert periksa(d) == [], periksa(d)
-    assert len(d["sumber"]) == 47 and len(diambil(d)) == 42
+    assert len(d["sumber"]) == 50 and len(diambil(d)) == 45   # +3 EWS bersyarat (EW-10)
     assert all(x["status"] != "gagal" for x in diambil(d))
 
     def salah(ubah, kata):

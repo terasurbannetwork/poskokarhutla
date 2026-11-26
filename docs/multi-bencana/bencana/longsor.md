@@ -78,7 +78,7 @@ Audit 15 Nov 2026, HEAD f3ab401e2, kode dan data di checkout (data tayang dibuat
 | C10 | Gelembung cluster | sebagian | SEBAGIAN | banjir/peta.js:448 | Gelembung kejadian B, bukan kejadian longsor |
 | C11 | Popup titik | sebagian | SEBAGIAN | banjir/peta.js:151,154 | Kartu kecamatan, tanpa titik longsoran |
 | C12 | Laci kejadian | sebagian | SEBAGIAN | banjir/kejadian.js:65-79 | Laci kejadian B |
-| C13 | Legenda | dibuat | ADA | renderLegenda | Bersama |
+| C13 | Legenda | dibuat | ADA | renderLegenda (`public/banjir/peta.js:305`) | Bersama |
 | C14 | Insight | diadaptasi | ADA | public/banjir/longsor.js (4 kartu: status, nowcast, musim, riwayat); insight.js:121-125 | Ada; judul kartu berupa kalimat temuan (longsor.js:31,46,54) yang kini dilarang |
 | C15 | Tabel kejadian | sebagian | SEBAGIAN | longsor.js (daftar tinggi/sedang) | Daftar kecamatan di tab, bukan tabel kejadian |
 | C16 | Cerita | belum | BELUM | - | Tidak ada cerita_longsor.js |
@@ -124,7 +124,7 @@ Audit 15 Nov 2026, HEAD f3ab401e2, kode dan data di checkout (data tayang dibuat
 | E07 | Beban | sebagian | SEBAGIAN | tests/beban/ukur_muat.mjs | Rute banjir; longsor tak diukur |
 | E08 | i18n | sebagian | SEBAGIAN | kumpul.mjs | Per rute banjir, tanpa kunci longsor |
 | E09 | Kepemilikan berkas | dibuat | ADA | roster.json (longsor); ilmu-agent/longsor.md | Hijau |
-| E10 | Model agent | dibuat | ADA | roster longsor model sonnet | Hijau |
+| E10 | Model agent | dibuat | ADA | roster longsor model sonnet (`scripts/agents/roster.json`, `.claude/agents/longsor.md`) | Hijau |
 | F01 | Pengerja agent | dibuat | ADA | scripts/agents/roster.json; .claude/ilmu-agent/longsor.md | - |
 | F02 | Dokumen spesifikasi | dibuat | ADA | docs/multi-bencana/bencana/longsor.md | Audit ini |
 | F03 | Dokumen riset | dibuat | ADA | scripts/longsor/RISET-AMBANG-KAB.md; PRAREG-LHASA2.md | Dua berkas riset |

@@ -15,3 +15,5 @@ Kerjakan urut. Tiket yang ditahan pertanyaan terbuka tidak dimulai sebelum pemil
 | EW-08 | Kisi CCTV + pemuat `cctv.json` berizin + grafik getaran ringkas per menit | `inti-layar`, `warga-api` | Q1, Q6 | U9 |
 | EW-09 | Kotak Langkah cepat dari `public/ews_tindakan.js` | `inti-layar` | Q5 | uji DOM: teks sama persis dengan entri tangga |
 | EW-10 | Daftarkan sumber di `scripts/siklus/sumber.json` (MHEWS, Banda Aceh, geodashboard) dengan status `bersyarat` | `siklus` | - | `node --test tests/siklus/gerbang_registri.test.mjs` |
+
+Status 26 Nov 2026: EW-10 selesai. `scripts/siklus/sumber.json` memuat `ews-mhews-bnpb`, `ews-banjir-banda-aceh`, `ews-geodashboard` berstatus `bersyarat`, pemilik `warga-api`, tanpa adapter sehingga `panen.py` melewatinya; tidak ada tarikan uji ke ketiga situs (Q1). Kolom `catatan` tiap sumber adalah tempat izin tertulis dicatat sebelum EW-06 dan EW-07 dimulai. Bukti: `node --test tests/siklus/gerbang_registri.test.mjs` hijau.

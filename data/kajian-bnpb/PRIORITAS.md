@@ -13,7 +13,7 @@ Dasar urutan: musim hujan (banjir, longsor, cuaca dipakai tiap hari), modul hamp
 - [x] PB-50 uji balik hujan 50 mm: GAGAL, hanya musim kemarau (aaa2db9fd)
 - [x] Paket `peta-situs` (73f2495c6)
 - [x] Peta situs PS-00 sampai PS-11 selesai 25 Nov (474ac23c0, 4b4f15d10, 05a870e59); tinjau lokal sesudah terbit
-- [ ] Paritas PB-51 sampai PB-67 (selesai 25 Nov: PB-51..PB-66 kecuali yang tertahan kunci atau izin di PB-61.x dan PB-65.3/65.4; sisa: PB-67 penutup)
+- [x] Paritas PB-51 sampai PB-67 (PB-51..PB-66 selesai 25 Nov, PB-67 penutup F3 selesai 26 Nov: tabel target lawan hasil di `paritas-bencana/TIKET.md` bagian Penutup F3; sasaran F3 belum tercapai, selisih 28 sampai 74 ADA per bencana. Masih tertahan: PB-61.x karena kunci, login, izin unduh, lisensi, atau jalur akses; PB-65.3 menunggu pemilik masuk; PB-65.4 menunggu lisensi di DATA-PUBLIK; A34 video tidak dikerjakan, Q7)
 - [ ] Lapor Bencana sisa (LK-09..LK-12 selesai 25 Nov; LK-13 tinjauan pemilik dan saklar LAPOR_USUL; sisa LA-*)
 - [ ] Genangan GS-12, GS-13 (kode GS-13 selesai 25 Nov; tertahan: migrasi GS-09 oleh pemilik, Q14, uji balik butuh izin jaringan)
 

@@ -107,7 +107,9 @@ def olah():
     pn = json.load(open(os.path.join(D, "meta.json")))["provinsi"]
     nama2kode = {v.upper().replace("KEP.", "KEPULAUAN").replace("DI ", "DAERAH ISTIMEWA "): k for k, v in pn.items()}
     frp_in = 0.0
-    for lat, lon, jam, sen, frp, kf, wi, tgl in h["baris"]:
+    c = {n: i for i, n in enumerate(h.get("kolom") or ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib"])}  # 26 Nov 2026: kolom bisa bertambah
+    for r in h["baris"]:
+        lat, lon, frp, wi = (r[c[n]] for n in ("lat", "lon", "frp", "wilayah"))
         pv = (kw[wi] if isinstance(kw, list) else str(wi)).split("|")[0]
         prov_all[pv] = prov_all.get(pv, 0) + 1
         k = cari(g, lat, lon)

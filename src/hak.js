@@ -474,7 +474,7 @@ export const dlNamaStaf = async (env, ids) => ids.length ? new Map((await env.DB
    Target semai awan (migrasi 0129_semai_target; src/operasi_semai.js; data/kajian-bnpb/semai-awan/DESAIN-TEKNIS.md §4). Hak dicek di rute. */
 export const smTargetHari = async (env, t) => (await env.DB.prepare("SELECT id, zona_id, putaran, base_id, base_icao, base_nama, tanggal, lat, lon, mulai, selesai, skor, alasan_json, catatan, dibuat FROM op_semai_target WHERE tanggal = ? AND terhapus IS NULL ORDER BY base_id, mulai LIMIT 200").bind(t).all()).results;
 export const smTargetRentang = async (env, lo, hi) => (await env.DB.prepare("SELECT id, zona_id, putaran, base_id, base_icao, base_nama, tanggal, lat, lon, mulai, selesai, skor, alasan_json, catatan, dibuat FROM op_semai_target WHERE tanggal >= ? AND tanggal <= ? AND terhapus IS NULL ORDER BY tanggal, base_id, mulai LIMIT 2000").bind(lo, hi).all()).results;
-/* Sasaran manual semai banjir (migrasi 0179_semai_sasaran; DESAIN-TEKNIS semai-banjir §4). oleh = id akun. */
+/* Sasaran manual semai banjir (migrasi 0181_semai_sasaran; DESAIN-TEKNIS semai-banjir §4). oleh = id akun. */
 export const ssHari = async (env, t) => (await env.DB.prepare("SELECT id, kab, tanggal, catatan, dibuat FROM op_semai_sasaran WHERE tanggal = ? AND terhapus IS NULL ORDER BY kab LIMIT 200").bind(t).all()).results;
 export const ssAktif = async (env, kab, t) => !!await env.DB.prepare("SELECT 1 FROM op_semai_sasaran WHERE kab = ? AND tanggal = ? AND terhapus IS NULL").bind(kab, t).first();
 export const ssLajuBuat = async (env, oleh, awal) => (await env.DB.prepare("SELECT count(*) n FROM op_semai_sasaran WHERE oleh = ? AND dibuat >= ?").bind(oleh, awal).first()).n;
@@ -1579,6 +1579,14 @@ export const kuKandidatBaris = async (env, p, dummyOk) => {
   catch (e) { if (!/no such table: (main\.)?lf_riwayat/i.test(String(e?.message ?? e))) throw e; }
   return {baris: (await env.DB.prepare(KU_SQL_KANDIDAT(false)).bind(dummyOk ? 1 : 0).all()).results, lifeline: false};
 };
+/* KU-08 baca BPBD: kaji ulang yang SUDAH disahkan dari kejadian yang menyentuh salah satu kab4 di `lingkup` (larik kab4 wilayah akun; kosong = tanpa baris). Tanpa kolom oleh. */
+export const KU_MAKS_DISAHKAN = 200;
+export const kuDisahkanLingkup = async (env, p, lingkup, dummyOk) => {
+  izin(p, "ku_kaji", "baca");
+  return (await env.DB.prepare(`SELECT k.id, k.jenis, k.nama, k.fase, k.mulai, u.versi, u.disahkan_pada FROM ku_kaji u JOIN sk_kejadian k ON k.id = u.kejadian_id
+    WHERE u.status = 'disahkan' AND (?2 = 1 OR k.dummy = 0) AND EXISTS (SELECT 1 FROM sk_kejadian_kab x WHERE x.kejadian_id = k.id AND x.kab4 IN (SELECT value FROM json_each(?1)))
+    ORDER BY u.disahkan_pada DESC, k.id LIMIT ${KU_MAKS_DISAHKAN}`).bind(JSON.stringify(lingkup ?? []), dummyOk ? 1 : 0).all()).results;
+};
 /* T21: tugas_api yang dibuat dalam [dari, sampai) di provinsi kejadian tanpa baris sk_kejadian_sumber; pencocokan kab dilakukan pemanggil (kab4Dari). null bila tugas_api belum ada. */
 export const kuTugasBelumBertaut = async (env, p, dari, sampai, provs) => {
   izin(p, "ku_kaji", "baca");
@@ -1806,8 +1814,8 @@ Object.assign(MATRIKS, {
   lapor_selamat:       {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_cron: ["hapus"]},   // migrasi 0173: kabar selamat (K91, D126-D130); publik hanya lewat token
   lapor_cari:          {lp_pelapor: ["baca", "tambah"], lp_staf: ["baca", "ubah"], lp_cron: ["ubah"]},   // migrasi 0173: orang dicari, tidak pernah publik (D129); pelapor baca hanya miliknya (crMilik)
   lapor_cari_riwayat:  {lp_staf: ["baca", "tambah"]},   // migrasi 0173: append-only
-  lapor_cari_temu:     {lp_pelapor: ["tambah"], lp_staf: ["baca"], lp_cron: ["hapus"]},   // migrasi 0177: panggilan, nomor kontak, tempat tunggu (pemilik 25 Nov 2026); dihapus bersama anonim Q67
-  lp_komen:            {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"]},   // migrasi 0178: komentar kartu Alun-alun (K95, D136); publik hanya kolom id, teks, dibuat
+  lapor_cari_temu:     {lp_pelapor: ["tambah"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},   // migrasi 0177: panggilan, nomor kontak, tempat tunggu (pemilik 25 Nov 2026); dihapus bersama anonim Q67
+  lp_komen:            {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"]},   // migrasi 0180: komentar kartu Alun-alun (K95, D136); publik hanya kolom id, teks, dibuat
   lp_komen_aduan:      {lp_pelapor: ["baca", "tambah"], lp_staf: ["baca"]},
   lp_komen_usul:       {lp_mesin: ["tambah"], lp_staf: ["baca", "ubah"]},   // LA-86 menulis, LA-88 memutus
 });
@@ -1905,9 +1913,11 @@ export const crAnonimkan = (env, p, batas) => sedia(env, p, "lapor_cari", "ubah"
   .bind(batas, CARI_NOMOR_ANONIM, CARI_NAMA_ANONIM).run();
 /* tambahan 0177 ditulis sesudah batch sesi (bukan di dalamnya) supaya laporan tetap masuk selama migrasi belum diterapkan di produksi */
 export const ctTambah = (env, p, b) => sedia(env, p, "lapor_cari_temu", "tambah",
-  "INSERT OR IGNORE INTO lapor_cari_temu (cari_id, panggilan, nomor_kontak, tempat_tunggu) VALUES (?1, ?2, ?3, ?4)").bind(b.cari_id, b.panggilan, b.nomor_kontak, b.tempat_tunggu).run();
+  "INSERT OR IGNORE INTO lapor_cari_temu (cari_id, panggilan, nomor_kontak, tempat_tunggu, foto_id) VALUES (?1, ?2, ?3, ?4, ?5)").bind(b.cari_id, b.panggilan, b.nomor_kontak, b.tempat_tunggu, b.foto_id ?? null).run();
 export const ctBaca = async (env, p, ids) => ids.length ? (await sedia(env, p, "lapor_cari_temu", "baca",
-  "SELECT cari_id, panggilan, nomor_kontak, tempat_tunggu FROM lapor_cari_temu WHERE cari_id IN (SELECT value FROM json_each(?1))").bind(JSON.stringify(ids)).all()).results : [];
+  "SELECT cari_id, panggilan, nomor_kontak, tempat_tunggu, foto_id FROM lapor_cari_temu WHERE cari_id IN (SELECT value FROM json_each(?1))").bind(JSON.stringify(ids)).all()).results : [];
+export const ctFotoAnonim = async (env, p) => (await sedia(env, p, "lapor_cari_temu", "baca",
+  "SELECT foto_id FROM lapor_cari_temu WHERE foto_id IS NOT NULL AND cari_id IN (SELECT id FROM lapor_cari WHERE nomor_pencari = ?1)").bind(CARI_NOMOR_ANONIM).all()).results.map(r => r.foto_id);
 export const ctAnonim = (env, p) => sedia(env, p, "lapor_cari_temu", "hapus",
   "DELETE FROM lapor_cari_temu WHERE cari_id IN (SELECT id FROM lapor_cari WHERE nomor_pencari = ?1)").bind(CARI_NOMOR_ANONIM).run();
 /* orang dicari lewat obrolan (K105): satu pernyataan di batch sesi supaya sesi "cari_terkirim" dan baris lapor_cari tersimpan bersama (g = hanya bila pernyataan sebelumnya mengubah baris) */
@@ -2701,6 +2711,49 @@ export const stmtSegelLj = (env, s) => env.DB.prepare(`INSERT INTO segel (kode, 
     SELECT ?1, 'lj', berkas || '#' || versi, berkas, versi, sidik, NULL, ?3, ?4, ?5, ?6, ?7 FROM lj_beku WHERE berkas = ?2 AND waktu = ?7 AND sidik = ?8 ORDER BY versi DESC LIMIT 1`)
   .bind(s.kode, s.rujukan, s.judul, s.wilayah ?? null, s.periode, s.penerbit, s.terbit, s.sidik);
 export const segelIsiLj = (env, berkas, versi) => env.DB.prepare("SELECT isi FROM lj_beku WHERE berkas = ?1 AND versi = ?2").bind(berkas, versi).first();
+
+/* ---------- Laporan Berkala (LB-07, migrasi 0178; rute src/laporan_berkala.js, segel jenis 'berkala' migrasi 0179) ----------
+   Hak dicek di rute (K4: admin menulis; admin, staf, dan pemirsa bertab pusdalops membaca), di sini hanya SQL. Versi 0 = draf, 1.. = beku (trigger 0178).
+   Semua kueri lewat PK (periode, kode, versi): SEARCH, satu tabel kecil (sekitar 400 baris per tahun). */
+export const LBR_SQL = {
+  daftar: "SELECT kode, versi, diubah, oleh FROM laporan_berkala WHERE periode = ?1 ORDER BY kode DESC, versi DESC LIMIT 400",
+  /* tanpa versi (?3 NULL): draf bila ada, bila tidak versi beku terakhir; beku = versi tertinggi (0 bila hanya draf) */
+  baris: `SELECT versi, isian, diubah, angka_kunci, angka_sha256, oleh, (SELECT max(versi) FROM laporan_berkala WHERE periode = ?1 AND kode = ?2) beku
+    FROM laporan_berkala WHERE periode = ?1 AND kode = ?2 AND (?3 IS NULL OR versi = ?3) ORDER BY versi = 0 DESC, versi DESC LIMIT 1`,
+  /* draf satu pernyataan: baris baru selalu masuk; baris lama hanya bila diubah klien = diubah tersimpan (?8 NULL = tidak pernah, jadi 409) */
+  simpan: `INSERT INTO laporan_berkala (periode, kode, versi, isian, angka_kunci, angka_sha256, diubah, oleh) VALUES (?1, ?2, 0, ?3, ?4, ?5, ?6, ?7)
+    ON CONFLICT (periode, kode, versi) DO UPDATE SET isian = excluded.isian, angka_kunci = excluded.angka_kunci, angka_sha256 = excluded.angka_sha256,
+    diubah = excluded.diubah, oleh = excluded.oleh WHERE laporan_berkala.diubah = ?8`,
+  jejakBila: "INSERT INTO laporan_berkala_jejak (periode, kode, versi, aksi, oleh, waktu) SELECT ?1, ?2, ?3, ?4, ?5, ?6 WHERE changes() > 0",
+  jejak: "INSERT INTO laporan_berkala_jejak (periode, kode, versi, aksi, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+  /* Bekukan: versi ?3 hanya bila = max + 1 dan draf masih ber-diubah ?8; isian disalin dari draf di SQL (bukan dari klien) */
+  beku: `INSERT INTO laporan_berkala (periode, kode, versi, isian, angka_kunci, angka_sha256, diubah, oleh)
+    SELECT periode, kode, ?3, isian, ?4, ?5, ?6, ?7 FROM laporan_berkala WHERE periode = ?1 AND kode = ?2 AND versi = 0 AND diubah = ?8
+    AND ?3 = (SELECT max(versi) + 1 FROM laporan_berkala WHERE periode = ?1 AND kode = ?2)`,
+  /* draf dibuang hanya bila versi beku baru benar-benar tertulis di batch ini (bukan lewat changes(): rantai penanda rapuh) */
+  bekuBuangDraf: `DELETE FROM laporan_berkala WHERE periode = ?1 AND kode = ?2 AND versi = 0
+    AND EXISTS (SELECT 1 FROM laporan_berkala WHERE periode = ?1 AND kode = ?2 AND versi = ?3 AND diubah = ?4 AND angka_sha256 = ?5)`,
+  bekuJejak: `INSERT INTO laporan_berkala_jejak (periode, kode, versi, aksi, oleh, waktu) SELECT ?1, ?2, ?3, 'bekukan', ?6, ?4
+    WHERE EXISTS (SELECT 1 FROM laporan_berkala WHERE periode = ?1 AND kode = ?2 AND versi = ?3 AND diubah = ?4 AND angka_sha256 = ?5)`,
+  segel: `INSERT INTO segel (kode, jenis, rujukan, dasar, versi, sidik, sidik_berkas, judul, wilayah, periode, penerbit, terbit)
+    SELECT ?1, 'berkala', periode || '/' || kode || '#' || versi, periode || '/' || kode, versi, ?2, NULL, ?3, NULL, kode, ?4, ?5
+    FROM laporan_berkala WHERE periode = ?6 AND kode = ?7 AND versi = ?8 AND diubah = ?5 AND angka_sha256 = ?9`,
+};
+export const lbrDaftar = async (env, periode) => (await env.DB.prepare(LBR_SQL.daftar).bind(periode).all()).results;
+export const lbrBaris = (env, periode, kode, versi = null) => env.DB.prepare(LBR_SQL.baris).bind(periode, kode, versi).first();
+export const lbrJejak = (env, periode, kode, versi, aksi, oleh, kini) => env.DB.prepare(LBR_SQL.jejak).bind(periode, kode, versi, aksi, oleh, kini).run();
+/* kembalian: true tersimpan, false kalah (diubah beda) */
+export const lbrSimpan = async (env, d, kini) => (await env.DB.batch([
+  env.DB.prepare(LBR_SQL.simpan).bind(d.periode, d.kode, d.isian, d.angka_kunci, d.angka_sha256, kini, d.oleh, d.dasar ?? null),
+  env.DB.prepare(LBR_SQL.jejakBila).bind(d.periode, d.kode, 0, "simpan", d.oleh, kini)]))[0].meta.changes > 0;
+/* pernyataan pembeku (tanpa segel; segel dirangkai src/segel.js batchBersegel) */
+export const lbrStmtBeku = (env, d, kini) => [
+  env.DB.prepare(LBR_SQL.beku).bind(d.periode, d.kode, d.versi, d.angka_kunci, d.angka_sha256, kini, d.oleh, d.dasar),
+  env.DB.prepare(LBR_SQL.bekuBuangDraf).bind(d.periode, d.kode, d.versi, kini, d.angka_sha256),
+  env.DB.prepare(LBR_SQL.bekuJejak).bind(d.periode, d.kode, d.versi, kini, d.angka_sha256, d.oleh)];
+/* s.lbr = {periode, kode, versi, angka_sha256}; s.terbit = kini (sama dengan diubah baris beku) */
+export const stmtSegelBerkala = (env, s) => env.DB.prepare(LBR_SQL.segel).bind(s.kode, s.sidik, s.judul, s.penerbit, s.terbit, s.lbr.periode, s.lbr.kode, s.lbr.versi, s.lbr.angka_sha256);
+export const segelIsiBerkala = (env, periode, kode, versi) => env.DB.prepare("SELECT isian, angka_kunci, angka_sha256 FROM laporan_berkala WHERE periode = ?1 AND kode = ?2 AND versi = ?3 AND versi > 0").bind(periode, kode, versi).first();
 
 /* ---------- ews: kanal resmi (KI-50, Q8) ---------- */
 /* Penanda "putaran resmi pertama sudah lewat": satu baris ews_terkirim dengan langganan_id tetap (bukan id pelanggan; id asli 16 hex dari acak, tak pernah semua nol) dan kunci 'x|awal'.

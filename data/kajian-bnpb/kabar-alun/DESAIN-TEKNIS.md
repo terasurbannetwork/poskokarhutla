@@ -8,7 +8,7 @@
 | `public/data/alun/kabar.json` (baru, keluaran) | pipa-data | skema di ALGORITMA 7 |
 | `public/lapor/alun_kabar.js` (baru) | layar-peta | fungsi murni tanpa DOM: `gabung(kabar, barisAlun, sekarang)` (menempelkan klaster warga, menandai `usang`, menyaring `selesai_lama`) dan `teksKartu(kejadian, sekarang)` (semua teks kartu); diimpor uji Node dan `lapor.js` |
 | `public/lapor/lapor.js`, `lapor.css`, `index.html` | layar-peta | muat berkas, gambar titik dan kartu dari keluaran dua fungsi di atas |
-| `public/.assetsignore` dan `.gitignore` | mekanik-mesin | baris `data/alun/` (di `.gitignore`: `public/data/alun/`) selama Q2 belum dijawab |
+| `public/.assetsignore` dan `.gitignore` | mekanik-mesin | baris `data/alun/` dihapus sesudah K5 (KA-09) |
 | `tests/alun-kabar/**` (baru) | penulis-gerbang | uji murni dan uji berkas keluaran |
 | `data/laporan-bnpb/harian/<bulan>/<hari>/jalan.py` | pipa-data | satu baris memanggil `alun_kabar.py` (Q3); baris ini ikut tiap salinan `jalan.py` (README generator) |
 

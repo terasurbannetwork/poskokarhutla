@@ -23,6 +23,7 @@ Pemilik (25 Nov 2026): "Gw juga mau masukkan berita-berita bencana dari medsos g
 | K2 | Tempatnya Alun-alun `/lapor`, bukan menu baru. Claude menyarankan Alun-alun jadi satu tempat semua kabar per kejadian; pemilik menjawab "Yes, start package" atas usulan itu. |
 | K3 | Satu kejadian memuat semua kabarnya sekaligus: laporan resmi, laporan warga, berita, dan media sosial ("all in disitu"). |
 | K4 | Paket dokumen lengkap dulu, baru kode (AGENTS.md 3.7). |
+| K5 | (26 Nov 2026, jawaban Q2) Angka Laporan Kejadian Bencana Harian boleh tampil publik: pemilik memilih "Yes, publish". `public/data/alun/kabar.json` di-commit dan terbit. Daftar izin kolom D4 tetap berlaku. |
 
 ### Keputusan lama yang digantikan
 
@@ -59,7 +60,7 @@ Aturan lama yang tetap berlaku: laporan warga yang belum ditindaklanjuti tidak p
 | No | Pertanyaan | Bawaan sementara |
 | --- | --- | --- |
 | Q1 | Media sosial dari platform mana dan lewat jalur apa (Threads dan Instagram lewat API Meta gratis, X berbayar per unggahan, TikTok tanpa API resmi untuk lembaga)? Berapa anggaran per bulan? Kajian `pemantauan-medsos` menghitung Paket Mulai sekitar Rp8,8 juta per bulan. | **[BAWAAN SEMENTARA]** belum tersambung (D9). |
-| Q2 | Apakah angka Laporan Kejadian Bencana Harian boleh tampil publik? Laporan itu sekarang untuk pimpinan. | **[BAWAAN SEMENTARA]** kabar resmi hanya tampil di localhost sampai pemilik menjawab; `public/data/alun/kabar.json` dibangun tetapi tidak di-commit (`.gitignore`) dan tidak terbit (`public/.assetsignore`). Catatan: `data.json` harian dan deck harian sudah ter-commit di repo publik sejak Oktober 2026. |
+| Q2 | **Terjawab K5: boleh publik.** Apakah angka Laporan Kejadian Bencana Harian boleh tampil publik? Laporan itu sekarang untuk pimpinan. | **[BAWAAN SEMENTARA]** kabar resmi hanya tampil di localhost sampai pemilik menjawab; `public/data/alun/kabar.json` dibangun tetapi tidak di-commit (`.gitignore`) dan tidak terbit (`public/.assetsignore`). Catatan: `data.json` harian dan deck harian sudah ter-commit di repo publik sejak Oktober 2026. |
 | Q3 | Siapa yang menerbitkan data resmi tiap hari? Generator jalan di Mac pemilik dari teks WA, bukan di GitHub Actions. | **[BAWAAN SEMENTARA]** langkah ekspor ikut `jalan.py` hari itu dan berkasnya ikut commit laporan harian. |
 | Q4 | Nama tab tetap "Alun-alun" atau diganti, misalnya "Kabar Bencana"? | **[BAWAAN SEMENTARA]** tetap "Alun-alun". |
 | Q5 | Berita dari Google News RSS saja, atau ditambah portal resmi (BMKG, PVMBG, BPBD)? | **[BAWAAN SEMENTARA]** Google News RSS lewat `scripts/umum/berita.py` yang sudah ada. |

@@ -25,8 +25,8 @@ const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], gempa: ["#7a3b0b", "#e874
   bahaya: ["#0b2545", "#3b6fb0", "perisai"], lempeng: ["#5a4a3a", "#c9a26b", "lempeng"], sesar: ["#3b1f1f", "#d9534f", "lempeng"], satelit: ["#13324d", "#4d8a5e", "satelit"], evakuasi: ["#0b3d4d", "#2fb0c9", "ombak"]};
 const UBIN_PENDEK = {wilayah: "Wilayah", gempa: "Terkini", riwayat: "Sejak 1900", katalog: "BMKG semua M", kekerapan: "Kekerapan", bahaya: "InaRISK", lempeng: "Lempeng", sesar: "Sesar", satelit: "Satelit", evakuasi: "Evakuasi", sensor: "Sensor BMKG", dart: "DART", gnss: "GNSS"};
 /* urutan tumpukan lapisan, bawah ke atas */
-const URUT = ["satelit", "kekerapan", "prov-fill", "prov-line", "bahaya", "lempeng", "sesar", "gnss", "sensor", "evak-area", "evak-rute", "evak", "iso", "iso-garis", "riwayat", "katalog", "dart", "susulan", "gempa", "pilih"];
-const LAPIS_PETA = {wilayah: ["prov-fill"], gempa: ["gempa"], riwayat: ["riwayat"], katalog: ["katalog"], kekerapan: ["kekerapan"], bahaya: ["bahaya"], lempeng: ["lempeng"], sesar: ["sesar"], satelit: ["satelit"], sensor: ["sensor"], dart: ["dart"], gnss: ["gnss"], evakuasi: ["evak-area", "evak-rute", "evak"]};
+const URUT = ["satelit", "kekerapan", "prov-fill", "prov-line", "bahaya", "lempeng", "sesar-halo", "sesar", "gnss", "sensor", "evak-area", "evak-rute", "evak", "iso", "iso-garis", "riwayat", "katalog", "dart", "susulan", "gempa", "pilih"];
+const LAPIS_PETA = {wilayah: ["prov-fill"], gempa: ["gempa"], riwayat: ["riwayat"], katalog: ["katalog"], kekerapan: ["kekerapan"], bahaya: ["bahaya"], lempeng: ["lempeng"], sesar: ["sesar-halo", "sesar"], satelit: ["satelit"], sensor: ["sensor"], dart: ["dart"], gnss: ["gnss"], evakuasi: ["evak-area", "evak-rute", "evak"]};
 const WARNA_WIL = ["rgba(0,0,0,0)", "#fbe3c0", "#f4b97a", "#e6803f", "#c9503a"], BATAS_WIL = [1, 5, 20, 50];
 /* ukuran tabel provinsi (PB-76, F-39; mesin segmen di inti/tabel.js, gerbang kemampuan.layar.ukuran_provinsi). Semua dihitung dari agregat(dalamRentang()),
    tanpa tingkat Siaga (K12 c). kunci = kolom agregat; batas/leg = skala warna peta dan legenda. Jiwa terpapar tidak dibuat: lihat catatan tiket PB-76. */
@@ -111,7 +111,9 @@ const Peta = {
         this.taruh({id: "lempeng", type: "line", source: "lempeng", layout: vis, paint: {"line-color": "#b5523b", "line-width": 1.6, "line-dasharray": [3, 2], "line-opacity": .85}}); }
       else if (k === "sesar") { const d = S.sesar ||= await muatJSON("data/sesar.geojson"); if (peta.getLayer(k)) return;
         S.atr.sesar = d.atribusi; peta.addSource("sesar", {type: "geojson", data: d});
-        this.taruh({id: "sesar", type: "line", source: "sesar", layout: vis, paint: {"line-color": "#8f1d2b", "line-width": 1.4, "line-opacity": .9}}); renderLegenda(); }
+        const lebar = ["interpolate", ["linear"], ["zoom"], 4, 2, 8, 3.5, 12, 5];
+        this.taruh({id: "sesar-halo", type: "line", source: "sesar", layout: {...vis, "line-cap": "round"}, paint: {"line-color": "#fff", "line-width": ["interpolate", ["linear"], ["zoom"], 4, 5, 8, 6.5, 12, 8], "line-opacity": .75}});
+        this.taruh({id: "sesar", type: "line", source: "sesar", layout: {...vis, "line-cap": "round"}, paint: {"line-color": "#e8202f", "line-width": lebar}}); renderLegenda(); }
       else if (k === "riwayat") { const d = S.riwayat ||= await muatJSON("data/riwayat_m5.json"); if (peta.getLayer(k)) return;
         peta.addSource("riwayat", {type: "geojson", data: {type: "FeatureCollection", features: d.baris.map((b, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [b[2], b[1]]}, properties: {i, m: b[4], d: kelasDalam(b[3])}}))}});
         this.taruh({id: "riwayat", type: "circle", source: "riwayat", layout: {...vis, "circle-sort-key": ["-", 0, ["get", "m"]]}, paint: {"circle-radius": radius(.6), "circle-color": warnaDalam, "circle-opacity": .5}}); }
@@ -275,7 +277,7 @@ function renderLegenda() {
     ${T("dart") ? `<div class="lbl">Pelampung DART</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#2f7d4f"></i>di bawah ambang statistik</span><span><i class="sw dot" style="background:#c9503a"></i>melampaui ambang</span><span><i class="sw dot" style="background:#8a94a3"></i>data basi atau kosong</span></div>` : ""}
     ${T("gnss") ? `<div class="lbl">Stasiun GNSS</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#2f7d4f"></i>aktif</span><span><i class="sw dot" style="background:#8a94a3"></i>berhenti</span><span><i class="sw dot" style="background:#c9503a"></i>bendera transien</span></div>` : ""}
     ${Evakuasi.legenda()}
-    ${T("sesar") ? `<div class="lbl">Sesar aktif</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="height:0;border-top:3px solid #8f1d2b;border-radius:0;background:none;vertical-align:3px"></i>sesar aktif</span></div><div class="leg" style="margin:-4px 0 8px">Belum lengkap: banyak sesar di Jawa dan Bali, termasuk Lembang, Cimandiri, dan Baribis, tidak ada di katalog ini.</div>` : ""}
+    ${T("sesar") ? `<div class="lbl">Sesar aktif</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="height:0;border-top:3px solid #e8202f;box-shadow:0 0 0 1px #fff;border-radius:0;background:none;vertical-align:3px"></i>sesar aktif</span></div><div class="leg" style="margin:-4px 0 8px">Belum lengkap: banyak sesar di Jawa dan Bali, termasuk Lembang, Cimandiri, dan Baribis, tidak ada di katalog ini.</div>` : ""}
     ${Kejadian.aktif?.iso ? `<div class="lbl">Perkiraan guncangan (MMI) ${pilModel}</div><div class="leg" style="margin:4px 0 8px">${Kejadian.aktif.iso.slice().reverse().map(o => `<span><i class="sw" style="background:${MMI_WARNA[o.k]}"></i>${ROMAWI[o.k]}, sampai ${fmt(Math.round(o.r))} km</span>`).join("")}</div>` : ""}
     ${Kejadian.aktif ? `<div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#5f6fb0"></i>susulan</span></div>` : ""}
     <div class="lbl">Sumber</div><div class="leg lg-sumber">${sumber}</div></div></details>`;

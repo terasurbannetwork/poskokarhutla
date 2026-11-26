@@ -14,7 +14,7 @@ const PENJELAS = {
   tidak_cocok: "Isi dokumen di sistem sudah berbeda dari saat disegel. Hubungi penerbit untuk memastikan.",
 };
 const JUDUL = document.title;
-const versi = d => d.jenis === "pb" ? `Versi ${d.versi}` : d.versi ? `Ralat ${d.versi}` : "Terbitan awal";
+const versi = d => d.jenis === "pb" || d.jenis === "berkala" ? `Versi ${d.versi}` : d.versi ? `Ralat ${d.versi}` : "Terbitan awal";
 
 function baris(dl, label, isi) {
   dl.append(el("dt", null, label));

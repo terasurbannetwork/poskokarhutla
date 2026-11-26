@@ -6,7 +6,7 @@
 2. Langkah ekspor di `jalan.py` hari itu memanggil `python3 scripts/data/alun_kabar.py` (Q3, bawaan sementara). Skrip mencari `data.json` hari itu dan 8 hari ke belakang dengan glob `data/laporan-bnpb/harian/<bulan>/<hari>/kerja-*/data.json` (folder `kerja-DDMMYY` bernama tanggal hari berikutnya; folder hari yang tidak ada dilewati).
 3. Tiap kejadian diberi kunci (ALGORITMA 1), kode kab dipasang dari nama (ALGORITMA 2), titik tengah kab ditambahkan.
 4. Berita tayang di `public/` (hasil `lintas.yml`) dicocokkan lewat `cocok()` (ALGORITMA 3).
-5. Hasil ditulis ke `public/data/alun/kabar.json`. Selama Q2 belum dijawab berkas ini tidak di-commit (`.gitignore`) dan tidak terbit (`public/.assetsignore`); hanya server tinjau lokal yang menyajikannya. Sesudah Q2 dijawab ya, berkasnya ikut commit laporan harian.
+5. Hasil ditulis ke `public/data/alun/kabar.json`. Sejak K5 berkas ini ikut commit laporan harian dan terbit.
 6. Gagal membaca berita atau geo: kejadian tetap ditulis tanpa berita atau tanpa titik, jalan tidak berhenti dan tidak ada angka nol.
 
 ## Alur pembaca

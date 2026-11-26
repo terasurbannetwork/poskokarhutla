@@ -137,7 +137,7 @@ Tiap bencana dua tiket: "a" menyalakan operasi, renlap, dan sarana (W1); "b" men
 | PB-64 | F-31 | `public/i18n.js`, `public/i18n/en.json` untuk layar paritas | `layar-peta` + `inti-layar` → `selera-angka` | PB-48 | Q8 | `node --test tests/layar/pb_i18n.test.mjs` |
 | PB-65 | F-32 | `public/tentang.html` (bagian kredit dan lisensi data per sumber, dari baris Dipakai di `docs/multi-bencana/DATA-PUBLIK.md`), laporan ukur 375 px ditulis ke `docs/OUTSTANDING.md`; perbaikan lebar hanya pada halaman yang gagal ukur, tiap halaman gagal menjadi satu tiket anak (PB-65.1, PB-65.2, dan seterusnya) yang menyebut berkas persisnya | `layar-peta` (+ pemilik berkas halaman yang gagal ukur per tiket anak) → `selera-angka`, `inp-reviewer` | PB-48 | - | ukur di emulasi 375 px dan `http://localhost:8800/<halaman>` |
 | PB-66 | F-33 | mulai dengan grep ulang (hasil grep ditulis di laporan; butir yang sudah beres tidak dikerjakan): sisa dummy di `public/img/dummy/*`, `src/instansi.js:1618,1637`, `public/admin/foto.js:1,21` (bukan `src/foto.js`: baris dummy di sana adalah rute API tanpa tombol), kepala kartu kalimat temuan di `public/banjir/longsor.js:31,46,54`, dan salinan `* 2.json` nyasar; teks "Berita diperbarui tangan" dan plafon ilmu agent sudah beres per 15 Nov (cuaca-udara 39.389 byte) dan tidak dikerjakan | pengerja pemilik berkas → `higiene-repo`, `selera-angka` | PB-06 | - | `npm run uji:agen` |
-| PB-67 | Penutup F3 | hitung ulang paritas, tabel target PRD bagian 3 dibandingkan, pengecualian A34 (Q7) dan baris tertahan Q ditulis | `mekanik-mesin` → verifier bersih | PB-49 sampai PB-66 | Q7, Q12 | `node scripts/agents/paritas.mjs` |
+| PB-67 | Penutup F3 | **SELESAI 26 Nov 2026** (hitungan dan pembanding di bagian Penutup F3 di bawah; sasaran F3 belum tercapai). hitung ulang paritas, tabel target PRD bagian 3 dibandingkan, pengecualian A34 (Q7) dan baris tertahan Q ditulis | `mekanik-mesin` → verifier bersih | PB-49 sampai PB-66 | Q7, Q12 | `node scripts/agents/paritas.mjs` |
 
 ## Fase F4: layar publik setara karhutla (W8, K12)
 
@@ -202,3 +202,43 @@ F4: PB-68.1 sampai PB-68.5, PB-68.8, PB-68.9 boleh bersamaan karena berkasnya ti
 | PB-55 | Q6 untuk koefisien rupiah (tanpa koefisien bersumber, kartu menulis "koefisien tidak tersedia") |
 | PB-64 | Q8 (sudah dijadwalkan sesudah F2) |
 | tidak dikerjakan | A34 video (Q7), papan komando SKPDB (Q11), layar `/longsor` sendiri (Q1), penarikan SK dari JDIH (Q5) |
+
+## Penutup F3 (26 Nov 2026)
+
+Hitungan dari `node scripts/agents/paritas.mjs` (26 Nov 2026), komponen A sampai F (113 per bencana). Berlaku = ADA + Sebagian + Belum. Sasaran nyata F3 = target F3 PRD bagian 3 dikurangi 1 (A34 video tidak dikerjakan, Q7; A34 berstatus Belum di kedelapan bencana). Selisih = sasaran nyata dikurangi ADA hasil.
+
+Sebelum dihitung, 31 butir ADA yang diturunkan skrip ke Sebagian karena kolom buktinya tidak menyebut berkas dilengkapi dengan jalur berkas nyata di `docs/multi-bencana/bencana/*.md` (banjir 1, longsor 2, pesisir 1, cuaca 3, udara 8, gempa 6, gunung api 10). Sesudahnya skrip tidak mencetak baris TURUN lagi.
+
+| Bencana | ADA hasil | Sebagian | Belum | Berlaku hasil | Target F3 PRD | Sasaran nyata (tanpa A34) | Selisih |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Banjir | 75 | 32 | 3 | 110 | 110 | 109 | 34 |
+| Longsor | 33 | 64 | 11 | 108 | 108 | 107 | 74 |
+| Pesisir | 37 | 51 | 21 | 109 | 109 | 108 | 71 |
+| Cuaca ekstrem | 69 | 28 | 10 | 107 | 107 | 106 | 37 |
+| Kualitas udara | 69 | 25 | 14 | 108 | 107 | 106 | 37 |
+| Gempa dan tsunami | 67 | 32 | 5 | 104 | 103 | 102 | 35 |
+| Gunung api | 78 | 23 | 6 | 107 | 107 | 106 | 28 |
+| Kekeringan | 64 | 32 | 8 | 104 | 104 | 103 | 39 |
+
+Catatan pembanding:
+
+- Berlaku hasil udara (108) dan gempa (104) satu lebih banyak dari target F3 PRD (107 dan 103); selisih di atas memakai target PRD. Penyebabnya belum ditelusuri; PRD bagian 3 perlu diselaraskan dengan hitungan skrip (Q12).
+- Sasaran akhir F2 (Belum = 0) juga belum tercapai: Belum masih 3 sampai 21 per bencana.
+- ADA karhutla dan banjir tidak turun dari acuan `tests/agen/fixtures/paritas-acuan.json` (skrip tidak mencetak GALAT).
+- Komponen G01 sampai G11 (ADA, berlaku): banjir 5 dari 10, longsor 4 dari 10, pesisir 0 dari 10, cuaca 5 dari 10, udara 3 dari 11, gempa 3 dari 10, gunung api 1 dari 9, kekeringan 0 dari 11.
+
+Pengecualian dan baris tertahan:
+
+| Butir | Penahan |
+| --- | --- |
+| A34 video, semua bencana | Q7: tidak dikerjakan sampai pemilik memutuskan; dikurangkan dari sasaran |
+| PB-61.1 ISPU KLHK | jalur akses: ispu.menlhk.go.id tidak terjangkau dari CI |
+| PB-61.3 MOD13Q1, PB-61.8 BATNAS, PB-61.24 Copernicus Marine, PB-61.26 MCD64A1 | login atau akun |
+| PB-61.4 ERA5 pressure levels, PB-61.7 GFAS, PB-61.29 BPS, PB-61.31 OpenCelliD | kunci API atau secret GitHub |
+| PB-61.5 Slab2, PB-61.6 SPEI, PB-61.9 GRanD, PB-61.11 Vs30, PB-61.13 Global Mangrove Watch, PB-61.14 WorldPop umur, PB-61.28 Microsoft Buildings | izin unduh pemilik |
+| PB-61.12 KRB gunung api | lisensi: butuh izin Badan Geologi |
+| PB-61.18 PetaBencana | lisensi belum dinyatakan (dialihkan ke `banjir`) |
+| PB-61.23 peringatan BMKG 3 hari, PB-61.27 APBD DJPK | jalur akses belum diverifikasi (dialihkan) |
+| PB-61.19 NOAA ISD, PB-61.22 Pasut BIG | ditunda sampai ada bukti perlu |
+| PB-65.3 ukur 375 px `/laporan-konsesi` dan `/statistik` | butuh pemilik masuk dulu di `http://localhost:8800` (`docs/OUTSTANDING.md`) |
+| PB-65.4 kolom Lisensi kredit data `/tentang` | lisensi tiap sumber belum tercatat di `docs/multi-bencana/DATA-PUBLIK.md` bagian C (116 baris) |

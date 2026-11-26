@@ -125,7 +125,7 @@ Audit 15 Nov 2026, HEAD f3ab401e2, kode dan data di checkout (rob.json 13 Okt, c
 | E07 | Beban | belum | BELUM | tests/beban/ukur_muat.mjs | Rute /pesisir/ tak diukur |
 | E08 | i18n | sebagian | SEBAGIAN | kumpul.mjs | Tanpa kunci /pesisir/ |
 | E09 | Kepemilikan berkas | dibuat | ADA | roster.json:549; ilmu-agent/pesisir.md | Hijau |
-| E10 | Model agent | dibuat | ADA | roster pesisir model sonnet | Hijau |
+| E10 | Model agent | dibuat | ADA | roster pesisir model sonnet (`scripts/agents/roster.json`, `.claude/agents/pesisir.md`) | Hijau |
 | F01 | Pengerja agent | dibuat | ADA | roster.json:549 | - |
 | F02 | Dokumen spesifikasi | dibuat | ADA | docs/multi-bencana/bencana/pesisir.md | Audit ini; abrasi.md = dokumen metode abrasi, terpisah |
 | F03 | Dokumen riset | sebagian | SEBAGIAN | banjir/RISET-ROB.md; abrasi.md | Tak ada RISET di scripts/pesisir |
