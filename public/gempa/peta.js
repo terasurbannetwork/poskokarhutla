@@ -25,8 +25,8 @@ const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], gempa: ["#7a3b0b", "#e874
   bahaya: ["#0b2545", "#3b6fb0", "perisai"], lempeng: ["#5a4a3a", "#c9a26b", "lempeng"], sesar: ["#3b1f1f", "#d9534f", "lempeng"], satelit: ["#13324d", "#4d8a5e", "satelit"], evakuasi: ["#0b3d4d", "#2fb0c9", "ombak"]};
 const UBIN_PENDEK = {wilayah: "Wilayah", gempa: "Terkini", riwayat: "Sejak 1900", katalog: "BMKG semua M", kekerapan: "Kekerapan", bahaya: "InaRISK", lempeng: "Lempeng", sesar: "Sesar", satelit: "Satelit", evakuasi: "Evakuasi", sensor: "Sensor BMKG", dart: "DART", gnss: "GNSS"};
 /* urutan tumpukan lapisan, bawah ke atas */
-const URUT = ["satelit", "kekerapan", "prov-fill", "prov-line", "bahaya", "lempeng", "sesar-halo", "sesar", "sesar-lbl", "gnss", "sensor", "evak-area", "evak-rute", "evak", "iso", "iso-garis", "riwayat", "katalog", "dart", "susulan", "gempa", "pilih"];
-const LAPIS_PETA = {wilayah: ["prov-fill"], gempa: ["gempa"], riwayat: ["riwayat"], katalog: ["katalog"], kekerapan: ["kekerapan"], bahaya: ["bahaya"], lempeng: ["lempeng"], sesar: ["sesar-halo", "sesar", "sesar-lbl"], satelit: ["satelit"], sensor: ["sensor"], dart: ["dart"], gnss: ["gnss"], evakuasi: ["evak-area", "evak-rute", "evak"]};
+const URUT = ["satelit", "kekerapan", "prov-fill", "prov-line", "bahaya", "lempeng", "sesar-halo", "sesar", "sesar-lbl", "sesar-lbl-titik", "gnss", "sensor", "evak-area", "evak-rute", "evak", "iso", "iso-garis", "riwayat", "katalog", "dart", "susulan", "gempa", "pilih"];
+const LAPIS_PETA = {wilayah: ["prov-fill"], gempa: ["gempa"], riwayat: ["riwayat"], katalog: ["katalog"], kekerapan: ["kekerapan"], bahaya: ["bahaya"], lempeng: ["lempeng"], sesar: ["sesar-halo", "sesar", "sesar-lbl", "sesar-lbl-titik"], satelit: ["satelit"], sensor: ["sensor"], dart: ["dart"], gnss: ["gnss"], evakuasi: ["evak-area", "evak-rute", "evak"]};
 const WARNA_WIL = ["rgba(0,0,0,0)", "#fbe3c0", "#f4b97a", "#e6803f", "#c9503a"], BATAS_WIL = [1, 5, 20, 50];
 /* ukuran tabel provinsi (PB-76, F-39; mesin segmen di inti/tabel.js, gerbang kemampuan.layar.ukuran_provinsi). Semua dihitung dari agregat(dalamRentang()),
    tanpa tingkat Siaga (K12 c). kunci = kolom agregat; batas/leg = skala warna peta dan legenda. Jiwa terpapar tidak dibuat: lihat catatan tiket PB-76. */
@@ -52,6 +52,16 @@ const tglWIB = ms => new Date(ms + 7 * 36e5).toISOString().slice(0, 10);
 /* data 7 hari (S.gempa) cukup untuk tanggal baru; tanggal lebih tua dari itu memakai data 30 hari (S.gempa30, dimuat kalender tanggal.js) */
 const dataGempa = () => S.tanggal && S.gempa30 && S.tanggal <= tglWIB(Date.now() - 168 * 36e5) ? S.gempa30 : S.gempa;
 const dalamRentang = () => { if (S.tanggal) return dataGempa().filter(g => tglWIB(g.t) === S.tanggal); const t0 = Date.now() - S.rentang * 36e5; return S.gempa.filter(g => g.t >= t0); };
+/* Titik tengah (menurut panjang) tiap sesar di bawah 100 km; sesar itu ditandai pendek supaya label garisnya dilewati */
+function sesarTengah(d) { const km = (a, b) => Math.hypot((b[0] - a[0]) * Math.cos(a[1] * Math.PI / 180), b[1] - a[1]) * 111.2, fitur = [];
+  for (const f of d.features) { const ruas = f.geometry.type === "MultiLineString" ? f.geometry.coordinates : [f.geometry.coordinates];
+    const c = ruas.reduce((a, b) => b.length > a.length ? b : a), L = ruas.reduce((t, r) => t + r.slice(1).reduce((u, p, i) => u + km(r[i], p), 0), 0);
+    if (L >= 100) continue; f.properties.pendek = true;
+    let sisa = c.slice(1).reduce((u, p, i) => u + km(c[i], p), 0) / 2, i = 1;
+    for (; i < c.length - 1 && sisa > km(c[i - 1], c[i]); i++) sisa -= km(c[i - 1], c[i]);
+    const a = c[i - 1], b = c[i], t = Math.min(1, sisa / (km(a, b) || 1));
+    fitur.push({type: "Feature", properties: {jenis: f.properties.jenis}, geometry: {type: "Point", coordinates: [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]}}); }
+  return {type: "FeatureCollection", features: fitur}; }
 function agregat(daftar) { const o = {};
   for (const g of daftar) { const k = g.prov || "-", a = o[k] ||= {n: 0, m: 0, mmi: 0}; a.n++; a.m = Math.max(a.m, g.m); if (g.mmi_maks) a.mmi++; if (g.tsunami?.kode >= 1) a.ts = (a.ts || 0) + 1; } return o; }
 
@@ -114,9 +124,16 @@ const Peta = {
         const lebar = ["interpolate", ["linear"], ["zoom"], 4, 2, 8, 3.5, 12, 5];
         this.taruh({id: "sesar-halo", type: "line", source: "sesar", layout: {...vis, "line-cap": "round"}, paint: {"line-color": "#fff", "line-width": ["interpolate", ["linear"], ["zoom"], 4, 5, 8, 6.5, 12, 8], "line-opacity": .75}});
         this.taruh({id: "sesar", type: "line", source: "sesar", layout: {...vis, "line-cap": "round"}, paint: {"line-color": "#e8202f", "line-width": lebar}});
-        /* jenis sesar tertulis di sepanjang garis mulai zoom 6 */
-        this.taruh({id: "sesar-lbl", type: "symbol", source: "sesar", minzoom: 6, layout: {...vis, "symbol-placement": "line", "symbol-spacing": 320, "text-field": ["concat", "Sesar ", ["get", "jenis"]], "text-font": ["Noto Sans Bold"], "text-size": 11, "text-offset": [0, -1]},
-          paint: {"text-color": gelap() ? "#ffb3b8" : "#a3101c", "text-halo-color": gelap() ? "#0b1420" : "#fff", "text-halo-width": 1.6}}); renderLegenda(); }
+        /* jenis sesar mulai zoom 6: garis panjang ditulisi di sepanjang garis; garis pendek (<100 km) tidak muat
+           label sepanjang garis, jadi diberi satu label di titik tengahnya */
+        const tengah = sesarTengah(d);
+        peta.addSource("sesar-titik", {type: "geojson", data: tengah});
+        const teks = {"text-field": ["concat", "Sesar ", ["get", "jenis"]], "text-font": ["Noto Sans Bold"], "text-size": 11},
+          cat = {"text-color": gelap() ? "#ffb3b8" : "#a3101c", "text-halo-color": gelap() ? "#0b1420" : "#fff", "text-halo-width": 1.6};
+        this.taruh({id: "sesar-lbl", type: "symbol", source: "sesar", minzoom: 6, filter: ["!=", ["get", "pendek"], true],
+          layout: {...vis, ...teks, "symbol-placement": "line", "symbol-spacing": 160, "text-offset": [0, -1]}, paint: cat});
+        this.taruh({id: "sesar-lbl-titik", type: "symbol", source: "sesar-titik", minzoom: 6,
+          layout: {...vis, ...teks, "text-anchor": "bottom", "text-offset": [0, -.4]}, paint: cat}); renderLegenda(); }
       else if (k === "riwayat") { const d = S.riwayat ||= await muatJSON("data/riwayat_m5.json"); if (peta.getLayer(k)) return;
         peta.addSource("riwayat", {type: "geojson", data: {type: "FeatureCollection", features: d.baris.map((b, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [b[2], b[1]]}, properties: {i, m: b[4], d: kelasDalam(b[3])}}))}});
         this.taruh({id: "riwayat", type: "circle", source: "riwayat", layout: {...vis, "circle-sort-key": ["-", 0, ["get", "m"]]}, paint: {"circle-radius": radius(.6), "circle-color": warnaDalam, "circle-opacity": .5}}); }
