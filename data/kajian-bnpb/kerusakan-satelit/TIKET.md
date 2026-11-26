@@ -14,3 +14,5 @@ Kerjakan urut; ambil satu tiket, kerjakan hanya cakupannya.
 | KS-08 | Kartu Perkiraan satelit dan laci terima di Jitupasna; kartu gempa berstatus gagal | siklus (+ inp-reviewer, selera-angka) | T10, tinjau lokal | KS-07 |
 | KS-09 | Pipeline karhutla: hanya setelah target uji mandiri ada; sampai itu vonis menunggu uji | siklus (+ validasi-model) | T3 | Q9 |
 | KS-10 | Pembukaan ulang gempa: hanya bila Q2 dijawab pemilik dengan metode dan kebenaran baru | siklus (+ validasi-model) | kriteria baru terkunci | Q2 |
+
+Status 26 Nov 2026: KS-02 pipeline selesai dan kalibrasi berjalan dengan kunci v2 berjangkar, tetapi gerbang kelayakan MENUNGGU: n = 11 dari 20 pasangan (anggaran unduhan 2,5 GB habis, terpakai sekitar 2,28 GB); tidak ada ambang layak. KS-03 belum boleh jalan sampai n >= 20 dan satu ambang layak, atau pemilik menambah anggaran. Rincian di KEPUTUSAN-KERUSAKAN.md bagian Kalibrasi KS-02.
