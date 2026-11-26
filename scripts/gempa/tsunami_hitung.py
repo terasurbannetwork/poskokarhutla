@@ -158,8 +158,8 @@ def hash_masukan(spec):
 def hitung(spec, nama):
     """Jalankan satu spesifikasi; kembalikan dict keluaran tunggal. Butuh python venv (numpy, clawpack)."""
     # K12 (pemilik 26 Nov 2026, memperluas K10): tanpa Manning di hitungan pantai. Hanya diagnostik lab (lereng NTHMP) boleh manning > 0.
-    if spec.get("manning", 0) > 0 and not spec.get("diagnostik_lab"):
-        raise ValueError("manning > 0 ditolak (K10/K12: tanpa gesekan); hanya spek dengan diagnostik_lab=True")
+    if spec.get("manning", 0) > 0 and (not spec.get("diagnostik_lab") or spec.get("koordinat") == 2):
+        raise ValueError("manning > 0 ditolak (K10/K12: tanpa gesekan); hanya spek kartesian dengan diagnostik_lab=True (bendera tidak berlaku di lintang-bujur)")
     exe, dexe = _exe(spec.get("qinit_f90"))
     d = os.path.join(RUN, nama)
     shutil.rmtree(d, ignore_errors=True)
@@ -550,6 +550,11 @@ def uji():
     except ValueError:
         pass
     assert spek_lereng(0.019, manning=0.01)["diagnostik_lab"] is True
+    try:  # K12: bendera diagnostik_lab tidak meloloskan spek pantai (lintang-bujur)
+        hitung(dict(s, manning=0.01, diagnostik_lab=True, koordinat=2), "uji_tolak_manning2")
+        raise AssertionError("diagnostik_lab lolos di koordinat 2")
+    except ValueError:
+        pass
     assert s["sel"][0] > 0 and s["fgmax"]["min_level"] == 2 and abs(hukum_synolakis(0.019) - 0.0888) < 1e-3
     lap, gagal = uji_tolok_ukur(lab="lab" in sys.argv)
     print(json.dumps(lap, indent=1))
