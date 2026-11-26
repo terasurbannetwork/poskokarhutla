@@ -20,6 +20,8 @@
   --kat-banjir:oklch(64% .13 232); --kat-cuaca:oklch(42% .1 268); --kat-longsor:oklch(66% .14 152); --kat-karhutla:oklch(70% .17 48);
   --kat-kering:oklch(58% .06 70); --kat-gelombang:oklch(72% .1 195); --kat-gempa:oklch(80% .15 88); --kat-erupsi:oklch(55% .19 25);
   --kat-tsunami:oklch(55% .15 305); --kat-lain:oklch(70% .02 256);
+  /* warna jenis bencana di peta Laporan Kejadian Bencana Harian BNPB (deck harian 26 Nov 2026), dipakai peta dan pil Alun-alun /lapor */
+  --lh-banjir:#2f86d1; --lh-cuaca:#3d6b5a; --lh-longsor:#a07a32; --lh-gempa:#4b4f58; --lh-gunungapi:#d9600b; --lh-terdampak:#fbe3cc; --lh-wilayah:#e6e9ee;
   --sm-sasaran:#1d4f91; --sm-garis:#5b6577; /* sasaran dan zona cegat semai banjir (biru tua air) */
   color-scheme:light;
 }

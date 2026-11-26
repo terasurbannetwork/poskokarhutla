@@ -3182,8 +3182,8 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 /* pil jenis bencana di tabel kejadian Alun-alun: warna dari token --kat-* (tema.css), teks dicampur tinta supaya terbaca (pemilik 26 Nov 2026) */
 .lp-alun-kj-jenis{--k:var(--kat-lain);display:inline-flex;align-items:center;gap:5px;max-width:100%;padding:3px 9px 3px 7px;border-radius:999px;background:color-mix(in oklab,var(--k) 18%,var(--card));box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--k) 40%,transparent);color:color-mix(in oklab,var(--k) 45%,var(--ink));font:700 .75rem var(--font);white-space:nowrap;text-align:left}
 .lp-alun-kj-jenis svg{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;color:color-mix(in oklab,var(--k) 75%,var(--ink))}
-.lp-jenis-banjir{--k:var(--kat-banjir)}.lp-jenis-longsor{--k:var(--kat-longsor)}.lp-jenis-cuaca{--k:var(--kat-cuaca)}.lp-jenis-gempa{--k:var(--kat-gempa)}
-.lp-jenis-karhutla{--k:var(--kat-karhutla)}.lp-jenis-erupsi{--k:var(--kat-erupsi)}.lp-jenis-abrasi{--k:var(--kat-gelombang)}.lp-jenis-kekeringan{--k:var(--kat-kering)}
+.lp-jenis-banjir{--k:var(--lh-banjir)}.lp-jenis-longsor{--k:var(--lh-longsor)}.lp-jenis-cuaca{--k:var(--lh-cuaca)}.lp-jenis-gempa{--k:var(--lh-gempa)}
+.lp-jenis-karhutla{--k:var(--kat-karhutla)}.lp-jenis-erupsi{--k:var(--lh-gunungapi)}.lp-jenis-abrasi{--k:var(--kat-gelombang)}.lp-jenis-kekeringan{--k:var(--kat-kering)}
 .lp-alun-kj tbody tr[aria-expanded]{cursor:pointer}
 .lp-alun-kj tbody tr[aria-expanded="true"]{background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
 .lp-alun-kj tbody tr[aria-expanded]:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
@@ -3302,9 +3302,9 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-langkah-wadah .lp-kontak-kolom,.lp-sekali .lp-kontak-kolom{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))!important}
 /* legenda jenis bencana di peta Alun-alun: bentuk dan warna sama dengan tanda di peta (token --kat-*) */
 .lp-alun-legenda-isi:has(.lp-alun-legenda-jenis){grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
-.lp-alun-legenda-jenis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;margin:0;padding:0;list-style:none;font:600 .75rem var(--font)}
+.lp-alun-legenda ul.lp-alun-legenda-jenis{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0;padding:0;list-style:none;font:600 .75rem var(--font)}
 .lp-alun-legenda-jenis li{display:flex;align-items:center;gap:8px}
-.lp-jn-tanda{width:12px;height:12px;flex:none;border-radius:50%;background:var(--k,var(--kat-lain));box-shadow:0 0 0 2px var(--card)}
+.lp-jn-tanda{width:14px;height:14px;flex:none;border-radius:50%;background:var(--k,var(--kat-lain));box-shadow:0 0 0 2px var(--card)}
 .lp-jn-tanda.lp-jenis-gempa{border-radius:3px}
 .lp-jn-tanda.lp-jenis-erupsi{border-radius:0;clip-path:polygon(50% 0,100% 100%,0 100%);box-shadow:none}
 .lp-alun-legenda-isi small{font-size:.6875rem}

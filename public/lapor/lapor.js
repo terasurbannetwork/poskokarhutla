@@ -1788,10 +1788,14 @@ function gambarAlun() {
 }
 const ZOOM_KAB = 6.5;   // di bawah ini gelembung provinsi, di atas titik kab/kota
 /* tanda per jenis bencana di peta provinsi, gaya peta Laporan Kejadian Bencana Harian (pemilik 26 Nov 2026): warna = token --kat-* (sama dengan pil tabel), gempa persegi, erupsi segitiga */
-const KAT_JENIS = {banjir: "--kat-banjir", longsor: "--kat-longsor", cuaca: "--kat-cuaca", gempa: "--kat-gempa", karhutla: "--kat-karhutla", erupsi: "--kat-erupsi", abrasi: "--kat-gelombang", kekeringan: "--kat-kering"};
+const KAT_JENIS = {banjir: "--lh-banjir", longsor: "--lh-longsor", cuaca: "--lh-cuaca", gempa: "--lh-gempa", karhutla: "--kat-karhutla", erupsi: "--lh-gunungapi", abrasi: "--kat-gelombang", kekeringan: "--kat-kering"};
 const katJenis = j => KAT_JENIS[j] ? j : "lainnya";
-const JARAK_TANDA = 30;   // piksel antartanda jenis yang berjajar di satu provinsi
-let alunGrup = new Map(), alunTempat = new Map();
+const TANDA_PX = 26;   // diameter tanda untuk 1 kejadian (deck harian: 155k EMU); membesar dengan akar jumlah (2 = 37, 3 = 45, 4 = 52 px)
+const ukuranTanda = n => Math.min(2.2, Math.sqrt(Math.max(1, n)));   // dibatasi 57 px supaya provinsi dengan banyak kejadian tidak menutupi tetangganya
+/* singkatan nama provinsi seperti peta deck harian: Sum. Utara, Kal. Barat, Sul. Selatan, Jabar, Jateng, Jatim */
+const SINGKAT_PROV = {"Jawa Barat": "Jabar", "Jawa Tengah": "Jateng", "Jawa Timur": "Jatim", "Nusa Tenggara Barat": "NTB", "Nusa Tenggara Timur": "NTT", "Daerah Istimewa Yogyakarta": "DI Yogyakarta", "Kepulauan Bangka Belitung": "Babel", "Kepulauan Riau": "Kepri"};
+const singkatProv = n => SINGKAT_PROV[n] || n.replace(/^Sumatera /, "Sum. ").replace(/^Kalimantan /, "Kal. ").replace(/^Sulawesi /, "Sul. ");
+let alunGrup = new Map(), alunTempat = new Map(), alunProvTerdampak = [];
 /* ruang untuk panel daftar (kiri di layar lebar, bawah di HP), saringan di atas, dan legenda di bawah */
 const padPeta = () => matchMedia("(min-width:900px)").matches ? {top: 110, bottom: 150, left: 440, right: 60} : {top: 100, bottom: 48 + innerHeight * .42, left: 32, right: 32};
 const TEKS_JENIS = {};   // diisi saat peta dibuat: warna angka di dalam tanda (gelap untuk warna terang)
@@ -1809,11 +1813,15 @@ async function gambarPetaAlun(daftar) {
   for (const t of tempat.values()) { const g = grup.get(t.prov); if (g) for (const x of t.isi) { const j = katJenis(x.jenisId); g.j.set(j, (g.j.get(j) || 0) + 1); } }
   alunGrup = grup;
   const fp = {type: "FeatureCollection", features: [...grup].flatMap(([kunci, g]) => { const pusat = [g.x / g.k, g.y / g.k], jenis = [...g.j].sort((a, b) => b[1] - a[1]), m = jenis.length;
-    const tanda = jenis.map(([j, n], i) => { const dx = (i - (m - 1) / 2) * JARAK_TANDA;
-      return {type: "Feature", geometry: {type: "Point", coordinates: pusat}, properties: {kunci, jenis: j, n, off: [dx, 0], ofs: [dx / 12, 0], tw: TEKS_JENIS[j]}}; });
-    const kanan = ((m - 1) / 2) * JARAK_TANDA + 18;   // nama provinsi di kanan deretan tanda
-    return [...tanda, {type: "Feature", geometry: {type: "Point", coordinates: pusat}, properties: {kunci, lbl: /^\d{2}$/.test(kunci) ? namaProv(kunci) : "", ofs: [kanan / 11, 0]}}]; })};
-  if (!window.Wilayah) muatWilayah().then(() => { for (const f of fp.features) if ("lbl" in f.properties && /^\d{2}$/.test(f.properties.kunci)) f.properties.lbl = namaProv(f.properties.kunci); alunPeta?.getSource("alun-prov")?.setData(fp); });
+    // tanda berdampingan rapat: lebar tiap tanda mengikuti jumlahnya, dijajar dari kiri ke kanan dan dipusatkan
+    const lebar = jenis.map(([, n]) => TANDA_PX * ukuranTanda(n)), total = lebar.reduce((a, b) => a + b, 0) + 2 * (m - 1); let x0 = -total / 2;
+    const tanda = jenis.map(([j, n], i) => { const sz = ukuranTanda(n), dx = x0 + lebar[i] / 2; x0 += lebar[i] + 2;
+      return {type: "Feature", geometry: {type: "Point", coordinates: pusat}, properties: {kunci, jenis: j, n, sz, off: [dx / sz, 0], ofs: [dx / (11 + 2 * sz), 0], ts: 11 + 2 * sz, tw: TEKS_JENIS[j]}}; });
+    const kanan = total / 2 + 6;   // nama provinsi di kanan deretan tanda
+    return [...tanda, {type: "Feature", geometry: {type: "Point", coordinates: pusat}, properties: {kunci, lbl: /^\d{2}$/.test(kunci) ? singkatProv(namaProv(kunci)) : "", ofs: [kanan / 12, 0]}}]; })};
+  if (!window.Wilayah) muatWilayah().then(() => { for (const f of fp.features) if ("lbl" in f.properties && /^\d{2}$/.test(f.properties.kunci)) f.properties.lbl = singkatProv(namaProv(f.properties.kunci)); alunPeta?.getSource("alun-prov")?.setData(fp); });
+  alunProvTerdampak = [...grup.keys()].filter(k => /^\d{2}$/.test(k));
+  alunPeta?.getLayer("prov-terdampak") && alunPeta.setFilter("prov-terdampak", ["in", ["get", "kode"], ["literal", alunProvTerdampak]]);
   const pas = () => { if (!fc.features.length) return alunPeta.jumpTo({center: [118, -2], zoom: 4});
     const b = new maplibregl.LngLatBounds(); for (const f of fc.features) b.extend(f.geometry.coordinates);
     alunPeta.fitBounds(b, {padding: padPeta(), maxZoom: 11, duration: 0});
@@ -1828,10 +1836,10 @@ async function gambarPetaAlun(daftar) {
   for (const [teks, warna] of [["Berjalan", warnaWarn], ["Belum", W.belum], ["Selesai", W.selesai], ["Belum ada laporan resmi", W.tanpa]]) {
     const li = el("li", null, teks), t = el("i"); t.style.background = warna; li.prepend(t); st.append(li); }
   g1.append(el("b", null, "Status kejadian"), st);
-  const jl = el("ul", "lp-alun-legenda-jenis");
-  for (const [j, teks] of [["banjir", "Banjir"], ["longsor", "Tanah longsor"], ["cuaca", "Cuaca ekstrem"], ["gempa", "Gempa bumi"], ["erupsi", "Erupsi gunung api"], ["karhutla", "Karhutla"], ["abrasi", "Gelombang pasang dan abrasi"], ["kekeringan", "Kekeringan"]]) {
+  const jl = el("ul", "lp-alun-legenda-jenis");   // satu baris seperti legenda peta deck harian
+  for (const [j, teks] of [["banjir", "Banjir"], ["cuaca", "Cuaca ekstrem"], ["longsor", "Tanah longsor"], ["gempa", "Gempa bumi"], ["erupsi", "Gunung api Siaga"]]) {
     const li = el("li", null, teks), t = el("i", `lp-jn-tanda lp-jenis-${j}`); li.prepend(t); jl.append(li); }
-  g2.append(el("b", null, "Jenis bencana per provinsi"), jl, el("small", "lp-redup", "Angka di dalam tanda = jumlah kejadian. Ketuk untuk melihat kab/kota.")); lgI.append(g2, g1);
+  g2.append(jl, el("small", "lp-redup", "Angka di dalam lingkaran = jumlah kejadian per jenis. Ketuk untuk melihat kab/kota.")); lgI.append(g2, g1);
   lgT.addEventListener("click", () => { const buka = lgI.hidden; lgI.hidden = !buka; lgT.setAttribute("aria-expanded", String(buka)); });
   if (!matchMedia("(min-width:900px)").matches) { lgI.hidden = true; lgT.setAttribute("aria-expanded", "false"); }   // HP: terlipat, peta tetap lega
   lg.append(lgT, lgI); wp.append(lg);
@@ -1842,15 +1850,30 @@ async function gambarPetaAlun(daftar) {
     const putih = tok("--card"), gelap = tok("--ink");
     for (const j of [...Object.keys(KAT_JENIS), "lainnya"]) { const w = tok(KAT_JENIS[j] || "--kat-lain"), c = document.createElement("canvas"); c.width = c.height = 64; const x = c.getContext("2d");
       x.beginPath(); if (j === "gempa") x.roundRect(6, 6, 52, 52, 8); else if (j === "erupsi") { x.moveTo(32, 3); x.lineTo(61, 58); x.lineTo(3, 58); x.closePath(); } else x.arc(32, 32, 27, 0, 7);
-      x.fillStyle = w; x.fill(); x.lineWidth = 5; x.strokeStyle = putih; x.stroke();
+      x.fillStyle = w; x.fill(); x.lineWidth = 6; x.strokeStyle = putih; x.stroke();
       const [r, g, b] = w.match(/\d+/g).map(Number); TEKS_JENIS[j] = (.2126 * r + .7152 * g + .0722 * b) / 255 > .62 ? gelap : putih;   // angka gelap di atas warna terang (gempa kuning)
-      if (!alunPeta.hasImage("jn-" + j)) alunPeta.addImage("jn-" + j, x.getImageData(0, 0, 64, 64), {pixelRatio: 2}); }
+      if (!alunPeta.hasImage("jn-" + j)) alunPeta.addImage("jn-" + j, x.getImageData(0, 0, 64, 64), {pixelRatio: 64 / TANDA_PX}); }
     for (const f of fp.features) if (f.properties.jenis) f.properties.tw = TEKS_JENIS[f.properties.jenis];
     alunPeta.getSource("alun-prov").setData(fp);
-    alunPeta.addLayer({id: "kelompok", type: "symbol", source: "alun-prov", maxzoom: ZOOM_KAB, filter: ["has", "jenis"], layout: {"icon-image": ["concat", "jn-", ["get", "jenis"]], "icon-offset": ["get", "off"], "icon-allow-overlap": true, "icon-ignore-placement": true,
-      "text-field": ["to-string", ["get", "n"]], "text-offset": ["get", "ofs"], "text-size": 12, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true, "text-ignore-placement": true}, paint: {"text-color": ["get", "tw"]}});
+    // arsiran provinsi seperti deck harian: terdampak oranye muda, lainnya abu muda (batas dari /geo/provinsi.json, dimuat sekali)
+    const lapisBawah = alunPeta.getStyle().layers.find(l => l.type === "symbol")?.id;
+    fetch("/geo/provinsi.json").then(r => r.ok ? r.json() : null).then(gj => { if (!gj || alunPeta.getSource("prov-batas")) return;
+      alunPeta.addSource("prov-batas", {type: "geojson", data: gj});
+      alunPeta.addLayer({id: "prov-wilayah", type: "fill", source: "prov-batas", paint: {"fill-color": tok("--lh-wilayah"), "fill-opacity": .55}}, lapisBawah);
+      alunPeta.addLayer({id: "prov-terdampak", type: "fill", source: "prov-batas", filter: ["in", ["get", "kode"], ["literal", alunProvTerdampak]], paint: {"fill-color": tok("--lh-terdampak"), "fill-opacity": .85}}, lapisBawah);
+      alunPeta.addLayer({id: "prov-garis", type: "line", source: "prov-batas", paint: {"line-color": putih, "line-width": .8}}, lapisBawah);
+      if (alunMode === "peringatan") for (const l of ["prov-wilayah", "prov-terdampak", "prov-garis"]) alunPeta.setLayoutProperty(l, "visibility", "none"); }).catch(() => {});
+    alunPeta.addLayer({id: "kelompok", type: "symbol", source: "alun-prov", maxzoom: ZOOM_KAB, filter: ["has", "jenis"], layout: {"icon-image": ["concat", "jn-", ["get", "jenis"]], "icon-size": ["get", "sz"], "icon-offset": ["get", "off"], "icon-allow-overlap": true, "icon-ignore-placement": true,
+      "text-field": ["to-string", ["get", "n"]], "text-offset": ["get", "ofs"], "text-size": ["get", "ts"], "text-font": ["Noto Sans Bold"], "text-allow-overlap": true, "text-ignore-placement": true}, paint: {"text-color": ["get", "tw"]}});
+    // gunung api berstatus Siaga dan Awas: segitiga oranye dengan nama di bawahnya (status MAGMA/PVMBG, public/banjir/data/gunungapi_status.json)
+    fetch("/banjir/data/gunungapi_status.json").then(r => r.ok ? r.json() : null).then(d => { const L = (d?.gunung || []).filter(g => g.level >= 3 && Number.isFinite(g.lat) && Number.isFinite(g.lon));
+      if (!L.length || alunPeta.getSource("gunung-siaga")) return;
+      alunPeta.addSource("gunung-siaga", {type: "geojson", data: {type: "FeatureCollection", features: L.map(g => ({type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]}, properties: {nama: g.nama}}))}});
+      alunPeta.addLayer({id: "gunung-siaga", type: "symbol", source: "gunung-siaga", layout: {"icon-image": "jn-erupsi", "icon-size": 1.1, "icon-allow-overlap": true, "text-field": ["get", "nama"], "text-anchor": "top", "text-offset": [0, 1.1], "text-size": 11, "text-font": ["Noto Sans Bold"], "text-optional": true},
+        paint: {"text-color": tok("--lh-gunungapi"), "text-halo-color": putih, "text-halo-width": 1.6}});
+      if (alunMode === "peringatan") alunPeta.setLayoutProperty("gunung-siaga", "visibility", "none"); }).catch(() => {});
     alunPeta.addLayer({id: "kelompok-n", type: "symbol", source: "alun-prov", maxzoom: ZOOM_KAB, filter: ["has", "lbl"], layout: {"text-field": ["get", "lbl"], "text-anchor": "left", "text-offset": ["get", "ofs"], "text-size": 11, "text-font": ["Noto Sans Bold"], "text-allow-overlap": false, "text-optional": true},
-      paint: {"text-color": gelap, "text-halo-color": putih, "text-halo-width": 1.6}});
+      paint: {"text-color": tok("--head-bg"), "text-halo-color": putih, "text-halo-width": 1.6}});
     alunPeta.addLayer({id: "titik", type: "circle", source: "alun", minzoom: ZOOM_KAB, paint: {"circle-color": ["get", "warna"], "circle-radius": ["step", ["get", "n"], 8, 2, 12], "circle-stroke-width": 2, "circle-stroke-color": tok("--card")}});
     alunPeta.addLayer({id: "titik-n", type: "symbol", source: "alun", minzoom: ZOOM_KAB, filter: [">", ["get", "n"], 1], layout: {"text-field": ["to-string", ["get", "n"]], "text-size": 11, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true}, paint: {"text-color": tok("--card")}});
     alunPeta.on("click", "kelompok", e => { const kunci = e.features[0].properties.kunci; if (/^\d{2}$/.test(kunci) && typeof pilihProv === "function") return pilihProv(kunci);   // satu provinsi: daftar dan peta ikut provinsi itu
@@ -2039,7 +2062,7 @@ const dpModul = () => dpModul.j ||= new Promise(ok => { if (window.DampakPeringa
 const muatDp = () => muatDp.j ||= Promise.all([dpModul(), dpJson("/api/dampak-peringatan/status"), dpJson("/api/dampak-peringatan/ringkas")]).then(([, status, ringkas]) => {
   dpDok = window.DampakPeringatan && status?.kab && !status.belum_terukur ? {status, ringkas} : null; });
 const LABEL_BAHAYA = {bnj: "Banjir", lsr: "Longsor", cex: "Cuaca", kht: "Karhutla"};
-const KAMUS_PETA = ["kelompok", "kelompok-n", "titik", "titik-n"];
+const KAMUS_PETA = ["kelompok", "kelompok-n", "titik", "titik-n", "prov-wilayah", "prov-terdampak", "prov-garis", "gunung-siaga"];
 const petaAlunSiap = async () => { for (let i = 0; i < 100 && !alunPeta; i++) await new Promise(r => setTimeout(r, 100));
   if (!alunPeta) return false; if (!alunPeta.getLayer("titik")) await new Promise(r => alunPeta.once("load", r)); return true; };
 function tabBahaya() {
