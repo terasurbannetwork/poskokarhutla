@@ -44,6 +44,10 @@ def uji():
                     periksa_dasar(v, f"{jalur}.{k}")
     periksa_dasar(b)
     ok(abs(sum(M.nilai(b, f"skor.w{x}") for x in "qdt") - 1) < 1e-9, "bobot skor berjumlah 1")
+    ps = param_skor(b)
+    ok(ps["bobot"] == {"q": b["skor"]["wq"]["nilai"], "d": b["skor"]["wd"]["nilai"], "t": b["skor"]["wt"]["nilai"]}
+       and ps["zona_skor_min"] == b["zona"]["skor_min"]["nilai"] and ps["zona_jarak_min_km"] == b["zona"]["jarak_min_km"]["nilai"]
+       and ps["zona_maks"] == b["zona"]["maks"]["nilai"], "param_skor sama dengan bobot")
 
     # LCL, level beku, w
     dekat(M.lcl_m(30, 24), 750, pesan="LCL")
@@ -396,6 +400,12 @@ def _np():
 
 def n_(b, j):
     return M.nilai(b, j)
+
+
+def param_skor(b):
+    """Parameter skor zona target untuk klien (operasi_semai_murni.js): sumber tunggal semai_bobot.json."""
+    return {"bobot": {"q": n_(b, "skor.wq"), "d": n_(b, "skor.wd"), "t": n_(b, "skor.wt")},
+            "zona_skor_min": n_(b, "zona.skor_min"), "zona_jarak_min_km": n_(b, "zona.jarak_min_km"), "zona_maks": n_(b, "zona.maks")}
 
 
 def lintang():
@@ -1088,7 +1098,7 @@ def kandidat_target(c, b):
         if kolom is None:
             kolom = kolom_kandidat(ev)
         hasil[f"{pv}|{kab}"] = {"nama": kab, "prov": c.prov_nm[pv], "n_cluster": len(cls), "frp24": round(sum(x["frp24"] for x in cls)), "baris": rows}
-    return {"kolom": kolom or [], "target": hasil, "catatan": "target KHG belum ada: poligon KHG tidak tersedia di repo"}
+    return {"kolom": kolom or [], "target": hasil, "param_skor": param_skor(b), "catatan": "target KHG belum ada: poligon KHG tidak tersedia di repo"}
 
 
 def ukur_w(putaran):

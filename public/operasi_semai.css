@@ -169,7 +169,7 @@
 #opsLaporan .sm-form{display:grid;gap:12px}
 #opsLaporan .sm-form label,#opsLaporan .sm-form>div:not(.sm-aksi){display:grid;gap:4px;font-size:.8125rem}
 #opsLaporan .sm-form .sm-lbl{color:var(--ink2);font-weight:600}
-#opsLaporan .sm-form select,#opsLaporan .sm-form input,#opsLaporan .sm-form textarea{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font:inherit;font-size:.875rem}
+#opsLaporan .sm-form select,#opsLaporan .sm-target-pil,#opsLaporan .sm-form input,#opsLaporan .sm-form textarea{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font:inherit;font-size:.875rem}
 #opsLaporan .sm-aksi{display:flex;gap:10px;justify-content:flex-end}
 #opsLaporan .sm-aksi .sm-tombol{width:auto}
 #opsLaporan .sm-galat{margin:0;color:#a63a26;font-size:.8125rem;font-weight:600}
@@ -221,3 +221,8 @@
 #opsLaporan .sm-pv-sejalan{border-color:var(--ok-tx);color:var(--ok-tx);background:color-mix(in oklab,var(--ok-tx) 14%,var(--card))}
 #opsLaporan .sm-pv-berlawanan{border-color:var(--bad-tx);color:var(--bad-tx);background:color-mix(in oklab,var(--bad-tx) 12%,var(--card))}
 #opsLaporan .sm-pv-tak_terbedakan{background:color-mix(in oklab,var(--ink2) 14%,var(--card))}
+
+#opsLaporan .sm-target{display:grid;gap:8px;margin-bottom:12px}
+#opsLaporan .sm-target .sm-sub{margin:0}
+#opsLaporan .sm-target-pil{width:100%}
+#opsLaporan .sm-target [aria-busy=true]{opacity:.6}

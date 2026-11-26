@@ -143,3 +143,32 @@ test("SA-22 KML/GPX: base di tanah, deskripsi dasar awan, XML seimbang", async (
   const tanpa = R.bangunBerkas({...z, ketinggian: {kaki: null}}, "kml");
   assert.ok(!/,0[ <]|absolute/.test(tanpa) && /clampToGround/.test(tanpa));
 });
+
+test("SA-23 mulai dari target: daftar, zona dari baris, target tanpa baris", () => {
+  const kolom = ["lat", "lon", "langkah", "Q", "D", "T", "cape", "air", "rh", "geser", "naik", "g", "bhy"], b = (la, lo, Q, D, T, g = 1, bhy = 0) => [la, lo, 12, Q, D, T, 0, 0, 0, 0, 0, g, bhy];
+  const d = {kandidat_target: {kolom, catatan: "x", param_skor: {bobot: {q: 0.45, d: 0.4, t: 0.15}, zona_skor_min: 0.35, zona_jarak_min_km: 40, zona_maks: 5}, target: {
+    "62|Kotawaringin": {nama: "Kotawaringin", prov: "Kalteng", n_cluster: 2, frp24: 300, baris: [b(-2, 112, 0.8, 0.8, 0.8), b(-2, 112, 0.5, 0.5, 0.5), b(-2.1, 112.1, 0.7, 0.7, 0.7), b(-3, 113, 0.8, 0.8, 0.8, 1, 1), b(-4, 114, 0.9, 0.9, 0.9, 0), b(-5, 115, 0.9, 0, 0.9)]},
+    "62|Kosong": {nama: "Kosong", prov: "Kalteng", n_cluster: 1, frp24: 50, baris: []},
+    "62|Rendah": {nama: "Rendah", prov: "Kalteng", n_cluster: 1, frp24: 400, baris: [b(-6, 110, 0.2, 0.2, 0.2)]}}}};
+  assert.deepEqual(M.targetDaftar(d).map(t => t.nama), ["Rendah", "Kotawaringin", "Kosong"]);   // urut daya api turun
+  assert.deepEqual(M.targetDaftar({}), []);
+  const r = M.zonaTarget(d, "62|Kotawaringin");
+  assert.equal(r.zona.length, 1);                       // sel terbaik per koordinat, sel 15 km sebelah dibuang NMS, bahaya/gerbang gagal/D nol dibuang
+  assert.equal(r.zona[0].huruf, "T1"); assert.equal(r.zona[0].lat, -2); assert.equal(r.zona[0].skor, 0.8);
+  assert.equal(M.zonaTarget(d, "62|Kosong").alasan, "tanpa_baris");
+  // param_skor dari data dipakai: ambang naik, jarak turun, dan bobot berubah mengubah hasil
+  const ubah = p => ({kandidat_target: {...d.kandidat_target, param_skor: {...d.kandidat_target.param_skor, ...p}}});
+  assert.equal(M.zonaTarget(ubah({zona_skor_min: 0.9}), "62|Kotawaringin").zona.length, 0);
+  assert.equal(M.zonaTarget(ubah({zona_jarak_min_km: 5}), "62|Kotawaringin").zona.length, 2);
+  assert.equal(M.zonaTarget(ubah({zona_maks: 1}), "62|Kotawaringin").zona.length, 1);
+  const qSaja = M.zonaTarget(ubah({bobot: {q: 0.2, d: 0.2, t: 0.6}, zona_skor_min: 0.1}), "62|Rendah");
+  assert.equal(qSaja.zona.length, 1); assert.ok(Math.abs(qSaja.zona[0].skor - 0.2) < 1e-9);
+  // tanpa param_skor: kosong beralasan, tanpa cadangan konstanta
+  const lama = {kandidat_target: {kolom, target: d.kandidat_target.target}};
+  assert.deepEqual(M.zonaTarget(lama, "62|Kotawaringin"), {zona: [], alasan: "tanpa_param"});
+  assert.equal(M.kosongTarget("tanpa_param"), "Parameter skor belum tersedia di data putaran ini.");
+  assert.equal(M.zonaTarget(d, "62|Rendah").alasan, "tanpa_zona");
+  assert.equal(M.zonaTarget(d, "99|x").alasan, "target_tak_ada");
+  assert.equal(M.zonaTarget({}, "x").zona.length, 0);
+  assert.ok(M.kosongTarget("tanpa_baris").length && !/akan hujan|aman/.test(M.kosongTarget("tanpa_zona")));
+});

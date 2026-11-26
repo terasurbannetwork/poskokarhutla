@@ -127,6 +127,22 @@
     for (const r of d?.kandidat_sasaran || []) { const sk = skorBanjir(r[k.Q], r[k.H], r[k.P], ww), key = r[k.lat] + "," + r[k.lon], b = sel.get(key);
       if (!b || sk > b.skor) sel.set(key, {lat: r[k.lat], lon: r[k.lon], skor: sk, langkah: r[k.langkah], sasaran_idx: r[k.sasaran_idx], laut: !!r[k.laut], Q: r[k.Q], H: r[k.H], P: r[k.P]}); }
     return zonaNms([...sel.values()]); }
+  /* SA-23 Mulai dari target (ALGORITMA §7b): zona dari kandidat_target.target[kunci].baris, tanpa memanggil server. Port skor bawaan semai_murni.py
+     (rerata geometris Q D T; gerbang g=1; baris tanda hati-hati bhy=1 dibuang) lalu NMS. Bobot dan ambang HANYA dari kandidat_target.param_skor, tanpa cadangan. */
+  const targetDaftar = d => Object.entries(d?.kandidat_target?.target || {}).map(([kunci, t]) => ({kunci, nama: t.nama, prov: t.prov, nCluster: t.n_cluster, frp24: t.frp24, nBaris: (t.baris || []).length}))
+    .sort((a, b) => (b.frp24 || 0) - (a.frp24 || 0) || String(a.nama).localeCompare(String(b.nama)));
+  function zonaTarget(d, kunci) { const kt = d?.kandidat_target, t = kt?.target?.[kunci];
+    if (!t) return {zona: [], alasan: "target_tak_ada"};
+    const ps = kt.param_skor, bw = ps?.bobot; if (!bw || ![bw.q, bw.d, bw.t, ps.zona_skor_min, ps.zona_jarak_min_km, ps.zona_maks].every(Number.isFinite)) return {zona: [], alasan: "tanpa_param"};
+    if (!(t.baris || []).length) return {zona: [], alasan: "tanpa_baris"};
+    const k = Object.fromEntries((kt.kolom || []).map((n, i) => [n, i])), sel = new Map();
+    for (const r of t.baris) { if (r[k.g] !== 1 || r[k.bhy] === 1) continue; const Q = r[k.Q], D = r[k.D], T = r[k.T];
+      const sk = (Q > 0 && D > 0 && T > 0) ? Q ** bw.q * D ** bw.d * T ** bw.t : 0, key = r[k.lat] + "," + r[k.lon], b = sel.get(key);
+      if (sk > 0 && (!b || sk > b.skor)) sel.set(key, {lat: r[k.lat], lon: r[k.lon], skor: sk, langkah: r[k.langkah], Q, D, T}); }
+    const zona = zonaNms([...sel.values()], ps.zona_jarak_min_km, ps.zona_maks, ps.zona_skor_min).map((z, i) => ({...z, huruf: "T" + (i + 1)}));
+    return {zona, alasan: zona.length ? null : "tanpa_zona"}; }
+  const KOSONG_T = {tanpa_param: "Parameter skor belum tersedia di data putaran ini.", target_tak_ada: "Target ini tidak ada di putaran ini.", tanpa_baris: "Belum ada sel awan yang bisa dinilai di sekitar target ini pada putaran ini.", tanpa_zona: "Tidak ada sel awan yang mencapai skor 0,35 untuk target ini pada putaran ini."};
+  const kosongTarget = a => KOSONG_T[a] || KOSONG_T.tanpa_zona;
   const ASAL = {prakiraan: "prakiraan kita", bmkg: "BMKG", tetap: "daftar tetap", manual: "Pusdalops"};
   const asalTeks = a => ASAL[a] || a;
   const pantau = s => !!s.pantau || s.tenggang > 1;
@@ -157,6 +173,6 @@
     return baris("Lapis A", o?.lapis_a) + baris("Lapis B", o?.lapis_b) + `<p class="sm-kecil">kesesuaian, bukan sebab-akibat</p>`; };
   /* tabel faktor Tinjau sebagai CSV: tanda kutip dikutip ganda, pemisah koma */
   const csv = baris => baris.map(r => r.map(x => { const t = String(x ?? ""); return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; }).join(",")).join("\n");
-  const api = {raporHtml, faktorH, skorBanjir, zonaNms, hitungUlangBanjir, normBobot, BOBOT_B, asalTeks, pantau, kalimatKosongB, judulKosongB, alasanB, ringkasanBanjir, csv, tujuanDariHash, hashTujuan, tampakLapis, malas, teramati, fmt, dms, desimal, salinKoordinat, jam, hariJam, jendela, putaranTeks, waktuLangkah, plusJam, umurJam, umurTeks, kalimatKosong, judulKosong, urutKota, sudahBerasap, barisAsal, alasan, ketinggianTeks, bahanTeks, jumlahTeks, asapKalimat, ringkasan, namaNegara, arahKata};
+  const api = {targetDaftar, zonaTarget, kosongTarget, raporHtml, faktorH, skorBanjir, zonaNms, hitungUlangBanjir, normBobot, BOBOT_B, asalTeks, pantau, kalimatKosongB, judulKosongB, alasanB, ringkasanBanjir, csv, tujuanDariHash, hashTujuan, tampakLapis, malas, teramati, fmt, dms, desimal, salinKoordinat, jam, hariJam, jendela, putaranTeks, waktuLangkah, plusJam, umurJam, umurTeks, kalimatKosong, judulKosong, urutKota, sudahBerasap, barisAsal, alasan, ketinggianTeks, bahanTeks, jumlahTeks, asapKalimat, ringkasan, namaNegara, arahKata};
   if (typeof module !== "undefined" && module.exports) module.exports = api; else akar.OpsSemaiMurni = api;
 })(typeof window !== "undefined" ? window : globalThis);
