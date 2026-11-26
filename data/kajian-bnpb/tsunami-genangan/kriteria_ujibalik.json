@@ -232,5 +232,17 @@
   "tidak menghitung genangan kejadian uji sebelum berkas ini disidik dan dicek",
   "kejadian pengembangan tidak ikut vonis",
   "kelas B tidak dipakai menyatakan model lulus"
+ ],
+ "amandemen": [
+  {
+   "no": 1,
+   "tanggal": "2026-11-26",
+   "sidik_lama": "035a4e66a75674c2",
+   "sidik_baru": "lihat field sidik di .sidik (ikut menyidik berkas ini, jadi tak bisa tertulis di sini)",
+   "berkas_berubah": [
+    "scripts/gempa/tsunami_hitung.py"
+   ],
+   "alasan": "Amandemen 1 (26 Nov 2026, disetujui pemilik): hanya scripts/gempa/tsunami_hitung.py berubah untuk TS-11 dan K12: kode skenario sintetis, cpu_detik dan opsi ringkas, setrun lintang-bujur (capa_index 2, aux_type center/capacity/yleft), deteksi STOP/ERROR di run.log, penjaga Manning K12. Ambang, kelas, pembagian, Okada, dan pembanding Abe tidak berubah. Belum ada hitungan kejadian uji."
+  }
  ]
 }
