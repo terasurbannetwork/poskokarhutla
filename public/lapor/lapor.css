@@ -3448,3 +3448,17 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
   .lp-opsi.lp-tegak > button{justify-content:center!important}
   .lp-opsi.lp-tegak > button :is(span,b,small,p){text-align:center!important}
 }
+/* layar Laporan terkirim (pemilik 26 Nov 2026): judul terima kasih kecil, nama panjang tidak mendominasi; tombol lanjut bergradien oranye */
+.lp-terima .lp-pembuka-judul{font-size:clamp(1.5rem,min(4.5vh,6vw),2.5rem)!important;letter-spacing:-.02em;max-width:24ch;text-wrap:balance;overflow-wrap:anywhere}
+.lp-terima-lanjut{border:0!important;background:linear-gradient(135deg,var(--brand-accent),color-mix(in oklab,var(--brand-accent) 70%,var(--bad)))!important;color:var(--on-pekat)!important;font-weight:800!important;box-shadow:0 10px 24px -10px color-mix(in oklab,var(--brand-accent) 80%,transparent)}
+.lp-terima-lanjut:hover{filter:brightness(1.06)}
+/* kartu Hubungi BPBD di akhir laporan (pemilik 26 Nov 2026 "Bagusin"): ikon kiri, nama sebagai judul, nomor jelas, tombol telepon; layar sempit tombol selebar kartu; tidak menempel ke kartu berikutnya */
+.lp-tk-bpbd{flex-wrap:nowrap!important;gap:14px!important;margin:20px 22px 20px!important;padding:14px 16px!important;border-radius:16px!important;background:var(--card)!important;box-shadow:var(--shadow)}
+.lp-tk-bpbd-ik{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:12px;background:color-mix(in oklab,var(--bad) 12%,var(--card));color:var(--bad)}
+.lp-tk-bpbd-ik svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2}
+.lp-tk-bpbd>div{flex:1 1 auto!important;min-width:0;justify-items:start;gap:3px!important}
+.lp-tk-bpbd>div b{font:700 1rem/1.3 var(--display)!important}
+.lp-tk-bpbd .lp-tk-bpbd-no{font:700 1.0625rem var(--font)!important;font-variant-numeric:tabular-nums;color:var(--ink)!important;letter-spacing:.01em}
+.lp-tk-bpbd small{font-size:.75rem;color:var(--ink2)}
+.lp-tk-bpbd .lp-tk-tel{flex:none;padding:0 20px}
+@media (max-width:560px){.lp-tk-bpbd{flex-wrap:wrap!important}.lp-tk-bpbd>div{flex:1 1 calc(100% - 60px)!important}.lp-tk-bpbd .lp-tk-tel{flex:1 1 100%}}

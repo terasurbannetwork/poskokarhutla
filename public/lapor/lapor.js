@@ -710,7 +710,7 @@ function kartuFotoCari(j) {
 
 /* layar terima kasih sesudah laporan terkirim (pemilik 19 Nov 2026: "harusnya ada animasi terima kasih, kaya waktu pertama kali buka"):
    gaya sama dengan pembuka (.lp-pembuka), maskot senang; sekali per nomor tiket supaya tidak muncul lagi saat riwayat chat dimuat ulang */
-const TEKS_TERIMA = ["Laporan terkirim", "Terima kasih", "Nomor tiket", "Laporan Anda kami teruskan ke petugas BNPB dan BPBD setempat.", "Ketuk di mana saja untuk lanjut", "Bagaimana pengalaman melapor Anda?", "Terima kasih atas penilaian Anda.", "Pilih satu penilaian untuk melanjutkan"];
+const TEKS_TERIMA = ["Laporan terkirim", "Terima kasih", "Nomor tiket", "Laporan Anda akan kami proses lebih lanjut.", "Ketuk di mana saja untuk lanjut", "Bagaimana pengalaman melapor Anda?", "Terima kasih atas penilaian Anda.", "Pilih satu penilaian untuk melanjutkan"];
 /* terjemahan layar terima kasih disiapkan lebih dulu: elemen tersembunyi berisi teksnya ikut diterjemahkan penerjemah halaman dan masuk simpanan */
 function hangatkanTerima() { if (bahasaKini() === "id" || document.querySelector(".lp-tr-hangat")) return; const h = el("div", "lp-tr-hangat"); h.hidden = true;
   for (const t of TEKS_TERIMA) h.append(el("span", null, t)); document.body.append(h); }
@@ -774,9 +774,12 @@ function kartuTiket(j) {
   // K88 (pemilik 21 Nov 2026: "di akhir diarahkan ke BPBD mereka masing-masing"): nomor dari situs resmi, bila belum tercatat 117
   const bp = j.bpbd, hub = el("div", "lp-tk-bpbd");
   if (bp?.nomor) {
-    const t = el("div"); t.append(el("b", null, "Hubungi BPBD setempat"), el("span", null, bp.tingkat === "nasional" ? "Nomor BPBD daerah Anda belum tercatat. Hubungi Call Center BNPB." : bp.nama));
-    const tel = Object.assign(el("a", "lp-tk-tel"), {href: `tel:${bp.nomor.replace(/[^\d+]/g, "")}`}); tel.append(ikon("i-telepon"), `Telepon ${bp.nomor}`);
-    hub.append(t, tel);
+    // pemilik 26 Nov 2026 "Bagusin": ikon di kiri, nama BPBD sebagai judul dengan pil Hubungi, nomor terbaca jelas, tombol telepon; nomor tetap dari data (bp.nomor)
+    const nas = bp.tingkat === "nasional", ub = el("span", "lp-tk-bpbd-ik"), t = el("div"); ub.append(ikon("i-telepon"));
+    t.append(el("span", "lp-pil", nas ? "Call Center BNPB" : "Hubungi BPBD setempat"), el("b", null, nas ? "BNPB" : bp.nama), el("span", "lp-tk-bpbd-no", bp.nomor));
+    if (nas) t.append(el("small", null, "Nomor BPBD daerah Anda belum tercatat."));
+    const tel = Object.assign(el("a", "lp-tk-tel"), {href: `tel:${bp.nomor.replace(/[^\d+]/g, "")}`}); tel.append(ikon("i-telepon"), "Telepon"); tel.setAttribute("aria-label", `Telepon ${nas ? "BNPB" : bp.nama} ${bp.nomor}`);
+    hub.append(ub, t, tel);
   } else { const t = el("div"); t.append(el("b", null, "Butuh pertolongan sekarang?"), el("span", null, "Telepon 112 untuk keadaan darurat.")); const tel = Object.assign(el("a", "lp-tk-tel"), {href: "tel:112"}); tel.append(ikon("i-telepon"), "Telepon 112"); hub.append(t, tel); }
   // nomor penting di akhir obrolan (pemilik 25 dan 26 Nov 2026): kartu Nomor penting yang sama dengan menunya, terdekat dari lokasi laporan, di bawah tiket
   isi.append(pita, tiket, aksi, hub, baru);   // penilaian hanya di layar terima kasih (pemilik 21 Nov 2026: "disininya gausah ada lagi")
