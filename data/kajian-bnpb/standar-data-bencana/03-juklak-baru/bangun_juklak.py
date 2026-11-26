@@ -31,8 +31,10 @@ from docx.shared import Cm, Pt, RGBColor
 
 DI = Path(__file__).resolve().parent
 REPO = DI.parents[3]
-NASKAH = DI / 'naskah'
-KELUARAN = DI.parent / 'keluaran' / '03 Rancangan Juklak Standar Data'
+# Versi lain (misalnya Juklak praktis) memakai mesin yang sama lewat variabel lingkungan.
+NASKAH = Path(os.environ.get('JUKLAK_NASKAH', DI / 'naskah'))
+KELUARAN = Path(os.environ.get('JUKLAK_KELUARAN', DI.parent / 'keluaran' / '03 Rancangan Juklak Standar Data'))
+NAMA = os.environ.get('JUKLAK_NAMA', 'Rancangan Juklak Standar Data Kejadian dan Dampak Bencana')
 LOGO_BNPB = Path(os.path.expanduser('~')) / '.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/logo/sumber-bnpb.png'
 LOGO_KRIS = REPO / 'data/laporan-bnpb/generator/sampul/media/kris-logo.png'
 HURUF = 'Bookman Old Style'
@@ -296,7 +298,7 @@ def bangun(keluar):
 
 if __name__ == '__main__':
     tgl = datetime.date.today().strftime('%d%m%y')
-    docx = bangun(KELUARAN / f'Rancangan Juklak Standar Data Kejadian dan Dampak Bencana {tgl}.docx')
+    docx = bangun(KELUARAN / f'{NAMA} {tgl}.docx')
     print('DOCX', docx)
     if '--pdf' in sys.argv:
         ps = (f"$w=New-Object -ComObject Word.Application; $d=$w.Documents.Open('{docx}',$false,$true); "
