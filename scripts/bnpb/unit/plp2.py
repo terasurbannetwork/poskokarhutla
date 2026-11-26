@@ -39,9 +39,11 @@ ALIAS_KAB = {"75|Pahuwato": "75|Pohuwato"}   # ejaan di risiko_kecamatan.json
 
 
 def risiko_kab(d, kode):
-    """Jumlah risiko kecamatan per kab (None bila semua kecamatan kab itu tanpa skor). kode = {'prov|kab': kab4}."""
+    """Rata-rata risiko kecamatan TERISI per kab (kecamatan tanpa skor tidak dihitung 0); None bila tidak ada yang terisi.
+    -> (rata, tak_terpetakan, cakupan {kab: [n_terisi, n_kec]}). kode = {'prov|kab': kab4}. Rata-rata, bukan jumlah: jumlah
+    menghukum kab yang sebagian kecamatannya kosong dan memihak kab bercamat banyak."""
     i = {k: n for n, k in enumerate(d["kolom"])}
-    out, tak = {}, set()
+    isi, cak, tak = {}, {}, set()
     for r in d["kec"]:
         kunci = f"{r[i['prov']]}|{r[i['kab']]}"
         k = kode.get(ALIAS_KAB.get(kunci, kunci))
@@ -49,18 +51,21 @@ def risiko_kab(d, kode):
             tak.add(kunci)
             continue
         v = r[i["risiko"]]
-        out.setdefault(k, None)
+        c = cak.setdefault(k, [0, 0])
+        c[1] += 1
         if v is not None:
-            out[k] = (out[k] or 0) + v
-    return out, sorted(tak)
+            c[0] += 1
+            isi.setdefault(k, []).append(v)
+    return {k: (sum(isi[k]) / len(isi[k]) if k in isi else None) for k in cak}, sorted(tak), cak
 
 
 def celah_peralatan(standar, ada):
-    """{prov: 1 - min(ada/standar, 1) rata-rata jenis bertstandar} hanya untuk provinsi yang inventarisnya ada (dict jenis: jumlah)."""
+    """{prov: rata-rata 1 - min(ada/standar, 1) atas jenis berstandar yang DILAPORKAN} untuk provinsi yang inventarisnya ada.
+    Jenis tak dilaporkan (tidak ada atau None) dilewati, bukan 0; hanya 0 eksplisit berarti tidak punya."""
     out = {}
     for p, inv in (ada or {}).items():
         st = (standar.get(p) or {}).get("alat") or {}
-        r = [1 - min((inv.get(a) or 0) / n, 1) for a, n in st.items() if n > 0]
+        r = [1 - min(inv[a] / n, 1) for a, n in st.items() if n > 0 and inv.get(a) is not None]
         out[p] = sum(r) / len(r) if r else None
     return out
 
@@ -78,10 +83,18 @@ def hitung(nilai, penerima=None, bobot=None):
     return skor.skor(komp, bobot), bobot
 
 
+def parsial(b, cak, NAMA_K):
+    t = [NAMA_K[j] for j in b["hilang"]]
+    n = cak.get(b["kab"])
+    if n and 0 < n[0] < n[1]:
+        t.append(f"risiko parsial {n[0]}/{n[1]} kecamatan")
+    return ", ".join(t) or None
+
+
 def bangun(risiko_kec, terpapar, ikd, dibi, stok, standar, nama, kode, inventaris=None, penerima=None):
     th = mt2.tahun_akhir_data(dibi["baris"])
     m, _ = mt2.komponen(terpapar["kab"], ikd["kab"], dibi["baris"], th)
-    rk, tak = risiko_kab(risiko_kec, kode)
+    rk, tak, cak = risiko_kab(risiko_kec, kode)
     cp = celah_peralatan(standar["provinsi"], inventaris)
     kab_semua = sorted(set(m["kejadian"]) | set(rk))
     nilai = {"risiko": rk, "kejadian": m["kejadian"], "celah_kapasitas": m["celah_kapasitas"],
@@ -105,12 +118,12 @@ def bangun(risiko_kec, terpapar, ikd, dibi, stok, standar, nama, kode, inventari
                {"k": "komponen", "label": f"Komponen terukur yang terisi, dari {len(bobot)}", "nilai": len(bobot) - len(hilang_semua),
                 "title": "belum terisi untuk semua kab: " + (", ".join(NAMA_K[j] for j in hilang_semua) or "tidak ada")}],
         kolom=[{"k": "no", "label": "No", "angka": True}, {"k": "kab", "label": "Kab/kota"},
-               {"k": "skor", "label": "Skor MB-4", "angka": True, "desimal": 3,
-                "title": "rata-rata geometrik persentil komponen yang terisi, bobot sama rata (asumsi); " + LABEL_WAJIB + "; " + STATUS_UJI},
-               {"k": "hilang", "label": "Komponen belum ada data", "title": "komponen tanpa nilai untuk kab ini; bobotnya dinormalkan ulang, bukan 0"},
+               {"k": "skor", "label": "Skor MB-4", "angka": True, "desimal": 2,
+                "title": "rata-rata geometrik persentil komponen yang terisi, bobot sama rata (asumsi), belum diuji balik; dua desimal karena bobot asumsi; " + LABEL_WAJIB},
+               {"k": "hilang", "label": "Komponen belum ada data", "title": "komponen tanpa nilai untuk kab ini (bobotnya dinormalkan ulang, bukan 0); risiko parsial = kecamatan terisi dari jumlah kecamatan"},
                {"k": "ppn", "label": "Program prioritas nasional", "title": "kriteria Juklak 3/2024 untuk rapat; tidak diskor mesin"},
                {"k": "strategis", "label": "Analisis strategis", "title": "kriteria Juklak 3/2024 untuk rapat; tidak diskor mesin"}],
-        baris=[{"no": i + 1, "kab": b["nama_kab"], "skor": b["skor"], "hilang": ", ".join(NAMA_K[j] for j in b["hilang"]) or None,
+        baris=[{"no": i + 1, "kab": b["nama_kab"], "skor": b["skor"], "hilang": parsial(b, cak, NAMA_K),
                 "ppn": None, "strategis": None} for i, b in enumerate(baris)],
         rumus="S = prod q_j^(w_j / W), q = maks(persentil, 0,01); komponen tanpa nilai dinormalkan ulang",
         sumber=["risiko_kecamatan", "dibi_kab_tahun", "ikd", "stok_penyangga", "standar_peralatan_2009"],
@@ -122,7 +135,8 @@ def bangun(risiko_kec, terpapar, ikd, dibi, stok, standar, nama, kode, inventari
     b = rapor.berkas([k1], sumber)
     b["data"] = {"label_wajib": LABEL_WAJIB, "hipotesis": True, "status_uji": STATUS_UJI, "bobot": bobot, "komponen_kosong": hilang_semua,
                  "penerima": "tidak ada daftar (U10 bawaan): komponen belum_menerima dikeluarkan" if penerima is None else "ada",
-                 "jendela_kejadian": [th - 4, th], "kab_risiko_tak_terpetakan": tak, "kab": baris}
+                 "jendela_kejadian": [th - 4, th], "kab_risiko_tak_terpetakan": tak,
+                 "risiko_parsial": {k: v for k, v in cak.items() if 0 < v[0] < v[1]}, "kab": baris}
     return b
 
 
@@ -166,12 +180,17 @@ def cek():
     # celah peralatan: ada/standar dipangkas 1; tanpa inventaris -> {}
     st = {"11": {"alat": {"Perahu Karet": 42, "Mobil Rescue": 5}}}
     assert celah_peralatan(st, None) == {} and abs(celah_peralatan(st, {"11": {"Perahu Karet": 21, "Mobil Rescue": 9}})["11"] - 0.25) < 1e-12
+    assert celah_peralatan(st, {"11": {"Perahu Karet": 21}})["11"] == 0.5, "jenis tak dilaporkan dihitung 0"
+    assert celah_peralatan(st, {"11": {"Perahu Karet": 21, "Mobil Rescue": None}})["11"] == 0.5
+    assert celah_peralatan(st, {"11": {"Perahu Karet": 21, "Mobil Rescue": 0}})["11"] == 0.75   # 0 eksplisit = tidak punya
+    assert celah_peralatan(st, {"11": {}})["11"] is None
     S = _muat(STANDAR)["provinsi"]
     assert len(S) == 33 and S["11"]["alat"]["Perahu Karet"] == 42 and S["11"]["alat"]["Perahu Karet Bermesin"] == 21 and S["11"]["alat"]["Mobil Rescue"] == 5
-    # risiko kab: jumlah kecamatan, kecamatan tanpa skor dilewati, kab semua kosong None
-    rk, tak = risiko_kab({"kolom": ["prov", "kab", "risiko"], "kec": [["11", "A", 10.0], ["11", "A", 2.5], ["11", "B", None], ["11", "X", 1]]},
-                         {"11|A": "1101", "11|B": "1102"})
-    assert rk == {"1101": 12.5, "1102": None} and tak == ["11|X"], (rk, tak)
+    # risiko kab: rata-rata kecamatan terisi; kecamatan tanpa skor tidak jadi 0; kab semua kosong None; parsial tercatat
+    rk, tak, cak = risiko_kab({"kolom": ["prov", "kab", "risiko"], "kec": [["11", "A", 10.0], ["11", "A", 2.5], ["11", "A", None],
+                                                                          ["11", "B", None], ["11", "X", 1]]}, {"11|A": "1101", "11|B": "1102"})
+    assert rk == {"1101": 6.25, "1102": None} and tak == ["11|X"] and cak == {"1101": [2, 3], "1102": [0, 1]}, (rk, tak, cak)
+    assert parsial({"kab": "1101", "hilang": ["celah_stok"]}, cak, {"celah_stok": "celah stok PLP-1"}) == "celah stok PLP-1, risiko parsial 2/3 kecamatan"
     nyata = jalan()["hibah_prioritas"]
     rapor.periksa_berkas({"dibuat": "2026-11-26T00:00:00Z", "basi_jam": 1080, **nyata})
     k = nyata["kartu"][0]
@@ -183,7 +202,7 @@ def cek():
     assert "·" not in s and not re.search(r"\baman\b", s, re.I) and "prioritas" not in k["judul"].lower()
     a = {x["k"]: x["nilai"] for x in k["angka"]}
     print(f"plp2.py --cek: lulus ({a['berskor']} kab berskor, {a['data_kurang']} data kurang, {a['komponen']} dari {len(nyata['data']['bobot'])} komponen terisi; "
-          f"teratas {k['baris'][0]['kab']} {k['baris'][0]['skor']:.3f})")
+          f"teratas {k['baris'][0]['kab']} {k['baris'][0]['skor']:.2f}; {len(nyata['data']['risiko_parsial'])} kab risiko parsial)")
 
 
 if __name__ == "__main__":

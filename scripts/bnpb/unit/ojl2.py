@@ -17,6 +17,7 @@ h[b][2]). Gerbang ALGORITMA sec 12: hanya untuk kode yang di rapor skor.json men
 """
 import csv
 import json
+from datetime import datetime, timedelta, timezone
 import math
 import os
 import re
@@ -82,13 +83,38 @@ def musiman(kab, gudang, musim):
     return per, tanpa
 
 
-def lolos_gerbang(skor_pred, kode):
-    """Rapor prospektif /prediksi: kode mengalahkan persistensi dan klimatologi (bss > 0) di tenggang 1, 2, 3."""
-    g = ((skor_pred.get("kode") or {}).get(kode) or {}).get("grup") or []
-    per = {}
-    for x in g:
-        per.setdefault(x.get("tenggang"), []).append(x)
-    return all(per.get(t) and all((x.get("bss_persistensi") or 0) > 0 and (x.get("bss_klimatologi") or 0) > 0 for x in per[t]) for t in (1, 2, 3))
+BASI_JAM = 48   # rapor atau prakiraan lebih tua dari ini: gerbang tutup
+
+
+def _umur_jam(dibuat, kini):
+    try:
+        t = datetime.fromisoformat(str(dibuat).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if t.tzinfo is None:
+        t = t.replace(tzinfo=timezone(timedelta(hours=7)))
+    return (kini - t).total_seconds() / 3600
+
+
+def lolos_gerbang(skor_pred, pred, kode, kini):
+    """Rapor prospektif /prediksi -> (lolos, alasan). Wajib: skor.json dan prakiraan kode itu segar (<= 48 jam); per tenggang 1, 2, 3
+    ada baris ambang == TINGKAT_TINGGI; tiap baris itu bss persistensi dan klimatologi > 0 DAN (vonis lulus atau batas bawah
+    selang90_beda > 0)."""
+    for nama, dib in (("skor.json", skor_pred.get("dibuat")), ("prediksi.json", ((pred.get("kode") or {}).get(kode) or {}).get("dibuat") or pred.get("dibuat"))):
+        u = _umur_jam(dib, kini)
+        if u is None or u > BASI_JAM:
+            return False, f"{nama} {kode} basi atau tanpa tanggal dibuat"
+    g = [x for x in ((skor_pred.get("kode") or {}).get(kode) or {}).get("grup") or [] if x.get("ambang") == TINGKAT_TINGGI]
+    for t in (1, 2, 3):
+        bt = [x for x in g if x.get("tenggang") == t]
+        if not bt:
+            return False, f"{kode} tanpa rapor ambang tingkat {TINGKAT_TINGGI} tenggang {t}"
+        for x in bt:
+            sel = x.get("selang90_beda")
+            pasti = x.get("vonis") == "lulus" or (isinstance(sel, (list, tuple)) and sel and isinstance(sel[0], (int, float)) and sel[0] > 0)
+            if not ((x.get("bss_persistensi") or 0) > 0 and (x.get("bss_klimatologi") or 0) > 0 and pasti):
+                return False, f"{kode} tenggang {t} belum mengalahkan persistensi dan klimatologi dengan selang yang pasti"
+    return True, None
 
 
 def jelang(pred, kab, gudang, terpapar, kode_lolos):
@@ -121,7 +147,7 @@ def jelang(pred, kab, gudang, terpapar, kode_lolos):
     return saran
 
 
-def bangun(stok, kota, prov, kal, pred, skor_pred, terpapar, nama, bulan_ini):
+def bangun(stok, kota, prov, kal, pred, skor_pred, terpapar, nama, bulan_ini, kini=None):
     gudang = {p["kode"]: (float(p["lat"]), float(p["lon"])) for p in prov if p.get("lat") and p.get("lon")}
     nama_g = {p["kode"]: p["ibu_kota"] for p in prov}
     titik = {r[0]: (r[1], r[2]) for r in kota}
@@ -141,14 +167,18 @@ def bangun(stok, kota, prov, kal, pred, skor_pred, terpapar, nama, bulan_ini):
                       "target_puncak": v["target"].get(puncak) if puncak else None,
                       "pemicu": ", ".join(v["pemicu"].get(bulan_ini, [])) or None,
                       "saran": "stok belum dilaporkan, tidak disarankan pindah"})
-    lolos = [kd for kd in KODE_PRED if lolos_gerbang(skor_pred, kd)]
+    kini = kini or datetime.now(timezone.utc)
+    gerbang = {kd: lolos_gerbang(skor_pred, pred, kd, kini) for kd in KODE_PRED}
+    lolos = [kd for kd, (ok, _) in gerbang.items() if ok]
     sar = jelang(pred, kab, gudang, terpapar, lolos) if lolos else []
-    alasan_jelang = None if lolos else "prakiraan banjir dan longsor /prediksi belum mengalahkan pembanding persistensi dan klimatologi; bagian jelang tidak tampil"
+    alasan_jelang = None if lolos else "bagian jelang tidak tampil: " + "; ".join(a for _, a in gerbang.values())
+    n_target = sum(1 for b in baris if b["ini"] is not None)
     k1 = rapor.kartu(
         id="ojl2-musim", sistem="OJL-2", pil="Penempatan stok", ikon="gudang", judul="Target stok musiman per gudang, saran",
         angka=[{"k": "gudang", "label": "Gudang ibu kota provinsi melayani kab", "nilai": len(baris)},
-               {"k": "ini", "label": f"Target beras bulan {BLN[bulan_ini - 1]}, kg", "nilai": sum(b["ini"] or 0 for b in baris) if any(b["ini"] for b in baris) else None,
-                "title": "jumlah beras PR 1% 3 hari kab yang provinsinya bermusim bulan ini"},
+               {"k": "ini", "label": f"Target beras bulan {BLN[bulan_ini - 1]}, kg, dari {n_target} gudang yang punya target", "desimal": 0,
+                "nilai": sum(b["ini"] for b in baris if b["ini"] is not None) if n_target else None,
+                "title": "jumlah beras PR 1% 3 hari kab yang provinsinya bermusim bulan ini; gudang tanpa target tidak dijumlah"},
                {"k": "tanpa_musim", "label": "Kab/kota di provinsi tanpa musim tercatat", "nilai": tak_musim},
                {"k": "jelang", "label": "Saran kirim paket 72 jam", "nilai": len(sar) if lolos else None,
                 "title": alasan_jelang or "prakiraan tingkat Siaga ke atas, jarak ke gudang lebih dari 400 km"}],
@@ -182,7 +212,7 @@ def bangun(stok, kota, prov, kal, pred, skor_pred, terpapar, nama, bulan_ini):
                  "gudang": {g: {"nama": nama_g.get(g, g), "kab": v["kab"], "target_kg": {str(b_): t for b_, t in sorted(v["target"].items())},
                                 "pemicu": {str(b_): p for b_, p in sorted(v["pemicu"].items())}, "stok": None, "saran_pindah": None} for g, v in per.items() if v["kab"]},
                  "kab_tanpa_titik": tanpa_titik,
-                 "jelang": {"tampil": bool(lolos), "kode_lolos": lolos, "alasan": alasan_jelang, "saran": sar}}
+                 "jelang": {"tampil": bool(lolos), "kode_lolos": lolos, "alasan": alasan_jelang, "gerbang": {k: a for k, (_, a) in gerbang.items()}, "saran": sar}}
     return b
 
 
@@ -193,7 +223,6 @@ def _json(p):
 
 def jalan():
     import plp1
-    from datetime import datetime, timedelta, timezone
     kota = _json(os.path.join(AKAR, "scripts", "udara", "kota.json"))
     i = {k: n for n, k in enumerate(kota["kolom"])}
     titik = [(r[i["kode"]], r[i["lat"]], r[i["lon"]]) for r in kota["baris"]]
@@ -221,11 +250,23 @@ def cek():
     pred = {"kode": {"BNJ": {"hari": ["2026-11-27", "2026-11-28", "2026-11-29"]}, "LSR": {"hari": ["2026-11-27", "2026-11-28", "2026-11-29"]}},
             "kab": [{"id": "9101", "BNJ": [[1, 0.2], [2, 0.5], [3, 0.6]], "LSR": [[0, 0], [1, 0.1], None]},
                     {"id": "1101", "BNJ": [[3, 0.9], [3, 0.9], [3, 0.9]]}]}   # 1101 dekat gudang: tanpa saran
-    lulus = {"grup": [{"tenggang": t, "bss_persistensi": 0.2, "bss_klimatologi": 0.1} for t in (1, 2, 3)]}
-    gagal = {"grup": [{"tenggang": t, "bss_persistensi": 0.3, "bss_klimatologi": -0.2} for t in (1, 2, 3)]}
+    kini = datetime(2026, 11, 26, 12, tzinfo=timezone.utc)
+    pred["dibuat"] = "2026-11-26T04:41:29+07:00"
+    lulus = {"grup": [{"ambang": 2, "tenggang": t, "bss_persistensi": 0.2, "bss_klimatologi": 0.1, "selang90_beda": [0.01, 0.2], "vonis": "belum teruji"} for t in (1, 2, 3)]}
+    gagal = {"grup": [{"ambang": 2, "tenggang": t, "bss_persistensi": 0.3, "bss_klimatologi": -0.2, "selang90_beda": [0.01, 0.2]} for t in (1, 2, 3)]}
+    sp = lambda bnj, dib="2026-11-26T04:46:13+07:00": {"dibuat": dib, "kode": {"BNJ": bnj, "LSR": gagal}}  # noqa: E731
+    # gerbang: ambang 2 hilang di satu tenggang, selang menyentuh 0, berkas basi -> tutup
+    tanpa2 = {"grup": [dict(x, ambang=1) if x["tenggang"] == 3 else x for x in lulus["grup"]]}
+    assert lolos_gerbang(sp(tanpa2), pred, "BNJ", kini) == (False, "BNJ tanpa rapor ambang tingkat 2 tenggang 3")
+    ragu = {"grup": [dict(x, selang90_beda=[-0.01, 0.2]) for x in lulus["grup"]]}
+    assert not lolos_gerbang(sp(ragu), pred, "BNJ", kini)[0]
+    assert lolos_gerbang(sp({"grup": [dict(x, selang90_beda=None, vonis="lulus") for x in lulus["grup"]]}), pred, "BNJ", kini)[0]
+    assert not lolos_gerbang(sp(lulus, "2026-11-23T00:00:00+07:00"), pred, "BNJ", kini)[0], "skor.json basi lolos"
+    assert not lolos_gerbang(sp(lulus), {**pred, "dibuat": "2026-11-20T00:00:00+07:00"}, "BNJ", kini)[0], "prediksi.json basi lolos"
+    assert lolos_gerbang(sp(lulus), pred, "BNJ", kini) == (True, None)
     terp = {"9101": {"h": {"banjir": [0, 0, 500], "longsor": [0, 0, None]}}}
     nama = {"1101": "Kab. A", "1201": "Kab. B", "1202": "Kab. C", "9101": "Kab. D"}
-    b = bangun(stok, kota, prov, kal, pred, {"dibuat": "2026-11-26", "kode": {"BNJ": lulus, "LSR": gagal}}, terp, nama, 11)
+    b = bangun(stok, kota, prov, kal, pred, sp(lulus), terp, nama, 11, kini)
     rapor.periksa_berkas({"dibuat": "2026-11-26T00:00:00Z", "basi_jam": 48, **b})
     g = b["data"]["gudang"]
     assert g["11"]["target_kg"] == {"1": 2400.0, "10": 2400.0, "11": 2400.0, "12": 2400.0}, g["11"]   # kekeringan tidak_musiman dilewati
@@ -237,9 +278,11 @@ def cek():
     assert s["jiwa"] == 500 and s["jarak_km"] > AMBANG_KM and [p["tanggal"] for p in s["pemicu"]] == ["2026-11-28", "2026-11-29"], s   # tiap saran membawa pemicu
     assert all(x["pemicu"] for x in j["saran"]), "saran tanpa pemicu"
     # gerbang gagal: jelang tidak tampil, musiman tetap
-    b2 = bangun(stok, kota, prov, kal, pred, {"dibuat": "2026-11-26", "kode": {"BNJ": gagal, "LSR": gagal}}, terp, nama, 11)
+    b2 = bangun(stok, kota, prov, kal, pred, sp(gagal), terp, nama, 11, kini)
     assert not b2["data"]["jelang"]["tampil"] and b2["data"]["jelang"]["saran"] == [] and len(b2["kartu"]) == 1
     assert b2["kartu"][0]["angka"][3]["nilai"] is None and "tidak tampil" in b2["kartu"][0]["angka"][3]["title"]
+    a1 = b2["kartu"][0]["angka"][1]
+    assert a1["nilai"] == 3600.0 and "dari 2 gudang yang punya target" in a1["label"] and a1["desimal"] == 0, a1
     assert any("tanpa graf jalan" in a for a in b2["kartu"][0]["asumsi"]) and any("400 km" in a for a in b["kartu"][1]["asumsi"])
     nyata = jalan()["prepositioning"]
     rapor.periksa_berkas({"dibuat": "2026-11-26T00:00:00Z", "basi_jam": 48, **nyata})

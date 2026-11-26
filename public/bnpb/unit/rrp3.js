@@ -73,10 +73,10 @@
     const lbl = (f, t) => h("label", {for: f.id, teks: t});
     const pesan = h("p", {class: "bn-pesan", role: "status", hidden: true});
     const nilai = {}, dd = k => (nilai[k] = h("dd", {teks: "belum ada data"}));
-    const hasil = h("dl", {class: "un-ringkas", "aria-live": "polite"},
+    const hasil = h("dl", {class: "un-ringkas"},
       h("div", null, h("dt", {teks: "Nilai kerusakan"}), dd("rusak")), h("div", null, h("dt", {teks: "Kebutuhan dasar, tanpa indeks"}), dd("dasar")),
       h("div", null, h("dt", {teks: "Kebutuhan berindeks"}), dd("indeks")), h("div", null, h("dt", {teks: "Indeks biaya dipakai"}), dd("ikk")),
-      h("div", null, h("dt", {teks: "Huntap tambah stimulan RB"}), dd("ganda")));
+      h("div", null, h("dt", {teks: "Huntap tambah stimulan rumah rusak berat"}), dd("ganda")));
     const csv = h("button", {type: "button", class: "ad-tombol kecil", disabled: true}, ikon("unduh"), "Unduh CSV");
     let terakhir = null;
     const angka = el => el.value === "" ? null : Number(el.value);   // kosong tetap kosong, tidak jadi 0
@@ -93,7 +93,7 @@
         nilai.rusak.textContent = juta(rusak); nilai.dasar.textContent = juta(kb.dasar);
         nilai.indeks.textContent = k ? juta(kb.berindeks) : "pilih kab/kota dulu";
         nilai.ikk.textContent = !k ? "pilih kab/kota dulu" : kb.ikk == null ? kb.alasan : `${kb.ikk.toLocaleString("id-ID", {maximumFractionDigits: 2})} (${kb.sumber_ikk})`;
-        nilai.ganda.textContent = gd.ganda == null ? "belum ada data" : gd.ganda ? `periksa hitung ganda: ${gd.jumlah.toLocaleString("id-ID")} melebihi ${gd.batas.toLocaleString("id-ID")} RB terverifikasi` : `${gd.jumlah.toLocaleString("id-ID")} dari ${gd.batas.toLocaleString("id-ID")} RB terverifikasi`;
+        nilai.ganda.textContent = gd.ganda == null ? "belum ada data" : gd.ganda ? `periksa hitung ganda: ${gd.jumlah.toLocaleString("id-ID")} melebihi ${gd.batas.toLocaleString("id-ID")} rumah rusak berat terverifikasi` : `${gd.jumlah.toLocaleString("id-ID")} dari ${gd.batas.toLocaleString("id-ID")} rumah rusak berat terverifikasi`;
         nilai.ganda.classList.toggle("un-st-kurang", gd.ganda === true);
         if (k) { terakhir = UnitRrp3.barisFormulir(d.kolom_formulir || [], nama[k], unit, harga, kb); csv.disabled = false; }
       } catch (e) {
@@ -107,10 +107,10 @@
           h("table", {class: "ad-tabel"}, h("caption", {class: "sr", teks: "Masukan rumah rusak per tingkat"}),
             h("thead", null, h("tr", null, h("th", {scope: "col", teks: "Tingkat"}), h("th", {scope: "col", teks: "Unit rumah", title: "jumlah rumah rusak per tingkat, bilangan bulat"}),
               h("th", {scope: "col", teks: "Harga kerusakan", title: "juta rupiah per unit, harga satuan pemda atau tim"}),
-              h("th", {scope: "col", teks: "Satuan biaya", title: "juta rupiah per unit; bawaan tarif stimulan Jam Aturan (asumsi, rilis 2023-2024)"}))),
+              h("th", {scope: "col", teks: "Satuan biaya", title: "juta rupiah per unit; bawaan tarif stimulan Jam Aturan (asumsi, rilis 2023-2024, bukan pasal)"}))),
             h("tbody", null, ...baris))),
-        h("div", {class: "un-g-ganda"}, h("p", null, lbl(g.huntap, "Huntap"), " ", g.huntap), h("p", null, lbl(g.stim, "Stimulan RB"), " ", g.stim),
-          h("p", null, lbl(g.rb, "RB terverifikasi"), " ", g.rb))),
+        h("div", {class: "un-g-ganda"}, h("p", null, lbl(g.huntap, "Huntap"), " ", g.huntap), h("p", null, lbl(g.stim, "Stimulan rumah rusak berat"), " ", g.stim),
+          h("p", null, lbl(g.rb, "Rumah rusak berat terverifikasi"), " ", g.rb))),
       h("div", {class: "un-g-out"}, pesan, hasil));
     wadah.addEventListener("input", hitung);
     pilih.addEventListener("change", hitung);
@@ -119,7 +119,7 @@
     return h("section", {class: "ex ex-std", id: "rrp3-alat", "aria-labelledby": "rrp3-alat-j"},
       h("header", {class: "ex-hd"}, h("div", {class: "ex-pl"}, h("span", {class: "ex-ey", teks: "Jitupasna permukiman"}),
         h("span", {class: "bn-pil un-lbl un-hitungan"}, ikon("hitung"), "Hitungan kita"),
-        h("span", {class: "bn-pil un-lbl un-asumsi", title: "tarif_stimulan_juta Jam Aturan: rilis 2023-2024, bukan pasal"}, ikon("tanya"), "Asumsi: tarif stimulan")),
+        h("span", {class: "bn-pil un-lbl un-asumsi", title: "Tarif stimulan Jam Aturan, juta Rp per unit; rilis 2023-2024, bukan pasal"}, ikon("tanya"), "Asumsi: tarif stimulan")),
         h("div", {class: "ex-jd"}, h("h3", {id: "rrp3-alat-j"}, ikon("hitung"), "Kalkulator kerusakan dan kebutuhan"), h("div", {class: "un-aksi"}, csv))),
       h("div", {class: "ex-bd"}, h("p", {class: "un-g-cat", teks: "Dihitung di peramban ini saja. Isian tidak dikirim dan tidak disimpan."}), wadah));
   }

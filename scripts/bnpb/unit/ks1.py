@@ -88,7 +88,17 @@ def salin(d, b):
 def bangun(jdih, sk, hvc, nama, hari):
     situs = {s["kode"]: s["status"] for s in jdih["situs"]}
     baris = []
-    for d in sorted((d for d in jdih["dok"] if d["jenis_dok"] in JENIS), key=lambda d: (d["kode"], d["jenis_dok"], d["url"])):
+    dok = [d for d in jdih["dok"] if d["jenis_dok"] in JENIS]
+    # renkon: hanya yang terbaru per (daerah, bahaya); yang lama sudah digantikan dan tidak dihitung kedaluwarsa
+    baru = {}
+    for d in dok:
+        if d["jenis_dok"] == "renkon":
+            k = (d["kode"], bahaya(d["judul"]))
+            if k not in baru or (d["tgl_tetap"] or f"{d['tahun'] or 0}-12-31", d["url"]) > (baru[k]["tgl_tetap"] or f"{baru[k]['tahun'] or 0}-12-31", baru[k]["url"]):
+                baru[k] = d
+    lama = sum(1 for d in dok if d["jenis_dok"] == "renkon") - len(baru)
+    dok = [d for d in dok if d["jenis_dok"] != "renkon"] + list(baru.values())
+    for d in sorted(dok, key=lambda d: (d["kode"], d["jenis_dok"], d["url"])):
         b = bahaya(d["judul"])
         sejak = d["tgl_tetap"] or (f"{d['tahun']}-12-31" if d["tahun"] else None)
         if d["jenis_dok"] == "renkon":
@@ -106,11 +116,11 @@ def bangun(jdih, sk, hvc, nama, hari):
     k1 = rapor.kartu(
         id="ks1-dokumen", sistem="KS-1", pil="Dokumen siaga", ikon="resmi", judul="Renkon, RPKB, dan rencana aksi menurut JDIH",
         angka=[{"k": "renkon_daerah", "label": "Daerah punya renkon berlaku menurut JDIH, batas bawah", "nilai": daerah_berlaku, "title": LABEL_BAWAH},
-               {"k": "renkon", "label": "Renkon ditemukan", "nilai": n("renkon")},
+               {"k": "renkon", "label": "Renkon terbaru per daerah dan bahaya", "nilai": n("renkon"), "title": f"{lama} renkon lebih lama untuk daerah dan bahaya yang sama tidak dihitung"},
                {"k": "kedaluwarsa", "label": "Renkon kedaluwarsa", "nilai": n("renkon", ("kedaluwarsa",))},
                {"k": "reviu", "label": "Renkon perlu reviu", "nilai": n("renkon", ("perlu_reviu",)), "title": "lebih dari 6 bulan sejak penetapan; reviu tidak terlihat di JDIH"},
                {"k": "rpkb", "label": "RPKB perlu mutakhir", "nilai": n("rpkb", ("perlu_mutakhir",)), "title": "ada SK status darurat sesudah penetapan"},
-               {"k": "situs", "label": "Situs JDIH provinsi terbaca, dari 38", "nilai": sum(s == "terbaca" for s in situs.values())}],
+               {"k": "situs", "label": f"Situs JDIH provinsi terbaca, dari {len(situs)}", "nilai": sum(s == "terbaca" for s in situs.values())}],
         kolom=[{"k": "daerah", "label": "Daerah"}, {"k": "jenis", "label": "Dokumen"}, {"k": "bahaya", "label": "Bahaya", "title": "dari judul; kosong = tidak tertulis di judul"},
                {"k": "utama", "label": "Bahaya utama kab", "title": "risiko_hvc.json utama (indeks belum lulus uji balik), pembanding cakupan"},
                {"k": "status", "label": "Status", "title": "Perban 2/2023 Pasal 21: berlaku 3 tahun, reviu 6 bulan; segera habis 90 hari (asumsi internal)"},
@@ -124,7 +134,7 @@ def bangun(jdih, sk, hvc, nama, hari):
     src = [{"nama": "JDIH provinsi (jdih_daerah.py, MB-3)", "url": "repo:scripts/bnpb/unit/jdih_situs.json", "diambil": hari.isoformat(), "lisensi": "metadata peraturan daerah, informasi publik"},
            {"nama": "SK status darurat (status_darurat.json)", "url": "repo:public/data/status_darurat.json", "diambil": hari.isoformat(), "lisensi": "data BNPB, agregat"}]
     b = rapor.berkas([k1], src)
-    b["data"] = {"label": LABEL_BAWAH, "hari": hari.isoformat(), "dokumen": baris, "koreksi": "menunggu RU-034 (terima.py gabung dari unit_ketuk)"}
+    b["data"] = {"label": LABEL_BAWAH, "hari": hari.isoformat(), "dokumen": baris, "renkon_lama_tidak_dihitung": lama, "koreksi": "menunggu RU-034 (terima.py gabung dari unit_ketuk)"}
     us = {"berkas": "dokumen_siaga", "baris": [{"id": pspb1.usulan_id(r["jenis"], r["url"], r["kode"]),
                                                  "sumber": {"jenis": "jdih", "nama": r["judul"][:200], "url": r["url"]}, "label": "sekunder",
                                                  "isi": {"kode": r["kode"], "jenis": r["jenis"], "bahaya": r["bahaya"], "status": r["status"], "tgl_tetap": r["tgl_tetap"]},
@@ -165,6 +175,7 @@ def cek():
                                                              "url": f"https://jdih.contoh/{kode}/{jenis}"}
     jdih = {"situs": [{"kode": "33", "status": "terbaca"}],
             "dok": [dok("3301", "renkon", "Rencana Kontinjensi Banjir Kabupaten Cilacap", "2025-01-10"),
+                    dict(dok("3301", "renkon", "Rencana Kontinjensi Banjir Kab. Cilacap", "2021-03-01", 2021), url="https://jdih.contoh/3301/lama"),
                     dok("3301", "rpkb", "Rencana Penanggulangan Kedaruratan Bencana Banjir", "2024-06-01"),
                     dok("33", "rpkb", "RPKB Provinsi", "2024-06-01"), dok("3302", "rencana_aksi", "Rencana Aksi PRB"),
                     dok("3302", "rpbd", "RPBD 2024-2028")]}
@@ -181,6 +192,8 @@ def cek():
     assert rapor.JALUR.fullmatch(r0["salin"]), r0["salin"]
     assert [p["kunci"] for p in k["aturan"]] == ["renkon_berlaku", "renkon_reviu", "renkon_segera_hari"]
     assert len(us["baris"]) == 4 and len({x["id"] for x in us["baris"]}) == 4
+    assert b["data"]["renkon_lama_tidak_dihitung"] == 1 and a["kedaluwarsa"]["nilai"] == 0, "renkon lama yang sudah diganti dihitung kedaluwarsa"
+    assert a["situs"]["label"].endswith("dari 1"), a["situs"]
     rapor.periksa_berkas({"dibuat": "2026-11-26T00:00:00Z", "basi_jam": 240, **b})
     nyata = jalan(jaringan=False)
     rapor.periksa_berkas({"dibuat": "2026-11-26T00:00:00Z", "basi_jam": 240, **nyata["dokumen_siaga"]})

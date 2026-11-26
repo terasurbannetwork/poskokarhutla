@@ -52,7 +52,7 @@ test("RRP-3 kalkulator di peramban: J1, ganda, isian liar, tanpa POST", {skip: C
       const harap = (28200 * IKK.data.kab[kab] / 100).toLocaleString("id-ID", {maximumFractionDigits: 2});
       assert.equal(v[2], `Rp${harap} juta`); assert.match(v[3], /IKK kab\/kota/);
       await isi("rrp3-huntap", 50); await isi("rrp3-stim", 90); await isi("rrp3-rb", 120);
-      v = await dd(); assert.match(v[4], /^periksa hitung ganda: 140 melebihi 120/);
+      v = await dd(); assert.match(v[4], /^periksa hitung ganda: 140 melebihi 120 rumah rusak berat terverifikasi/);
       assert.equal(await t.eval("document.querySelector('#rrp3-alat .un-aksi button').disabled"), false, "Unduh CSV aktif");
       await isi("rrp3-u-RS", "2.5");
       assert.match(await t.eval("document.querySelector('#rrp3-alat .bn-pesan').textContent"), /bilangan bulat/);

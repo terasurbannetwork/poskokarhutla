@@ -75,11 +75,15 @@ def bangun(jdih, daftar, hari_ini):
     n = lambda st, t=None: sum(1 for r in reg if r["status"] in st and (t is None or r["tingkat"] == t))  # noqa: E731
     jml = {t: sum(r["tingkat"] == t for r in reg) for t in ("provinsi", "kab/kota")}
     ber = n(BERLAKU)
+    dicek = len(reg) - n(("tidak_bisa_dicek",))
+    duga = sum(1 for r in reg if r["status"] in BERLAKU and r["diduga"])
     ditemukan = [r for r in reg if r["url"]]
     k1 = rapor.kartu(
         id="pspb1-rpbd", sistem="PSPB-1", pil="Register RPBD", ikon="resmi", judul="Status RPBD menurut JDIH",
-        angka=[{"k": "berlaku", "label": f"Pemda ber-RPBD berlaku menurut JDIH, dari {len(reg):,}".replace(",", "."), "nilai": ber},
-               {"k": "persen", "label": "Persen pemda", "nilai": 100 * ber / len(reg), "desimal": 1},
+        angka=[{"k": "berlaku", "label": f"Pemda ber-RPBD berlaku menurut JDIH, {duga} di antaranya masa diduga", "nilai": ber,
+                "title": "masa diduga = tanpa periode di judul, penetapan + 5 tahun (asumsi riset/1)"},
+               {"k": "persen", "label": f"Persen dari {dicek:,} pemda yang bisa dicek (%)".replace(",", "."), "nilai": 100 * ber / dicek if dicek else None, "desimal": 1,
+                "title": f"batas bawah, {len(reg) - dicek:,} pemda tak bisa dicek (situs JDIH provinsi tidak terbaca)".replace(",", ".")},
                {"k": "prov", "label": f"Provinsi berlaku, dari {jml['provinsi']}", "nilai": n(BERLAKU, "provinsi")},
                {"k": "kab", "label": f"Kab/kota berlaku, dari {jml['kab/kota']}", "nilai": n(BERLAKU, "kab/kota")},
                {"k": "tidak", "label": "Tidak ditemukan, bukan berarti tidak punya", "nilai": n(("tidak_ditemukan",)), "title": LABEL_TIDAK},
@@ -160,7 +164,8 @@ def cek():
     assert st == {"21": "berlaku", "2101": "habis", "31": "sesuai_3_2026", "3171": "tidak_ditemukan",
                   "33": "tidak_bisa_dicek", "3301": "tidak_bisa_dicek"}, st   # sesuai_3_2026 sesudah 6 Okt 2026; situs diblokir bukan tidak_ditemukan
     a = {x["k"]: x["nilai"] for x in b["kartu"][0]["angka"]}
-    assert a["berlaku"] == 2 and a["tidak"] == 1 and a["cek"] == 2 and abs(a["persen"] - 100 * 2 / 6) < 1e-9, a
+    assert a["berlaku"] == 2 and a["tidak"] == 1 and a["cek"] == 2 and abs(a["persen"] - 100 * 2 / 4) < 1e-9, a   # penyebut = 4 pemda yang bisa dicek
+    assert "1 di antaranya masa diduga" in b["kartu"][0]["angka"][0]["label"], b["kartu"][0]["angka"][0]   # DKI 2026 tanpa periode
     assert any(r["status"] == LABEL_TIDAK for r in b["kartu"][0]["baris"]) is False   # tabel hanya dokumen yang ditemukan
     assert LABEL_TIDAK in json.dumps(b["kartu"][0], ensure_ascii=False)
     assert len(us["baris"]) == 4 and all(len(x["id"]) == 16 and x["keputusan"] == "menunggu" for x in us["baris"])

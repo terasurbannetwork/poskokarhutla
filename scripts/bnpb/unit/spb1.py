@@ -95,17 +95,17 @@ def bangun(kat, renstra, tahun_ini):
         baris=baris, rumus="isi sel = jumlah dokumen berlaku efektif yang judul atau subjeknya memuat kata fase dan kata bahaya",
         sumber=["katalog_hukum"], label=["resmi", "hitungan_kita"], asumsi=["Asumsi: kamus fase dan bahaya"],
         tautan=[["/bnpb/hukum", "Buka pustaka hukum"]], unduh="matriks_nspk.csv")
-    NAMA_ST = {"terbit": "terbit", "lewat_target": "lewat tahun target", "belum_jatuh_tempo": "belum jatuh tempo"}
+    NAMA_ST = {"terbit": "ada dokumen berjudul cocok", "lewat_target": "belum ditemukan dokumen berjudul cocok, lewat tahun target", "belum_jatuh_tempo": "belum jatuh tempo"}
     k2 = rapor.kartu(
         id="spb1-renstra", sistem="SPB-1", pil="Peta NSPK", ikon="kalender", judul="Target regulasi Renstra 2025-2029",
         angka=[{"k": "butir", "label": "Butir Lampiran III", "nilai": len(tg)},
-               {"k": "terbit", "label": "Terbit menurut katalog", "nilai": n("terbit")},
-               {"k": "lewat", "label": "Belum terbit, lewat tahun target", "nilai": n("lewat_target")},
+               {"k": "terbit", "label": "Ada dokumen berjudul cocok di katalog", "nilai": n("terbit"), "title": "pencocokan frasa judul, bukan pemeriksaan isi"},
+               {"k": "lewat", "label": "Belum ditemukan dokumen berjudul cocok, lewat tahun target", "nilai": n("lewat_target"), "title": "pencocokan frasa judul di katalog lokal; bisa terbit dengan judul lain"},
                {"k": "belum", "label": "Belum jatuh tempo", "nilai": n("belum_jatuh_tempo")}],
         kolom=[{"k": "no", "label": "No", "angka": True}, {"k": "judul", "label": "Kebutuhan regulasi"},
                {"k": "target", "label": "Target", "title": "tahun akhir kolom Target Penyelesaian Lampiran III"},
-               {"k": "status", "label": "Status", "title": "terbit = dokumen berlaku efektif berjudul cocok dan bertahun >= target - 1"},
-               {"k": "dok", "label": "Dokumen pengganti", "tautan": "dok_url"}],
+               {"k": "status", "label": "Status", "title": "dari pencocokan frasa judul dengan katalog lokal 233 dokumen, bukan pemeriksaan isi"},
+               {"k": "dok", "label": "Dokumen cocok", "tautan": "dok_url", "title": "dokumen berlaku efektif yang judulnya memuat frasa butir dan bertahun >= target - 1; frasa di renstra_nspk.json (asumsi)"}],
         baris=[{"no": t["no"], "judul": t["judul"], "target": str(t["target"]), "status": NAMA_ST[t["status"]],
                 "dok": huk1.singkat(next(d for d in dok if d["id"] == t["dokumen"])) if t["dokumen"] else None,
                 **({"dok_url": huk1.tautan(t["dokumen"])} if t["dokumen"] else {})} for t in tg],

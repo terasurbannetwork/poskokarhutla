@@ -156,7 +156,7 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-059 | PERB-2 kerugian ekonomi berjalan | `ruang-bnpb` | `validasi-model` | 10 | M | belum |
 | RU-060 | PSPB-3 rapor Sendai dan SDGs 11.b | `ruang-bnpb` | `validasi-model` | 10 | S | belum |
 | RU-061 | MT-2 daerah prioritas mitigasi | `ruang-bnpb` | `validasi-model` | 10 | S | tinjau 26 Nov (belum di-commit; hipotesis, judul "urutan skor", pil "Asumsi: belum lulus uji balik"; kriteria `lab_kriteria/mb4.json` dikunci, uji balik belum dijalankan dan belum bertiket; 35 kab tanpa kode DIBI ditandai, 15 di kuartil atas) |
-| RU-062 | PLP-2 daftar pendek hibah logpal | `ruang-bnpb` | `validasi-model` | 10 | M | tinjau 26 Nov (belum di-commit; 511 kab berskor dari 3 komponen terisi (risiko, kejadian, celah kapasitas); celah stok menunggu RU-036, celah peralatan menunggu inventaris per provinsi, penerima hibah U10; `standar_peralatan_2009.json` 33 provinsi diekstrak dari teks Perka 17/2009) |
+| RU-062 | PLP-2 daftar pendek hibah logpal | `ruang-bnpb` | `validasi-model` | 10 | M | tinjau 26 Nov (belum di-commit; 511 kab berskor (risiko = rata-rata kecamatan terisi, 68 kab parsial) dari 3 komponen terisi (risiko, kejadian, celah kapasitas); celah stok menunggu RU-036, celah peralatan menunggu inventaris per provinsi, penerima hibah U10; `standar_peralatan_2009.json` 33 provinsi diekstrak dari teks Perka 17/2009) |
 | RU-063 | OJL-2 penempatan stok | `ruang-bnpb` | `validasi-model` | 10 | M | tinjau 26 Nov (belum di-commit; 38 gudang ibu kota provinsi, target musiman beras PR 1%; saran pindah menunggu stok RU-036; bagian jelang tidak tampil karena BNJ dan LSR /prediksi kalah dari klimatologi di skor.json) |
 | RU-064 | OJL-3 rapor Klaster Logistik | `ruang-bnpb` | `security-reviewer`, `selera-angka` | 10 | S | belum |
 | RU-065 | RRP-1 neraca rumah rusak | `ruang-bnpb` | `security-reviewer`, `validasi-model` | 10 | M | belum |
@@ -168,7 +168,7 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-071 | SDU-1 rapor tata kelola pengadaan | `ruang-bnpb` | `security-reviewer`, `selera-angka` | 10 | M | belum |
 | RU-072 | [induk] Tinjauan dan terbit F2 Januari | sesi induk | pemeriksa per lapisan | 10 | S | belum |
 | RU-073 | PSPB-1 register status RPBD | `ruang-bnpb` | `selera-angka` | 11 | S | tinjau 26 Nov (belum di-commit; 552 pemda: 2 berlaku, 231 tidak ditemukan, 317 situs tidak bisa dicek; usulan_rpbd 4 baris, gabung keputusan menunggu RU-034) |
-| RU-074 | KS-1 pemantau dokumen kesiapsiagaan | `ruang-bnpb` | `selera-angka` | 11 | S | tinjau 26 Nov (belum di-commit; 4 renkon ditemukan, semuanya kedaluwarsa; tautan Salin ke Meja Kerja `/bnpb/meja#salin=` membuka isian renkon terisi; gabung keputusan menunggu RU-034) |
+| RU-074 | KS-1 pemantau dokumen kesiapsiagaan | `ruang-bnpb` | `selera-angka` | 11 | S | tinjau 26 Nov (belum di-commit; 4 renkon ditemukan, 1 terbaru per daerah dan bahaya, kedaluwarsa; tautan Salin ke Meja Kerja `/bnpb/meja#salin=` membuka isian renkon terisi; gabung keputusan menunggu RU-034) |
 | RU-075 | SPB-1 peta NSPK | `ruang-bnpb` | `selera-angka` | 11 | S | tinjau 26 Nov (belum di-commit; 180 dokumen berlaku efektif, 13 konflik tidak dihitung; `renstra_nspk.json` 75 butir: 11 terbit, 14 lewat target, 50 belum jatuh tempo; pencocok frasa judul berlabel asumsi) |
 | RU-076 | HUK-2 pelacak amanat | `ruang-bnpb` | `penulis-gerbang` | 11 | M | belum |
 | RU-077 | KPOD-1 rapor intervensi status darurat | `ruang-bnpb` | `validasi-model` | 11 | M | belum |
