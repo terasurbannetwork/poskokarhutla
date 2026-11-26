@@ -14,7 +14,7 @@ Salinan data InaRISK yang diperbarui tiap minggu, supaya bisa dilihat dan diband
 
 Beberapa angka di situs InaRISK asli tampak sama untuk semua daerah, sehingga hanya berfungsi sebagai pengisi dan tidak informatif: total penduduk, persentase laki-laki dan perempuan, serta kartu komponen kerentanan dan kapasitas tingkat nasional. Angka-angka itu sengaja tidak ditiru di sini.
 
-## Silang sumber: centurisk97.id/bnpb/silang
+## Banding sumber data: centurisk97.id/bnpb/silang
 
 Empat kartu yang membandingkan sumber data:
 

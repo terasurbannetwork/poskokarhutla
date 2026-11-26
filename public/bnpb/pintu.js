@@ -1,6 +1,6 @@
-/* Pintu /bnpb: satu kartu per halaman pintu Staf BNPB, dikelompokkan per grup peta situs (GET /api/peta-situs, paket data/kajian-bnpb/peta-situs D4),
-   sudah disaring Worker per peran. Halaman yang punya angka hidup memuat angkanya dari endpoint ringkas masing-masing.
-   Angka gagal dimuat = "belum ada data" (bukan kartu kosong). Teks data lewat textContent. */
+/* Pintu /bnpb: halaman pintu Staf BNPB dari GET /api/peta-situs (paket data/kajian-bnpb/peta-situs D4), sudah disaring Worker per peran.
+   Dua tingkat (rombak 26 Nov 2026, pemilik: "masih jelek dan berantakan"): deret ubin angka hidup setinggi sama di atas, lalu satu kartu standar per grup
+   berisi daftar baris rapat (ikon, nama, panah), dua kartu per baris setinggi sama, daftar dua kolom di dalamnya (26 Nov sore: "berantakan jir", susunan bertingkat dibuang). Angka gagal dimuat = "belum ada data", bukan 0. Teks data lewat textContent. */
 (() => {
   "use strict";
   const NS = "http://www.w3.org/2000/svg";
@@ -58,35 +58,127 @@
     "/bnpb/rapor-sumber": [async () => { const r = await ambil("/data/bnpb/rapor_sumber.json"); const s = (r?.sel || []).filter(x => x.daerah.tingkat === "nas"); if (!s.length) return null;
       return [F(s.filter(x => x.status !== "belum_cukup").length), "dari " + F(s.length) + " penilaian sumber sudah punya data cukup", "perlu arsip 30 hari"]; }, null, "BMKG, Centurisk97, DIBI BNPB, Logbook Pusdalops"],
     "/bnpb/silang": [async () => { const r = await ambil("/data/bnpb/beda_sumber.json"); const k = r?.ringkas; if (!k) return null;
-      return [F(k.n_perlu_dicek), "dari " + F(k.n_dibandingkan) + " perbandingan resmi lawan model perlu dicek", "hipotesis"]; }, null, "BMKG, Open-Meteo, DIBI BNPB, Logbook Pusdalops"],
+      return [F(k.n_perlu_dicek), "dari " + F(k.n_dibandingkan) + " perbandingan data resmi dan model perlu dicek", "hipotesis"]; }, null, "BMKG, Open-Meteo, DIBI BNPB, Logbook Pusdalops"],
     "/meja": [async () => { const r = await ambil("/api/meja/ringkas"); return r?.meja ? [F(jumlah(r.meja)), "catatan lapangan"] : null; }],
   };
 
   const h = (tag, att, ...anak) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(att || {})) { if (v == null) continue; if (k === "class") e.className = v; else if (k === "teks") e.textContent = v; else e.setAttribute(k, v); } for (const a of anak) if (a != null) e.append(a); return e; };
-  const pil = (teks, ikon) => { const e = h("span", {class: "bn-pil"}); if (ikon) e.append(svg(ikon)); e.append(teks); return e; };
+  const MP = window.MenuPusdalops;
+  /* ikon butir: ikon panel kiri bila ada (registri peta situs), cadangan ikon berkas ini */
+  const IKON_BUTIR = {banjir: "banjir", daftar: "logbook", simpan: "sitrep", personel: "relawan", pin: "risiko", peringatan: "siaga", kalender: "logbook", sinyal: "alun", meja: "meja", grafik: "kinerja", awan: "banjir", atur: "admin"};
+  const IKON_GRUP = {pantau: "banjir", kejadian: "daftar", operasi: "pin", laporan: "simpan", risiko: "peringatan", pimpinan: "grafik", jejaring: "personel", pengaturan: "atur"};
+  const ikonButir = k => MP?.ikon ? MP.ikon(k) : svg(IKON_BUTIR[k] || "logbook");
+  const luar = rute => MP?.dalam ? !MP.dalam(rute) : false;
 
   const host = document.getElementById("pintu");
   document.getElementById("admin").append(svg("admin"), "Pintu admin");
-  const IKON_GRUP = {pantau: "banjir", kejadian: "logbook", operasi: "relawan", laporan: "sitrep", risiko: "risiko", pimpinan: "kinerja", jejaring: "alun", pengaturan: "admin"};
-  const IKON_BUTIR = {banjir: "banjir", daftar: "logbook", simpan: "sitrep", personel: "relawan", pin: "risiko", peringatan: "siaga", kalender: "logbook", sinyal: "alun", meja: "meja", grafik: "kinerja", awan: "banjir"};
-  const kartuButir = b => {
-    const [ambilAngka, pilTetap, sumber] = ANGKA[b.rute] || [], angka = ambilAngka ? h("div", {class: "pt-angka"}) : null;
-    const a = h("a", {class: "bn-kartu pt-kartu" + (ambilAngka || pilTetap ? "" : " pt-polos"), href: b.rute, title: sumber ? "Sumber: " + sumber : null},
-      h("h2", null, svg(IKON_BUTIR[b.ikon] || "logbook"), h("span", {teks: b.nama}), h("span", {class: "pt-panah"}, svg("panah"))), angka, pilTetap ? pil(pilTetap, "risiko") : null);
-    if (ambilAngka) { const kosong = () => angka.append(h("span", {class: "bn-label", teks: "belum ada data"}));
-      ambilAngka().then(x => { if (!x) return kosong(); angka.append(h("span", {class: "bn-angka", teks: x[0]}), h("span", {class: "bn-label", teks: x[1]})); if (x[2]) a.append(pil(x[2], "risiko")); }).catch(kosong); }
-    return a;
+
+  /* hero (26 Nov 2026 malam, pemilik: "jadi hero ... tambahin foto sebagai overlay", lalu "masih kurang, bagusin lagi"): kepala berfoto di index.html.
+     Hierarki: empat angka UTAMA besar tanpa kotak (dipisah garis tipis, naik dari nol saat dimuat), lalu PITA angka lain di dasar hero (kecil, tanpa angka nol).
+     Semua angka diambil dulu, baru digambar sekali. Tanpa angka: tidak tampil (bukan 0). Mutu angka (hipotesis, perkiraan, belum diuji balik)
+     hanya di tooltip bersama sumber, tanpa pil ("pill2nya hapus", "jadikan tooltip aja"). */
+  const UTAMA = ["/bnpb/dalops", "/sitrep", "/bnpb/siaga", "/risiko"];   // urutan angka utama; yang tak ada diganti angka bukan nol berikutnya
+  /* tooltip bergaya (pemilik 26 Nov 2026: "yang kayak gini jadiin tooltip", "kasih penjelasan juga itu apa"): nama halaman, penjelasan angka,
+     keterangan angka, mutu, sumber. Penjelasan disusun dari cara angka dihitung di ANGKA di atas, bukan definisi baru. */
+  const ARTI = {
+    "/bnpb/dalops": "Kejadian banjir di logbook harian Pusdalops yang tercatat dalam 7 hari sampai tanggal logbook terakhir.",
+    "/sitrep": "Jenis bencana yang dimuat di Laporan situasi.",
+    "/bnpb/siaga": "Kabupaten/kota yang punya musim bencana berulang menurut logbook Pusdalops 2014–2020 dan 2024–2025.",
+    "/risiko": "Kecamatan berkelas Tinggi dan Sangat tinggi pada indeks risiko kecamatan.",
+    "/risiko-kebakaran": "Kelurahan di DKI Jakarta dengan kelas risiko kebakaran permukiman tertinggi.",
+    "/kebutuhan": "Perkiraan biaya penanganan karhutla untuk 90 hari ke depan pada skenario rata-rata.",
+    "/kinerja-bnpb": "Persen daerah dengan kapasitas penanggulangan bencana minimal sedang, dibanding target Renstra.",
+    "/bnpb/logbook": "Seluruh kejadian yang tercatat di arsip logbook harian Pusdalops.",
+    "/bnpb/rapor-sumber": "Penilaian sumber prakiraan tingkat nasional yang datanya sudah cukup untuk dinilai.",
+    "/bnpb/silang": "Perbandingan angka sumber resmi dengan model yang selisihnya perlu dicek staf.",
+    "/relawan": "Relawan terdaftar yang berstatus siap tugas.",
+    "/admin/alun": "Permintaan bantuan di Alun-alun yang belum ditutup.",
+    "/riset": "Riset kampus yang sedang berjalan.",
+    "/meja": "Catatan lapangan di Meja kerja.",
   };
-  /* satu kartu standar per grup: kepala = nama grup (AGENTS 3.5), isi = kartu halaman; halaman ini sendiri tidak ditautkan ulang */
-  const seksi = g => h("section", {class: "ex ex-std pt-seksi", id: "g-" + g.id},
-    h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, svg(IKON_GRUP[g.id] || "logbook"), "Staf BNPB"), h("div", {class: "ex-jd"}, h("h3", {teks: g.nama}))),
-    h("div", {class: "ex-bd"}, h("div", {class: "bn-grid pt-grid"}, ...g.butir.filter(b => b.rute !== "/bnpb").map(kartuButir))));
+  const tip = r => ({"data-tip": "", "data-tip-judul": r.b.nama, "data-tip-ikon": r.b.ikon || "", "data-tip-arti": ARTI[r.b.rute] || "",
+    "data-tip-nilai": r.x[0], "data-tip-ket": r.x[1], "data-tip-mutu": [r.pilTetap, r.x[2]].filter(Boolean).join(", "), "data-tip-sumber": r.sumber || ""});
+  const statUtama = r => h("a", {class: "pt-utama-i", href: r.b.rute, ...tip(r)},
+    h("span", {class: "pt-utama-nilai", "data-nilai": r.x[0], teks: r.x[0]}), h("span", {class: "pt-utama-ket", teks: r.x[1]}));
+  const statKecil = r => h("a", {class: "pt-kecil", href: r.b.rute, ...tip(r)},
+    h("span", {class: "pt-kecil-nama"}, ikonButir(r.b.ikon), h("span", {teks: r.b.nama})), h("span", {class: "pt-kecil-nilai", teks: r.x[0]}));
+  /* baris penuh tanpa bolong: grid 60 kolom; tiap baris dibagi rata, baris terakhir yang kurang isi dilebarkan */
+  function susun(g, anak, maks) {
+    const n = anak.length, baris = Math.ceil(n / maks), c = Math.ceil(n / baris), akhir = n - c * (baris - 1);
+    anak.forEach((e, i) => e.style.setProperty("--span", 60 / (i < n - akhir ? c : akhir)));
+    g.append(...anak); return g;
+  }
+  /* angka utama naik dari nol (0,7 detik); awalan dan akhiran dipertahankan ("Rp446 miliar", "50%"); tanpa gerak bila pengguna memintanya */
+  function naik(el) {
+    const m = /^(\D*)([\d.]+)(.*)$/.exec(el.dataset.nilai || ""); if (!m || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const akhir = Number(m[2].replace(/\./g, "")); if (!Number.isFinite(akhir) || akhir < 10) return;
+    const t0 = performance.now(), langkah = t => { const p = Math.min(1, (t - t0) / 700), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = m[1] + Math.round(akhir * e).toLocaleString("id-ID") + m[3]; if (p < 1) requestAnimationFrame(langkah); else el.textContent = el.dataset.nilai; };
+    requestAnimationFrame(langkah);
+  }
+  async function angkaTerkini(berangka, utamaW, pitaW) {
+    utamaW.setAttribute("aria-busy", "true");
+    const hasil = await Promise.all(berangka.map(b => { const [ambilAngka, pilTetap, sumber] = ANGKA[b.rute];
+      return ambilAngka().catch(() => null).then(x => x && {b, x, pilTetap, sumber}); }));
+    utamaW.removeAttribute("aria-busy");
+    const ada = hasil.filter(Boolean), bukanNol = ada.filter(r => r.x[0] !== "0");
+    const utama = [...UTAMA.map(u => bukanNol.find(r => r.b.rute === u)).filter(Boolean), ...bukanNol.filter(r => !UTAMA.includes(r.b.rute))].slice(0, 4);
+    const lain = bukanNol.filter(r => !utama.includes(r));   // angka nol tidak ditampilkan di hero (pemilik: "terlalu penuh"); halamannya tetap di kartu grup
+    utamaW.replaceChildren(...utama.map(statUtama)); utamaW.style.setProperty("--n", utama.length || 1);
+    utamaW.querySelectorAll(".pt-utama-nilai").forEach(naik);
+    if (lain.length) { pitaW.hidden = false; pitaW.replaceChildren(susun(h("div", {class: "pt-pita-grid"}), lain.map(statKecil), 6)); }
+  }
+  /* gelembung tooltip: satu elemen di body (tidak terpotong overflow pita), muncul saat kursor atau fokus keyboard, hilang saat keluar, gulir, Esc */
+  const gel = h("div", {class: "pt-tip", id: "ptTip", role: "tooltip", hidden: ""});
+  document.body.append(gel);
+  let pemilik = null;
+  const tutupTip = () => { if (!pemilik) return; pemilik.removeAttribute("aria-describedby"); pemilik = null; gel.hidden = true; };
+  const bukaTip = el => {
+    if (pemilik === el) return; tutupTip(); pemilik = el; const d = el.dataset;
+    gel.replaceChildren(
+      h("div", {class: "pt-tip-kepala"}, h("span", {class: "pt-tip-j"}, ikonButir(d.tipIkon), h("span", {teks: d.tipJudul})), d.tipMutu ? h("span", {class: "pt-tip-mutu", teks: d.tipMutu}) : null),
+      h("div", {class: "pt-tip-nilai"}, h("b", {teks: d.tipNilai}), h("span", {teks: d.tipKet})),
+      d.tipArti ? h("p", {class: "pt-tip-arti", teks: d.tipArti}) : null,
+      d.tipSumber ? h("p", {class: "pt-tip-sumber"}, h("span", {teks: "Sumber"}), d.tipSumber) : null);
+    gel.classList.remove("pt-tip-atas"); gel.hidden = false; el.setAttribute("aria-describedby", "ptTip");
+    const k = el.getBoundingClientRect(), g = gel.getBoundingClientRect(), jarak = 10;
+    let x = k.left + k.width / 2 - g.width / 2, y = k.bottom + jarak;
+    if (y + g.height > innerHeight - 8) { y = k.top - g.height - jarak; gel.classList.add("pt-tip-atas"); }
+    x = Math.max(8, Math.min(x, innerWidth - g.width - 8));
+    gel.style.setProperty("left", x + "px"); gel.style.setProperty("top", Math.max(8, y) + "px");
+    gel.style.setProperty("--panah", Math.max(14, Math.min(g.width - 14, k.left + k.width / 2 - x)) + "px");   // panah menunjuk tengah angka
+  };
+  document.addEventListener("pointerover", e => { const el = e.target.closest?.("[data-tip]"); if (el) bukaTip(el); else if (!e.target.closest?.(".pt-tip")) tutupTip(); });
+  document.addEventListener("focusin", e => { const el = e.target.closest?.("[data-tip]"); if (el) bukaTip(el); else tutupTip(); });
+  document.addEventListener("focusout", e => { if (e.target === pemilik) tutupTip(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") tutupTip(); });
+  addEventListener("scroll", tutupTip, {passive: true});
+  const tgl = document.getElementById("heroTgl");
+  if (tgl) tgl.textContent = new Date().toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta"});
+  const baris = b => {
+    const ke = luar(b.rute), a = h("a", {class: "pt-baris", href: b.rute, title: ke ? "Membuka dashboard lain" : null, "aria-label": ke ? b.nama + ", membuka dashboard lain" : null},
+      h("span", {class: "pt-ik"}, ikonButir(b.ikon)), h("span", {class: "pt-nama", teks: b.nama}), ke ? h("span", {class: "pt-arah"}, ikonButir("luar")) : null);
+    return h("li", null, a);
+  };
+  const kepala = (ikon, nama) => h("header", {class: "ex-hd"}, h("div", {class: "ex-jd"}, h("h3", null, MP?.ikon ? MP.ikon(ikon) : svg("logbook"), h("span", {teks: nama})),
+  ));
+  const seksiGrup = g => h("section", {class: "ex ex-std pt-grup", id: "g-" + g.id}, kepala(IKON_GRUP[g.id] || "daftar", g.nama),
+    h("div", {class: "ex-bd"}, h("ul", {class: "pt-butir"}, ...g.butir.map(baris))));
+
   const pesan = t => host.replaceChildren(h("p", {class: "bn-pesan", role: "status", teks: t}));
   pesan("Memuat menu staf…");
-  (window.MenuPusdalops?.peta || fetch("/api/peta-situs", {credentials: "same-origin"}).then(r => r.ok ? r.json() : null).catch(() => null)).then(m => {
+  (MP?.peta || fetch("/api/peta-situs", {credentials: "same-origin"}).then(r => r.ok ? r.json() : null).catch(() => null)).then(m => {
     const staf = Array.isArray(m) && m.find(p => p.pintu === "staf");
     if (!m) return pesan("Menu staf belum bisa dimuat. Muat ulang halaman ini.");
     if (!staf) return pesan("Masuk dengan akun staf untuk melihat halaman Ruang Koordinasi.");
-    host.replaceChildren(...staf.grup.filter(g => g.butir.some(b => b.rute !== "/bnpb")).map(seksi));
+    const grup = staf.grup.map(g => ({...g, butir: g.butir.filter(b => b.rute !== "/bnpb")})).filter(g => g.butir.length);   // halaman ini sendiri tidak ditautkan ulang
+    const berangka = grup.flatMap(g => g.butir).filter(b => ANGKA[b.rute]);
+    const isi = [];
+    /* daftar isi hero: grup bernomor, tautan ke kartu grupnya di bawah */
+    document.getElementById("heroIsi")?.replaceChildren(...grup.map((g, i) => h("li", null, h("a", {href: "#g-" + g.id},
+      h("span", {class: "pt-isi-no", teks: String(i + 1).padStart(2, "0")}), h("span", {class: "pt-isi-nama", teks: g.nama}), h("span", {class: "pt-isi-jml", teks: String(g.butir.length)})))));
+    const utamaW = document.getElementById("heroUtama"), pitaW = document.getElementById("heroPita"); if (utamaW && pitaW && berangka.length) angkaTerkini(berangka, utamaW, pitaW);
+    isi.push(h("div", {class: "pt-grup-grid"}, ...grup.map(seksiGrup)));
+    host.replaceChildren(...isi);
   });
 })();

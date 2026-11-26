@@ -58,7 +58,7 @@
       tabel(["Sumber", "Alasan"], R.dilewati.map(x => [x.sumber, x.alasan])));
   }
   async function mulai() {
-    /* rapor digabung ke layar Silang sumber (sistem desain dashboard I3, pemilik 11 Nov 2026): /bnpb/rapor-sumber pindah ke /bnpb/silang */
+    /* rapor digabung ke layar Banding sumber data (sistem desain dashboard I3, pemilik 11 Nov 2026): /bnpb/rapor-sumber pindah ke /bnpb/silang */
     if (!$("#isi-rapor")) { location.replace("/bnpb/silang#k-ringkas"); return; }
     const isi = $("#isi-rapor"), pesan = $("#pesan-rapor");
     try {

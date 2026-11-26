@@ -2191,7 +2191,7 @@
       "id": "inarisk-silang",
       "judul": "InaRISK, silang sumber, rapor sumber",
       "berkas": "panduan/ruang-bnpb/07-inarisk-silang.md",
-      "isi": "panduan/10-ruang-bnpb.md: Cermin InaRISK: centurisk97.id/bnpb/inarisk; Silang sumber: centurisk97.id/bnpb/silang; Rapor sumber: centurisk97.id/bnpb/rapor-sumber"
+      "isi": "panduan/10-ruang-bnpb.md: Cermin InaRISK: centurisk97.id/bnpb/inarisk; Banding sumber data: centurisk97.id/bnpb/silang; Rapor sumber: centurisk97.id/bnpb/rapor-sumber"
      },
      {
       "id": "kejadian-langkah",
@@ -2259,7 +2259,7 @@
       "id": "layar-silang-alun",
       "judul": "Layar InaRISK, silang sumber, Alun-alun",
       "berkas": "pengembang/ruang-bnpb/05-layar-silang-alun.md",
-      "isi": "10-ruang-bnpb.md: Cermin InaRISK, /bnpb/inarisk; Silang sumber, /bnpb/silang; Rapor sumber, /bnpb/rapor-sumber; Alun-alun, /alun-alun dan /admin/alun"
+      "isi": "10-ruang-bnpb.md: Cermin InaRISK, /bnpb/inarisk; Banding sumber data, /bnpb/silang; Rapor sumber, /bnpb/rapor-sumber; Alun-alun, /alun-alun dan /admin/alun"
      },
      {
       "id": "kejadian-dalops",
@@ -2293,7 +2293,7 @@
      },
      {
       "id": "silang-alun",
-      "judul": "Silang sumber, beruntun, Alun-alun",
+      "judul": "Banding sumber data, beruntun, Alun-alun",
       "berkas": "pengembang/ruang-bnpb/11-silang-alun.md",
       "isi": "10-ruang-bnpb.md: Rapor sumber (silang sumber F1); Beda sumber (silang sumber F3); Deteksi gempa beruntun dan kalender ancaman (silang sumber F5 dan F6); Alun-alun: moderasi dan tautan; Dashboard pimpinan lintas bencana"
      },

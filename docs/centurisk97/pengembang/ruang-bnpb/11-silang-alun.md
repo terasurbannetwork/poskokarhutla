@@ -1,4 +1,4 @@
-# Silang sumber, beruntun, Alun-alun
+# Banding sumber data, beruntun, Alun-alun
 
 Halaman ini menjelaskan metode rapor sumber, beda sumber, gempa beruntun, kalender ancaman, moderasi Alun-alun, dan dashboard pimpinan.
 

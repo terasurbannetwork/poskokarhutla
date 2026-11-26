@@ -113,7 +113,7 @@ const _HALAMAN = [
     ["/bnpb/inarisk", "Risiko bencana Indonesia (InaRISK)", "pin", "risiko"],
     ["/bnpb/data-bencana", "Data bencana Indonesia", "grafik", "risiko", "tamu"],
     ["/bnpb/rapor-sumber", "Rapor sumber prakiraan", "grafik", "risiko"],
-    ["/bnpb/silang", "Silang sumber", "grafik", "risiko"],
+    ["/bnpb/silang", "Banding sumber data", "grafik", "risiko"],
     ["/admin/pimpinan", "Layar pimpinan", "grafik", "pimpinan"],
     ["/bnpb/pimpinan", "Dashboard pimpinan", "grafik", "pimpinan"],
     ["/kinerja-bnpb", "Kinerja BNPB", "grafik", "pimpinan"],

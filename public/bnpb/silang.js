@@ -183,7 +183,7 @@
   }
 
   /* ---------- pasang ---------- */
-  window.DasborA?.pasang({nama: "Silang sumber", sub: "Rapor sumber, beda sumber, kajian kejadian"});   // model A (sistem desain dashboard)
+  window.DasborA?.pasang({nama: "Banding sumber data", sub: "Rapor sumber, beda sumber, kajian kejadian"});   // model A (sistem desain dashboard)
   async function mulai() {
     const isi = $("#isi"), pesan = $("#pesan");
     try {

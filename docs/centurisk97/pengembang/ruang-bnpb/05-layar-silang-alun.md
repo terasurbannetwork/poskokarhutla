@@ -14,7 +14,7 @@ Layar bertab dengan navigasi hash. Akses menurut kode: perlu masuk di centurisk9
 
 Yang tidak ada di cermin dengan sengaja: penduduk laki-laki dan perempuan 51,8 persen dan 48,2 persen, total penduduk dari rumus pengisi, dan kartu komponen V dan C nasional. Angka-angka itu bukan data di InaRISK (lihat Metode).
 
-## Silang sumber, /bnpb/silang
+## Banding sumber data, /bnpb/silang
 
 Kajian membandingkan sumber. Empat kartu (`public/bnpb/silang.js`):
 

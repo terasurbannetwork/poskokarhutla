@@ -141,7 +141,8 @@
   let tunda; new MutationObserver(() => { clearTimeout(tunda); tunda = setTimeout(seksiOtomatis, 120); }).observe(document.body, {childList: true, subtree: true});
   /* panel kiri TETAP di semua halaman Pusdalops (pemilik 25 Nov 2026, pilihan A: "terlalu dinamis, jadinya pusing sendiri"): halaman tidak lagi mengisi panel;
      pakaiSlot mengembalikan null sehingga tiap halaman memakai tab di halamannya sendiri (cadangan layar sempit yang sudah ada) */
-  window.MenuPusdalops = {peta, pakaiSlot: () => null, slot: () => slot, grup: kepalaGrup, kaki: baris => { kaki.replaceChildren(kepalaGrup("Pembaruan data", "kalender"), ...baris.map(([w, label, nilai]) => { const r = el("div", "db-nav-pb"), d = el("i", "db-nav-dot"); d.style.setProperty("--w", w); r.append(d, el("span", null, label), el("b", null, nilai)); r.style.setProperty("--w", w); return r; })); }};
+  /* ikon dan dalam dipakai pintu /bnpb (pintu.js): ikon butir dan tanda "membuka dashboard lain" sama persis dengan panel kiri */
+  window.MenuPusdalops = {peta, ikon: n => ikon(ikonAman(n) ? n : "daftar"), dalam: DALAM, pakaiSlot: () => null, slot: () => slot, grup: kepalaGrup, kaki: baris => { kaki.replaceChildren(kepalaGrup("Pembaruan data", "kalender"), ...baris.map(([w, label, nilai]) => { const r = el("div", "db-nav-pb"), d = el("i", "db-nav-dot"); d.style.setProperty("--w", w); r.append(d, el("span", null, label), el("b", null, nilai)); r.style.setProperty("--w", w); return r; })); }};
   const pasangSamping = () => { const main = document.querySelector("body > main"); if (!main || main.closest(".mp-a")) return;
     const w = el("div", "mp-a"); main.before(w); w.append(samping, main); document.body.classList.add("mp-model-a"); taruhKeluar(); tarik(w);
     pulihGulir(); requestAnimationFrame(pulihGulir); };

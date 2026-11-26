@@ -1,23 +1,134 @@
-/* Pintu /bnpb. Token dan kartu dari bnpb.css. Tanpa gaya inline (CSP). */
-.pt-daftar{display:grid;gap:20px}
-.pt-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
-.pt-kartu{display:grid;align-content:start;gap:10px;color:var(--ink);text-decoration:none;transition:box-shadow .15s}
-.pt-kartu h2{display:flex;align-items:center;gap:8px;margin:0;font-size:var(--fs-4)}
-.pt-kartu svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
-.pt-kartu h2>svg{width:20px;height:20px;color:var(--navy2)}
-.pt-panah{margin-left:auto;display:inline-flex;color:var(--ink3)}
-.pt-panah svg{width:16px;height:16px}
-.pt-kartu:hover{box-shadow:0 0 0 1px color-mix(in srgb,var(--c5) 45%,transparent),var(--bayang)}
-.pt-kartu:focus-visible{outline:2px solid var(--c5);outline-offset:2px}
-.pt-kartu:active{transform:scale(.99)}
-.pt-angka{display:grid;gap:2px;min-height:48px}
-.bn-pil svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.pt-kartu .bn-pil{justify-self:start}
-@media (max-width:420px){.pt-grid{grid-template-columns:minmax(0,1fr)}}
-.pt-admin{margin:18px 0 0;text-align:right}
+/* Pintu /bnpb (rombak 26 Nov 2026). Token dari tema.css lewat bnpb.css; tanpa literal warna, tanpa gaya inline (CSP).
+   Tiga lapis: hero berfoto dengan empat angka utama, pita terang angka lain, lalu kartu per grup berisi daftar baris rapat (dua kartu per baris). */
+.pt-daftar{display:grid;gap:16px}
+.pt-daftar svg,.pt-hero svg,.pt-pita svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* hero (rombak 26 Nov 2026, pemilik memilih gaya gabungan "pembatas slide" dan "daftar isi"): panel navy kepala (--head-bg) di kiri dipotong miring,
+   gambar Indonesia dari orbit (public/img/hero-nusantara.jpg, dari pemilik) di kanan. Selalu gelap di mode terang dan gelap; teks --on-head, aksen --head-hl.
+   Kiri: lambang BNPB di kiri judul, garis aksen di bawah judul, cincin konsentris samar, daftar grup bernomor. Kanan: logo KRIS di kotak putih
+   (seperti sampul deck, data/laporan-bnpb/generator/kris.py), empat angka utama di dasar gambar. Garis potongan berlapis: garis tipis bergradasi
+   dan pita jingga tembus pandang ("garis ini terlalu flat"); dicoba tanpa garis lalu dikembalikan pemilik ("balikin lagi"). */
+.pt-hero{--garis:color-mix(in oklch,var(--on-head) 18%,transparent);position:relative;min-height:300px;margin:0 0 12px;border-radius:22px;overflow:hidden;isolation:isolate;
+  background:var(--head-bg);color:var(--on-head);box-shadow:var(--bayang)}
+.pt-hero::before,.pt-hero::after{content:"";position:absolute;inset:0;z-index:-1;background:var(--head-bg);clip-path:polygon(0 0,50% 0,40% 100%,0 100%)}
+.pt-hero::after{background:linear-gradient(180deg,color-mix(in oklch,var(--head-hl) 25%,transparent) 0%,var(--head-hl) 55%,var(--head-hl) 100%);
+  clip-path:polygon(50% 0,50.55% 0,40.55% 100%,40% 100%)}
+.pt-hero-foto{position:absolute;top:0;right:0;bottom:0;width:64%;z-index:-2;background:url("/img/hero-nusantara.jpg") 38% 50%/cover no-repeat}
+.pt-hero-foto::after{content:"";position:absolute;inset:-1px;background:linear-gradient(180deg,transparent 40%,color-mix(in oklch,var(--head-bg) 88%,transparent) 100%)}
+.pt-hero-arsir{position:absolute;z-index:-1;inset:0;clip-path:polygon(50.55% 0,53.2% 0,43.2% 100%,40.55% 100%);
+  background:linear-gradient(180deg,transparent 0%,color-mix(in oklch,var(--head-hl) 22%,transparent) 60%,color-mix(in oklch,var(--head-hl) 30%,transparent) 100%)}
+/* kisi titik samar di ruang kosong antara judul dan potongan ("yang kiri tambahin ornamen dikit") */
+.pt-hero-titik{position:absolute;z-index:-1;top:26px;left:calc(40% - 40px);width:88px;height:55px;opacity:.28;
+  background:radial-gradient(circle,var(--on-head) 1.6px,transparent 2px) 0 0/11px 11px}
+.pt-hero-cincin{position:absolute;z-index:-1;left:-110px;bottom:-150px;width:380px;height:380px;border-radius:50%;
+  background:repeating-radial-gradient(circle,transparent 0 24px,color-mix(in oklch,var(--on-head) 8%,transparent) 24px 25px)}
+
+/* kiri: merek, judul, daftar grup */
+.pt-hero-kiri{position:relative;display:grid;align-content:start;gap:16px;width:41%;padding:26px 28px 22px;box-sizing:border-box}
+.pt-hero-merek{display:flex;align-items:center;gap:14px;min-width:0}
+.pt-hero-lambang{flex:none;width:62px;height:62px;filter:drop-shadow(0 2px 8px color-mix(in oklch,var(--head-bg) 70%,transparent))}
+.pt-hero-kepala{display:grid;gap:6px;min-width:0}
+.pt-hero-ey{margin:0;font-size:.6875rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--head-hl)}
+.pt-hero-kepala h1{margin:0;font:800 1.75rem/1.05 var(--display,inherit);letter-spacing:-.03em;white-space:nowrap;color:var(--on-head)}
+.pt-hero-kepala h1::after{content:"";display:block;width:40px;height:3px;margin-top:8px;border-radius:2px;background:var(--head-hl)}
+.pt-hero-tgl{margin:0;font-size:var(--fs-3,.875rem);font-weight:600;color:var(--on-head-2)}
+.pt-isi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;max-width:420px;list-style:none;margin:0;padding:0}
+.pt-isi a{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:9px;color:var(--on-head);text-decoration:none;font-size:.8125rem;font-weight:600}
+.pt-isi-no{display:grid;place-items:center;height:24px;border-radius:6px;background:color-mix(in oklch,var(--on-head) 14%,transparent);font-size:.6875rem;font-weight:800}
+.pt-isi li:first-child .pt-isi-no{background:var(--head-hl);color:var(--head-bg)}
+.pt-isi-nama{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pt-isi-jml{font-size:.6875rem;color:var(--on-head-2)}
+.pt-isi a:hover .pt-isi-nama{text-decoration:underline;text-underline-offset:3px}
+
+/* kanan: logo KRIS dan angka utama */
+.pt-hero-kris{position:absolute;top:16px;right:16px;padding:7px 12px;border-radius:10px;background:var(--on-head);box-shadow:0 2px 10px color-mix(in oklch,var(--head-bg) 45%,transparent)}
+.pt-hero-kris img{display:block;width:120px;height:auto}
+.pt-utama{position:absolute;left:calc(44% + 18px);right:22px;bottom:22px;display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr))}
+.pt-utama[aria-busy]{min-height:70px}
+.pt-utama-i{display:grid;align-content:start;gap:3px;min-width:0;padding:0 14px;text-decoration:none;color:var(--on-head)}
+.pt-utama-i:first-child{padding-left:0}
+.pt-utama-i+.pt-utama-i{border-left:1px solid var(--garis)}
+.pt-utama-nilai{font:800 1.875rem/1.05 var(--display,inherit);letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;text-shadow:0 1px 12px var(--head-bg)}
+.pt-utama-ket{font-size:.75rem;font-weight:600;line-height:1.3;color:var(--on-head-2);text-shadow:0 1px 8px var(--head-bg);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pt-utama-i:focus-visible,.pt-isi a:focus-visible{outline:2px solid var(--on-head);outline-offset:2px}
+
+/* gelembung tooltip angka (pintu.js bukaTip; pemilik 26 Nov 2026 "jadiin tooltip", "kasih penjelasan", "tooltipnya bagusin"): kepala ikon + nama dan
+   label mutu, angka besar dan keterangannya, penjelasan, kaki sumber dipisah garis; panah menunjuk tengah angka (--panah), muncul dengan geser halus */
+.pt-tip{position:fixed;z-index:60;display:grid;gap:8px;width:max-content;max-width:310px;padding:12px 14px;border-radius:14px;pointer-events:none;
+  background:var(--head-bg);color:var(--on-head);border:1px solid color-mix(in oklch,var(--on-head) 14%,transparent);box-shadow:var(--bayang);font-size:.75rem;line-height:1.45;
+  animation:pt-tip-masuk var(--dur-1,.12s) var(--ease,ease)}
+.pt-tip[hidden]{display:none}
+.pt-tip::before{content:"";position:absolute;left:var(--panah,50%);top:-6px;width:10px;height:10px;margin-left:-5px;rotate:45deg;background:var(--head-bg);
+  border-left:1px solid color-mix(in oklch,var(--on-head) 14%,transparent);border-top:1px solid color-mix(in oklch,var(--on-head) 14%,transparent)}
+.pt-tip.pt-tip-atas::before{top:auto;bottom:-6px;border:0;border-right:1px solid color-mix(in oklch,var(--on-head) 14%,transparent);border-bottom:1px solid color-mix(in oklch,var(--on-head) 14%,transparent)}
+.pt-tip svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.pt-tip-kepala{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.pt-tip-j{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:700;color:var(--on-head-2)}
+.pt-tip-j svg{width:14px;height:14px;color:var(--head-hl)}
+.pt-tip-mutu{flex:none;padding:1px 8px;border-radius:999px;font-size:.6875rem;font-weight:700;color:var(--head-hl);border:1px solid color-mix(in oklch,var(--head-hl) 45%,transparent)}
+.pt-tip-nilai{display:grid;gap:1px}
+.pt-tip-nilai b{font:800 1.375rem/1.1 var(--display,inherit);letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--on-head)}
+.pt-tip-nilai span{font-size:.75rem;font-weight:600;color:var(--on-head-2)}
+.pt-tip-arti{margin:0;font-size:.75rem;color:var(--on-head)}
+.pt-tip-sumber{margin:0;padding-top:8px;border-top:1px solid color-mix(in oklch,var(--on-head) 14%,transparent);font-size:.6875rem;color:var(--on-head-2)}
+.pt-tip-sumber span{display:block;margin-bottom:1px;font-size:.625rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:color-mix(in oklch,var(--on-head-2) 80%,transparent)}
+@keyframes pt-tip-masuk{from{opacity:0;translate:0 4px}to{opacity:1;translate:0 0}}
+
+/* pita terang angka lain, di bawah hero; grid 60 kolom, lebar tiap butir dari --span (pintu.js susun()) */
+.pt-pita{margin:0 0 16px;padding:12px 6px;border:1px solid var(--line);border-radius:16px;background:var(--card);box-shadow:var(--bayang)}
+.pt-pita[hidden]{display:none}
+.pt-pita-grid{display:grid;grid-template-columns:repeat(60,minmax(0,1fr));row-gap:10px;overflow:hidden}
+.pt-pita-grid>*{grid-column:span var(--span,10)}
+.pt-kecil{display:grid;gap:2px;min-width:0;padding:4px 16px;text-decoration:none;color:var(--ink);box-shadow:-1px 0 0 var(--line);transition:background var(--dur-1,.12s) var(--ease,ease)}
+.pt-kecil:hover{background:var(--surface)}
+.pt-kecil:focus-visible{outline:2px solid var(--info-tx);outline-offset:-2px}
+.pt-kecil-nama{display:flex;align-items:center;gap:6px;min-width:0;font-size:.75rem;font-weight:600;color:var(--ink2)}
+.pt-kecil-nama>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pt-kecil-nama svg{width:13px;height:13px;color:var(--info-tx)}
+.pt-kecil-nilai{font:800 1.25rem/1.15 var(--display,inherit);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* layar sempit: potongan miring dan pita kaca dilepas, gambar jadi latar penuh bertirai, angka dua kolom berbingkai */
+@media (max-width:900px){
+  .pt-hero{min-height:0}
+  .pt-hero::before,.pt-hero::after,.pt-hero-arsir,.pt-hero-titik{display:none}
+  .pt-hero::before,.pt-hero::after,  .pt-hero-foto{left:0;width:auto}
+  .pt-hero-foto::after{background:color-mix(in oklch,var(--head-bg) 82%,transparent)}
+  .pt-hero-kiri{width:auto;padding:46px 18px 16px}
+  .pt-hero-kepala h1{font-size:1.5rem}
+  .pt-hero-lambang{width:56px;height:56px}
+  .pt-isi{max-width:none}
+  .pt-hero-kris{top:12px;right:12px;padding:5px 9px}
+  .pt-hero-kris img{width:92px}
+  .pt-utama{position:static;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 18px 22px}
+  .pt-utama-i,.pt-utama-i:first-child{padding:9px 12px;border:1px solid var(--garis);border-radius:10px}
+  .pt-utama-i+.pt-utama-i{border-left:1px solid var(--garis)}
+  .pt-pita-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pt-pita-grid>*{grid-column:auto}
+}
+@media (prefers-reduced-motion:reduce){.pt-kecil{transition:none}.pt-tip{animation:none}}
+
+/* kartu grup: dua per baris, setinggi sama per baris; daftar halaman dua kolom di dalamnya, baris sama tinggi */
+.pt-grup-grid{display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.ex.ex-std.pt-grup{display:flex;flex-direction:column;margin:0}   /* kartu.css .ex+.ex memberi margin-top 20px: di grid jarak sudah dari gap */
+.pt-grup>.ex-bd{padding:8px;flex:1;align-content:start}
+.pt-butir{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 8px}
+.pt-baris{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:10px;min-height:40px;padding:5px 8px;line-height:1.25;border-radius:10px;color:var(--ink);text-decoration:none;font-size:var(--fs-3,.875rem);font-weight:600;
+  transition:background var(--dur-1,.12s) var(--ease,ease)}
+.pt-baris:hover{background:var(--surface)}
+.pt-baris:focus-visible{outline:2px solid var(--info-tx);outline-offset:-2px;background:var(--surface)}
+.pt-baris:active{background:var(--line)}
+.pt-ik{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--surface);color:var(--info-tx)}
+.pt-ik svg{width:16px;height:16px}
+.pt-baris:hover .pt-ik{background:var(--card)}
+.pt-nama{overflow-wrap:anywhere}
+.pt-arah{display:grid;place-items:center;color:var(--ink3)}
+.pt-arah svg{width:13px;height:13px}
+@media (max-width:1100px){.pt-grup-grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.pt-butir{grid-template-columns:minmax(0,1fr)}}
+
+@media (prefers-reduced-motion:reduce){.pt-baris{transition:none}}
+@media (max-width:640px){.pt-hero{border-radius:16px}.pt-kecil{padding:4px 10px}.pt-kecil-nilai{font-size:1.125rem}}
+
+.pt-admin{margin:4px 0 0;text-align:right}
 .pt-admin a{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-3);font-weight:600;color:var(--ink3);text-decoration:none}
 .pt-admin a:hover{color:var(--ink)}
-.pt-admin svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-/* kartu halaman tanpa angka hidup: hanya bilah judul, tanpa isi kosong di bawahnya */
-.pt-grid{align-items:start}
-.pt-kartu.pt-polos>h2:first-child{margin-bottom:-16px;border-bottom:0}
+.pt-admin svg{width:14px;height:14px}
