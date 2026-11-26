@@ -99,12 +99,10 @@ test("N9b medsos: 'Belum tersambung', tanpa angka", () => {
   assert.deepEqual(saring(gabung(kabar(), [warga()]), {sumber: "medsos"}), [], "Saringan medsos mengembalikan kartu padahal tak ada data medsos.");
 });
 
-test("N10 selama kabar.json tidak dilacak git, data/alun/ ada di .assetsignore dan .gitignore", () => {
-  const dilacak = execFileSync("git", ["ls-files", "public/data/alun/kabar.json"], {cwd: ROOT, encoding: "utf8"}).trim();
-  if (dilacak) return; // Q2 sudah dijawab pemilik: berkas boleh publik, gerbang tak berlaku
+test("N10 Q2 dijawab terbit (26 Nov 2026): data/alun/ tidak ditahan .assetsignore atau .gitignore", () => {
   const baris = t => t.split("\n").map(s => s.trim());
-  assert.ok(baris(baca("public/.assetsignore")).includes("data/alun/"), "public/.assetsignore kehilangan 'data/alun/'. Akibatnya kabar resmi harian ikut terbit publik sebelum Q2 dijawab. Tambahkan barisnya.");
-  assert.ok(baris(baca(".gitignore")).some(s => s === "public/data/alun/" || s === "data/alun/"), ".gitignore kehilangan 'public/data/alun/'. Akibatnya kabar.json bisa ter-commit ke repo publik. Tambahkan barisnya.");
+  assert.ok(!baris(baca("public/.assetsignore")).includes("data/alun/"), "public/.assetsignore memuat 'data/alun/'. Pemilik sudah memutuskan kabar resmi terbit (K5); hapus barisnya.");
+  assert.ok(!baris(baca(".gitignore")).some(s => s === "public/data/alun/" || s === "data/alun/"), ".gitignore memuat 'public/data/alun/'. Pemilik sudah memutuskan kabar resmi terbit (K5); hapus barisnya.");
 });
 
 test("N11 keluaran teksKartu: tanpa titik tengah, tanpa 'aman', tanpa kunci terlarang", () => {

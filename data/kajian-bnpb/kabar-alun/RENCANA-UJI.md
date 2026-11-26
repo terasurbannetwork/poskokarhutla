@@ -36,7 +36,7 @@ Uji `--cek` murni tanpa jaringan; fixture dibuat di dalam uji. Uji Node memakai 
 | N7 | `kabar.json` tidak ada | Alun-alun tampil seperti sekarang, tanpa galat |
 | N8 | Tautan `javascript:` pada berita | tampil sebagai teks, bukan `<a>` |
 | N9 | Pita kosong; `dampak` warga semua 0 | "Belum ada ..." dan tidak ada angka 0 |
-| N10 | Gerbang Q2: selama `public/data/alun/kabar.json` tidak dilacak git (`git ls-files`), `public/.assetsignore` dan `.gitignore` memuat `data/alun/` | gagal bila salah satu baris hilang |
+| N10 | Sesudah K5: `public/.assetsignore` dan `.gitignore` tidak menahan `data/alun/` | gagal bila salah satu baris muncul lagi |
 | N11 | Pindai keluaran `teksKartu` | tanpa titik tengah sebagai pemisah, tanpa `\baman\b`, tanpa literal warna baru |
 | N12 | `gabung` dengan `selesai_lama = true` | tersembunyi di tampilan bawaan, muncul di saringan Selesai |
 

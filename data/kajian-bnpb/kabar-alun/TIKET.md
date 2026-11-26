@@ -13,7 +13,7 @@ Kerjakan urut. Tiap tiket hanya cakupannya. Bukti siap = perintah di RENCANA-UJI
 | KA-06 | Layar Alun-alun: muat `kabar.json`, titik di peta, kartu kejadian `.ex.ex-std` empat pita memakai `teksKartu`, saringan status termasuk Selesai, kesegaran per kejadian; teks lewat `bahasa-indonesia-plain`; panduan `modern-web-guidance` dirujuk dulu | layar-peta | N6, N7, N8, N11; tangkapan layar desktop dan HP; `inp-reviewer`, `selera-angka`; tinjau `http://localhost:8800/lapor/` | KA-05 |
 | KA-07 | Pita Media sosial "Belum tersambung" dan teks penjelasan; tidak ada unggahan atau angka | layar-peta | N9, P13 | KA-06 |
 | KA-08 | Sambung medsos sesuai jalur yang dipilih (jumlah per kejadian dan tautan pencarian saja) | pipa-data | uji P11 tetap hijau; telaah Biro Hukum untuk jalur pihak ketiga | Q1 |
-| KA-09 | Terbitkan kabar resmi: hapus baris `data/alun/` dari `public/.assetsignore` dan `public/data/alun/` dari `.gitignore`, perbarui N10 dan KEAMANAN-PRIVASI | mekanik-mesin | `npm run uji:agen`; pemilik meninjau | Q2 |
+| KA-09 | Terbitkan kabar resmi: hapus baris `data/alun/` dari `public/.assetsignore` dan `public/data/alun/` dari `.gitignore`, perbarui N10 dan KEAMANAN-PRIVASI | mekanik-mesin | `npm run uji:agen`; pemilik meninjau | selesai 26 Nov 2026 (K5) |
 | KA-10 | Portal resmi (BMKG, PVMBG, BPBD) sebagai sumber berita tambahan | pipa-data | artikel cocok dari sumber baru, tanpa mengubah `cocok()` | Q5 |
 | KA-11 | Peringatan dini dan status gunung api ikut tampil | pipa-data, layar-peta | belum dirinci | Q7 |
 
