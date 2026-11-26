@@ -1,10 +1,24 @@
-# RISET: bahan yang sudah ada untuk mode Peringatan Alun-alun
+# RISET: Potensi Bencana Hidromet `/potensi`
 
 Dipetakan 26 Nov 2026 dari kode repo. Rujukan `berkas:baris` saat dipetakan; periksa ulang sebelum dipakai.
 
-## 1. Dashboard pembanding
+## 1. Dashboard pembanding (dianalisis ulang 26 Nov 2026, K5)
 
-Dashboard hidromet InaRISK (`inarisk.bnpb.go.id/dashboard-monev-bencana/dashboard-hidromet/`), diamati 26 Nov 2026 dari tangkapan layar pemilik. Bagiannya: kepala ringkas status tertinggi dan jumlah kab per status; kartu ONI dan IOD; tujuh kartu bahaya (banjir, banjir bandang, longsor, gelombang, karhutla, kekeringan, cuaca ekstrem); peta lingkaran per kab dengan menu lapisan (InaRISK, batas, BMKG CAP dan nowcast, prediksi hujan bulanan, angin, Himawari, GPM, titik panas); daftar kab teratas; peringatan BMKG aktif; matriks cara membaca status; analisis wilayah; prakiraan BMKG tingkat desa; desa bahaya tinggi terbanyak; rekomendasi per pihak; definisi; sumber data. Status mereka dari satu titik sampel Open-Meteo per kab tanpa uji balik terlihat; angka penduduk dari raster InaRISKPOP tanpa pembulatan. Cara kita dibahas di paket induk RISET bagian 6.
+Dashboard hidromet InaRISK (`inarisk.bnpb.go.id/dashboard-monev-bencana/dashboard-hidromet/`), aplikasi Leaflet. Bagian layar: Ringkasan, Peta, Dampak, Analisis wilayah, Rekomendasi, Definisi dan sumber, Simulasi banjir, WebGIS. Berkas yang dibaca dari peramban (diperiksa langsung):
+
+| Berkas | Isi | Dipakai kita |
+| --- | --- | --- |
+| `assets/hidromet/ews-engine.js` | modul murni: 7 bahaya, matriks kelas bahaya 0-3 kali pemicu 0-4, `hazardClass(counts)` kelas kab dari sebaran kelas desa (tinggi bila porsi desa kelas 3 paling sedikit 40 persen atau paling sedikit 30 desa kelas 3 dan 10 persen; sedang bila 10 persen kelas 3 atau 10 desa kelas 3 atau 60 persen kelas 2-3) | aturan sebaran kelas desa dipinjam sebagai aturan awal, dikunci bersidik (ALGORITMA 5); pemicu tidak (pemicu kita dari prakiraan 514 kab) |
+| `data/hidromet_kab.json` (0,5 MB) | 516 kab: titik sampel, desa wakil adm4, `hb` dan `hp` = jumlah desa per kelas [tanpa, rendah, sedang, tinggi] untuk 6 bahaya (baseline dan proyeksi), `pr` prioritas, `top` desa bahaya tinggi terbanyak. Meta: diturunkan dari `data/index.json` 83.518 desa; "tahun baseline, skenario, dan periode proyeksi tidak tercantum dalam atribut sumber" | ya (D7, D8) |
+| `data/impact/<wilayah>.json` (38 berkas) | per desa: kode adm4, nama, kecamatan, kab, koordinat terskala, kelas baseline 6 digit, kelas proyeksi 6 digit | ya, kelas per desa (D7) |
+| `data/village_pts.json` (1,5 MB) | 249.384 titik desa terskala | tidak; batas desa kita sendiri |
+| `data/pch/<bulan>/kab.json` | peluang hujan bulanan BMKG per kab, hasil unggahan CSV petugas | tidak (Q4: bila ya, dari rilis BMKG) |
+| `assets/hidromet/recommendations.js` | 4 pihak kali 3 fase (respons, kesiapsiagaan, mitigasi) kali 7 bahaya, ditambah butir umum dan konteks musiman. Kepala berkas: "disusun dari kerangka UU 24/2007, PP 21/2008, Perpres 87/2020, Permendagri 101/2018 ... bersifat generik ... bukan instruksi resmi". Tidak ada rujukan per butir | struktur ya; butir hanya dengan label generik (D11, Q3) |
+| `assets/hidromet/live-layers.js`, `notify.js` | CAP lewat proksi PHP, laporan hari ini InaRISK, notifikasi WA ke daftar penerima super user | tidak (D20) |
+| `assets/hidromet/content.js` | definisi dan daftar sumber | gagasan halaman Sumber (D17) |
+| sumber luar di `app.js` | Open-Meteo forecast, marine, flood; CAP BMKG; nowcasting ArcGIS phase2; ONI CPC; API BMKG adm4; GIBS; FIRMS; ImageServer InaRISK | yang setara sudah kita punya, kecuali API BMKG adm4 per desa (D10) |
+
+Pola tata letak diambil dari Foundry IDN-GRID (`foundry.vantis.sh/grid`) lewat tiruannya di repo `platformmeti` (`public/jaringan.html`, `public/jr_app.js`, kontrak `docs/perencanaan/KEMBARAN-JARINGAN.md`): pil tab, satu peta bersama untuk tab peta, panel lipat, lembar bawah di HP, tab baca terpisah (Ontologi, Ringkasan, Sumber), chip status fakta (Bersumber, Dihitung, Perkiraan, Menunggu data).
 
 ## 2. ONI dan IOD
 

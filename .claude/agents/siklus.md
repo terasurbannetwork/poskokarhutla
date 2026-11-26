@@ -50,6 +50,10 @@ Berkas milikmu (glob paling spesifik menang):
 - `scripts/siklus/dampak_peringatan.py`
 - `scripts/siklus/kelas_kab.py`
 - `public/data/kelas_bahaya_kab.json`
+- `scripts/siklus/kelas_desa_bnpb.py`
+- `public/data/kelas_desa_bnpb.json`
+- `public/data/kelas_desa/**`
+- `data/kajian-bnpb/potensi-hidromet/**`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

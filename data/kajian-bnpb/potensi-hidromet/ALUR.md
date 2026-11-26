@@ -1,33 +1,26 @@
 # ALUR
 
-## Warga
+## Publik
 
-1. Buka `/lapor`, pilih Peringatan.
-2. Lihat ringkas dan ONI/IOD; pilih pil bahaya (misal Banjir bandang).
-3. Peta mewarnai kab; daftar menampilkan kab teratas.
-4. Klik kab: kartu rincian, prakiraan BMKG per desa dimuat saat itu.
-5. Ganti hari di kartu kanan atas; peta dan daftar mengikuti.
-6. Buka sub-tab Analisis untuk gambaran nasional.
+1. Buka `/potensi` (dari menu, dari Alun-alun mode Peringatan, atau langsung). Tab bawaan: Status, pilihan hari "3 hari".
+2. Pilih pil bahaya; peta dan daftar mengikuti. Putar garis waktu Hari ini sampai Lusa.
+3. Klik kab di peta atau daftar: kartu fakta di panel; prakiraan BMKG per desa dimuat saat itu.
+4. Tab Dampak: peringatan BMKG yang aktif dan keterpaparannya per kab.
+5. Tab Iklim: ONI, IOD, hari tanpa hujan, debit.
+6. Tab Analisis, Lapisan, Ringkasan, Sumber: baca.
+7. Alamat menyimpan tab, bahaya, hari, dan kab (`/potensi#status?b=bnj&h=1&kab=3501`) supaya bisa dibagikan.
 
 ## Staf
 
-Sama, ditambah di kartu rincian: tabel per desa (rute `/desa`), unduh CSV, dan rekomendasi per pihak (rute `/rekomendasi`). Masuk lewat `/admin/masuk`.
+Sama, ditambah: tab Rekomendasi muncul sesudah rute sesi menjawab sah; kartu fakta dan tab Dampak memuat tabel per desa, fasilitas bernama, CSV. Masuk lewat `/admin/masuk`.
 
-## Pipeline per jam (`dampak_peringatan.yml`)
+## Pipeline
 
-1. Keterpaparan (induk).
-2. `status_prakiraan.py` (sekarang dengan BDG).
-3. `analisis_wilayah.py` membaca `status.json`, `prediksi.json`, `kelas_bahaya_kab.json`, kelas desa, `kekeringan_hth.json`, debit kab, menulis `analisis.json`.
-4. Unggah ke R2 `dampak_peringatan/`.
-
-## Bulanan
-
-`kelas_kab.py --bangun` dengan bahaya tambahan dan kelas per desa.
-
-## Harian
-
-`hth.py`, `debit_glofas.py` dengan keluaran publik ringkas, `iklim.py` (mingguan) dengan cadangan IOD.
+- Per jam (`dampak_peringatan.yml`): keterpaparan (induk), `status_prakiraan.py` (dengan BDG dan K dari kelas desa), `analisis_wilayah.py`, unggah R2.
+- Harian: `hth.py`, `debit_glofas.py` keluaran ringkas, runner BMKG desa bila Q2 jatuh ke jalur cadangan.
+- Mingguan: `iklim.py` dengan cadangan IOD.
+- Bulanan: `kelas_desa_bnpb.py` menarik berkas kelas desa BNPB, memeriksa bentuk dan jumlah desa, menulis `public/data/kelas_desa_bnpb.json` dan kelas kab.
 
 ## Galat
 
-Sumber hilang: blok tampil "belum terukur" dengan jam data terakhir. BMKG desa ditolak: "Prakiraan BMKG per desa belum bisa dimuat", tanpa angka.
+Sumber hilang: blok tampil "belum terukur" dengan tanggal data terakhir. BMKG desa ditolak: "Prakiraan BMKG per desa belum bisa dimuat", tanpa angka. Berkas kelas desa BNPB berubah bentuk: pipeline berhenti dan memakai tarikan terakhir yang lolos, tidak menulis berkas kosong.

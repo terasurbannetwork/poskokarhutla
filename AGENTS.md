@@ -732,6 +732,17 @@ Sebelum menyentuh status prakiraan per kab per bahaya, keterpaparan per desa dar
 
 Aturan berhentinya sama dengan §2.1. Pakai cara kita, bukan angka InaRISK (K8); satu mesin paparan (`paparan.py`); status berpil hipotesis sampai uji balik lulus, hijau Normal hanya bila semua sumber masuk dan segar, selain itu abu "belum terukur"; tidak pernah menulis "aman" atau "terdampak" sebagai fakta; angka dibulatkan di keluaran; angka antarsumber tidak dijumlah; rincian per desa hanya untuk staf (R2); tinjau tiap layar di `http://localhost:8800`.
 
+### 2.54 Potensi Bencana Hidromet (`/potensi`: tab Status, Dampak, Iklim, Analisis, Lapisan, Ringkasan, Sumber, Rekomendasi staf; kelas bahaya desa BNPB, status banjir bandang, ONI dan IOD, debit GloFAS per kab, prakiraan BMKG per desa): baca dulu, baru bangun
+
+Sebelum menyentuh halaman `/potensi`, kelas bahaya per desa dari berkas BNPB, kode status `BDG`, analisis wilayah, rute `/api/potensi/*` atau `/api/bmkg/desa`, atau katalog rekomendasi per pihak, baca dokumen di
+`data/kajian-bnpb/potensi-hidromet/` dengan urutan otoritas ini (`public/potensi/**` milik `layar-peta`; `scripts/siklus/kelas_desa_bnpb.py` milik `siklus`; `scripts/prediksi/status_prakiraan*`, `scripts/prediksi/analisis_wilayah.py` milik `prediksi`; `src/potensi.js`, `src/rekomendasi_katalog.js` milik `warga-api`; `public/inti/dampak_peringatan.*` milik `inti-layar`; `tests/potensi/**` milik `penulis-gerbang`). Paket induk `data/kajian-bnpb/dampak-peringatan/` tetap berlaku:
+
+1. `KEPUTUSAN-POTENSI.md`: keputusan pemilik K1-K5, rancangan D1-D21, pertanyaan terbuka Q1-Q8 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (status per hari, kelas kab dari kelas desa terkunci), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PH-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Rekomendasi per pihak hanya staf, tidak pernah di `public/` atau respons publik; debit dan nowcast bandang tidak menaikkan status; status dan kelas baru berpil hipotesis sampai uji balik lulus; kelas desa kosong "belum terukur", tidak pernah rendah atau 0; yang ditiru dari Foundry dan METI pola tata letak, bukan rupa atau angka; tanpa kotak tanya; tidak pernah menulis "aman"; tinjau di `http://localhost:8800/potensi`.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

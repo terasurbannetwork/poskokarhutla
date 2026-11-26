@@ -114,6 +114,31 @@ def status_iod(dmi):
     return ("IOD positif" if r >= AMBANG_IOD else "IOD negatif" if r <= -AMBANG_IOD else "Netral"), round(r, 2)
 
 
+BASI_IOD, BASI_ONI = 21, 45
+MUSIM_ONI = "DJF JFM FMA MAM AMJ MJJ JJA JAS ASO SON OND NDJ".split()
+
+
+def pilih_iod(dmi_tgl, dmi8, dmi_basi, bom, hari_ini):
+    """DMI NOAA rerata 8 minggu bila tak macet; selain itu nilai BoM terakhir (bom = [{akhir_minggu, iod}] atau None). basi bila umur > BASI_IOD hari."""
+    if not dmi_basi and dmi8 is not None:
+        tgl, nilai, sumber = dmi_tgl, dmi8, "NOAA OSMC DMI"
+    elif bom:
+        tgl, nilai, sumber = bom[-1]["akhir_minggu"], bom[-1]["iod"], "BoM IOD"
+    else:
+        return {"nilai": None, "tgl_data": None, "umur_hari": None, "sumber": None, "basi": True}
+    umur = (hari_ini - dt.date.fromisoformat(tgl)).days
+    return {"nilai": nilai, "tgl_data": tgl, "umur_hari": umur, "sumber": sumber, "basi": umur > BASI_IOD}
+
+
+def info_oni(o, hari_ini):
+    """ONI terakhir + umur dari tengah bulan terakhir musimnya (tahun CPC = tahun bulan tengah); basi bila > BASI_ONI hari."""
+    a = o[-1]
+    akhir = MUSIM_ONI.index(a["musim"]) + 2             # bulan terakhir musim: DJF -> 2 (Feb), NDJ -> 13 (Jan tahun berikutnya)
+    thn, bln = a["tahun"] + (akhir - 1) // 12, (akhir - 1) % 12 + 1
+    umur = (hari_ini - dt.date(thn, bln, 15)).days
+    return {"nilai": a["nilai"], "musim": a["musim"], "tahun": a["tahun"], "umur_hari": umur, "basi": umur > BASI_ONI}
+
+
 def bobot(w_enso, iod):
     """36 bobot El Niño per dasarian (lihat aturan di docstring modul)."""
     return [min(1.0, w_enso + (0.25 if iod == "IOD positif" and d >= 18 else 0)) for d in range(36)]
@@ -131,15 +156,21 @@ def bangun():
            if abs(v) < 50][-104:]
     status, w = status_enso(alert, o[-1]["nilai"])
     iod, dmi8 = status_iod(dmi)
+    dmi8_mentah, hari_ini = dmi8, dt.date.today()
     umur = (dt.date.today() - dt.date.fromisoformat(dmi[-1]["tgl"])).days
     basi = umur >= 45
     if basi:   # sumber OSMC berhenti: nilai null berlabel umur, bukan data basi dan bukan henti total
         print(f"PERINGATAN: DMI terakhir {dmi[-1]['tgl']} sudah {umur} hari; iod_status/dmi_8_minggu = null, bobot tanpa tambahan IOD", file=sys.stderr)
         iod, dmi8 = None, None
+    try:
+        bom = iod_mingguan(ambil(IOD_BOM).decode())
+    except Exception as e:
+        print("iod BoM gagal:", e, file=sys.stderr); bom = None
     out = {"dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes"),
            "status": status, "cpc_status": alert, "cpc_sinopsis": sinopsis,
            "oni_terakhir": o[-1], "roni_terakhir": r[-1] if r else None,
            "iod_status": iod, "dmi_8_minggu": dmi8, "dmi_umur_hari": umur, "dmi_basi": basi,
+           "iod": pilih_iod(dmi[-1]["tgl"], dmi8_mentah, basi, bom, hari_ini), "oni_status": info_oni(o, hari_ini),
            "bobot_el_nino": bobot(w, iod),
            "aturan": "peluang[d] = w[d]*p_el_nino[d] + (1-w[d])*p_biasa[d]; w = 1 El Niño Advisory, 0,5 El Niño Watch, 0 lainnya; +0,25 Jul-Des bila DMI 8 minggu >= +0,4",
            "oni": o, "roni": r, "dmi": dmi,
@@ -159,6 +190,15 @@ def uji():
     assert status_iod([{"nilai": 0.5}] * 8)[0] == "IOD positif" and status_iod([{"nilai": 0.1}] * 8)[0] == "Netral"
     b = bobot(0.5, "IOD positif")
     assert b[0] == 0.5 and b[18] == 0.75 and bobot(1.0, "IOD positif")[30] == 1.0
+    h = dt.date(2026, 11, 26)
+    b = [{"akhir_minggu": "2026-11-15", "iod": 0.8}]
+    assert pilih_iod("2026-09-27", 0.3, False, b, h)["sumber"] == "NOAA OSMC DMI" and pilih_iod("2026-09-27", 0.3, False, b, h)["basi"] is True
+    x = pilih_iod("2026-09-27", None, True, b, h)
+    assert (x["sumber"], x["nilai"], x["umur_hari"], x["basi"]) == ("BoM IOD", 0.8, 11, False)
+    assert pilih_iod("2026-09-27", None, True, [{"akhir_minggu": "2026-10-01", "iod": 0.1}], h)["basi"] is True
+    assert pilih_iod("2026-09-27", None, True, None, h)["nilai"] is None
+    assert info_oni([{"tahun": 2026, "musim": "ASO", "nilai": 1.0}], h)["umur_hari"] == 42    # tengah Okt (bulan terakhir ASO) -> 26 Nov
+    assert info_oni([{"tahun": 2025, "musim": "NDJ", "nilai": 1.0}], dt.date(2026, 1, 20))["umur_hari"] == 5
     # netCDF3: 1 dimensi rekaman TIME, 2 variabel rekaman (double, float), 2 rekaman
     def s(x):
         e = x.encode(); return struct.pack(">I", len(e)) + e + b"\0" * (-len(e) % 4)
