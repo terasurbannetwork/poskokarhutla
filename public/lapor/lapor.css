@@ -3344,9 +3344,14 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-donat{position:relative;display:block;width:var(--d);height:var(--d);padding:0;border:0;background:none;cursor:pointer;filter:drop-shadow(0 1px 2px color-mix(in oklab,var(--head-bg) 35%,transparent))}
 .lp-donat[hidden]{display:none}
 .lp-donat svg{display:block;overflow:visible}
-.lp-donat-isi{fill:var(--card)}
+.lp-donat-isi{fill:var(--card);stroke:var(--card);stroke-width:3}
 .lp-donat-potong{fill:none;stroke:var(--k,var(--kat-lain))}
 .lp-donat-angka{fill:var(--head-bg);font:800 .8125rem var(--font)}
-.lp-donat-nama{position:absolute;left:calc(100% + 4px);top:50%;transform:translateY(-50%);white-space:nowrap;font:800 .6875rem var(--font);color:var(--head-bg);text-shadow:0 0 2px var(--card),0 0 2px var(--card),0 0 3px var(--card);pointer-events:none}
+.lp-donat-nama{position:absolute;left:calc(100% + 3px);top:50%;transform:translateY(-50%);white-space:nowrap;padding:2px 7px;border-radius:999px;background:var(--card);box-shadow:0 1px 3px color-mix(in oklab,var(--head-bg) 25%,transparent);font:800 .6875rem/1.3 var(--font);color:var(--head-bg);pointer-events:none}
 .lp-donat:focus-visible{outline:2px solid var(--brand2);outline-offset:3px;border-radius:50%}
 .lp-donat:hover .lp-donat-isi{fill:color-mix(in oklab,var(--brand2) 10%,var(--card))}
+/* gunung api Siaga/Awas di skala provinsi: segitiga oranye bernama, ikut aturan tanpa tumpukan */
+.lp-gunung-tanda{position:relative;width:18px;height:16px;pointer-events:none}
+.lp-gunung-tanda i{position:absolute;inset:0;background:var(--lh-gunungapi);clip-path:polygon(50% 0,100% 100%,0 100%);filter:drop-shadow(0 0 1px var(--card))}
+.lp-gunung-tanda span{position:absolute;top:calc(100% + 2px);left:50%;transform:translateX(-50%);white-space:nowrap;padding:1px 6px;border-radius:999px;background:var(--card);font:800 .625rem/1.3 var(--font);color:var(--lh-gunungapi);box-shadow:0 1px 3px color-mix(in oklab,var(--head-bg) 20%,transparent)}
+.lp-gunung-tanda span[hidden],.lp-donat-nama[hidden]{display:none}
