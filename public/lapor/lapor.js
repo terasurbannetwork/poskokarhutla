@@ -1804,7 +1804,7 @@ const TINGKAT_PROV = [[1, .07, "1 sampai 2"], [3, .14, "3 sampai 5"], [6, .23, "
 const tingkatProv = n => TINGKAT_PROV.reduce((o, [a, v]) => n >= a ? v : o, 0);
 const isiProv = () => { const m = []; for (const [k, g] of alunGrup) if (/^\d{2}$/.test(k)) m.push(k, tingkatProv(g.n)); return m.length ? ["match", ["get", "kode"], ...m, 0] : 0; };
 /* ruang untuk panel daftar (kiri di layar lebar, bawah di HP) dan legenda bersaringan jenis di bawah */
-const padPeta = () => matchMedia("(min-width:900px)").matches ? {top: 48, bottom: 170, left: 440, right: 60} : {top: 64, bottom: 48 + innerHeight * .42, left: 32, right: 32};
+const padPeta = () => matchMedia("(min-width:900px)").matches ? {top: 48, right: 60, bottom: 40 + (document.getElementById("legendaAlun")?.offsetHeight || 130), left: 440} : {top: 64, bottom: 48 + innerHeight * .42, left: 32, right: 32};
 /* cincin donat per provinsi (pemilik 26 Nov 2026: "Ya, pakai donat"): satu penanda SVG per provinsi, angka total di tengah, potongan cincin per jenis
    sebanding jumlahnya dengan warna yang sama dengan pil tabel (kelas lp-jenis-*), diameter mengikuti akar total. Penanda DOM ringan, hanya di skala provinsi. */
 const ZOOM_NASIONAL = 5.2;   // sama dengan peta karhutla (public/index.html): diperkecil pengguna di bawah ini = tingkat provinsi dilepas ke Indonesia
@@ -1855,7 +1855,7 @@ function letakLabel(px, py, rx, ry, teks, huruf, kotak, layar, urut) {
 }
 /* panel daftar, legenda, dan tombol zoom menutupi peta: label tidak diletakkan di bawahnya */
 const halangPeta = kv => { const o = kv.getBoundingClientRect();
-  return [...kv.closest("#petaAlun").querySelectorAll(".lp-alun-panel, #legendaAlun, .maplibregl-ctrl-top-right")].filter(e => e.offsetParent).map(e => { const r = e.getBoundingClientRect();
+  return [...kv.closest("#petaAlun").querySelectorAll(".lp-alun-panel, #legendaAlun, #periodeAlun, .maplibregl-ctrl-top-right")].filter(e => e.offsetParent).map(e => { const r = e.getBoundingClientRect();
     return {x1: r.left - o.left - 4, x2: r.right - o.left + 4, y1: r.top - o.top - 4, y2: r.bottom - o.top + 4}; }); };
 const tabrak = (a, b) => a.x1 < b.x2 && b.x1 < a.x2 && a.y1 < b.y2 && b.y1 < a.y2;
 function pasangDonat() { gambarDonat(); }
@@ -1944,10 +1944,8 @@ async function gambarPetaAlun(daftar) {
   // legenda di bawah peta seperti peta karhutla, bisa dilipat; label sama dengan status di kartu (alun_kabar.js STATUS_LABEL), warna sama dengan W di atas
   const lg = el("section", "lp-alun-legenda"); lg.id = "legendaAlun"; lg.setAttribute("aria-label", "Legenda peta"); lg.hidden = alunMode === "peringatan";
   const lgT = el("button", "lp-alun-legenda-t"); lgT.type = "button"; lgT.setAttribute("aria-expanded", "true"); lgT.append("Legenda", ikon("i-panah", "lp-kb-panah"));
-  const lgI = el("div", "lp-alun-legenda-isi"), g1 = el("div"), g2 = el("div"), st = el("ul");
-  for (const [teks, warna] of [["Berjalan", warnaWarn], ["Belum", W.belum], ["Selesai", W.selesai], ["Belum ada laporan resmi", W.tanpa]]) {
-    const li = el("li", null, teks), t = el("i"); t.style.background = warna; li.prepend(t); st.append(li); }
-  g1.append(el("b", null, "Status kejadian"), st);
+  // status kejadian tidak tergambar di peta (cincin = jenis), jadi tidak masuk legenda; statusnya ada di tabel dan pop-up
+  const lgI = el("div", "lp-alun-legenda-isi"), g2 = el("div");
   const jl = el("div", "lp-alun-legenda-jenis");   // chip jenis bertitik warna sama dengan potongan cincin, sekaligus saringan (boleh lebih dari satu)
   jl.setAttribute("role", "group"); jl.setAttribute("aria-label", "Saring jenis bencana");
   for (const [j, teks] of [["", "Semua jenis"], ...JENIS_CHIP]) { const b = el("button", "lp-jn-chip", teks); b.type = "button"; b.dataset.jenis = j;
@@ -1957,7 +1955,8 @@ async function gambarPetaAlun(daftar) {
     segarChipJenis(); gambarAlun(); });   // chrome langsung, daftar dan peta ditunda di gambarAlun
   const tk = el("ul", "lp-alun-legenda-tingkat");
   for (const [, , teks] of TINGKAT_PROV) { const li = el("li", null, teks); li.prepend(el("i")); tk.append(li); }
-  g2.append(el("b", null, "Angka = total kejadian, warna cincin = jenis"), jl, el("b", null, "Kejadian per provinsi"), tk); lgI.append(g2, g1);
+  const tkB = el("div", "lp-alun-legenda-baris"); tkB.append(el("b", null, "Kejadian per provinsi"), tk);
+  g2.append(el("b", null, "Angka = total kejadian, warna cincin = jenis"), jl, tkB); lgI.append(g2);
   lgT.addEventListener("click", () => { const buka = lgI.hidden; lgI.hidden = !buka; lgT.setAttribute("aria-expanded", String(buka)); });
   if (!matchMedia("(min-width:900px)").matches) { lgI.hidden = true; lgT.setAttribute("aria-expanded", "false"); }   // HP: terlipat, peta tetap lega
   lg.append(lgT, lgI); wp.append(lg); segarChipJenis();
@@ -2087,6 +2086,12 @@ function pitaPeriode() {
   const ref = alunKabar?.hari; if (ref) { const a = el("small", "lp-redup"); a.textContent = alunPeriode ? `sampai ${tglPendekId(ref)}` : `data ${tglPendekId(akhirAwal())} sampai ${tglPendekId(ref)}`; d.append(a); }
   return d;
 }
+/* layar lebar: periode jadi kartu "Tanggal data" di kanan atas peta seperti peta utama (pemilik 26 Nov 2026); HP: tetap di atas daftar. Hasil = isi untuk daftar */
+function taruhPeriode() {
+  const lama = $("periodeAlun"); if (!matchMedia("(min-width:900px)").matches) { lama?.remove(); return [pitaPeriode()]; }
+  const k = el("section", "lp-alun-tanggal"); k.id = "periodeAlun"; k.setAttribute("aria-label", "Tanggal data"); k.append(el("b", null, "Tanggal data"), pitaPeriode());
+  if (lama) lama.replaceWith(k); else $("petaAlun").append(k); return [];
+}
 const tglPendekId = iso => { const m = /^(\d{4})-(\d\d)-(\d\d)/.exec(iso || ""); return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"}) : ""; };
 const akhirAwal = () => (alunKabar?.kejadian || []).map(k => k.lap_terakhir).filter(Boolean).sort()[0] || alunKabar?.hari;
 const muatWilayah = () => muatWilayah.j ||= new Promise(ok => { if (window.Wilayah) return ok();
@@ -2190,9 +2195,9 @@ function gambarKabar(ikut) {
       const k = el("div", "lp-kosong-besar"), m = el("div", "lp-kosong-maskot"); m.innerHTML = maskot("berpikir");
       const tx = el("div", "lp-kosong-teks"); tx.append(el("h2", null, alunJenis === "diikuti" ? "Belum ada kejadian yang Anda ikuti" : alunSumber === "medsos" ? "Media sosial belum tersambung" : "Belum ada kejadian untuk saringan ini"),
         el("p", null, alunSumber === "medsos" ? "Belum ada unggahan media sosial yang ditampilkan." : alunPeriode ? "Coba periode yang lebih panjang, atau ganti saringan jenis atau sumber." : "Coba ganti saringan jenis atau sumber."));
-      k.append(m, tx); return w.replaceChildren(pitaPeriode(), k);
+      k.append(m, tx); return w.replaceChildren(...taruhPeriode(), k);
     }
-    w.replaceChildren(pitaPeriode(), ...(alunJenis === "selesai" ? [el("p", "lp-redup lp-kb-catatan", "Kejadian selesai yang tampil hanya yang tercatat dalam 8 hari terakhir.")] : []));
+    w.replaceChildren(...taruhPeriode(), ...(alunJenis === "selesai" ? [el("p", "lp-redup lp-kb-catatan", "Kejadian selesai yang tampil hanya yang tercatat dalam 8 hari terakhir.")] : []));
     if (!alunProv) return tabelProvinsi(w, semuaProv);   // Status gunung api pindah ke tampilan Peringatan (pemilik 26 Nov 2026)   // tampilan awal: dikelompokkan per provinsi seperti panel karhutla (pemilik 26 Nov 2026)
     w.append(kepalaProvinsi(alunProv, daftar.length));
     tabelKejadianProv(w, daftar, ikut, giliran);   // pemilik 26 Nov 2026: "ga bisa dibuat kaya tabel gitu aja?": satu baris per kejadian, kartu lengkap terbuka di bawah baris yang diketuk
@@ -2233,7 +2238,7 @@ async function nyalakanPeringatan() {
 function setModeAlun(mode, bahaya) {
   const per = mode === "peringatan"; alunMode = mode; if (bahaya) dpBahaya = bahaya;
   for (const b of $("modeAlun").children) b.setAttribute("aria-selected", String(b.dataset.mode === mode));   // chrome langsung
-  $("saringPanel").hidden = per; $("daftarAlun").hidden = per; if ($("legendaAlun")) $("legendaAlun").hidden = per; $("isiPeringatan").hidden = !per; $("sumberAlun").hidden = !alunKabar;
+  $("saringPanel").hidden = per; $("daftarAlun").hidden = per; if ($("legendaAlun")) $("legendaAlun").hidden = per; if ($("periodeAlun")) $("periodeAlun").hidden = per; $("isiPeringatan").hidden = !per; $("sumberAlun").hidden = !alunKabar;
   requestAnimationFrame(() => {   // kerja berat ditunda
     if (alunMode !== mode) return;
     if (typeof gambarDonat === "function") gambarDonat();   // cincin dan gunung api penanda DOM: ikut sembunyi di mode Peringatan
