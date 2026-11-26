@@ -131,13 +131,8 @@ def selisih(jiwa):
     return round(max(v) - min(v)) if len(v) >= 2 else None
 
 
-def hitung_kab(sel, zonas, desa, wp, ghsl=None, kelas_h=None):
-    """sel [(i, j, n, luas_m2, kec, lon, lat)] sel halus kabupaten; desa [(id, kec, lon, lat, jiwa)]; wp {kec: jiwa WorldPop};
-    ghsl {kunci_zona: jiwa}|None; kelas_h {(i, j): {bahaya: H}}|None. -> dict kabupaten."""
-    kec_n, kec_luas = {}, {}
-    for i, j, n, a, kc, lo, la in sel:
-        kec_n[kc] = kec_n.get(kc, 0) + n
-        kec_luas[kc] = kec_luas.get(kc, 0) + a
+def _penetapan(sel, desa):
+    """Sel -> desa Dukcapil terdekat dalam kecamatan yang sama. -> (bangunan per desa, {(i, j): id desa|None}). Dipakai hitung_kab dan hitung_desa."""
     des_kec = {}
     for d in desa:
         des_kec.setdefault(d[1], []).append((d[0], d[2], d[3]))
@@ -148,6 +143,51 @@ def hitung_kab(sel, zonas, desa, wp, ghsl=None, kelas_h=None):
         penetapan[(i, j)] = did
         if did is not None:
             desa_n[did] = desa_n.get(did, 0) + n
+    return desa_n, penetapan
+
+
+def hitung_desa(sel, z, desa, kelas_h=None):
+    """DP-03, tidak mengubah hitung_kab: rincian per desa Dukcapil dalam satu zona z. desa [(id, kec, lon, lat, jiwa[, balita, lansia, pria, wanita])];
+    kelas_h {(i, j): H|None}|None (H bahaya z; boleh hanya sebagian sel: pembagi kelas = bangunan sel yang disampel). Nilai MENTAH (belum dibulatkan). Hanya desa dengan porsi > 0.
+    -> {id: {"jiwa", "balita", "lansia", "jiwa_kelas"|None, "jiwa_jk": (laki, perempuan)|(None, None)}}; kelas: tak terliput berdiri sendiri."""
+    desa_n, pen = _penetapan(sel, desa)
+    t_des, kn = {}, {}
+    for i, j, n, a, kc, lo, la in sel:
+        did = pen[(i, j)]
+        if did is None or not z["fn"](lo, la):
+            continue
+        t_des[did] = t_des.get(did, 0) + n
+        if kelas_h is not None:
+            if (i, j) not in kelas_h:   # sel tak disampel (kelas_h sebagian): tidak ikut pembagi kelas
+                continue
+            k = HK.kelas(kelas_h[(i, j)]) or "tak_terliput"
+            kn.setdefault(did, {})[k] = kn.get(did, {}).get(k, 0) + n
+    out = {}
+    for d in desa:
+        tot = desa_n.get(d[0], 0)
+        por = t_des.get(d[0], 0) / tot if tot else (1.0 if z["fn"](d[2], d[3]) else 0.0)
+        if por <= 0:
+            continue
+        jw = d[4] * por
+        r = {"jiwa": jw, "balita": d[5] * por if len(d) > 5 and d[5] is not None else None,
+             "lansia": d[6] * por if len(d) > 6 and d[6] is not None else None, "jiwa_kelas": None,
+             "jiwa_jk": HK._T.jiwa_jk(jw, d[7], d[8]) if len(d) > 8 else (None, None)}
+        if kelas_h is not None:
+            kk = kn.get(d[0])
+            r["jiwa_kelas"] = ({k: jw * kk.get(k, 0) / sum(kk.values()) for k in (*HK.KELAS, "tak_terliput")} if kk else
+                               {**{k: 0.0 for k in HK.KELAS}, "tak_terliput": jw})   # desa tanpa bangunan: kelas tak diketahui
+        out[d[0]] = r
+    return out
+
+
+def hitung_kab(sel, zonas, desa, wp, ghsl=None, kelas_h=None):
+    """sel [(i, j, n, luas_m2, kec, lon, lat)] sel halus kabupaten; desa [(id, kec, lon, lat, jiwa)]; wp {kec: jiwa WorldPop};
+    ghsl {kunci_zona: jiwa}|None; kelas_h {(i, j): {bahaya: H}}|None. -> dict kabupaten."""
+    kec_n, kec_luas = {}, {}
+    for i, j, n, a, kc, lo, la in sel:
+        kec_n[kc] = kec_n.get(kc, 0) + n
+        kec_luas[kc] = kec_luas.get(kc, 0) + a
+    desa_n, penetapan = _penetapan(sel, desa)
     out = {"n": sum(kec_n.values()), "luas_m2": sum(kec_luas.values()), "kec": {kc: {"n": kec_n[kc], "luas_m2": kec_luas[kc], "jiwa_worldpop": wp.get(kc)} for kc in sorted(kec_n)},
            "zona": {}}
     for z in zonas:
@@ -242,7 +282,7 @@ def sel_kab(prov, kab4, akar=AKAR):
 
 
 def desa_dukcapil(prov, kab4, w, cache_dir):
-    """Desa Dukcapil satu kabupaten [(id, kec, lon, lat, jiwa)]; ArcGIS publik, jeda 2 dtk, cache di data/raw (git-ignored)."""
+    """Desa Dukcapil satu kabupaten [(id, kec, lon, lat, jiwa, balita, lansia, pria, wanita)]; ArcGIS publik, jeda 2 dtk, cache di data/raw (git-ignored)."""
     cache = os.path.join(cache_dir, f"dukcapil_{kab4}.json")
     if os.path.exists(cache):
         mentah = json.load(open(cache))
@@ -264,7 +304,7 @@ def desa_dukcapil(prov, kab4, w, cache_dir):
     out = []
     for d in mentah:
         r = w.cari(d["x"], d["y"])
-        out.append((d["oid"], r[2] if r else None, d["x"], d["y"], d["n"]))
+        out.append((d["oid"], r[2] if r else None, d["x"], d["y"], d["n"], d.get("b"), d.get("l"), d.get("pria"), d.get("wanita")))   # DP-03: indeks 5..8 tambahan, hitung_kab hanya membaca 0..4
     return out
 
 
@@ -451,6 +491,17 @@ def _uji():
     gp = json.load(open(os.path.join(AKAR, "tests/siklus/fixtures/paparan_golden_poligon.json"), encoding="utf-8"))
     hg = hitung_kab(sel, [zona_dari_bagian([persegi], "banjir", "poligon"), tak_tersedia("rob", "x")], desa, wp)
     assert json.loads(json.dumps(hg, sort_keys=True)) == gp, "zona poligon berubah dari golden"
+    # DP-03 golden: desa 9 kolom (balita, lansia, pria, wanita) dan refaktor _penetapan tidak mengubah keluaran kab/kec/zona
+    d9 = [d + (10, 20, 480, 520) for d in desa]
+    assert json.loads(json.dumps(hitung_kab(sel, [zona_dari_bagian([persegi], "banjir", "poligon"), tak_tersedia("rob", "x")], d9, wp), sort_keys=True)) == gp, "keluaran lama berubah"
+    # hitung_desa: d1 menerima 200 bangunan di zona (semua bangunannya), pria 480 wanita 520 -> 288 dan 312
+    zp = zona_dari_bagian([persegi], "banjir", "poligon")
+    hd = hitung_desa(sel, zp, d9, {(0, 0): .2, (0, 1): None})
+    assert set(hd) == {"d1"} and hd["d1"]["jiwa"] == 600 and hd["d1"]["balita"] == 10 and hd["d1"]["lansia"] == 20, hd
+    assert hd["d1"]["jiwa_jk"] == (288, 312) and hd["d1"]["jiwa_kelas"] == {"rendah": 300, "sedang": 0, "tinggi": 0, "tak_terliput": 300}, hd
+    assert abs(sum(hd["d1"]["jiwa_kelas"].values()) - hd["d1"]["jiwa"]) < 1e-9   # P14
+    assert hitung_desa(sel, zp, desa)["d1"]["balita"] is None and hitung_desa(sel, zp, desa)["d1"]["jiwa_jk"] == (None, None)
+    assert hitung_desa(sel, z2, d9, {})["d4"]["jiwa_kelas"]["tak_terliput"] == 80   # desa tanpa bangunan: kelas tak diketahui, bukan rendah
     # GS-06 ALGORITMA 4: satu kec WorldPop 1.000; A 10 bangunan rasio 0,6; B 30 rasio 0,2; C 60 rasio 0 -> bawah 100, atas 400, GHSL null
     i0 = 100
     ctr = lambda j: (BG.LON0 + (j + .5) / BG.HALUS, BG.LAT0 + (i0 + .5) / BG.HALUS)
