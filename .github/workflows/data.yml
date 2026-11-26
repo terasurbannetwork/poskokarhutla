@@ -54,7 +54,7 @@ jobs:
 
       # cache public/data lama tidak boleh menimpa berkas yang di-commit tapi TIDAK dibuat ulang di sini: lapisan statis
       # (statis.yml) dan keluaran skrip lokal (sebaran/*, sejarah.py, riwayat_grid.py, lahan.py, osm.py, udara.py, daops.py,
-      # musim.py, luas_satelit.py). ls-files membuang path yang tidak ada, jadi satu path hilang tidak menggagalkan semuanya.
+      # musim.py, luas_satelit.py, logbook_bersih.py). ls-files membuang path yang tidak ada, jadi satu path hilang tidak menggagalkan semuanya.
       - name: Pakai lapisan statis dari repo, bukan dari cache
         run: |
           f=$(git ls-files public/data/opera_dist.json public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
@@ -62,7 +62,7 @@ jobs:
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
-            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json public/data/iklim_stasiun.json public/data/harga_komoditas.json public/data/ps.json public/data/tambang.json public/data/hgu_api.json public/data/menara.json public/data/foto_dasar.json public/data/bnpb/kerentanan.json public/data/bnpb/ikd.json public/data/bnpb/terpapar.json public/data/bnpb/risiko_hvc.json public/data/bnpb/puso.json)
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json public/data/iklim_stasiun.json public/data/harga_komoditas.json public/data/ps.json public/data/tambang.json public/data/hgu_api.json public/data/menara.json public/data/foto_dasar.json public/data/bnpb/kerentanan.json public/data/bnpb/ikd.json public/data/bnpb/terpapar.json public/data/bnpb/risiko_hvc.json public/data/bnpb/puso.json public/data/logbook_riwayat.json public/data/laphar_riwayat.json)
           git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       # arsip cluster hari LAMPAU yang di-commit (dibangun ulang, mis. definisi kolom berubah) menang atas cache: cache hanya

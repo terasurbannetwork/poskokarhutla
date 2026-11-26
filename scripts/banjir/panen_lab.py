@@ -195,6 +195,14 @@ def jam_int(j):
     return {h: v for h, v in o.items() if any(v)}
 
 
+def skema_berkas(f):
+    """Skema berkas imerg_kab yang sudah ada: 1 bila tanpa meta.skema, 0 bila rusak/terpotong."""
+    try:
+        return json.load(gzip.open(f, "rt")).get("meta", {}).get("skema", 1)
+    except (EOFError, OSError, ValueError):
+        return 0
+
+
 def cmd_imerg(a):
     tok = os.environ.get("EARTHDATA_TOKEN")
     if not tok:
@@ -203,7 +211,11 @@ def cmd_imerg(a):
     S = muat_sel(); os.makedirs(a.keluar, exist_ok=True)
     akhir = os.path.join(a.keluar, f"imerg_kab_{a.bulan}.json.gz")
     if os.path.exists(akhir):
-        print("imerg: sudah ada", akhir); return 0
+        sk = skema_berkas(akhir)
+        if sk >= 2:
+            print("imerg: sudah ada", akhir); return 0
+        # skema 1 (tanpa j per jam) atau rusak: panen ulang. Dispatch ulang tanpa timpa=ya cukup untuk melengkapi bulan yang gagal (25 Nov 2026)
+        print(f"imerg: {akhir} skema {sk}, dipanen ulang ke skema 2"); os.remove(akhir)
     ids = sorted({i for v in S["kab"].values() for i in v["s"]})
     lok = {i: n for n, i in enumerate(ids)}
     cel = [S["sel"][i] for i in ids]
@@ -369,6 +381,15 @@ def uji():
     # pilih koleksi: Final dulu, jatuh ke Late lalu Early
     f = lambda t, kol: [(dt.datetime(2026, 1, 1, tzinfo=dt.timezone.utc), "x")] if kol in ("GPM_3IMERGHHL.07",) else []
     assert pilih_koleksi(dt.date(2026, 1, 1), f)[0] == "L" and pilih_koleksi(dt.date(2026, 1, 1), lambda t, k: []) is None
+    # berkas yang sudah ada: hanya skema 2 yang dilewati (25 Nov 2026: bulan skema 1 dari R2 dulu dianggap selesai)
+    import tempfile
+    with tempfile.TemporaryDirectory() as t:
+        for nama, isi, harap in (("s1", b'{"meta":{"bulan":"2026-01"},"kab":{}}', 1), ("s2", b'{"meta":{"skema":2},"kab":{}}', 2)):
+            with gzip.open(os.path.join(t, nama), "wb") as g: g.write(isi)
+            assert skema_berkas(os.path.join(t, nama)) == harap, nama
+        with gzip.open(os.path.join(t, "s2"), "rb") as g: utuh = g.read()
+        open(os.path.join(t, "pot"), "wb").write(gzip.compress(utuh)[:20])
+        assert skema_berkas(os.path.join(t, "pot")) == 0
     # titik glofas
     T = json.load(open(TITIK_F)); assert len(T) >= 500 and all(len(v) == 2 for v in T.values())
     print("panen_lab uji OK")

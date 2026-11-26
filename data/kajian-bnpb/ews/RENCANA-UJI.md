@@ -6,7 +6,7 @@ Aturan pemilik: perilaku di luar TypeScript diuji dengan menjalankannya, bukan d
 | --- | --- | --- |
 | U1 | `tingkat()` memakai `tingkatAmbang` yang sama dengan `src/sensor.js`; pos basi selalu `tanpa_data`; pos tanpa ambang `null` | `node --test tests/warga/alat_tingkat.test.mjs` (murni, kasus tepi: nilai null, nilai tepat di ambang, umur tepat di batas) |
 | U2 | Pos basi tidak pernah menampilkan 0 dan tidak berwarna tingkat | uji DOM `tests/warga/alat_kartu.test.mjs` dengan pos basi bernilai terakhir 0 dan bernilai null |
-| U3 | `GET /api/alat/pos` dengan D1 lokal sungguhan (migrasi 0089 + migrasi geofon) mengembalikan bentuk D2, staf melihat sensor sendiri, tanpa sesi tidak | `tests/warga/alat_rute.test.mjs` memakai pola uji rute `tests/warga` (Miniflare/D1 lokal) |
+| U3 | `GET /api/alat/pos` dengan D1 lokal sungguhan (migrasi 0089 + migrasi geofon) mengembalikan bentuk D2. Sesuai jawaban Q2 25 Nov 2026: publik melihat sensor sendiri dengan koordinat dibulatkan 0,01 derajat tanpa desa; sesi staf melihat koordinat penuh tanpa cache; token admin tidak membuka jalur staf | `tests/warga/alat_rute.test.mjs` memakai pola uji rute `tests/warga` (Miniflare/D1 lokal) |
 | U4 | Migrasi geofon idempoten: dijalankan dua kali tanpa galat, baris alat lama utuh | `tests/warga/alat_migrasi.test.mjs`; diperiksa `migrasi-idempoten` |
 | U5 | Sumber gagal dimuat tampil sebagai "sumber X gagal dimuat", ringkasan tidak menulis 0 pos | uji rute dengan adapter yang melempar galat |
 | U6 | Panel tidak dirender bila tidak ada sumber aktif | uji DOM |

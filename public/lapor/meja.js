@@ -4,7 +4,7 @@
    INP (aturan pemilik 2): tombol saring berganti keadaan seketika, peta dan tabel digambar ulang sesudah cat berikutnya.
    Angka dampak antarlaporan tidak dijumlah (laporan warga bisa ganda untuk satu kejadian): ringkasan menghitung LAPORAN, bukan korban. */
 import {labelKode} from "./kode.js";
-import {bukaOrangDicari} from "./meja_cari.js?v=2";   // LA-82: orang dicari (K91)
+import {bukaOrangDicari} from "./meja_cari.js?v=4";   // LA-82: orang dicari (K91)
 import {pasangDataLanjutan, bukaDaftarData} from "./meja_data.js";   // LJ-16: data lanjutan BPBD (rincian tiket dan daftar lintas kab)
 const $ = id => document.getElementById(id);
 const el = (t, k, x) => { const e = document.createElement(t); if (k) e.className = k; if (x != null) e.textContent = x; return e; };
@@ -699,6 +699,36 @@ function kartuPublik(j, nomor, kartu) {
   w.append(alasan, t, galat);
   return kartu("Halaman publik", "m-buka", w);
 }
+/* kartu Buku Besar (LK-09, K87): satu klik mengusulkan kejadian laporan ke Buku Besar Kejadian; hanya usulan, staf Siklus yang memutuskan.
+   Tampil hanya bila Worker mengirim j.usulan (akun BNPB, saklar LAPOR_USUL menyala); hak peran diperiksa Worker */
+function kartuUsulan(j, nomor, kartu) {
+  const u = j.usulan; if (!u) return null;
+  const w = el("div", "mj-isi-kartu"), st = u.status;
+  /* LK-11 (A7, D11): status dari sk_kejadian_sumber lewat Worker; tanpa usulan (st null) tidak pernah "Diusulkan" */
+  if (st && st.keadaan !== "ditolak") {
+    w.append(el("p", "mj-pub-status", st.keadaan === "terpasang" ? `Terpasang ke ${st.kejadian_id}` : st.keadaan === "tinjau" ? "Menunggu staf Siklus memilih kejadian" : "Diusulkan, menunggu pencocokan"),
+      el("p", "mj-pub-kecil", st.keadaan === "terpasang" ? `Usulan ${labelKode(st.kode)} sudah masuk Buku Besar Kejadian.` : st.keadaan === "tinjau" ? `Usulan ${labelKode(st.kode)} cocok dengan lebih dari satu kejadian atau belum berwilayah. Staf Siklus yang memutuskan.` : `Usulan ${labelKode(st.kode)} dicocokkan pada jalan terjadwal berikutnya, tiap 3 jam.`));
+    if (st.keadaan === "terpasang") { const a = el("a", "mj-tombol"); a.href = `/siklus/kejadian/${encodeURIComponent(st.kejadian_id)}`; a.append(ikon("m-buka"), "Buka kejadian"); w.append(a); }
+    return kartu("Buku Besar", "m-kejadian", w);
+  }
+  if (st) w.append(el("p", "mj-pub-status", "Ditolak staf Siklus"), el("p", "mj-pub-kecil", u.siap ? `Usulan ${labelKode(st.kode)} ditolak. Kejadian ini boleh diusulkan lagi.` : `Usulan ${labelKode(st.kode)} ditolak.`));
+  if (u.ada) { w.append(el("p", "mj-pub-status", "Diusulkan, menunggu pencocokan")); return kartu("Buku Besar", "m-kejadian", w); }
+  if (!u.siap) { w.append(el("p", "mj-label", u.alasan || "Belum bisa diusulkan.")); return kartu("Buku Besar", "m-kejadian", w); }
+  w.append(el("p", "mj-label", "Usulan masuk antrean pencocokan Buku Besar Kejadian. Staf Siklus yang memutuskan."));
+  const galat = el("p", "mj-pesan-galat"); galat.setAttribute("role", "alert");
+  const t = el("button", "mj-tombol"); t.type = "button";
+  const isi = () => t.replaceChildren(ikon("m-kirim"), "Usulkan ke Buku Besar"); isi();
+  t.addEventListener("click", async () => {
+    galat.textContent = ""; t.disabled = true; t.replaceChildren("Mengirim...");   // chrome urgent, kerja jaringan sesudahnya
+    try {
+      const r = await fetch(`/api/lapor/meja/${nomor}/usulkan`, {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, body: "{}"});
+      const h = await r.json().catch(() => ({})); if (!r.ok && r.status !== 409) { galat.textContent = h.galat || "Gagal mengusulkan."; t.disabled = false; isi(); return; }
+      await muat();   // 409 = sudah diusulkan staf lain: muat ulang menampilkan statusnya
+    } catch { galat.textContent = "Gagal mengusulkan, periksa sambungan."; t.disabled = false; isi(); }
+  });
+  w.append(t, galat);
+  return kartu("Buku Besar", "m-kejadian", w);
+}
 /* ---------- pop-up rincian: membuka = tiket "Dilihat" (pelapor melihat tahapnya di halaman lacak) ---------- */
 // light dismiss: closedby="any"; peramban tanpa dukungan (Safari) memakai klik di luar kotak dialog
 if (!("closedBy" in HTMLDialogElement.prototype)) dlg.addEventListener("click", e => { if (e.target !== dlg) return; const r = dlg.getBoundingClientRect();
@@ -882,7 +912,7 @@ async function bukaRinci(nomor, lihat = true, fokus = null) {
       bt.type = "button"; bt.append(ikon("m-tangan"), "Catat tindakan"); bt.addEventListener("click", () => kirim("tindakan", pm.nilai(), bt, gt)); wt.append(pm.el, gt, bt); }
     return wt; })()) : null;
   const kBukti = kartuBukti(j, nomor, kirim);
-  const kPublik = kartuPublik(j, nomor, kartu);
+  const kPublik = kartuPublik(j, nomor, kartu), kUsulan = kartuUsulan(j, nomor, kartu);
 
   // pelapor
   const p = j.pelapor, bpbd = /bpbd/i.test(p.peran || ""), wp = wadah(), siapa = el("div", "mj-siapa");
@@ -930,7 +960,7 @@ async function bukaRinci(nomor, lihat = true, fokus = null) {
     return wt; })());
 
   // dua kolom: kiri tindakan (menempel saat digulir), kanan isi laporan
-  const kiri = el("div", "mj-kolom kiri"), kanan = el("div", "mj-kolom"); const pilKiri = el("p", "mj-bagian-pil"); pilKiri.append(ikon("m-tiket"), "Penanganan"); kiri.append(pilKiri, kTiket, ...(kPic ? [kPic] : []), kPeriksa, ...(kTindakan ? [kTindakan] : []), kBukti, ...(kPublik ? [kPublik] : []), ...(akunBpbd() ? [] : [kartuTeruskan(j, b, kirim)]), kPelapor, kLog); // BPBD sudah penerima terusan
+  const kiri = el("div", "mj-kolom kiri"), kanan = el("div", "mj-kolom"); const pilKiri = el("p", "mj-bagian-pil"); pilKiri.append(ikon("m-tiket"), "Penanganan"); kiri.append(pilKiri, kTiket, ...(kPic ? [kPic] : []), kPeriksa, ...(kTindakan ? [kTindakan] : []), kBukti, ...(kPublik ? [kPublik] : []), ...(kUsulan ? [kUsulan] : []), ...(akunBpbd() ? [] : [kartuTeruskan(j, b, kirim)]), kPelapor, kLog); // BPBD sudah penerima terusan
   /* isi laporan dikategorikan (pemilik 19 Nov 2026 "harus dikategoriin, ada bagian dengan pill"): tiap bagian berpil berikon,
      deret pil di atas untuk lompat ke bagian; kartu tiap kelompok isian masuk bagiannya */
   const kartuKelompok = new Map([...per].map(([kel, xs]) => [kel, kartuKel([kel, xs])]));

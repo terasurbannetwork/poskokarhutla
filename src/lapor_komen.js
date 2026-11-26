@@ -1,4 +1,4 @@
-/* Komentar warga di kartu kejadian Alun-alun (paket data/kajian-bnpb/lapor-ai/, K95, D136-D140, tiket LA-85). SQL di src/hak.js (migrasi 0175).
+/* Komentar warga di kartu kejadian Alun-alun (paket data/kajian-bnpb/lapor-ai/, K95, D136-D140, tiket LA-85). SQL di src/hak.js (migrasi 0178).
    Baca: publik, hanya teks dan waktu dibulatkan ke menit (penulis tampil "Warga"), cache tepi 30 detik. Tulis dan laporkan: pemilik nomor seperti saat
    melapor (pelapor() src/lapor_ai.js: sesi /masuk, nomor ketikan terikat perangkat, atau mesin WA) + x-pb. Hanya kartu yang sedang tampil yang bisa dikomentari.
    Saringan D137: nomor HP, email, akun media sosial, tautan, RT/RW, nama jalan, gang, blok, dan nomor rumah dibuang; kata kasar ditolak; paling panjang 500 huruf.
@@ -43,7 +43,7 @@ export function bersihKomen(t) {
 }
 
 /* ---------- angka dari komentar (LA-86, D138) ---------- */
-/* kolom sama dengan CHECK lp_komen_usul (migrasi 0175); LA-88 memetakan ke isian laporan saat petugas menerima */
+/* kolom sama dengan CHECK lp_komen_usul (migrasi 0178); LA-88 memetakan ke isian laporan saat petugas menerima */
 export const KOLOM_USUL = {meninggal: "orang meninggal", hilang: "orang hilang", luka: "orang luka", mengungsi: "orang mengungsi (jiwa)", rumah: "rumah rusak, semua tingkat", terendam: "rumah terendam"};
 const MAKS_NILAI = 100000;
 export const SISTEM_KOMEN = `Kamu membaca komentar warga tentang satu kejadian bencana dan mengambil angka dampak yang disebut.
@@ -92,7 +92,7 @@ export function buatKomen({pelapor, kartuTampil, model = () => null}) {
     return cacheTepi(req, ctx, 30, async () => {   // batas IP dan baca D1 hanya saat cache kosong
       const lj = await lajuIP(env, req, "lapor.komen.baca", [[JAM, 600]], kini); if (lj) return lj;
       try { return kirim(200, {komen: (await H.kmDaftarPublik(env, PUBLIK, x)).map(k => ({id: k.id, teks: k.teks, waktu: Math.floor(k.dibuat / MENIT) * MENIT}))}); }
-      catch (e) { if (tabelBelum(e)) return kirim(200, {komen: []}); throw e; }   // migrasi 0175 belum: kartu tanpa komentar, bukan galat
+      catch (e) { if (tabelBelum(e)) return kirim(200, {komen: []}); throw e; }   // migrasi 0178 belum: kartu tanpa komentar, bukan galat
     }, true);
   }
   async function tulis(env, req, url, kini, ctx, x) {
@@ -123,7 +123,7 @@ export function buatKomen({pelapor, kartuTampil, model = () => null}) {
         .catch(e => console.log(`lapor komen usul gagal: ${String(e?.message).slice(0, 120)}`));
       if (ctx?.waitUntil) ctx.waitUntil(usul); else await usul;   // di latar: jawaban komentar tidak menunggu model
       return kirim(200, {komen: {id: baris.id, teks: baris.teks, waktu: Math.floor(kini / MENIT) * MENIT}});
-    } catch (e) { if (tabelBelum(e)) return galat(503, "Komentar belum aktif (migrasi 0175 belum diterapkan)."); throw e; }
+    } catch (e) { if (tabelBelum(e)) return galat(503, "Komentar belum aktif (migrasi 0178 belum diterapkan)."); throw e; }
   }
   return {rute: {"GET /api/lapor/komen/:x": daftar, "POST /api/lapor/komen/:x": tulis}};
 }

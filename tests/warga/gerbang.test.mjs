@@ -19,7 +19,7 @@ function temukan() {
   const f = readFileSync(path.join(AKAR, "src/foto.js"), "utf8");   // RUTE_FOTO digabung ke RUTE
   const e = readFileSync(path.join(AKAR, "src/ews.js"), "utf8") + readFileSync(path.join(AKAR, "src/sosmed.js"), "utf8") + readFileSync(path.join(AKAR, "src/posko.js"), "utf8");   // RUTE_EWS + RUTE_SOSMED + RUTE_POSKO digabung ke RUTE
   /* Ruang Koordinasi BNPB: RUTE_BNPB, RUTE_RELAWAN, RUTE_ALUN, RUTE_RISET, RUTE_MEJA digabung ke RUTE */
-  const bn = ["bnpb", "wa_form", "wa_proyek", "relawan", "alun", "riset", "meja", "sitrep", "pengingat", "instansi", "profil", "penugasan", "staf", "pantau", "inventaris", "korban", "laporan_karhutla", "omc", "operasi_lapangan", "operasi_udara", "operasi_isian", "jarak_pandang", "push", "sla", "pipa", "kontak", "uji_lapangan", "uji_banjir", "monitor", "sippa", "wa", "kemitraan", "logbook", "sensor", "pemulihan", "lapsus", "rollcall", "lapangan", "lapangan_panel", "lapangan_wa", "berantai", "medsos_antre", "command_center", "ai", "logpal", "siklus_kejadian", "siklus_paparan", "siklus_kaji", "siklus_pulih", "siklus_renkon", "siklus_pintu", "siklus_dummy", "tiga_w", "masuk", "masuk_undang", "pengungsian_titik", "lapor_ai"].map(m => readFileSync(path.join(AKAR, `src/${m}.js`), "utf8")).join("\n");
+  const bn = ["bnpb", "wa_form", "wa_proyek", "relawan", "alun", "riset", "meja", "sitrep", "pengingat", "instansi", "profil", "penugasan", "staf", "pantau", "inventaris", "korban", "laporan_karhutla", "omc", "operasi_lapangan", "operasi_udara", "operasi_isian", "jarak_pandang", "push", "sla", "pipa", "kontak", "uji_lapangan", "uji_banjir", "monitor", "sippa", "wa", "kemitraan", "logbook", "sensor", "alat", "pemulihan", "lapsus", "rollcall", "lapangan", "lapangan_panel", "lapangan_wa", "berantai", "medsos_antre", "command_center", "ai", "logpal", "siklus_kejadian", "siklus_paparan", "siklus_kaji", "siklus_pulih", "siklus_renkon", "siklus_pintu", "siklus_dummy", "tiga_w", "masuk", "masuk_undang", "pengungsian_titik", "lapor_ai"].map(m => readFileSync(path.join(AKAR, `src/${m}.js`), "utf8")).join("\n");
   if (/bersihkanBnpb\(env/.test(w)) out.add("cron bersihkanBnpb");
   if (/arsipkanSitrep\(env/.test(w)) out.add("cron arsipkanSitrep");
   if (/buatTugas\(env/.test(w)) out.add("cron buatTugas");
@@ -44,6 +44,9 @@ function temukan() {
   if (/perbaruiGempa\(env/.test(w)) out.add("cron gempa");
   for (const [, x] of readFileSync(path.join(AKAR, "src/sihka.js"), "utf8").matchAll(/"(\/api\/banjir\/[\w-]+)"/g)) out.add("GET " + x);   // SIHKA: semua rute baca
   if (/"\/api\/banjir\/sungai-ukur\/pos\/"/.test(readFileSync(path.join(AKAR, "src/sihka.js"), "utf8"))) out.add("GET /api/banjir/sungai-ukur/pos/:id");
+  const bg = readFileSync(path.join(AKAR, "src/banjir_genangan.js"), "utf8");   // genangan radar publik dari R2 (GS-14, Q13)
+  if (/jalur !== "\/api\/banjir\/genangan"/.test(bg)) out.add("GET /api/banjir/genangan");
+  if (/RE_BERKAS = new RegExp\(`\^\/api\/banjir\/genangan\//.test(bg)) out.add("GET /api/banjir/genangan/:kj/v:n/:nama");
   if (/dasarSihka\(env/.test(w)) out.add("cron dasar sihka");
   if (/perbaruiSihka\(env/.test(w)) out.add("cron sihka");
   const pr = readFileSync(path.join(AKAR, "src/peringatan.js"), "utf8");   // peringatan dini: rute baca, rute admin, cron

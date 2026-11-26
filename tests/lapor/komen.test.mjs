@@ -1,4 +1,4 @@
-/* Komentar warga di kartu Alun-alun (src/lapor_komen.js, migrasi 0175, tiket LA-85; KEPUTUSAN-LAPOR-AI K95, D136-D140) di workerd dengan D1 sungguhan.
+/* Komentar warga di kartu Alun-alun (src/lapor_komen.js, migrasi 0178, tiket LA-85; KEPUTUSAN-LAPOR-AI K95, D136-D140) di workerd dengan D1 sungguhan.
    Jalankan: node --test tests/lapor/komen.test.mjs */
 import assert from "node:assert/strict";
 import {siapkan, berantai, sha256} from "../warga/_bnpb.mjs";

@@ -1,0 +1,2947 @@
+{
+ "periode": "bulanan",
+ "kode": "2026-10",
+ "hari_ini": "2026-11-25",
+ "dirakit": "2026-11-25T03:10:00Z",
+ "dibi": {
+  "tarik": "2026-11-21",
+  "dari": "2025-12-05",
+  "sampai": "2026-11-20",
+  "kejadian": [
+   {
+    "tanggal": "2026-10-01",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.02",
+    "kab": "Kab 14.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-02",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.03",
+    "kab": "Kab 14.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-03",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.04",
+    "kab": "Kab 14.04",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-03",
+    "jenis": "Kebakaran Lahan",
+    "prov_kode": "62",
+    "prov": "Kalimantan Tengah",
+    "kab_kode": "62.04",
+    "kab": "Kab 62.04",
+    "kategori": "Kebakaran Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-10-04",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.05",
+    "kab": "Kab 14.05",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-05",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.01",
+    "kab": "Kab 14.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-06",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.02",
+    "kab": "Kab 14.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-06",
+    "jenis": "Kebakaran Lahan",
+    "prov_kode": "62",
+    "prov": "Kalimantan Tengah",
+    "kab_kode": "62.03",
+    "kab": "Kab 62.03",
+    "kategori": "Kebakaran Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-10-07",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.03",
+    "kab": "Kab 14.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-08",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.04",
+    "kab": "Kab 14.04",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-09",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.05",
+    "kab": "Kab 14.05",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-09",
+    "jenis": "Kebakaran Lahan",
+    "prov_kode": "62",
+    "prov": "Kalimantan Tengah",
+    "kab_kode": "62.02",
+    "kab": "Kab 62.02",
+    "kategori": "Kebakaran Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-10-10",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.01",
+    "kab": "Kab 14.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-11",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.02",
+    "kab": "Kab 14.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-12",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.03",
+    "kab": "Kab 14.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-12",
+    "jenis": "Kebakaran Lahan",
+    "prov_kode": "62",
+    "prov": "Kalimantan Tengah",
+    "kab_kode": "62.01",
+    "kab": "Kab 62.01",
+    "kategori": "Kebakaran Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-10-13",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.04",
+    "kab": "Kab 14.04",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-14",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.05",
+    "kab": "Kab 14.05",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-15",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.01",
+    "kab": "Kab 14.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-15",
+    "jenis": "Kebakaran Lahan",
+    "prov_kode": "62",
+    "prov": "Kalimantan Tengah",
+    "kab_kode": "62.04",
+    "kab": "Kab 62.04",
+    "kategori": "Kebakaran Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-10-16",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.02",
+    "kab": "Kab 14.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-17",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.03",
+    "kab": "Kab 14.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-18",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.04",
+    "kab": "Kab 14.04",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-18",
+    "jenis": "Kebakaran Lahan",
+    "prov_kode": "62",
+    "prov": "Kalimantan Tengah",
+    "kab_kode": "62.03",
+    "kab": "Kab 62.03",
+    "kategori": "Kebakaran Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-10-19",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.05",
+    "kab": "Kab 14.05",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-20",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.01",
+    "kab": "Kab 14.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-21",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.02",
+    "kab": "Kab 14.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-21",
+    "jenis": "Kebakaran Lahan",
+    "prov_kode": "62",
+    "prov": "Kalimantan Tengah",
+    "kab_kode": "62.02",
+    "kab": "Kab 62.02",
+    "kategori": "Kebakaran Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-10-22",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.03",
+    "kab": "Kab 14.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-23",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.04",
+    "kab": "Kab 14.04",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-24",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.05",
+    "kab": "Kab 14.05",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-24",
+    "jenis": "Kebakaran Lahan",
+    "prov_kode": "62",
+    "prov": "Kalimantan Tengah",
+    "kab_kode": "62.01",
+    "kab": "Kab 62.01",
+    "kategori": "Kebakaran Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-10-25",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.01",
+    "kab": "Kab 14.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-26",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.02",
+    "kab": "Kab 14.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-27",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.03",
+    "kab": "Kab 14.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-27",
+    "jenis": "Kebakaran Lahan",
+    "prov_kode": "62",
+    "prov": "Kalimantan Tengah",
+    "kab_kode": "62.04",
+    "kab": "Kab 62.04",
+    "kategori": "Kebakaran Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-10-28",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.04",
+    "kab": "Kab 14.04",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-29",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.05",
+    "kab": "Kab 14.05",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-30",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.01",
+    "kab": "Kab 14.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-30",
+    "jenis": "Kebakaran Lahan",
+    "prov_kode": "62",
+    "prov": "Kalimantan Tengah",
+    "kab_kode": "62.03",
+    "kab": "Kab 62.03",
+    "kategori": "Kebakaran Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-10-31",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.02",
+    "kab": "Kab 14.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1,
+    "lahan_ha": 3
+   },
+   {
+    "tanggal": "2026-10-10",
+    "jenis": "Banjir",
+    "prov_kode": "12",
+    "prov": "Sumatera Utara",
+    "kab_kode": "12.01",
+    "kab": "Kab 12.01",
+    "kategori": "Banjir",
+    "kejadian": 1,
+    "terdampak": 100,
+    "mengungsi": 0,
+    "rr_ringan": 0
+   },
+   {
+    "tanggal": "2026-10-11",
+    "jenis": "Banjir",
+    "prov_kode": "12",
+    "prov": "Sumatera Utara",
+    "kab_kode": "12.02",
+    "kab": "Kab 12.02",
+    "kategori": "Banjir",
+    "kejadian": 1,
+    "terdampak": 200,
+    "mengungsi": 10,
+    "rr_ringan": 1
+   },
+   {
+    "tanggal": "2026-10-12",
+    "jenis": "Banjir",
+    "prov_kode": "11",
+    "prov": "Aceh",
+    "kab_kode": "11.08",
+    "kab": "Kab 11.08",
+    "kategori": "Banjir",
+    "kejadian": 1,
+    "terdampak": 300,
+    "mengungsi": 20,
+    "rr_ringan": 2
+   },
+   {
+    "tanggal": "2026-10-13",
+    "jenis": "Banjir",
+    "prov_kode": "11",
+    "prov": "Aceh",
+    "kab_kode": "11.09",
+    "kab": "Kab 11.09",
+    "kategori": "Banjir",
+    "kejadian": 1,
+    "terdampak": 400,
+    "mengungsi": 30,
+    "rr_ringan": 3
+   },
+   {
+    "tanggal": "2026-10-14",
+    "jenis": "Banjir",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.01",
+    "kab": "Kab 33.01",
+    "kategori": "Banjir",
+    "kejadian": 1,
+    "terdampak": 500,
+    "mengungsi": 40,
+    "rr_ringan": 4
+   },
+   {
+    "tanggal": "2026-10-15",
+    "jenis": "Banjir dan Tanah Longsor",
+    "prov_kode": "12",
+    "prov": "Sumatera Utara",
+    "kab_kode": "12.03",
+    "kab": "Kab 12.03",
+    "kategori": "Banjir dan Tanah Longsor",
+    "kejadian": 2,
+    "meninggal": 1,
+    "terdampak": 40
+   },
+   {
+    "tanggal": "2026-10-16",
+    "jenis": "Tanah Longsor",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.02",
+    "kab": "Kab 33.02",
+    "kategori": "Tanah Longsor",
+    "kejadian": 1,
+    "meninggal": 2,
+    "rr_berat": 1
+   },
+   {
+    "tanggal": "2026-10-17",
+    "jenis": "Cuaca Ekstrem",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.03",
+    "kab": "Kab 33.03",
+    "kategori": "Cuaca Ekstrem",
+    "kejadian": 1,
+    "rr_ringan": 12,
+    "terdampak": 30
+   },
+   {
+    "tanggal": "2026-10-18",
+    "jenis": "Angin Kencang",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.04",
+    "kab": "Kab 33.04",
+    "kategori": "Angin Kencang",
+    "kejadian": 1,
+    "rr_ringan": 12,
+    "terdampak": 30
+   },
+   {
+    "tanggal": "2026-10-18",
+    "jenis": "Angin Kencang",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.05",
+    "kab": "Kab 33.05",
+    "kategori": "Angin Kencang",
+    "kejadian": 1,
+    "rr_ringan": 12,
+    "terdampak": 30
+   },
+   {
+    "tanggal": "2026-10-19",
+    "jenis": "Kekeringan",
+    "prov_kode": "53",
+    "prov": "Nusa Tenggara Timur",
+    "kab_kode": "53.01",
+    "kab": "Kab 53.01",
+    "kategori": "Kekeringan",
+    "kejadian": 1,
+    "terdampak": 2000
+   },
+   {
+    "tanggal": "2026-10-08",
+    "jenis": "Gempabumi",
+    "prov_kode": "53",
+    "prov": "Nusa Tenggara Timur",
+    "kab_kode": "53.02",
+    "kab": "Kab 53.02",
+    "kategori": "Gempabumi",
+    "kejadian": 1,
+    "rr_berat": 3,
+    "rr_sedang": 5,
+    "luka": 4
+   },
+   {
+    "tanggal": "2026-10-09",
+    "jenis": "Gempabumi",
+    "prov_kode": "53",
+    "prov": "Nusa Tenggara Timur",
+    "kab_kode": "53.03",
+    "kab": "Kab 53.03",
+    "kategori": "Gempabumi",
+    "kejadian": 1,
+    "rr_ringan": 7
+   },
+   {
+    "tanggal": "2026-10-21",
+    "jenis": "Erupsi Gunung Api",
+    "prov_kode": "53",
+    "prov": "Nusa Tenggara Timur",
+    "kab_kode": "53.04",
+    "kab": "Kab 53.04",
+    "kategori": "Erupsi Gunung Api",
+    "kejadian": 1,
+    "mengungsi": 300
+   },
+   {
+    "tanggal": "2026-10-22",
+    "jenis": "Kebakaran Gedung dan Permukiman",
+    "prov_kode": "31",
+    "prov": "DKI Jakarta",
+    "kab_kode": "31.71",
+    "kab": "Kab 31.71",
+    "kategori": "Kebakaran Gedung dan Permukiman",
+    "kejadian": 2,
+    "meninggal": 1,
+    "rr_berat": 4
+   },
+   {
+    "tanggal": "2026-10-23",
+    "jenis": "Konflik Sosial",
+    "prov_kode": "94",
+    "prov": "Papua",
+    "kab_kode": "94.01",
+    "kab": "Kab 94.01",
+    "kategori": "Konflik Sosial",
+    "kejadian": 1,
+    "luka": 5
+   },
+   {
+    "tanggal": "2026-10-24",
+    "jenis": "Banjir",
+    "prov_kode": "12",
+    "prov": "Sumatera Utara",
+    "kab_kode": "12.04",
+    "kab": "Kab 12.04",
+    "kategori": "Banjir",
+    "kejadian": 1,
+    "bencana": 0
+   },
+   {
+    "tanggal": "2026-10-30",
+    "jenis": "Gelombang Pasang / Abrasi",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.01",
+    "kab": "Kab 16.01",
+    "kategori": "Gelombang Pasang / Abrasi",
+    "kejadian": 1,
+    "rr_ringan": 2
+   },
+   {
+    "tanggal": "2026-09-01",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.02",
+    "kab": "Kab 16.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-02",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.03",
+    "kab": "Kab 16.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-03",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.01",
+    "kab": "Kab 16.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-04",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.02",
+    "kab": "Kab 16.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-05",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.03",
+    "kab": "Kab 16.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-06",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.01",
+    "kab": "Kab 16.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-07",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.02",
+    "kab": "Kab 16.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-08",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.03",
+    "kab": "Kab 16.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-09",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.01",
+    "kab": "Kab 16.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-10",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.02",
+    "kab": "Kab 16.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-11",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.03",
+    "kab": "Kab 16.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-12",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.01",
+    "kab": "Kab 16.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-13",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.02",
+    "kab": "Kab 16.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-14",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.03",
+    "kab": "Kab 16.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-15",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.01",
+    "kab": "Kab 16.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-16",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.02",
+    "kab": "Kab 16.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-17",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.03",
+    "kab": "Kab 16.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-18",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.01",
+    "kab": "Kab 16.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-19",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.02",
+    "kab": "Kab 16.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-20",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.03",
+    "kab": "Kab 16.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-21",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.01",
+    "kab": "Kab 16.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-22",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.02",
+    "kab": "Kab 16.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-23",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.03",
+    "kab": "Kab 16.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-24",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.01",
+    "kab": "Kab 16.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-25",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.02",
+    "kab": "Kab 16.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-26",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.03",
+    "kab": "Kab 16.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-27",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.01",
+    "kab": "Kab 16.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-28",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.02",
+    "kab": "Kab 16.02",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-29",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.03",
+    "kab": "Kab 16.03",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-30",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "16",
+    "prov": "Sumatera Selatan",
+    "kab_kode": "16.01",
+    "kab": "Kab 16.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-01-05",
+    "jenis": "Banjir",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.01",
+    "kab": "Kab 33.01",
+    "kategori": "Banjir",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-02-05",
+    "jenis": "Banjir",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.01",
+    "kab": "Kab 33.01",
+    "kategori": "Banjir",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-03-05",
+    "jenis": "Banjir",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.01",
+    "kab": "Kab 33.01",
+    "kategori": "Banjir",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-04-05",
+    "jenis": "Banjir",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.01",
+    "kab": "Kab 33.01",
+    "kategori": "Banjir",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-05-05",
+    "jenis": "Banjir",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.01",
+    "kab": "Kab 33.01",
+    "kategori": "Banjir",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-06-05",
+    "jenis": "Banjir",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.01",
+    "kab": "Kab 33.01",
+    "kategori": "Banjir",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-07-05",
+    "jenis": "Banjir",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.01",
+    "kab": "Kab 33.01",
+    "kategori": "Banjir",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-08-05",
+    "jenis": "Banjir",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.01",
+    "kab": "Kab 33.01",
+    "kategori": "Banjir",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2026-09-05",
+    "jenis": "Banjir",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.01",
+    "kab": "Kab 33.01",
+    "kategori": "Banjir",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2025-12-20",
+    "jenis": "Banjir",
+    "prov_kode": "33",
+    "prov": "Jawa Tengah",
+    "kab_kode": "33.01",
+    "kab": "Kab 33.01",
+    "kategori": "Banjir",
+    "kejadian": 1
+   }
+  ]
+ },
+ "dibi_lalu": {
+  "tarik": "2026-11-21",
+  "asal": "siklus_bersih",
+  "dari": "2025-01-01",
+  "sampai": "2025-12-31",
+  "kejadian": [
+   {
+    "tanggal": "2025-10-05",
+    "jenis": "Kebakaran Hutan dan Lahan",
+    "prov_kode": "14",
+    "prov": "Riau",
+    "kab_kode": "14.01",
+    "kab": "Kab 14.01",
+    "kategori": "Kebakaran Hutan dan Lahan",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2025-10-06",
+    "jenis": "Banjir",
+    "prov_kode": "12",
+    "prov": "Sumatera Utara",
+    "kab_kode": "12.01",
+    "kab": "Kab 12.01",
+    "kategori": "Banjir",
+    "kejadian": 1,
+    "terdampak": 50
+   },
+   {
+    "tanggal": "2025-10-07",
+    "jenis": "Banjir",
+    "prov_kode": "11",
+    "prov": "Aceh",
+    "kab_kode": "11.08",
+    "kab": "Kab 11.08",
+    "kategori": "Banjir",
+    "kejadian": 1
+   },
+   {
+    "tanggal": "2025-10-08",
+    "jenis": "Konflik Sosial",
+    "prov_kode": "94",
+    "prov": "Papua",
+    "kab_kode": "94.01",
+    "kab": "Kab 94.01",
+    "kategori": "Konflik Sosial",
+    "kejadian": 1
+   }
+  ]
+ },
+ "karhutla": {
+  "tarik": "2026-11-01",
+  "asal": "potong",
+  "hari": {
+   "2026-09-01": {
+    "14": {
+     "hot": 101,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-02": {
+    "14": {
+     "hot": 102,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-03": {
+    "14": {
+     "hot": 103,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-04": {
+    "14": {
+     "hot": 104,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-05": {
+    "14": {
+     "hot": 105,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-06": {
+    "14": {
+     "hot": 106,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-07": {
+    "14": {
+     "hot": 107,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-08": {
+    "14": {
+     "hot": 108,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-09": {
+    "14": {
+     "hot": 109,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-10": {
+    "14": {
+     "hot": 110,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-11": {
+    "14": {
+     "hot": 111,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-12": {
+    "14": {
+     "hot": 112,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-13": {
+    "14": {
+     "hot": 113,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-14": {
+    "14": {
+     "hot": 114,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-15": {
+    "14": {
+     "hot": 115,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-16": {
+    "14": {
+     "hot": 116,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-17": {
+    "14": {
+     "hot": 117,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-18": {
+    "14": {
+     "hot": 118,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-19": {
+    "14": {
+     "hot": 119,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-20": {
+    "14": {
+     "hot": 120,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-21": {
+    "14": {
+     "hot": 121,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-22": {
+    "14": {
+     "hot": 122,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-23": {
+    "14": {
+     "hot": 123,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-24": {
+    "14": {
+     "hot": 124,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-25": {
+    "14": {
+     "hot": 125,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-26": {
+    "14": {
+     "hot": 126,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-27": {
+    "14": {
+     "hot": 127,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-28": {
+    "14": {
+     "hot": 128,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-29": {
+    "14": {
+     "hot": 129,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-09-30": {
+    "14": {
+     "hot": 130,
+     "luas": 5,
+     "belum": 0,
+     "padam": 0,
+     "nama": "Riau"
+    }
+   },
+   "2026-10-01": {
+    "14": {
+     "hot": 203,
+     "luas": 162.4,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-02": {
+    "14": {
+     "hot": 206,
+     "luas": 164.8,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-03": {
+    "14": {
+     "hot": 209,
+     "luas": 167.2,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-04": {
+    "14": {
+     "hot": 212,
+     "luas": 169.6,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-05": {
+    "14": {
+     "hot": 215,
+     "luas": 172.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-06": {
+    "14": {
+     "hot": 218,
+     "luas": 174.4,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 900,
+     "luas": 720.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-07": {
+    "14": {
+     "hot": 221,
+     "luas": 176.8,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-08": {
+    "14": {
+     "hot": 224,
+     "luas": 179.2,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-09": {
+    "14": {
+     "hot": 227,
+     "luas": 181.6,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-10": {
+    "14": {
+     "hot": 230,
+     "luas": 184.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-11": {
+    "14": {
+     "hot": 233,
+     "luas": 186.4,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-12": {
+    "14": {
+     "hot": 236,
+     "luas": 188.8,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-13": {
+    "14": {
+     "hot": 239,
+     "luas": 191.2,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-14": {
+    "14": {
+     "hot": 242,
+     "luas": 193.6,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-15": {
+    "14": {
+     "hot": 245,
+     "luas": 196.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-16": {
+    "14": {
+     "hot": 248,
+     "luas": 198.4,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-17": {
+    "14": {
+     "hot": 251,
+     "luas": 200.8,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-18": {
+    "14": {
+     "hot": 254,
+     "luas": 203.2,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-19": {
+    "14": {
+     "hot": 257,
+     "luas": 205.6,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-20": {
+    "14": {
+     "hot": 260,
+     "luas": 208.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-21": {
+    "14": {
+     "hot": 263,
+     "luas": 210.4,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-22": {
+    "14": {
+     "hot": 266,
+     "luas": 212.8,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-23": {
+    "14": {
+     "hot": 269,
+     "luas": 215.2,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-24": {
+    "14": {
+     "hot": 272,
+     "luas": 217.6,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-25": {
+    "14": {
+     "hot": 275,
+     "luas": 220.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-26": {
+    "14": {
+     "hot": 278,
+     "luas": 222.4,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-27": {
+    "14": {
+     "hot": 281,
+     "luas": 224.8,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-28": {
+    "14": {
+     "hot": 284,
+     "luas": 227.2,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-29": {
+    "14": {
+     "hot": 287,
+     "luas": 229.6,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-30": {
+    "14": {
+     "hot": 290,
+     "luas": 232.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 0,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 0,
+     "padam": 0
+    }
+   },
+   "2026-10-31": {
+    "14": {
+     "hot": 293,
+     "luas": 234.4,
+     "belum": 1.5,
+     "padam": 0
+    },
+    "16": {
+     "hot": 300,
+     "luas": 240.0,
+     "belum": 1.5,
+     "padam": 0
+    },
+    "61": {
+     "hot": 400,
+     "luas": 320.0,
+     "belum": 1.5,
+     "padam": 0
+    },
+    "62": {
+     "hot": 350,
+     "luas": 280.0,
+     "belum": 1.5,
+     "padam": 0
+    },
+    "11": {
+     "hot": 20,
+     "luas": 16.0,
+     "belum": 1.5,
+     "padam": 0
+    },
+    "53": {
+     "hot": 5,
+     "luas": 4.0,
+     "belum": 1.5,
+     "padam": 0
+    }
+   }
+  }
+ },
+ "surut": {
+  "tarik": "2026-11-01",
+  "asal": "potong",
+  "hari": {
+   "2026-10-20": {
+    "1201": {
+     "surut": false,
+     "kondisi": "berangsur surut"
+    },
+    "11|1108": {
+     "surut": true
+    }
+   },
+   "2026-10-31": {
+    "12.01": {
+     "surut": true
+    }
+   }
+  }
+ },
+ "gunungapi": {
+  "tanggal": "2026-11-01",
+  "level": {
+   "G0": 1,
+   "G1": 1,
+   "G2": 1,
+   "G3": 1,
+   "G4": 1,
+   "G5": 1,
+   "G6": 1,
+   "G7": 1,
+   "G8": 1,
+   "G9": 1,
+   "G10": 1,
+   "G11": 1,
+   "G12": 1,
+   "G13": 1,
+   "G14": 1,
+   "G15": 1,
+   "G16": 1,
+   "G17": 1,
+   "G18": 1,
+   "G19": 1,
+   "G20": 1,
+   "G21": 1,
+   "G22": 1,
+   "G23": 1,
+   "G24": 1,
+   "G25": 1,
+   "G26": 1,
+   "G27": 1,
+   "G28": 1,
+   "G29": 1,
+   "G30": 1,
+   "G31": 1,
+   "G32": 1,
+   "G33": 1,
+   "G34": 1,
+   "G35": 1,
+   "G36": 1,
+   "G37": 1,
+   "G38": 1,
+   "G39": 1,
+   "G40": 1,
+   "G41": 1,
+   "W0": 2,
+   "W1": 2,
+   "W2": 2,
+   "W3": 2,
+   "W4": 2,
+   "W5": 2,
+   "W6": 2,
+   "W7": 2,
+   "W8": 2,
+   "W9": 2,
+   "W10": 2,
+   "W11": 2,
+   "W12": 2,
+   "W13": 2,
+   "W14": 2,
+   "W15": 2,
+   "W16": 2,
+   "W17": 2,
+   "W18": 2,
+   "W19": 2,
+   "W20": 2,
+   "W21": 2,
+   "W22": 2,
+   "W23": 2,
+   "Lewotobi Laki-laki": 3,
+   "Semeru": 3,
+   "Ibu": 3
+  }
+ },
+ "gempa": {
+  "tarik": "2026-11-01",
+  "peristiwa": [
+   {
+    "id": "bmkg-1",
+    "tanggal": "2026-10-08",
+    "prov_kode": "53",
+    "mag": 5.4
+   }
+  ]
+ },
+ "erupsi": {
+  "tarik": "2026-11-01",
+  "peristiwa": [
+   {
+    "id": "lewotobi-1021",
+    "gunung": "Lewotobi Laki-laki",
+    "tanggal": "2026-10-21",
+    "prov_kode": "53"
+   }
+  ]
+ },
+ "riwayat": {
+  "dibuat": "2026-11-01T11:44:52+00:00",
+  "tahun_penuh": [
+   "2014",
+   "2015",
+   "2016",
+   "2017",
+   "2018",
+   "2019",
+   "2020",
+   "2024",
+   "2025"
+  ],
+  "kab": {
+   "11|Aceh Barat": {
+    "tahun_ada": {
+     "banjir": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      6
+     ],
+     "longsor": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      5
+     ]
+    }
+   },
+   "12|Nias Selatan": {
+    "tahun_ada": {
+     "banjir": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      3
+     ],
+     "longsor": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      2
+     ]
+    }
+   },
+   "14|Kota Pekanbaru": {
+    "tahun_ada": {
+     "banjir": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      9,
+      9
+     ]
+    }
+   },
+   "32|Bogor": {
+    "tahun_ada": {
+     "banjir": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      7,
+      8
+     ],
+     "longsor": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      8,
+      9
+     ]
+    }
+   },
+   "53|Kupang": {
+    "tahun_ada": {
+     "banjir": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      5
+     ]
+    }
+   }
+  }
+ },
+ "iklim": {
+  "dibuat": "2026-11-09T07:10+07:00",
+  "wilayah": {
+   "aceh_sumut": {
+    "nama": "Aceh-Sumut"
+   },
+   "jawa": {
+    "nama": "Jawa"
+   },
+   "kalbar_kalteng": {
+    "nama": "Kalbar-Kalteng"
+   },
+   "nasional": {
+    "nama": "Indonesia"
+   }
+  },
+  "keadaan_sekarang": {
+   "roni": {
+    "musim": "ASO",
+    "tahun": 2026,
+    "nilai": 1.97
+   },
+   "dmi": 0.6
+  },
+  "fit": {
+   "OND": {
+    "aceh_sumut": {
+     "lulus": false
+    },
+    "jawa": {
+     "lulus": true
+    },
+    "kalbar_kalteng": {
+     "lulus": false
+    },
+    "nasional": {
+     "lulus": true
+    }
+   }
+  },
+  "prakiraan": [
+   {
+    "musim": "SON",
+    "tahun": 2026,
+    "bulan_tengah": "2026-10",
+    "label": "Sep 2026 - Nov 2026",
+    "horizon_bulan": 0,
+    "ekstrapolasi": false,
+    "di_luar_rentang": false,
+    "jenis_pendorong": "persistensi",
+    "pendorong": {
+     "roni": 1.97,
+     "dmi": 0.6
+    },
+    "wilayah": {
+     "jawa": {
+      "anom_pct": -60.0,
+      "p10": -100.0,
+      "p90": -20.0,
+      "sd_total": 9.0,
+      "tampil": true
+     }
+    }
+   },
+   {
+    "musim": "OND",
+    "tahun": 2026,
+    "bulan_tengah": "2026-11",
+    "label": "Okt 2026 - Des 2026",
+    "horizon_bulan": 1,
+    "ekstrapolasi": false,
+    "di_luar_rentang": false,
+    "jenis_pendorong": "persistensi",
+    "pendorong": {
+     "roni": 1.97,
+     "dmi": 0.6
+    },
+    "wilayah": {
+     "aceh_sumut": {
+      "anom_pct": -11.8,
+      "p10": -23.0,
+      "p90": -0.6,
+      "sd_total": 9.0,
+      "tampil": true
+     },
+     "jawa": {
+      "anom_pct": -49.3,
+      "p10": -88.0,
+      "p90": -10.6,
+      "sd_total": 9.0,
+      "tampil": true
+     },
+     "kalbar_kalteng": {
+      "anom_pct": -17.6,
+      "p10": -40.0,
+      "p90": 4.8,
+      "sd_total": 9.0,
+      "tampil": false
+     },
+     "nasional": {
+      "anom_pct": -29.0,
+      "p10": -45.0,
+      "p90": -13.0,
+      "sd_total": 9.0,
+      "tampil": true
+     }
+    }
+   }
+  ]
+ }
+}

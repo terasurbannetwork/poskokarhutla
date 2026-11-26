@@ -79,6 +79,7 @@ uji("usul tutup: status usul_tutup, versi 1 tanpa data pribadi, sidik objek berk
   const kanon = `{"data":${JSON.stringify(ob.data)},"pribadi":${JSON.stringify(ob.pribadi)}}`;
   assert.notEqual(s, sha256(kanon), "sidik objek bukan SHA-256 polos: HP dan NIK tidak bisa ditebak dari versi");
   assert.equal(await n("lj_jejak", `berkas = '${berkasId}' AND aksi = 'usul_tutup'`), 1);
+  assert.equal(r.j.segel.sidik12, v.sidik.slice(0, 12)); assert.equal(await n("segel", `jenis = 'lj' AND kode = '${r.j.segel.kode}' AND sidik = '${v.sidik}'`), 1);
 });
 
 uji("berkas usul_tutup terkunci: rute tulis 409; pernyataan SQL objek, ubah, batal, titik, foto, nihil kalah walau pemeriksaan kode terlewati (balapan tutup lawan tulis)", async () => {
@@ -129,6 +130,19 @@ uji("buka lagi: wajib alasan; ditutup kosong (hitungan 5 tahun mulai ulang), tul
   assert.equal(t.j.status_akhir, "selesai", "hilang 0 dari data, mengungsi dan putus nihil: selesai tanpa catatan (D13)");
   const vs = await beku(); assert.equal(vs.length, 2); assert.deepEqual(vs[0], v1, "versi 1 tidak berubah"); assert.notEqual(vs[1].sidik, v1.sidik);
   assert.equal((await terima({berkas: berkasId, aksi: "tutup"})).s, 200); b = await berkas(); assert.equal(b.status, "selesai");
+});
+
+uji("SG-13 segel lj: tiap versi beku tersegel di batch yang sama, sidik = lj_beku.sidik, usul yang kalah tanpa segel; verifikasi publik Berlaku dan Ada versi lebih baru tanpa isi", async () => {
+  const sg = (await DB.prepare("SELECT * FROM segel WHERE jenis = 'lj' AND dasar = ? ORDER BY versi").bind(berkasId).all()).results, vs = await beku();
+  assert.equal(sg.length, 2, "dua versi beku, dua segel; usul ulang 409 tidak menambah segel");
+  sg.forEach((x, i) => { assert.equal(x.rujukan, `${berkasId}#${vs[i].versi}`); assert.equal(x.versi, vs[i].versi); assert.equal(x.sidik, vs[i].sidik); assert.equal(x.terbit, vs[i].waktu); });
+  assert.equal(sg[0].penerbit, "BPBD Kota Bogor"); assert.equal(sg[0].wilayah, "Kota Bogor");
+  for (const k of ["penerbit", "judul", "wilayah", "periode"]) for (const x of ["Rani", "Budi", "Dedi", "Anggota", KETUA]) assert.ok(!String(sg[0][k]).includes(x), `${k} tanpa nama orang`);
+  const lama = await api("GET", `/api/verifikasi/${sg[0].kode}`), baru = await api("GET", `/api/verifikasi/${sg[1].kode.slice(0, 5)}-${sg[1].kode.slice(5).toLowerCase()}`);
+  assert.equal(lama.s, 200, lama.t); assert.equal(lama.j.status, "lebih_baru"); assert.equal(lama.j.terbaru, sg[1].kode);
+  assert.equal(baru.s, 200, baru.t); assert.equal(baru.j.status, "berlaku"); assert.equal(baru.j.sidik12, vs[1].sidik.slice(0, 12));
+  for (const x of ["isi", "rujukan", "dasar", "sidik", "rekap", "objek"]) assert.equal(x in baru.j, false, `tanpa ${x}`);
+  assert.ok(!baru.t.includes(berkasId), "id berkas tidak sampai ke publik");
 });
 
 uji("tiket dengan dua berkas: tiket tetap terbuka sampai semua berkasnya ditutup", async () => {

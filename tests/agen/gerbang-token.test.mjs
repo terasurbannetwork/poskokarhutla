@@ -9,8 +9,14 @@ const BATAS = 164, POLA = /(?:token|kode|kunci|akses|tautan|rahasia|secret)\w*?(
 const nomor = (f) => Number(f.match(/migrations\/(\d{4})_/)?.[1])
 const buang = (s) => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/--.*$/gm, '')
 
+/* Bangun ulang tabel lama menyalin kolom yang lahir sebelum 0164. Tiap entri menyebut berkas, kolom, dan migrasi asal; kolom lain di berkas itu tetap diperiksa. */
+const BANGUN_ULANG = {'migrations/0176_sensor_geofon.sql': {kolom: ['kunci_hash'], asal: 'migrations/0089_sensor.sql', alasan: 'EW-03: CHECK jenis geofon memaksa sensor_alat dibangun ulang; kunci_hash HMAC alat dari 0089'}}
+const POLA_G = new RegExp(POLA.source, 'gi')
+const kolomToken = (f) => (buang(baca(f)).match(POLA_G) || []).map((x) => x.toLowerCase()).filter((x) => !(BANGUN_ULANG[f]?.kolom || []).includes(x))
+
 test('migrasi sesudah 0164 tidak membuat kolom token sendiri (pakai tautan_token)', () => {
-  const salah = berkas('migrations', /\.sql$/).filter((f) => nomor(f) > BATAS && POLA.test(buang(baca(f))))
+  for (const [f, e] of Object.entries(BANGUN_ULANG)) for (const k of e.kolom) assert.match(buang(baca(e.asal)), new RegExp(`\\b${k}\\b`), `${f}: ${k} harus sudah ada di ${e.asal}`)
+  const salah = berkas('migrations', /\.sql$/).filter((f) => nomor(f) > BATAS && kolomToken(f).length)
   assert.deepEqual(salah, [], 'pakai src/token.js (terbitkan, periksa, cabut) dan tabel tautan_token, bukan kolom *_sha baru')
 })
 

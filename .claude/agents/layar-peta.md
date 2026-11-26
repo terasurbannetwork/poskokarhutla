@@ -47,6 +47,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `public/*.js`
 - `tests/layar/**`
 - `tests/gambar/**`
+- `tests/berkala/**`
 - `tests/prioritas.test.mjs`
 - `public/*.css`
 - `public/design-system-*.json`

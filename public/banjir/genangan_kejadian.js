@@ -1,5 +1,5 @@
 /* Genangan radar per kejadian di /banjir (GS-14, KEPUTUSAN-GENANGAN K4). Dimuat dari tab Dampak lewat import() di dampak.js.
-   Data: /banjir/data/genangan_kejadian.json dan /banjir/data/genangan_kejadian/<KJ>/v<n>/ (scripts/banjir/genangan_terbit.py).
+   Data: /api/banjir/genangan dan /api/banjir/genangan/<KJ>/v<n>/<berkas> dari R2 (src/banjir_genangan.js; diisi scripts/banjir/genangan_terbit.py, Q13).
    Fungsi di atas `pasang` murni (tanpa DOM dan jaringan) supaya bisa diuji di Node: tests/banjir/genangan_kejadian.test.mjs.
    Aturan paket: tak teramati = teks alasan, bukan 0; rentang selalu dua ujung; antarsumber tidak dijumlah; tanpa kata aman, surut, terdampak.
    Fungsi format sengaja serupa public/siklus/genangan.js; berkas itu di balik sesi staf (run_worker_first /siklus/*), jadi tidak bisa diimpor halaman publik. */
@@ -42,7 +42,7 @@ export function lahanGabung(kab) {
 }
 
 const NAMA_BERKAS = /^\d{4}_(sel\.geojson|(radar|asli|swir)_(pra|pasca)\.png)$/;
-export const urlAset = (kej, nama) => /^KJ-[A-Z0-9-]+$/.test(kej?.kj ?? "") && Number.isInteger(kej?.versi) && NAMA_BERKAS.test(nama ?? "") ? `/banjir/data/genangan_kejadian/${kej.kj}/v${kej.versi}/${nama}` : null;
+export const urlAset = (kej, nama) => /^KJ-[A-Z0-9-]+$/.test(kej?.kj ?? "") && Number.isInteger(kej?.versi) && NAMA_BERKAS.test(nama ?? "") ? `/api/banjir/genangan/${kej.kj}/v${kej.versi}/${nama}` : null;
 export const JENIS_CITRA = [["radar", "Radar"], ["asli", "Warna asli"], ["swir", "Semu SWIR"]];
 /* pasangan sebelum dan sesudah satu kab untuk satu jenis, atau {alasan}; salah satu sisi tanpa berkas = alasan */
 export function citraKab(kej, k, jenis) {
@@ -90,7 +90,7 @@ export function kartuLahan(kab) {
 
 export function kartuMetode(kej) {
   const am = kej.ambang ?? {}, min = bil(am.cakupan_pct_min) ? fmtPersen(am.cakupan_pct_min) : "yang ditetapkan model", bawah = bil(am.zona_bawah) ? fmtPersen(am.zona_bawah * 100) : "yang ditetapkan model";
-  const butir = [["Data", "Genangan dari Copernicus Global Flood Monitoring (GFM), turunan radar Sentinel-1. Lahan dari ESA WorldCover 2021. Penduduk dari WorldPop, dibagi menurut bangunan Google Open Buildings."],
+  const butir = [["Data", "Genangan dari Copernicus Global Flood Monitoring (GFM), turunan radar Sentinel-1. Lahan dari ESA WorldCover 2021. Penduduk dari WorldPop, dibagi menurut bangunan Google Open Buildings, untuk Aceh bangunan Overture Maps."],
     ["Deteksi", `Genangan dipakai apa adanya dari GFM. Kami tidak membuat ambang radar sendiri dan tidak menyediakan penyetel ambang. Kabupaten dihitung bila radar mengamati paling sedikit ${min} persen luasnya dan sinyalnya tidak lemah; ambang ini masih hipotesis.`],
     ["Dampak", `Penduduk di area genangan dihitung dari sel yang terkena genangan. Ujung bawah memakai sel yang tergenang paling sedikit ${bawah} persen; ujung atas memakai semua sel yang tersentuh. Bangunan terendam tidak ditampilkan.`],
     ["Catatan", `Belum lulus uji balik, jadi semua angka di sini dibaca sebagai hipotesis. Radar satu lintasan hanya memotret satu saat dan buta di permukiman padat. Angka ini berdampingan dengan laporan resmi dan tidak menggantikannya.`]];
@@ -101,7 +101,7 @@ export function kartuMetode(kej) {
 /* ================================================================ layar */
 const nanti = f => { let ok = false; const g = () => { if (!ok) { ok = true; f(); } }; requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(g))); setTimeout(g, 120); };
 let DATA = null;
-const muat = () => DATA ??= fetch("/banjir/data/genangan_kejadian.json", {cache: "no-cache"}).then(r => r.ok ? r.json() : null).catch(() => null).then(d => { const v = d?.kejadian?.length ? d : null; if (!v) DATA = null; return v; });   // gagal tidak disimpan: dicoba lagi pada render berikutnya
+const muat = () => DATA ??= fetch("/api/banjir/genangan").then(r => r.ok ? r.json() : null).catch(() => null).then(d => { const v = d?.kejadian?.length ? d : null; if (!v) DATA = null; return v; });   // gagal tidak disimpan: dicoba lagi pada render berikutnya
 
 export async function pasang(host) {
   const d = await muat(), sec = host.closest("[data-bag]") ?? host;

@@ -16,6 +16,8 @@ ALFABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 PRIORITAS = ("dibi", "logbook", "lintas", "gempa", "karhutla", "rob")
 PRIORITAS_MASUK = PRIORITAS + ("tugas_api", "logbook_d1", "sippa", "lapangan", "gempa_d1", "lapsus", "lapor_ai")   # hanya bertahap; lapsus terakhir: kembar logbook_d1, harus menempel bukan mendirikan
 TAUTAN_SAJA = ("lapor_ai",)   # LJ-14: laporan BPBD hanya menempel ke KJ- yang ada; mesin tidak pernah mendirikan atau mengantre kejadian dari sumber ini (Lanjutan D2)
+# LK-10 (lapor-kejadian K87, A6): kecuali rekaman bertanda usulan_staf (kode LU-, satu klik staf di meja): itu mengikuti aturan umum (0 baru, 1 tambah, >1 ambigu, tanpa kab tanpa_wilayah).
+BANYAK_PER_KJ = ("lapor_ai",)   # banyak tiket/usulan per kejadian: KJ- yang sudah punya entri lapor_ai tetap kandidat (tanpa ini usulan kedua mendirikan KJ- kembar)
 MATI = ("digabung", "dibatalkan")
 JENDELA = 3        # semua jenis 3 hari (F1.4; kekeringan/karhutla/gunungapi menunggu UA-1)
 YAKIN = {"dibi": "resmi", "logbook": "terverifikasi"}
@@ -277,7 +279,8 @@ def bertahap(rekaman, kj, sumber, diambil, jendela=JENDELA):
         ada.add((r["sumber"], r["kode"]))
         dasar = {"sumber": r["sumber"], "kode": r["kode"], "jenis": "+".join(sorted(r["jenis"])), "mulai": r["tgl"],
                  "dampak": dampak({r["sumber"]: r}).get(r["sumber"]) or None, "diambil": diambil}
-        if not r["kab"] and r["sumber"] in TAUTAN_SAJA:
+        tautan_saja = r["sumber"] in TAUTAN_SAJA and not r.get("usulan_staf")
+        if not r["kab"] and tautan_saja:
             ada.discard((r["sumber"], r["kode"]))
             h["menunggu_kejadian"] += 1
             continue
@@ -286,10 +289,10 @@ def bertahap(rekaman, kj, sumber, diambil, jendela=JENDELA):
             h["tanpa_wilayah"] += 1
             continue
         cand = [x for x in indeks if set(x["jenis"].split("+")) & set(r["jenis"]) and x["kab4"] in r["kab"] and _hari(x["mulai"], r["tgl"]) <= jendela
-                and r["sumber"] not in punya[x["id"]]]
-        if r["sumber"] in TAUTAN_SAJA and len(cand) != 1:   # 0 = belum ada kejadian, >1 = ambigu: tunggu tanpa keputusan (dicoba lagi putaran berikut)
+                and (r["sumber"] in BANYAK_PER_KJ or r["sumber"] not in punya[x["id"]])]
+        if tautan_saja and len(cand) != 1:   # 0 = tanpa pasangan, >1 = ambigu: tunggu tanpa keputusan (rute tidak punya aksi tanpa_pasangan; dicoba lagi putaran berikut)
             ada.discard((r["sumber"], r["kode"]))
-            h["menunggu_kejadian"] += 1
+            h["tanpa_pasangan" if not cand else "menunggu_kejadian"] += 1
             continue
         if len(cand) == 1 and not cand[0]["lokal"]:
             c = cand[0]
@@ -393,15 +396,19 @@ def tarik_modul(http, basis, dari, sampai, cari=None):
                 kab = H._kab_titik(cari, b["lat"], b["lon"])
             else:
                 kab = []
-            hasil.append({"sumber": s, "kode": str(b["kode"]), "jenis": (b["jenis"],), "kab": kab, "tgl": b["mulai"][:10], "nilai": {}, "akhir": None})
+            rek = {"sumber": s, "kode": str(b["kode"]), "jenis": (b["jenis"],), "kab": kab, "tgl": b["mulai"][:10], "nilai": {}, "akhir": None}
+            if s == "lapor_ai" and b.get("usulan_staf") is True and str(b["kode"]).startswith("LU-"):   # LK-10: hanya usulan staf (lk_usulan) boleh mendirikan
+                rek["usulan_staf"] = True
+            hasil.append(rek)
     return hasil
 
 
 def masuk(http, basis, rekaman, dari, sampai, kering=False, diambil=None, putaran=3, batch=200):
     """Putar sampai tidak ada yang ditunda. -> jumlah keputusan per aksi. Jalan dua kali = nol baris baru (rute menolak (sumber, kode) yang sudah ada)."""
     diambil = diambil or int(dt.datetime.now(dt.timezone.utc).timestamp() * 1000)
-    a = (dt.date.fromisoformat(dari) - dt.timedelta(days=JENDELA)).isoformat()
-    b = (dt.date.fromisoformat(sampai) + dt.timedelta(days=JENDELA)).isoformat()
+    tg = [r["tgl"] for r in rekaman]   # LK-10: tgl rekaman (usulan LU- = tanggal tiket) bisa di luar --dari/--sampai; kandidat ditarik sekitar rekaman, kalau tidak 0 kandidat = KJ- kembar
+    a = (dt.date.fromisoformat(min([dari] + tg)) - dt.timedelta(days=JENDELA)).isoformat()
+    b = (dt.date.fromisoformat(max([sampai] + tg)) + dt.timedelta(days=JENDELA)).isoformat()
     total, sisa = collections.Counter(), rekaman
     for _ in range(putaran):
         kep, tunda, h = bertahap(sisa, _tarik(http, basis, "jendela", a, b), _tarik(http, basis, "sumber", a, b), diambil)
@@ -595,7 +602,51 @@ def _uji():
     assert [(k["aksi"], k["kejadian_id"]) for k in kep] == [("tambah", kjA["id"])]
     for kj_, kb in (([], ("3201",)), ([kjA, kjB], ("3201",)), ([kjA], ())):
         kep, tunda, h = bertahap([LA("2026-03-03", kb)], kj_, [], 1)
-        assert kep == [] and tunda == [] and h == {"menunggu_kejadian": 1}, "lapor_ai tidak mendirikan, mengantre, atau tanpa_wilayah"
+        assert kep == [] and tunda == [] and h == {"tanpa_pasangan" if not kj_ else "menunggu_kejadian": 1}, "lapor_ai tidak mendirikan, mengantre, atau tanpa_wilayah"
+    # LK-10 U6: usulan staf (lapor_ai, kode LU-, usulan_staf) mengikuti aturan umum; rekaman otomatis tetap tidak mendirikan
+    LU = lambda t, kab=("3201",), n="01": dict(R("lapor_ai", ("banjir",), kab, t), kode="LU-030326-" + n, usulan_staf=True)
+    kep, tunda, h = bertahap([LU("2026-03-03")], [], [], 1)
+    assert [k["aksi"] for k in kep] == ["baru"] and kep[0]["kab4"] == "3201" and kep[0]["dampak"] is None and "usulan_staf" not in kep[0] and h == {"baru": 1}, "usulan tanpa kandidat mendirikan"
+    assert kep[0]["kode"] == "LU-030326-01" and kep[0]["sumber"] == "lapor_ai"
+    kep, _, _ = bertahap([LU("2026-03-03")], [kjA], [], 1)
+    assert [(k["aksi"], k["kejadian_id"]) for k in kep] == [("tambah", kjA["id"])]
+    kep, _, _ = bertahap([LU("2026-03-03")], [kjA], [{"sumber": "lapor_ai", "kode": "LA-030326-01", "kejadian_id": kjA["id"]}], 1)
+    assert [(k["aksi"], k["kejadian_id"]) for k in kep] == [("tambah", kjA["id"])], "KJ- yang sudah punya tiket lapor_ai tetap kandidat usulan (tanpa KJ- kembar)"
+    kep, _, _ = bertahap([LA("2026-03-04")], [kjA], [{"sumber": "lapor_ai", "kode": "LA-030326-01", "kejadian_id": kjA["id"]}], 1)
+    assert [k["aksi"] for k in kep] == ["tambah"], "tiket BPBD kedua menempel ke KJ- yang sama"
+    kep, _, _ = bertahap([LU("2026-03-03")], [kjA, kjB], [], 1)
+    assert [k["aksi"] for k in kep] == ["ambigu"] and kep[0]["kandidat"] == sorted([kjA["id"], kjB["id"]]), "Q13: dua kandidat ke antrean"
+    kep, _, h = bertahap([LU("2026-03-03", ())], [kjA], [], 1)
+    assert [k["aksi"] for k in kep] == ["tanpa_wilayah"] and h == {"tanpa_wilayah": 1}
+    kep, _, h = bertahap([LU("2026-03-03")], [kjA], [{"sumber": "lapor_ai", "kode": "LU-030326-01", "kejadian_id": kjA["id"]}], 1)
+    assert kep == [] and h == {"sudah_ada": 1}, "(sumber, kode) sudah ada: tanpa duplikat"
+    dua = [LU("2026-03-03", n="01"), LU("2026-03-20", n="02")]
+    k1, t1, _ = bertahap(dua, [], [], 1)
+    k2, t2, _ = bertahap(dua[::-1], [], [], 1)
+    assert [k["aksi"] for k in k1] == ["baru", "baru"] and k1 == k2 and t1 == t2 == [], "INV-9: urutan masuk tidak mengubah ID"
+    k3, t3, h3 = bertahap([LU("2026-03-03", n="01"), LU("2026-03-04", n="02")], [], [], 1)
+    assert [k["aksi"] for k in k3] == ["baru"] and len(t3) == 1 and h3["tunda"] == 1, "usulan kedua sekab menunggu KJ- baru, bukan KJ- kembar"
+    class _H:
+        def __call__(self, m, u, isi=None):
+            if "sumber=lapor_ai" not in u:
+                return {"baris": []}
+            return {"baris": [{"sumber": "lapor_ai", "kode": "LU-030326-01", "jenis": "banjir", "prov": "32", "kab": "Bogor", "mulai": "2026-03-03", "usulan_staf": True},
+                              {"sumber": "lapor_ai", "kode": "LA-030326-01", "jenis": "banjir", "prov": "32", "kab": "Bogor", "mulai": "2026-03-03", "usulan_staf": True}]}
+    rk = tarik_modul(_H(), "http://x", "2026-03-01", "2026-03-05")
+    assert [r.get("usulan_staf") for r in rk] == [True, None] and rk[0]["kab"] == ["3201"], "tanda usulan hanya untuk kode LU-"
+    class _J:   # rute palsu: KJ- hanya terlihat bila jendela tarikan mencakup tanggal mulainya
+        def __init__(self):
+            self.kirim = []
+        def __call__(self, m, u, isi=None):
+            if m == "POST":
+                self.kirim += isi["keputusan"]
+                return {}
+            q = urllib.parse.parse_qs(urllib.parse.urlparse(u).query)
+            dalam = q["dari"][0] <= kjA["mulai"] <= q["sampai"][0]
+            return {"baris": [kjA] if "/jendela?" in u and dalam else []}
+    j = _J()
+    h = masuk(j, "http://x", [LU("2026-03-03")], "2026-03-20", "2026-03-25", diambil=1)
+    assert h == {"tambah": 1} and [(k["aksi"], k["kejadian_id"]) for k in j.kirim] == [("tambah", kjA["id"])], "usulan bertanggal tiket di luar --dari/--sampai tetap menemukan KJ-"
     assert usulan_fase_tutup({"status": "terbuka", "ditutup": None, "tgl_selesai": "2026-03-10"}) is None
     assert usulan_fase_tutup({"status": "usul_tutup", "ditutup": None, "tgl_selesai": "2026-03-10"}) is None
     u = usulan_fase_tutup({"status": "selesai", "ditutup": 1, "tgl_selesai": "2026-03-10"})

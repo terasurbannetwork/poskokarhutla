@@ -104,7 +104,14 @@ def galat_kemampuan(id_, k):
         g += [f"{id_}: kemampuan.layar.{n} harus bool" for n in LAYAR_BOOL if not isinstance(ly[n], bool)]
         g += [f"{id_}: kemampuan.layar.{n} harus list slug" for n in LAYAR_LIST
               if not isinstance(ly[n], list) or any(not isinstance(x, str) or not SLUG.match(x) for x in ly[n])]
-    g += [f"{id_}: kemampuan.{n} tidak dikenal" for n in k if n not in KEMAMPUAN_BOOL + ("dokumen", "tindakan", "layar") + tuple(objek)]
+    al = k.get("alat")   # EWS EW-02: panel alat, opsional; sumber dan jenis berupa list slug tak kosong
+    if al is not None:
+        if not isinstance(al, dict) or set(al) != {"sumber", "jenis"}:
+            g.append(f"{id_}: kemampuan.alat harus objek berkunci tepat sumber, jenis")
+        else:
+            g += [f"{id_}: kemampuan.alat.{n} harus list slug tak kosong" for n in ("sumber", "jenis")
+                  if not isinstance(al[n], list) or not al[n] or any(not isinstance(x, str) or not SLUG.match(x) for x in al[n])]
+    g += [f"{id_}: kemampuan.{n} tidak dikenal" for n in k if n not in KEMAMPUAN_BOOL + ("dokumen", "tindakan", "layar", "alat") + tuple(objek)]
     return g
 
 
@@ -306,6 +313,12 @@ def _uji():
     rusak(lambda b: b[0]["kemampuan"]["layar"].update(brief="ya"), "layar.brief harus bool")
     rusak(lambda b: b[0]["kemampuan"]["layar"].update(cari=["Desa Baru"]), "layar.cari harus list slug")
     rusak(lambda b: b[0]["kemampuan"]["layar"].pop("tab_operasi"), "layar harus berkunci tepat")
+    rusak(lambda b: b[0]["kemampuan"].update(alat={"sumber": ["sensor"]}), "kemampuan.alat harus objek")
+    rusak(lambda b: b[0]["kemampuan"].update(alat={"sumber": [], "jenis": ["tma"]}), "alat.sumber harus list slug")
+    rusak(lambda b: b[0]["kemampuan"].update(alat={"sumber": ["sensor"], "jenis": ["Tinggi Air"]}), "alat.jenis harus list slug")
+    r = copy.deepcopy(reg)
+    r["bencana"][0]["kemampuan"].update(alat={"sumber": ["sensor"], "jenis": ["tma"]})
+    assert periksa(r) == [], periksa(r)
     r = copy.deepcopy(reg)
     r["bencana"][0]["kemampuan"].update(operasi=True, dokumen=["sitrep"], renlap={"sarana": ["tenda"], "bobot": "banjir"})
     assert periksa(r) == [], periksa(r)

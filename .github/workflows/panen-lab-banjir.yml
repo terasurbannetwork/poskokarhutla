@@ -6,7 +6,9 @@ name: Panen data lab banjir (IMERG per kabupaten, GloFAS)
 # GloFAS: cron tiap 4 jam memanggil `jenis=glofas`; kuota Open-Meteo harian (keluar 75) = selesai bersih untuk run itu.
 # H90 panen ulang IMERG skema 2 (kolom j per jam): gh workflow run panen-lab-banjir.yml -f jenis=imerg -f bulan_awal=2015-01 -f bulan_akhir=2026-10 -f timpa=ya
 # (`timpa=ya` melewati langkah pulihkan dari R2, jadi panen_lab.py tidak melihat "sudah ada"; objek R2 lama baru ditimpa bila hasil baru TIDAK lebih kecil,
-# yang selalu benar untuk skema 2 yang selesai karena menambah j; hasil separuh karena timeout tidak menimpa; ulangi bulan itu saja dengan timpa=ya).
+# yang selalu benar untuk skema 2 yang selesai karena menambah j; hasil separuh karena timeout tidak menimpa).
+# Melengkapi bulan yang merah (NASA 401/habis waktu): dispatch ulang rentang yang sama TANPA timpa. Bulan skema 2 di R2 dilewati dalam detik,
+# bulan skema 1 dipanen ulang dan melanjutkan cache slot `_slot_<bulan>.jsonl.gz` di R2.
 # Sesudah semua bulan selesai: -f jenis=jam_hujan (dan tiap tgl 3 otomatis).
 # Berhenti sendiri: bila semua kab sudah ada di R2, penanda glofas/_LENGKAP ditulis dan run berikutnya keluar dalam detik.
 on:
@@ -94,6 +96,15 @@ jobs:
           $WR r2 object get "$R2/imerg/$BULAN.json.gz" --file "keluar/imerg_kab_$BULAN.json.gz" --remote \
             || { rm -f "keluar/imerg_kab_$BULAN.json.gz"; echo "belum ada di R2, mulai dari nol"; }
 
+      # Cache per slot dari run sebelumnya yang berhenti (NASA 401/403 atau habis waktu). Dipulihkan juga saat timpa=ya:
+      # cache hanya memuat slot skema 2, jadi panen ulang melanjutkan, bukan mulai dari nol (25 Nov 2026: 22 bulan hilang begini).
+      - name: Pulihkan cache slot dari R2 (boleh gagal)
+        continue-on-error: true
+        run: |
+          mkdir -p keluar
+          $WR r2 object get "$R2/imerg/_slot_$BULAN.jsonl.gz" --file "keluar/_slot_$BULAN.jsonl.gz" --remote \
+            && echo "cache slot dipulihkan" || { rm -f "keluar/_slot_$BULAN.jsonl.gz"; echo "tidak ada cache slot"; }
+
       - name: Uji mandiri
         run: python3 scripts/banjir/panen_lab.py uji
 
@@ -114,13 +125,20 @@ jobs:
         run: |
           set -e
           F="keluar/imerg_kab_$BULAN.json.gz"
-          [ -f "$F" ] || { echo "::warning title=imerg $BULAN::tidak ada berkas"; [ "${rc:-0}" = 1 ] && exit 1; exit 0; }
+          C="keluar/_slot_$BULAN.jsonl.gz"
+          if [ ! -f "$F" ]; then
+            # berhenti di tengah: simpan kemajuan supaya dispatch ulang melanjutkan, dan merahkan job supaya tidak lolos diam-diam
+            [ -f "$C" ] && $WR r2 object put "$R2/imerg/_slot_$BULAN.jsonl.gz" --file "$C" --content-type application/gzip --remote
+            echo "::error title=imerg $BULAN::tidak ada berkas (rc=${rc:-?}); cache slot disimpan, dispatch ulang bulan ini untuk melanjutkan"
+            exit 1
+          fi
           LOKAL=$(wc -c < "$F")
           R2UKURAN=0
           if $WR r2 object get "$R2/imerg/$BULAN.json.gz" --file /tmp/r2.gz --remote > /tmp/r2.log 2>&1; then R2UKURAN=$(wc -c < /tmp/r2.gz); fi
           echo "$BULAN: lokal $LOKAL byte, R2 $R2UKURAN byte"
           if [ "$LOKAL" -ge "$R2UKURAN" ]; then
             $WR r2 object put "$R2/imerg/$BULAN.json.gz" --file "$F" --content-type application/gzip --remote
+            $WR r2 object delete "$R2/imerg/_slot_$BULAN.jsonl.gz" --remote > /dev/null 2>&1 || true
           else
             echo "R2 lebih lengkap, tidak ditimpa"
           fi

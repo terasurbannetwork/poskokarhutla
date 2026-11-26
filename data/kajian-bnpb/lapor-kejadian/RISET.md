@@ -44,10 +44,10 @@ sedikit berbeda; paket ini merapikannya (lihat `ALGORITMA.md` A1).
 ### 1.5 Buku Besar Kejadian dan pencocok
 
 - Buku Besar: `data/kajian-bnpb/siklus/` (`KEPUTUSAN-AWAL.md`: U3 halaman publik ringkasan resmi saja, U16 status tidak naik terverifikasi otomatis, `:100`, `:112`).
-- Pencocok satu: `scripts/siklus/pasang.py`. `PRIORITAS_MASUK` (`:17`) dan `SUMBER_MODUL` (`:345`) belum memuat `lapor_ai`. Logika `bertahap` (`:262-310`): satu kandidat menempel (`tambah`), nol kandidat mendirikan (`baru`), lebih dari satu masuk antrean (`ambigu`), tanpa wilayah (`tanpa_wilayah`). ID resmi `id_kj` (`:43-47`).
+- Pencocok satu: `scripts/siklus/pasang.py`. `PRIORITAS_MASUK` (`:17`) dan `SUMBER_MODUL` (`:373`) sudah memuat `lapor_ai` (LJ-14); `TAUTAN_SAJA` (`:18`) membuat tiket LA- hanya menempel, dan LK-10 mengecualikan rekaman bertanda `usulan_staf` berkode LU- (`:282`, `:400-401`). Logika `bertahap` (`:262-310`): satu kandidat menempel (`tambah`), nol kandidat mendirikan (`baru`), lebih dari satu masuk antrean (`ambigu`), tanpa wilayah (`tanpa_wilayah`). ID resmi `id_kj` (`:43-47`).
 - Rencana sumber `lapor_ai`: `lapor-ai/ALGORITMA.md:119` dan D29 (`:128`): hanya menempel, tidak pernah `baru`. Tiket LA-25 belum dikerjakan (`TIKET.md:52`).
 - Antrean tinjau: `src/siklus_kejadian.js:295` (`antreanPutus`), rute `:469-470` (izin `PDKO`); keputusan `pilih` = ID kandidat, `"baru"`, atau tolak.
-- Rute ingest modul yang direncanakan `keterpaduan` D3 (`GET /api/siklus/ingest/modul`) belum ada di kode (pencarian `ingest/modul` pada `src` dan `scripts` kosong). Ini dependensi LK-10.
+- Rute ingest modul `keterpaduan` D3 (`GET /api/siklus/ingest/modul`, `src/kejadian_tautan.js`) sudah ada. Sumber `lapor_ai` (SQL `KT` di `src/hak.js:499`) memuat tiket LA- tingkat bpbd berberkas dan, sejak LK-10, usulan staf `lk_usulan` (LU-, putaran terakhir) bertanda `usulan_staf: true`.
 - Aturan keterpaduan yang mengikat: satu nomor kejadian untuk semua modul, pencocok tetap satu, tidak ada buku kejadian kedua, tanpa router WA bersama (`keterpaduan/KEPUTUSAN-KETERPADUAN.md:19-20`, `:33`; AGENTS 2.15).
 - Kadensi pencocok: `siklus.yml` jalan tiap 3 jam (`.github/workflows/siklus.yml:16`) dan tiga jadwal lain.
 

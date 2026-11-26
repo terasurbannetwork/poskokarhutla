@@ -1,0 +1,47 @@
+/* Kaji ulang pasca-kejadian (KU-07..KU-09). Warna hanya lewat token tema; kartu berjarak 20 px; tanpa huruf kapital semua. */
+.ku-tumpuk{display:grid;gap:20px;min-width:0}
+.ku-dua{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));align-items:stretch}
+.ku-dua>.ex{height:100%}
+.ku-kol{display:grid;gap:8px;align-content:start;min-width:0}
+.ku-kol h4,.ku-lamp{margin:0;font-size:.8125rem;text-transform:none}
+.ku-lamp{margin-top:12px;color:var(--ink2)}
+.ku-ket{margin:0 0 8px;font-size:.8125rem;color:var(--ink2)}
+.ku-redup{color:var(--ink2)}
+.ku-dft{margin:0;padding-left:18px;display:grid;gap:6px;font-size:.8125rem}
+.ku-dft small,.ku-kutip small{color:var(--ink2)}
+.ku-kutip{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.ku-kutip li{display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:start}
+.ku-kutip blockquote{margin:0;padding-left:10px;border-left:3px solid var(--line);font-size:.8125rem}
+.ku-kutip small{grid-column:1}
+.ku-kutip li>[data-aksi]{grid-row:1/span 2;grid-column:2}
+.ku-pil{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:999px;font-weight:700;font-size:.75rem;background:var(--line);color:var(--ink);white-space:nowrap}
+.ku-pil[data-s="proses"]{background:var(--warn);color:var(--ink)}
+.ku-pil[data-s="selesai"]{background:var(--ok);color:var(--on-pekat)}
+.ku-pil[data-s="perkiraan"]{margin-left:6px;background:transparent;border:1px dashed var(--ink2);color:var(--ink2)}
+.ku-lewat{display:inline-flex;align-items:center;gap:4px;margin-left:6px;font-size:.75rem;font-weight:700;color:var(--bad)}
+.ku-baris{cursor:pointer}
+.ku-baris:focus-visible{outline:2px solid var(--info);outline-offset:-2px}
+[data-aksi="ikon"]{border:0;background:transparent;padding:0 6px;min-height:28px;color:var(--ink2)}
+[data-aksi="ikon"]:hover:not(:disabled){color:var(--ink)}
+.ku-laci{max-width:36rem}
+.ku-isi{display:grid;gap:10px;padding:0 4px}
+.ku-isi h4{margin:8px 0 0;font-size:.8125rem;text-transform:none}
+.ku-isi p{margin:0}
+.ku-isi textarea,.ku-isi select{width:100%}
+.ku-lembar{display:none}
+
+@media print{
+  @page{size:A4;margin:14mm}
+  body.ku-mencetak>*:not(.ku-lembar){display:none!important}
+  body.ku-mencetak .ku-lembar{display:block;color:var(--ink);font-size:10pt}
+  .ku-lembar h1{margin:0 0 4px;font-size:14pt;text-transform:none}
+  .ku-lembar h2{margin:14px 0 6px;font-size:11pt;text-transform:none;break-after:avoid}
+  .ku-lembar header p{margin:0 0 8px;color:var(--ink2)}
+  .ku-lembar table{width:100%;border-collapse:collapse}
+  .ku-lembar th{background:var(--head-bg);color:var(--on-pekat);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ku-lembar th,.ku-lembar td{padding:3px 6px;border:1px solid var(--line);vertical-align:top}
+  .ku-lembar th{text-align:center}
+  .ku-lembar td{text-align:left}
+  .ku-lembar tr{break-inside:avoid}
+  .ku-lembar button,.ku-lembar [data-aksi]{display:none!important}
+}

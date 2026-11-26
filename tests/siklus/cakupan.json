@@ -69,6 +69,9 @@
   },
   "GET /api/siklus/ingest/modul": {
    "server": "tests/warga/kejadian_tautan.test.mjs",
+   "server_tambahan": [
+    "tests/warga/kejadian_tautan_usulan.test.mjs"
+   ],
    "klien": []
   },
   "GET /api/siklus/kejadian/tautan": {
@@ -364,6 +367,12 @@
   "POST /api/siklus/renkon/:sid/status": {
    "server": "tests/warga/siklus_renkon.test.mjs",
    "klien": []
+  },
+  "GET /api/siklus/kaji/:sid/berkas/:nama": {
+   "server": "tests/warga/siklus_kaji_gfm.test.mjs",
+   "klien": [
+    "tests/siklus/genangan_layar.test.mjs"
+   ]
   }
  },
  "skrip": {
@@ -378,12 +387,15 @@
   "bps.py": "uji",
   "dummy_saji.py": "uji",
   "fasilitas.py": "uji",
+  "genangan_kaji.py": "uji",
+  "genangan_kriteria.py": "uji",
   "ghsl_lab.py": "uji",
   "gudang.py": "uji",
   "hidup.py": "uji",
   "iklim_lab.py": "uji",
   "kaji_banjir.py": "uji",
   "kaji_gempa.py": "uji",
+  "kerusakan.py": "uji",
   "konst.py": "uji",
   "kunci.py": "uji",
   "panen.py": "uji",
@@ -391,6 +403,7 @@
   "pasang.py": "uji",
   "registri.py": "uji",
   "saji.py": "uji",
+  "titik_desa.py": "uji",
   "ujibalik.py": "uji",
   "unggah_riwayat.py": "uji"
  }

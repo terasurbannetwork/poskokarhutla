@@ -7,10 +7,10 @@ import {gerbangIngest, masukan, JENIS_SAH} from "./siklus_kejadian.js";
 import {hariAntara} from "./siklus_hitung.js";
 import * as H from "./hak.js";
 import {lingkupKab4, NAMA_KAB4} from "./siklus_kab.js";
+import {JENIS_BUKU_BESAR} from "./lapor_kejadian.js";   // jenis tiket Lapor -> jenis kejadian, satu sumber dengan usulan LK-09
 
 const BATAS = 500, WIB = 7 * 36e5;   // WIB = UTC+7 (ms)
 const PETA = {gempabumi: "gempa", gelombang_pasang: "gelombang"};
-const PETA_LAPOR = {abrasi: "gelombang", erupsi: "gunungapi", kebakaran_gedung: "kebakaran_permukiman"};   // jenis tiket Lapor yang namanya beda; "lainnya" tidak punya padanan: tidak dikirim
 const bulat = v => Math.round(v * 1e3) / 1e3;   // lat/lon tugas lapangan ~110 m
 const tgl = ms => new Date(ms + WIB).toISOString().slice(0, 10);
 const awalHari = t => Date.parse(t + "T00:00:00+07:00");
@@ -36,9 +36,17 @@ const jenisSah = (sumber, r) => {
   return JENIS_SAH.includes(j) ? j : null;
 };
 function item(sumber, r) {
-  if (sumber === "lapor_ai") {   // kab "32.71" -> prov "32" dan nama kab (pasang.py memetakan nama + prov ke kab4; bolak-balik diuji untuk 514 kab); kab tak dikenal = tanpa wilayah
-    const k4 = String(r.kab ?? "").replace(".", ""); r = {...r, jenis: PETA_LAPOR[r.jenis] ?? r.jenis, prov: k4.slice(0, 2) || null, kab: Object.hasOwn(NAMA_KAB4, k4) ? NAMA_KAB4[k4] : null};
-    if (r.kab == null) return null;
+  if (sumber === "lapor_ai") {   // kab "32.71" (tiket) atau "3271" (usulan) -> prov "32" dan nama kab (pasang.py memetakan nama + prov ke kab4; bolak-balik diuji untuk 514 kab)
+    const k4 = String(r.kab ?? "").replace(".", ""), usulan = r.usulan === 1;
+    r = {...r, jenis: usulan ? r.jenis : JENIS_BUKU_BESAR[r.jenis] ?? r.jenis, prov: k4.slice(0, 2) || null, kab: Object.hasOwn(NAMA_KAB4, k4) ? NAMA_KAB4[k4] : null};
+    if (!usulan && r.kab == null) return null;   // tiket kab tak dikenal: tidak dikirim (tiket hanya menempel)
+    const jenis = jenisSah(sumber, r); if (!jenis) return null;
+    const o = {sumber, kode: r.kode, jenis};
+    if (r.prov != null) o.prov = r.prov;
+    if (r.kab != null) o.kab = r.kab;   // usulan kab tak dikenal: dikirim tanpa kab supaya pasang.py menjawab tanpa_wilayah (LK-10)
+    o.mulai = tgl(usulan ? r.mulai ?? r.w : r.w);
+    if (usulan) o.usulan_staf = true;
+    return o;
   }
   const jenis = jenisSah(sumber, r); if (!jenis) return null;
   const o = {sumber, kode: r.kode, jenis};

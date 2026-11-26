@@ -233,7 +233,9 @@ aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true
    tombol kartu di ujung kanan. Pil .ex-ey tetap ada (gerbang kartu-std), hanya pindah posisi dan bentuk. */
 :is(html,#_) .ex.ex-std>.ex-hd{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;padding:10px 16px}
 :is(html,#_) .ex.ex-std>.ex-hd>.ex-jd{display:contents}
-:is(html,#_) .ex.ex-std>.ex-hd .ex-jd>h3{order:1;display:flex;align-items:center;gap:10px;margin:0;font-size:1.0625rem;font-weight:800;line-height:1.25;color:var(--db-tx)}
+/* flex hanya untuk nama seksi berikon (svg langsung atau dibungkus, mis. .pr-ik); judul kalimat (teks + .hl) tetap mengalir sebaris */
+:is(html,#_) .ex.ex-std>.ex-hd .ex-jd>h3{order:1;margin:0;font-size:1.0625rem;font-weight:800;line-height:1.25;color:var(--db-tx)}
+:is(html,#_) .ex.ex-std>.ex-hd .ex-jd>h3:has(>svg:first-child,>:first-child>svg){display:flex;align-items:center;gap:10px}
 :is(html,#_) .ex.ex-std>.ex-hd .ex-jd>h3>svg:first-child{box-sizing:border-box;width:30px;height:30px;margin:0;padding:7px;border-radius:8px;background:var(--db-ikon);color:var(--db-ikon-tx);stroke:currentColor;fill:none;flex:none;vertical-align:middle}
 :is(html,#_) .ex.ex-std>.ex-hd>.ex-ey{order:2;display:inline-flex;align-items:center;gap:5px;margin:0;padding:3px 10px;border-radius:999px;background:var(--card);color:var(--db-tx);font-size:.75rem;font-weight:700;opacity:1;border:0}
 :is(html,#_) .ex.ex-std>.ex-hd>.ex-ey svg{width:12px;height:12px;color:var(--db-tx);stroke:currentColor;fill:none}

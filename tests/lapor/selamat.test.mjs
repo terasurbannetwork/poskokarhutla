@@ -95,6 +95,13 @@ uji("orang dicari: validasi, nomor dinormalkan, tidak tampil publik", async () =
   assert.equal((await cari(H1)).s, 429, "batas 5 per nomor per hari");
 });
 
+uji("Laporan saya: pencari melihat laporan orang dicari miliknya saja, tanpa nomor dan ciri", async () => {
+  const s1 = await api("GET", "/api/lapor/selamat/saya", undefined, H1); assert.equal(s1.s, 200, s1.t);
+  assert.ok(s1.j.cari.length >= 5); assert.ok(s1.j.cari.every(r => r.status === "buka" && r.id && r.kab_nama));
+  assert.equal(s1.t.includes(WA_DICARI) || s1.t.includes("kerudung") || s1.t.includes("nomor"), false, "tanpa nomor siapa pun dan tanpa ciri");
+  const s2 = await api("GET", "/api/lapor/selamat/saya", undefined, H2); assert.equal(s2.s, 200); assert.deepEqual(s2.j.cari, [], "nomor lain tidak melihat milik H1");
+});
+
 uji("meja: BNPB melihat semua; cocok hanya bila nomor sama persis dengan tanda aktif (bukan nama)", async () => {
   const dicari = await sesi(WA_DICARI, 3);
   const a = await api("GET", "/api/lapor/meja/cari", undefined, ADMIN); assert.equal(a.s, 200, a.t);
@@ -190,4 +197,23 @@ uji("halaman /lapor/s/<token> tamu: melayani halaman tautan dengan noindex dan t
   const r = await api("GET", `/lapor/s/${"A".repeat(43)}`);
   assert.equal(r.s, 200); assert.match(r.t, /Kabar selamat/);
   assert.match(r.h.get("x-robots-tag"), /noindex/); assert.equal(r.h.get("referrer-policy"), "no-referrer"); assert.match(r.h.get("cache-control"), /no-store/);
+});
+
+uji("orang dicari lewat obrolan (pemilik 25 Nov 2026): tanpa kode, baris lapor_cari ditulis dengan nomor pengirim, tanpa tiket", async () => {
+  const MESIN_H = {authorization: "Bearer mesin-rahasia"}, WA_CHAT = "6281200000071";
+  assert.equal((await api("POST", "/api/lapor/izin", {wa: WA_CHAT}, MESIN_H)).s, 200);
+  const tiket0 = await n("lapor_tiket"), cari0 = await n("lapor_cari");
+  const kirimP = b => api("POST", "/api/lapor/pesan", {wa: WA_CHAT, ...b}, MESIN_H);
+  let r;
+  for (const t of ["orang hilang", "1", "1", "Rina Wati"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
+  r = await kirimP({lokasi: {lat: -6.6, lon: 106.8, akurasi: 12}}); assert.equal(r.s, 200, r.t.slice(0, 300));
+  if (/Benar/.test(r.t)) r = await kirimP({teks: "1"});   // konfirmasi desa bila pembaca wilayah tersedia
+  for (const t of ["Joko", "Lewati", "4", "Lewati", "1", "Tidak tahu", "Pakai nomor saya", "Posko SDN 1 Paledang, Jl. Paledang"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
+  assert.match(r.t, /Ringkasan laporan orang dicari/);
+  r = await kirimP({teks: "1"}); assert.equal(r.s, 200, r.t.slice(0, 300)); assert.match(r.t, /Laporan orang dicari diterima/);
+  assert.equal(await n("lapor_cari"), cari0 + 1); assert.equal(await n("lapor_tiket"), tiket0, "tidak membuat tiket");
+  const b = await DB.prepare("SELECT nomor_pencari, nama_dicari, hubungan, waktu_terakhir, nomor_dicari, status FROM lapor_cari ORDER BY dibuat DESC LIMIT 1").first();
+  assert.deepEqual(b, {nomor_pencari: WA_CHAT, nama_dicari: "Joko", hubungan: "Saudara", waktu_terakhir: "Hari ini", nomor_dicari: null, status: "buka"});
+  const t = await DB.prepare("SELECT panggilan, nomor_kontak, tempat_tunggu FROM lapor_cari_temu ORDER BY rowid DESC LIMIT 1").first();
+  assert.deepEqual(t, {panggilan: null, nomor_kontak: WA_CHAT, tempat_tunggu: "Posko SDN 1 Paledang, Jl. Paledang"}, "nomor kontak dan tempat tunggu tersimpan (0177)");
 });

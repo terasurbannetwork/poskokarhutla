@@ -19,6 +19,7 @@ import {kodeTp, jarakM, BOX, DEKAT_M} from "./pengungsian_titik.js";
 import {putaranData, perintahData, balasanTersimpan, kunciFotoDraf, fotoMasuk, titikWa, samarPribadi, perintahStatus, balasanStatus, perintahNihil, perintahTim, perintahJawab, perintahTutup, namaMetrik, BASI_MS} from "./lapor_lanjut_mesin.js";
 import {dorongRekap, terimaJitupasna} from "./lapor_lanjut_meja.js";
 import * as H from "./hak.js";
+import {batchBersegel} from "./segel.js";
 
 const JAM = 3600e3, HARI = 864e5, UMUR_TOKEN = 30 * HARI;   // Q11: 30 hari
 const HDR = {"cache-control": "private, no-store", "x-robots-tag": "noindex", "referrer-policy": "no-referrer"};
@@ -636,13 +637,17 @@ async function usulTutup(env, t, u, kini) {
   const penutupan = {tgl_selesai: u.tgl_selesai, sk_nomor: sk.nilai, sk_tanggal: u.sk_tanggal ?? null, status: h.kondisi.status};
   if (!env.SESI_KUNCI) return tolak(503, "Penutupan belum bisa dipakai: kunci sidik belum dipasang.");
   const beku = await isiBeku({berkas: t.b, semua: h.semua, rekap: h.r, kondisi: h.kondisi, penutupan, sidikObjek: s => sidikPribadi(env, s, "lj-beku:")});
-  const r = await H.ljBatch(env, TIM, [H.ljStmtUsulTutup(env, TIM, t.b.id, JSON.stringify(penutupan), t.b.diubah, h.maks, kini),
+  /* SG-13: segel menempel di batch yang sama (pernyataan terakhir, versi dan sidik dibaca dari baris lj_beku baru); penerbit = lembaga, tanpa nama orang */
+  const nama = namaKab(t.b) ?? t.b.kab, awal = tglWib(t.b.dibuat), sampul = {jenis: "lj", rujukan: t.b.id, sidik: beku.sidik, judul: `Data lanjutan BPBD ${nama}`.slice(0, 160),
+    wilayah: String(nama).slice(0, 80), periode: `${awal < u.tgl_selesai ? awal : u.tgl_selesai}/${u.tgl_selesai}`, penerbit: `BPBD ${nama}`.slice(0, 80), terbit: kini};
+  const {r, kode: segel} = await batchBersegel(env, [H.ljStmtUsulTutup(env, TIM, t.b.id, JSON.stringify(penutupan), t.b.diubah, h.maks, kini),
     H.ljStmtBekuBaru(env, TIM, t.b.id, beku.isi, beku.sidik, "ketua", kini),   // oleh tanpa nomor: versi beku tidak memuat data pribadi; siapa yang menutup ada di lj_jejak
     H.ljStmtJejak(env, TIM, {berkas: t.b.id, aksi: "usul_tutup", sesudah: JSON.stringify({status: penutupan.status, tgl_selesai: penutupan.tgl_selesai, sidik: beku.sidik}),
-      pribadi_sidik: await sidikPribadi(env, t.tim.wa), oleh: t.oleh}, kini, true)]);
+      pribadi_sidik: await sidikPribadi(env, t.tim.wa), oleh: t.oleh}, kini, true)], sampul, 0, {batch: st => H.ljBatch(env, TIM, st), stmt: H.stmtSegelLj});
   if (!r[0].meta.changes) return tolak(409, "Data berkas berubah saat ditutup, atau berkas sudah ditutup. Muat ulang lalu coba lagi.");
   const v = await H.ljBekuTerakhir(env, TIM, t.b.id);
-  return {kode: 200, isi: {status: "usul_tutup", status_akhir: penutupan.status, versi: v?.versi ?? null, sidik: beku.sidik, kondisi: h.kondisi}};
+  return {kode: 200, isi: {status: "usul_tutup", status_akhir: penutupan.status, versi: v?.versi ?? null, sidik: beku.sidik, kondisi: h.kondisi,
+    segel: segel ? {kode: segel, sidik12: beku.sidik.slice(0, 12)} : null}};
 }
 async function tutupPost(env, req, url, kini) {
   const lj = await lajuIP(env, req, "lapor.data.tulis", [[JAM, 600]], kini); if (lj) return lj;

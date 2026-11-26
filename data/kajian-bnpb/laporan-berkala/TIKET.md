@@ -4,11 +4,11 @@ Kerjakan urut. Satu tiket = satu cakupan; yang di luar cakupan tidak disentuh. T
 
 | Kode | Judul | Pengerja | Pemeriksa | Bergantung | Status |
 | --- | --- | --- | --- | --- | --- |
-| LB-00 | Daftarkan modul: baris peta modul di AGENTS.md (bagian 2.12 sudah ada), roster wilayah `scripts/berkala/**` dan `tests/berkala/**`, skrip `uji:berkala` di `package.json` dan masuk `npm run uji`, `npm run agents:build` | `mekanik-mesin` | `higiene-repo` | | belum |
-| LB-01 | `hitung.py` validasi kode periode dan rentang (D11, H15, H16), Bab 1, perbandingan tahun lalu dan bulan sebelumnya, Lampiran (ALGORITMA 1, 2, 3); bentuk berkas angka dan uji kontrak | `pipa-data` | `validasi-model` | LB-00, Q19, Q20 | belum |
-| LB-02 | `hitung.py` Bab 2 sampai 5 dan usulan temuan (ALGORITMA 4 sampai 7, 9) | `pipa-data` | `validasi-model` | LB-01 | belum |
-| LB-03 | `rakit.py --potong` dan `--periode bulanan` (baca produksi, lapis Siklus tahun lalu, unggah R2), uji data nyata Oktober 2026 (RENCANA-UJI 5) | `pipa-data` | `validasi-model` | LB-02, Q3 | belum |
-| LB-04 | Bab 7.1 peluang dan indeks ENSO, Bab 4.4 hujan ke depan (ALGORITMA 6, 8), banding dengan contoh Oktober | `pipa-data` | `validasi-model` | LB-03, Q12, Q14 | belum |
+| LB-00 | Daftarkan modul: baris peta modul di AGENTS.md (bagian 2.12 sudah ada), roster wilayah `scripts/berkala/**` dan `tests/berkala/**`, skrip `uji:berkala` di `package.json` dan masuk `npm run uji`, `npm run agents:build` | `mekanik-mesin` | `higiene-repo` | | dikerjakan (25 Nov 2026, pipa-data atas permintaan orkestrator) |
+| LB-01 | `hitung.py` validasi kode periode dan rentang (D11, H15, H16), Bab 1, perbandingan tahun lalu dan bulan sebelumnya, Lampiran (ALGORITMA 1, 2, 3); bentuk berkas angka dan uji kontrak | `pipa-data` | `validasi-model` | LB-00, Q19, Q20 | dikerjakan (25 Nov 2026) |
+| LB-02 | `hitung.py` Bab 2 sampai 5 dan usulan temuan (ALGORITMA 4 sampai 7, 9) | `pipa-data` | `validasi-model` | LB-01 | dikerjakan (25 Nov 2026; Bab 4.4 hujan dan Bab 7.1 tetap LB-04, T6 dan T7 menunggu masukan LB-04) |
+| LB-03 | `rakit.py --potong` dan `--periode bulanan` (baca produksi, lapis Siklus tahun lalu, unggah R2), uji data nyata Oktober 2026 (RENCANA-UJI 5) | `pipa-data` | `validasi-model` | LB-02, Q3 | dikerjakan (25 Nov 2026; jadwal harian `berkala.yml` tetap LB-10, `mekanik-mesin`) |
+| LB-04 | Bab 7.1 peluang dan indeks ENSO, Bab 4.4 hujan ke depan (ALGORITMA 6, 8), banding dengan contoh Oktober | `pipa-data` | `validasi-model` | LB-03, Q12, Q14 | dikerjakan (25 Nov 2026; menunggu `validasi-model`) |
 | LB-05 | Halaman cetak A4 bulanan dari fixture: CSS token dan komponen, sampul sampai lampiran, tanda air draf; modul `laporan_berkala_hitung.js` (format, ALGORITMA 10, 11) | `layar-peta` | `selera-angka`, `inp-reviewer` | LB-01, Q4, Q5, Q6, Q13, Q17, Q21 | belum |
 | LB-06 | Layar isian: jenis ketiga "Laporan Berkala", pemilih periode dan kode (bulanan dulu), kartu per bab, kolom staf dan bentuk isian yang muat batas `bersihIsi`, kelengkapan, pengingat sebelum keluar | `layar-peta` | `selera-angka`, `inp-reviewer` | LB-05, Q15, Q18 | belum |
 | LB-07 | Migrasi tabel `laporan_berkala` (kolom `periode`, `kode`, CHECK pola per periode), trigger, dan jejak; `src/laporan_berkala.js` (draf, angka, Bekukan, cetak, jejak), baris rute di `src/worker.js`; uji I1 sampai I9e (termasuk I1b, I2b), I11, I12 | `warga-api` | `migrasi-idempoten`, `guard-api`, `security-reviewer` | LB-03, LB-05, Q1 | belum |
@@ -34,6 +34,37 @@ Berkas: `scripts/berkala/hitung.py`, `tests/berkala/fixtures/*`, `tests/berkala/
 ### LB-03 Rakit dan uji data nyata
 
 Berkas: `scripts/berkala/rakit.py`. Impor `put/get` dari `scripts/siklus/gudang.py`, tidak menyalin. Laporan tiket memuat tabel angka rakit lawan contoh Oktober 2026 (RENCANA-UJI 5) dengan sebab tiap selisih. Bukti: `python3 -I scripts/berkala/rakit.py --periode bulanan --kode 2026-10 --lokal <folder>`.
+
+Hasil data nyata Oktober 2026 (25 Nov 2026, `dibi_kejadian.json` dibuat 23 Nov, `peta_karhutla.json` 9 Nov, MAGMA 10 Nov, dalops 25 Nov):
+
+| Angka | Contoh | Rakit | Sebab selisih |
+| --- | --- | --- | --- |
+| Kejadian bencana alam | 324 | 324 (resmi DIBI 262) | cocok; 62 laporan di bawah ambang ikut dihitung contoh (Q28) |
+| Karhutla | 222 | 222 (resmi 200) | cocok |
+| Banjir | 55 | 56 | DIBI berubah sesudah tarikan contoh: riwayat penuh tarikan 10 Nov mencatat Gayo Lues 29 Okt sebagai Cuaca Ekstrem (banjir 55, cuaca 19), tarikan 23 Nov sebagai Banjir (banjir 56, cuaca 18). Bukan beda rumus; inilah alasan versi beku (D3) |
+| Provinsi | 27 | 27 | dulu 24: `dibi_kejadian.json` memakai kode provinsi induk sebelum pemekaran Papua 2022 (Papua, Papua Selatan, Papua Tengah, Papua Pegunungan semuanya 94). Contoh menghitung 38 provinsi; rakit mengode ulang dari nama provinsi ke kode Kemendagri |
+| Kab/kota | 139 | 139 | cocok |
+| Hotspot, puncak | 469.010; 25.539 pada 6 Okt | sama | cocok |
+| Luas, belum padam | 854.069 ha; 3.865 ha | sama | cocok |
+| Gunung api I/II/III/IV | 42/24/3/0 | 42/24/3/0 | cocok; sumber level `public/banjir/data/gunungapi_status.json`, dihitung mundur ke 1 Nov |
+| Gempa laporan / peristiwa | 5 / 4 | 5 / 5 | dua laporan DIBI 16 Okt (Sukabumi, Bogor) tidak punya kejadian BMKG di arsip kita (`inatews_detail_2026-10.json` dan `inatews_katalog.json` tidak memuat gempa di selatan 5° LS pada 15 sampai 17 Okt selain Sumbawa, Timor, dan luar negeri), jadi tiap baris jadi satu peristiwa (ALGORITMA 7.2) |
+| Tahun lalu (Okt 2025) | 386 (surat Kepala BNPB 2 Nov) | 529 semua laporan; resmi tidak diketahui | lapis Siklus (riwayat penuh tarikan 10 Nov) memuat laporan di bawah ambang tanpa tanda; 386 kemungkinan angka resmi. Contoh membandingkan 324 (termasuk di bawah ambang) dengan 386, dua definisi berbeda. Belum bisa dipastikan tanpa tarikan resmi Okt 2025 (Q3, Q28) |
+
+### LB-04 Prakiraan dan ENSO
+
+Berkas: `scripts/berkala/hitung.py` (`hujan_depan`, `peluang_bulan`, `enso`, `bab7`; T6 dan T7 dari turunannya), `scripts/berkala/rakit.py` (baca `data/logbook_riwayat.json` dan `data/iklim_outlook.json`, hanya bulanan), fixture dan uji kontrak. Bukti: `npm run uji:berkala`.
+
+Banding dengan contoh Oktober 2026 (25 Nov 2026):
+
+| Angka | Contoh | Rakit, `public/data` repo | Rakit, produksi | Sebab selisih |
+| --- | --- | --- | --- | --- |
+| Kab berpeluang tinggi banjir November | 33 | 33 | 28 | produksi masih menyajikan `logbook_riwayat.json` 31 Okt (7 tahun penuh 2014-2020); repo 1 Nov memakai 9 tahun |
+| Banjir Desember | 36 | 36 | 33 | sama |
+| Longsor November | 24 | 24 | 23 | sama |
+| Longsor Desember | 32 | 32 | 32 | |
+| Indeks Pasifik (RONI) | 1,97 | 1,69 (JAS, berkas repo 19 Okt) | 1,97 (ASO, terbit 9 Nov) | berkas repo belum disegarkan sejak 19 Okt |
+
+Peluang berlabel hipotesis (aturan frekuensi belum diuji balik); wilayah hujan berlabel `uji_balik_lulus` hanya bila fit musimnya lulus uji balik leave-one-out di `iklim_outlook.json`, selain itu hipotesis. Golongan ENSO memakai ambang NOAA CPC plus minus 0,5.
 
 ### LB-05 Halaman cetak
 

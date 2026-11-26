@@ -169,6 +169,11 @@ def proses_baris(baris, cari, ambang=AMBANG_KEYAKINAN):
         k = math.floor(float(p[0]) * HALUS) * 1000000 + math.floor(float(p[1]) * HALUS)
         cnt[k] = cnt.get(k, 0) + 1
         luas[k] = luas.get(k, 0.0) + float(p[2])
+    return {"baris": n_baris, "rendah": rendah, **petakan(cnt, luas, cari)}
+
+
+def petakan(cnt, luas, cari):
+    """cnt, luas: {kunci sel halus global (floor(lat*HALUS)*1e6 + floor(lon*HALUS)): n | m2}. -> tak_terpetakan, kec, grid, halus."""
     kec, grid, halus, tak = {}, {}, {}, 0
     cari0 = cari
     cari = lambda lon, lat: (lambda w: w if w and None not in w else None)(cari0(lon, lat))  # poligon geo tanpa nama kab/kec (13: ada satu, danau) = tak terpetakan
@@ -194,7 +199,7 @@ def proses_baris(baris, cari, ambang=AMBANG_KEYAKINAN):
         g = grid.setdefault(w[0], {}).setdefault("%d,%d" % (ki // per - round(LAT0 / STEP), kj // per - round(LON0 / STEP)), [0, 0.0])
         g[0] += n
         g[1] += a
-    return {"baris": n_baris, "rendah": rendah, "tak_terpetakan": tak, "kec": kec, "grid": grid, "halus": halus}
+    return {"tak_terpetakan": tak, "kec": kec, "grid": grid, "halus": halus}
 
 
 def proses_ubin(level, token, cari, hapus=False):
@@ -214,7 +219,7 @@ def proses_ubin(level, token, cari, hapus=False):
     return h
 
 
-def gabung(hasil, provs=None):
+def gabung(hasil, provs=None, sumber=SUMBER, lisensi=LISENSI, ambang=AMBANG_KEYAKINAN):
     """hasil: daftar hasil sebagian. provs: kode yang disimpan (None = semua). -> (kec_doc, {prov: grid_doc})"""
     kec, grid, halus = {}, {}, {}
     baris = rendah = tak = 0
@@ -226,8 +231,8 @@ def gabung(hasil, provs=None):
             e = kec.setdefault(k, [0, 0.0])
             e[0] += n
             e[1] += a
-        for tujuan, sumber in ((grid, h["grid"]), (halus, h.get("halus", {}))):
-            for pv, sel in sumber.items():
+        for tujuan, asal in ((grid, h["grid"]), (halus, h.get("halus", {}))):
+            for pv, sel in asal.items():
                 if provs and pv not in provs:
                     continue
                 g = tujuan.setdefault(pv, {})
@@ -244,7 +249,7 @@ def gabung(hasil, provs=None):
             e[1] += round(a)
     kec = {k: [n, round(a)] for k, (n, a) in sorted(kec.items())}
     dibuat = dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="seconds")
-    kdoc = {"dibuat": dibuat, "sumber": SUMBER, "lisensi": LISENSI, "ambang_keyakinan": AMBANG_KEYAKINAN,
+    kdoc = {"dibuat": dibuat, "sumber": sumber, "lisensi": lisensi, "ambang_keyakinan": ambang,
             "ringkasan": {"bangunan": sum(v[0] for v in kec.values()), "luas_m2": sum(v[1] for v in kec.values()),
                           "baris_dibaca": baris, "dibuang_keyakinan_rendah": rendah, "di_luar_kecamatan": tak,
                           "provinsi": sorted(grid)},
@@ -257,11 +262,11 @@ def gabung(hasil, provs=None):
             cells.append([int(i), int(j), n, round(a)])
         cells.sort()
         gdoc[pv] = {"dibuat": dibuat, "prov": pv, "lat0": LAT0, "lon0": LON0, "step": STEP, "kolom": ["i", "j", "n", "luas_m2"],
-                    "sumber": SUMBER, "lisensi": LISENSI, "ambang_keyakinan": AMBANG_KEYAKINAN, "cells": cells}
+                    "sumber": sumber, "lisensi": lisensi, "ambang_keyakinan": ambang, "cells": cells}
     for pv, sel in halus.items():
         cells = sorted([*map(int, k.split(",")), n, round(a)] for k, (n, a) in sel.items())
         gdoc["halus_" + pv] = {"dibuat": dibuat, "prov": pv, "lat0": LAT0, "lon0": LON0, "step": 1 / HALUS, "kolom": ["i", "j", "n", "luas_m2"],
-                               "sumber": SUMBER, "lisensi": LISENSI, "ambang_keyakinan": AMBANG_KEYAKINAN, "cells": cells}
+                               "sumber": sumber, "lisensi": lisensi, "ambang_keyakinan": ambang, "cells": cells}
     return kdoc, gdoc
 
 
@@ -280,6 +285,81 @@ def simpan(kdoc, gdoc, keluar=KELUAR):
         nama = (pv if pv.startswith("halus_") else f"grid_{pv}") + ".json"
         n[nama] = tulis(d, os.path.join(keluar, nama))
     return n
+
+
+# ---------------- Overture (provinsi yang Open Buildings v3 tidak mencakup, mis. Aceh: K9 genangan-satelit) ----------------
+# Satu provinsi satu sumber: provinsi Overture TIDAK dijumlah dengan Open Buildings (aturan lereng-bangunan D, genangan K9).
+OVERTURE = "s3://overturemaps-us-west-2/release/2026-10-21.0/theme=buildings/type=building/*"  # sumber.json overture-buildings
+SUMBER_OVT = "Overture Maps buildings rilis 2026-10-21.0 (OpenStreetMap, Microsoft ML Buildings, Google Open Buildings), https://overturemaps.org"
+LISENSI_OVT = "ODbL 1.0: wajib mencantumkan 'Overture Maps Foundation, kontributor OpenStreetMap' bila hasil turunan dipublikasikan"
+PROV_OVERTURE = ("11",)
+
+
+def kotak_prov(wil, prov):
+    xs, ys = [], []
+    for f in json.load(open(os.path.join(AKAR, "public/geo/kecamatan", f"{prov}.json")))["features"]:
+        for r in wil._cincin(f["geometry"]):
+            xs += [c[0] for c in r]
+            ys += [c[1] for c in r]
+    return min(xs) - .01, min(ys) - .01, max(xs) + .01, max(ys) + .01
+
+
+def proses_overture(prov, wm, cari):
+    """Hitung bangunan Overture per sel halus lewat DuckDB (venv data/raw/lereng/venv) -> hasil sebagian (bentuk sama dengan proses_baris).
+    Titik = tengah bbox bangunan; luas = luas poligon derajat2 x (111320 m)^2 x cos(lat), galat < 0,5% di lintang Aceh."""
+    p = os.path.join(HASIL, f"OVT_{prov}.json")
+    if os.path.exists(p):
+        return json.load(open(p))
+    import duckdb  # ponytail: hanya mode ini butuh duckdb; jalankan dengan data/raw/lereng/venv/bin/python
+    x0, y0, x1, y1 = kotak_prov(wm, prov)
+    c = duckdb.connect()
+    c.execute("install httpfs; load httpfs; install spatial; load spatial; set s3_region='us-west-2'")
+    t = time.time()
+    baris = c.execute(f"""
+        with b as (select (bbox.xmin + bbox.xmax) / 2 x, (bbox.ymin + bbox.ymax) / 2 y, st_area(geometry) a
+                   from read_parquet('{OVERTURE}', hive_partitioning=1)
+                   where bbox.xmin >= {x0} and bbox.xmax <= {x1} and bbox.ymin >= {y0} and bbox.ymax <= {y1})
+        select floor(y * {HALUS})::bigint * 1000000 + floor(x * {HALUS})::bigint k, count(*) n,
+               sum(a * 12392142400.0 * cos(radians(y))) m2 from b group by k""").fetchall()
+    cnt = {k: n for k, n, _ in baris}
+    luas = {k: m2 for k, _, m2 in baris}
+    h = {"baris": sum(cnt.values()), "rendah": 0, **petakan(cnt, luas, cari)}
+    # kotak menyentuh provinsi tetangga: buang yang bukan provinsi ini (provinsi lain tetap memakai Open Buildings)
+    h["kec"] = {k: v for k, v in h["kec"].items() if k.split("|")[0] == prov}
+    h["grid"] = {pv: v for pv, v in h["grid"].items() if pv == prov}
+    h["halus"] = {pv: v for pv, v in h["halus"].items() if pv == prov}
+    h["detik"] = round(time.time() - t)
+    os.makedirs(HASIL, exist_ok=True)
+    json.dump(h, open(p, "w"), separators=(",", ":"))
+    return h
+
+
+def ganti_prov_kec(kdoc_lama, kdoc_prov, prov, sumber):
+    """kec.json: baris provinsi `prov` diganti kdoc_prov; ringkasan, prov, kab dihitung ulang; sumber per provinsi dicatat."""
+    kec = {k: v for k, v in kdoc_lama["kec"].items() if k.split("|")[0] != prov}
+    kec.update(kdoc_prov["kec"])
+    kab, pr = {}, {}
+    for k, (n, a) in kec.items():
+        pv, kb, _ = k.split("|")
+        for d, kk in ((kab, f"{pv}|{kb}"), (pr, pv)):
+            e = d.setdefault(kk, [0, 0])
+            e[0] += n
+            e[1] += a
+    out = dict(kdoc_lama)
+    out["dibuat"] = kdoc_prov["dibuat"]
+    out["sumber_prov"] = {**kdoc_lama.get("sumber_prov", {}), prov: sumber}
+    out["ringkasan"] = {**kdoc_lama["ringkasan"], "bangunan": sum(v[0] for v in kec.values()), "luas_m2": sum(v[1] for v in kec.values()),
+                        "provinsi": sorted(set(kdoc_lama["ringkasan"].get("provinsi", [])) | {prov})}
+    out["prov"], out["kab"], out["kec"] = dict(sorted(pr.items())), dict(sorted(kab.items())), dict(sorted(kec.items()))
+    return out
+
+
+def sumber_prov(prov, keluar=KELUAR):
+    """Teks sumber bangunan provinsi (dari halus_<prov>.json); None bila berkas tidak ada."""
+    try:
+        return json.load(open(os.path.join(keluar, f"halus_{prov}.json"))).get("sumber")
+    except FileNotFoundError:
+        return None
 
 
 # ---------------- baca grid halus (dipakai modul lain, mis. banjir/genangan_nasional) ----------------
@@ -357,6 +437,16 @@ def uji():
         assert bangunan_di("62", titik=[(113.2051, -2.2051), (113.2052, -2.2052)], keluar=d) == (4, 301.0)  # satu sel (data [h,h]); titik kembar tak digandakan
         assert bangunan_di("62", kotak=(100, -9, 101, -8), keluar=d) == (0, 0)
         assert g["cells"][0][2] >= 1 and g["step"] == STEP and json.load(open(os.path.join(d, "kec.json")))["kec"]
+    # Overture: ganti baris satu provinsi tanpa menyentuh provinsi lain; sumber per provinsi tercatat
+    sel = math.floor(-2.2051 * HALUS) * 1000000 + math.floor(113.2051 * HALUS)
+    kp, gp = gabung([{"baris": 7, "rendah": 0, **petakan({sel: 7}, {sel: 70.0}, kotak)}], {"62"}, sumber=SUMBER_OVT, lisensi=LISENSI_OVT, ambang=None)
+    lama = {**kdoc, "kec": {**kdoc["kec"], "13|Kab Z|Kec Z": [5, 50]}, "ringkasan": {**kdoc["ringkasan"], "provinsi": ["13", "62"]}}
+    baru = ganti_prov_kec(lama, kp, "62", SUMBER_OVT)
+    assert baru["kec"] == {"13|Kab Z|Kec Z": [5, 50], "62|Kab A|Kec A": [7, 70]} and baru["prov"] == {"13": [5, 50], "62": [7, 70]}, baru
+    assert baru["ringkasan"]["bangunan"] == 12 and baru["sumber_prov"] == {"62": SUMBER_OVT} and gp["halus_62"]["sumber"] == SUMBER_OVT
+    with tempfile.TemporaryDirectory() as d:
+        simpan(kp, gp, d)
+        assert sumber_prov("62", d) == SUMBER_OVT and sumber_prov("99", d) is None
     # Wilayah nyata: Palangka Raya harus di Kalteng
     w = _muat_wilayah().Wilayah()
     assert w.cari(113.92, -2.21)[0] == "62"
@@ -369,14 +459,30 @@ def main():
     ap.add_argument("--semua", action="store_true")
     ap.add_argument("--level", type=int, default=LEVEL, choices=(4, 6))
     ap.add_argument("--hapus-mentah", action="store_true")
+    ap.add_argument("--overture", help="kode provinsi yang memakai Overture, bukan Open Buildings (butuh duckdb)")
     ap.add_argument("--uji", action="store_true")
     a = ap.parse_args()
     if a.uji:
         return uji()
     wm = _muat_wilayah()
+    if a.overture:
+        pv = a.overture.strip()
+        if pv not in PROV_OVERTURE:
+            raise SystemExit(f"--overture hanya untuk {PROV_OVERTURE} (satu provinsi satu sumber; tambah kode di PROV_OVERTURE dengan keputusan pemilik)")
+        h = proses_overture(pv, wm, wm.Wilayah().cari)
+        kp, gp = gabung([h], {pv}, sumber=SUMBER_OVT, lisensi=LISENSI_OVT, ambang=None)
+        lama = json.load(open(os.path.join(KELUAR, "kec.json")))
+        n = simpan(ganti_prov_kec(lama, kp, pv, SUMBER_OVT), gp)
+        return print(json.dumps(kp["ringkasan"]), "\n", n, f"\ndetik kueri {h.get('detik')}")
     provs = sorted(wm.PROVINSI) if a.semua else [p.strip() for p in (a.prov or "").split(",") if p.strip()]
     if not provs or any(p not in wm.PROVINSI for p in provs):
         raise SystemExit("beri --prov <kode,...> atau --semua")
+    lewat = [p for p in provs if p in PROV_OVERTURE]
+    if lewat:   # ponytail: bangunan.yml bulanan tidak menyegarkan Overture (butuh duckdb); jalankan --overture manual bila rilis baru dipakai
+        print(f"provinsi {lewat} memakai Overture (K9 genangan-satelit): dilewati di jalur Open Buildings, halus/grid lama tidak ditimpa", flush=True)
+        provs = [p for p in provs if p not in PROV_OVERTURE]
+        if not provs:
+            return
     mulai = time.time()
     ada = daftar(a.level)
     butuh = sorted(t for t in ubin_untuk(wm, provs, a.level) if t in ada)

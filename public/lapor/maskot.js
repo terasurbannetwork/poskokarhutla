@@ -185,11 +185,64 @@ const MULUT = {
   senyum: `<path d="M106 129c6 8 22 8 28 0" class="sg-alis" ${G}/>`,
   kaget: '<ellipse cx="120" cy="135" rx="6" ry="8" class="sg-mulut"/>',
   pikir: `<path d="M110 134c5-2 9 1 13-1s6-1 8-2" class="sg-alis" ${G}/>`};
-export function maskot(pose = "sapa", judul = "") {
+/* aksi: maskot memegang papan berikon sesuai yang sedang dijelaskan, geraknya beda per aksi (pemilik 25 Nov 2026: "kalo lapor kejadian tindakannya mungkin berbeda").
+   Ikon dari sprite halaman (#i-*), jadi hanya dipakai di halaman yang memuat sprite itu. */
+const PAPAN = {darurat: "i-sirene", lapor: "i-kirim", status: "i-status", pasang: "i-unduh", peringatan: "i-sirene", hilang: "i-cari",
+  info: "i-lokasi", edukasi: "i-daftar", penting: "i-telepon", bahasa: "i-bahasa", laporan: "i-pesan"};
+
+/* lengan kanan per aksi (pemilik 25 Nov 2026: "jangan cuma menghadap ke depan, ngapain kek dia"): tiap aksi punya gestur dan benda sendiri.
+   Bahu kanan di (162,178). k = isian kulit. */
+const TANGAN = (x, y, k, r = 10) => `<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r * .9}" fill="${k}" class="sg-o"/>`;
+const DEPAN = (k, benda) => `<g class="mk-aksi">
+      <path d="M162 178c12 8 10 24-8 28" class="sg-lengan" stroke-width="20" stroke-linecap="round" fill="none"/>${benda}${TANGAN(150, 206, k)}</g>`;
+const LENGAN = {
+  // mengetik laporan di HP, pesawat kertas terbang dari layar
+  lapor: k => DEPAN(k, `<g class="mk-benda"><rect x="128" y="168" width="30" height="46" rx="6" class="sg-hp"/><rect x="132" y="174" width="22" height="32" rx="2" class="sg-hp-layar"/>
+      <path d="M136 182h14M136 188h10M136 194h12" class="sg-hp-teks" stroke-width="2" stroke-linecap="round"/></g>
+      <path d="M176 150l18-9-6 19-4-6Z" class="sg-pesawat mk-terbang"/>`),
+  // memeriksa papan klip, centang tergambar
+  status: k => DEPAN(k, `<g class="mk-benda"><rect x="122" y="166" width="40" height="50" rx="5" class="sg-klip"/><rect x="127" y="172" width="30" height="40" rx="2" class="sg-kertas"/>
+      <rect x="134" y="162" width="16" height="8" rx="2" class="sg-klip-jepit"/><path d="M131 182h10M131 192h16M131 202h12" class="sg-hp-teks" stroke-width="2" stroke-linecap="round"/>
+      <path d="M144 182l3 3 6-7" class="sg-centang mk-gores" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g>`),
+  // membaca buku panduan, halaman bergerak
+  edukasi: k => DEPAN(k, `<g class="mk-benda"><path d="M118 176q16-6 26 2v40q-10-8-26-2Z" class="sg-buku"/><path d="M170 176q-16-6-26 2v40q10-8 26-2Z" class="sg-buku"/>
+      <path d="M144 178v40" class="sg-buku-tengah" stroke-width="2"/><path d="M123 186q9-3 16 1M123 194q9-3 16 1M149 187q8-4 16-1M149 195q8-4 16-1" class="sg-hp-teks" stroke-width="1.8" fill="none"/>
+      <path d="M144 178q12-8 24-2v40q-12-6-24 2Z" class="sg-buku-halaman mk-balik"/></g>`),
+  // memegang HP, panah unduh masuk ke layar
+  pasang: k => DEPAN(k, `<g class="mk-benda"><rect x="128" y="168" width="30" height="46" rx="6" class="sg-hp"/><rect x="132" y="174" width="22" height="32" rx="2" class="sg-hp-layar"/>
+      <path d="M143 178v14M137 186l6 6 6-6M137 198h12" class="sg-unduh mk-turun" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g>`),
+  // menelepon: gagang di telinga, gelombang suara
+  penting: k => `<g class="mk-aksi"><path d="M162 178c16-6 20-30 12-58" class="sg-lengan" stroke-width="20" stroke-linecap="round" fill="none"/>
+      <rect x="166" y="92" width="14" height="34" rx="6" class="sg-hp" transform="rotate(14 173 109)"/>${TANGAN(175, 118, k)}
+      <path d="M190 96q6 6 0 14M198 90q10 12 0 26" class="sg-gelombang mk-denyar" stroke-width="3" stroke-linecap="round" fill="none"/></g>`,
+  // mencari: kaca pembesar di depan mata, menyapu kiri kanan
+  hilang: k => `<g class="mk-aksi mk-sapu"><path d="M162 178c18-4 26-24 26-46" class="sg-lengan" stroke-width="20" stroke-linecap="round" fill="none"/>
+      <path d="M186 128l-8-16" class="sg-gagang" stroke-width="7" stroke-linecap="round"/><circle cx="172" cy="100" r="17" class="sg-lensa"/><circle cx="172" cy="100" r="17" class="sg-lensa-tepi" stroke-width="5" fill="none"/>
+      ${TANGAN(188, 132, k)}</g>`,
+  // menunjuk ke atas: pin lokasi memantul
+  info: k => `<g class="mk-aksi"><path d="M162 178c18-4 28-22 30-48" class="sg-lengan" stroke-width="20" stroke-linecap="round" fill="none"/>${TANGAN(192, 128, k)}
+      <path d="M192 120v-18" class="sg-telunjuk" stroke="${k}" stroke-width="7" stroke-linecap="round"/>
+      <g class="mk-pantul"><path d="M206 56c-9 0-15 7-15 15 0 10 15 23 15 23s15-13 15-23c0-8-6-15-15-15Z" class="sg-pin"/><circle cx="206" cy="71" r="5" class="sg-kertas"/></g></g>`,
+  // membunyikan lonceng peringatan
+  peringatan: k => `<g class="mk-aksi"><path d="M162 178c18-4 30-22 32-46" class="sg-lengan" stroke-width="20" stroke-linecap="round" fill="none"/>
+      <g class="mk-goyang"><path d="M194 92c-11 0-17 9-17 19v10l-5 7h44l-5-7v-10c0-10-6-19-17-19Z" class="sg-lonceng"/><circle cx="194" cy="132" r="4" class="sg-lonceng"/>
+      <path d="M170 92q-6 8 0 16M218 92q6 8 0 16" class="sg-gelombang mk-denyar" stroke-width="3" stroke-linecap="round" fill="none"/></g>${TANGAN(194, 134, k)}</g>`,
+  // darurat: HT diangkat, lampu sirene berkedip di tangan
+  darurat: k => `<g class="mk-aksi"><path d="M162 178c18-4 30-22 32-46" class="sg-lengan" stroke-width="20" stroke-linecap="round" fill="none"/>
+      <path d="M180 120h28v10h-28Z" class="sg-sirene-alas"/><path d="M184 120c0-14 20-14 20 0Z" class="sg-sirene mk-kelip"/>
+      <path d="M176 104l-6-6M194 96v-8M212 104l6-6" class="sg-sirene-sinar mk-kelip" stroke-width="3" stroke-linecap="round"/>${TANGAN(194, 134, k)}</g>`,
+  // bahasa: gelembung bicara bergantian
+  bahasa: k => `<g class="mk-aksi"><path d="M162 178c18-4 28-20 30-40" class="sg-lengan" stroke-width="20" stroke-linecap="round" fill="none"/>${TANGAN(192, 136, k)}
+      <g class="mk-ucap1"><rect x="176" y="70" width="40" height="26" rx="10" class="sg-gelembung"/><path d="M184 80h24M184 87h14" class="sg-hp-teks" stroke-width="2.4" stroke-linecap="round"/></g>
+      <g class="mk-ucap2"><rect x="186" y="96" width="34" height="22" rx="9" class="sg-gelembung dua"/><path d="M193 105h20" class="sg-hp-teks" stroke-width="2.4" stroke-linecap="round"/></g></g>`,
+};
+LENGAN.laporan = LENGAN.status;
+export function maskot(pose = "sapa", judul = "", aksi = "") {
   const i = `sg${++n}`, u = x => `url(#${i}${x})`, ao = (x, y, rx, ry, o = .4) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${u("bayang")}" opacity="${o}"/>`;
   const rim = (d, o = .4, w = 2.5) => `<path d="${d}" style="stroke:var(--on-head)" opacity="${o}" stroke-width="${w}" stroke-linecap="round" fill="none"/>`;
+  const lengan = LENGAN[aksi]?.(u("kulit")) || "", ik = PAPAN[aksi];
   const st = (o, c) => `<stop offset="${o}" style="stop-color:${c}"/>`;
-  return `<svg class="mk sg" data-pose="${pose}" data-mimik="${DASAR[pose] || "sapa"}" viewBox="0 0 240 280" ${judul ? `role="img" aria-label="${judul}"` : 'aria-hidden="true"'}>
+  return `<svg class="mk sg" data-pose="${pose}" data-mimik="${DASAR[pose] || "sapa"}"${ik ? ` data-aksi="${aksi}"` : ""} viewBox="0 0 240 280" ${judul ? `role="img" aria-label="${judul}"` : 'aria-hidden="true"'}>
   <defs>
     <radialGradient id="${i}kulit" cx=".38" cy=".3" r=".8"><stop offset="0" class="sg-g-kulit-a" stop-color="#fde4cf"/><stop offset="1" class="sg-g-kulit-b" stop-color="#f6c79f"/></radialGradient>
     <linearGradient id="${i}helm" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" class="sg-g-helm-a" stop-color="#f39a4e"/><stop offset="1" class="sg-g-helm-b" stop-color="#e0662f"/></linearGradient>
@@ -234,13 +287,13 @@ export function maskot(pose = "sapa", judul = "") {
       <path d="M66 212h14M66 218h14" class="sg-ruas" stroke-width="1.8" stroke-linecap="round"/>
       <ellipse cx="82" cy="207" rx="4.5" ry="4" fill="${u("kulit")}" class="sg-o"/>
     </g>
-    <g class="mk-rk"><g class="mk-lambai">
+    <g class="mk-rk">${lengan || `<g class="mk-lambai">
       <path d="M162 178c18-4 30-20 34-42" class="sg-lengan" stroke-width="20" stroke-linecap="round" fill="none"/>
       <path d="M185 145l22 4" class="sg-manset" stroke-width="9" stroke-linecap="round"/>
       <g class="sg-tangan-tepi"><path d="M189.5 126Q187 119 185.5 112M194.5 123Q193.5 115 193 107M199.5 123Q200.5 115 201.5 108M204 126Q206 120 208 114M187.5 135Q183 131 180 127" stroke-width="9" stroke-linecap="round"/><ellipse cx="196.5" cy="133" rx="10.5" ry="11.5" stroke-width="3.5"/></g>
       <path d="M189.5 126Q187 119 185.5 112M194.5 123Q193.5 115 193 107M199.5 123Q200.5 115 201.5 108M204 126Q206 120 208 114M187.5 135Q183 131 180 127" stroke="${u("kulit")}" stroke-width="5.6" stroke-linecap="round" fill="none"/>
       <ellipse cx="196.5" cy="133" rx="10.5" ry="11.5" fill="${u("kulit")}"/>${ao(200, 139, 7, 6, .3)}
-    </g></g>
+    </g>`}</g>
     <g class="mk-kt"><g class="mk-kp"><g class="mk-kb"><g class="mk-kepala">
       <circle cx="69" cy="106" r="10" fill="${u("kulit")}" class="sg-o"/><circle cx="171" cy="106" r="10" fill="${u("kulit")}" class="sg-o"/>
       <path d="M66 106h5M169 106h5" class="sg-ruas" stroke-width="2" stroke-linecap="round"/>

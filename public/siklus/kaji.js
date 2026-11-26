@@ -276,7 +276,7 @@ function kartuPeta(sid, S) {
 
 function kartuMetode(hasil) {
   const a = hasil?.ambang ?? {}, min = Number.isFinite(a.cakupan_pct_min) ? a.cakupan_pct_min : 10, bawah = Number.isFinite(a.zona_bawah) ? Math.round(a.zona_bawah * 100) : 50, vonis = VONIS[hasil?.ringkas?.vonis ?? "menunggu"] ?? "belum dijalankan";
-  const butir = [["Data", "Genangan dari Copernicus Global Flood Monitoring (GFM), turunan radar Sentinel-1. Lahan dari ESA WorldCover 2021. Penduduk dari WorldPop dan Dukcapil, dibagi menurut bangunan Google Open Buildings."],
+  const butir = [["Data", "Genangan dari Copernicus Global Flood Monitoring (GFM), turunan radar Sentinel-1. Lahan dari ESA WorldCover 2021. Penduduk dari WorldPop dan Dukcapil, dibagi menurut bangunan Google Open Buildings, untuk Aceh bangunan Overture Maps."],
     ["Deteksi", `Genangan dipakai apa adanya dari GFM. Kita tidak membuat ambang radar sendiri dan tidak menyediakan penyetel ambang. Kabupaten dihitung bila radar mengamati paling sedikit ${min} persen luasnya dan sinyalnya tidak lemah; ambang ini masih hipotesis.`],
     ["Dampak", `Penduduk di area genangan memakai mesin Peta Paparan. Ujung bawah memakai sel 110 meter yang tergenang paling sedikit ${bawah} persen; ujung atas memakai semua sel yang tersentuh genangan. Bangunan terendam tidak ditampilkan di sini.`],
     ["Catatan", `Uji balik: ${vonis}. ${hasil?.keterbatasan_paparan ?? ""} Radar satu lintasan hanya memotret satu saat dan buta di permukiman padat.`.replace(/\s+/g, " ").trim()]];

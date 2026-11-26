@@ -35,3 +35,9 @@ Dibangun dan diuji di Chrome tanpa layar (halaman terbuka tanpa sinyal, formulir
 Perubahan rancangan: pengiriman tidak memakai rute dan tabel baru (LR-07, LR-08 tidak dibangun). Butir luring diputar ulang lewat alur Lapor darurat di `/api/lapor/pesan` langkah demi langkah, jadi mesin percakapan tetap satu dan meja menerima laporan biasa. Akibatnya waktu kejadian tercatat saat terkirim, bukan saat disimpan; lencana "dikirim dari luring" (LR-09) belum ada.
 
 Belum dibangun: foto luring (LR-06), lencana dan aturan pita darurat terlambat (LR-09, Q3), gerbang (LR-11), uji perangkat nyata (LR-12), Background Sync (LR-13).
+
+## Status 25 Nov 2026
+
+- LR-00 diperiksa: `AGENTS.md` bagian 2.34 ada; pemilik berkas baru tercatat (`public/inti/luring_spek.js` dan `tests/inti/luring_spek.test.mjs` milik `inti-layar`); gerbang paket modul dan gerbang ilmu agent hijau. **Belum ada** catatan di `data/kajian-bnpb/lapor-ai/KEPUTUSAN-LAPOR-AI.md` bahwa K37 diperinci paket ini; menunggu sesi induk.
+- LR-01 selesai: hasil di `RISET.md` bagian 1.1. Temuan pokok: `/lapor` tanpa garis miring disajikan langsung tanpa pengalihan, jadi tidak dikendalikan service worker dan tidak terbuka tanpa sinyal; `/lapor/` dan start_url aplikasi terbuka. Perbaikan (pengalihan `/lapor` ke `/lapor/`) milik `warga-api`. Cangkang 2,43 MB (di atas batas HIPOTESIS 2 MB). Putar ulang Lapor darurat gagal untuk korban "ya" (langkah `darurat_isi`), dibetulkan di LR-04.
+- LR-02 selesai: `public/inti/luring_spek.js` (isian, batas Q1 Q3 Q4 Q9, `periksa`, `waktuKlienSah`, `label`, `bolehSimpan`; validator dipakai ulang dari `public/inti/spek.js`), uji `tests/inti/luring_spek.test.mjs` 10 lulus. Belum dipakai `luring.js` (LR-04) maupun Worker (LR-07, ditunda oleh perubahan rancangan 22 Nov). Uji "hash isi sama di klien dan Worker" ditulis sebagai dua instansi modul yang memberi hasil sama, karena Worker belum mengimpornya.

@@ -1,0 +1,83 @@
+/* Panel pemantauan alat (EWS) banjir dan gunung api, EW-05. data/kajian-bnpb/ews/DESIGN-SYSTEM.md.
+   Warna hanya token public/inti/tema.css (gerbang-token-warna). Kartu berjarak 20px, tanpa huruf kapital semua. */
+.al{container-type:inline-size}
+.al .ex-jd>h3{display:flex;align-items:center;gap:8px}
+.al .ex-jd>h3 svg{width:18px;height:18px;flex:none}
+
+/* warna per tingkat: --al-c titik/garis, --al-tx teks (lolos AA) */
+.al [data-w]{--al-c:transparent;--al-tx:var(--ink)}
+.al [data-w=normal]{--al-c:var(--ok);--al-tx:var(--ok-tx)}
+.al [data-w=info]{--al-c:var(--info);--al-tx:var(--info-tx)}
+.al [data-w=waspada]{--al-c:var(--warn);--al-tx:var(--warn-tx)}
+.al [data-w=siaga]{--al-c:var(--brand-accent);--al-tx:var(--f2-tx)}
+.al [data-w=awas]{--al-c:var(--bad);--al-tx:var(--bad-tx)}
+.al [data-w=tanpa_data]{--al-c:var(--ink2);--al-tx:var(--ink2)}
+
+/* ringkasan: angka sebaris, bukan kotak */
+.al-ring{display:flex;flex-wrap:wrap;gap:6px 22px;margin:0;color:var(--ink2);font-size:var(--fs-3)}
+.al-ring b{font-size:var(--fs-6);color:var(--ink);font-variant-numeric:tabular-nums;margin-right:2px}
+.al-ring .al-atas b{color:var(--bad-tx)}
+.al-gagal{margin:0;color:var(--bad-tx);font-size:var(--fs-3)}
+
+/* baris pemberitahuan alat tanpa data terkini (bukan dialog) */
+.al-putus{display:flex;align-items:center;gap:10px;padding:10px 8px 10px 14px;border-radius:var(--r-sm);background:color-mix(in oklch,var(--warn) 16%,var(--card));color:var(--ink);font-size:var(--fs-3)}
+.al-putus>svg{flex:none;color:var(--warn-tx)}
+.al-putus p{margin:0;flex:1;min-width:0}
+
+/* tombol ikon polos: tanpa garis, tanpa kotak */
+.al-ik{flex:none;display:inline-grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:var(--r-xs);background:none;color:var(--ink2);cursor:pointer}
+.al-ik:hover,.al-ik[aria-expanded=true]{color:var(--brand2)}
+.al-ik:focus-visible,.al-lagi:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+
+/* kisi kartu: 3 kolom, 2 di tablet, 1 di HP; dense supaya grafik yang disisipkan sesudah kartu tidak meninggalkan lubang di barisnya */
+.al-kisi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-flow:row dense;gap:20px}
+@container (max-width:820px){.al-kisi{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container (max-width:520px){.al-kisi{grid-template-columns:minmax(0,1fr)}}
+
+.al-kartu{display:flex;flex-direction:column;gap:8px;min-width:0;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);box-shadow:inset 3px 0 0 var(--al-c)}
+.al-kartu>header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin:-4px -8px 0 0}
+.al-kartu h4{margin:4px 0 0;font-size:var(--fs-4);font-weight:700;line-height:1.3;color:var(--ink);overflow-wrap:anywhere}
+.al-sumber{display:flex;align-items:center;gap:6px;margin:0;font-size:var(--fs-2);color:var(--ink2)}
+
+/* atom angka */
+.al-angka{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 6px}
+.al-angka b{font-size:var(--fs-8);font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;color:var(--ink)}
+.al-angka span{font-size:var(--fs-3);color:var(--ink2)}
+.al-angka small{flex-basis:100%;font-size:var(--fs-2);color:var(--ink2)}
+.al-basi b{color:var(--ink2)}
+
+/* atom pil */
+.al-pil{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:var(--r-pill);font-size:var(--fs-2);font-weight:700;color:var(--al-tx);background:color-mix(in oklch,var(--al-c) 16%,transparent)}
+.al-pil svg{color:var(--al-c)}
+
+/* atom tabel mini: menempel di dasar kartu supaya sebaris rata */
+.al-rinci{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;margin:auto 0 0;padding-top:8px;border-top:1px solid var(--line);font-size:var(--fs-2)}
+.al-rinci dt{color:var(--ink2)}
+.al-rinci dd{margin:0;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+.al-lagi{justify-self:center;padding:8px 14px;border:0;border-radius:var(--r-pill);background:none;color:var(--brand2);font:inherit;font-weight:700;cursor:pointer}
+.al-lagi:hover{background:var(--surface)}
+
+/* blok grafik: selebar kisi, tepat sesudah kartu yang dipilih */
+.al-grafik{grid-column:1/-1;min-width:0;padding:12px 16px 10px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card)}
+.al-grafik>header{display:flex;align-items:center;gap:10px;margin-right:-8px}
+.al-grafik h4{margin:0;font-size:var(--fs-4);font-weight:700;color:var(--ink)}
+.al-grafik>header span{flex:1;font-size:var(--fs-2);color:var(--ink2)}
+.al-gr-isi{min-height:120px;display:grid;align-items:center}
+.al-kosong{margin:0;color:var(--ink2);font-size:var(--fs-3)}
+.al-svg{display:block;width:100%;height:auto}
+.al-svg text{font-size:var(--fs-1);fill:var(--ink2);font-variant-numeric:tabular-nums}
+.al-svg .al-gk{stroke:var(--line);stroke-width:1}
+.al-svg .al-gs{fill:none;stroke:var(--brand2);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.al-svg .al-gt{fill:var(--brand2)}
+.al-svg .al-gt-akhir{stroke:var(--card);stroke-width:1.5}
+.al-svg .al-ga{stroke:var(--al-c);stroke-width:1.5;stroke-dasharray:5 4}
+.al-svg .al-gal{fill:var(--ink2);font-weight:700}
+.al-svg .al-gh{fill:transparent;cursor:crosshair}
+.al-svg .al-gh:hover{fill:color-mix(in oklch,var(--brand2) 12%,transparent)}
+
+/* EW-09 kotak Langkah cepat: teks dari public/ews_tindakan.js, garis kiri warna tingkat */
+.al-langkah{padding:12px 16px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);box-shadow:inset 3px 0 0 var(--al-c)}
+.al-langkah>header{display:flex;align-items:center;gap:10px}
+.al-langkah h4{margin:0;font-size:var(--fs-4);font-weight:700;color:var(--ink)}
+.al-langkah ol{margin:8px 0 0;padding-left:20px;display:grid;gap:4px;font-size:var(--fs-3);color:var(--ink);line-height:1.45}

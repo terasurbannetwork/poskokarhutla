@@ -46,7 +46,7 @@ else {
     return id;
   };
   const op = await staf("Budi Santoso", ["operator_cc"]), koord = await staf("Koordinator Uji", ["koordalops"]), rekan = await staf("Citra Dewi", ["operator_cc"]);
-  const T1 = await tugas(0x3001, {dibuat: Date.now() - 20 * MENIT}), T2 = await tugas(0x3002, {kab: "Aceh Besar", kec: "Darul Imarah", lat: 5.4, lon: 95.5, dibuat: Date.now() - 12 * MENIT, konfirmasi_pada: Date.now() - 5 * MENIT});
+  const dibuatT1 = Date.now() - 20 * MENIT, T1 = await tugas(0x3001, {dibuat: dibuatT1}), T2 = await tugas(0x3002, {kab: "Aceh Besar", kec: "Darul Imarah", lat: 5.4, lon: 95.5, dibuat: Date.now() - 12 * MENIT, konfirmasi_pada: Date.now() - 5 * MENIT});
   const T3 = await tugas(0x3003, {kab: "Aceh Tamiang", kec: "Karang Baru", lat: 4.3, lon: 98.0, dibuat: Date.now() - 40 * MENIT});
   await DB.prepare("INSERT INTO cc_status (tugas_id, status, oleh, sejak, dummy) VALUES (?, 'dalam_konfirmasi', ?, ?, 0)").bind(T3, "staf:" + rekan.id, Date.now() - 8 * MENIT).run();
   /* titik panas: 3 lokasi unik + 1 duplikat lokasi (satelit lain) + 1 lebih tua dari 24 jam; putaran dibuat 5 jam lalu = basi (batas 4 jam) */
@@ -103,7 +103,7 @@ else {
     const T4 = await tugas(0x3004, {kab: "Aceh Jaya", kec: "Teunom", dibuat: Date.now() - 2 * 24 * JAM}); await jajakUlang(tab);
     await tab.tungguFungsi(`document.querySelector('.cc-kartu[data-id="${T4}"]')`);
     assert.match(await q(tab, `q('.cc-kartu[data-id="${T4}"] .cc-meta').innerText`), /dibuat \d{1,2} \p{L}+ \d\d\.\d\d, umur/u, "alert kemarin: tanggal ikut tampil");
-    assert.match(await q(tab, `q('.cc-kartu[data-id="${T1}"] .cc-meta').innerText`), /dibuat \d\d\.\d\d, umur/, "alert hari ini: jam saja");
+    assert.match(await q(tab, `q('.cc-kartu[data-id="${T1}"] .cc-meta').innerText`), Math.floor((dibuatT1 + 7 * 3600e3) / 864e5) === Math.floor((Date.now() + 7 * 3600e3) / 864e5) ? /dibuat \d\d\.\d\d, umur/ : /dibuat \d{1,2} \p{L}+ \d\d\.\d\d, umur/u, "alert hari ini: jam saja; lewat tengah malam WIB tanggal ikut");
     await DB.prepare("DELETE FROM tugas_api WHERE id = ?").bind(T4).run(); await jajakUlang(tab);
     await tab.tungguFungsi(`!document.querySelector('.cc-kartu[data-id="${T4}"]')`);
     /* ambil alert pertama */

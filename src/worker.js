@@ -75,6 +75,7 @@ import {RUTE_ROLLCALL} from "./rollcall.js";
 import {RUTE_BERANTAI} from "./berantai.js";
 import {RUTE_MEDSOS} from "./medsos_antre.js";
 import {RUTE_SENSOR} from "./sensor.js";
+import {RUTE_ALAT} from "./alat.js";
 import {RUTE_MONITOR} from "./monitor.js";
 import {layaniApiV1, RUTE_KUNCI_API} from "./api_v1.js";
 import {layaniMcp} from "./mcp.js";
@@ -103,6 +104,7 @@ import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.j
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
 import {perbaruiGunungapi, layaniGunungapi} from "./gunungapi.js";
 import {perbaruiSihka, perbaruiSungaiResmi, perbaruiHujan, dasarSihka, ruteSihka} from "./sihka.js";
+import {ruteGenangan} from "./banjir_genangan.js";
 import {himawariDibuat, statusHimawari} from "./himawari.js";
 import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
 import {layaniUbin} from "./ubin.js";
@@ -655,6 +657,7 @@ const RUTE = {
   ...RUTE_BERANTAI,   // peringatan berantai banjir/cuaca ke longsor/banjir susulan 3 hari, pola deskriptif (src/berantai.js, migrasi 0098)
   ...RUTE_MEDSOS,   // antrean verifikasi pantauan medsos/TV ke logbook dan jeda ukur (src/medsos_antre.js, migrasi 0098)
   ...RUTE_SENSOR,   // sensor lapangan: ingest HMAC per alat + status staf (src/sensor.js)
+  ...RUTE_ALAT,   // panel EWS banjir dan gunung api: pos dan seri (src/alat.js, EW-04)
   ...RUTE_DALOPS,   // Pantau Banjir Dalops: layar + JSON logbook privat dari R2, staf Pusdalops saja (src/dalops.js)
   ...RUTE_AKADEMISI,   // direktori pakar kebencanaan, hanya staf BNPB dan admin (src/akademisi.js, data di R2)
   ...RUTE_MONITOR,   // halaman staf /monitor: tanda baca peringatan, groundcheck, tindak lanjut (src/monitor.js)
@@ -913,7 +916,7 @@ const W = {
     });
     if (url.pathname.startsWith("/api/cuaca/")) { const c = await layaniNowcast(req, env, ctx, url); if (c) return c; }   // nowcast BMKG D1 (src/nowcast.js)
     if (url.pathname.startsWith("/api/gunungapi/")) { const g = await layaniGunungapi(req, env, ctx, url); if (g) return g; }   // level gunung api MAGMA D1 (src/gunungapi.js)
-    if (url.pathname.startsWith("/api/banjir/")) { const b = await ruteSihka(req, env, ctx, url); if (b) return b; }   // sungai terukur SIHKA D1 (src/sihka.js)
+    if (url.pathname.startsWith("/api/banjir/")) { const b = (await ruteGenangan(req, env, ctx, url)) || (await ruteSihka(req, env, ctx, url)); if (b) return b; }   // genangan radar R2 (src/banjir_genangan.js), sungai SIHKA D1 (src/sihka.js)
     if (url.pathname.startsWith("/api/gempa/")) { const g = await layaniGempa(req, env, ctx, url); if (g) return g; }   // katalog gempa D1 (src/gempa.js)
     if (url.pathname.startsWith("/api/peringatan/") || url.pathname.startsWith("/api/admin/peringatan/")) { const p = await layaniPeringatan(req, env, ctx, url); if (p) return p; }   // peringatan dini (src/peringatan.js)
     if (url.pathname === "/api/status" && req.method === "GET") return cacheTepi(req, ctx, 60, () => status(env, url, Date.now()), true);
@@ -936,7 +939,10 @@ const W = {
     if (url.pathname === "/instansi.html") return new Response(null, {status: 303, headers: {location: "/instansi", "cache-control": "no-store"}});
     if (url.pathname === "/renlap.html") return new Response(null, {status: 303, headers: {location: "/renlap", "cache-control": "no-store"}});   // satu pintu ber-CSP ketat (fragmen #t= ikut dibawa peramban)   // satu pintu: /instansi (CSP ketat)
     if (url.pathname === "/instansi_uji.html") return new Response(null, {status: 303, headers: {location: "/uji-lapangan", "cache-control": "no-store"}});   // satu pintu: /uji-lapangan
-    if (/^\/warga(\/(index\.html)?)?$/.test(url.pathname)) return new Response(null, {status: 301, headers: {location: "/lapor", "cache-control": "no-store"}});   // Lapor Warga lama pensiun ke /lapor (PETA-SITUS Q1); tujuan tetap, query dibuang: bukan pengalih terbuka
+    if (/^\/warga(\/(index\.html)?)?$/.test(url.pathname)) return new Response(null, {status: 301, headers: {location: "/lapor/", "cache-control": "no-store"}});   // Lapor Warga lama pensiun ke /lapor/ (PETA-SITUS Q1); tujuan tetap, query dibuang: bukan pengalih terbuka
+    /* /lapor tanpa garis miring di luar cakupan service worker /lapor/ (LR-01, lapor-luring RISET 1.1): halaman yang dibuka di sini tidak pernah jalan luring.
+       Jalur tujuan tetap di asal yang sama, query dibawa apa adanya (?ke=, ?t=): bukan pengalih terbuka. */
+    if (url.pathname === "/lapor" && (req.method === "GET" || req.method === "HEAD")) return new Response(null, {status: 301, headers: {location: "/lapor/" + url.search, "cache-control": "no-store"}});
     if (url.pathname === "/presiden.html") return new Response(null, {status: 303, headers: {location: "/presiden" + url.search, "cache-control": "no-store"}});   // satu pintu: /presiden (publik, bisa di-iframe)
     if (url.pathname === "/rumah_rusak.html") return new Response(null, {status: 303, headers: {location: "/rumah-rusak", "cache-control": "no-store"}});   // satu pintu: /rumah-rusak (CSP ketat, 404 di luar Centurisk97)
     /* /uji-lapangan (evaluasi internal): admin ATAU pemirsa di SEMUA host; pemirsa tidak dialihkan ke tab pertamanya oleh gerbang di bawah */

@@ -1,4 +1,4 @@
-/* Semai banjir: zona -B, sasaran manual, SEMAI_TOKEN (src/operasi_semai.js, migrations/0176_semai_sasaran.sql; data/kajian-bnpb/semai-banjir/RENCANA-UJI.md §4).
+/* Semai banjir: zona -B, sasaran manual, SEMAI_TOKEN (src/operasi_semai.js, migrations/0179_semai_sasaran.sql; data/kajian-bnpb/semai-banjir/RENCANA-UJI.md §4).
    Worker sungguhan di Miniflare dengan D1 dan R2 lokal; arsip R2 = fixture uji (bentuk DESAIN-TEKNIS semai-banjir §2).
    Jalankan: node --test tests/warga/semai_banjir_rute.test.mjs */
 import assert from "node:assert/strict";
@@ -36,8 +36,8 @@ const sas = (b, h) => api("POST", "/api/operasi/semai/sasaran", b, h);
 const hps = (b, h) => api("POST", "/api/operasi/semai/sasaran/hapus", b, h);
 let pusdalops, udara, idT;
 
-uji("migrasi 0176 dua kali; kab bukan 4 huruf, catatan >300, kolom wajib kosong, kembar aktif ditolak", async () => {
-  for (const s of pecah(readFileSync(path.join(AKAR, "migrations/0176_semai_sasaran.sql"), "utf8"))) await DB.prepare(s).run();
+uji("migrasi 0179 dua kali; kab bukan 4 huruf, catatan >300, kolom wajib kosong, kembar aktif ditolak", async () => {
+  for (const s of pecah(readFileSync(path.join(AKAR, "migrations/0179_semai_sasaran.sql"), "utf8"))) await DB.prepare(s).run();
   const sisip = (kab, cat = null, oleh = "o") => DB.prepare("INSERT INTO op_semai_sasaran (id,kab,tanggal,catatan,oleh,dibuat) VALUES (?,?,'2026-01-01',?,?,'d')").bind(crypto.randomUUID(), kab, cat, oleh).run();
   await assert.rejects(sisip("31720"), "kab 5 huruf"); await assert.rejects(sisip("317"), "kab 3 huruf");
   await assert.rejects(sisip("3172", "x".repeat(301)), "catatan 301"); await assert.rejects(sisip("3172", null, null), "oleh wajib");
@@ -138,7 +138,7 @@ uji("laju dicek sebelum duplikat: akun di batas dapat 429, bukan 409, pada kab y
 });
 
 uji("tabel sasaran belum ada: 503 dengan pesan sendiri tanpa menyebut migrasi 0103", async () => {
-  const V = await siapkan("uji-semai-banjir-lama", {r2: true, ikat: {SEMAI_TOKEN: TOKEN}, sampai: "0176_"});
+  const V = await siapkan("uji-semai-banjir-lama", {r2: true, ikat: {SEMAI_TOKEN: TOKEN}, sampai: "0179_"});
   for (const [m, j, b] of [["POST", "/api/operasi/semai/sasaran", {kab: "3172", tanggal: hari}], ["POST", "/api/operasi/semai/sasaran/hapus", {id: "x", alasan: "uji tabel hilang"}], ["GET", "/api/operasi/semai/sasaran", undefined]]) {
     const r = await V.api(m, j, b, m === "GET" ? bear(TOKEN) : MOD2); assert.equal(r.s, 503, j); assert.doesNotMatch(r.t, /0103/);
   }

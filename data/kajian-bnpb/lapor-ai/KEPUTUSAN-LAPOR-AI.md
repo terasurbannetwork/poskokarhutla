@@ -630,7 +630,7 @@ Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya b
 
 ### Catatan pelaksanaan LA-85 (25 Nov 2026)
 
-- Migrasi 0175 (`lp_komen`, `lp_komen_aduan`, `lp_komen_usul`), rute `GET` dan `POST /api/lapor/komen/:x` di `src/lapor_komen.js`, uji `tests/lapor/komen.test.mjs`.
+- Migrasi 0178 (`lp_komen`, `lp_komen_aduan`, `lp_komen_usul`), rute `GET` dan `POST /api/lapor/komen/:x` di `src/lapor_komen.js`, uji `tests/lapor/komen.test.mjs`.
 - Saringan D137 diperluas sesudah ulasan keamanan: teks dinormalkan NFKC dan karakter tak terlihat dibuang; nomor seluler dengan pemisah apa pun, email (termasuk "(at)"), akun `@`, tautan berjalur, RT/RW dalam berbagai tulisan, singkatan Jl/Gg/Blok/Perum, dan "Jalan/Gang Nama" berhuruf besar dibuang. Batas yang diterima: nomor yang ditulis dengan kata, nama orang, dan tanggal berawalan 08 (ikut terbuang sebagai nomor). Meja (LA-88) tetap jaring terakhir.
 - Aduan D137 dihitung per pengadu, bukan per nomor: sesi `/masuk` dan mesin WA = sidik nomor, nomor ketikan = sidik alamat IP, karena satu perangkat bisa mengetik banyak nomor. Penulis tidak bisa mengadu komentarnya sendiri. Batas aduan 30 per IP dan 20 per nomor per jam.
 - Penulis lewat nomor ketikan tidak terbukti pemilik nomornya, sama dengan laporan (K65, K67). Nomor itu hanya dibaca meja.
@@ -675,6 +675,7 @@ Dasar: `riset/R-PERTANYAAN-LANJUT.md` (Perka 9/2008 Format-7 sampai 9, Lampiran 
 | K102 | 25 Nov 2026 | `warga_terancam` (U-12, pita bukan angka) dan `evakuasi_pencegahan` (U-11) dicatat terpisah dari terdampak dan pengungsi (Lampiran I 4.6 dan 5.2); hanya untuk jenis yang bahayanya bisa meluas. |
 | K103 | 25 Nov 2026 | `wilayah_terisolasi` (U-10): dusun atau kampung lain yang terputus total, untuk kesenjangan informasi kelompok tanpa pelapor. |
 | K104 | 25 Nov 2026 | Kuota pesan per nomor naik menjadi 120 per jam (pemilik: "kuotanya satu orang 120, pertanyaannya banyak"); harian 300 supaya tidak lebih ketat dari jam. Batas 20 per menit dan pintu web per IP tetap. |
+| K105 | 25 Nov 2026 | Lapor orang hilang lewat obrolan seperti Lapor kejadian, tanpa kode sekali pakai WA (pemilik: "Ini gausah lah ada gini. Ya kaya di halaman AI Assistant aja", lalu memilih "Chat, no code"). Mengubah D129 untuk orang dicari: nomor pelapor = nomor obrolan (sesi `/masuk`, gateway WA, atau nomor ketikan K65), tidak lagi wajib terbukti. Urutan: identitas, lokasi terakhir terlihat, nama, hubungan, ciri, waktu, nomor orang itu bila tahu, ringkasan, kirim; hasilnya baris `lapor_cari`, bukan laporan bertiket. Batas 5 per nomor per hari tetap. Tanda selamat (D127) tetap wajib kode. Risiko yang diterima: laporan orang dicari bisa dibuat atas nama nomor ketikan orang lain; dijaga batas laju dan tidak pernah publik. Laporan orang dicari milik nomor itu tampil di Laporan saya (`crMilik`, tanpa nomor dan ciri). |
 
 Catatan pelaksanaan: semua isian baru tipe pilihan, tidak pernah wajib, selalu punya "Tidak tahu". Pita jarak dan pita jumlah orang adalah kategori pilihan, bukan ambang resmi. Penanda merah di meja untuk "ada yang terjebak" (QP-2) belum dibangun di putaran ini.
 

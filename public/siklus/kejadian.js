@@ -6,6 +6,7 @@ import {h, ik, K, api, kartu, hl, wadah, para, kead, kead_dari, kosongkan, seg, 
 import {FASE, RE_KJ, faseSah} from "./hitung.js";
 import {kartuLifeline} from "./lifeline.js";
 import {kartuTigaW} from "./tiga_w.js";
+import {kartuKajiUlang} from "./kaji_ulang.js";
 
 const G = globalThis, HALAMAN = 50, BATAS_MUAT = 100;
 const KEL = () => (K.kelompok || [["semua", "Semua", "semua"]]).map(([v, t, i]) => [v, t, i]);
@@ -93,7 +94,7 @@ async function daftar(isi, sk) {
         h("tbody", {}, rs.map(r => { const d = r.dampak || {}, lb = d.logbook?.meninggal; return h("tr", {}, h("td", {}, r.id), h("td", {}, selWilayah(r.kab4)), h("td", {class: "t"}, tgl(r.mulai)),
           kolom.map(k => { const x = d.dibi?.[k]; return h("td", {class: "t"}, x ? nilai(x.n, x.y, {sumber: "DIBI", waktu: x.t}) : "tidak ada data"); }),
           h("td", {class: "t"}, lb ? nilai(lb.n, lb.y, {sumber: "Logbook Pusdalops", waktu: lb.t}) : "tidak ada data"), h("td", {}, r.sinyal), h("td", {}, r.peringatan)); })))),
-      S.kasus.tanpa_dampak_dibi?.[j] ? h("p", {class: "sk-cat"}, `${S.kasus.tanpa_dampak_dibi[j].toLocaleString("id-ID")} kejadian lain tercatat di Logbook tetapi tidak punya angka DIBI, jadi tidak ikut diurutkan.`) : null)));
+      S.kasus.tanpa_dampak_dibi?.[j] ? h("p", {class: "sk-cat"}, `${angka(S.kasus.tanpa_dampak_dibi[j])} kejadian lain tercatat di Logbook tetapi tidak punya angka DIBI, jadi tidak ikut diurutkan.`) : null)));
   }
   function gambar() {   // isi berat: tabel per halaman 50 baris
     if (S.rentang === "kasus") return S.kasus ? gambarKasus() : undefined;
@@ -302,7 +303,7 @@ function detailHidup(id, d, P, ulang) {
       if (!x.ok) return toast(x.j?.galat || "Status publik belum bisa diubah"); toast(r.publik ? "Ringkasan ditarik dari publik" : "Ringkasan dibuka untuk publik"); G.nanti(ulang);
     }, "terbit"));
   }
-  const bagian = [["ringkasan", "Ringkasan", "mata"], ["waktu", "Waktu", "bolak"], ["dampak", "Dampak", "jiwa"], ["paparan", "Paparan", "bangunan"], ["kaji", "Kaji", "gelombang"], ["pulih", "Pulih", "palu"]];
+  const bagian = [["ringkasan", "Ringkasan", "mata"], ["waktu", "Waktu", "bolak"], ["dampak", "Dampak", "jiwa"], ["paparan", "Paparan", "bangunan"], ["kaji", "Kaji", "gelombang"], ["pulih", "Pulih", "palu"], ["kajiulang", "Kaji ulang", "timbangan"]];
   const lompat = seg(bagian, "", v => document.getElementById("k-" + v)?.scrollIntoView({block: "start"}), "Loncat ke bagian");
   const kepala = kartu({ey: [ik("bolak", 12), id], judul, id: "k-kepala", isi: [h("div", {class: "sk-baris"}, barisFase, aksi), lompat]});
 
@@ -354,5 +355,5 @@ function detailHidup(id, d, P, ulang) {
   const dariDesa = r.pusat_dasar === "pusat_desa";
   const sekitar = r.pusat_lat != null && r.pusat_lon != null && globalThis.DampakRadius ? kartu({ey: [ik("jiwa", 12), dariDesa ? "Sekitar pusat desa (perkiraan)" : "Sekitar titik pusat"], id: "k-sekitar", judul: ["Penduduk dan sarana dalam ", hl("1, 5, dan 10 km"), ...(dariDesa ? [" dari pusat desa"] : [])],
     isi: [DampakRadius.tabel(r.pusat_lat, r.pusat_lon, [1, 5, 10], {judul: false, kaki: false, kelasTabel: "", kelasWadah: "tw"})]}) : null;
-  return [kepala, h("div", {class: "sk-detail"}, h("div", {}, ringkasan, tahapKartu, waktu, dampak, sekitar, kartuLifeline(id, P), kartuTigaW(id, P), paparan, kaji, pulih), h("div", {}, terpasang))];
+  return [kepala, h("div", {class: "sk-detail"}, h("div", {}, ringkasan, tahapKartu, waktu, dampak, sekitar, kartuLifeline(id, P), kartuTigaW(id, P), paparan, kaji, pulih, kartuKajiUlang(id, P)), h("div", {}, terpasang))];
 }

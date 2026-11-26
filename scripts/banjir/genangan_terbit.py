@@ -1,10 +1,15 @@
 """Versi publik genangan radar per kejadian (GS-14, KEPUTUSAN-GENANGAN K4): susun JSON dan aset untuk /banjir.
 
 Pakai:  python3 scripts/banjir/genangan_terbit.py terbit [--sumber DIR] [--keluar DIR] [--izinkan-uji]
+        python3 scripts/banjir/genangan_terbit.py unggah [--keluar DIR] --wrangler W   (siklus.yml job genangan; aset dulu, JSON kejadian paling akhir)
             sumber = folder `saji` keluaran scripts/siklus/genangan_kaji.py (isi: kaji/<KJ>_banjir_gfm_v<n>.json, kaji_berkas/<KJ>/banjir_gfm/v<n>/*)
                      bawaan data/raw/siklus/kaji/siklus/saji; hanya versi terbaru tiap kejadian dibaca, tidak disunting
             --izinkan-uji: kejadian KJ-UJI-* (contoh uji) ditolak tanpa flag ini; hasilnya tidak boleh di-commit (public/.assetsignore menolak aset KJ-UJI-*)
-            keluar = bawaan public/banjir/data  -> genangan_kejadian.json + genangan_kejadian/<KJ>/v<n>/<kab4>_*.{png,geojson}
+            keluar = bawaan data/raw/banjir/genangan_terbit -> <KJ>.json + <KJ>/v<n>/<kab4>_*.{png,geojson}
+            Q13 (pemilik 25 Nov 2026: "R2 aja"): keluaran diunggah ke R2 `banjir/genangan/` dan dibaca lewat rute publik Worker
+            /api/banjir/genangan (src/banjir_genangan.js), tidak di-commit ke git. Satu berkas per kejadian supaya jalan harian yang
+            hanya memuat sebagian kejadian tidak menghapus kejadian lain.
+            Kejadian yang JSON-nya merujuk berkas tetapi folder berkasnya tidak ada (versi lama yang hanya ditarik JSON-nya) dilewati, tidak diterbitkan ulang tanpa aset.
         python3 scripts/banjir/genangan_terbit.py uji     (self-check sintetis, tanpa jaringan)
 
 Daftar putih, bukan salin-lalu-buang: yang tidak disebut di sini tidak pernah keluar (kecamatan, id adegan, sidik, jiwa_kab_sah, akun).
@@ -16,7 +21,8 @@ import argparse, json, math, os, re, shutil, sys, tempfile
 
 AKAR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SUMBER = os.path.join(AKAR, "data", "raw", "siklus", "kaji", "siklus", "saji")
-KELUAR = os.path.join(AKAR, "public", "banjir", "data")
+KELUAR = os.path.join(AKAR, "data", "raw", "banjir", "genangan_terbit")
+R2_AWALAN = "banjir/genangan/"
 BATAS_PNG, BATAS_SEL, BATAS_TOTAL = 120_000, 300_000, 12_000_000
 RE_KJ = re.compile(r"KJ-[A-Z0-9-]{3,60}")
 RE_BERKAS = re.compile(r"\d{4}_(sel\.geojson|(radar|asli|swir)_(pra|pasca)\.png)")
@@ -33,6 +39,11 @@ CATATAN = "Penduduk di area genangan, bukan korban. Radar satu lintasan, buta di
 def tgl(x):
     """Tanggal ISO atau None: teks bebas dari berkas sumber tidak pernah diteruskan ke publik."""
     return x if isinstance(x, str) and RE_TGL.fullmatch(x) else None
+
+
+def bangunan_atr(a):
+    """Atribusi sumber bangunan (Open Buildings atau Overture, K9): hanya ikut bila ada kab dengan penduduk."""
+    return "Open Buildings" in a or "Overture" in a or "pembagian penduduk" in a
 
 
 def bersih_atribusi(a):
@@ -82,7 +93,7 @@ def kab_publik(k, dir_berkas, dir_tujuan, anggaran):
     """Satu kab: daftar putih. anggaran = [byte_terpakai]; berkas disalin hanya bila lolos nama, ukuran, isi, dan sisa anggaran."""
     luas = k.get("luas") or {}
     sah = k.get("sah") is True and angka(luas.get("baru_ha"))
-    o = {"kab": str(k.get("kab") or k["kab4"]), "kab4": str(k["kab4"]), "sah": sah, "status": k["status"] if isinstance(k.get("status"), str) and RE_STATUS.fullmatch(k["status"]) else "",
+    o = {"kab": str(k.get("kab") or k["kab4"])[:80], "kab4": str(k["kab4"]), "sah": sah, "status": k["status"] if isinstance(k.get("status"), str) and RE_STATUS.fullmatch(k["status"]) else "",
          "lintasan": tgl(k.get("lintasan")), "pra": tgl(k.get("pra"))}
     if angka(k.get("cakupan_pct")):
         o["cakupan_pct"] = k["cakupan_pct"]
@@ -136,9 +147,9 @@ def kejadian_publik(kj, n, jalur, sumber, keluar):
     if d.get("kejadian") != kj or d.get("model") != "banjir_gfm":
         raise ValueError(f"{jalur}: kejadian atau model tidak cocok")
     dir_berkas = os.path.join(sumber, "kaji_berkas", kj, "banjir_gfm", f"v{n}")
-    tujuan = os.path.join(keluar, "genangan_kejadian", kj, f"v{n}")
-    if os.path.isdir(os.path.join(keluar, "genangan_kejadian", kj)):
-        shutil.rmtree(os.path.join(keluar, "genangan_kejadian", kj))   # hanya versi terbaru tinggal; tidak ada berkas yatim
+    tujuan = os.path.join(keluar, kj, f"v{n}")
+    if os.path.isdir(os.path.join(keluar, kj)):
+        shutil.rmtree(os.path.join(keluar, kj))   # hanya versi terbaru tinggal; tidak ada berkas yatim
     kab, dilewati, anggaran = [], [], [0]
     for k in sorted(d.get("kab") or [], key=lambda x: (x.get("sah") is not True, str(x.get("kab4")))):   # kab sah dahulu: anggaran habis, yang tak sah yang terpotong
         if re.fullmatch(r"\d{4}", str(k.get("kab4"))) and not isinstance(k.get("kab4"), bool):
@@ -157,7 +168,7 @@ def kejadian_publik(kj, n, jalur, sumber, keluar):
                "satuan": "jiwa", "metrik": "penduduk di area genangan", "vonis": r.get("vonis") if r.get("vonis") in VONIS else "menunggu",
                "status_model": d.get("status_model") if d.get("status_model") in STATUS_MODEL else "hipotesis", "pil": "Hipotesis: belum lulus uji balik" if (d.get("status_model") not in STATUS_MODEL or d.get("status_model") == "hipotesis") else "Teruji", "sumber": "Copernicus GFM"}
     ada_jiwa = any("penduduk" in x for x in sah)
-    atribusi = [bersih_atribusi(a) for a in (d.get("atribusi") or []) if isinstance(a, str) and (ada_jiwa or "Open Buildings" not in a)]
+    atribusi = [bersih_atribusi(a)[:300] for a in (d.get("atribusi") or []) if isinstance(a, str) and (ada_jiwa or not bangunan_atr(a))]
     am = d.get("ambang") or {}
     ambang = {x: am[x] for x in ("cakupan_pct_min", "zona_bawah") if angka(am.get(x))}
     return {"kj": kj, "mulai": tgl(d.get("mulai")), "versi": n, "ambang": ambang, "dibuat": tgl(d.get("dibuat")), "ringkas": ringkas, "catatan": CATATAN, "atribusi": atribusi, "kab": kab}, dilewati
@@ -174,6 +185,11 @@ def kunci_terlarang(x, jalur=""):
             yield from kunci_terlarang(v, f"{jalur}[{i}]")
 
 
+def rujuk_berkas(d):
+    """True bila JSON kaji merujuk sel atau citra (butuh folder berkas)."""
+    return any(k.get("sel") or any(isinstance(c, dict) and c.get("berkas") for c in (k.get("citra") or {}).values()) for k in (d.get("kab") or []) if isinstance(k, dict))
+
+
 def terbit(sumber=SUMBER, keluar=KELUAR, izinkan_uji=False):
     dir_kaji = os.path.join(sumber, "kaji")
     pilihan = versi_terbaru(dir_kaji) if os.path.isdir(dir_kaji) else {}
@@ -182,6 +198,9 @@ def terbit(sumber=SUMBER, keluar=KELUAR, izinkan_uji=False):
         if RE_KJ.fullmatch(kj):
             if kj.startswith("KJ-UJI-") and not izinkan_uji:
                 print(f"{kj}: kejadian uji tidak diterbitkan (butuh --izinkan-uji)")
+                continue
+            if not os.path.isdir(os.path.join(sumber, "kaji_berkas", kj, "banjir_gfm", f"v{n}")) and rujuk_berkas(baca(jalur)):
+                print(f"{kj} v{n}: folder berkas tidak ada (versi lama, hanya JSON yang ditarik); tidak diterbitkan ulang")
                 continue
             k, s = kejadian_publik(kj, n, jalur, sumber, keluar)
             daftar.append(k)
@@ -195,12 +214,42 @@ def terbit(sumber=SUMBER, keluar=KELUAR, izinkan_uji=False):
     if salah:
         raise ValueError(f"kunci terlarang di keluaran publik: {salah[:3]}")
     os.makedirs(keluar, exist_ok=True)
-    tmp = os.path.join(keluar, "genangan_kejadian.json.tmp")
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
-    os.replace(tmp, os.path.join(keluar, "genangan_kejadian.json"))
-    print(f"{len(daftar)} kejadian -> {os.path.join(keluar, 'genangan_kejadian.json')}; {len(lewat)} berkas dilewati {lewat[:5]}")
+    for k in daftar:   # satu berkas per kejadian; Worker merangkai daftar dari awalan R2
+        tmp = os.path.join(keluar, k["kj"] + ".json.tmp")
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(k, f, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+        os.replace(tmp, os.path.join(keluar, k["kj"] + ".json"))
+    print(f"{len(daftar)} kejadian -> {keluar}; {len(lewat)} berkas dilewati {lewat[:5]}")
     return out
+
+
+def rencana_unggah(keluar):
+    """[(kunci R2, jalur)]: aset dulu, JSON kejadian paling akhir (JSON tidak pernah merujuk berkas yang belum ada)."""
+    aset, js = [], []
+    for nama in sorted(os.listdir(keluar)) if os.path.isdir(keluar) else []:
+        p = os.path.join(keluar, nama)
+        if nama.endswith(".json") and RE_KJ.fullmatch(nama[:-5]):
+            js.append((R2_AWALAN + nama, p))
+        elif os.path.isdir(p) and RE_KJ.fullmatch(nama):
+            for v in sorted(os.listdir(p)):
+                for b in sorted(os.listdir(os.path.join(p, v))) if re.fullmatch(r"v\d+", v) else []:
+                    if RE_BERKAS.fullmatch(b):
+                        aset.append((f"{R2_AWALAN}{nama}/{v}/{b}", os.path.join(p, v, b)))
+    return aset + js
+
+
+def unggah(keluar, wrangler, put=None):
+    if put is None:
+        import importlib.util
+        sp = importlib.util.spec_from_file_location("gudang", os.path.join(AKAR, "scripts", "siklus", "gudang.py"))
+        g = importlib.util.module_from_spec(sp)
+        sp.loader.exec_module(g)
+        put = g.Wrangler(wrangler).put
+    daftar = rencana_unggah(keluar)
+    for kunci, jalur in daftar:
+        put(kunci, jalur)
+    print(f"{len(daftar)} berkas diunggah ke R2 {R2_AWALAN}")
+    return [k for k, _ in daftar]
 
 
 def uji():
@@ -237,7 +286,7 @@ def uji():
         tulis(2, "1103_radar_pasca.png", b"\0" * (BATAS_PNG + 1))   # terlalu besar -> dilewati
         tulis(2, "1104_radar_pra.png", png)
         tulis(2, "1103_sel.geojson", fc({"ha": 1.2}))
-        os.makedirs(os.path.join(keluar, "genangan_kejadian", kj, "v1"))   # sisa lama harus hilang
+        os.makedirs(os.path.join(keluar, kj, "v1"))   # sisa lama harus hilang
         o = terbit(sumber, keluar, True)
         k = o["kejadian"][0]
         assert k["ambang"] == {"cakupan_pct_min": 10, "zona_bawah": 0.5} and k["versi"] == 2 and k["ringkas"]["kab_sah"] == 1 and k["ringkas"]["kab_semua"] == 2 and k["ringkas"]["luas_baru_ha"] == 100.5
@@ -248,15 +297,27 @@ def uji():
         assert a["sel"] == "1103_sel.geojson" and a["citra"]["radar_pra"]["berkas"] == "1103_radar_pra.png"
         assert a["citra"]["radar_pasca"]["status"].startswith("dilewati") and a["citra"]["asli_pra"]["status"] == "tertutup awan"
         assert k["ringkas"]["kab_rentang"] == 1 and any("Open Buildings" in x for x in k["atribusi"])
-        dirv = os.path.join(keluar, "genangan_kejadian", kj)
+        dirv = os.path.join(keluar, kj)
+        assert json.load(open(os.path.join(keluar, kj + ".json"))) == k                                          # satu berkas per kejadian
         assert os.listdir(dirv) == ["v2"] and "1103_radar_pasca.png" not in os.listdir(os.path.join(dirv, "v2"))
         assert terbit(sumber, keluar, True) == o                                                                    # idempoten
         # sel yang membawa properti lain (mis. bangunan) ditolak
         tulis(2, "1103_sel.geojson", fc({"ha": 1.2, "nama": "x"}))
         assert "sel" not in terbit(sumber, keluar, True)["kejadian"][0]["kab"][0]
-        # tanpa penduduk: atribusi Open Buildings tidak ikut
+        assert bangunan_atr("Overture Maps Foundation, kontributor OpenStreetMap, ODbL 1.0 (bangunan untuk pembagian penduduk)") and not bangunan_atr("Copernicus GFM")
+        # unggah: aset dulu, JSON paling akhir, kunci di bawah banjir/genangan/
+        kunci = unggah(keluar, None, put=lambda k, j: None)
+        assert kunci[-1] == f"banjir/genangan/{kj}.json" and f"banjir/genangan/{kj}/v2/1103_radar_pra.png" in kunci and all(x.startswith(R2_AWALAN) for x in kunci)
+        # versi baru yang merujuk berkas tetapi foldernya tidak ada (hanya JSON yang ditarik dari R2): tidak diterbitkan ulang
+        with open(os.path.join(sumber, "kaji", f"{kj}_banjir_gfm_v3.json"), "w") as f:
+            json.dump(dict(kaji, versi=3), f)
+        assert terbit(sumber, keluar, True) is None and json.load(open(os.path.join(keluar, kj + ".json")))["versi"] == 2
+        os.remove(os.path.join(sumber, "kaji", f"{kj}_banjir_gfm_v3.json"))
+        # tanpa penduduk: atribusi Open Buildings tidak ikut; tanpa rujukan berkas boleh terbit tanpa folder
         for p in ("kab",):
             kaji[p][1]["penduduk"] = {}
+            for x in kaji[p]:
+                x["citra"] = {}
         with open(os.path.join(sumber, "kaji", f"{kj}_banjir_gfm_v3.json"), "w") as f:
             json.dump(dict(kaji, versi=3), f)
         k3 = terbit(sumber, keluar, True)["kejadian"][0]
@@ -267,6 +328,7 @@ def uji():
         assert tgl("2025-11-28T23:11:47Z") and tgl("2025-11-28") and tgl("<script>") is None and tgl("2025-11-28\n") is None and tgl(5) is None
         assert bersih_atribusi("Copernicus GFM, EODC; ringkasan oleh Pantau Bencana. Syarat: x") == "Copernicus GFM, EODC. Syarat: x"
         kaji["ringkas"].update({"vonis": "lulus!!", "lintasan_terakhir": "<b>x</b>"})
+        tulis(4, "1103_sel.geojson", fc({"ha": 1.2}))
         kaji["kab"][1]["lintasan"] = "<img>"
         kaji["atribusi"] = ["Copernicus GFM; ringkasan oleh Pantau Bencana", "Google Open Buildings v3"]
         with open(os.path.join(sumber, "kaji", f"{kj}_banjir_gfm_v4.json"), "w") as f:
@@ -280,16 +342,19 @@ def uji():
         _, s = kab_publik(dict(sah, citra={"radar_pra": {"berkas": "../x.png"}}), t, os.path.join(t, "z"), [0])
         assert not os.path.exists(os.path.join(t, "z"))
         # anggaran total: berkas yang melewatinya dilewati
-        _, s = kab_publik(sah, os.path.join(sumber, "kaji_berkas", kj, "banjir_gfm", "v2"), os.path.join(t, "y"), [BATAS_TOTAL - 10])
+        _, s = kab_publik(dict(sah, citra={"radar_pra": cit("1103_radar_pra.png")}), os.path.join(sumber, "kaji_berkas", kj, "banjir_gfm", "v2"), os.path.join(t, "y"), [BATAS_TOTAL - 10])
         assert "1103_radar_pra.png" in s
     print("ok")
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", choices=["terbit", "uji"])
+    ap.add_argument("mode", choices=["terbit", "unggah", "uji"])
     ap.add_argument("--sumber", default=SUMBER)
     ap.add_argument("--keluar", default=KELUAR)
     ap.add_argument("--izinkan-uji", action="store_true")
+    ap.add_argument("--wrangler")
     a = ap.parse_args()
-    uji() if a.mode == "uji" else terbit(a.sumber, a.keluar, a.izinkan_uji)
+    if a.mode == "unggah" and not a.wrangler:
+        sys.exit("unggah butuh --wrangler")
+    uji() if a.mode == "uji" else unggah(a.keluar, a.wrangler) if a.mode == "unggah" else terbit(a.sumber, a.keluar, a.izinkan_uji)

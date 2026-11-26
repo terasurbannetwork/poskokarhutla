@@ -34,7 +34,7 @@ const kamusTr = b => { try { return JSON.parse(fs.readFileSync(path.join(AKAR, `
 import {samarkan} from "../../src/samarkan.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk} from "../../src/lapor_meja_hak.js";
 import {agregat, keCsv, KOLOM as KOLOM_AGREGAT, BATAS_SEL} from "../../src/lapor_agregat.js";
-import {penandaPemeriksa, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik} from "../../src/lapor_kejadian.js";
+import {penandaPemeriksa, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik, usulanDari, usulanTerakhir, statusUsulan} from "../../src/lapor_kejadian.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "../../src/lapor_periksa.js";
 const KATA_UMUM = new Set(["rusak", "roboh", "putus", "ambruk", "terendam", "longsor", "banjir", "yang", "di", "dan", "atau", "dekat", "sekitar", "kena", "terdampak"]);
 
@@ -570,6 +570,14 @@ async function alun(q) {
 const tarikNomor = (d, n) => (d.tarik || []).filter(x => x.kode === n);
 const periksaAkun = s => (s.periksa || []).map((p, i) => ({id: i + 1, hasil: p.hasil, waktu: p.waktu, akun: p.akun || null}));
 const JENDELA_HARI = 24 * 3600e3;
+/* usulan ke Buku Besar (LK-09): penentu yang sama dengan Worker (usulanDari); usulan disimpan di d.usulan. Lokal tidak punya Siklus, jadi tidak ada usulan yang ditolak */
+function usulanLokal(d, nomor) {
+  const G = gugusSemua(d), sesi = Object.values(d.sesi), daftar = G.gugus.find(x => x.kode === G.per[nomor])?.anggota || [nomor];
+  const anggota = daftar.map(n => { const s = sesi.find(x => x.nomor === n), w = s.isian.lokasi?.nilai?.wilayah || null;
+    return {nomor: n, jenis: s.isian.jenis?.nilai || null, laporan: {status: s.tiket.status, wilayah: w}, periksa: periksaAkun(s), versi: (s.versi || []).map(v => ({waktu: v.waktu}))}; });
+  const lama = (d.usulan || []).filter(u => daftar.includes(u.kejadian_laporan));
+  return {...usulanDari(anggota, lama), statusUsulan: statusUsulan(usulanTerakhir(lama), null)};   // LK-11: tanpa Siklus lokal, usulan selalu menunggu pencocokan
+}
 async function hariIni(q, kini = Date.now()) {
   const d = baca(), G = gugusSemua(d), gk = new Map(G.gugus.map(g => [g.kode, g])), sesi = new Map(Object.values(d.sesi).filter(s => s.nomor).map(s => [s.nomor, s]));
   const kejadian = new Map();
@@ -644,6 +652,7 @@ function mejaRinci(c, nomor, lihat = false) {
       const segar = (terakhir(P)?.waktu || 0) > Date.now() - JENDELA_HARI;   // sama dengan statusPublik di Worker (LK-07); halaman lokal selalu buka
       return {syarat: sy, ditarik: !!terakhir(T)?.aktif, tayang: sy.every(x => x.ok) && segar, dalam24jam: segar, halamanBuka: true}; })(),
     revisi: revisiTampil(s),
+    usulan: c.jenis === "bnpb" ? (() => { const r = usulanLokal(d, nomor); return {...(r.usulan ? {siap: true, ada: null, alasan: null} : {siap: false, ada: r.ada || null, alasan: r.ada ? null : r.galat}), status: r.statusUsulan}; })() : null,   // saklar LAPOR_USUL tidak dibaca di lokal
     gugus: (() => { const G = gugusSemua(d), g = G.gugus.find(x => x.anggota.includes(nomor)); if (!g) return null;
       const sesi = Object.values(d.sesi); return {...g, anggota: g.anggota.map(n => { const a = sesi.find(x => x.nomor === n);
         return {nomor: n, waktuLapor: waktuLapor(a.terkirim, a.isian.lokasi?.nilai?.wilayah?.provKode), desa: a.isian.lokasi?.nilai?.wilayah?.desa || null, status: a.tiket.status, dampak: dampakRingkas(a), saya: n === nomor}; })}; })(), jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,
@@ -668,6 +677,13 @@ function mejaUbah(c, nomor, aksi, body) {
     const anggota = [nomor, ...(G.gugus.find(x => x.kode === G.per[nomor])?.anggota || []).filter(n => n !== nomor && dalamWilayah(c, wil(n)))];
     for (const n of anggota) (d.tarik ||= []).push({id: (d.tarik || []).length + 1, kode: n, aktif: body.aktif ? 1 : 0, alasan, oleh: c.pelaku, waktu: kini});
     simpan(d); return [200, {ok: true, ditarik: body.aktif, anggota: anggota.length}];
+  }
+  if (aksi === "usulkan") { // LK-09, sama dengan usulkan di Worker: satu baris d.usulan, tidak pernah mendirikan kejadian resmi
+    if (c.jenis !== "bnpb") return [403, {galat: "Mengusulkan ke Buku Besar hanya untuk staf Pusdalops atau Koordalops BNPB dan Super Admin."}];
+    const r = usulanLokal(d, nomor); if (!r.usulan) return [r.status, {galat: r.galat, ...(r.ada ? {usulan: r.ada} : {})}];
+    const hari = tglKejadian(kini), kode = `LU-${hari}-${String((d.usulan || []).filter(u => u.kode.startsWith(`LU-${hari}-`)).length + 1).padStart(2, "0")}`;
+    (d.usulan ||= []).push({kode, ...r.usulan, oleh: c.pelaku, waktu: kini});
+    simpan(d); return [200, {ok: true, usulan: {kode, putaran: r.usulan.putaran, anggota: r.usulan.anggota.length}}];
   }
   if (aksi === "balas") {
     if (catatan.length < 2) return [400, {galat: "Balasan kosong."}];
@@ -869,7 +885,7 @@ export async function tanganiLapor(req, res, url) {
       if (mj) { const s = Object.values(baca().sesi).find(x => x.nomor === mj[1]), w = s?.isian.lokasi?.nilai;
         if (!s || !dalamWilayah(c, w?.wilayah)) return kirim([404, {galat: "Laporan tidak ditemukan."}]);
         return kirim([200, await jalanOsm(w?.lat, w?.lon, tempatRusak(s)?.jalan || [])]); }
-      const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas|periksa|tindakan|tarik))?$/.exec(j);
+      const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas|periksa|tindakan|tarik|usulkan))?$/.exec(j);
       // sama dengan Worker: GET rincian tidak pernah menulis; tanda "dilihat" lewat POST .../lihat (guard-api 19 Nov 2026). ?lihat=1 lama tetap dilayani sementara
       if (m && m[2] === "lihat" && req.method === "POST") return kirim(mejaRinci(c, m[1], true));
       if (m && !m[2]) return kirim(mejaRinci(c, m[1], url.searchParams.get("lihat") === "1"));

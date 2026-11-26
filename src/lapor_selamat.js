@@ -56,8 +56,10 @@ export function buatSelamat(wilayahDari) {
   }
   async function selamatSaya(env, req, url, kini) {
     const m = await pemilik(env, req, kini, false); if (m.tolak) return m.tolak;
-    const t = await H.slAktif(env, P, m.wa, kini);
-    return kirim(200, {tanda: t ? {...await tampil(env, {...t}), kedaluwarsa: t.kedaluwarsa} : null});
+    const [t, cari] = await Promise.all([H.slAktif(env, P, m.wa, kini), H.crMilik(env, P, m.wa)]);
+    // laporan orang dicari milik nomor ini ikut di Laporan saya (pemilik 25 Nov 2026)
+    const daftarCari = await Promise.all(cari.map(async r => ({id: r.id, nama_dicari: r.nama_dicari, status: r.status, dibuat: r.dibuat, kab_nama: (await kabNama(env, r.kab)) || r.kab})));
+    return kirim(200, {tanda: t ? {...await tampil(env, {...t}), kedaluwarsa: t.kedaluwarsa} : null, cari: daftarCari});
   }
   /* publik bertoken: nama panggilan, status, waktu, kab/kota. Tidak pernah nomor, titik, atau desa. Tidak dikenal, dicabut, kedaluwarsa: jawaban sama. */
   async function selamatToken(env, req, url, kini, ctx, x) {
@@ -87,6 +89,8 @@ export function buatSelamat(wilayahDari) {
     const kab = h.c.jenis === "bnpb" ? null : h.c.kab ?? h.c.prov;   // prefiks kode; BPBD kab bernama (tanpa kode) hanya disaring di aplikasi
     for (const r of await H.crDaftar(env, STAF, kab || null)) { const kn = await namaKab(r.kab);
       if (dalamWilayah(h.c, {provKode: r.kab.slice(0, 2), kabKode: r.kab, kab: kn})) baris.push({...r, kab_nama: kn}); }
+    const temu = new Map((await H.ctBaca(env, STAF, baris.map(r => r.id)).catch(e => { if (tabelBelum(e)) return []; throw e; })).map(t => [t.cari_id, t]));
+    for (const r of baris) { const t = temu.get(r.id); if (t) Object.assign(r, {panggilan: t.panggilan, nomor_kontak: t.nomor_kontak, tempat_tunggu: t.tempat_tunggu}); }
     const tanda = new Map((await H.slAktifNomor(env, STAF, [...new Set(baris.map(r => r.nomor_dicari).filter(Boolean))], kini)).map(t => [t.nomor, t]));
     return kirim(200, {akun: {jenis: h.c.jenis, label: h.c.label}, baris: baris.map(r => { const t = r.nomor_dicari && tanda.get(r.nomor_dicari);
       return {...r, cocok: !!t, tanda: t ? {status: t.status, label: LABEL[t.status], waktu: t.dibuat} : null}; })});

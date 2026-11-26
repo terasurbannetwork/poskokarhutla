@@ -172,7 +172,10 @@ def cincin_desa(ix):
 def titik_unik(hs, acuan_t=None):
     """Baris hotspot.json -> {(kunci petak, tgl_wib): (jam, lat, lon, wilayah)} yang lolos definisi D5 dan jendela 168 jam. Satu petak satu hari = satu titik."""
     out = {}
-    for lat, lon, jam, sen, _frp, yak, wil, tgl in hs["baris"]:
+    # 26 Nov 2026: hotspot.json di CI bertambah kolom; baca lewat "kolom", bukan urutan tetap
+    c = {n: i for i, n in enumerate(hs.get("kolom") or ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib"])}
+    for r in hs["baris"]:
+        lat, lon, jam, sen, yak, wil, tgl = (r[c[n]] for n in ("lat", "lon", "jam", "sensor", "keyakinan", "wilayah", "tgl_wib"))
         if sen not in SENSOR_DAFTAR or yak < YAKIN_MIN or jam < -JENDELA_JAM:
             continue
         k = (riwayat_petak.kunci(lat, lon), tgl)
@@ -669,6 +672,9 @@ def uji():
         assert peluang_kab(dict(pred, dibuat="2026-11-22T10:00:00+07:00"), now) == ({}, "basi")
         st_ = {"tahun": tahun, "gambut": gambut}
         # B: tahun 3, 0 titik: harus ada bila tak ada di A. Desa B muncul di A di fixture, jadi hapus titiknya
+        # kolom tambahan di hotspot.json (crash CI 25 Nov 2026) tidak boleh mengubah hasil
+        hs9 = dict(hs, kolom=["x", "lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib"], baris=[["?"] + b for b in hs["baris"]])
+        assert titik_unik(hs9) == titik_unik(hs), "kolom tambahan"
         hs2 = dict(hs, baris=[b for b in hs["baris"] if b[1] < 95.1])
         skor = {"kode": {"API": {"status": "dinilai"}}}
         o, po = susun(hs2, Desa(cari, geo=geo), cari, st_, pred, skor, None, now)

@@ -10,7 +10,8 @@ Pakai:  python3 -I scripts/siklus/genangan_kriteria.py uji          self-check t
         python3 -I scripts/siklus/genangan_kriteria.py layak --luring   sama, tanpa jaringan: pakai cache bulanan apa adanya (juga bulan berjalan)
         python3 -I scripts/siklus/genangan_kriteria.py versi-baru --alasan "..."   kunci ulang (versi naik, riwayat mencatat sidik + jangkar lama);
                                                                     hanya bila versi lama berjangkar & utuh dan genangan_vonis.json belum ada
-        python3 -I scripts/siklus/genangan_kriteria.py prasyarat    tolak bila sidik hilang, jangkar kosong, sidik beda, atau jangkar bukan leluhur HEAD
+        python3 -I scripts/siklus/genangan_kriteria.py prasyarat    tolak bila sidik hilang, jangkar kosong, sidik beda, jangkar bukan leluhur HEAD,
+                                                                    riwayat kunci putus, atau genangan_vonis.json ada/pernah ada di git (gerbang tests/agen/gerbang-genangan-kriteria.test.mjs)
 Langkah CI yang menjalankan `prasyarat` butuh checkout `fetch-depth: 0` (git show dan merge-base atas commit jangkar).
 """
 import datetime as dt, hashlib, importlib.util, json, os, subprocess, sys, tempfile, time
@@ -52,8 +53,9 @@ def sidik_isi(isi):
     return hashlib.sha256(isi[:-1] if isi.endswith(b"\n") else isi).hexdigest()
 
 
-def periksa_kunci(kri=KRI, sid=SID, git=True, akar=AKAR):
-    """-> kriteria (dict). Tolak bila jangkar kosong, sidik beda, isi di commit jangkar beda, atau jangkar bukan leluhur HEAD."""
+def periksa_kunci(kri=KRI, sid=SID, git=True, akar=AKAR, vonis=VONIS):
+    """-> kriteria (dict). Tolak bila jangkar kosong, sidik beda, isi di commit jangkar beda, jangkar bukan leluhur HEAD,
+    riwayat kunci putus (jangkar lama bukan leluhur jangkar baru, atau isi lama tidak cocok sidik lama), atau berkas vonis pernah ada di git."""
     if not os.path.exists(sid):
         raise Tolak("genangan_sidik.json hilang: kriteria tidak punya sidik terkunci")
     s = json.load(open(sid))
@@ -67,8 +69,22 @@ def periksa_kunci(kri=KRI, sid=SID, git=True, akar=AKAR):
         r = subprocess.run(["git", "-C", akar, "show", f"{s['jangkar_commit']}:{rel}"], capture_output=True)
         if r.returncode or r.stdout != isi:
             raise Tolak("isi kriteria berbeda dari commit jangkar (atau commit jangkar tidak ada)")
-        if subprocess.run(["git", "-C", akar, "merge-base", "--is-ancestor", s["jangkar_commit"], "HEAD"], capture_output=True).returncode:
+        leluhur = lambda a, b: not subprocess.run(["git", "-C", akar, "merge-base", "--is-ancestor", a, b], capture_output=True).returncode
+        if not leluhur(s["jangkar_commit"], "HEAD"):
             raise Tolak("commit jangkar bukan leluhur HEAD")
+        # riwayat kunci: tiap jangkar lama leluhur jangkar sesudahnya, isinya di jangkar lama cocok sidik lama
+        rantai = list(s.get("riwayat", [])) + [{"versi": s.get("versi"), "sidik": s["sidik"], "jangkar_commit": s["jangkar_commit"]}]
+        for lama, baru in zip(rantai, rantai[1:]):
+            if not lama.get("jangkar_commit") or not leluhur(lama["jangkar_commit"], baru["jangkar_commit"]):
+                raise Tolak(f"jangkar versi {lama.get('versi')} bukan leluhur jangkar versi {baru.get('versi')}")
+            r = subprocess.run(["git", "-C", akar, "show", f"{lama['jangkar_commit']}:{rel}"], capture_output=True)
+            if r.returncode or sidik_isi(r.stdout) != lama.get("sidik"):
+                raise Tolak(f"isi kriteria versi {lama.get('versi')} di commit jangkarnya tidak cocok sidik lamanya")
+        # uji balik yang sudah pernah dijalankan menutup jalan, walau berkas vonis sudah dihapus
+        rv = os.path.relpath(vonis, akar)
+        r = subprocess.run(["git", "-C", akar, "log", "--all", "--format=%H", "--", rv], capture_output=True, text=True)
+        if r.returncode or r.stdout.strip() or os.path.exists(vonis):
+            raise Tolak(f"{rv} ada atau pernah ada di riwayat git (atau riwayat tak terbaca): uji balik GS-13 sudah dijalankan")
     return json.loads(isi)
 
 
@@ -250,7 +266,7 @@ def versi_baru_syarat(sid=SID, kri=KRI, vonis=VONIS, git=True):
     Satu-satunya pintu kunci ulang; tidak bisa dipakai menyetel ulang sesudah melihat hasil."""
     if os.path.exists(vonis):
         raise Tolak("genangan_vonis.json ada: uji balik GS-13 sudah dijalankan, kunci ulang ditutup")
-    K = periksa_kunci(kri, sid, git=git)          # versi lama wajib berjangkar dan utuh
+    K = periksa_kunci(kri, sid, git=git, vonis=vonis)   # versi lama wajib berjangkar dan utuh
     s = json.load(open(sid))
     if s.get("vonis"):
         raise Tolak("sidik memuat vonis: kunci ulang ditutup")
@@ -433,11 +449,11 @@ def uji():
         c0 = g("rev-parse", "HEAD")
         sd = lambda j: json.dump({"sidik": sidik_isi(open(kri, "rb").read()), "jangkar_commit": j}, open(sid, "w"))
         sd(c0)
-        assert periksa_kunci(kri, sid, akar=d) == {"a": 1}
+        assert periksa_kunci(kri, sid, akar=d, vonis=os.path.join(d, "v.json")) == {"a": 1}
         open(kri, "w").write('{"a":2}\n')            # isi beda dari commit jangkar, sidik ikut diperbarui
         sd(c0)
         try:
-            periksa_kunci(kri, sid, akar=d)
+            periksa_kunci(kri, sid, akar=d, vonis=os.path.join(d, "v.json"))
             raise SystemExit("isi beda di commit jangkar harus ditolak")
         except Tolak as e:
             assert "berbeda dari commit jangkar" in str(e)
@@ -450,16 +466,53 @@ def uji():
         open(kri, "w").write('{"a":3}\n')
         sd(c1)
         try:
-            periksa_kunci(kri, sid, akar=d)
+            periksa_kunci(kri, sid, akar=d, vonis=os.path.join(d, "v.json"))
             raise SystemExit("jangkar bukan leluhur HEAD harus ditolak")
         except Tolak as e:
             assert "bukan leluhur" in str(e)
         os.remove(sid)
         try:
-            periksa_kunci(kri, sid, akar=d)
+            periksa_kunci(kri, sid, akar=d, vonis=os.path.join(d, "v.json"))
             raise SystemExit("sidik hilang harus ditolak")
         except Tolak as e:
             assert "hilang" in str(e)
+    # riwayat kunci dan vonis di riwayat git (validasi-model 25 Nov 2026)
+    with tempfile.TemporaryDirectory() as d:
+        g = lambda *a: subprocess.run(["git", "-C", d, "-c", "user.name=u", "-c", "user.email=u@x", *a], capture_output=True, text=True, check=True).stdout.strip()
+        kri, sid, von = (os.path.join(d, n) for n in ("k.json", "s.json", "v.json"))
+        pk = lambda: periksa_kunci(kri, sid, akar=d, vonis=von)
+        tulis_kri = lambda t: (open(kri, "w").write(t), g("add", "k.json"), g("commit", "-q", "-m", t), g("rev-parse", "HEAD"))[-1]
+        sd = lambda j, riw: json.dump({"versi": 2, "sidik": sidik_isi(open(kri, "rb").read()), "jangkar_commit": j, "riwayat": riw}, open(sid, "w"))
+        g("init", "-q")
+        h1 = tulis_kri('{"v":1}\n')
+        s1 = sidik_isi(b'{"v":1}\n')
+        h2 = tulis_kri('{"v":2}\n')
+        sd(h2, [{"versi": 1, "sidik": s1, "jangkar_commit": h1}])
+        assert pk() == {"v": 2}
+        sd(h2, [{"versi": 1, "sidik": "salah", "jangkar_commit": h1}])
+        assert "tidak cocok sidik lama" in tolak(pk, "isi lama tak cocok sidik lama harus ditolak")
+        sd(h2, [{"versi": 1, "sidik": s1, "jangkar_commit": ""}])
+        assert "bukan leluhur jangkar" in tolak(pk, "jangkar lama kosong harus ditolak")
+        g("checkout", "-q", "--orphan", "lain")          # jangkar lama di cabang lain: bukan leluhur jangkar baru
+        open(kri, "w").write('{"v":1}\n')
+        g("add", "k.json")
+        g("commit", "-q", "-m", "akar lain")              # pesan beda: tanpa itu hash sama dengan h1 (pohon, waktu, tanpa induk sama)
+        h0 = g("rev-parse", "HEAD")
+        assert h0 != h1
+        g("checkout", "-q", "-f", h2)
+        sd(h2, [{"versi": 1, "sidik": s1, "jangkar_commit": h0}])
+        assert "bukan leluhur jangkar" in tolak(pk, "jangkar lama bukan leluhur jangkar baru harus ditolak")
+        sd(h2, [{"versi": 1, "sidik": s1, "jangkar_commit": h1}])
+        open(von, "w").write("{}")
+        assert "GS-13" in tolak(pk, "berkas vonis di pohon kerja harus ditolak")
+        g("checkout", "-q", "lain")                      # vonis pernah di-commit lalu dihapus, di cabang mana pun
+        g("add", "v.json")
+        g("commit", "-q", "-m", "vonis")
+        g("rm", "-q", "v.json")
+        g("commit", "-q", "-m", "hapus vonis")
+        g("checkout", "-q", "-f", h2)
+        assert not os.path.exists(von)
+        assert "pernah ada di riwayat git" in tolak(pk, "vonis yang pernah ada di riwayat git harus ditolak")
     print("uji genangan_kriteria: lulus")
 
 

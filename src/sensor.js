@@ -11,8 +11,9 @@ import {json, gagal, bacaBytes, sha, acak, ipHash} from "./worker.js";
 import {laju} from "./bnpb.js";
 import {modAtauStaf} from "./staf.js";
 import {wib} from "./posko.js";
+import {tingkatAmbang} from "../public/inti/pantau_alat.js";
 
-const PERAN = ["pusdalops", "koordalops", "pimpinan"], MAKS_BADAN = 1024, TUA_MAKS = 24 * 3600e3, KONTROL = /[\u0000-\u001f\u007f\u200b-\u200f\u202a-\u202e\ufeff]/g, SELISIH = 10 * 6e4, LAJU_ALAT = [[5 * 6e4, 30]], LAJU_IP = [[6e4, 300]], BASI = 3600e3, TINGKAT = ["waspada", "siaga", "awas"];
+const PERAN = ["pusdalops", "koordalops", "pimpinan"], MAKS_BADAN = 1024, TUA_MAKS = 24 * 3600e3, KONTROL = /[\u0000-\u001f\u007f\u200b-\u200f\u202a-\u202e\ufeff]/g, SELISIH = 10 * 6e4, LAJU_ALAT = [[5 * 6e4, 30]], LAJU_IP = [[6e4, 300]], BASI = 3600e3;
 const RE_ID = /^[A-Za-z0-9_-]{3,40}$/, RE_TANDA = /^(?:sha256=)?([0-9a-f]{64})$/i, RE_KUNCI = /^[a-z][a-z0-9_]{0,23}$/;
 const enc = new TextEncoder(), hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
 
@@ -25,15 +26,8 @@ export const tandaSah = async (kunci, badan, tandaHex) => {
   const k = await crypto.subtle.importKey("raw", enc.encode(kunci), {name: "HMAC", hash: "SHA-256"}, false, ["verify"]);
   return crypto.subtle.verify("HMAC", k, Uint8Array.from(tandaHex.match(/../g), x => parseInt(x, 16)), badan);   // banding waktu-tetap
 };
-/* tingkat tertinggi yang terlewati: "awas" | "siaga" | "waspada" | null (murni, diuji) */
-export function tingkatAmbang(ambang, nilai) {
-  let t = -1, kunci = null;
-  for (const [k, a] of Object.entries(ambang || {})) {
-    const v = nilai?.[k]; if (typeof v !== "number" || !a || typeof a !== "object") continue;
-    TINGKAT.forEach((n, i) => { if (typeof a[n] === "number" && v >= a[n] && i > t) { t = i; kunci = k; } });
-  }
-  return t < 0 ? null : {tingkat: TINGKAT[t], kunci};
-}
+/* tingkat tertinggi yang terlewati: {tingkat, kunci} | null. Satu definisi di public/inti/pantau_alat.js (panel EWS, ALGORITMA G1), diekspor ulang di sini */
+export {tingkatAmbang};
 const waktuBaca = v => { const t = typeof v === "number" ? v : typeof v === "string" ? Date.parse(v) : NaN; return Number.isFinite(t) ? Math.round(t) : null; };
 
 /* gerbang bersama: konfigurasi, tanda tangan, alat aktif, waktu kirim, batas laju. Mengembalikan {r: Response} atau {a, o, kini}. tabel = sensor_baca | sensor_lapor */

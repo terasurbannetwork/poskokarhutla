@@ -1,4 +1,4 @@
--- 0175: komentar warga di kartu kejadian Alun-alun Pantau Bencana (paket data/kajian-bnpb/lapor-ai/, K94-K95, D135-D140, tiket LA-85).
+-- 0178: komentar warga di kartu kejadian Alun-alun Pantau Bencana (paket data/kajian-bnpb/lapor-ai/, K94-K95, D135-D140, tiket LA-85).
 -- lp_komen: satu baris per komentar. kartu = id kartu Alun-alun (10 heks, sha256 id laporan jangkar gugus), sesi = id laporan jangkar itu (untuk meja, LA-88).
 --   wa = nomor penulis, hanya untuk meja dan batas laju; tidak pernah keluar ke jawaban publik. status: tampil, dilaporkan (aduan >= 3 pengadu berbeda, menunggu meja), tersembunyi (keputusan meja).
 -- lp_komen_aduan: satu aduan per pengadu per komentar (PK menolak aduan ganda). pengadu = sha256 nomor (sesi /masuk, mesin WA) atau sidik alamat IP (nomor ketikan), tanpa nomor mentah.

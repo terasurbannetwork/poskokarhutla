@@ -112,6 +112,7 @@ ulang yang berubah.
 | Siklus Bencana `/siklus` | `public/siklus/**`, `scripts/siklus/**`, `tests/siklus/**`, `data/kajian-bnpb/siklus/**`; `src/siklus*.js`, migrasi `sk_*` (warga-api) | D1 `sk_*`, R2 `siklus/`; `siklus.yml` | `siklus` |
 | Inventori LogPal `/logpal` | `public/logpal/**`, `public/data/logpal/**`, `scripts/logpal/**`, `data/kajian-bnpb/logpal/**`; `src/logpal.js`, `migrations/0112` (warga-api) | D1 `logpal_*`; rute `/api/instansi/logpal/*` | `warga-api` |
 | Lab InSAR gambut | `scripts/data/insar_gambut.py`, `tests/insar-gambut/**`, `data/kajian-bnpb/insar-gambut/**` | lab lokal, tanpa keluaran publik sebelum vonis | `pipa-data` |
+| Laporan Berkala `/laporan-bnpb` | `scripts/berkala/**`, `tests/berkala/kontrak.test.mjs`, `tests/berkala/fixtures/**` (pipa-data); `public/laporan_berkala*`, `tests/berkala/**` (layar-peta); `src/laporan_berkala.js` dan migrasinya (warga-api) | R2 privat `berkala/`, D1 `laporan_berkala*`; `npm run uji:berkala`; `berkala.yml` belum ada (LB-10) | `pipa-data` |
 | Alat gambar wilayah | `public/alat_gambar*.js`, `tests/gambar/**`, `data/kajian-bnpb/alat-gambar/**` | hitung di peramban dari JSON publik | `layar-peta` |
 | Docs Centurisk97 `/docs` | `docs/centurisk97/**`, `scripts/docs/**`, `public/docs/**`, `tests/docs/**` (docs-situs); `src/docs_rute.js` (warga-api) | `public/docs/*.html` dan `cari.json` di-commit; langkah `bangun.py --cek` di `terbit.yml` | `docs-situs` |
 
@@ -686,6 +687,17 @@ Sebelum menyentuh pemindai Himawari L1b, detektor api, abu, konveksi, status sum
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`ST-*`), `GLOSARIUM.md`.
 
 Aturan berhentinya sama dengan §2.1. Satu pemindai, tanpa pembaca HSD atau GFM kedua; kriteria dikunci sebelum diuji; tanpa vonis lolos tetap hipotesis dan tidak dikirim ke luar; status BMKG, PVMBG, VAAC terpisah; sumber putus tidak pernah 0 dan tidak pernah diam; titik Himawari tidak dijumlah dengan VIIRS; tidak pernah menulis "aman" atau "padam".
+
+### 2.52 Kabar Alun-alun (`/lapor` tab Alun-alun: laporan harian BNPB, laporan warga, berita, media sosial per kejadian di peta): baca dulu, baru bangun
+
+Sebelum menyentuh kabar resmi harian di Alun-alun, penempel berita atau laporan warga ke kejadian, pita media sosial, atau berkas `public/data/alun/kabar.json`, baca dokumen di
+`data/kajian-bnpb/kabar-alun/` dengan urutan otoritas ini (pengekspor `scripts/data/alun_kabar.py` milik `pipa-data`; layar dan `public/lapor/alun_kabar.js` milik `layar-peta`; `tests/alun-kabar/**` milik `penulis-gerbang`; pencocok berita tetap `scripts/data/dalops_kabar.py` `cocok()`):
+
+1. `KEPUTUSAN-KABAR-ALUN.md`: keputusan pemilik K1-K4, rancangan D1-D15, pertanyaan terbuka Q1-Q7 dengan bawaan sementara; menang atas semuanya. Menggantikan `lapor-kejadian` D5 dan Q15 untuk tab ini.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`KA-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Angka antarsumber tidak pernah dijumlah atau tampak setara; status hanya dari laporan resmi; berita hanya judul, media, jam, tautan; medsos belum tersambung sampai Q1 dan sesudahnya hanya jumlah dan tautan tanpa nama akun; kabar resmi hanya localhost (tidak di-commit, tidak terbit) sampai Q2; tidak pernah menulis "aman"; tinjau di `http://localhost:8800/lapor/`.
 
 ### 2.50 Docs Centurisk97 (`/docs`, panduan pengguna dan pengembang, metode di dalam sistem): baca dulu, baru bangun
 

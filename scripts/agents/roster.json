@@ -19,6 +19,9 @@
       "tidak": "model ML sebaran; tampilan layar; worker Cloudflare",
       "milik": [
         "scripts/data/**",
+        "scripts/berkala/**",
+        "tests/berkala/kontrak.test.mjs",
+        "tests/berkala/fixtures/**",
         "scripts/panen/**",
         "scripts/scrape/**",
         "scripts/geo/**",
@@ -45,7 +48,8 @@
         "public/data/luas_pembanding.json",
         "public/data/tanah_gambut_bulanan.json",
         "tests/insar-gambut/**",
-        "public/data/desa_waspada.json"
+        "public/data/desa_waspada.json",
+        "public/data/alun/**"
       ]
     },
     {
@@ -219,6 +223,7 @@
         "public/*.js",
         "tests/layar/**",
         "tests/gambar/**",
+        "tests/berkala/**",
         "tests/prioritas.test.mjs",
         "public/*.css",
         "public/design-system-*.json",
@@ -390,7 +395,9 @@
       "milik": [
         "tests/agen/**",
         "tests/beban/**",
-        "tests/desa-waspada/**"
+        "tests/e2e/**",
+        "tests/desa-waspada/**",
+        "tests/alun-kabar/**"
       ]
     },
     {

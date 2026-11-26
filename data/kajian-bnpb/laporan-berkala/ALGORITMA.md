@@ -15,7 +15,8 @@ Bulan laporan `B` = tanggal 1 sampai hari terakhir `B`. DIBI hanya punya tanggal
 
 Bentuk masukan: `public/data/dibi_kejadian.json` `kejadian[]`, satu baris per (tanggal, jenis, kab), kolom `kejadian` = banyak kejadian di baris itu, kolom dampak `meninggal, hilang, luka, terdampak, mengungsi, rr_berat, rr_sedang, rr_ringan, terendam, f_pendidikan, f_kantor, jembatan, f_umum` (tidak ada = 0).
 
-1. **Jumlah kejadian = jumlah kolom `kejadian`**, bukan banyak baris.
+1. **Jumlah kejadian = jumlah kolom `kejadian`**, bukan banyak baris. Riwayat penuh DIBI (lapis Siklus) memecah satu kejadian lintas kab menjadi pecahan (0,5 + 0,5); pecahan dijumlah dulu, lalu dibulatkan sekali.
+   **Dua angka kejadian (Q28, [BAWAAN SEMENTARA])**: baris bertanda `bencana = 0` di `dibi_kejadian.json` berada di bawah ambang bencana DIBI. Berkas angka memuat `alam` (semua laporan, termasuk di bawah ambang, cara contoh Oktober 2026) dan `resmi` (tanpa baris itu), keduanya berlabel (`label_angka`), plus `di_bawah_ambang` per jenis (bencana alam dan non-alam). Baris tanpa tanda yang diketahui (`bencana = None`, lapis Siklus) membuat `resmi` dan `di_bawah_ambang` bernilai None, bukan 0. Kolom dampak: kunci tidak ada = 0 (aturan `dibi_kejadian.json`), kunci bernilai None = tidak diketahui; satu baris tidak diketahui membuat jumlahnya tidak diketahui, dan perbandingan dengan nilai tidak diketahui tidak pernah menulis "baru".
 2. **Peta jenis** (nama mentah DIBI ke jenis laporan). Jenis mentah yang tidak ada di tabel membuat `rakit.py` gagal dengan daftar nama baru, supaya tidak ada yang hilang diam-diam.
 
 | Jenis laporan | Nama mentah DIBI |
@@ -26,13 +27,13 @@ Bentuk masukan: `public/data/dibi_kejadian.json` `kejadian[]`, satu baris per (t
 | Cuaca ekstrem | Cuaca Ekstrem, Angin Kencang, Angin Topan, Puting Beliung |
 | Kekeringan | Kekeringan, Kekeringan Pertanian |
 | Gelombang pasang dan abrasi | Gelombang Pasang / Abrasi, Gelombang Pasang, Abrasi Pantai |
-| Gempa bumi | Gempabumi, Gempabumi Reruntuhan, Gempa Bumi dan Tsunami |
+| Gempa bumi | Gempabumi, Gempabumi Reruntuhan, Gempa Bumi dan Tsunami, Tsunami (nama lama riwayat penuh) |
 | Erupsi gunung api | Erupsi Gunung Api |
-| Non-alam dan sosial (bagian sendiri, Bab 1.4, K5) | Kebakaran Gedung dan Permukiman, Konflik Sosial, Gagal Teknologi, Kecelakaan Industri, Epidemi dan Wabah Penyakit, Lainnya |
+| Non-alam dan sosial (bagian sendiri, Bab 1.4, K5) | Kebakaran Gedung dan Permukiman, Konflik Sosial, Gagal Teknologi, Kecelakaan Industri, Epidemi dan Wabah Penyakit (juga nama lama Epidemi, Wabah Penyakit), Lainnya |
 
    Angka utama Bab 1.1 sampai 1.3 hanya bencana alam (sebanding dengan contoh Oktober). Kejadian non-alam dan sosial disebut jumlahnya di paragraf 1.1 dan diolah di bagian 2.9.
 3. **Kelompok**: kering = karhutla + kekeringan; basah = banjir + longsor + cuaca ekstrem + gelombang pasang; geologi = gempa + erupsi. Jumlah tiga kelompok = jumlah bencana alam (uji H4).
-4. **Duplikat antarkab**: catatan metode contoh menulis "baris yang mencatat dampak identik pada tanggal dan jenis yang sama di dua kabupaten dihitung sekali". **[BAWAAN SEMENTARA, Q20]** aturan hanya berlaku untuk baris yang punya paling sedikit satu kolom dampak lebih dari 0 (baris tanpa dampak, misalnya kebanyakan karhutla, tidak pernah dianggap duplikat). Untuk tiap kelompok (tanggal, jenis laporan, seluruh kolom dampak sama) di lebih dari satu kab: dampak dihitung sekali, kejadian tetap dihitung per kab. Banyak baris yang kena aturan ini dicatat (`duplikat_dampak`).
+4. **Duplikat antarkab**: catatan metode contoh menulis "baris yang mencatat dampak identik pada tanggal dan jenis yang sama di dua kabupaten dihitung sekali". **[BAWAAN SEMENTARA, Q20]** aturan hanya berlaku untuk baris yang punya paling sedikit **dua** kolom dampak lebih dari 0 (baris tanpa dampak, misalnya kebanyakan karhutla, dan kebetulan satu kolom seperti "meninggal 1" tidak pernah dianggap duplikat). Untuk tiap kelompok (tanggal, jenis laporan, **provinsi yang sama**, seluruh kolom dampak sama) di lebih dari satu kab: dampak dihitung sekali, kejadian tetap dihitung per kab. Banyak baris yang kena aturan ini dicatat (`duplikat_dampak`).
 5. **Dampak turunan**: "meninggal dan hilang" = meninggal + hilang; "terdampak dan mengungsi" = terdampak + mengungsi (Tabel 2 dan 3 contoh); "rumah rusak" = rr_berat + rr_sedang + rr_ringan; "fasilitas umum rusak" = f_pendidikan + f_kantor + f_umum; jembatan terpisah; "luka" = luka.
 6. **Agregat**: per jenis, per kelompok, per provinsi x kelompok, per provinsi x jenis, per kab x jenis. Jumlah provinsi dan kab = banyak kode berbeda dengan kejadian lebih dari 0.
 7. **Riwayat 11 bulan** (Gambar 1, 6, 8, 11): langkah 1 sampai 6 untuk tiap bulan `B-10 .. B`.
@@ -52,6 +53,7 @@ Satu sumber: `public/data/peta_karhutla.json` `prov[kode]` dengan deret harian `
 3. Luas terbakar perkiraan per provinsi = jumlah `luas` harian dalam `B`.
 4. Belum padam per provinsi = nilai `belum` pada tanggal terakhir `B`.
 5. Peta provinsi: kelas hotspot seperti contoh (di bawah 2.000; 2.000 sampai 8.000; 8.000 sampai 20.000; 20.000 sampai 60.000; di atas 60.000) **[BAWAAN SEMENTARA, Q21]**, delapan provinsi teratas diberi label.
+7. Cakupan: jumlah hotspot periode mana pun (periode laporan, periode sebelumnya, tiap bulan sejak Januari) hanya ditulis bila semua harinya ada; bila tidak, nilainya None dengan banyak hari yang ada, dan perbandingan tidak dihitung. Usulan T1 dan T2 dari data yang tidak penuh menyebut "(data N dari M hari)".
 6. Laporan daerah lawan satelit (Gambar 4): 8 provinsi hotspot teratas, hotspot dan jumlah kejadian karhutla DIBI berdampingan; tanpa rasio atau skor (KEPUTUSAN D5). Kalimat 2.3 menyebut n provinsi teratas dan persen hotspot nasionalnya, dengan n = **[BAWAAN SEMENTARA, Q21]** 6 (seperti contoh).
 
 ## 5. Banjir dan longsor
@@ -67,8 +69,8 @@ Kab terdampak dari DIBI; tabel dampak terbesar paling banyak **[BAWAAN SEMENTARA
 ## 7. Geologi
 
 1. Bab 1 dan Lampiran: jumlah kolom `kejadian` DIBI gempa dan erupsi (laporan per kab).
-2. Bab 5: per peristiwa. Satu peristiwa = satu kejadian di `public/gempa/data/*` (atau satu erupsi di data gunung api) yang punya paling sedikit satu baris DIBI pada tanggal yang sama atau sehari sesudahnya di provinsi yang sama. Baris DIBI yang tidak cocok dengan data gempa dihitung satu peristiwa per baris. Selisih Bab 1 lawan Bab 5 dijelaskan di catatan metode (contoh: 5 laporan, 4 peristiwa).
-3. Status gunung api: hitungan per level dari `public/gunungapi/data/gunung.json` pada potongan tanggal 1 bulan berikutnya, nama gunung Level III dan IV.
+2. Bab 5: per peristiwa (katalog: kejadian berbuletin BMKG di `public/gempa/data/inatews_detail_<bulan>.json`, provinsi = kab yang memuat pusat gempa, di laut kab terdekat; gempa yang dilaporkan di beberapa provinsi terhitung lebih dari satu peristiwa, ditulis di catatan metode; baris DIBI tak cocok dengan `kejadian = k` menjadi k peristiwa dengan dampak baris hanya di yang pertama). Satu peristiwa = satu kejadian di `public/gempa/data/*` (atau satu erupsi di data gunung api) yang punya paling sedikit satu baris DIBI pada tanggal yang sama atau sehari sesudahnya di provinsi yang sama. Baris DIBI yang tidak cocok dengan data gempa dihitung satu peristiwa per baris. Selisih Bab 1 lawan Bab 5 dijelaskan di catatan metode (contoh: 5 laporan, 4 peristiwa).
+3. Status gunung api: hitungan per level dari `public/banjir/data/gunungapi_status.json` (MAGMA, `gunung[].level`; `gunung.json` hanya katalog koordinat tanpa level) pada potongan tanggal 1 bulan berikutnya, nama gunung Level III dan IV. Tanpa potongan tanggal itu, level dihitung mundur dari status terbaru dengan membatalkan perubahan sesudah tanggal itu (`public/gunungapi/data/perubahan_level.json`), dan catatan metode menyebutnya.
 
 ## 8. Prediksi dua bulan berikutnya (Bab 7.1)
 
