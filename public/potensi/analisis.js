@@ -40,9 +40,12 @@ export function bahan() {
 }
 
 /* ---------- tampilan ---------- */
-const kartu = (ey, judul, isi) => `<section class="ex ex-std bc-kartu"><header class="ex-hd"><span class="ex-ey">${esc(ey)}</span><div class="ex-jd"><h3>${esc(judul)}</h3></div></header><div class="ex-bd">${isi}</div></section>`;
+/** tip = tanggal data dan catatan, di title kepala kartu (tanpa kaki Sumber, AGENTS.md 3.5) */
+const kartu = (ey, judul, isi, tip) => `<section class="ex ex-std bc-kartu"><header class="ex-hd"><span class="ex-ey">${esc(ey)}</span><div class="ex-jd"><h3${tip ? ` title="${esc(tip)}"` : ""}>${esc(judul)}</h3></div></header><div class="ex-bd">${isi}</div></section>`;
 const tabel = (kep, br, kls = "") => `<div class="ex-tabel ${kls}"><table><thead><tr>${kep.map((c) => `<th${c[1] ? ` title="${esc(c[1])}"` : ""}>${esc(c[0])}</th>`).join("")}</tr></thead><tbody>${br.join("")}</tbody></table></div>`;
-const kaki = (jenis, tip, data) => `<p class="bc-cat">${chip(jenis, tip)}${data ? ` <span>Data per ${esc(data)}</span>` : ""}</p>`;
+/** chip status fakta di atas isi kartu; tanggal data masuk title kepala kartu */
+const atas = (jenis, tip) => `<p class="bc-cat">${chip(jenis, tip)}</p>`;
+const per = (d) => (d ? `Data per ${d}` : undefined);
 const belumBlok = (judul, ey, tglSumber, sebab) => kartu(ey, judul, `<p class="bc-kosong">${BELUM}. ${esc(sebab)}${tgl(tglSumber) ? ` Data terakhir tercatat ${esc(tgl(tglSumber))}.` : " Tanggal data belum tercatat."}</p><p class="bc-cat">${chip("belum")}</p>`);
 
 /** Batang mendatar bertooltip. baris: [{nama, nilai, teks, tip}] */
@@ -64,33 +67,33 @@ function seksiMatriks(A) {
   const m = A.matriks;
   if (!m || !Object.keys(m).length) return belumBlok("Bahaya kali status", "Matriks", A.sumber?.status, "Matriks belum dibangun dari sumbernya.");
   const br = Object.entries(m).map(([k, v]) => `<tr><th scope="row">${ikon(k)} ${esc(NAMA[k] || k)}</th><td class="bc-n">${angka(v.kab_tinggi) ?? BELUM}</td><td class="bc-n">${angka(v.desa_tinggi) ?? BELUM}</td><td>${sebaran(v.status)}</td></tr>`);
-  return kartu("Matriks", "Bahaya kali status", tabel([["Bahaya"], ["Kab/kota kelas tinggi", "Jumlah kab/kota berkelas bahaya tinggi (aturan kelas kab dari sebaran desa)"], ["Desa kelas tinggi", "Desa berkelas bahaya tinggi pada baseline BNPB"], ["Sebaran status, ringkas 3 hari", "Jumlah kab/kota per status; ringkas 3 hari = tingkat tertinggi empat hari"]], br, "bc-lebar") + legenda +
-    kaki("hitung", "Hitungan dari status per kab dan kelas desa BNPB", tgl(A.sumber?.status)) + `<p class="bc-cat">${chip("sumber", "BNPB InaRISK, kelas bahaya desa")} <span>Kelas desa dari BNPB</span> ${chip("hipotesis", "Status dari model Centurisk97 yang belum lolos uji balik")} <span>Status prakiraan</span></p>`);
+  return kartu("Matriks", "Bahaya kali status", `<p class="bc-cat">${chip("sumber", "BNPB InaRISK, kelas bahaya desa")} <span>Kelas desa dari BNPB</span> ${chip("hipotesis", "Status dari model Centurisk97 yang belum lolos uji balik")} <span>Status prakiraan</span> ${chip("hitung", "Hitungan dari status per kab dan kelas desa BNPB")}</p>` + tabel([["Bahaya"], ["Kab/kota kelas tinggi", "Jumlah kab/kota berkelas bahaya tinggi (aturan kelas kab dari sebaran desa)"], ["Desa kelas tinggi", "Desa berkelas bahaya tinggi pada baseline BNPB"], ["Sebaran status, ringkas 3 hari", "Jumlah kab/kota per status; ringkas 3 hari = tingkat tertinggi empat hari"]], br, "bc-lebar") + legenda, per(tgl(A.sumber?.status)));
 }
 function seksiHujan(A) {
   if (!A.hujan?.length) return belumBlok("Hujan prakiraan tertinggi", "Hujan", A.sumber?.prediksi, "Prakiraan hujan belum tersedia.");
-  return kartu("Hujan", "Hujan prakiraan tertinggi", batang(A.hujan.map((h) => ({ nama: h.nama, nilai: h.mm, teks: angka(h.mm), tip: `${h.nama}: ${angka(h.mm)} mm pada ${tgl(h.hari) || "hari tak tercatat"}` })), "mm") + `<p class="bc-cat">Hujan harian tertinggi per kab/kota, tiga hari ke depan.</p>` + kaki("sumber", "Prakiraan cuaca numerik; bukan peringatan", tgl(A.sumber?.prediksi)));
+  return kartu("Hujan", "Hujan prakiraan tertinggi", atas("sumber", "Prakiraan cuaca numerik; bukan peringatan") + batang(A.hujan.map((h) => ({ nama: h.nama, nilai: h.mm, teks: angka(h.mm), tip: `${h.nama}: ${angka(h.mm)} mm pada ${tgl(h.hari) || "hari tak tercatat"}` })), "mm") + `<p class="bc-cat">Hujan harian tertinggi per kab/kota, tiga hari ke depan.</p>`, per(tgl(A.sumber?.prediksi)));
 }
 function seksiHth(A) {
   if (!A.hth?.length) return belumBlok("Hari tanpa hujan terpanjang", "Kekeringan", A.sumber?.hth, "Daftar hari tanpa hujan tidak ada atau sudah basi.");
-  return kartu("Kekeringan", "Hari tanpa hujan terpanjang", batang(A.hth.map((h) => ({ nama: h.nama, nilai: h.maks, teks: angka(h.maks), tip: `${h.nama}: ${angka(h.maks)} hari berturut-turut tanpa hujan` })), "hari") + kaki("hitung", "Hitungan dari data hujan harian", tgl(A.sumber?.hth)));
+  return kartu("Kekeringan", "Hari tanpa hujan terpanjang", atas("hitung", "Hitungan dari data hujan harian") + batang(A.hth.map((h) => ({ nama: h.nama, nilai: h.maks, teks: angka(h.maks), tip: `${h.nama}: ${angka(h.maks)} hari berturut-turut tanpa hujan` })), "hari"), per(tgl(A.sumber?.hth)));
 }
 function seksiGelombang(A) {
   if (!A.gelombang?.length) return belumBlok("Gelombang tertinggi", "Pesisir", A.sumber?.prediksi, "Prakiraan gelombang belum tersedia.");
-  return kartu("Pesisir", "Gelombang tertinggi", batang(A.gelombang.map((g) => ({ nama: g.nama, nilai: g.m, teks: angka(g.m, 1), tip: `${g.nama}: gelombang ${angka(g.m, 1)} m pada ${tgl(g.hari) || "hari tak tercatat"}` })), "m") + kaki("sumber", "Prakiraan gelombang; bukan peringatan", tgl(A.sumber?.prediksi)));
+  return kartu("Pesisir", "Gelombang tertinggi", atas("sumber", "Prakiraan gelombang; bukan peringatan") + batang(A.gelombang.map((g) => ({ nama: g.nama, nilai: g.m, teks: angka(g.m, 1), tip: `${g.nama}: gelombang ${angka(g.m, 1)} m pada ${tgl(g.hari) || "hari tak tercatat"}` })), "m"), per(tgl(A.sumber?.prediksi)));
 }
 function seksiDebit(A) {
   const d = A.debit?.daftar;
   if (!d?.length) return belumBlok("Debit sungai tertinggi", "Sungai", A.sumber?.debit, "Prakiraan debit belum tersedia.");
-  return kartu("Sungai", "Debit sungai tertinggi", batang(d.map((x) => ({ nama: x.nama, nilai: x.puncak_m3s, teks: angka(x.puncak_m3s), tip: `${x.nama}: puncak ${angka(x.puncak_m3s)} m³/detik pada ${tgl(x.hari) || "hari tak tercatat"}` })), "m³/detik") + `<p class="bc-cat">Puncak debit per kab/kota. Tidak berarti banjir; banding dengan debit rata-rata sungai itu.</p>` + kaki("hipotesis", "Model aliran global belum diuji balik di Indonesia", tgl(A.sumber?.debit)));
+  const tipD = [per(tgl(A.sumber?.debit)), A.debit?.catatan_dasar, A.debit?.dasar && !A.debit?.catatan_dasar ? "Dasar: " + A.debit.dasar : null, "Puncak debit per kab/kota. Tidak berarti banjir; banding dengan debit rata-rata sungai itu."].filter(Boolean).join(". ");
+  return kartu("Sungai", "Debit sungai tertinggi", atas("hipotesis", "Model aliran global belum diuji balik di Indonesia") + batang(d.map((x) => ({ nama: x.nama, nilai: x.puncak_m3s, teks: angka(x.puncak_m3s), tip: `${x.nama}: puncak ${angka(x.puncak_m3s)} m³/detik pada ${tgl(x.hari) || "hari tak tercatat"}` })), "m³/detik"), tipD);
 }
 function seksiDesa(A, nmKab) {
   const dt = A.desa_tinggi;
   if (!dt?.length) return belumBlok("Desa dengan bahaya tinggi terbanyak", "Desa", A.sumber?.kelas_desa, "Kelas bahaya desa belum tersedia.");
   const ikons = (s, p) => URUT6.map((k, i) => (s[i] === "3" ? `<span class="bc-ik" title="${esc(NAMA[k] + ": kelas tinggi" + (p ? " (proyeksi)" : ""))}">${ikon(k, 15)}</span>` : "")).join("") || '<span class="bc-kosong">-</span>';
   const br = dt.map((d) => `<tr><th scope="row">${esc(d.nama)}</th><td>${esc(d.kecamatan)}</td><td>${esc(nmKab(d.kab4))}</td><td>${ikons(String(d.baseline6 || ""))}</td><td class="bc-n">${angka(d.jumlah_kelas3) ?? BELUM}</td><td>${ikons(String(d.proyeksi6 || ""), 1)}</td></tr>`);
-  return kartu("Desa", "Desa dengan bahaya tinggi terbanyak", tabel([["Desa"], ["Kecamatan"], ["Kab/kota"], ["Bahaya kelas tinggi", "Kelas baseline BNPB"], ["Jumlah"], ["Kelas proyeksi", "Proyeksi dari BNPB; tahun dan skenario tidak tercantum di sumber. Hanya pembanding, tidak dipakai untuk status."]], br, "bc-lebar") +
-    `<p class="bc-cat">Hanya kelas bahaya dan nama wilayah. Keterpaparan penduduk per desa tidak dibuka untuk publik.</p>` + kaki("sumber", "BNPB InaRISK, kelas bahaya desa", tgl(A.sumber?.kelas_desa)) + `<p class="bc-cat">${chip("hipotesis", "Kolom proyeksi: tahun dan skenario tidak tercantum di sumber")} <span>Kolom kelas proyeksi</span></p>`);
+  return kartu("Desa", "Desa dengan bahaya tinggi terbanyak", `<p class="bc-cat">${chip("sumber", "BNPB InaRISK, kelas bahaya desa")} ${chip("hipotesis", "Kolom proyeksi: tahun dan skenario tidak tercantum di sumber")} <span>Kolom kelas proyeksi</span></p>` + tabel([["Desa"], ["Kecamatan"], ["Kab/kota"], ["Bahaya kelas tinggi", "Kelas baseline BNPB"], ["Jumlah"], ["Kelas proyeksi", "Proyeksi dari BNPB; tahun dan skenario tidak tercantum di sumber. Hanya pembanding, tidak dipakai untuk status."]], br, "bc-lebar") +
+    `<p class="bc-cat">Hanya kelas bahaya dan nama wilayah. Keterpaparan penduduk per desa tidak dibuka untuk publik.</p>`, per(tgl(A.sumber?.kelas_desa)));
 }
 
 export function pasang(ctx) {

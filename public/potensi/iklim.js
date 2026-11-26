@@ -2,11 +2,13 @@
    Data apa adanya: /data/iklim.json (oni_status, iod, status, cpc_status), /banjir/data/debit_kab.json, /data/kekeringan_hth.json. Basi tampil abu, kosong tidak pernah 0.
    Rasio terhadap Q2 belum terukur (Q2 titik kab belum ada); debit tidak menaikkan status banjir (Q6). Kartu dan chip dari dampak.js (satu salinan). ctx: lihat app.js. */
 import { warnaToken } from "/inti/maplibre.js";
-import { esc, nanti, ambil, BELUM, muatDP, muatCss, kartu, chip, bbox } from "/potensi/dampak.js";
+import { esc, nanti, BELUM, muatDP, muatCss, kartu, chip, bbox } from "/potensi/dampak.js";
+import { ambil, geoKab } from "/potensi/umum.js";
 
 const HARI = ["Hari ini", "Besok", "Lusa", "Hari ke-3"];
 const LANGKAH = [10, 100, 500, 2000]; // m³/detik, batas kelas legenda
 const BASI_HTH = 3; // hari
+/* ONI dan IOD: nilai indeks sumber, dua desimal seperti yang dilaporkan NOAA dan BoM. Debit bulat, rasio satu desimal. */
 const num = (n, d = 2) => (n == null || !Number.isFinite(+n) ? null : (+n).toLocaleString("id-ID", { minimumFractionDigits: d, maximumFractionDigits: d }));
 const bertanda = (n) => { const t = num(n); return t == null ? BELUM : (+n > 0 ? "+" : "") + t; };
 const tgl = (iso) => { const t = new Date(String(iso).slice(0, 10) + "T00:00:00+07:00"); return Number.isNaN(+t) ? BELUM : t.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta" }); };
@@ -16,7 +18,7 @@ const umurHari = (iso) => Math.floor((Date.now() - new Date(String(iso).slice(0,
 export function pasang(ctx) {
   const { panel, bawah } = ctx;
   muatCss();
-  let DP, I = null, Q = null, H = null, peta = null, kini = false, fc = null, geoMuat = false, bb = new Map(), lama = "";
+  let DP, I = null, Q = null, H = null, peta = null, kini = false, fc = null, geoMuat = false, gm = new Map(), lama = "";
   panel.innerHTML = '<p class="p2-info" role="status">Memuat data iklim</p>';
   bawah.innerHTML = `<ul class="p2-sw" aria-label="Legenda debit puncak"><li class="p2-jd">Debit puncak, m³/detik</li>${["kurang dari " + LANGKAH[0], LANGKAH[0] + " sampai " + LANGKAH[1], LANGKAH[1] + " sampai " + LANGKAH[2], LANGKAH[2] + " sampai " + LANGKAH[3], "lebih dari " + LANGKAH[3]].map((t, i) => `<li><i class="p2-k p2-q${i}"></i>${t}</li>`).join("")}<li><i class="p2-k p2-kn"></i>${BELUM}</li></ul>`;
 
@@ -49,7 +51,7 @@ export function pasang(ctx) {
     return kartu("Banjir", "Debit sungai per kab/kota", `<p class="p2-cat">${Q.hipotesis ? chip(DP, "hipotesis", "Belum lolos uji balik") : ""} ${chip(DP, "sumber", Q.sumber || "Copernicus GloFAS")}</p>
 <p class="p2-cat">Puncak debit ansambel rerata, hari ini sampai hari ke-3. Rasio terhadap Q2 (debit ulang dua tahun): ${adaRasio ? "tersedia untuk sebagian kab/kota" : BELUM + ", Q2 titik kab belum ada"}. Debit tidak menaikkan status banjir.${basi ? ` Data belum diperbarui sejak ${esc(tgl(Q.dibuat))}.` : ""}</p>
 <div id="ik-kab" class="p2-pilih" role="status"><p class="p2-info">Klik kab/kota di peta untuk melihat debitnya.</p></div>
-<ol class="p2-top" aria-label="Debit puncak tertinggi">${atas.map(([k, v]) => `<li><button type="button" data-kab="${k}"><span>${esc(nmKab(k))}</span><b>${num(v.puncak_m3s, 1)}</b></button></li>`).join("")}</ol>`);
+<ol class="p2-top" aria-label="Debit puncak tertinggi">${atas.map(([k, v]) => `<li><button type="button" data-kab="${k}"><span>${esc(nmKab(k))}</span><b>${num(v.puncak_m3s, 0)}</b></button></li>`).join("")}</ol>`);
   }
 
   function kartuHth() {
@@ -67,7 +69,7 @@ export function pasang(ctx) {
   const kartuKabDebit = (k) => {
     const v = kabQ(k);
     if (!v || v.puncak_m3s == null) return `<p class="p2-info"><b>${esc(nmKab(k))}</b>: debit ${BELUM}.</p>`;
-    return `<dl class="p2-kv"><dt>Kab/kota</dt><dd>${esc(nmKab(k))}</dd><dt>Puncak debit</dt><dd>${num(v.puncak_m3s, 1)} m³/detik</dd><dt>Hari puncak</dt><dd>${v.hari_puncak != null ? HARI[v.hari_puncak] || "Hari ke-" + v.hari_puncak : BELUM}</dd><dt>Rasio terhadap Q2</dt><dd>${v.rasio_q2 != null ? num(v.rasio_q2, 2) : BELUM}</dd></dl>`;
+    return `<dl class="p2-kv"><dt>Kab/kota</dt><dd>${esc(nmKab(k))}</dd><dt>Puncak debit</dt><dd>${num(v.puncak_m3s, 0)} m³/detik</dd><dt>Hari puncak</dt><dd>${v.hari_puncak != null ? HARI[v.hari_puncak] || "Hari ke-" + v.hari_puncak : BELUM}</dd><dt>Rasio terhadap Q2</dt><dd>${v.rasio_q2 != null ? num(v.rasio_q2, 1) + "×" : BELUM}</dd></dl><p class="p2-cat">${chip(DP, "hipotesis", "Debit GloFAS; belum lolos uji balik")}</p>`;
   };
   function pilihKab(k, terbang) {
     const w = panel.querySelector("#ik-kab");
@@ -77,7 +79,8 @@ export function pasang(ctx) {
       peta.setFeatureState({ source: "ik-kab", id: k }, { pilih: true });
     }
     lama = k;
-    if (terbang && bb.has(k)) peta?.fitBounds(bb.get(k), { padding: ctx.padPeta(), maxZoom: 9, duration: 500 });
+    const g = terbang && gm.get(k); // bbox dihitung hanya untuk kab terpilih
+    if (g) peta?.fitBounds(bbox(g.coordinates), { padding: ctx.padPeta(), maxZoom: 9, duration: 500 });
   }
 
   /* ---------- peta ---------- */
@@ -105,7 +108,7 @@ export function pasang(ctx) {
     if (geoMuat || !Q?.kab) return;
     geoMuat = true;
     const prov = [...new Set(Object.keys(Q.kab).map((k) => k.slice(0, 2)))];
-    const gs = await Promise.all(prov.map((p) => ambil(`/geo/kabupaten/${p}.json`)));
+    const gs = await Promise.all(prov.map((p) => geoKab(p)));
     const fitur = [];
     prov.forEach((p, i) => {
       for (const f of gs[i]?.features || []) {
@@ -113,7 +116,7 @@ export function pasang(ctx) {
         if (!k) continue;
         const v = Q.kab[k];
         fitur.push({ type: "Feature", geometry: f.geometry, properties: { kab: k, q: v?.puncak_m3s ?? -1 } });
-        bb.set(k, bbox(f.geometry.coordinates));
+        gm.set(k, f.geometry);
       }
     });
     fc = { type: "FeatureCollection", features: fitur };

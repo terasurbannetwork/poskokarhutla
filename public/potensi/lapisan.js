@@ -3,12 +3,12 @@
    Publik hanya kelas bahaya dan status kab induk (Q9); tanpa paparan penduduk atau fasilitas per desa.
    Data: /api/dampak-peringatan/ringkas (peringatan), /status, /data/kelas_desa_bnpb.json, /data/kelas_desa/<pp>.json.
    Klik: tanda lapis di-set langsung, isi daftar ditunda lewat nanti(). ctx: lihat app.js. */
-import { esc, angka, ambil, ikon, NAMA, PROV, BELUM, chip, pakaiGaya, bahan } from "/potensi/analisis.js";
+import { esc, angka, ikon, NAMA, PROV, BELUM, chip, pakaiGaya, bahan } from "/potensi/analisis.js";
+import { nanti, ambil } from "/potensi/umum.js";
 
 const LAP = [["peringatan", "Peringatan BMKG aktif"], ["bahaya", "Bahaya"], ["prov", "Provinsi"], ["kab", "Kab/kota"], ["kec", "Kecamatan"], ["desa", "Desa"]];
 const URUT6 = ["BNJ", "BDG", "LSR", "GEL", "KHT", "KEK"];
 const TAMPIL = 100;
-const nanti = (f) => requestAnimationFrame(() => setTimeout(f, 0));
 const kecil = (s) => String(s ?? "").toLowerCase();
 
 export function pasang(ctx) {
@@ -50,7 +50,8 @@ export function pasang(ctx) {
   const tabel = (kep, br) => `<div class="ex-tabel"><table><thead><tr>${kep.map((c) => `<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${br.join("")}</tbody></table></div>`;
   const pilih = (lap, id, teks, on) => `<button type="button" class="bc-pilih" data-lap="${lap}" data-id="${esc(id)}" aria-pressed="${on}">${esc(teks)}</button>`;
   const cocok = (...t) => !cari || t.some((x) => kecil(x).includes(cari));
-  const dipotong = (br) => br.length > TAMPIL ? br.slice(0, TAMPIL).join("") + `<tr><td colspan="9" class="bc-cat">Menampilkan ${TAMPIL} pertama dari ${angka(br.length)}. Ketik di kolom cari untuk menyempit.</td></tr>` : br.join("");
+  /* saring dulu, potong, baru jadikan HTML: hanya TAMPIL baris yang dirender; total dari panjang hasil saringan */
+  const potong = (it, f) => it.slice(0, TAMPIL).map(f).join("") + (it.length > TAMPIL ? `<tr><td colspan="9" class="bc-cat">Menampilkan ${TAMPIL} pertama dari ${angka(it.length)}. Ketik di kolom cari untuk menyempit.</td></tr>` : "");
 
   async function isiLapis() {
     const L = aktif, el = kananEl();
@@ -65,18 +66,18 @@ export function pasang(ctx) {
       const ks = kabHingga("bahaya"), ada = sel.peringatan ? bahayaPeringatan(P.find((x) => x.id === sel.peringatan) || {}) : null;
       const br = kodeBahaya().filter((c) => (!ada || ada.has(c)) && cocok(NAMA[c], c)).map((c) => {
         const v = ks.map((k) => nilaiKode(k, c)).filter((x) => x != null);
-        return `<tr${sel.bahaya === c ? ' class="bc-on"' : ""}><th scope="row">${ikon(c)} ${pilih(L, c, NAMA[c] || c, sel.bahaya === c)}</th><td class="bc-n">${angka(v.length)}</td><td class="bc-n">${angka(v.filter((x) => x >= 2).length)}</td></tr>`;
+        return `<tr${sel.bahaya === c ? ' class="bc-on"' : ""}><th scope="row">${ikon(c)} ${pilih(L, c, NAMA[c] || c, sel.bahaya === c)}</th><td class="bc-n">${v.length ? angka(v.length) : BELUM}</td><td class="bc-n">${v.length ? angka(v.filter((x) => x >= 2).length) : BELUM}</td></tr>`;
       });
       h = tabel(["Bahaya", "Kab/kota berstatus", "Siaga atau Awas"], [br.join("") || '<tr><td colspan="3" class="bc-kosong">Tidak ada yang cocok.</td></tr>']);
     } else if (L === "prov") {
       const ks = kabHingga("prov"), g = new Map();
-      for (const k of ks) { const p = k.slice(0, 2), a = g.get(p) || [0, 0]; a[0]++; if ((statusKab(k) ?? -1) >= 2) a[1]++; g.set(p, a); }
-      const br = [...g].filter(([p]) => cocok(PROV[p])).sort((a, b) => (PROV[a[0]] || "").localeCompare(PROV[b[0]] || "", "id")).map(([p, [n, s]]) => `<tr${sel.prov === p ? ' class="bc-on"' : ""}><th scope="row">${pilih(L, p, PROV[p] || "Provinsi " + p, sel.prov === p)}</th><td class="bc-n">${angka(n)}</td><td class="bc-n">${angka(s)}</td></tr>`);
+      for (const k of ks) { const p = k.slice(0, 2), a = g.get(p) || [0, 0, 0], st = statusKab(k); a[0]++; if (st != null) a[2]++; if ((st ?? -1) >= 2) a[1]++; g.set(p, a); }
+      const br = [...g].filter(([p]) => cocok(PROV[p])).sort((a, b) => (PROV[a[0]] || "").localeCompare(PROV[b[0]] || "", "id")).map(([p, [n, s, u]]) => `<tr${sel.prov === p ? ' class="bc-on"' : ""}><th scope="row">${pilih(L, p, PROV[p] || "Provinsi " + p, sel.prov === p)}</th><td class="bc-n">${angka(n)}</td><td class="bc-n">${u ? angka(s) : BELUM}</td></tr>`);
       h = tabel(["Provinsi", "Kab/kota", "Siaga atau Awas"], [br.join("") || '<tr><td colspan="3" class="bc-kosong">Tidak ada yang cocok.</td></tr>']);
     } else if (L === "kab") {
-      const br = kabHingga("kab").filter((k) => cocok(kab[k].nama, PROV[k.slice(0, 2)])).sort((a, b) => (statusKab(b) ?? -1) - (statusKab(a) ?? -1) || kab[a].nama.localeCompare(kab[b].nama, "id"))
-        .map((k) => `<tr${sel.kab === k ? ' class="bc-on"' : ""}><th scope="row">${pilih(L, k, kab[k].nama, sel.kab === k)}</th><td>${esc(PROV[k.slice(0, 2)] || "")}</td><td>${pil(statusKab(k))}</td><td>${URUT6.filter((c) => kab[k].K?.[c] === "tinggi").map((c) => `<span class="bc-ik" title="${esc(NAMA[c])}: kelas kab tinggi">${ikon(c, 15)}</span>`).join("") || '<span class="bc-kosong">-</span>'}</td></tr>`);
-      h = br.length ? tabel(["Kab/kota", "Provinsi", "Status, ringkas 3 hari", "Kelas bahaya tinggi"], [dipotong(br)]) : '<p class="bc-kosong">Tidak ada kab/kota yang cocok dengan pilihan di atas.</p>';
+      const ks = kabHingga("kab").filter((k) => cocok(kab[k].nama, PROV[k.slice(0, 2)])), sk = new Map(ks.map((k) => [k, statusKab(k)])); // kunci urut dihitung sekali per kab
+      ks.sort((a, b) => (sk.get(b) ?? -1) - (sk.get(a) ?? -1) || kab[a].nama.localeCompare(kab[b].nama, "id"));
+      h = ks.length ? tabel(["Kab/kota", "Provinsi", "Status, ringkas 3 hari", "Kelas bahaya tinggi"], [potong(ks, (k) => `<tr${sel.kab === k ? ' class="bc-on"' : ""}><th scope="row">${pilih(L, k, kab[k].nama, sel.kab === k)}</th><td>${esc(PROV[k.slice(0, 2)] || "")}</td><td>${pil(sk.get(k))}</td><td>${URUT6.filter((c) => kab[k].K?.[c] === "tinggi").map((c) => `<span class="bc-ik" title="${esc(NAMA[c])}: kelas kab tinggi">${ikon(c, 15)}</span>`).join("") || '<span class="bc-kosong">-</span>'}</td></tr>`)]) : '<p class="bc-kosong">Tidak ada kab/kota yang cocok dengan pilihan di atas.</p>';
     } else {
       el.querySelector(".bc-daftar").innerHTML = '<p class="bc-info" role="status">Memuat daftar</p>';
       const r = await desaTersaring();
@@ -86,11 +87,11 @@ export function pasang(ctx) {
       else if (L === "kec") {
         const g = new Map();
         for (const d of r.out) { const id = d.k + "|" + d.kec, a = g.get(id) || { k: d.k, kec: d.kec, n: 0, t: 0 }; a.n++; if (d.b.includes("3")) a.t++; g.set(id, a); }
-        const br = [...g].filter(([, a]) => cocok(a.kec, kab[a.k]?.nama)).sort((a, b) => a[1].kec.localeCompare(b[1].kec, "id")).map(([id, a]) => `<tr${sel.kec === id ? ' class="bc-on"' : ""}><th scope="row">${pilih(L, id, a.kec, sel.kec === id)}</th><td>${esc(kab[a.k]?.nama || "")}</td><td class="bc-n">${angka(a.n)}</td><td class="bc-n">${angka(a.t)}</td></tr>`);
-        h = br.length ? tabel(["Kecamatan", "Kab/kota", "Desa", "Desa berkelas tinggi"], [dipotong(br)]) : '<p class="bc-kosong">Tidak ada kecamatan yang cocok.</p>';
+        const ga = [...g].filter(([, a]) => cocok(a.kec, kab[a.k]?.nama)).sort((a, b) => a[1].kec.localeCompare(b[1].kec, "id"));
+        h = ga.length ? tabel(["Kecamatan", "Kab/kota", "Desa", "Desa berkelas tinggi"], [potong(ga, ([id, a]) => `<tr${sel.kec === id ? ' class="bc-on"' : ""}><th scope="row">${pilih(L, id, a.kec, sel.kec === id)}</th><td>${esc(kab[a.k]?.nama || "")}</td><td class="bc-n">${angka(a.n)}</td><td class="bc-n">${angka(a.t)}</td></tr>`)]) : '<p class="bc-kosong">Tidak ada kecamatan yang cocok.</p>';
       } else {
-        const br = r.out.filter((d) => (!sel.kec || d.k + "|" + d.kec === sel.kec) && cocok(d.nama, d.kec)).map((d) => `<tr><th scope="row">${esc(d.nama)}</th><td>${esc(d.kec)}</td><td>${ikonTinggi(d.b)}</td><td>${pil(statusKab(d.k))}</td></tr>`);
-        h = br.length ? tabel(["Desa", "Kecamatan", "Bahaya kelas tinggi", "Status kab/kota induk"], [dipotong(br)]) + '<p class="bc-cat">Hanya kelas bahaya dan status kab/kota induk. Keterpaparan penduduk per desa tidak dibuka untuk publik.</p>' : '<p class="bc-kosong">Tidak ada desa yang cocok.</p>';
+        const dd = r.out.filter((d) => (!sel.kec || d.k + "|" + d.kec === sel.kec) && cocok(d.nama, d.kec));
+        h = dd.length ? tabel(["Desa", "Kecamatan", "Bahaya kelas tinggi", "Status kab/kota induk"], [potong(dd, (d) => `<tr><th scope="row">${esc(d.nama)}</th><td>${esc(d.kec)}</td><td>${ikonTinggi(d.b)}</td><td>${pil(statusKab(d.k))}</td></tr>`)]) + '<p class="bc-cat">Hanya kelas bahaya dan status kab/kota induk. Keterpaparan penduduk per desa tidak dibuka untuk publik.</p>' : '<p class="bc-kosong">Tidak ada desa yang cocok.</p>';
       }
     }
     el.querySelector(".bc-daftar").innerHTML = h;
@@ -132,7 +133,7 @@ export function pasang(ctx) {
     }
   });
   let tunda = 0;
-  panel.addEventListener("input", (e) => { if (!e.target.classList.contains("bc-cari")) return; cancelAnimationFrame(tunda); tunda = requestAnimationFrame(() => { cari = kecil(e.target.value.trim()); isiLapis(); }); });
+  panel.addEventListener("input", (e) => { if (!e.target.classList.contains("bc-cari")) return; const v = e.target.value; clearTimeout(tunda); tunda = setTimeout(() => { cari = kecil(v.trim()); nanti(isiLapis); }, 120); });
 
   bahan().then((b) => {
     B = b; DP = globalThis.DampakPeringatan;

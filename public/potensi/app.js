@@ -3,6 +3,7 @@
    ctx = { tab, panel, bawah, state, ubah(patch), petaBersama(), pasangPeta(fn), padPeta(), kotakIndonesia() }.
    Alamat: #status?b=bnj&h=ringkas&kab=3501 (tab, bahaya, hari, kab). INP: pil berubah sinkron, modul dan isi berat ditunda. */
 import { muatMapLibre } from "/inti/maplibre.js";
+import { nanti } from "/potensi/umum.js";
 
 const TAB = [
   { k: "status", n: "Status", peta: 1, ik: '<path d="M12 3 3 8v1h18V8zM5 11v6M10 11v6M14 11v6M19 11v6M3 20h18"/>' },
@@ -20,7 +21,6 @@ const STADIA = [0, 0.46, 0.86]; // lembar bawah: tertutup, setengah, tinggi
 const $ = (id) => document.getElementById(id);
 const hp = matchMedia("(max-width:768px)");
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-const nanti = (f) => requestAnimationFrame(() => setTimeout(f, 0));
 
 /* ---------- alamat ---------- */
 function baca() {

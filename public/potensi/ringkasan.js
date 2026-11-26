@@ -3,7 +3,8 @@
 import { esc, angka, tgl, NAMA, BELUM, chip, pakaiGaya, bahan } from "/potensi/analisis.js";
 
 const BAB = ["Keadaan hari ini", "Bahaya yang paling banyak naik", "Kab/kota yang perlu dipantau", "Iklim", "Yang belum terukur", "Cara halaman ini dibuat"];
-const fk = (nilai, jenis, tip) => `<span class="bc-fk"><b>${esc(nilai)}</b>${chip(jenis, tip)}</span>`; // satu angka beserta chip faktanya
+/* satu angka beserta chip faktanya; hitungan dari status model membawa Dihitung dan Hipotesis */
+const fk = (nilai, jenis, tip) => `<span class="bc-fk"><b>${esc(nilai)}</b>${jenis === "hitung-model" ? chip("hitung", tip) + chip("hipotesis", "Status dari model Centurisk97 yang belum lolos uji balik") : chip(jenis, tip)}</span>`;
 const kab = (n) => `${angka(n)} kab/kota`;
 
 export function pasang(ctx) {
@@ -20,8 +21,8 @@ export function pasang(ctx) {
     /* 1. keadaan hari ini */
     if (st?.kab && DP) {
       const r0 = DP.ringkas(st, 0, kodes), r3 = DP.ringkas(st, "ringkas", kodes);
-      const baris = (r) => [["Awas", r.awas], ["Siaga", r.siaga], ["Waspada", r.waspada], ["Normal", r.normal]].map(([n, v]) => `${fk(kab(v), "hitung", "Dihitung dari status tiap kab/kota")} berstatus ${n}`).join(", ");
-      bab.push(`<p>Pada ${esc(tgl(st.dibuat) || "tanggal yang tidak tercatat")}, hari ini: ${baris(r0)}, dan ${fk(kab(r0.belum), "belum", "Sumber belum masuk atau basi")} belum bisa dinilai.</p>
+      const baris = (r) => [["Awas", r.awas], ["Siaga", r.siaga], ["Waspada", r.waspada], ["Normal", r.normal]].map(([n, v]) => `${fk(kab(v), "hitung-model", "Dihitung dari status tiap kab/kota")} berstatus ${n}`).join(", ");
+      bab.push(`<p>Pada ${esc(tgl(st.dibuat) || "tanggal yang tidak tercatat")}${(st.dibuat || "").slice(0, 10) === new Date(Date.now() + 252e5).toISOString().slice(0, 10) ? ", hari ini" : ""}: ${baris(r0)}, dan ${fk(kab(r0.belum), "belum", "Sumber belum masuk atau basi")} belum bisa dinilai.</p>
 <p>Jika empat hari ke depan digabung dan diambil yang tertinggi: ${baris(r3)}, dan ${fk(kab(r3.belum), "belum")} belum bisa dinilai.</p>
 <p class="bc-cat">${chip("hipotesis", "Status dari model Centurisk97 yang belum lolos uji balik")} Status prakiraan masih hipotesis. Status Normal berarti tidak ada pemicu di atas ambang dalam tiga hari menurut prakiraan dan BMKG, bukan jaminan keselamatan.</p>`);
     } else bab.push(`<p>${BELUM}. Status prakiraan belum bisa dibaca.</p><p>${chip("belum")}</p>`);
@@ -29,20 +30,20 @@ export function pasang(ctx) {
     /* 2. bahaya yang paling banyak naik: kab/kota yang status hari ke-3 lebih tinggi dari hari ini */
     if (st?.kab && DP) {
       const naik = kodes.map((c) => [c, Object.keys(st.kab).filter((k) => { const a = sh(k, c, 0), b = sh(k, c, 3); return a != null && b != null && b > a; }).length]).filter((x) => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 3);
-      bab.push(naik.length ? `<p>Status hari ke-3 lebih tinggi daripada hari ini di paling banyak kab/kota untuk: ${naik.map(([c, n]) => `${esc(NAMA[c].toLowerCase())} ${fk(kab(n), "hitung", "Dihitung: status hari ke-3 dibanding hari ini")}`).join(", ")}.</p><p class="bc-cat">Status dibandingkan hanya bila kedua hari terukur.</p>`
-        : `<p>Tidak ada kab/kota yang statusnya hari ke-3 lebih tinggi daripada hari ini, di antara yang terukur ${chip("hitung", "Dihitung: status hari ke-3 dibanding hari ini")}.</p>`);
+      bab.push(naik.length ? `<p>Status hari ke-3 lebih tinggi daripada hari ini di paling banyak kab/kota untuk: ${naik.map(([c, n]) => `${esc(NAMA[c].toLowerCase())} ${fk(kab(n), "hitung-model", "Dihitung: status hari ke-3 dibanding hari ini")}`).join(", ")}.</p><p class="bc-cat">Status dibandingkan hanya bila kedua hari terukur.</p>`
+        : `<p>Tidak ada kab/kota yang statusnya hari ke-3 lebih tinggi daripada hari ini, di antara yang terukur ${chip("hitung", "Dihitung: status hari ke-3 dibanding hari ini")} ${chip("hipotesis")}.</p>`);
     } else bab.push(`<p>${BELUM}. Perbandingan hari belum bisa dihitung.</p><p>${chip("belum")}</p>`);
 
     /* 3. kab yang perlu dipantau: status ringkas tertinggi, seri diputus jumlah bahaya berkelas kab tinggi */
     if (st?.kab && DP) {
       const L = Object.keys(st.kab).map((k) => { const v = kodes.map((c) => [c, sh(k, c, "ringkas")]).filter((x) => x[1] != null); const m = v.length ? Math.max(...v.map((x) => x[1])) : null; return { k, m, c: v.filter((x) => x[1] === m).map((x) => x[0]), t: kodes.filter((c) => kelas?.kab?.[k]?.K?.[c] === "tinggi").length }; })
         .filter((x) => x.m >= 2).sort((a, b) => b.m - a.m || b.t - a.t || nm(a.k).localeCompare(nm(b.k), "id"));
-      bab.push(L.length ? `<p>${fk(kab(L.length), "hitung", "Status Siaga atau Awas pada ringkas 3 hari")} berstatus Siaga atau Awas dalam empat hari ke depan. Delapan teratas:</p><ul class="bc-ul">${L.slice(0, 8).map((x) => `<li>${esc(nm(x.k))}: <span class="bc-st bc-st${x.m}">${DP.TINGKAT[x.m]}</span> untuk ${esc(x.c.map((c) => NAMA[c].toLowerCase()).join(", "))}</li>`).join("")}</ul>` : `<p>Tidak ada kab/kota berstatus Siaga atau Awas dalam empat hari ke depan, di antara yang terukur ${chip("hitung")}.</p>`);
+      bab.push(L.length ? `<p>${fk(kab(L.length), "hitung-model", "Status Siaga atau Awas pada ringkas 3 hari")} berstatus Siaga atau Awas dalam empat hari ke depan. Delapan teratas:</p><ul class="bc-ul">${L.slice(0, 8).map((x) => `<li>${esc(nm(x.k))}: <span class="bc-st bc-st${x.m}">${DP.TINGKAT[x.m]}</span> untuk ${esc(x.c.map((c) => NAMA[c].toLowerCase()).join(", "))}</li>`).join("")}</ul>` : `<p>Tidak ada kab/kota berstatus Siaga atau Awas dalam empat hari ke depan, di antara yang terukur ${chip("hitung")} ${chip("hipotesis")}.</p>`);
     } else bab.push(`<p>${BELUM}. Daftar kab/kota belum bisa disusun.</p><p>${chip("belum")}</p>`);
 
     /* 4. iklim */
     const on = ik?.oni_status, io = ik?.iod, p4 = [];
-    if (on && Number.isFinite(on.nilai)) p4.push(`<p>Indeks ONI musim ${esc(on.musim)} ${esc(on.tahun)} bernilai ${fk(angka(on.nilai, 2), on.basi ? "belum" : "sumber", "NOAA CPC")}, data berumur ${angka(on.umur_hari)} hari${on.basi ? ", sudah basi" : ""}.${ik.cpc_status ? ` Status resmi NOAA CPC: ${esc(ik.cpc_status)}.` : ""}</p>`);
+    if (on && Number.isFinite(on.nilai)) p4.push(`<p>Indeks ONI musim ${esc(on.musim)} ${esc(on.tahun)} bernilai ${fk(angka(on.nilai, 2), on.basi ? "belum" : "sumber", "NOAA CPC")}, ${on.umur_hari != null ? `data berumur ${angka(on.umur_hari)} hari` : "umur data tidak tercatat"}${on.basi ? ", sudah basi" : ""}.${ik.cpc_status ? ` Status resmi NOAA CPC: ${esc(ik.cpc_status)}.` : ""}</p>`);
     else p4.push(`<p>ONI: ${BELUM} ${chip("belum")}</p>`);
     if (io && Number.isFinite(io.nilai)) p4.push(`<p>Indeks IOD bernilai ${fk(angka(io.nilai, 2), io.basi ? "belum" : "sumber", io.sumber || "")} (${esc(io.sumber || "sumber tak tercatat")}, ${esc(tgl(io.tgl_data) || "tanggal tak tercatat")})${io.basi ? ", sudah basi" : ""}.</p>`);
     else p4.push(`<p>IOD: ${BELUM} ${chip("belum")}</p>`);
@@ -67,7 +68,7 @@ export function pasang(ctx) {
     }
     if (ik?.oni_status?.basi) bl.push("Indeks ONI sudah basi.");
     if (ik?.iod?.basi) bl.push("Indeks IOD sudah basi.");
-    bab.push(bl.length ? `<ul class="bc-ul">${bl.map((x) => `<li>${esc(x)} ${chip("belum")}</li>`).join("")}</ul><p class="bc-cat">Belum terukur tidak berarti nol atau aman; artinya datanya tidak ada.</p>` : "<p>Semua sumber yang dibutuhkan halaman ini terbaca dan segar pada saat data dibangun.</p>");
+    bab.push(bl.length ? `<ul class="bc-ul">${bl.map((x) => `<li>${esc(x)} ${chip("belum")}</li>`).join("")}</ul><p class="bc-cat">Belum terukur tidak berarti nol dan bukan jaminan keselamatan; artinya datanya tidak ada.</p>` : "<p>Semua sumber yang dibutuhkan halaman ini terbaca dan segar pada saat data dibangun.</p>");
 
     /* 6. cara dibuat (kalimat tetap) */
     bab.push(`<p>Halaman ini ditulis mesin dari data hari itu. Kalimatnya templat tetap; hanya angkanya yang berganti. Setiap angka diberi satu dari empat chip: ${chip("sumber")} sumber publik menyebutnya, ${chip("hitung")} dihitung dari fakta lain, ${chip("hipotesis")} model kita yang belum lolos uji balik, ${chip("belum")} datanya tidak ada.</p>

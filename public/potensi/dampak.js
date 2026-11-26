@@ -4,8 +4,8 @@
    Kosong: "Tidak ada peringatan BMKG yang aktif saat ini", tidak pernah "aman". Teks data lewat textContent. ctx: lihat app.js. */
 import { warnaToken } from "/inti/maplibre.js";
 export const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-export const nanti = (f) => requestAnimationFrame(() => setTimeout(f, 0));
-export const ambil = (u) => fetch(u, { credentials: "same-origin" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+import { nanti, ambil, bbox } from "/potensi/umum.js";
+export { nanti, ambil, bbox };
 export const BELUM = "belum terukur";
 const tunda = () => (globalThis.scheduler?.yield ? scheduler.yield() : new Promise((r) => setTimeout(r, 0)));
 const pasangSkrip = (src, kunci) => (globalThis[kunci] ? Promise.resolve() : new Promise((ok, gagal) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = gagal; document.head.append(s); }));
@@ -16,11 +16,6 @@ export function muatCss() {
 }
 export const kartu = (ey, judul, isi) => `<section class="ex ex-std p2-kartu"><header class="ex-hd"><span class="ex-ey">${esc(ey)}</span><div class="ex-jd"><h3>${esc(judul)}</h3></div></header><div class="ex-bd">${isi}</div></section>`;
 export const chip = (DP, j, t) => { const c = DP.chipFakta(j); return `<span class="p2-chip ${c.kelas}"${t ? ` title="${esc(t)}"` : ""}>${c.label}</span>`; };
-export function bbox(koor) {
-  let a = 180, b = 90, c = -180, d = -90;
-  (function jalan(x) { if (typeof x[0] === "number") { a = Math.min(a, x[0]); c = Math.max(c, x[0]); b = Math.min(b, x[1]); d = Math.max(d, x[1]); } else for (const y of x) jalan(y); })(koor);
-  return [[a, b], [c, d]];
-}
 const waktu = (iso) => { const t = new Date(iso); return Number.isNaN(+t) ? BELUM : t.toLocaleString("id-ID", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }) + " WIB"; };
 
 export function pasang(ctx) {
