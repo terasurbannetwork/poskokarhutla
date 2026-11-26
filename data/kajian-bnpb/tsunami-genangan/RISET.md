@@ -219,3 +219,9 @@ Kelas ditentukan dari sifat sumber dan ketersediaan data, tidak dari hasil hitun
 ## 8. Yang tidak diriset di sini
 
 Peringatan dini dan keputusan evakuasi (milik BMKG); waktu berjalan dan titik evakuasi (sudah di tab Evakuasi, `public/gempa`); model kerugian ekonomi; sumber tsunami dari gunung api. Semuanya di luar lingkup (PRD).
+
+## Medan TS-06 (26 Nov 2026)
+
+DEMNAS tidak tersedia; dipakai GLO-30 (AWS `copernicus-dem-30m`, COG deflate prediktor 3, 3600x3600 per ubin, sampel di lon0 + c/3600) dan GEBCO_2020 15 detik (ERDDAP NOAA, NetCDF3, `node_offset` 1). Readme AWS: ubin laut tidak dirilis (anggap 0), jadi ubin S07_E104 yang tak ada dibaca laut. Pembaca TIFF dan NetCDF3 ditulis sendiri (tanpa GDAL) di `tsunami_medan.py`; numpy dari venv lab.
+Temuan: GLO-30 darat lawan GEBCO darat berbeda di sel yang GLO-30-nya air tetapi GEBCO kasar >= 0: ujung_kulon 4,5% kotak, pangandaran 1,0%, banyuwangi 1,5%. Ujung Kulon paling besar (rawa, muara, pulau kecil); sebab per sel belum dipilah. Kantong air terisolasi tanpa tetangga laut (79, 1249, 23 sel) diisi -0,1 m. Titik run-up NCEI jatuh di pantai kisi (jendela +-1,5 km punya darat dan laut) pada 139/139, 125/125, 29/30.
+Lisensi GLO-30: registri AWS menunjuk Licence ESA di dataspace.copernicus.eu (halaman dinamis, teks penuh belum terbaca); atribusi memakai teks dari pemilik. GEBCO: atribut license ERDDAP (bebas pakai, tanpa jaminan, bukan untuk navigasi) dan sitasi doi 10.5285/a29c5465-b138-234d-e053-6c86abc040b9.
