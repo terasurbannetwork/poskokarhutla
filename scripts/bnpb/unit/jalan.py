@@ -27,6 +27,12 @@ LANGKAH = [
     ("MT-2", "mt2", "bulanan"),     # RU-061 unit/mitigasi_prioritas.json
     ("PUS-1", "pus1", "harian"),    # RU-044 unit/satu_data.json (jaringan: data.bnpb.go.id lewat panen.py)
     ("MB-3", "jdih_daerah", "mingguan"),  # RU-026 unit/jdih_daerah.json (jaringan: situs JDIH provinsi lewat panen.py)
+    ("HUK-1", "huk1", "harian"),    # RU-037 unit/status_peraturan.json (dari public/data/bnpb/hukum/katalog.json)
+    ("REN-1", "ren1", "harian"),    # RU-048 unit/rb.json (dari pustaka/5-lakip.md)
+    ("REN-3", "ren3", "bulanan"),    # RU-049 unit/kalender_monev.json (dari Jam Aturan)
+    ("JF-1", "jf1", "harian"),    # RU-050 unit/kompetensi.json (dari data/hukum/seed.sql perban-5-2024)
+    ("KS-4", "ks4", "bulanan"),    # RU-053 unit/kalender_gladi.json (dari siaga.json, risiko_hvc.json, dibi_kab_tahun.json)
+    ("RRS-3", "rrs3", "harian"),    # RU-055 unit/fasilitas_sosial.json (OSM x jejak banjir aktif; gempa menunggu jejak MMI)
 ]
 
 BASI_JAM = {"harian": 48, "mingguan": 240, "bulanan": 1080}  # DT sec 9.4

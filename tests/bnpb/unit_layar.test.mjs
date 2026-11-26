@@ -171,3 +171,48 @@ test("cangkang: urutan muat DS 3, tanpa skrip dan gaya inline, tanpa titik tenga
     assert.doesNotMatch(t, /text-transform:\s*uppercase/i, f);
   }
 });
+
+/* RU-037 tautan lokal dan Unduh CSV; RU-038 KPOD-2 kartu Jam Aturan dari public/inti/jam_aturan.json (jam.js + rapor.js asli) */
+vm.runInContext(baca("public/bnpb/unit/jam.js"), ctx);
+const JAM = JSON.parse(baca("public/inti/jam_aturan.json"));
+
+test("KPOD-2: satu baris per kunci, jumlah tenggat berpasal dan asumsi dari berkas, asumsi berpil, acuan bertaut ke /bnpb/hukum", () => {
+  const k = ctx.window.UnitJam.bangun(JAM), h = R.html(k, null);
+  assert.equal(k.baris.length, JAM.length);
+  const n = o => k.angka.find(a => a.k === o).nilai;
+  assert.equal(n("asumsi"), JAM.filter(e => e.asumsi).length);
+  assert.equal(n("tenggat"), JAM.filter(e => e.jenis === "tenggat" && !e.asumsi).length);
+  assert.ok(n("asumsi") > 0 && n("tenggat") > 0, "berkas Jam Aturan nyata punya keduanya");
+  assert.match(kepala(h), /un-asumsi[^>]*>[\s\S]*?Asumsi: kunci tanpa pasal/, "pil Asumsi di kepala");
+  const r3p = k.baris.find(b => b.kunci === "r3p"), masa = k.baris.find(b => b.kunci === "masa_status_kab");
+  assert.equal(r3p.nilai, "90 hari"); assert.equal(r3p.status, "Berpasal"); assert.equal(masa.status, "Asumsi"); assert.equal(masa.acuan, null);
+  assert.equal(k.baris.find(b => b.kunci === "std_beras_kg").nilai, "0,4 kg per orang per hari");
+  assert.equal(k.baris.find(b => b.kunci === "dsp_laporan_perkembangan").nilai, "tanggal 5 bulan berikutnya");
+  assert.match(h, /<a href="\/bnpb\/hukum#d=perban-5-2017">perban-5-2017, Pasal 2 ayat \(2\) dan \(3\)<\/a>/);
+  assert.equal((h.match(/<tr>/g) || []).length, JAM.length + 1);
+  assert.doesNotMatch(h, /·|\baman\b/i);
+});
+
+test("tautan kartu dan sel hanya jalur situs sendiri; Unduh CSV dari baris mentah, kosong tetap kosong, rumus spreadsheet dinetralkan", () => {
+  const k = {...salin(B.kartu[0]), tautan: [["/bnpb/hukum", "Buka pustaka hukum"], ["https://jahat.id", "x"], ["//jahat.id", "y"]], unduh: "uji.csv"};
+  k.kolom = [{k: "a", label: "Peraturan", tautan: "a_url"}, {k: "n", label: "Jumlah", angka: true}];
+  k.baris = [{a: "Perka 1/2012", a_url: "/bnpb/hukum#d=perka-1-2012", n: 1234.5}, {a: "=HYPERLINK(\"x\")", a_url: "javascript:alert(1)", n: null},
+    {a: "SD 1;=cmd|' /C calc'!A0;+1", n: 2}];
+  const h = R.html(k, B, SEGAR), kp = kepala(h);
+  assert.match(kp, /<a class="ad-tombol kecil" href="\/bnpb\/hukum">/);
+  assert.doesNotMatch(h, /jahat\.id|javascript:/, "jalur luar dibuang");
+  assert.match(kp, /data-unduh="[^"]+"[^>]*>[^]*Unduh CSV/);
+  assert.match(h, /<a href="\/bnpb\/hukum#d=perka-1-2012">Perka 1\/2012<\/a>/);
+  const c = R.csv(k).replace(/^﻿/, "").split("\r\n");
+  assert.deepEqual(c.slice(0, 4), [`"Peraturan","Jumlah"`, `"Perka 1/2012","1234.5"`, `"'=HYPERLINK(""x"")",""`, `"SD 1;'=cmd|' /C calc'!A0;'+1","2"`]);
+  assert.match(R.html(k, B, SEGAR), /data-unduh=/);
+  const tanpa = R.html({...k, unduh: undefined, tautan: undefined}, B, SEGAR);
+  assert.doesNotMatch(kepala(tanpa), /un-aksi/);
+});
+
+test("JF-1: jf1.js mendaftarkan tampilan bentuk G tanpa menyentuh DOM saat dimuat", () => {
+  vm.runInContext(baca("public/bnpb/unit/jf1.js"), ctx);
+  assert.equal(typeof ctx.window.UnitTampil?.["JF-1"], "function");
+  assert.equal(KAT.SISTEM.find(s => s.id === "JF-1").skrip, "scripts/bnpb/unit/jf1.py");
+  assert.equal(KAT.SISTEM.find(s => s.id === "KPOD-2").publik, "/inti/jam_aturan.json");
+});

@@ -4,7 +4,14 @@
   "PLP-1": "plp1.py --cek",
   "PERB-1": "perb1.py --cek; tests/bnpb/unit_perb1.test.mjs",
   "MT-2": "mt2.py --cek",
-  "PUS-1": "pus1.py --cek"
+  "PUS-1": "pus1.py --cek",
+  "HUK-1": "huk1.py --cek",
+  "REN-1": "ren1.py --cek",
+  "REN-3": "ren3.py --cek; tests/bnpb/unit_ren3.test.mjs",
+  "JF-1": "jf1.py --cek; tests/bnpb/unit_layar.test.mjs",
+  "KPOD-2": "tests/bnpb/unit_layar.test.mjs; tests/agen/gerbang-jam-aturan.test.mjs",
+  "KS-4": "ks4.py --cek",
+  "RRS-3": "rrs3.py --cek"
  },
  "dikecualikan": {},
  "antre": [
@@ -18,11 +25,9 @@
   "PD-3",
   "KS-1",
   "KS-3",
-  "KS-4",
   "MT-1",
   "MT-3",
   "KPOD-1",
-  "KPOD-2",
   "KPOD-3",
   "WIL-1",
   "WIL-2",
@@ -37,19 +42,14 @@
   "RRP-3",
   "RRI-1",
   "RRS-1",
-  "RRS-3",
-  "REN-1",
   "REN-2",
-  "REN-3",
   "KEU-1",
   "SDU-1",
-  "HUK-1",
   "HUK-2",
   "IRT-1",
   "DIK-1",
   "DIK-4",
-  "JF-1",
   "JF-2"
  ],
- "antre_maks": 42
+ "antre_maks": 35
 }

@@ -1,7 +1,8 @@
 "use strict";
 /* Katalog Ruang Unit: satu-satunya daftar sistem di sisi layar (DESAIN-TEKNIS 2.1; tiket RU-020).
    KELOMPOK dan UNIT mengikuti KEPUTUSAN-AWAL 1 (urutan sama, kode = KODE_UNIT src/unit.js); SISTEM = 70 ID KEPUTUSAN-AWAL 5.1.
-   Baris SISTEM: [id, unit, fase, nama, pendek (label tab), berkas R2 unit/<berkas>.json atau null, bentuk tampilan DS 7.3-7.10, mesin, skrip di repo atau null].
+   Baris SISTEM: [id, unit, fase, nama, pendek (label tab), berkas R2 unit/<berkas>.json atau null, bentuk tampilan DS 7.3-7.10, mesin, skrip di repo atau null,
+   lokal, publik]. publik = jalur JSON publik yang dibaca langsung tanpa R2 (KPOD-2 Jam Aturan, DT 5.5): selalu tayang.
    Status tayang TIDAK ditulis di sini: dihitung layar dari GET /api/unit/indeks (berkas sudah diunggah). Skrip hanya diisi bila berkasnya ada
    (dijaga tests/bnpb/unit_layar.test.mjs). lokal = dijalankan di mesin pemilik (U9, DS 8.6). */
 (() => {
@@ -64,13 +65,13 @@
     ["KS-1", "ks", "F2", "Pemantau dokumen kesiapsiagaan daerah (RPKB, renkon, rencana aksi)", "Dokumen siaga", "dokumen_siaga", "C", "MB-3", null],
     ["KS-2", "ks", "F3", "Registri dan sasaran Destana sesuai Perban 7/2025", "Registri Destana", null, null, null, null],
     ["KS-3", "ks", "F2", "Kesenjangan lokasi evakuasi", "Lokasi evakuasi", "evakuasi", "A", null, null],
-    ["KS-4", "ks", "F1", "Kalender gladi pra-musim", "Gladi pra-musim", "kalender_gladi", "C", "MB-2", null],
+    ["KS-4", "ks", "F1", "Kalender gladi pra-musim", "Gladi pra-musim", "kalender_gladi", "C", "MB-2", S + "ks4.py"],
     ["MT-1", "mt", "F2*", "Penyusun dan pra-telaah usulan Dana Bersama prabencana", "Dana Bersama", "dana_bersama_katalog", "G", null, null],
     ["MT-2", "mt", "F2", "Daftar daerah prioritas mitigasi dan paket kegiatan yang cocok", "Prioritas mitigasi", "mitigasi_prioritas", "A", "MB-4", S + "mt2.py"],
     ["MT-3", "mt", "F2", "Kalender kampanye dan sasaran edukasi per kab", "Kampanye musiman", "kampanye", "C", "MB-2", null],
     ["MT-4", "mt", "F3", "Registri rambu dan papan informasi", "Registri rambu", null, null, null, null],
     ["KPOD-1", "kpod", "F2", "Rapor intervensi status darurat (IKU Program 3) dari data", "Intervensi status", "rapor_darurat", "D", "MB-6", null],
-    ["KPOD-2", "kpod", "F1", "Jam Aturan (berkas tenggat juklak untuk semua meja)", "Jam Aturan", null, "C", "MB-2", "public/inti/jam_aturan.json"],
+    ["KPOD-2", "kpod", "F1", "Jam Aturan (berkas tenggat juklak untuk semua meja)", "Jam Aturan", null, "C", "MB-2", "public/inti/jam_aturan.json", false, "/inti/jam_aturan.json"],
     ["KPOD-3", "kpod", "F1", "Laporan harian terurai otomatis dari PDF di WA", "Laphar terurai", "usulan_laphar", "E", "MB-7", null],
     ["WIL-1", "wil", "F2", "Meja Wilayah: siapa yang harus diurus hari ini, per direktorat", "Meja Wilayah", "meja_wilayah", "khusus", "MB-2", null],
     ["WIL-2", "wil", "F2*", "Pengungsi per tempat pengungsian, kebutuhan dasar terhitung, selisih pusat-daerah", "Pengungsian", "pengungsian", "khusus", "MB-5, MB-7", null],
@@ -92,16 +93,16 @@
     ["RRI-3", "rri", "F3", "Aset hasil hibah di atas peta bahaya", "Aset hibah", null, null, null, null],
     ["RRS-1", "rrs", "F2", "Taksiran cepat kerugian pertanian per kab", "Kerugian pertanian", "rugi_tani", "A", "MB-5", null],
     ["RRS-2", "rrs", "F3", "Kurva pulih ekonomi dari lampu malam (lab)", "Kurva pulih", null, null, null, null],
-    ["RRS-3", "rrs", "F1", "Daftar fasilitas sosial rusak untuk bab sosial R3P", "Fasilitas sosial", "fasilitas_sosial", "khusus", null, null],
-    ["REN-1", "ren", "F1", "Rapor Reformasi Birokrasi: di mana poin hilang", "Rapor RB", "rb", "D", "MB-6", null],
+    ["RRS-3", "rrs", "F1", "Daftar fasilitas sosial rusak untuk bab sosial R3P", "Fasilitas sosial", "fasilitas_sosial", "khusus", null, S + "rrs3.py"],
+    ["REN-1", "ren", "F1", "Rapor Reformasi Birokrasi: di mana poin hilang", "Rapor RB", "rb", "D", "MB-6", S + "ren1.py"],
     ["REN-2", "ren", "F2", "Peta belanja lawan peta risiko dari SIRUP", "Belanja lawan risiko", "belanja_risiko", "A", "MB-8", null],
-    ["REN-3", "ren", "F1", "Kalender monev dan tenggat pelaporan", "Kalender monev", "kalender_monev", "C", "MB-2", null],
+    ["REN-3", "ren", "F1", "Kalender monev dan tenggat pelaporan", "Kalender monev", "kalender_monev", "C", "MB-2", S + "ren3.py"],
     ["KEU-1", "keu", "F1", "Penguji konsistensi angka LAKIP dan LK", "Konsistensi angka", null, "D", "MB-6", null, true],
     ["KEU-2", "keu", "F3", "Pantau deviasi rencana penarikan dana per unit", "Deviasi penarikan", null, null, null, null],
     ["SDU-1", "sdu", "F2", "Rapor tata kelola pengadaan dari SIRUP dan SPSE", "Tata kelola pengadaan", "pengadaan", "D", "MB-6, MB-8", null],
     ["SDU-2", "sdu", "F3", "Rekap kehadiran tugas lapangan untuk pelengkap tukin", "Rekap kehadiran", null, null, null, null],
     ["SDU-3", "sdu", "F3", "BMN lawan bahaya", "BMN lawan bahaya", null, null, null, null],
-    ["HUK-1", "huk", "F1", "Pemeriksa status peraturan", "Status peraturan", "status_peraturan", "F", "MB-1", null],
+    ["HUK-1", "huk", "F1", "Pemeriksa status peraturan", "Status peraturan", "status_peraturan", "F", "MB-1", S + "huk1.py"],
     ["HUK-2", "huk", "F2", "Pelacak amanat pengaturan turunan dan bahan Indeks Reformasi Hukum", "Amanat turunan", "amanat", "F", "MB-1", null],
     ["HUK-3", "huk", "T", "Register kerja sama", "Kerja sama", null, null, null, null],
     ["IRT-1", "irt", "F2", "Papan umur rekomendasi TLHP per unit", "Umur TLHP", null, "D", "MB-6", null, true],
@@ -111,10 +112,10 @@
     ["DIK-2", "dik", "F3", "STTP elektronik terverifikasi dan registri alumni", "STTP elektronik", null, null, null, null],
     ["DIK-3", "dik", "F3", "Survei retensi dan kemanfaatan lewat WA", "Survei retensi", null, null, null, null],
     ["DIK-4", "dik", "F2", "Bank tenaga pengajar dari direktori pakar", "Bank pengajar", "pengajar", "G", null, null],
-    ["JF-1", "jf", "F1", "Kamus kompetensi PB.01-PB.58 terstruktur dan jalur pengembangan", "Kamus kompetensi", "kompetensi", "G", null, null],
+    ["JF-1", "jf", "F1", "Kamus kompetensi PB.01-PB.58 terstruktur dan jalur pengembangan", "Kamus kompetensi", "kompetensi", "G", null, S + "jf1.py"],
     ["JF-2", "jf", "F2", "Hitung kebutuhan formasi JF per instansi", "Formasi JF", "formasi_jf", "A", null, null],
     ["JF-3", "jf", "F3", "Registri pejabat JF dan pemantau kepatuhan", "Registri pejabat JF", null, null, null, null],
-  ].map(([id, unit, fase, nama, pendek, berkas, bentuk, mesin, skrip, lokal]) => ({id, unit, fase, nama, pendek, berkas, bentuk, mesin, skrip, lokal: !!lokal}));
+  ].map(([id, unit, fase, nama, pendek, berkas, bentuk, mesin, skrip, lokal, publik]) => ({id, unit, fase, nama, pendek, berkas, bentuk, mesin, skrip, lokal: !!lokal, publik: publik || null}));
   const unit = Object.fromEntries(Object.entries(UNIT).map(([kode, [nama, singkat, tautan]]) =>
     [kode, {kode, nama, singkat, tautan: tautan || [], kelompok: KELOMPOK.find(g => g.unit.includes(kode))}]));
   window.UnitKatalog = {KELOMPOK, UNIT: unit, SISTEM,

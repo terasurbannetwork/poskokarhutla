@@ -8,8 +8,10 @@ Selisih dengan DT sec 4.6, mengikuti AGENTS.md sec 3.5 pembaruan 11 Nov 2026 (me
 kepala kartu = NAMA SEKSI berikon, bukan kalimat temuan. `judul` tidak memuat {n};
 angka temuan masuk `angka` = [{k, label, nilai}] dan tampil di baris ringkas isi kartu.
 
-  kartu(id, pil, judul, angka, kolom, baris, rumus, sumber, label, sistem=None, ikon="data", aturan=())
-                          angka dan kolom angka boleh membawa desimal (0-6) untuk tampilan
+  kartu(id, pil, judul, angka, kolom, baris, rumus, sumber, label, sistem=None, ikon="data", aturan=(), asumsi=(), tautan=(), unduh=None)
+                          angka dan kolom angka boleh membawa desimal (0-6) untuk tampilan;
+                          kolom teks boleh membawa tautan=<kunci baris> berisi jalur lokal (/bnpb/...);
+                          tautan = [[jalur lokal, teks]] di kanan judul; unduh = nama berkas .csv (rapor.js membangun CSV dari baris)
   berkas(kartu, sumber)   -> {label, sumber, kartu}; sumber = [{nama, url, diambil, lisensi}] (MB-8)
   rata(nilai)             -> rata-rata tanpa None; None bila semua kosong (kosong tidak ikut rata-rata)
   periksa_berkas(d)       -> d; menolak berkas R2 yang skemanya salah
@@ -31,6 +33,8 @@ IKON = ("data", "gudang", "rumah", "timbang", "toga", "kaca", "kalender", "resmi
 BASI = (48, 240, 1080, None)
 ID = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 KUNCI = re.compile(r"^[a-z][a-z0-9_]*$")
+JALUR = re.compile(r"^/(?!/)[A-Za-z0-9/_.\-]*(#[A-Za-z0-9=&%_.\-]*)?$")  # hanya jalur situs sendiri, tanpa skema dan tanpa //
+UNDUH = re.compile(r"^[a-z0-9_\-]{1,60}\.csv$")
 TERLARANG = (re.compile("\u00b7"), re.compile(r"\baman\b", re.I))  # tanpa titik tengah; tidak pernah "aman"
 AKAR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 CONTOH = os.path.join(AKAR, "tests", "bnpb", "fixtures", "unit", "r2", "contoh.json")
@@ -84,7 +88,13 @@ def _pasal(kunci):
             "kutipan": e.get("kutipan"), "asumsi": bool(e.get("asumsi"))}
 
 
-def kartu(id, pil, judul, angka, kolom, baris, rumus, sumber, label, sistem=None, ikon="data", aturan=(), asumsi=()):
+def _jalur(x, nama):
+    if not isinstance(x, str) or not JALUR.fullmatch(x):
+        raise ValueError(f"{nama}: {x!r} bukan jalur lokal /...")
+    return x
+
+
+def kartu(id, pil, judul, angka, kolom, baris, rumus, sumber, label, sistem=None, ikon="data", aturan=(), asumsi=(), tautan=(), unduh=None):
     """asumsi: teks pil Asumsi tanpa kunci Jam Aturan (konstanta skrip berlabel, ALGORITMA 0.1 butir 3; belum lulus uji balik 0.9)."""
     asumsi = [_teks(t, "asumsi", maks=60) for t in asumsi]
     if any(not t.startswith("Asumsi: ") for t in asumsi):
@@ -112,29 +122,42 @@ def kartu(id, pil, judul, angka, kolom, baris, rumus, sumber, label, sistem=None
         raise ValueError("kunci angka kembar")
     ko, kunci_angka = [], set()
     for i, c in enumerate(kolom or []):
-        if not isinstance(c, dict) or set(c) - {"k", "label", "title", "angka", "desimal"} or not KUNCI.match(str(c.get("k", ""))):
-            raise ValueError(f"kolom[{i}] harus {{k, label, title?, angka?, desimal?}}: {c!r}")
+        if not isinstance(c, dict) or set(c) - {"k", "label", "title", "angka", "desimal", "tautan"} or not KUNCI.match(str(c.get("k", ""))):
+            raise ValueError(f"kolom[{i}] harus {{k, label, title?, angka?, desimal?, tautan?}}: {c!r}")
         if "desimal" in c and not c.get("angka"):
             raise ValueError(f"kolom {c['k']}: desimal hanya untuk kolom angka")
+        if "tautan" in c and (c.get("angka") or not KUNCI.match(str(c["tautan"]))):
+            raise ValueError(f"kolom {c['k']}: tautan = kunci baris berisi jalur, hanya untuk kolom teks")
         ko.append({"k": c["k"], "label": _teks(c.get("label"), f"kolom {c['k']}", maks=60),
                    **({"title": _teks(c["title"], "title")} if c.get("title") else {}),
-                   **({"angka": True} if c.get("angka") else {}), **_desimal(c)})
+                   **({"angka": True} if c.get("angka") else {}), **_desimal(c),
+                   **({"tautan": c["tautan"]} if c.get("tautan") else {})})
         if c.get("angka"):
             kunci_angka.add(c["k"])
     nama_kolom = [c["k"] for c in ko]
-    if len(set(nama_kolom)) != len(nama_kolom):
+    kunci_jalur = {c["tautan"] for c in ko if c.get("tautan")}
+    if len(set(nama_kolom)) != len(nama_kolom) or kunci_jalur & set(nama_kolom):
         raise ValueError("kunci kolom kembar")
     if baris and not ko:
         raise ValueError("baris tanpa kolom")
     ba = []
     for i, b in enumerate(baris or []):
-        if not isinstance(b, dict) or set(b) - set(nama_kolom):
-            raise ValueError(f"baris[{i}] memuat kunci di luar kolom: {sorted(set(b) - set(nama_kolom)) if isinstance(b, dict) else b!r}")
-        ba.append({k: (_angka(v, f"baris[{i}].{k}") if k in kunci_angka else (None if v is None else _teks(str(v), f"baris[{i}].{k}")))
+        if not isinstance(b, dict) or set(b) - set(nama_kolom) - kunci_jalur:
+            raise ValueError(f"baris[{i}] memuat kunci di luar kolom: {sorted(set(b) - set(nama_kolom) - kunci_jalur) if isinstance(b, dict) else b!r}")
+        ba.append({k: (_angka(v, f"baris[{i}].{k}") if k in kunci_angka else None if v is None
+                       else _jalur(v, f"baris[{i}].{k}") if k in kunci_jalur else _teks(str(v), f"baris[{i}].{k}"))
                    for k, v in b.items()})
+    ta = []
+    for i, t in enumerate(tautan or []):
+        if not isinstance(t, (list, tuple)) or len(t) != 2:
+            raise ValueError(f"tautan[{i}] harus [jalur, teks]")
+        ta.append([_jalur(t[0], f"tautan[{i}]"), _teks(t[1], f"tautan[{i}] teks", maks=40)])
+    if unduh is not None and (not isinstance(unduh, str) or not UNDUH.fullmatch(unduh) or not ko):
+        raise ValueError(f"unduh {unduh!r} harus nama .csv huruf kecil dan kartu bertabel")
     return {"id": id, "sistem": _teks(sistem, "sistem", wajib=False, maks=20), "pil": _teks(pil, "pil", maks=40), "ikon": ikon,
             "judul": judul, "angka": a, "kolom": ko, "baris": ba, "rumus": rumus, "aturan": [_pasal(k) for k in aturan],
-            "label": label, "sumber": sumber, **({"asumsi": asumsi} if asumsi else {})}
+            "label": label, "sumber": sumber, **({"asumsi": asumsi} if asumsi else {}),
+            **({"tautan": ta} if ta else {}), **({"unduh": unduh} if unduh else {})}
 
 
 def _atribusi(sumber):
@@ -236,6 +259,18 @@ def cek():
     _tolak(kartu, **{**dasar, "ikon": "roket"})
     _tolak(kartu, **{**dasar, "id": "PLP 1"})
     _tolak(kartu, **{**dasar, "sumber": []})
+    # tautan dan unduh: hanya jalur situs sendiri; kolom tautan menunjuk kunci baris berisi jalur
+    t = kartu(**{**dasar, "tautan": [["/bnpb/hukum", "Buka pustaka hukum"]], "unduh": "status_peraturan.csv",
+                 "kolom": [{"k": "kab", "label": "Kab/kota", "tautan": "kab_url"}, dasar["kolom"][1]],
+                 "baris": [{"kab": "A", "kab_url": "/bnpb/hukum#d=perka-1-2012", "beras_kg": 1}]})
+    assert t["tautan"] == [["/bnpb/hukum", "Buka pustaka hukum"]] and t["unduh"] == "status_peraturan.csv" and t["baris"][0]["kab_url"].startswith("/bnpb/")
+    assert "tautan" not in k and "unduh" not in k
+    for j in ("https://contoh.id", "//contoh.id", "javascript:alert(1)", "/a b", "/a\n", "/a\"x"):
+        _tolak(kartu, **{**dasar, "tautan": [[j, "x"]]})
+        _tolak(kartu, **{**dasar, "kolom": [{"k": "kab", "label": "K", "tautan": "u"}], "baris": [{"kab": "A", "u": j}]})
+    for u in ("a.xlsx", "../a.csv", "A.csv", "a.csv\n"):
+        _tolak(kartu, **{**dasar, "unduh": u})
+    _tolak(kartu, **{**dasar, "kolom": [{"k": "kab", "label": "K", "tautan": "kab"}]})
     # rata-rata: kosong tidak ikut, semua kosong -> None
     assert rata([2, None, 4]) == 3 and rata([None, None]) is None and rata([]) is None and rata([0, None]) == 0
     # berkas: atribusi wajib lengkap

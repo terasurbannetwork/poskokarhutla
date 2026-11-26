@@ -32,6 +32,7 @@
   function status(s, idx) {
     if (s.lokal) return "lokal";
     if (s.fase === "T") return "tunda";
+    if (s.publik) return "tayang";   // JSON publik di repo (KPOD-2): tidak menunggu unggahan R2
     const e = entri(s, idx);
     if (e && e.nama === s.berkas && e.ok !== false && e.diunggah) return "tayang";
     return e ? "disiapkan" : "menunggu";
@@ -98,9 +99,19 @@
   const panelGalat = (s, t, ulang) => seksi(s.id.toLowerCase(), s.pendek, "data", s.pendek, [],
     h("p", {class: "bn-pesan galat", role: "status", teks: t}), ulang ? h("button", {type: "button", class: "ad-tombol kecil", "data-ulang": s.id, teks: "Muat ulang"}) : null);
 
+  /* KPOD-2 Jam Aturan (DT 5.5): JSON publik, susunan kartunya di jam.js (UnitJam.bangun) */
+  async function isiPublik(s, panel) {
+    let j = null;
+    try { const r = await ambil(s.publik); if (r.ok) j = await r.json(); } catch (e) { j = null; }
+    if (!Array.isArray(j) || !j.length) { panel.dataset.muat = ""; return panel.replaceChildren(panelGalat(s, `Data ${s.pendek} gagal dimuat. Coba lagi beberapa menit lagi.`, true)); }
+    await jeda();
+    panel.replaceChildren(R.render(window.UnitJam.bangun(j), null));
+  }
+
   async function isiSistem(s, panel) {
     panel.dataset.muat = "1";
     panel.replaceChildren(hantu(s));
+    if (s.publik) return isiPublik(s, panel);
     let r;
     try { r = await ambil("/api/unit/data/" + encodeURIComponent(s.berkas)); } catch (e) { r = null; }
     if (r && (r.status === 401 || r.status === 403)) return layarMasuk(r.status);
@@ -111,6 +122,8 @@
     if (!j) { panel.dataset.muat = ""; return panel.replaceChildren(panelGalat(s, `Data ${s.pendek} gagal dimuat. Coba lagi beberapa menit lagi.`, true)); }
     const daftar = (Array.isArray(j.kartu) ? j.kartu : []).filter(k => k && (!k.sistem || k.sistem === s.id));
     if (!daftar.length) return panelKosong();
+    const tampil = window.UnitTampil?.[s.id];   // bentuk G (alat di peramban, DS 7.9): skrip sistem menyusun panelnya sendiri dari berkas yang sama
+    if (tampil) { await jeda(); return panel.replaceChildren(...tampil(j)); }
     const isi = [];
     for (const k of daftar) { isi.push(R.render(k, j)); await jeda(); }   // satu kartu per tugas: tab lain tetap bisa diklik
     panel.replaceChildren(...isi);

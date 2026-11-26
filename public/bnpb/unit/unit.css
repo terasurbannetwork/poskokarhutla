@@ -50,3 +50,21 @@
 :focus-visible{outline:2px solid var(--info);outline-offset:2px}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 @media (prefers-reduced-motion:reduce){.un-tabs button{transition:none}}
+/* RU-037 tombol di kanan judul kartu (tautan lokal, Unduh CSV) dan tautan di sel tabel */
+.un-aksi{display:flex;flex-wrap:wrap;gap:8px;flex:none}
+.un-aksi .ad-tombol{display:inline-flex;align-items:center;gap:6px;height:32px;text-decoration:none;color:var(--ink)}
+.un-aksi svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:640px){.ex-std .ex-jd:has(>.un-aksi){flex-wrap:wrap}}
+.ad-tabel tbody th a{white-space:nowrap}
+/* RU-050 JF-1 kamus kompetensi: kotak cari dan daftar <details> */
+.un-jf-q{width:100%;box-sizing:border-box;height:40px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit}
+.un-jf-st{margin:8px 0;font-size:var(--fs-2);color:var(--ink2)}
+.un-jf-daftar{display:grid;gap:6px}
+.un-jf{border:1px solid var(--line);border-radius:12px;padding:0 14px;background:var(--card)}
+.un-jf>summary{cursor:pointer;padding:10px 0;font-weight:600}
+.un-jf>summary b{margin-right:4px}
+.un-jf-def{margin:0 0 10px;color:var(--ink2)}
+.un-jf-lv h4{margin:10px 0 4px;font-size:var(--fs-3)}
+.un-jf-lv ol{margin:0 0 6px;padding-left:0;list-style:none;display:grid;gap:4px}
+.un-jf-no{font-weight:700;margin-right:4px}
+.un-lbl svg{width:13px;height:13px;vertical-align:-2px;margin-right:4px}
