@@ -20,11 +20,11 @@ Dasar urutan: musim hujan (banjir, longsor, cuaca dipakai tiap hari), modul hamp
 ## P1: berguna musim ini, kode belum ada
 
 - [ ] EWS panel sensor dan CCTV (EW-01..EW-05, EW-09 selesai 25 Nov; migrasi 0176 diterapkan pemilik; EW-06/07/08/10 menunggu izin tertulis Q1, Q6)
-- [ ] Laporan Berkala (LB-00..LB-03, LB-10 selesai 25 Nov; Q28 baru; sisa LB-04..LB-09, LB-11, LB-12)
-- [ ] Lapor luring dan PWA: service worker `/lapor` (LR-*, PW-*)
-- [ ] Lifeline LF-9..LF-11
-- [ ] Kaji ulang KU-4..KU-12
-- [ ] Segel SG-12, SG-13 (SG-14 migrasi menunggu pemilik)
+- [ ] Laporan Berkala (LB-00..LB-07, LB-10, LB-11, LB-12 selesai 25-26 Nov; sisa LB-08 foto, LB-09 kegiatan; migrasi 0178 dan 0179 menunggu pemilik)
+- [ ] Lapor luring dan PWA (LR-01..LR-06, LR-09 meja, LR-11 selesai 26 Nov; sisa LR-12 uji perangkat nyata dan tinjau pemilik; PW-* menunggu kunci VAPID, migrasi 0163, lambang resolusi tinggi)
+- [ ] Lifeline (LF-09 dibangun 26 Nov, belum tersedia di laporan sampai pemilik memilih jalur data CI; LF-10 lab VNP46A2 dikerjakan sesi lain; LF-11 migrasi oleh pemilik)
+- [ ] Kaji ulang (KU-04..KU-10 selesai 26 Nov, KU-10 menunggu jalur data CI yang sama dengan LF-09; KU-11 migrasi 0147 oleh pemilik; KU-12 menunggu 10 kejadian disahkan)
+- [x] Segel (SG-01..SG-11, SG-13 selesai; SG-12 di luar fase 1 menurut Q4; SG-14 migrasi 0171, 0172 menunggu pemilik)
 - [ ] Lapor ke kejadian, Silang sumber, Desa Waspada terbit publik (Q1), Alat gambar, Tindakan operasi, 3W TW-10, Profil PF-0
 
 ## P2: riset dan validasi satelit (boleh gagal, tetap hipotesis bila gagal)
