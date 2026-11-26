@@ -3119,7 +3119,9 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-kb-pil svg{width:13px;height:13px;flex:none}
 .lp-kb-status{display:flex;align-items:center;gap:8px;margin:0;font-size:.9375rem}
 .lp-kb-angka{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
-.lp-kb-angka div{display:grid;gap:2px;padding:8px 10px;border-radius:12px;background:var(--surface)}
+.lp-kb-angka div{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:var(--surface)}
+.lp-kb-angka div > span{display:grid;gap:2px;min-width:0}
+.lp-kb-angka-ik{width:20px;height:20px;flex:none;fill:none;stroke:var(--head-bg);stroke-width:2}
 .lp-kb-angka b{font:800 1.125rem var(--display);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .lp-kb-angka b.lp-redup{font:700 .75rem var(--font)}
 .lp-kb-angka small{font-size:.6875rem;color:var(--ink2)}
@@ -3158,6 +3160,8 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-kb-berita li.ada-gambar{grid-template-columns:96px minmax(0,1fr);column-gap:10px;align-items:start}
 .lp-kb-berita li > div{display:grid;gap:2px;min-width:0}
 .lp-kb-thumb{width:96px;height:64px;object-fit:cover;border-radius:8px;background:var(--surface)}
+.lp-kb-thumb.kosong{display:grid;place-items:center;color:var(--ink2)}
+.lp-kb-thumb.kosong svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.75}
 /* pop-up titik peta: tiap kejadian satu baris tombol penuh berpanah (pemilik 26 Nov 2026) */
 .lp-alun-pop-baris{display:flex;align-items:center;gap:10px;width:100%;padding:8px 6px;margin:0 -6px;border:0;border-top:1px solid var(--line);border-radius:8px;background:none;color:var(--ink);text-align:left;cursor:pointer;font:inherit}
 .lp-alun-pop-baris:first-of-type{border-top:0}
@@ -3225,13 +3229,13 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-alun-periode button:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
 .lp-alun-periode small{grid-column:1 / -1;text-align:center;font-size:.6875rem;padding-top:2px}
 /* kartu Tanggal data di kanan atas peta (layar lebar), meniru kartu Tanggal data peta utama */
-.lp-alun-tanggal{position:absolute;z-index:2;top:16px;right:16px;width:min(360px,calc(100% - 480px));padding:10px 12px 8px;border-radius:16px;background:var(--card);box-shadow:var(--shadow)}
+.lp-alun-tanggal{position:absolute;z-index:2;top:16px;right:16px;width:min(320px,calc(100% - 480px));padding:8px 10px 6px;border-radius:16px;background:var(--card);box-shadow:var(--shadow)}
 .lp-alun-tanggal[hidden]{display:none}
-.lp-alun-tanggal > b{display:block;margin-bottom:6px;text-align:center;font:800 .6875rem var(--font);color:var(--ink2)}
+.lp-alun-tanggal > b{display:block;margin-bottom:4px;text-align:center;font:800 .6875rem var(--font);color:var(--ink2)}
 .lp-alun-tanggal .lp-alun-periode{margin:0;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--card)}
-.lp-alun-tanggal .lp-alun-periode button{min-height:30px;border-radius:999px;font-weight:600}
+.lp-alun-tanggal .lp-alun-periode button{min-height:28px;border-radius:999px;font-weight:600}
 .lp-alun-tanggal .lp-alun-periode small{padding-top:4px}
-#lAlun .lp-alun-peta:has(.lp-alun-tanggal:not([hidden])) .maplibregl-ctrl-top-right{top:128px}
+#lAlun .lp-alun-peta:has(.lp-alun-tanggal:not([hidden])) .maplibregl-ctrl-top-right{top:118px}
 /* kejadian dalam satu provinsi: tabel, kartu lengkap terbuka di bawah baris (pemilik 26 Nov 2026) */
 .lp-alun-prov.lp-alun-kj td{text-align:left}
 .lp-alun-prov.lp-alun-kj td:last-child{text-align:center}
@@ -3260,6 +3264,7 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-alun-prov tbody tr:not(.lp-alun-prov-total):hover{background:var(--surface)}
 .lp-alun-prov-total td{font-weight:800;background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
 .lp-alun-prov td.n{font-weight:800}
+.lp-alun-prov td.lain{color:var(--ink2);font-weight:500}
 .lp-alun-prov-nama{padding:0;border:0;background:none;color:var(--ink);font:700 .8125rem/1.25 var(--font);text-align:left;cursor:pointer}
 .lp-alun-prov-nama:focus-visible{outline:2px solid var(--brand2);outline-offset:2px;border-radius:4px}
 .lp-alun-provkep{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:4px 2px 8px}
@@ -3436,3 +3441,10 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-gunung-tanda span[data-pos=kiri]{top:50%;left:auto;right:calc(100% + 4px);transform:translateY(-50%)}
 .lp-gunung-tanda span[data-pos=atas]{top:auto;bottom:calc(100% + 2px)}
 .lp-gunung-tanda span[hidden],.lp-donat-nama[hidden]{display:none}
+/* kartu pilihan berikon: ikon, judul, dan keterangan satu blok di tengah kartu, mendatar dan tegak (pemilik 26 Nov 2026: "agar semua rata middle") */
+@media (min-width:701px){
+  .lp-opsi-ikon.lp-tegak button{align-content:center!important;justify-items:center!important}
+  .lp-opsi-ikon.lp-tegak button :is(span,b,small,p){text-align:center!important}
+  .lp-opsi.lp-tegak > button{justify-content:center!important}
+  .lp-opsi.lp-tegak > button :is(span,b,small,p){text-align:center!important}
+}

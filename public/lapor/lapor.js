@@ -1769,7 +1769,7 @@ function gambarAlun() {
   const nIkut = alunData.filter(x => ikut[x.id]).length, nUbah = alunData.filter(x => ikut[x.id] && ikut[x.id] !== x.status).length;
   // alunJenis = saringan status (Semua, Diikuti, Selesai); jenis bencana dipilih di legenda peta (alunJenisPilih, boleh lebih dari satu)
   const jenis = [["", "Semua", "i-daftar"], ["diikuti", nIkut ? `Diikuti (${nIkut})` : "Diikuti", "i-centang"], ...(alunKabar ? [["selesai", "Selesai", "i-status"]] : [])];
-  $("statusAlun").replaceChildren(...jenis.map(([id, t, ik]) => { const b = el("button"); b.append(ikon(ik), el("span", null, t)); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(id === alunJenis));
+  $("statusAlun")?.replaceChildren(...jenis.map(([id, t, ik]) => { const b = el("button"); b.append(ikon(ik), el("span", null, t)); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(id === alunJenis));
     if (id === "diikuti" && nUbah) b.append(el("span", "lp-tab-jumlah", String(nUbah)));
     b.addEventListener("click", () => { alunJenis = id; for (const t of b.parentNode.children) t.setAttribute("aria-selected", String(t === b)); gambarAlun(); }); return b; }));   // chrome langsung, daftar ditunda
   if (alunKabar) return gambarKabar(ikut);
@@ -2059,7 +2059,9 @@ function kartuKejadian(x, ikut) {
   else { pita.push(pr); const st = el("p", "lp-kb-status"); st.append(el("b", null, r.status)); if (r.baru) st.append(el("span", "lp-pil", "Baru")); pr.append(st);
     // hanya angka yang ada; bila semuanya kosong, satu kalimat, bukan tiga kotak "belum ada data"
     const ada = r.angka.filter(a => a.nilai != null), g = ada.length ? el("div", "lp-kb-angka") : el("p", "lp-redup lp-kecil", "Angka dampak belum dilaporkan.");
-    for (const a of ada) { const c = el("div"); c.append(el("b", null, a.teks), el("small", null, a.label)); g.append(c); }
+    // ikon polos per kotak angka (pemilik 26 Nov 2026: "Kasih icon")
+    for (const a of ada) { const c = el("div"), tx = el("span"); tx.append(el("b", null, a.teks), el("small", null, a.label));
+      c.append(ikon({"KK terdampak": "i-orang", mengungsi: "i-pengungsian", "rumah terdampak": "i-rumah"}[a.label] || "i-status", "lp-kb-angka-ik"), tx); g.append(c); }
     pr.append(g, el("small", "lp-redup", r.kesegaran)); }
   // Laporan warga
   const pw = pitaKabar("Laporan warga", "i-orang");
@@ -2081,7 +2083,9 @@ function kartuKejadian(x, ikut) {
   else { pita.push(pb); const ul = el("ul", "lp-kb-berita");
     for (const b of t.berita.baris) { const li = el("li"), judul = b.url ? Object.assign(el("a", null, b.judul), {href: b.url, target: "_blank", rel: "noopener noreferrer"}) : el("span", null, b.judul), tx = el("div");
       tx.append(judul, el("small", "lp-redup", [b.media, b.tgl].filter(Boolean).join(", ")));
-      if (b.gambar) { li.className = "ada-gambar"; const img = Object.assign(el("img", "lp-kb-thumb"), {src: b.gambar, alt: "", loading: "lazy", decoding: "async", width: 96, height: 64}); img.addEventListener("error", () => { img.remove(); li.className = ""; }); li.append(img); }   // thumbnail dari folder kita (K6); gagal muat = tanpa gambar
+      // tiap berita punya kotak gambar (pemilik 26 Nov 2026: "Kasih thumbnail berita"): thumbnail kita bila ada, selain itu ikon berita di kotak yang sama, jadi daftar rata
+      li.className = "ada-gambar"; const kosongG = () => { const k = el("span", "lp-kb-thumb kosong"); k.append(ikon("i-pesan")); return k; };
+      if (b.gambar) { const img = Object.assign(el("img", "lp-kb-thumb"), {src: b.gambar, alt: "", loading: "lazy", decoding: "async", width: 96, height: 64}); img.addEventListener("error", () => img.replaceWith(kosongG())); li.append(img); } else li.append(kosongG());
       li.append(tx); ul.append(li); }
     pb.append(ul); if (t.berita.lebih) pb.append(el("small", "lp-redup", `Dan ${t.berita.lebih.toLocaleString("id-ID")} berita lain yang cocok.`)); }
   // Media sosial (KA-07) belum tersambung: tidak diulang di tiap kartu; keterangannya tampil sekali lewat saringan Medsos
@@ -2166,12 +2170,15 @@ function tabelProvinsi(w, daftar) {
   for (const x of daftar) { const k = x.prov || "", r = g.get(k) || {k, n: 0, jalan: 0, warga: 0, berita: 0}; r.n++; if (x.status === "berjalan") r.jalan++; r.warga += x.warga.length; r.berita += x.nBerita || 0; g.set(k, r); }
   const baris = [...g.values()].sort((a, b) => b.n - a.n || b.jalan - a.jalan || namaProv(a.k).localeCompare(namaProv(b.k), "id"));
   const t = el("table", "ex-tabel lp-alun-prov"), th = el("thead"), tb = el("tbody"), f = v => v ? v.toLocaleString("id-ID") : "–";
-  const kep = el("tr"); for (const [teks, judul] of [["", ""], ["Provinsi", ""], ["Kejadian", "Jumlah kejadian di provinsi ini"], ["Berjalan", "Kejadian berstatus berjalan menurut laporan resmi BNPB"], ["Warga", "Klaster laporan warga yang sudah ditindaklanjuti"], ["Berita", "Berita yang cocok dengan kejadian"]]) { const c = el("th", null, teks); c.scope = "col"; if (judul) c.title = judul; kep.append(c); }
-  th.append(kep);
+  // kolom yang seluruhnya kosong (mis. Warga) tidak digambar; Berita bukan angka resmi, jadi tampil redup supaya tidak tampak setara (D3, pemilik 26 Nov 2026)
   const tot = baris.reduce((a, r) => ({n: a.n + r.n, jalan: a.jalan + r.jalan, warga: a.warga + r.warga, berita: a.berita + r.berita}), {n: 0, jalan: 0, warga: 0, berita: 0});
-  const rt = el("tr", "lp-alun-prov-total"); rt.append(el("td"), el("td", null, "Total"), el("td", null, f(tot.n)), el("td", null, f(tot.jalan)), el("td", null, f(tot.warga)), el("td", null, f(tot.berita))); tb.append(rt);
+  const KOL = [["n", "Kejadian", "Jumlah kejadian di provinsi ini", "n"], ["jalan", "Berjalan", "Kejadian berstatus berjalan menurut laporan resmi BNPB", ""],
+    ["warga", "Warga", "Klaster laporan warga yang sudah ditindaklanjuti", "lain"], ["berita", "Berita", "Berita yang cocok dengan kejadian", "lain"]].filter(([k]) => k === "n" || tot[k] > 0);
+  const kep = el("tr"); for (const [teks, judul] of [["", ""], ["Provinsi", ""], ...KOL.map(([, t, j]) => [t, j])]) { const c = el("th", null, teks); c.scope = "col"; if (judul) c.title = judul; kep.append(c); }
+  th.append(kep);
+  const rt = el("tr", "lp-alun-prov-total"); rt.append(el("td"), el("td", null, "Total"), ...KOL.map(([k, , , kl]) => el("td", kl || null, f(tot[k])))); tb.append(rt);
   baris.forEach((r, i) => { const tr = el("tr"), nm = el("button", "lp-alun-prov-nama", namaProv(r.k)); nm.type = "button"; nm.addEventListener("click", () => pilihProv(r.k));
-    const c = el("td"); c.append(nm); tr.append(el("td", "lp-redup", String(i + 1)), c, el("td", "n", f(r.n)), el("td", null, f(r.jalan)), el("td", null, f(r.warga)), el("td", null, f(r.berita)));
+    const c = el("td"); c.append(nm); tr.append(el("td", "lp-redup", String(i + 1)), c, ...KOL.map(([k, , , kl]) => el("td", kl || null, f(r[k]))));
     tr.addEventListener("click", e => { if (e.target !== nm) pilihProv(r.k); }); tb.append(tr); });
   t.append(th, tb); w.append(t);
   if (!window.Wilayah) muatWilayah().then(() => { if (!alunProv) for (const [i, r] of baris.entries()) { const b = tb.children[i + 1]?.querySelector(".lp-alun-prov-nama"); if (b) b.textContent = namaProv(r.k); } });
