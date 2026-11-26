@@ -10,6 +10,7 @@ import {bukaPeramban, cariChrome} from "../bnpb/_peramban.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
 import {halamanBnpb} from "../../src/admin_halaman.js";
 import {fixture} from "./_kinerja_fixture.mjs";
+import {petaSitus} from "../bnpb/_peta.mjs";   // menu staf (menu_pusdalops.js) meminta /api/peta-situs; 404 = galat konsol
 
 const PUB = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../public");
 const MIME = {".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".json": "application/json"};
@@ -48,6 +49,7 @@ else {
         if (mode === "kosong") Object.assign(f, {sumber: [], tahap: [], wilayah: [], tren: [], himawari: {alarm: 0, terkunci: 0, hilang: 0, selisih_viirs_p50_menit: null}, catatan: [], proses: [], macet: [], lapangan: null});
         s.setHeader("content-type", "application/json"); return s.end(JSON.stringify(f));
       }
+      if (u.pathname === "/api/peta-situs") { s.setHeader("content-type", "application/json"); return s.end(JSON.stringify(petaSitus())); }
       if (u.pathname === "/api/kesehatan" || u.pathname === "/data/kesegaran.json") { s.setHeader("content-type", "application/json"); return s.end(JSON.stringify(u.pathname === "/api/kesehatan" ? KES(mode) : BERKAS)); }
       const f = path.join(PUB, u.pathname);
       if (f.startsWith(PUB) && existsSync(f) && !f.endsWith("/")) { s.setHeader("content-type", MIME[path.extname(f)] || "application/octet-stream"); return s.end(readFileSync(f)); }

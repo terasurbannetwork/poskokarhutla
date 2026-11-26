@@ -384,8 +384,8 @@ function gantiFoto(svg, k) {
 if (D) {
   if (!D.getElementById("mk-gaya-foto")) { const s = D.createElement("style"); s.id = "mk-gaya-foto"; s.textContent = gayaFoto(); D.head.appendChild(s); }
   for (const k of GILIR) { const l = D.createElement("link"); l.rel = "prefetch"; l.as = "image"; l.href = FOTO + k + ".webp"; D.head.appendChild(l); }
-  setInterval(() => {   // satu pewaktu untuk semua maskot foto; berhenti saat tab tersembunyi atau gerak dikurangi
-    if (D.hidden || kurang()) return;
+  // satu pewaktu untuk semua maskot foto; berhenti saat tab tersembunyi atau gerak dikurangi
+  setInterval(() => { if (D.hidden || kurang()) return;
     for (const svg of D.querySelectorAll("svg.mk-foto")) {
       const r = svg.getBoundingClientRect(); if (!r.width || r.bottom < 0 || r.top > innerHeight || Math.random() < .45) continue;
       const x = Math.random();

@@ -91,6 +91,10 @@
   "public/data/usgs_produk.json": {
    "alasan": "Produk USGS per gempa (ground failure, moment tensor; PB-61.2, PB-61.10) dipanen data.yml, model USGS bukan pengamatan. Pemakai layar gempa dan longsor belum dipasang; pengecualian dicabut saat pemakainya ada.",
    "tanggal": "2026-11-25"
+  },
+  "public/gempa/data/tsunami_runup.json": {
+   "alasan": "Tsunami genangan TS-02 (data/kajian-bnpb/tsunami-genangan/KEPUTUSAN-TSUNAMI.md K5, 23 Nov 2026): run-up historis NOAA NCEI ditarik sekali di mesin lokal pemilik; GitHub Actions dan R2 baru di fase 3 sesudah waktu hitung terukur. Data historis, tidak perlu jadwal harian. Pengerja gempa menghapus pengecualian ini bila penarik pindah ke workflow.",
+   "tanggal": "2026-11-26"
   }
  }
 }
