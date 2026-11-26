@@ -24,6 +24,8 @@ const MUTU = {hipotesis: "hipotesis", uji_balik_lulus: "lulus uji balik"};
 const KEADAAN = {ok: "lengkap", sebagian: "sebagian", belum_ada: "belum ada", gagal: "gagal ditarik", basi: "terbit bukan untuk periode ini"};
 
 const kosong = (t = "belum diisi") => `<span class="lbk-kosong">${esc(t)}</span>`;
+/* LB-08: alamat foto; versi beku membaca salinan beku yang sidiknya diperiksa server */
+const srcFoto = (c, id) => `/api/laporan-berkala/foto?periode=${c.periode}&kode=${c.kode}&id=${id}${c.versi > 0 ? `&versi=${c.versi}` : ""}`;
 const isi = v => typeof v === "string" ? v.trim() !== "" : Array.isArray(v) ? v.length > 0 : v != null;
 const paragraf = v => String(v).split(/\n+/).filter(s => s.trim()).map(s => `<p>${esc(s.trim())}</p>`).join("");
 const teksStaf = (v, label) => isi(v) ? paragraf(v) : `<p>${kosong(label)}</p>`;
@@ -68,7 +70,7 @@ const catatanStaf = (I, bab) => isi(I.catatan?.[bab]) ? `<div class="lbk-catat">
 function dokumentasi(I, ctx, bab) {
   const foto = (I.foto || []).filter(f => f?.bab === bab && /^[0-9a-f]{64}$/.test(f.id || ""));
   if (!foto.length) return `<p>${kosong("belum ada foto dipilih")}</p>`;
-  return `<div class="lbk-dok">${foto.map(f => `<figure class="lbk-gb"><img alt="${esc(f.ket)}" src="/api/laporan-berkala/foto?periode=${ctx.periode}&kode=${ctx.kode}&id=${f.id}" style="aspect-ratio:4/3;width:100%;object-fit:cover">
+  return `<div class="lbk-dok">${foto.map(f => `<figure class="lbk-gb"><img alt="${esc(f.ket)}" src="${srcFoto(ctx, f.id)}" style="aspect-ratio:4/3;width:100%;object-fit:cover">
     <div class="lbk-sumber">${esc(f.ket)}${f.kredit ? `, foto: ${esc(f.kredit)}` : ""}</div></figure>`).join("")}</div>`;
 }
 function temuan(daftar, usulan) {
@@ -678,7 +680,7 @@ export async function susun(akar, A, I = {}, {versi = 0, periode = "bulanan", ko
   const s = kertas(ctx, {sampul: true}), fotoS = (I.foto || []).find(f => f?.bab === "sampul" && /^[0-9a-f]{64}$/.test(f.id || ""));
   s.innerHTML = `<div style="display:flex;flex-direction:column;gap:4mm"><div class="lbk-logo"><img src="/img/logo-kris.png" alt="KRIS" width="220" height="51"><img src="/lapor/lambang-bnpb.png" alt="BNPB" width="51" height="51"></div>
     <span class="lbk-pil">Laporan ${periode === "tahunan" ? "tahunan" : "bulanan"} Kepala BNPB</span><h1>Laporan Bencana ${esc(ctx.nama)}</h1><div class="lbk-sub">Kepada Presiden Republik Indonesia</div></div>
-    <div class="lbk-foto-sampul">${fotoS ? `<img alt="${esc(fotoS.ket)}" src="/api/laporan-berkala/foto?periode=${periode}&kode=${kode}&id=${fotoS.id}" style="width:100%;height:100%;object-fit:cover;border-radius:2mm">` : kosong("foto sampul belum dipilih")}</div>
+    <div class="lbk-foto-sampul">${fotoS ? `<img alt="${esc(fotoS.ket)}" src="${srcFoto(ctx, fotoS.id)}" style="width:100%;height:100%;object-fit:cover;border-radius:2mm">` : kosong("foto sampul belum dipilih")}</div>
     <dl class="lbk-dl"><dt>Kepada</dt><dd>Presiden Republik Indonesia</dd><dt>Dari</dt><dd>Kepala Badan Nasional Penanggulangan Bencana,<br><span class="lbk-kepala">${esc(H.KEPALA_BNPB)}</span></dd>
     <dt>Tempat dan tanggal</dt><dd>${isi(I.kota) ? esc(I.kota) : kosong("kota")}, ${isi(I.tanggal) ? esc(tgl(I.tanggal) || I.tanggal) : kosong("tanggal")}</dd>
     <dt>Versi</dt><dd>${versi > 0 ? `Versi ${n(versi)}, dibekukan` : "Draf, belum dibekukan"}</dd></dl>`;
@@ -751,7 +753,7 @@ const kiniWib = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10)
 const IK = {hari: "M4 5h16v15H4zM4 10h16M9 3v4M15 3v4M11 14h2v2h-2z", minggu: "M4 5h16v15H4zM4 10h16M9 3v4M15 3v4M7 14h10", bulan: "M4 5h16v15H4zM4 10h16M9 3v4M15 3v4M7 14h3M14 14h3M7 17h3",
   tahun: "M4 7h16v13H4zM7 4h10M9 11h6M9 15h6", ringkas: "M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5", umum: "M4 20V10M10 20V4M16 20v-7M22 20H2", api: "M12 3c2 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-3 0-5 1-8z",
   air: "M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z", awan: "M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11 2 3 3 0 0 0 1 6z", gunung: "M3 20l6-10 4 6 2-3 6 7z", program: "M9 4h6v3H9zM6 5h3M15 5h3v16H6V5M9 12h6M9 16h4",
-  prediksi: "M3 17l5-5 4 4 8-8M15 8h5v5", sampul: "M4 20h4L19 9l-4-4L4 16zM13 7l4 4", tambah: "M12 5v14M5 12h14", hapus: "M6 6l12 12M18 6L6 18"};
+  prediksi: "M3 17l5-5 4 4 8-8M15 8h5v5", sampul: "M4 20h4L19 9l-4-4L4 16zM13 7l4 4", tambah: "M12 5v14M5 12h14", foto: "M4 7h4l2-3h4l2 3h4v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", hapus: "M6 6l12 12M18 6L6 18"};
 const ikon = d => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
 const PERIODE = [["harian", "Harian", IK.hari], ["mingguan", "Mingguan", IK.minggu], ["bulanan", "Bulanan", IK.bulan], ["tahunan", "Tahunan", IK.tahun]];
 const MASUKAN = {harian: {label: "Tanggal", type: "date", pola: "\\d{4}-\\d{2}-\\d{2}", contoh: "2026-11-11"}, mingguan: {label: "Minggu", type: "week", pola: "\\d{4}-W\\d{2}", contoh: "2026-W46"},
@@ -824,7 +826,37 @@ function temuanIsian(A, I, nama) {
     <button type="button" class="lbk-tambah" data-tambah="${nama}"${penuhT ? " disabled" : ""}>${ikon(IK.tambah)}Tambah temuan sendiri</button></div>`;
 }
 
-function kartuIsian(A, I, periode = "bulanan") {
+/* LB-08, Q7: foto unggahan staf BNPB atau foto BNPB; foto media hanya dengan centang izin dan kredit. Kredit wajib di bawah tiap foto. */
+const BAB_FOTO = [["sampul", "Sampul"], ["bab2", "Bab 2 Karhutla"], ["bab3", "Bab 3 Banjir dan tanah longsor"], ["bab4", "Bab 4 Cuaca ekstrem dan kekeringan"], ["bab5", "Bab 5 Geologi dan vulkanologi"], ["bab6", "Bab 6 Program kerja"]];
+const pilihBab = (id, v, p = "") => `<select id="${id}"${p ? ` data-p="${p}"` : ""}>${BAB_FOTO.map(([k, l]) => `<option value="${k}"${k === v ? " selected" : ""}>${esc(l)}</option>`).join("")}</select>`;
+const centang = (id, label, v, p = "") => `<label class="lbk-u" for="${id}"><input type="checkbox" id="${id}"${p ? ` data-p="${p}"` : ""}${v ? " checked" : ""}><span>${esc(label)}</span></label>`;
+function fotoIsian(I, c) {
+  const xs = Array.isArray(I.foto) ? I.foto : [], maks = H.MAKS_FOTO[c.periode] || 0;
+  return `<div class="lbk-daftar" data-daftar="foto"><p class="lbk-h">Pilih foto yang tidak menonjolkan wajah anak. Data kamera dan titik lokasi dibuang di peramban sebelum foto diunggah.
+    Foto media hanya boleh bila izinnya sudah ada; kredit tampil di bawah tiap foto.</p>
+    ${xs.map((f, i) => `<div class="lbk-baris"><div class="lbk-baris-k"><b>Foto ${i + 1}</b>
+      <button type="button" class="lbk-ik" data-foto-hapus="${i}" aria-label="Hapus foto ${i + 1}" title="Hapus foto">${ikon(IK.hapus)}</button></div>
+      ${/^[0-9a-f]{64}$/.test(f?.id || "") ? `<img alt="${esc(f.ket || `Foto ${i + 1}`)}" src="${srcFoto(c, f.id)}" loading="lazy" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:.25rem">` : ""}
+      <div class="lbk-f"><label for="${nid(`foto.${i}.bab`)}">Bagian</label>${pilihBab(nid(`foto.${i}.bab`), f?.bab, `foto.${i}.bab`)}</div>
+      ${teks(I, `foto.${i}.ket`, "Keterangan", {jenis: "text", wajibIsi: false})}${teks(I, `foto.${i}.kredit`, "Kredit", {jenis: "text"})}
+      ${centang(nid(`foto.${i}.media`), "Foto dari media, bukan BNPB", f?.media, `foto.${i}.media`)}${f?.media ? centang(nid(`foto.${i}.izin`), "Izin sudah ada", f?.izin, `foto.${i}.izin`) : ""}</div>`).join("")}
+    <fieldset class="lbk-usul"><legend>Tambah foto (${xs.length} dari ${maks})</legend>
+      <div class="lbk-f"><label for="lbkFotoBab">Bagian</label>${pilihBab("lbkFotoBab", "bab2")}</div>
+      <div class="lbk-f"><label for="lbkFotoKredit">Kredit<span class="lbk-kosong">wajib</span></label><input id="lbkFotoKredit" type="text" maxlength="120" placeholder=" " autocomplete="off" aria-describedby="lbkFotoKreditH"><small id="lbkFotoKreditH" class="lbk-h">Contoh: Dok. BNPB, atau nama media dan juru foto.</small></div>
+      ${centang("lbkFotoMedia", "Foto dari media, bukan BNPB", false)}${centang("lbkFotoIzin", "Izin sudah ada", false)}
+      <label class="lbk-tambah"${xs.length >= maks ? ' aria-disabled="true"' : ""}>${ikon(IK.foto)}Pilih foto<input type="file" id="lbkFotoBerkas" accept="image/jpeg,image/png,image/webp" hidden${xs.length >= maks ? " disabled" : ""}></label>
+      <p class="lbk-h" id="lbkFotoSt" role="status" aria-live="polite"></p></fieldset></div>`;
+}
+/* kode ulang ke JPEG lewat kanvas (createImageBitmap + toBlob, Baseline widely available): EXIF dan GPS hilang, sisi panjang <= 1600 px, <= 1,4 MB.
+   Tidak jatuh ke berkas asli (beda dengan public/inti/foto_kecil.js): gagal kode ulang = tidak diunggah. */
+async function kodeUlang(file, maks = 1.4 * 1048576) {
+  const bmp = await createImageBitmap(file, {imageOrientation: "from-image"}), s = Math.min(1, 1600 / Math.max(bmp.width, bmp.height)), c = document.createElement("canvas");
+  c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s); c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height); bmp.close?.();
+  for (const q of [0.82, 0.7, 0.55, 0.4]) { const b = await new Promise(r => c.toBlob(r, "image/jpeg", q)); if (b && b.size <= maks) return b; }
+  return null;
+}
+
+function kartuIsian(A, I, periode = "bulanan", c = {periode}) {
   const b1 = A.bab1 || {}, b2 = A.bab2 || {}, b3 = A.bab3 || {}, b4 = A.bab4 || {}, b5 = A.bab5 || {}, en = A.bab7?.enso, d = b1.alam?.dampak || {};
   const st = b3.banjir?.status || {}, pl = b5.gunungapi?.per_level || {}, kel = b1.kelompok || {};
   const K = (ik, ey, judul, isi, buka = false) => `<details class="ex ex-std lbk-k"${buka ? " open" : ""}><summary class="ex-hd"><span class="ex-ey">${ikon(ik)}${esc(ey)}</span>
@@ -868,8 +900,9 @@ function kartuIsian(A, I, periode = "bulanan") {
       `<p class="lbk-lbl">Dukungan yang dimohon</p>` + daftarIsian(I, "dukungan") +
       `<p class="lbk-lbl">Temuan untuk musim berikutnya</p>` + temuanIsian(A, I, "temuan_bab7") +
       teks(I, "arahan", "Arahan yang dimohon", {baris: 3}) + teks(I, "penutup", "Penutup", {baris: 3})),
+    K(IK.foto, "Dokumentasi", "Foto sampul dan dokumentasi", fotoIsian(I, c)),
     K(IK.sampul, "Sampul", "Sampul dan tanda tangan", teks(I, "kota", "Kota", {jenis: "text"}) + teks(I, "tanggal", "Tanggal surat", {jenis: "date"}) +
-      `<p class="lbk-h">Nama dan gelar Kepala BNPB diisi mesin. Foto sampul dan dokumentasi menyusul bersama unggah foto.</p>`),
+      `<p class="lbk-h">Nama dan gelar Kepala BNPB diisi mesin.</p>`),
   ].join("");
 }
 
@@ -972,21 +1005,23 @@ async function mulai() {
   };
   const jadwal = () => { clearTimeout(tunda); tunda = setTimeout(gambarUlang, 700); };
   const ubah = () => { S.kotor = true; tandaServer(); jadwal(); };
-  const gambarIsian = () => { fs.querySelectorAll(":scope > :not(legend)").forEach(x => x.remove()); fs.insertAdjacentHTML("beforeend", kartuIsian(S.A, S.I, periode)); $(".lbk-isian").hidden = false; aturMode(); };
+  const gambarIsian = () => { fs.querySelectorAll(":scope > :not(legend)").forEach(x => x.remove()); fs.insertAdjacentHTML("beforeend", kartuIsian(S.A, S.I, periode, {periode, kode, versi: S.versi})); $(".lbk-isian").hidden = false; aturMode(); };
   const gambarDaftar = nama => {
     const lamaEl = fs.querySelector(`[data-daftar="${nama}"]`); if (!lamaEl) return;
-    const t = document.createElement("template"); t.innerHTML = nama.startsWith("temuan") ? temuanIsian(S.A, S.I, nama) : nama === "kegiatan" ? kegiatanIsian(S.A, S.I) : daftarIsian(S.I, nama);
+    const t = document.createElement("template"); t.innerHTML = nama.startsWith("temuan") ? temuanIsian(S.A, S.I, nama) : nama === "foto" ? fotoIsian(S.I, {periode, kode, versi: S.versi}) : nama === "kegiatan" ? kegiatanIsian(S.A, S.I) : daftarIsian(S.I, nama);
     const baru = t.content.firstElementChild; lamaEl.replaceWith(baru); return baru;
   };
 
   /* isian: satu pendengar per jenis peristiwa (delegasi); hanya mengubah memori dan bagian kecil, pratinjau lewat jadwal() */
   form.addEventListener("input", e => {
     const el = e.target, p = el.dataset?.p; if (!p) return;
+    if (el.type === "checkbox") { tulis(S.I, p, el.checked || undefined); if (/^foto\.\d+\.media$/.test(p)) gambarDaftar("foto")?.querySelector(`[data-p="${p}"]`)?.focus(); ubah(); return; }
     tulis(S.I, p, el.type === "number" ? (el.value === "" || !Number.isFinite(+el.value) ? undefined : +el.value) : el.value);
     ubah();
   });
   form.addEventListener("change", e => {
     const el = e.target;
+    if (el.id === "lbkFotoBerkas") { unggahFoto(el); return; }
     if (el.dataset?.calon !== undefined) {   // LB-09: centang calon = tambah baris kegiatan, lepas = buang baris bertautan sama
       const c = (S.A.kegiatan?.calon || [])[+el.dataset.calon]; if (!c) return;
       const xs = Array.isArray(S.I.kegiatan) ? S.I.kegiatan : (S.I.kegiatan = []);
@@ -1005,6 +1040,13 @@ async function mulai() {
     ubah();
   });
   form.addEventListener("click", e => {
+    const hf = e.target.closest("button[data-foto-hapus]");
+    if (hf) {
+      const xs = S.I.foto || [], i = +hf.dataset.fotoHapus, id = xs[i]?.id;
+      S.I.foto = xs.filter((_, j) => j !== i);
+      if (id && !S.I.foto.some(f => f?.id === id)) kirim("/api/laporan-berkala/foto/hapus", {periode, kode, id}).catch(() => {});   // salinan versi beku tidak tersentuh
+      gambarDaftar("foto")?.querySelector("#lbkFotoKredit")?.focus(); ubah(); return;
+    }
     const b = e.target.closest("button[data-tambah],button[data-hapus]"); if (!b) return;
     if (b.dataset.tambah) {
       const nama = b.dataset.tambah, xs = Array.isArray(S.I[nama]) ? S.I[nama] : (S.I[nama] = []);
@@ -1022,6 +1064,24 @@ async function mulai() {
   const kirim = (url, isi) => fetch(url, {method: "POST", credentials: "same-origin", headers: {"content-type": "application/json"}, body: JSON.stringify(isi)})
     .then(async r => ({r, j: await r.json().catch(() => ({}))}));
   const belumAda = r => r.status === 404 || r.status === 405;
+  async function unggahFoto(el) {
+    const f = el.files?.[0]; el.value = ""; if (!f) return;
+    const kredit = $("#lbkFotoKredit"), media = $("#lbkFotoMedia").checked, izin = $("#lbkFotoIzin").checked, tulisSt = t => { const x = $("#lbkFotoSt"); if (x) x.textContent = t; };
+    if (!kredit.value.trim()) { tulisSt("Isi kredit foto dulu."); kredit.setAttribute("aria-invalid", "true"); kredit.focus(); return; }
+    if (media && !izin) { tulisSt("Foto media hanya bisa diunggah bila izinnya sudah ada. Centang Izin sudah ada."); $("#lbkFotoIzin").focus(); return; }
+    tulisSt("Menyiapkan foto…");
+    let b = null; try { b = await kodeUlang(f); } catch (x) { /* berkas bukan gambar yang bisa dibaca peramban */ }
+    if (!b) { tulisSt("Foto tidak bisa dibaca atau tetap lebih dari 1,4 MB. Pilih foto lain."); return; }
+    tulisSt("Mengunggah foto…");
+    const q = new URLSearchParams({periode, kode, kredit: kredit.value.trim(), ...(media ? {media: "1", izin: "1"} : {})});
+    try {
+      const r = await fetch(`/api/laporan-berkala/foto?${q}`, {method: "POST", credentials: "same-origin", headers: {"content-type": "image/jpeg"}, body: b}), j = await r.json().catch(() => ({}));
+      if (!r.ok) { tulisSt(r.status === 403 ? "Unggah foto hanya untuk admin." : `Foto belum terunggah: ${j.galat || "galat " + r.status}.`); return; }
+      (S.I.foto = Array.isArray(S.I.foto) ? S.I.foto : []).push({bab: $("#lbkFotoBab").value, id: j.id, ket: "", kredit: kredit.value.trim(), ...(media ? {media: true, izin: true} : {})});
+      gambarDaftar("foto")?.querySelector(`#${nid(`foto.${S.I.foto.length - 1}.ket`)}`)?.focus();
+      ubah();
+    } catch (x) { tulisSt("Foto belum terunggah: koneksi ke server gagal."); }
+  }
   async function simpan() {
     const b = $("#lbkSimpan"); b.disabled = true; st("Menyimpan draf…");
     try {

@@ -290,3 +290,94 @@ uji("kode tayang sebelum migrasi: tanpa 0178 = 503, tanpa 0179 Bekukan = 503 tan
   assert.equal((await B.DB.prepare("SELECT count(*) n FROM laporan_berkala WHERE versi > 0").first()).n, 0);
   assert.equal((await B.DB.prepare("SELECT count(*) n FROM laporan_berkala WHERE versi = 0").first()).n, 1);
 });
+
+/* ---------------------------------------------------------------- LB-08 foto dokumentasi (Q7, RENCANA-UJI I10) */
+const seg = (m, isi) => [0xff, m, (isi.length + 2) >> 8, (isi.length + 2) & 255, ...isi];
+const huruf = t => [...new TextEncoder().encode(t)];
+const jpeg = (n, ekstra = []) => new Uint8Array([0xff, 0xd8, ...seg(0xe0, [...huruf("JFIF"), 0, 1, 1, 0, 0, 0, 0, 1, 0, 0]), ...ekstra,
+  ...seg(0xc0, [8, 0, 1, 0, 1, 1, 1, 0x11, 0]), ...seg(0xda, [1, 1, 0, 0, 0x3f, 0]), ...Array(40).fill(n), 0xff, 0xd9]);
+const unggah = async (periode, kode, b, {kredit = "Dok. BNPB", media, izin, h = ADMIN} = {}) => {
+  const q = new URLSearchParams({periode, kode, ...(kredit != null ? {kredit} : {}), ...(media ? {media: "1"} : {}), ...(izin ? {izin: "1"} : {})});
+  const r = await mf.dispatchFetch(`${ASAL}/api/laporan-berkala/foto?${q}`, {method: "POST", headers: {origin: ASAL, "content-type": "image/jpeg", ...h}, body: b});
+  const t = await r.text(); let j = null; try { j = JSON.parse(t); } catch (e) {}
+  return {s: r.status, j, t, h: r.headers};
+};
+const isiR2 = async k => { const o = await R2.get(k); return o ? new Uint8Array(await o.arrayBuffer()) : null; };
+const jmlFoto = async (p, k) => (await R2.list({prefix: `berkala/${p}/${k}/foto/`})).objects.length;
+
+uji("I10 unggah foto: teks bernama .jpg, JPEG ber-APP1 Exif, PNG ditolak; EXIF/IPTC tidak tersimpan", async () => {
+  const k = "2026-08";
+  const teksJpg = new TextEncoder().encode("ini teks biasa bernama foto.jpg");
+  const exif = jpeg(3, seg(0xe1, [...huruf("Exif"), 0, 0, ...huruf("MM"), 0, 42, ...huruf("GPS-RAHASIA")]));
+  const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, ...Array(40).fill(0)]);
+  for (const b of [teksJpg, exif, png]) assert.equal((await unggah(P, k, b)).s, 400);
+  assert.equal(await jmlFoto(P, k), 0);
+  /* IPTC (APP13) dan XMP (APP1 non-Exif) lolos pemeriksa Exif tetapi dibuang bersihMedia sebelum disimpan */
+  const ber = jpeg(4, [...seg(0xed, huruf("Photoshop 3.0 IPTC-RAHASIA")), ...seg(0xe1, huruf("http://ns.adobe.com/xap/1.0/ XMP-RAHASIA"))]);
+  const r = await unggah(P, k, ber); assert.equal(r.s, 201, r.t);
+  assert.equal(r.h.get("cache-control"), "private, no-store");
+  const simpan = await isiR2(`berkala/${P}/${k}/foto/${r.j.id}.jpg`);
+  assert.ok(simpan); assert.equal(sha256(simpan), r.j.id);
+  assert.ok(!/RAHASIA|Exif/.test(new TextDecoder("latin1").decode(simpan)), "metadata ikut tersimpan");
+  assert.equal(await n("laporan_berkala_jejak", `periode = '${P}' AND kode = '${k}' AND aksi = 'foto'`), 1);
+  const g = await mf.dispatchFetch(`${ASAL}/api/laporan-berkala/foto?periode=${P}&kode=${k}&id=${r.j.id}`, {headers: STAF});
+  assert.equal(g.status, 200); assert.equal(g.headers.get("content-type"), "image/jpeg"); assert.equal(g.headers.get("cache-control"), "private, no-store");
+  assert.deepEqual(new Uint8Array(await g.arrayBuffer()), simpan);
+});
+
+uji("LB-08 kredit dan izin: kredit kosong ditolak, foto media tanpa centang izin ditolak, harian tanpa foto, pemirsa dan staf tidak bisa unggah, batas jumlah", async () => {
+  const k = "2026-06";
+  assert.equal((await unggah(P, k, jpeg(5), {kredit: "  "})).s, 400);
+  assert.equal((await unggah(P, k, jpeg(5), {kredit: null})).s, 400);
+  assert.equal((await unggah(P, k, jpeg(5), {kredit: "Kompas", media: true})).s, 400);
+  assert.equal((await unggah("harian", "2026-10-01", jpeg(5))).s, 400);
+  assert.equal((await unggah(P, k, jpeg(5), {h: PEMIRSA})).s, 403);
+  assert.equal((await unggah(P, k, jpeg(5), {h: STAF})).s, 403);
+  assert.equal((await unggah(P, k, jpeg(5), {h: {}})).s, 403);
+  assert.equal(await jmlFoto(P, k), 0);
+  assert.equal((await unggah(P, k, jpeg(5), {kredit: "Kompas", media: true, izin: true})).s, 201);
+  /* mingguan paling banyak 4 (PRD); unggah ulang foto yang sama tidak menambah */
+  const m = "2026-W40";
+  for (let i = 0; i < 4; i++) assert.equal((await unggah("mingguan", m, jpeg(10 + i))).s, 201);
+  assert.equal((await unggah("mingguan", m, jpeg(10))).s, 201);
+  assert.equal((await unggah("mingguan", m, jpeg(20))).s, 409);
+  assert.equal(await jmlFoto("mingguan", m), 4);
+  /* draf dengan foto media tanpa izin: simpan boleh, Bekukan 422 menyebutnya (ALGORITMA 10) */
+  await R2.put(`berkala/${P}/${k}/angka/terbaru.json`, ANGKA.replace(/2026-10/g, k));
+  const id = sha256(jpeg(5));
+  const s = await api("POST", "/api/laporan-berkala", {periode: P, kode: k, isian: {...LENGKAP, foto: [{bab: "bab2", id, ket: "Uji", kredit: "Kompas", media: true}]}}, ADMIN);
+  assert.equal(s.s, 201, s.t);
+  const b = await api("POST", "/api/laporan-berkala/bekukan", {periode: P, kode: k, diubah: s.j.diubah}, ADMIN);
+  assert.equal(b.s, 422); assert.ok(b.j.kurang.includes("Dokumentasi: foto media tanpa tanda izin"), b.t);
+  assert.equal((await api("POST", "/api/laporan-berkala", {periode: P, kode: k, isian: {...LENGKAP, foto: [{bab: "bab2", id: "../x"}]}, diubah: s.j.diubah}, ADMIN)).s, 400);
+});
+
+uji("LB-08 foto beku tetap terbaca walau foto draf dihapus; foto belum terunggah 422; sidik beku dicek", async () => {
+  const k = "2026-07", q = `periode=${P}&kode=${k}`, f = jpeg(30), id = sha256(f);
+  await R2.put(`berkala/${P}/${k}/angka/terbaru.json`, ANGKA.replace(/2026-10/g, k));
+  const hilang = "e".repeat(64);
+  const s0 = await api("POST", "/api/laporan-berkala", {periode: P, kode: k, isian: {...LENGKAP, foto: [{bab: "bab2", id: hilang, ket: "Belum", kredit: "Dok. BNPB"}]}}, ADMIN);
+  const b0 = await api("POST", "/api/laporan-berkala/bekukan", {periode: P, kode: k, diubah: s0.j.diubah}, ADMIN);
+  assert.equal(b0.s, 422); assert.ok(b0.j.kurang.some(x => /belum terunggah/.test(x)), b0.t);
+  assert.equal((await unggah(P, k, f)).j.id, id);
+  const s = await api("POST", "/api/laporan-berkala", {periode: P, kode: k, isian: {...LENGKAP, foto: [{bab: "bab2", id, ket: "Posko", kredit: "Dok. BNPB"}]}, diubah: s0.j.diubah}, ADMIN);
+  assert.equal(s.s, 201, s.t);
+  const b = await api("POST", "/api/laporan-berkala/bekukan", {periode: P, kode: k, diubah: s.j.diubah}, ADMIN);
+  assert.equal(b.s, 201, b.t);
+  assert.deepEqual(await isiR2(`berkala/${P}/${k}/beku/v1/foto/${id}.jpg`), f);
+  const h = await api("POST", "/api/laporan-berkala/foto/hapus", {periode: P, kode: k, id}, ADMIN); assert.equal(h.s, 200, h.t);
+  assert.equal((await api("POST", "/api/laporan-berkala/foto/hapus", {periode: P, kode: k, id}, PEMIRSA)).s, 403);
+  assert.equal(await isiR2(`berkala/${P}/${k}/foto/${id}.jpg`), null);
+  for (const [qq, hh] of [[`${q}&id=${id}&versi=1`, STAF], [`${q}&id=${id}&versi=1`, PEMIRSA], [`${q}&id=${id}`, ADMIN]]) {
+    const g = await mf.dispatchFetch(`${ASAL}/api/laporan-berkala/foto?${qq}`, {headers: hh});
+    assert.equal(g.status, 200, qq); assert.deepEqual(new Uint8Array(await g.arrayBuffer()), f);
+  }
+  for (const qq of [`${q}&id=../../dalops`, `${q}&id=${id}&versi=x`, `periode=bulanan&kode=2099-01&id=${id}`])
+    assert.equal((await api("GET", `/api/laporan-berkala/foto?${qq}`, undefined, ADMIN)).s, 400, qq);
+  assert.equal((await api("GET", `/api/laporan-berkala/foto?${q}&id=${id}&versi=1`)).s, 403);
+  assert.equal((await api("GET", `/api/laporan-berkala/foto?${q}&id=${hilang}&versi=1`, undefined, ADMIN)).s, 404);
+  /* objek beku diubah di R2: dibaca 500, tidak dijawab isi palsunya */
+  await R2.put(`berkala/${P}/${k}/beku/v1/foto/${id}.jpg`, jpeg(31));
+  const t = await api("GET", `/api/laporan-berkala/foto?${q}&id=${id}&versi=1`, undefined, ADMIN);
+  assert.equal(t.s, 500); assert.equal(t.j.galat, "foto versi ini berubah");
+});
