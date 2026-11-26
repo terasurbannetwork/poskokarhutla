@@ -384,6 +384,10 @@ test("lapor orang hilang lewat obrolan (pemilik 25 Nov 2026): identitas, lokasi 
   await kirim("150"); assert.equal(sesi.status, "cari_berat"); assert.equal(h.satuan, "kg");
   assert.equal((await kirim("500")).sesi.status, "cari_berat", "berat di atas 300 kg ditanya ulang");
   await kirim("1"); assert.equal(sesi.status, "cari_pakaian", "Tidak tahu: berat kosong, bukan 0");
+  assert.equal(h.pilihan, null, "pakaian wajib, tanpa Lewati"); assert.equal((await kirim("Lewati")).sesi.status, "cari_pakaian", "Lewati ditolak (pemilik 26 Nov 2026)");
+  // panel Isian laporan berisi isian orang dicari, bukan kejadian
+  { const {isianTampil} = await import("../../src/lapor_tampil.js"), d = isianTampil(sesi);
+    assert.ok(d.some(x => x.nama === "cari_nama" && x.tampil === "Siti Aminah")); assert.ok(d.some(x => x.nama === "cari_umur" && x.tampil === "9 tahun")); assert.ok(!d.some(x => x.nama === "jenis")); }
   await kirim("kaos merah"); assert.equal(sesi.status, "cari_tanda");
   await kirim("1"); assert.equal(sesi.status, "cari_foto", "sesudah ciri: foto (pemilik 26 Nov 2026)"); assert.equal(h.minta, "foto_cari"); assert.deepEqual(h.pilihan, ["Lewati"]); assert.match(h.balasan, /galeri/);
   assert.equal((await kirim("apa ini")).sesi.status, "cari_foto", "teks lain ditanya ulang");

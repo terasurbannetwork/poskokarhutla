@@ -23,7 +23,7 @@ const IKON_JENIS = {banjir: "b-banjir", longsor: "b-longsor", abrasi: "b-gelomba
 const ILUS_JENIS = {}; // jenis tanpa foto memakai ilustrasi
 const KREDIT = {kekeringan: "Foto: Crisco 1492, CC BY-SA 4.0", kebakaran_gedung: "Foto: CEphoto, Uwe Aranas, CC BY-SA 3.0"}; // foto berlisensi atribusi
 const GAMBAR = {kebakaran_gedung: "kebakaran", kekeringan: "kekeringan", banjir: "banjir", longsor: "longsor", abrasi: "rob", cuaca: "cuaca", gempa: "gempa", tsunami: "tsunami", erupsi: "gunungapi", karhutla: "karhutla"};
-const KELOMPOK_IKON = {"Kejadian": "i-kejadian", "Korban": "i-korban", "Warga terdampak": "i-orang", "Pengungsian": "i-pengungsian", "Warga terdampak dan mengungsi": "i-pengungsian", "Kerusakan rumah": "i-rumah", "Fasilitas dan jalan": "i-fasilitas", "Data khusus": "i-khusus", "Kebutuhan": "i-kebutuhan", "Penyelamatan dan medis": "i-plus", "Situasi sekarang": "i-status", "Kelompok rentan": "i-orang", "Layanan dasar": "k-listrik"};
+const KELOMPOK_IKON = {"Orang yang dicari": "i-orang", "Ciri-ciri": "i-cari", "Terakhir terlihat": "i-lokasi", "Kontak": "i-telepon", "Kejadian": "i-kejadian", "Korban": "i-korban", "Warga terdampak": "i-orang", "Pengungsian": "i-pengungsian", "Warga terdampak dan mengungsi": "i-pengungsian", "Kerusakan rumah": "i-rumah", "Fasilitas dan jalan": "i-fasilitas", "Data khusus": "i-khusus", "Kebutuhan": "i-kebutuhan", "Penyelamatan dan medis": "i-plus", "Situasi sekarang": "i-status", "Kelompok rentan": "i-orang", "Layanan dasar": "k-listrik"};
 const KEPALA = {ketik_teks: ["i-tambah-teks", "Isian"], ketik_angka: ["i-orang", "Isian angka"], ketik_telepon: ["i-telepon", "Nomor telepon"], tempat: ["i-pengungsian", "Titik pengungsian"], pilihan: ["i-daftar", "Pilih salah satu"], setuju: ["i-status", "Persetujuan data"], identitas: ["i-orang", "Data pelapor"], lokasi: ["i-lokasi", "Lokasi kejadian"], jenis: ["i-kejadian", "Jenis bencana"],
   sub: ["i-kejadian", "Karakteristik"], foto: ["i-kamera", "Foto kejadian"]};
 const BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"], HARI = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
@@ -252,7 +252,9 @@ const isiTeksBebas = (isi, j) => { const angka = j.minta === "angka", tel = j.mi
   if (dua) { const l = el("button", "lp-kedua", dua); l.type = "button"; l.addEventListener("click", () => kirim({teks: "1", tampil: dua})); bawah.append(l); }
   bawah.append(k);
   // satuan di kanan kotak angka (pemilik 26 Nov 2026: "di sebelah box nya ada kata tahun"); satuan dari mesin, bukan ditebak
-  if (angka && j.satuan) { const b = el("div", "lp-isian-satuan"); b.append(t, el("span", null, j.satuan)); isi.append(b, h, bawah); } else isi.append(t, h, bawah); };
+  // angka dan telepon satu baris: kotak (dan satuannya) lalu tombol, tanpa ruang kosong di kanan (pemilik 26 Nov 2026: "kenapa dia hanya sendiri disitu")
+  if (angka || tel) { const baris = el("div", `lp-isian-baris${angka ? " angka" : ""}`), kotak = el("div", "lp-isian-satuan"); kotak.append(t); if (angka && j.satuan) kotak.append(el("span", null, j.satuan));
+    baris.append(kotak, ...bawah.children); isi.append(baris, h); } else isi.append(t, h, bawah); };
 /* pilihan tinggi air: orang dewasa 170 cm dengan air setinggi pilihannya (pemilik 19 Nov 2026: "bagusin") */
 /* pilihan bertingkat tanpa ikon: batang naik, yang terisi sebanyak urutan pilihannya (besar kecilnya terlihat sekilas) */
 const gambarTingkat = (i, n) => { const k = Math.max(2, Math.min(n, 5)); return `<svg viewBox="0 0 ${k * 8} 24" aria-hidden="true" class="lp-tingkat-svg">${Array.from({length: k}, (_, x) => `<rect x="${x * 8 + 1}" y="${22 - (x + 1) * (20 / k)}" width="6" height="${(x + 1) * (20 / k)}" rx="1.5" class="${x <= i * (k - 1) / Math.max(1, n - 1) ? "isi" : ""}"/>`).join("")}</svg>`; };

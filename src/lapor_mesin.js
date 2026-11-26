@@ -538,7 +538,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     if (langkah === "umur") return Object.assign(jawab(`${k}*Umur ${sesi.cari.nama}*\nTulis angkanya saja, misalnya 12.`, ["Tidak tahu"], false, "angka", ["Tidak tahu umurnya"]), {satuan: sesi.satuan = "tahun"});
     if (langkah === "tinggi") return Object.assign(jawab(`${k}*Tinggi badan ${sesi.cari.nama}*\nPerkiraan saja, misalnya 160.`, ["Tidak tahu"], false, "angka", ["Tidak tahu tingginya"]), {satuan: sesi.satuan = "cm"});
     if (langkah === "berat") return Object.assign(jawab(`${k}*Berat badan ${sesi.cari.nama}*\nPerkiraan saja, misalnya 55.`, ["Tidak tahu"], false, "angka", ["Tidak tahu beratnya"]), {satuan: sesi.satuan = "kg"});
-    if (langkah === "pakaian") return jawab(`${k}*Pakaian terakhir ${sesi.cari.nama}*\nMisalnya kaus merah dan celana jeans.`, ["Lewati"], false, "teks", ["Tidak ingat pakaiannya"]);
+    if (langkah === "pakaian") return jawab(`${k}*Pakaian terakhir ${sesi.cari.nama}*\nMisalnya kaus merah dan celana jeans.`, null, false, "teks");   // wajib, tanpa Lewati (pemilik 26 Nov 2026: "gausah ada lewati deh soalnya datanya penting")
     if (langkah === "tanda") return jawab(`${k}*Tanda lain yang mudah dikenali*\nMisalnya kacamata, tahi lalat di pipi, atau bekas luka.`, ["Lewati"], false, "teks", ["Tidak ada tanda lain"]);
     if (langkah === "ciri") return jawab(`${k}*Ciri-ciri ${sesi.cari.nama}*\nTulis umur, pakaian terakhir, tinggi badan, atau tanda lain yang mudah dikenali.`, ["Lewati"]);   // sesi lama yang sudah di langkah ini
     // sampai 10 foto (pemilik 26 Nov 2026: "Oke ini bisa sampai 10 foto ya"); Lewati sebelum ada foto, Lanjut sesudahnya; batas juga di rute unggah (MAKS_FOTO)
@@ -676,10 +676,11 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     }
     if (sesi.status === "cari_pakaian" || sesi.status === "cari_tanda") {
       const kosong = p === 0 || KATA_BELUM.test(teks) || /^lewati/i.test(teks.trim()), cr = (c.cr ||= {});
+      if (sesi.status === "cari_pakaian" && (kosong || samarkan(teks).trim().length < 3)) return tanyaCari("pakaian", "Pakaian terakhir wajib diisi. Tulis yang Anda ingat, misalnya warna baju.");
       cr[sesi.status === "cari_pakaian" ? "pakaian" : "tanda"] = kosong ? null : samarkan(teks).trim().slice(0, 120) || null;
       if (sesi.status === "cari_pakaian") return tanyaCari("tanda");
       const bagian = [cr.kelamin, cr.umur != null ? `${cr.umur} tahun` : null, cr.tinggi != null ? `tinggi ${cr.tinggi} cm` : null, cr.berat != null ? `berat ${cr.berat} kg` : null, cr.pakaian ? `pakaian terakhir ${cr.pakaian}` : null, cr.tanda || null].filter(Boolean);
-      c.ciri = bagian.join(", ").slice(0, 300) || null; delete c.cr; return tanyaCari("foto");
+      c.ciri = bagian.join(", ").slice(0, 300) || null; return tanyaCari("foto");   // c.cr disimpan untuk panel Isian laporan
     }
     if (sesi.status === "cari_ciri") { c.ciri = p === 0 || KATA_BELUM.test(teks) ? null : samarkan(teks).trim().slice(0, 300) || null; return tanyaCari("foto"); }
     if (sesi.status === "cari_foto") {

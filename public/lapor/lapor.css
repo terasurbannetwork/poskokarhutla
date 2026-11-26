@@ -3536,3 +3536,12 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 .lp-tk.lp-tk-cari{grid-template-columns:minmax(0,1fr)!important}
 .lp-langkah-wadah .lp-kontak-kolom{align-items:start!important}
 .lp-tk-cari .lp-tk-langkah{grid-template-columns:repeat(4,minmax(0,1fr))}
+/* isian angka dan telepon satu baris: [kotak + satuan] [Tidak tahu] [Kirim]; layar sempit turun berlapis (pemilik 26 Nov 2026) */
+.lp-isian-baris{display:grid;grid-template-columns:auto auto minmax(140px,1fr);gap:10px;align-items:center}
+.lp-isian-baris:not(.angka){grid-template-columns:minmax(0,1.4fr) auto minmax(120px,1fr)}
+.lp-isian-baris:has(> :nth-child(2):last-child){grid-template-columns:auto minmax(140px,1fr)}
+.lp-isian-baris:not(.angka):has(> :nth-child(2):last-child){grid-template-columns:minmax(0,1.4fr) minmax(120px,1fr)}
+.lp-isian-baris .lp-isian-satuan input.lp-isian{min-height:48px}
+.lp-isian-baris .lp-kedua,.lp-isian-baris .lp-utama{min-height:48px;margin:0}
+.lp-isian-baris:not(.angka) .lp-isian-satuan input.lp-isian{width:100%}
+@media (max-width:560px){.lp-isian-baris,.lp-isian-baris:not(.angka){grid-template-columns:auto minmax(0,1fr)}.lp-isian-baris > .lp-isian-satuan{grid-column:1 / -1}}
