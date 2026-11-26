@@ -67,17 +67,16 @@ uji("anggota U-22: nomor di kontak pemangku aktif (kategori dan wilayah cocok), 
   await kontak({wa: nomor(21), kategori: "bpbd"});   // kategori polri tidak membuka akun pemkab
   const j = await login(20), awal = await snapInstansi();
   const r = await mohon(j, akun);
-  assert.equal(r.s, 200, r.t); assert.equal(r.j.status, "aktif"); assert.equal(r.j.jalur, "kontak"); assert.equal(r.j.ke, "/instansi");
-  const ci = sesiInstansi(r); assert.equal(ci.length, 2); assert.deepEqual(ci.map(l => l.match(/Path=([^;]+)/)[1]).sort(), ["/api/instansi", "/instansi"]);
+  assert.equal(r.s, 200, r.t); assert.equal(r.j.status, "aktif"); assert.equal(r.j.jalur, "kontak"); assert.equal(r.j.ke, "/masuk?ke=%2Finstansi", "K25: anggota masuk lewat sandi");
+  assert.equal(sesiInstansi(r).length, 0, "K25: kode tidak menerbitkan sesi instansi");
   const a = await anggota(20, akun); assert.equal(a.status, "aktif"); assert.equal(a.jalur, "kontak"); assert.equal(a.rujukan, "kontak:" + kid);
-  const saya = await api("GET", "/api/instansi/saya", undefined, {cookie: ci[0].split(";")[0]}); assert.equal(saya.s, 200, saya.t); assert.equal(saya.j.akun.id, akun);
-  assert.equal(await n("mk_masuk_log", `akun_id = '${akun}'`), 1);
+  assert.equal(await n("mk_masuk_log", `akun_id = '${akun}'`), 0, "tanpa sesi, tanpa log masuk akun");
   assert.equal((await mohon(j, akun)).s, 200); assert.equal(await n("mk_anggota", `akun_id = '${akun}'`), 1, "idempoten per (orang, akun)");
   assert.equal(await snapInstansi(), awal, "tidak ada baris instansi_akun yang dibuat atau diubah");
   /* kategori tidak cocok: menunggu */
   const j2 = await login(21), r2 = await mohon(j2, akun); assert.equal(r2.j.status, "menunggu"); assert.equal(sesiInstansi(r2).length, 0);
-  /* daftar ruang berikutnya memuat akun itu tanpa kode lain */
-  const j3 = await login(20); assert.equal(j3.r.j.ruang.filter(x => x.jenis === "instansi").length, 1);
+  /* K25: daftar ruang tidak memuat akun lembaga */
+  const j3 = await login(20); assert.equal(j3.r.j.ruang.filter(x => x.jenis === "instansi").length, 0);
 });
 
 /* ---------------- U-23 ---------------- */
@@ -159,7 +158,7 @@ uji("anggota U-25: email dinas terpetakan: kode sekali pakai ke domain yang dipe
   assert.equal((await minta("rekan@unit.bpbd.contoh.go.id")).s, 429, "jeda kirim ulang");
   const periksa = (kodeX, email = "rekan@unit.bpbd.contoh.go.id", id = akun) => api("POST", "/api/masuk/email/periksa", {akun_id: id, email, kode: kodeX}, dari(j));
   assert.equal((await periksa(kode === "000000" ? "111111" : "000000")).s, 400); assert.equal((await periksa(kode, "orang-lain@unit.bpbd.contoh.go.id")).s, 400, "kode terikat pada alamat");
-  const ok = await periksa(kode); assert.equal(ok.s, 200, ok.t); assert.equal(ok.j.status, "aktif"); assert.equal(sesiInstansi(ok).length, 2);
+  const ok = await periksa(kode); assert.equal(ok.s, 200, ok.t); assert.equal(ok.j.status, "aktif"); assert.equal(sesiInstansi(ok).length, 0, "K25");
   const a = await anggota(50, akun); assert.equal(a.jalur, "email"); assert.equal(a.rujukan, "email:unit.bpbd.contoh.go.id"); assert.ok(!JSON.stringify(a).includes("rekan@"));
   assert.equal((await periksa(kode)).s, 400, "kode sekali pakai");
   assert.equal(await snapInstansi(), awal, "tidak ada baris instansi_akun yang dibuat atau diubah");
@@ -195,7 +194,7 @@ uji("anggota U-26: undangan berlaku mengaktifkan anggota saat kode sah; dicabut 
   assert.equal(u.j.status, "terkirim"); assert.match(u.j.wa, /^x+0060$/); assert.ok(!u.t.includes(nomor(60)) && !u.t.includes(lokal(60)));
   const j = await login(60); const a = await anggota(60, akun); assert.equal(a.status, "aktif"); assert.equal(a.jalur, "undang"); assert.equal(a.rujukan, "undang:" + u.j.id); assert.match(a.oleh, /^admin:/);
   assert.equal((await DB.prepare("SELECT status FROM mk_undang WHERE id = ?").bind(u.j.id).first()).status, "diterima");
-  assert.equal(j.r.j.ruang.filter(x => x.jenis === "instansi").length, 1); assert.equal(sesiInstansi(j.r).length, 2, "sesi instansi terbit saat kode sah");
+  assert.equal(j.r.j.ruang.filter(x => x.jenis === "instansi").length, 0); assert.equal(sesiInstansi(j.r).length, 0, "K25: kode tidak menerbitkan sesi instansi");
   /* dicabut */
   const c = await undang(H(ADMIN), {wa: lokal(61), akun_id: akun}); const cb = await api("POST", "/api/masuk/undang/cabut/" + c.j.id, {}, H(ADMIN)); assert.equal(cb.s, 200, cb.t);
   assert.equal((await api("POST", "/api/masuk/undang/cabut/" + c.j.id, {}, H(ADMIN))).s, 409); await login(61); assert.equal(await anggota(61, akun), null);
@@ -359,7 +358,8 @@ uji("anggota tinjau: antrean instansi, pendataan, dan kampus membawa cocok_konta
   /* daftar dan cabut anggota: pemilik nomor akun dan admin saja; anggota biasa dan staf tidak */
   const dl = await api("GET", "/api/masuk/anggota?akun_id=" + akun, undefined, bacaDari(jo)); assert.equal(dl.s, 200, dl.t);
   assert.deepEqual(dl.j.anggota.map(x => x.id), [idA]); assert.ok(/^x+0133$/.test(dl.j.anggota[0].wa) && !dl.t.includes(nomor(133)));
-  const jb = await login(133); assert.equal(sesiInstansi(jb.r).length, 2, "anggota aktif mendapat sesi instansi lewat kode");
+  const jb = await login(133); assert.equal(sesiInstansi(jb.r).length, 0, "K25: anggota aktif tidak mendapat sesi instansi lewat kode");
+  await DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind("b".repeat(64), akun, Date.now(), Date.now() + 864e5).run();   // sesi dari pintu sandi
   assert.equal((await api("GET", "/api/masuk/anggota?akun_id=" + akun, undefined, bacaDari(jb))).s, 403, "anggota biasa"); assert.equal(dl.j.cabut_sesi_default, false); assert.equal((await api("GET", "/api/masuk/anggota")).s, 401);
   assert.equal((await api("POST", "/api/masuk/anggota/cabut/" + idA, {}, dari(jb))).s, 404);
   assert.equal((await api("POST", "/api/masuk/anggota/cabut/" + id16(), {}, H(ADMIN))).s, 404);

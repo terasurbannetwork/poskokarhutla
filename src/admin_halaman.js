@@ -38,7 +38,7 @@ export const aksesStaf = peran => [...Object.keys(HALAMAN_STAF).filter(k => bole
 /* null = semua peran KECUALI 'direktori' (peran itu hanya membuka Direktori, src/staf.js hanyaDirektori) */
 export const bolehStaf = (k, peran) => Object.hasOwn(HALAMAN_STAF, k) && (HALAMAN_STAF[k] === null ? peran.some(p => p !== "direktori") : peran.some(p => HALAMAN_STAF[k].includes(p)));
 /* Arah bawaan staf sesudah masuk tanpa ?ke= (peta-situs ALGORITMA "Arah sesudah masuk", Q7): Direktori saja ke /direktori, operator_cc saja ke /command-center,
-   lainnya /bnpb bila gerbang host ini membukanya untuk perannya, selain itu butir pertama menu staf perannya. Satu sumber untuk form sandi dan /api/masuk/sandi. */
+   lainnya /bnpb bila gerbang host ini membukanya untuk perannya, selain itu butir pertama menu staf perannya. Satu sumber untuk form sandi /masuk. */
 export function arahStaf(peran, terkunci) {
   if (peran.length && peran.every(p => p === "direktori")) return "/direktori";
   if (peran.length && peran.every(p => p === "operator_cc")) return "/command-center";

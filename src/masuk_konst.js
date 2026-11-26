@@ -25,12 +25,9 @@ export const DENYUT_MATI = 5 * MENIT;        // denyut lebih tua dari ini = salu
 export const RETENSI_KODE = HARI;            // mk_kode
 export const RETENSI_UNDANG = 90 * HARI;     // mk_undang, dihitung sesudah masa berlakunya lewat
 export const RETENSI_LOG = 400 * HARI;       // mk_masuk_log
-/* PM-06/PM-07: peran, sandi staf, rute Super Admin */
-export const LAJU_IP_SANDI = [[JAM, 20]];    // POST /api/masuk/sandi per alamat; tebakan sandi staf juga dihitung aturan staf (8 per jam per username dan IP)
-export const LAJU_AKUN_SANDI = [[JAM, 10]];  // per akun umum yang membuktikan nomor
+/* PM-06/PM-07: peran, rute Super Admin (sandi staf sesudah kode dan pilih ruang dicabut K25, 26 Nov 2026) */
 export const AKUN_PER_JENIS = 5;             // paling banyak akun peran per jenis yang dibuka satu nomor (anggaran subrequest Worker)
 /* perbaikan PM-05..07 */
-export const LAJU_IP_PILIH = [[JAM, 60]];        // POST /api/masuk/pilih per alamat
 export const LAJU_IP_PEMIRSA_WA = [[JAM, 30]];   // POST /api/masuk/pemirsa_wa per alamat
 /* PM-08: lengkapi profil akun umum */
 export const LAJU_IP_LENGKAPI = [[JAM, 30]];     // POST /api/masuk/lengkapi per alamat
@@ -68,14 +65,9 @@ export const UNDANG_JENDELA = HARI;              // jendela hitung UNDANG_HARIAN
 export const DAFTAR_MAKS = 200;                  // baris daftar anggota, undangan, dan antrean tinjau per jawaban
 export const UNDANG_PER_NOMOR = 3;               // undangan ke satu nomor tujuan per jendela, lintas pengundang
 export const LAJU_IP_BACA = [[JAM, 120]];        // GET daftar undangan, anggota, antrean tinjau per alamat (bucket terpisah dari tulis)
-/* PM-13 sampai PM-16: atur sandi, hapus akun, bukti ulang, kode lewat email (ALGORITMA §2.4, §6, §7) */
-export const LAJU_IP_SANDI_BARU = [[JAM, 20]];   // POST /api/masuk/sandi_baru per alamat
-export const LAJU_AKUN_SANDI_BARU = [[JAM, 10]]; // per akun umum
+/* PM-13 sampai PM-16: hapus akun, bukti ulang (atur sandi dan kode lewat email dicabut K25) */
 export const LAJU_IP_HAPUS = [[JAM, 20]];        // POST /api/masuk/hapus per alamat
 export const BUKTI_ULANG = 180 * HARI;           // anggota yang selama ini tidak masuk ke akun lembaganya diperiksa ulang
-export const LAJU_IP_KODE_EMAIL = [[JAM, 20]];   // POST /api/masuk/kode_email per alamat (sebelum Turnstile)
-export const LAJU_NOMOR_KODE_EMAIL = [[15 * MENIT, 3], [HARI, 8]];   // per nomor, dihitung untuk semua permintaan (alamat cocok atau tidak)
-export const LAJU_GLOBAL_KODE_EMAIL = [[JAM, 100], [HARI, 500]];     // kode email semua orang; Resend punya kuota sendiri
 export const SANDI_MIN = 10;                     // sama dengan aturan sandi pendataan dan kampus (diperiksa modul masing-masing)
 export const LAJU_IP_SAYA = [[JAM, 300]];       // GET /api/masuk/saya per alamat (juga ?lunak=1, probe halaman lain)
 
