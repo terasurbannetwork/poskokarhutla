@@ -3194,6 +3194,29 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-pop-waktu{margin:0;padding-top:8px;border-top:1px solid var(--line);font:500 .6875rem/1.4 var(--font);color:var(--ink2)}
 .lp-pop-buka{margin:0 -6px;padding:6px;border-top:0}
 .lp-pop-buka b{font:700 .8125rem var(--font);color:var(--brand2)}
+/* menu Data Bencana di atas peta Alun-alun (pemilik 26 Nov 2026), meniru menu Data Bencana situs utama; boleh centang lebih dari satu */
+.lp-alun-menu{position:absolute;z-index:3;top:16px;left:456px;width:240px}
+.lp-alun-menu[hidden]{display:none}
+.lp-alun-menu-t{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 12px 6px 6px;border-radius:14px;background:var(--card);box-shadow:var(--shadow);font:700 .875rem var(--font);color:var(--ink);cursor:pointer;list-style:none}
+.lp-alun-menu-t::-webkit-details-marker{display:none}
+.lp-alun-menu-t > span:nth-child(2){flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lp-alun-menu-t:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.lp-alun-menu-panah{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:2;rotate:90deg;transition:rotate var(--dur-1,.15s) ease}
+.lp-alun-menu[open] .lp-alun-menu-panah{rotate:-90deg}
+.lp-alun-menu-ik{display:grid;place-items:center;flex:none;width:30px;height:30px;border-radius:9px;background:color-mix(in oklab,var(--k,var(--head-bg)) 16%,var(--card));color:var(--head-bg)}
+.lp-alun-menu-ik svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
+.lp-alun-menu-ik .lp-jn-tanda{width:12px;height:12px}
+.lp-alun-menu-isi{display:grid;gap:2px;margin-top:6px;padding:6px;border-radius:14px;background:var(--card);box-shadow:var(--shadow);max-height:min(460px,calc(100vh - 140px));overflow:auto}
+.lp-alun-menu-b{display:flex;align-items:center;gap:10px;width:100%;min-height:40px;padding:4px 8px 4px 5px;border:0;border-radius:10px;background:none;color:var(--ink);font:600 .875rem var(--font);text-align:left;cursor:pointer}
+.lp-alun-menu-b:hover{background:var(--surface)}
+.lp-alun-menu-b[aria-pressed="true"]{background:var(--head-bg);color:var(--on-head)}
+.lp-alun-menu-b[aria-pressed="true"] .lp-alun-menu-ik{background:var(--card)}
+.lp-alun-menu-b.pudar{opacity:.5}
+.lp-alun-menu-b:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
+.lp-jn-ket{cursor:default;min-height:22px;border:0;padding:0 6px 0 0;background:none}
+.lp-jn-ket:hover{background:none}
+@media (max-width:899px){.lp-alun-menu{top:12px;left:auto;right:56px;width:min(220px,calc(100% - 80px))}}
+@media (prefers-reduced-motion:reduce){.lp-alun-menu-panah{transition:none}}
 /* periode Alun-alun (pemilik 26 Nov 2026): satu deret selebar panel, dibagi rata, pilihan aktif navy */
 .lp-alun-periode{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:0 0 10px;padding:4px;border-radius:12px;background:var(--surface)}
 .lp-alun-periode button{min-height:34px;border:0;border-radius:9px;background:none;color:var(--ink2);font:700 .8125rem var(--font);cursor:pointer}

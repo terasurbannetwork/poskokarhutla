@@ -1855,7 +1855,7 @@ function letakLabel(px, py, rx, ry, teks, huruf, kotak, layar, urut) {
 }
 /* panel daftar, legenda, dan tombol zoom menutupi peta: label tidak diletakkan di bawahnya */
 const halangPeta = kv => { const o = kv.getBoundingClientRect();
-  return [...kv.closest("#petaAlun").querySelectorAll(".lp-alun-panel, #legendaAlun, #periodeAlun, .maplibregl-ctrl-top-right")].filter(e => e.offsetParent).map(e => { const r = e.getBoundingClientRect();
+  return [...kv.closest("#petaAlun").querySelectorAll(".lp-alun-panel, #legendaAlun, #periodeAlun, #menuJenisAlun, .maplibregl-ctrl-top-right")].filter(e => e.offsetParent).map(e => { const r = e.getBoundingClientRect();
     return {x1: r.left - o.left - 4, x2: r.right - o.left + 4, y1: r.top - o.top - 4, y2: r.bottom - o.top + 4}; }); };
 const tabrak = (a, b) => a.x1 < b.x2 && b.x1 < a.x2 && a.y1 < b.y2 && b.y1 < a.y2;
 function pasangDonat() { gambarDonat(); }
@@ -1900,8 +1900,13 @@ function gambarDonat() {
 }
 const aturDonat = () => gambarDonat();
 const JENIS_CHIP = [["banjir", "Banjir"], ["longsor", "Tanah longsor"], ["cuaca", "Cuaca ekstrem"], ["gempa", "Gempa bumi"], ["karhutla", "Karhutla"], ["erupsi", "Erupsi"], ["abrasi", "Abrasi"], ["kekeringan", "Kekeringan"]];
-function segarChipJenis() { for (const b of document.querySelectorAll("#legendaAlun .lp-jn-chip")) { const j = b.dataset.jenis;
-  b.setAttribute("aria-pressed", String(j ? alunJenisPilih.has(j) : !alunJenisPilih.size)); b.classList.toggle("pudar", !!j && !!alunJenisAda && !alunJenisAda.has(j)); } }
+function segarChipJenis() {
+  for (const b of document.querySelectorAll("#legendaAlun .lp-jn-chip")) b.classList.toggle("pudar", !!alunJenisAda && !alunJenisAda.has(b.dataset.jenis));
+  for (const b of document.querySelectorAll("#menuJenisAlun .lp-alun-menu-b")) { const j = b.dataset.jenis;
+    b.setAttribute("aria-pressed", String(j ? alunJenisPilih.has(j) : !alunJenisPilih.size)); b.classList.toggle("pudar", !!j && !!alunJenisAda && !alunJenisAda.has(j)); }
+  const sm = document.querySelector("#menuJenisAlun summary"); if (!sm) return;
+  const pil = [...alunJenisPilih], j = pil.length === 1 ? pil[0] : "", teks = pil.length > 1 ? `${pil.length} jenis bencana` : j ? (JENIS_CHIP.find(([k]) => k === j)?.[1] || j) : "Data Bencana", ub = el("span", `lp-alun-menu-ik${j ? ` lp-jenis-${j}` : ""}`);
+  ub.append(j ? el("i", "lp-jn-tanda") : ikon("i-kejadian")); sm.replaceChildren(ub, el("span", null, teks), ikon("i-panah", "lp-alun-menu-panah")); }
 const tandaiJenisAda = daftarJenis => { alunJenisAda = new Set(daftarJenis); segarChipJenis(); };
 const TEKS_JENIS = {};   // diisi saat peta dibuat: warna angka di dalam tanda (gelap untuk warna terang)
 async function gambarPetaAlun(daftar) {
@@ -1946,13 +1951,21 @@ async function gambarPetaAlun(daftar) {
   const lgT = el("button", "lp-alun-legenda-t"); lgT.type = "button"; lgT.setAttribute("aria-expanded", "true"); lgT.append("Legenda", ikon("i-panah", "lp-kb-panah"));
   // status kejadian tidak tergambar di peta (cincin = jenis), jadi tidak masuk legenda; statusnya ada di tabel dan pop-up
   const lgI = el("div", "lp-alun-legenda-isi"), g2 = el("div");
-  const jl = el("div", "lp-alun-legenda-jenis");   // chip jenis bertitik warna sama dengan potongan cincin, sekaligus saringan (boleh lebih dari satu)
-  jl.setAttribute("role", "group"); jl.setAttribute("aria-label", "Saring jenis bencana");
-  for (const [j, teks] of [["", "Semua jenis"], ...JENIS_CHIP]) { const b = el("button", "lp-jn-chip", teks); b.type = "button"; b.dataset.jenis = j;
-    if (j) b.prepend(el("i", `lp-jn-tanda lp-jenis-${j}`)); jl.append(b); }
-  jl.addEventListener("click", e => { const b = e.target.closest("button[data-jenis]"); if (!b) return; const j = b.dataset.jenis;
-    if (!j) alunJenisPilih.clear(); else if (!alunJenisPilih.delete(j)) alunJenisPilih.add(j);
+  // legenda: keterangan warna cincin per jenis saja; saringan jenis pindah ke menu Data Bencana di atas peta (pemilik 26 Nov 2026)
+  const jl = el("div", "lp-alun-legenda-jenis");
+  for (const [j, teks] of JENIS_CHIP) { const b = el("span", "lp-jn-chip lp-jn-ket", teks); b.dataset.jenis = j; b.prepend(el("i", `lp-jn-tanda lp-jenis-${j}`)); jl.append(b); }
+  // menu Data Bencana (meniru menu Data Bencana situs utama): centang satu atau beberapa jenis, peta dan tabel ikut tersaring
+  const mn = document.createElement("details"); mn.className = "lp-alun-menu"; mn.id = "menuJenisAlun"; mn.hidden = alunMode === "peringatan";
+  const sm = document.createElement("summary"); sm.className = "lp-alun-menu-t"; sm.setAttribute("aria-label", "Pilih jenis bencana");
+  const ls = el("div", "lp-alun-menu-isi"); ls.setAttribute("role", "group"); ls.setAttribute("aria-label", "Jenis bencana");
+  for (const [j, teks] of [["", "Semua bencana"], ...JENIS_CHIP]) { const b = el("button", "lp-alun-menu-b"), ub = el("span", `lp-alun-menu-ik${j ? ` lp-jenis-${j}` : ""}`);
+    b.type = "button"; b.dataset.jenis = j; ub.append(j ? el("i", "lp-jn-tanda") : ikon("i-kejadian")); b.append(ub, el("span", null, teks)); ls.append(b); }
+  ls.addEventListener("click", e => { const b = e.target.closest("button[data-jenis]"); if (!b) return; const j = b.dataset.jenis;
+    if (!j) { alunJenisPilih.clear(); mn.open = false; } else if (!alunJenisPilih.delete(j)) alunJenisPilih.add(j);   // boleh lebih dari satu (pemilik 26 Nov 2026); menu tetap terbuka
     segarChipJenis(); gambarAlun(); });   // chrome langsung, daftar dan peta ditunda di gambarAlun
+  document.addEventListener("click", e => { if (mn.open && !mn.contains(e.target)) mn.open = false; });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && mn.open) { mn.open = false; sm.focus(); } });
+  mn.append(sm, ls); wp.append(mn);
   const tk = el("ul", "lp-alun-legenda-tingkat");
   for (const [, , teks] of TINGKAT_PROV) { const li = el("li", null, teks); li.prepend(el("i")); tk.append(li); }
   const tkB = el("div", "lp-alun-legenda-baris"); tkB.append(el("b", null, "Kejadian per provinsi"), tk);
@@ -2251,7 +2264,7 @@ async function nyalakanPeringatan() {
 function setModeAlun(mode, bahaya) {
   const per = mode === "peringatan"; alunMode = mode; if (bahaya) dpBahaya = bahaya;
   for (const b of $("modeAlun").children) b.setAttribute("aria-selected", String(b.dataset.mode === mode));   // chrome langsung
-  $("saringPanel").hidden = per; $("daftarAlun").hidden = per; if ($("legendaAlun")) $("legendaAlun").hidden = per; if ($("periodeAlun")) $("periodeAlun").hidden = per; $("isiPeringatan").hidden = !per; $("sumberAlun").hidden = !alunKabar;
+  $("saringPanel").hidden = per; $("daftarAlun").hidden = per; if ($("legendaAlun")) $("legendaAlun").hidden = per; if ($("periodeAlun")) $("periodeAlun").hidden = per; if ($("menuJenisAlun")) $("menuJenisAlun").hidden = per; $("isiPeringatan").hidden = !per; $("sumberAlun").hidden = !alunKabar;
   requestAnimationFrame(() => {   // kerja berat ditunda
     if (alunMode !== mode) return;
     if (typeof gambarDonat === "function") gambarDonat();   // cincin dan gunung api penanda DOM: ikut sembunyi di mode Peringatan
