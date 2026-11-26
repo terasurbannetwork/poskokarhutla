@@ -41,7 +41,7 @@ Pakai:  python3 scripts/umum/lampu_malam.py                      pemicu otomatis
                                                                  vonis U-L1..U-L4 -> kunci "laads" di lampu_malam_validasi.json
                                                                  (dijalankan .github/workflows/lab-lampu-malam.yml)
 """
-import array, datetime as dt, importlib.util, json, math, os, re, struct, sys, time, urllib.error, urllib.parse, urllib.request, zlib
+import array, datetime as dt, http.cookiejar, importlib.util, json, math, os, re, struct, sys, time, urllib.error, urllib.parse, urllib.request, zlib
 from concurrent.futures import ThreadPoolExecutor
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
@@ -456,6 +456,19 @@ MUTU_OK = {0, 1}            # Mandatory_Quality_Flag: 0 bermutu tinggi persisten
 NTL_KOSONG = 65535
 
 
+class _Teruskan(urllib.request.HTTPRedirectHandler):
+    """Token hanya ikut redirect ke *.earthdata.nasa.gov dan *.eosdis.nasa.gov (pola scripts/cuaca/imerg.py)."""
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        r = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if r and not (urllib.parse.urlsplit(newurl).hostname or "").endswith((".earthdata.nasa.gov", ".eosdis.nasa.gov")):
+            r.headers.pop("Authorization", None)
+        return r
+
+
+# OPeNDAP LAADS mengalihkan ke login Earthdata lalu kembali dengan cookie sesi; tanpa cookie jar putaran itu berakhir 401.
+_LAADS = urllib.request.build_opener(_Teruskan, urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+
+
 def ambil_laads(url, maks=80_000_000):
     """GET bertoken Earthdata (Authorization: Bearer); tanpa token -> RuntimeError. Dicoba ulang 3 kali."""
     tok = os.environ.get("EARTHDATA_TOKEN", "").strip()
@@ -464,7 +477,7 @@ def ambil_laads(url, maks=80_000_000):
     for i in range(3):
         try:
             q = urllib.request.Request(url, headers={"Authorization": f"Bearer {tok}", "User-Agent": "centurisk97-lampu-malam"})
-            with urllib.request.urlopen(q, timeout=180) as r:
+            with _LAADS.open(q, timeout=180) as r:
                 return r.status, r.geturl(), r.headers.get("content-type", ""), r.read(maks)
         except urllib.error.HTTPError as e:
             if e.code in (401, 403, 404) or i == 2:
