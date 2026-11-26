@@ -3167,6 +3167,13 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-alun-pop-baris:hover{background:var(--surface)}
 .lp-alun-pop-baris:hover svg{color:var(--brand2)}
 .lp-alun-pop-baris:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
+/* periode Alun-alun (pemilik 26 Nov 2026): satu deret selebar panel, dibagi rata, pilihan aktif navy */
+.lp-alun-periode{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:0 0 10px;padding:4px;border-radius:12px;background:var(--surface)}
+.lp-alun-periode button{min-height:34px;border:0;border-radius:9px;background:none;color:var(--ink2);font:700 .8125rem var(--font);cursor:pointer}
+.lp-alun-periode button[aria-checked="true"]{background:var(--head-bg);color:var(--on-head)}
+.lp-alun-periode button:hover:not([aria-checked="true"]){background:var(--card);color:var(--ink)}
+.lp-alun-periode button:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
+.lp-alun-periode small{grid-column:1 / -1;text-align:center;font-size:.6875rem;padding-top:2px}
 /* kejadian dalam satu provinsi: tabel, kartu lengkap terbuka di bawah baris (pemilik 26 Nov 2026) */
 .lp-alun-prov.lp-alun-kj td{text-align:left}
 .lp-alun-prov.lp-alun-kj td:last-child{text-align:center}

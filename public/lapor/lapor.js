@@ -1861,7 +1861,20 @@ function kartuKejadian(x, ikut) {
 }
 /* Alun-alun per provinsi (pemilik 26 Nov 2026: "harusnya dia ini dikelompokkan kaya gini"): tabel provinsi dulu, klik baris = kartu kejadian provinsi itu.
    Kolom menghitung kejadian per sumber terpisah (D3: angka antarsumber tidak dijumlah). Nama provinsi dari /instansi_wilayah.js (satu tabel nama wilayah). */
-let alunProv = "";
+let alunProv = "", alunPeriode = 0;   // alunPeriode: 0 = semua data, n = n hari terakhir (pemilik 26 Nov 2026: period picker)
+const PERIODE_ALUN = [[1, "Hari ini"], [3, "3 hari"], [7, "7 hari"], [0, "Semua"]];
+/* tanggal kegiatan terakhir satu kejadian: laporan resmi terakhir, tanggal mulai, atau laporan warga terbaru */
+const akhirKejadian = x => [x.resmi?.lap_terakhir, x.resmi?.mulai, ...x.warga.map(g => String(g.waktu || "").slice(0, 10))].filter(Boolean).sort().pop() || "";
+function pitaPeriode() {
+  const d = el("div", "lp-alun-periode"); d.setAttribute("role", "radiogroup"); d.setAttribute("aria-label", "Periode kejadian");
+  const ref0 = alunKabar?.hari, kini0 = new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);   // data belum hari ini: tombol pertama memakai tanggal datanya, bukan "Hari ini"
+  for (const [n, t] of PERIODE_ALUN) { const b = el("button", null, n === 1 && ref0 && ref0 < kini0 ? tglPendekId(ref0) : t); b.type = "button"; b.setAttribute("role", "radio"); b.setAttribute("aria-checked", String(n === alunPeriode));
+    b.addEventListener("click", () => { if (n === alunPeriode) return; alunPeriode = n; for (const c of d.children) c.setAttribute("aria-checked", String(c === b)); gambarAlun(); }); d.append(b); }
+  const ref = alunKabar?.hari; if (ref) { const a = el("small", "lp-redup"); a.textContent = alunPeriode ? `sampai ${tglPendekId(ref)}` : `data ${tglPendekId(akhirAwal())} sampai ${tglPendekId(ref)}`; d.append(a); }
+  return d;
+}
+const tglPendekId = iso => { const m = /^(\d{4})-(\d\d)-(\d\d)/.exec(iso || ""); return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"}) : ""; };
+const akhirAwal = () => (alunKabar?.kejadian || []).map(k => k.lap_terakhir).filter(Boolean).sort()[0] || alunKabar?.hari;
 const muatWilayah = () => muatWilayah.j ||= new Promise(ok => { if (window.Wilayah) return ok();
   document.head.append(Object.assign(document.createElement("script"), {src: "/instansi_wilayah.js?v=1", onload: ok, onerror: ok})); });
 const namaProv = k => !k ? "Provinsi belum diketahui" : window.Wilayah?.PROV?.[k] || `Provinsi ${k}`;
@@ -1918,6 +1931,8 @@ function gambarKabar(ikut) {
     const JENIS = ["banjir", "longsor", "cuaca", "gempa", "karhutla", "erupsi", "abrasi", "kekeringan"];
     let daftar = saring(gabung(alunKabar, alunData, Date.now()), {jenis: JENIS.includes(alunJenis) ? alunJenis : "", sumber: alunSumber, selesai: alunJenis === "selesai"});
     if (alunJenis === "diikuti") { daftar = daftar.filter(x => x.warga.some(g => ikut[g.id])); const m = ikutiBaca(); for (const x of daftar) for (const g of x.warga) if (m[g.id]) m[g.id] = g.status; ikutiTulis(m); }
+    if (alunPeriode) { const ref = alunKabar?.hari || new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10), batas = new Date(Date.parse(`${ref}T00:00:00Z`) - (alunPeriode - 1) * 864e5).toISOString().slice(0, 10);
+      daftar = daftar.filter(x => akhirKejadian(x) >= batas); }   // aktif dalam periode: laporan resmi atau warga terakhir di dalam rentang
     const semuaProv = daftar;   // tabel per provinsi dihitung dari daftar tersaring, sebelum dipilih satu provinsi
     if (alunProv) daftar = daftar.filter(x => (x.prov || "") === alunProv);
     gambarPetaAlun(daftar.map(x => ({id: x.id, titik: x.titik, jenis: x.jenisLabel, lokasi: {kab: x.kab}, statusLabel: x.statusLabel, status: x.status, prov: x.prov})));
@@ -1925,10 +1940,10 @@ function gambarKabar(ikut) {
     if (!daftar.length) {
       const k = el("div", "lp-kosong-besar"), m = el("div", "lp-kosong-maskot"); m.innerHTML = maskot("berpikir");
       const tx = el("div", "lp-kosong-teks"); tx.append(el("h2", null, alunJenis === "diikuti" ? "Belum ada kejadian yang Anda ikuti" : alunSumber === "medsos" ? "Media sosial belum tersambung" : "Belum ada kejadian untuk saringan ini"),
-        el("p", null, alunSumber === "medsos" ? "Belum ada unggahan media sosial yang ditampilkan." : "Coba ganti saringan jenis atau sumber."));
-      k.append(m, tx); return w.replaceChildren(k);
+        el("p", null, alunSumber === "medsos" ? "Belum ada unggahan media sosial yang ditampilkan." : alunPeriode ? "Coba periode yang lebih panjang, atau ganti saringan jenis atau sumber." : "Coba ganti saringan jenis atau sumber."));
+      k.append(m, tx); return w.replaceChildren(pitaPeriode(), k);
     }
-    w.replaceChildren(...(alunJenis === "selesai" ? [el("p", "lp-redup lp-kb-catatan", "Kejadian selesai yang tampil hanya yang tercatat dalam 8 hari terakhir.")] : []));
+    w.replaceChildren(pitaPeriode(), ...(alunJenis === "selesai" ? [el("p", "lp-redup lp-kb-catatan", "Kejadian selesai yang tampil hanya yang tercatat dalam 8 hari terakhir.")] : []));
     if (!alunProv) return tabelProvinsi(w, semuaProv);   // tampilan awal: dikelompokkan per provinsi seperti panel karhutla (pemilik 26 Nov 2026)
     w.append(kepalaProvinsi(alunProv, daftar.length));
     tabelKejadianProv(w, daftar, ikut, giliran);   // pemilik 26 Nov 2026: "ga bisa dibuat kaya tabel gitu aja?": satu baris per kejadian, kartu lengkap terbuka di bawah baris yang diketuk
