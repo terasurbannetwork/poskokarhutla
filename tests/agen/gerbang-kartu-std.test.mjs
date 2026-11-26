@@ -8,7 +8,7 @@
 import { fileURLToPath } from 'node:url'
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {readFileSync} from 'node:fs'
+import {readFileSync, existsSync} from 'node:fs'
 import {berkas, muatDaftar, banding, tegas} from './fixtures/ratchet.mjs'
 import {pindai, ukurSemua, SCOPE, WAJIB_BERSIH} from './fixtures/kartu_std.mjs'
 
@@ -30,6 +30,8 @@ const LAYAR = [
   {skrip: 'public/siklus/publik.js', html: 'public/siklus/publik.html', lama: []},
   {skrip: 'public/insiden_kaya.js', html: 'public/index.html', lama: []},
   {skrip: 'public/desa-waspada/desa-waspada.js', html: 'public/desa-waspada/index.html', lama: []},
+  // Ruang Unit (G-3, RU-031). menunggu = HTML belum dibuat tiketnya; begitu berkasnya ada, syarat kartu.css berlaku tanpa sunting di sini.
+  {skrip: 'public/bnpb/unit/rapor.js', html: 'public/bnpb/unit/unit.html', lama: [], menunggu: 'RU-020'},
 ]
 
 test('kartu.css memuat semua bagian kartu standar', () => {
@@ -45,9 +47,26 @@ for (const l of LAYAR) {
     assert.match(js, /ex-ey/, 'kartu harus punya pil kategori .ex-ey')
     assert.doesNotMatch(js, /Sumber: |class:\s*"ex-ft"/, 'kartu standar tanpa kaki keterangan/sumber (pemilik 4 Nov 2026)')
     for (const re of l.lama) assert.doesNotMatch(js, re, `pola kepala lama ${re} masih dipakai`)
+    if (l.menunggu && !existsSync(ROOT + l.html)) return   // cangkang belum ada (tiket l.menunggu)
     assert.match(baca(l.html), /\/inti\/kartu\.css/, `${l.html} harus memuat /inti/kartu.css`)
   })
 }
+
+// G-3 (RU-031): tiap skrip Ruang Unit yang merender kartu wajib ada di LAYAR. Meta-uji direktori lawan daftar, supaya layar baru tidak lolos diam-diam.
+const MERENDER = /ex-std|(?<![\w$.])(?:\w+\.)?kartu\w*\(/
+const belumTerdaftar = (isi, layar) => Object.entries(isi).filter(([f, src]) => MERENDER.test(src) && !layar.some(l => l.skrip === f)).map(([f]) => f)
+test('tiap public/bnpb/unit/*.js yang merender kartu terdaftar di LAYAR', () => {
+  const isi = Object.fromEntries(berkas('public/bnpb/unit', /\.js$/).map(f => [f, baca(f)]))
+  assert.ok(Object.keys(isi).includes('public/bnpb/unit/rapor.js'), 'public/bnpb/unit/rapor.js hilang: meta-uji membaca direktori yang salah')
+  assert.deepEqual(belumTerdaftar(isi, LAYAR), [],
+    'SEBAB: skrip Ruang Unit merender kartu (.ex-std atau kartu()) tetapi tidak ada di LAYAR gerbang-kartu-std.test.mjs.\nAKIBAT: syarat kartu standar dan kartu.css tidak diperiksa untuk layar itu.\nPERBAIKI: tambahkan {skrip, html, lama: []} ke LAYAR (RENCANA-UJI Ruang Unit 6.2) di commit yang sama dengan layarnya.')
+  for (const l of LAYAR.filter(l => l.menunggu)) assert.ok(existsSync(ROOT + l.skrip), `${l.skrip} terdaftar tetapi tidak ada`)
+})
+test('meta-uji G-3 menolak public/bnpb/unit/contoh.js fiktif yang tidak terdaftar', () => {
+  const palsu = {'public/bnpb/unit/contoh.js': 'el.innerHTML = `<section class="ex ex-std"><span class="ex-ey">x</span></section>`',
+    'public/bnpb/unit/kartu2.js': 'UnitRapor.kartu(k)', 'public/bnpb/unit/rapor.js': '<section class="ex ex-std">', 'public/bnpb/unit/bantu.js': 'const a = 1'}
+  assert.deepEqual(belumTerdaftar(palsu, LAYAR), ['public/bnpb/unit/contoh.js', 'public/bnpb/unit/kartu2.js'], 'meta-uji buta terhadap layar Ruang Unit yang tidak terdaftar')
+})
 
 // Layar yang membangun kartunya lewat kartu() dari inti.js (sudah di LAYAR): tak boleh membuat kepala bagian sendiri.
 for (const skrip of ['public/siklus/kaji.js', 'public/siklus/pulih.js', 'public/siklus/renkon.js', 'public/siklus/gladi.js', 'public/siklus/masadepan.js', 'public/siklus/pintu.js', 'public/siklus/registri.js']) {
