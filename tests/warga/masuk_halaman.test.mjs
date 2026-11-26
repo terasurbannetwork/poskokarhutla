@@ -1,4 +1,4 @@
-/* Satu Pintu Masuk, PM-08 (RENCANA-UJI U-20, U-21, L-1 bagian mesin): lengkapi profil akun umum, halaman /masuk, tautan dari pintu lama.
+/* Satu Pintu Masuk, PM-08 (RENCANA-UJI U-20, U-21, L-1 bagian mesin): lengkapi profil akun umum, halaman /masuk (sandi saja sejak K25), tautan dari pintu lama.
    Worker utuh di workerd + D1 lokal sungguhan (migrasi apa adanya); public/ disajikan apa adanya. Nomor uji hanya berawalan 62800. */
 import assert from "node:assert/strict";
 import {readFileSync, existsSync} from "node:fs";
@@ -65,30 +65,31 @@ uji("halaman L-1: GET /masuk menyajikan public/masuk.html dengan CSP yang cukup;
   const r = await mf.dispatchFetch(ASAL + "/masuk", {headers: {"cf-connecting-ip": "10.9.251.1"}}), html = await r.text();
   assert.equal(r.status, 200); assert.equal(html, baca("public/masuk.html"), "berkas asli, bukan halaman sementara");
   const csp = r.headers.get("content-security-policy");
-  assert.match(csp, /script-src 'self' https:\/\/challenges\.cloudflare\.com;/); assert.match(csp, /frame-src https:\/\/challenges\.cloudflare\.com;/); assert.match(csp, /style-src 'self' https:\/\/fonts\.googleapis\.com;/);
-  assert.match(csp, /font-src https:\/\/fonts\.gstatic\.com;/); assert.match(csp, /frame-ancestors 'none'/); assert.match(csp, /connect-src 'self';/); assert.doesNotMatch(csp, /unsafe-inline|unsafe-eval|\*/);
+  assert.match(csp, /style-src 'self' https:\/\/fonts\.googleapis\.com;/); assert.match(csp, /img-src 'self' data:;/);
+  assert.match(csp, /font-src https:\/\/fonts\.gstatic\.com;/); assert.match(csp, /frame-ancestors 'none'/); assert.match(csp, /form-action 'self'/); assert.doesNotMatch(csp, /unsafe-inline|unsafe-eval|\*/);
   assert.equal(r.headers.get("cache-control"), "no-store");
   assert.doesNotMatch(html, /<script(?![^>]*\ssrc=)/i, "tanpa skrip inline"); assert.doesNotMatch(html, /<style|\sstyle=|\son[a-z]+=/i, "tanpa gaya atau penangan inline");
-  const lokalDimuat = [...html.matchAll(/(?:src|href)="(\/[^"?]+)(?:\?[^"]*)?"/g)].map(m => m[1]).filter(p => /\.(?:js|css|svg)$/.test(p));
-  assert.ok(lokalDimuat.includes("/masuk.js") && lokalDimuat.includes("/masuk.css") && lokalDimuat.includes("/bnpb/bnpb.css") && lokalDimuat.includes("/bnpb/turnstile.js"));
+  const lokalDimuat = [...html.matchAll(/(?:src|href)="(\/[^"?]+)(?:\?[^"]*)?"/g)].map(m => m[1]);
+  assert.ok(lokalDimuat.includes("/masuk.js") && lokalDimuat.includes("/admin/admin.css"));
   for (const p of lokalDimuat) assert.ok(existsSync(path.join(AKAR, "public", p)), "ada: " + p);
-  for (const luarSitus of [...html.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)].map(m => new URL(m[1]).origin)) assert.ok(["https://fonts.googleapis.com", "https://fonts.gstatic.com"].includes(luarSitus), "asal luar yang tidak diizinkan CSP: " + luarSitus);
-  for (const id of ["fNomor", "fKode", "vRuang", "fSandi", "fLengkapi", "iKode"]) assert.match(html, new RegExp(`id="${id}"`), id);
-  const iKode = html.match(/<input id="iKode"[^>]*>/)[0]; for (const t of ["autocomplete=\"one-time-code\"", "inputmode=\"numeric\"", "maxlength=\"6\""]) assert.ok(iKode.includes(t), t);
-  assert.match(html, /type="tel" inputmode="numeric" autocomplete="tel"/);
-  assert.match(html, /class="ad-top"/); assert.doesNotMatch(html, /Pantau Bencana/);
+  for (const luarSitus of [...html.matchAll(/<(?:script|link|img)[^>]*(?:src|href)="(https?:\/\/[^"]+)"/g)].map(m => new URL(m[1]).origin)) assert.ok(["https://fonts.googleapis.com", "https://fonts.gstatic.com"].includes(luarSitus), "asal luar yang tidak diizinkan CSP: " + luarSitus);
+  assert.doesNotMatch(html, /Pantau Bencana/);
 });
 
-uji("halaman U-21: alamat lama /admin/masuk dialihkan ke form sandi /masuk dengan ?ke= halamannya (K21); /masuk memuat form kode WA dan form sandi", async () => {
+uji("halaman U-21: /masuk hanya username dan sandi (K25: tanpa kode WhatsApp); galeri jenis bencana di kanan; /admin/masuk dialihkan ke /masuk", async () => {
   const alih = async j => { const r = await mf.dispatchFetch(ASAL + j, {redirect: "manual"}); await r.text(); assert.equal(r.status, 303, j); return r.headers.get("location"); };
   assert.equal(await alih("/admin/masuk"), "/masuk#sandi");
   assert.equal(await alih("/admin/masuk?ke=%2Fkemitraan"), "/masuk?ke=%2Fkemitraan#sandi");
   assert.doesNotMatch(await alih("/admin/masuk?ke=%2F%2Fevil.lokal"), /evil\.lokal/, "?ke= asing dibuang oleh tujuan()");
   const html = baca("public/masuk.html");
-  assert.match(html, /<form id="fAkun" class="bn-form" method="post" action="\/masuk" hidden>/, "form sandi biasa, tersembunyi sampai dibuka");
-  assert.match(html, /id="iSandiAkun" name="sandi" type="password" autocomplete="current-password"/); assert.match(html, /id="iAkun" name="email" type="text" autocomplete="username"/);
-  assert.match(html, /id="aSandi" href="#sandi">Masuk dengan sandi</); assert.doesNotMatch(html, /\/admin\/masuk/, "tidak ada tautan ke pintu lama");
+  assert.match(html, /<form id="fAkun" method="post" action="\/masuk">/, "form sandi biasa, langsung tampil");
+  assert.match(html, /id="iSandiAkun" name="sandi" type="password"[^>]*autocomplete="current-password"/); assert.match(html, /id="iAkun" name="email" type="text"[^>]*autocomplete="username"/);
+  assert.doesNotMatch(html, /WhatsApp|type="tel"|one-time-code|id="fNomor"|id="fKode"/, "tanpa jalur kode WhatsApp (K25)");
+  assert.doesNotMatch(html, /\/admin\/masuk/, "tidak ada tautan ke pintu lama");
+  assert.equal((html.match(/<figure class="ad-pita">/g) || []).length, 6, "galeri enam jenis bencana");
+  for (const f of html.matchAll(/src="(\/img\/masuk\/[^"?]+)/g)) assert.ok(existsSync(path.join(AKAR, "public", f[1])), "foto ada: " + f[1]);
   const js = baca("public/masuk.js");
+  assert.doesNotMatch(js, /\/api\/masuk\/kode|\/api\/masuk\/periksa/, "halaman tidak memanggil rute kode");
   assert.match(js, /\$\("fAkun"\)\.action = "\/masuk" \+ \(ke \? "\?ke=" \+ encodeURIComponent\(ke\) : ""\)/, "?ke= ikut dikirim ke POST /masuk");
   assert.match(js, /document\.body\.dataset\.galat/, "galat server dibaca dari <body data-galat>");
   /* satu pintu (KEPUTUSAN-MASUK K16, 24 Nov 2026): /instansi tidak punya layar masuk sendiri; tamu dialihkan ke /masuk?ke=/instansi (K21) */
@@ -97,47 +98,20 @@ uji("halaman U-21: alamat lama /admin/masuk dialihkan ke form sandi /masuk denga
   assert.match(insJs, /location\.replace\("\/masuk\?ke=" \+ encodeURIComponent\(location\.pathname/, "tamu ke pintu tunggal");
 });
 
-uji("halaman L-1b: penyaring ?ke= menolak jalur di luar situs; pintu sandi mengikuti tujuan; nomor tersamar", () => {
+uji("halaman L-1b: penyaring ?ke= menolak jalur di luar situs; akun pendataan dan kampus ke layar sandinya sendiri; galat lewat textContent", () => {
   const ctx = {document: {getElementById: () => null}}; ctx.globalThis = ctx; vm.createContext(ctx);
-  if (existsSync(path.join(AKAR, "public/inti/pesan.js"))) vm.runInContext(baca("public/inti/pesan.js"), ctx, {filename: "pesan.js"});
   vm.runInContext(baca("public/masuk.js"), ctx, {filename: "masuk.js"});
-  const {jalurAman, pintuSandi, nomorSah, kalimat} = ctx.MasukMurni;
+  const {jalurAman, pintuSandi} = ctx.MasukMurni;
   for (const jahat of ["//evil.com", "/\\evil", "https://x", "http://x/y", "/\tx", "/\t/evil.com", "/\n/evil.com", "/ evil", "javascript:alert(1)", "evil.com", "", "\\\\evil", "/\u0000x", "/\x7f", null, undefined, 5, ["/a"]]) assert.equal(jalurAman(jahat), "", JSON.stringify(jahat));
   for (const baik of ["/", "/instansi", "/admin/pantau?x=1", "/alun-alun#a", "/petugas/panel"]) assert.equal(jalurAman(baik), baik);
-  assert.equal(pintuSandi(""), "#sandi"); assert.equal(pintuSandi("/instansi"), "#sandi"); assert.equal(pintuSandi("/instansi/laporan"), "#sandi");
+  assert.equal(pintuSandi(""), ""); assert.equal(pintuSandi("/instansi"), ""); assert.equal(pintuSandi("/instansiku"), ""); assert.equal(pintuSandi("/admin/pantau"), "");
   assert.equal(pintuSandi("/pendataan"), "/pendataan"); assert.equal(pintuSandi("/kemitraan/daerah"), "/kemitraan/masuk");
-  assert.equal(pintuSandi("/instansiku"), "#sandi"); assert.equal(pintuSandi("/admin/pantau"), "#sandi");
-  assert.equal(nomorSah("0812 3456 7890"), true); assert.equal(nomorSah("+62 812-3456-7890"), true); assert.equal(nomorSah("12345"), false); assert.equal(nomorSah("0212345678"), false); assert.equal(nomorSah(""), false);
-  assert.equal(ctx.PesanLayar.samar("62800123456"), "xxxxxxx3456");   // satu penyamar bersama (/inti/pesan.js)
-  assert.equal(kalimat("kode salah atau kedaluwarsa"), "Kode salah atau kedaluwarsa."); assert.equal(kalimat(""), ""); assert.equal(kalimat("Sudah."), "Sudah.");
-  assert.doesNotMatch(baca("public/masuk.js"), /console\.|localStorage|sessionStorage|innerHTML|insertAdjacentHTML|eval\(/, "kode dan nomor tidak dicatat atau disimpan; teks server lewat textContent");
+  assert.doesNotMatch(baca("public/masuk.js"), /console\.|localStorage|sessionStorage|innerHTML|insertAdjacentHTML|eval\(/, "sandi tidak dicatat atau disimpan; teks server lewat textContent");
 });
 
-uji("halaman L-1c: keluar dan kode sah mengosongkan isian; hitung mundur dari jam dan berhenti di tab tersembunyi; L4 tanpa tautan /privasi; 404 sama dengan 503", () => {
-  const js = baca("public/masuk.js"), html = baca("public/masuk.html");
-  const fn = (nama, mulai) => { const i = js.indexOf(mulai); assert.ok(i >= 0, nama); return js.slice(i, i + 700); };
-  const bersih = fn("bersih", "function bersih()");
-  for (const id of ["iNomor", "iKode", "iSandi", "iNama", "iKab"]) assert.ok(bersih.includes(`"${id}"`), "bersih: " + id);
-  assert.match(bersih, /daftarRuang"\)\.replaceChildren\(\)/); assert.match(bersih, /clearInterval\(hitung\)/);
-  assert.match(fn("keluar", "async function keluar()"), /bersih\(\)/, "jalur keluar memanggil bersih");
-  assert.match(fn("periksa", "clearInterval(hitung); gambarUlang = null;"), /\$\("iNomor"\)\.value = ""/, "kode sah mengosongkan nomor");
-  assert.doesNotMatch(js, /sisa--/, "hitung mundur tidak bergantung jumlah tick"); assert.match(js, /akhir = Date\.now\(\)/); assert.match(js, /visibilitychange/);
-  assert.match(js, /setInterval\(\(\) => \{ if \(document\.hidden\) return;/);
-  assert.match(fn("isiKab", "async function isiKab()"), /if \(\$\("iProv"\)\.value !== prov\) return;/);
-  assert.match(js, /\[saya\.s, saluran\.s\]\.some\(x => x === 404 \|\| x === 503\)/);
-  assert.match(html, /id="mkMuat"/); assert.match(html, /<form id="fNomor"[^>]*hidden>/, "form nomor tersembunyi sampai pemeriksaan awal selesai");
-  assert.doesNotMatch(html, /\/privasi/); assert.match(html, /<details class="mk-rinci">\s*<summary>Baca selengkapnya<\/summary>/);
-  assert.match(html, /menghapus akunmu sendiri dari halaman akun/, "teks persetujuan L4 menyebut hapus akun sendiri (PM-14)");
-  for (const id of ["fEmail", "fSandiBaru", "fHapus", "bHapusAkun", "bEmail", "iSandiBaru"]) assert.match(html, new RegExp(`id="${id}"`), id);
-  assert.match(html, /id="iSandiBaru"[^>]*autocomplete="new-password"/); assert.match(html, /id="iSandiBaru"[^>]*type="password"|type="password"[^>]*id="iSandiBaru"/);
-});
-
-uji("halaman L-1d: masuk.js dan aktivasi.js memakai PesanLayar, tanpa salinan kalimat, tanggal, atau penyamar lama", () => {
-  const ak = baca("public/admin/aktivasi.js"), mj = baca("public/masuk.js");
-  for (const [nama, js] of [["masuk.js", mj], ["aktivasi.js", ak]]) {
-    assert.match(js, /PesanLayar\./, nama + " memakai PesanLayar");
-    for (const lama of ["Tidak ada sambungan", "lalu coba lagi", "Menunggu persetujuan", "•"]) assert.ok(!js.includes(lama), nama + " tanpa salinan: " + lama);
-  }
-  assert.doesNotMatch(mj, /const tersamar|const lama =/); assert.match(baca("public/masuk.html"), /\/inti\/pesan\.js\?v=1"><\/script>\s*<script src="\/masuk\.js/);
+uji("halaman L-1d: aktivasi.js memakai PesanLayar, tanpa salinan kalimat, tanggal, atau penyamar lama", () => {
+  const ak = baca("public/admin/aktivasi.js");
+  assert.match(ak, /PesanLayar\./);
+  for (const lama of ["Tidak ada sambungan", "lalu coba lagi", "Menunggu persetujuan", "•"]) assert.ok(!ak.includes(lama), "tanpa salinan: " + lama);
   assert.match(ak, /Tidak ada dalam 120 hari/); assert.doesNotMatch(ak, /4 bulan/);
 });

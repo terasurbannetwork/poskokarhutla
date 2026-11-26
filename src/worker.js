@@ -862,7 +862,7 @@ async function masukSandi(env, req, url, kini) {
   return St.masuk(env, req, kini, async g => {   // aset dibaca hanya saat galat; sukses tidak menyentuh ASSETS
     const a = await env.ASSETS.fetch(new Request(new URL("/masuk.html", url)));
     const t = a.ok ? await a.text() : (a.body?.cancel(), "");
-    return t.includes("<body>") ? t.replace("<body>", () => `<body data-galat="${esc(g)}">`)   // fungsi pengganti: $& atau $1 di pesan tidak ditafsirkan
+    return /<body[\s>]/.test(t) ? t.replace(/<body(?=[\s>])/, () => `<body data-galat="${esc(g)}"`)   // fungsi pengganti: $& atau $1 di pesan tidak ditafsirkan
       : `<!doctype html><html lang="id"><meta charset="utf-8"><title>Masuk</title><p>${esc(g)}</p><p><a href="/masuk">Coba lagi</a></p></html>`;
   });
 }
