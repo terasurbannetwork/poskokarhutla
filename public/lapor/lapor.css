@@ -2802,7 +2802,7 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
   #isian{flex:1 1 auto;display:flex!important;flex-direction:column;gap:10px;min-height:0;overflow-y:auto}
   #isian>details{flex:1 1 auto;display:flex;flex-direction:column;min-height:56px}
   #isian>details:not([open])>summary{flex:1;display:flex;align-items:center}
-  #isian>details[open]{flex-grow:0}
+  #isian>details[open]{flex-grow:0;flex-shrink:0}   /* kartu terbuka tidak boleh menyusut di bawah isinya (teks meluap keluar garis, pemilik 26 Nov 2026); panel yang menggulir */
 }
 /* pilih bahasa (pemilik 25 Nov 2026: "bagusin"): nama wilayah jadi judul kecil di atas deretannya, garis tipis menyambung ke kanan;
    tombol memakai lebar penuh dialog sehingga nama bahasa tidak patah dua baris dan tidak ada blok label tinggi di kiri */

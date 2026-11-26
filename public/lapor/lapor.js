@@ -492,12 +492,12 @@ function kartuAngka(j) {
 }
 
 function kartuWaktu(j) {
-  const isi = kartu("waktu", "Waktu kejadian"); wadah.querySelector(".lp-langkah-kepala").prepend(ikon("i-kalender"));
+  const isi = kartu("waktu", j.form.judul || "Waktu kejadian"); wadah.querySelector(".lp-langkah-kepala").prepend(ikon("i-kalender"));   // judul dari mesin: kartu yang sama dipakai "Kapan terakhir terlihat" (pemilik 26 Nov 2026)
   // tanggal dan jam dihitung di zona lokasi kejadian, bukan zona perangkat; zona tertulis di label (pemilik 19 Nov 2026)
   const zona = j.form.zona || "WIB", geser = j.form.geser ?? 7;
   const hari = el("div", "lp-hari"), kini = new Date(Date.now() + geser * 3600e3 + new Date().getTimezoneOffset() * 6e4);
   let tanggal = j.form.isian[0].nilai, jam = "";
-  const tgl = el("input"); tgl.type = "date"; tgl.max = tanggal; tgl.min = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10); tgl.value = tanggal;
+  const tgl = el("input"); tgl.type = "date"; tgl.max = tanggal; tgl.min = new Date(Date.now() - (j.form.minHari || 30) * 864e5).toISOString().slice(0, 10); tgl.value = tanggal;
   for (let n = 0; n < 7; n++) {
     const d = new Date(kini - n * 864e5), iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     const b = el("button", null, n === 0 ? "Hari ini" : n === 1 ? "Kemarin" : `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]}`); b.type = "button";
@@ -514,8 +514,8 @@ function kartuWaktu(j) {
   sek.addEventListener("click", () => { jam = `${String(kini.getHours()).padStart(2, "0")}:${String(kini.getMinutes()).padStart(2, "0")}`; jm.value = jam; });
   const bJam = el("span", "lp-jam-baris"); bJam.append(jm, sek, el("span", "lp-zona", zona)); // tombol jam sekarang di dalam bar jam
   const lJam = el("div", "lp-isi"); lJam.append(`Jam, waktu setempat (${zona})`, bJam);
-  const s = el("button", "lp-utama", "Simpan waktu"); s.type = "button";
-  s.addEventListener("click", () => { if (!jam) { jm.focus(); statusEl.textContent = "Isi jam kejadian. Perkiraan juga boleh."; return; } kirim({form: {tanggal, jam}, tampil: `${tanggal.split("-").reverse().join("/")}, ${jam.replace(":", ".")} ${zona}`}); });
+  const s = el("button", "lp-utama", j.form.kirim || "Simpan waktu"); s.type = "button"; if (j.form.jamOpsional) lJam.firstChild.textContent = `Jam bila ingat (${zona})`;
+  s.addEventListener("click", () => { if (!jam && j.form.jamOpsional) { kirim({form: {tanggal, jam: ""}, tampil: tanggal.split("-").reverse().join("/")}); return; } if (!jam) { jm.focus(); statusEl.textContent = "Isi jam kejadian. Perkiraan juga boleh."; return; } kirim({form: {tanggal, jam}, tampil: `${tanggal.split("-").reverse().join("/")}, ${jam.replace(":", ".")} ${zona}`}); });
   isi.append(hari, lTgl, lJam, s);
 }
 

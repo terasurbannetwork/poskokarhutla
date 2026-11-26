@@ -537,7 +537,13 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     if (langkah === "tanda") return jawab(`${k}*Tanda lain yang mudah dikenali*\nMisalnya tinggi badan, kacamata, atau tahi lalat di pipi.`, ["Lewati"], false, null, ["Tidak ada tanda lain"]);
     if (langkah === "ciri") return jawab(`${k}*Ciri-ciri ${sesi.cari.nama}*\nTulis umur, pakaian terakhir, tinggi badan, atau tanda lain yang mudah dikenali.`, ["Lewati"]);   // sesi lama yang sudah di langkah ini
     if (langkah === "foto") return jawab(`${k}*Foto ${sesi.cari.nama}*\nKirim satu foto yang wajahnya terlihat jelas. Boleh dari galeri, foto lama pun tidak apa-apa. Foto hanya dilihat petugas.\nDi WhatsApp: kirim fotonya di obrolan ini.`, ["Lewati"], false, "foto_cari", ["Lanjut tanpa foto"]);   // pemilik 26 Nov 2026: "Foto orang dicari"
-    if (langkah === "waktu") return jawab(`${k}*Kapan terakhir terlihat?*`, CARI_WAKTU);
+    if (langkah === "waktu") {   // web: kartu tanggal dan jam seperti waktu kejadian (pemilik 26 Nov 2026), jam boleh kosong; WA tetap pilihan bernomor
+      if (pesan?.saluran !== "web") return jawab(`${k}*Kapan terakhir terlihat?*`, CARI_WAKTU);
+      const h = jawab(`${k}*Kapan terakhir terlihat?*\nPilih tanggalnya. Isi jam bila ingat.`), [zona, geser] = zonaProv(sesi.isian.lokasi?.nilai?.wilayah?.provKode);
+      sesi.form = h.form = {kirim: "Simpan", judul: "Kapan terakhir terlihat", jamOpsional: true, zona, geser, minHari: 365, isian: [
+        {nama: "tanggal", label: "Tanggal", tipe: "tanggal", nilai: tglLokal(kini, geser), maks: tglLokal(kini, geser)}, {nama: "jam", label: `Jam (${zona})`, tipe: "jam"}]};
+      sesi.isiAwal = h.isiAwal = null; return h;
+    }
     if (langkah === "nomor") return jawab(`${k}*Nomor WhatsApp ${sesi.cari.nama}*\nBila tahu, tulis nomornya. Petugas memakainya untuk mencocokkan dengan kabar selamat.`, ["Tidak tahu"]);
     if (langkah === "kontak") return jawab(`${k}*Nomor yang dihubungi bila ${sesi.cari.nama} ditemukan*\nPetugas menelepon atau mengirim WhatsApp ke nomor ini.`, ["Pakai nomor saya"], false, null, ["Nomor WhatsApp yang Anda pakai sekarang"]);
     if (langkah === "tempat") return jawab(`${k}*Ke mana ${sesi.cari.nama} diantar bila ditemukan?*\nTulis tempat Anda menunggu: nama posko pengungsian, atau alamat lengkap dengan nama jalan, RT/RW, dan patokan.`);
@@ -662,6 +668,16 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       if (pesan?.foto) { sesi.foto = [pesan.foto]; c.foto = pesan.foto.id; return tanyaCari("waktu", "*Foto diterima*"); }   // satu foto; berkas dan baris lapor_foto ditulis pemanggil (fotoPost)
       if (p === 0 || KATA_BELUM.test(teks) || /^lewati/i.test(teks.trim())) { c.foto = null; return tanyaCari("waktu"); }
       return tanyaCari("foto", "Kirim fotonya, atau pilih *Lewati*.");
+    }
+    if (sesi.status === "cari_waktu" && pesan?.form) {   // kartu tanggal (wajib) dan jam (boleh kosong); tidak di masa depan, paling lama setahun lalu
+      const [, zona, geser] = [null, ...zonaProv(sesi.isian.lokasi?.nilai?.wilayah?.provKode)], tg = String(pesan.form.tanggal || ""), jm = String(pesan.form.jam || "");
+      const mt = /^(\d{4})-(\d{2})-(\d{2})$/.exec(tg), mj = jm ? /^(\d{2}):(\d{2})$/.exec(jm) : null;
+      const ms = mt ? Date.UTC(+mt[1], +mt[2] - 1, +mt[3], mj ? +mj[1] : 0, mj ? +mj[2] : 0) - geser * 3600e3 : NaN;
+      const sah = mt && (!jm || mj) && +mt[2] >= 1 && +mt[2] <= 12 && new Date(Date.UTC(+mt[1], +mt[2] - 1, +mt[3])).getUTCDate() === +mt[3] && (!mj || (+mj[1] < 24 && +mj[2] < 60));
+      if (!sah) return tanyaCari("waktu", "Tanggal atau jam tidak sah.");
+      if (tg > tglLokal(kini, geser) || (mj && ms > kini + 10 * 6e4)) return tanyaCari("waktu", "Waktu itu belum terjadi. Periksa lagi tanggalnya.");
+      if (ms < kini - 366 * 864e5) return tanyaCari("waktu", "Tanggal lebih dari setahun lalu. Periksa lagi tanggalnya.");
+      c.waktu = `${+mt[3]} ${BULAN[+mt[2] - 1][0].toUpperCase()}${BULAN[+mt[2] - 1].slice(1)} ${mt[1]}${mj ? `, ${mj[1]}.${mj[2]} ${zona}` : ""}`; return tanyaCari("nomor");
     }
     if (sesi.status === "cari_waktu") {
       const w = p >= 0 ? CARI_WAKTU[p] : teks.trim().slice(0, 100); if (w.length < 2) return tanyaCari("waktu", "Pilih salah satu.");

@@ -380,7 +380,11 @@ test("lapor orang hilang lewat obrolan (pemilik 25 Nov 2026): identitas, lokasi 
   await kirim("1"); assert.equal(sesi.status, "cari_foto", "sesudah ciri: foto (pemilik 26 Nov 2026)"); assert.equal(h.minta, "foto_cari"); assert.deepEqual(h.pilihan, ["Lewati"]); assert.match(h.balasan, /galeri/);
   assert.equal((await kirim("apa ini")).sesi.status, "cari_foto", "teks lain ditanya ulang");
   await kirim({foto: {id: "f".repeat(16), lencana: "tanpa"}}); assert.equal(sesi.cari.foto, "f".repeat(16)); assert.equal(sesi.foto.length, 1); assert.equal(sesi.status, "cari_waktu"); assert.match(h.balasan, /Foto diterima/);
-  await kirim("2"); assert.equal(sesi.cari.waktu, "Kemarin");
+  // web: "Kapan terakhir terlihat" memakai kartu tanggal dan jam seperti waktu kejadian (pemilik 26 Nov 2026), jam boleh kosong
+  await kirim({teks: "x", saluran: "web"}); assert.equal(sesi.status, "cari_waktu"); assert.equal(h.form.judul, "Kapan terakhir terlihat"); assert.equal(h.form.jamOpsional, true); assert.equal(h.pilihan, null);
+  await kirim({form: {tanggal: "2999-01-01", jam: ""}, saluran: "web"}); assert.equal(sesi.status, "cari_waktu", "tanggal masa depan ditanya ulang"); assert.match(h.balasan, /belum terjadi/);
+  await kirim({form: {tanggal: "1970-02-30", jam: ""}, saluran: "web"}); assert.match(h.balasan, /tidak sah/, "tanggal yang tidak ada ditolak");
+  await kirim({form: {tanggal: "1970-01-01", jam: ""}, saluran: "web"}); assert.equal(sesi.cari.waktu, "1 Januari 1970");
   assert.equal((await kirim("123")).sesi.status, "cari_nomor", "nomor tidak sah ditanya ulang");
   await kirim("0812 3456 7890"); assert.equal(sesi.cari.nomor, "6281234567890"); assert.equal(sesi.status, "cari_kontak"); assert.deepEqual(h.pilihan, ["Pakai nomor saya"]);
   assert.equal((await kirim("12")).sesi.status, "cari_kontak", "nomor kontak tidak sah ditanya ulang");
@@ -391,7 +395,7 @@ test("lapor orang hilang lewat obrolan (pemilik 25 Nov 2026): identitas, lokasi 
   await kirim("1");
   assert.equal(sesi.status, "cari_terkirim"); assert.ok(!h.kirim, "bukan laporan bertiket");
   assert.deepEqual(sesi.cari, {nama: "Siti Aminah"}, "ciri, nomor, hubungan tidak tertinggal di salinan sesi");
-  assert.deepEqual(h.kirimCari, {nama_dicari: "Siti Aminah", ciri: "Perempuan, 9 tahun, pakaian terakhir kaos merah", lokasi_terakhir: "Desa/Kel. Sukamaju, Kec. Cibinong", waktu_terakhir: "Kemarin", nomor_dicari: "6281234567890", hubungan: "Anak", kab: "32.01"});
+  assert.deepEqual(h.kirimCari, {nama_dicari: "Siti Aminah", ciri: "Perempuan, 9 tahun, pakaian terakhir kaos merah", lokasi_terakhir: "Desa/Kel. Sukamaju, Kec. Cibinong", waktu_terakhir: "1 Januari 1970", nomor_dicari: "6281234567890", hubungan: "Anak", kab: "32.01"});
   assert.deepEqual(h.kirimTemu, {panggilan: "Ami", nomor_kontak: "6280000000000", tempat_tunggu: "Posko Masjid Al Ikhlas, Jl. Raya Cibinong No 12", foto_id: "f".repeat(16)});
   assert.match(h.balasan, /mengantar ke Posko Masjid Al Ikhlas/);
   const baru = await kirim("halo"); assert.equal(baru.sesi.cari, undefined, "sesudah terkirim, pesan berikutnya membuka laporan biasa");
