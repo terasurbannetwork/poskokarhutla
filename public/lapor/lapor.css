@@ -3192,14 +3192,14 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-alun-prov{width:100%;border-collapse:collapse;font-size:.8125rem;font-variant-numeric:tabular-nums}
 .lp-alun-prov th{padding:8px 6px;text-align:center;white-space:nowrap;background:var(--head-bg);color:var(--on-head);font:800 .6875rem var(--font);position:sticky;top:0;z-index:1}
 .lp-alun-prov th:first-child{border-radius:10px 0 0 0}.lp-alun-prov th:last-child{border-radius:0 10px 0 0}
-.lp-alun-prov td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:center}
+.lp-alun-prov td{padding:5px 6px;line-height:1.25;border-bottom:1px solid var(--line);text-align:center}
 .lp-alun-prov td:nth-child(2){text-align:left}
 .lp-alun-prov td:first-child{width:24px;font-size:.6875rem}
 .lp-alun-prov tbody tr:not(.lp-alun-prov-total){cursor:pointer}
 .lp-alun-prov tbody tr:not(.lp-alun-prov-total):hover{background:var(--surface)}
 .lp-alun-prov-total td{font-weight:800;background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
 .lp-alun-prov td.n{font-weight:800}
-.lp-alun-prov-nama{padding:0;border:0;background:none;color:var(--ink);font:700 .8125rem var(--font);text-align:left;cursor:pointer}
+.lp-alun-prov-nama{padding:0;border:0;background:none;color:var(--ink);font:700 .8125rem/1.25 var(--font);text-align:left;cursor:pointer}
 .lp-alun-prov-nama:focus-visible{outline:2px solid var(--brand2);outline-offset:2px;border-radius:4px}
 .lp-alun-provkep{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:4px 2px 8px}
 .lp-alun-provkep .lp-teks-tombol{display:inline-flex;align-items:center;gap:4px}
@@ -3352,7 +3352,7 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-donat svg{display:block;overflow:visible}
 .lp-donat-isi{fill:var(--card);stroke:var(--card);stroke-width:2}
 .lp-donat-potong{fill:none;stroke:var(--k,var(--kat-lain))}
-.lp-donat-angka{fill:var(--head-bg);font-family:var(--font);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.lp-donat-angka{fill:var(--head-bg);font-family:var(--font);font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
 .lp-donat-nama{position:absolute;left:calc(100% + 5px);top:50%;transform:translateY(-50%);white-space:nowrap;font:600 .75rem/1.3334 var(--font);color:var(--head-bg);text-shadow:0 0 2px var(--card),1px 1px 0 var(--card),-1px -1px 0 var(--card),1px -1px 0 var(--card),-1px 1px 0 var(--card),0 1px 0 var(--card),0 -1px 0 var(--card),1px 0 0 var(--card),-1px 0 0 var(--card);pointer-events:none}
 .lp-donat-nama[data-pos=kiri]{left:auto;right:calc(100% + 5px)}
 .lp-donat-nama[data-pos=bawah]{left:50%;top:calc(100% + 2px);transform:translateX(-50%)}

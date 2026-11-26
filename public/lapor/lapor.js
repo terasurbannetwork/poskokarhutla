@@ -1825,7 +1825,7 @@ function elDonat(c) {
     Object.entries({cx: d / 2, cy: d / 2, r, class: `lp-donat-potong lp-jenis-${j}`, "stroke-width": w, "stroke-dasharray": `${Math.max(0, pj - (jenis.length > 1 ? 1.5 : 0))} ${C}`, "stroke-dashoffset": -jalan, transform: `rotate(-90 ${d / 2} ${d / 2})`}).forEach(([k, v]) => el2.setAttribute(k, v));
     svg.append(el2); jalan += pj; }
   // angka muat di cakram putih: ukuran huruf mengikuti diameter cakram dan banyaknya digit, tidak pernah menyentuh cincin
-  const angka = c.n.toLocaleString("id-ID"), dalam = d - 2 * w, fs = Math.max(9, Math.floor(Math.min(dalam * .56, dalam * .8 / (angka.length * .62))));
+  const angka = c.n.toLocaleString("id-ID"), dalam = d - 2 * w, fs = Math.max(9, Math.floor(Math.min(dalam * .46, dalam * .74 / (angka.length * .62))));
   const t = document.createElementNS(NS, "text"); Object.entries({x: d / 2, y: d / 2, "text-anchor": "middle", "dominant-baseline": "central", class: "lp-donat-angka", "font-size": fs}).forEach(([k, v]) => t.setAttribute(k, v)); t.textContent = angka; svg.append(t);
   const rinci = jenis.map(([j, n]) => `${NAMA_JENIS_KECIL[j] || j} ${n.toLocaleString("id-ID")}`).join(", "), siapa = c.nama.join(", ") || "Provinsi";
   const b = el("button", "lp-donat"); b.type = "button"; b.style.setProperty("--d", `${d}px`); b.title = `${siapa}: ${rinci}`; b.setAttribute("aria-label", `${siapa}, ${c.n.toLocaleString("id-ID")} kejadian: ${rinci}`);
