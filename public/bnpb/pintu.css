@@ -5,7 +5,7 @@
 
 /* hero (rombak 26 Nov 2026, pemilik memilih gaya gabungan "pembatas slide" dan "daftar isi"): panel navy kepala (--head-bg) di kiri dipotong miring,
    gambar Indonesia dari orbit (public/img/hero-nusantara.jpg, dari pemilik) di kanan. Selalu gelap di mode terang dan gelap; teks --on-head, aksen --head-hl.
-   Kiri: lambang BNPB di kiri judul, garis aksen di bawah judul, cincin konsentris samar, daftar grup bernomor. Kanan: logo KRIS di kotak putih
+   Kiri: lambang BNPB di kiri judul, garis aksen di bawah judul, cincin konsentris samar, daftar grup berikon. Kanan: logo KRIS di kotak putih
    (seperti sampul deck, data/laporan-bnpb/generator/kris.py), empat angka utama di dasar gambar. Garis potongan berlapis: garis tipis bergradasi
    dan pita jingga tembus pandang ("garis ini terlalu flat"); dicoba tanpa garis lalu dikembalikan pemilik ("balikin lagi"). */
 .pt-hero{--garis:color-mix(in oklch,var(--on-head) 18%,transparent);position:relative;min-height:300px;margin:0 0 12px;border-radius:22px;overflow:hidden;isolation:isolate;
@@ -34,8 +34,9 @@
 .pt-hero-tgl{margin:0;font-size:var(--fs-3,.875rem);font-weight:600;color:var(--on-head-2)}
 .pt-isi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;max-width:420px;list-style:none;margin:0;padding:0}
 .pt-isi a{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:9px;color:var(--on-head);text-decoration:none;font-size:.8125rem;font-weight:600}
-.pt-isi-no{display:grid;place-items:center;height:24px;border-radius:6px;background:color-mix(in oklch,var(--on-head) 14%,transparent);font-size:.6875rem;font-weight:800}
-.pt-isi li:first-child .pt-isi-no{background:var(--head-hl);color:var(--head-bg)}
+.pt-isi-ik{display:grid;place-items:center;height:24px;border-radius:6px;background:color-mix(in oklch,var(--on-head) 12%,transparent);color:var(--head-hl)}
+.pt-isi-ik svg{width:14px;height:14px}
+.pt-isi a:hover .pt-isi-ik{background:color-mix(in oklch,var(--on-head) 20%,transparent)}
 .pt-isi-nama{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pt-isi-jml{font-size:.6875rem;color:var(--on-head-2)}
 .pt-isi a:hover .pt-isi-nama{text-decoration:underline;text-underline-offset:3px}
@@ -48,6 +49,9 @@
 .pt-utama-i{display:grid;align-content:start;gap:3px;min-width:0;padding:0 14px;text-decoration:none;color:var(--on-head)}
 .pt-utama-i:first-child{padding-left:0}
 .pt-utama-i+.pt-utama-i{border-left:1px solid var(--garis)}
+.pt-utama-atas{display:flex;align-items:center;gap:9px;min-width:0}
+.pt-utama-ik{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:8px;background:color-mix(in oklch,var(--head-bg) 55%,transparent);border:1px solid var(--garis);color:var(--head-hl)}
+.pt-utama-ik svg{width:15px;height:15px}
 .pt-utama-nilai{font:800 1.875rem/1.05 var(--display,inherit);letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;text-shadow:0 1px 12px var(--head-bg)}
 .pt-utama-ket{font-size:.75rem;font-weight:600;line-height:1.3;color:var(--on-head-2);text-shadow:0 1px 8px var(--head-bg);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .pt-utama-i:focus-visible,.pt-isi a:focus-visible{outline:2px solid var(--on-head);outline-offset:2px}

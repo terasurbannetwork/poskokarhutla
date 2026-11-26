@@ -96,10 +96,11 @@
     "/riset": "Riset kampus yang sedang berjalan.",
     "/meja": "Catatan lapangan di Meja kerja.",
   };
-  const tip = r => ({"data-tip": "", "data-tip-judul": r.b.nama, "data-tip-ikon": r.b.ikon || "", "data-tip-arti": ARTI[r.b.rute] || "",
+  const tip = r => ({"data-tip": "", "data-tip-judul": r.b.nama, "data-tip-ikon": r.b.ikon || "", "data-tip-arti": r.arti || ARTI[r.b.rute] || "",
     "data-tip-nilai": r.x[0], "data-tip-ket": r.x[1], "data-tip-mutu": [r.pilTetap, r.x[2]].filter(Boolean).join(", "), "data-tip-sumber": r.sumber || ""});
   const statUtama = r => h("a", {class: "pt-utama-i", href: r.b.rute, ...tip(r)},
-    h("span", {class: "pt-utama-nilai", "data-nilai": r.x[0], teks: r.x[0]}), h("span", {class: "pt-utama-ket", teks: r.x[1]}));
+    h("span", {class: "pt-utama-atas"}, h("span", {class: "pt-utama-ik"}, ikonButir(r.b.ikon)), h("span", {class: "pt-utama-nilai", "data-nilai": r.x[0], teks: r.x[0]})),
+    h("span", {class: "pt-utama-ket", teks: r.x[1]}));   // ikon halaman di kiri angka (pemilik 26 Nov 2026 "ini juga tambahin icon")
   const statKecil = r => h("a", {class: "pt-kecil", href: r.b.rute, ...tip(r)},
     h("span", {class: "pt-kecil-nama"}, ikonButir(r.b.ikon), h("span", {teks: r.b.nama})), h("span", {class: "pt-kecil-nilai", teks: r.x[0]}));
   /* baris penuh tanpa bolong: grid 60 kolom; tiap baris dibagi rata, baris terakhir yang kurang isi dilebarkan */
@@ -123,10 +124,45 @@
     utamaW.removeAttribute("aria-busy");
     const ada = hasil.filter(Boolean), bukanNol = ada.filter(r => r.x[0] !== "0");
     const utama = [...UTAMA.map(u => bukanNol.find(r => r.b.rute === u)).filter(Boolean), ...bukanNol.filter(r => !UTAMA.includes(r.b.rute))].slice(0, 4);
-    const lain = bukanNol.filter(r => !utama.includes(r));   // angka nol tidak ditampilkan di hero (pemilik: "terlalu penuh"); halamannya tetap di kartu grup
     utamaW.replaceChildren(...utama.map(statUtama)); utamaW.style.setProperty("--n", utama.length || 1);
     utamaW.querySelectorAll(".pt-utama-nilai").forEach(naik);
-    if (lain.length) { pitaW.hidden = false; pitaW.replaceChildren(susun(h("div", {class: "pt-pita-grid"}), lain.map(statKecil), 6)); }
+    situasiUmum(pitaW);
+  }
+  /* pita situasi umum (pemilik 26 Nov 2026: "tampilin data-data general yang cocok untuk dashboard"): angka nasional dari berkas publik yang
+     diperbarui pipeline, tanpa API staf. Tiap butir: [nama, ikon, rute, ambil() -> [nilai, keterangan] atau null, penjelasan, sumber, mutu].
+     Tanpa data: butir tidak tampil (bukan 0). Hari ini = tanggal WIB peramban. */
+  const hariWIB = (geser = 0) => new Date(Date.now() + 7 * 36e5 - geser * 864e5).toISOString().slice(0, 10);
+  const dibiAmbang = r => r.bencana !== 0;   // baris di bawah ambang bencana DIBI tidak masuk angka resmi (catatan dibi_kejadian.json)
+  let dibi = null; const ambilDibi = () => dibi ||= ambil("/data/dibi_kejadian.json");
+  const dibi30 = async kolom => { const d = await ambilDibi(); if (!d?.sampai || !Array.isArray(d.kejadian)) return null;
+    const awal = new Date(Date.parse(d.sampai) - 29 * 864e5).toISOString().slice(0, 10);
+    const n = d.kejadian.filter(r => dibiAmbang(r) && r.tanggal >= awal && r.tanggal <= d.sampai).reduce((a, r) => a + kolom.reduce((b, k) => b + (r[k] || 0), 0), 0);
+    return [n, d.sampai.split("-").reverse().join("/")]; };
+  const UMUM = [
+    ["Status darurat", "peringatan", "/bnpb/dalops", async () => { const d = await ambil("/data/status_darurat.json"); if (!Array.isArray(d?.sk)) return null; const kini = hariWIB();
+      const n = new Set(d.sk.filter(k => k.mulai && k.berakhir && !k.tanggal_janggal && k.mulai <= kini && k.berakhir >= kini).map(k => k.kab_kode || k.prov_kode)).size;
+      return [F(n), "daerah berstatus darurat hari ini"]; },
+     "Kabupaten/kota dan provinsi yang SK status keadaan daruratnya (siaga, tanggap, atau transisi darurat) masih berlaku hari ini.", "SK status darurat (CKAN dan Drive Pusdalops)"],
+    ["Kejadian bencana", "daftar", "/bnpb/data-bencana", async () => { const x = await dibi30(["kejadian"]); return x && [F(x[0]), "kejadian 30 hari sampai " + x[1]]; },
+     "Kejadian bencana semua jenis dalam 30 hari terakhir data DIBI, hanya yang memenuhi ambang bencana DIBI.", "DIBI BNPB", "sementara"],
+    ["Korban jiwa", "personel", "/bnpb/data-bencana", async () => { const x = await dibi30(["meninggal", "hilang"]); return x && [F(x[0]), "meninggal dan hilang, 30 hari sampai " + x[1]]; },
+     "Jumlah korban meninggal dan hilang dari kejadian bencana 30 hari terakhir data DIBI.", "DIBI BNPB", "sementara"],
+    ["Gempa M5+", "grafik", "/gempa", async () => { const d = await ambil("/gempa/data/inatews_katalog.json"); const i = d?.kolom?.indexOf("t"), j = d?.kolom?.indexOf("m");
+      if (!(i >= 0 && j >= 0) || !Array.isArray(d.baris)) return null; const batas = Date.now() / 1000 - 7 * 86400;
+      return [F(d.baris.filter(b => b[i] >= batas && b[j] >= 5).length), "gempa dalam 7 hari"]; },
+     "Gempa bermagnitudo 5 ke atas dalam 7 hari terakhir pada katalog InaTEWS BMKG, termasuk di sekitar wilayah Indonesia.", "BMKG InaTEWS"],
+    ["Gunung api", "pin", "/gunungapi", async () => { const d = await ambil("/gunungapi/data/riwayat_level.json"); if (!Array.isArray(d?.baris)) return null;
+      const akhir = {}; for (const b of [...d.baris].sort((p, q) => String(p.tanggal).localeCompare(String(q.tanggal)))) if (b.ke) akhir[b.gunung] = b.ke;
+      const naik = Object.entries(akhir).filter(([, l]) => l >= 2); return [F(naik.length), "di atas Normal: " + (naik.map(([g, l]) => g + " (" + (d.level?.[l] || "Level " + l) + ")").join(", ") || "tidak ada")]; },
+     "Gunung api yang level terakhirnya Waspada, Siaga, atau Awas menurut arsip laporan PVMBG di Pusdalops.", "PVMBG Badan Geologi, arsip Pusdalops BNPB"],
+    ["Mengungsi", "meja", "/bnpb/data-bencana", async () => { const x = await dibi30(["mengungsi"]); return x && [F(x[0]), "jiwa mengungsi, 30 hari sampai " + x[1]]; },
+     "Jiwa mengungsi akibat kejadian bencana 30 hari terakhir data DIBI. Posko pengungsian DIBI tidak dipakai karena laporannya masih Agustus 2026.", "DIBI BNPB", "sementara"],
+  ];
+  async function situasiUmum(pitaW) {
+    const hasil = await Promise.all(UMUM.map(([nama, ikon, rute, ambilU, arti, sumber, mutu]) => ambilU().catch(() => null)
+      .then(x => x && {b: {nama, ikon, rute}, x: [x[0], x[1], mutu], sumber, arti})));
+    const ada = hasil.filter(Boolean); if (!ada.length) return;
+    pitaW.hidden = false; pitaW.replaceChildren(susun(h("div", {class: "pt-pita-grid"}), ada.map(statKecil), 6));
   }
   /* gelembung tooltip: satu elemen di body (tidak terpotong overflow pita), muncul saat kursor atau fokus keyboard, hilang saat keluar, gulir, Esc */
   const gel = h("div", {class: "pt-tip", id: "ptTip", role: "tooltip", hidden: ""});
@@ -174,9 +210,9 @@
     const grup = staf.grup.map(g => ({...g, butir: g.butir.filter(b => b.rute !== "/bnpb")})).filter(g => g.butir.length);   // halaman ini sendiri tidak ditautkan ulang
     const berangka = grup.flatMap(g => g.butir).filter(b => ANGKA[b.rute]);
     const isi = [];
-    /* daftar isi hero: grup bernomor, tautan ke kartu grupnya di bawah */
+    /* daftar isi hero: grup berikon (ikon grup panel kiri; pemilik 26 Nov 2026 "pakai icon aja"), tautan ke kartu grupnya di bawah */
     document.getElementById("heroIsi")?.replaceChildren(...grup.map((g, i) => h("li", null, h("a", {href: "#g-" + g.id},
-      h("span", {class: "pt-isi-no", teks: String(i + 1).padStart(2, "0")}), h("span", {class: "pt-isi-nama", teks: g.nama}), h("span", {class: "pt-isi-jml", teks: String(g.butir.length)})))));
+      h("span", {class: "pt-isi-ik"}, MP?.ikon ? MP.ikon(IKON_GRUP[g.id] || "daftar") : svg("logbook")), h("span", {class: "pt-isi-nama", teks: g.nama}), h("span", {class: "pt-isi-jml", teks: String(g.butir.length)})))));
     const utamaW = document.getElementById("heroUtama"), pitaW = document.getElementById("heroPita"); if (utamaW && pitaW && berangka.length) angkaTerkini(berangka, utamaW, pitaW);
     isi.push(h("div", {class: "pt-grup-grid"}, ...grup.map(seksiGrup)));
     host.replaceChildren(...isi);
