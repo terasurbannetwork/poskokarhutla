@@ -700,6 +700,8 @@ function ucapanTerimaKasih(nomor) {
   pb.append(riak, merek(), m, el("p", "lp-pembuka-sapa", TEKS_TERIMA[0]), judul, bnpb, lanjut);
   document.body.append(pb); lanjut.focus();
 }
+/* nomor darurat nasional: satu daftar untuk akhir obrolan dan menu Nomor darurat */
+const NOMOR_NASIONAL = [["112", "Panggilan darurat", "i-sirene"], ["117", "Call Center BNPB", "i-telepon"], ["115", "Basarnas, pencarian dan pertolongan", "i-cari"], ["119", "Ambulans dan layanan gawat darurat", "i-plus"], ["110", "Polisi", "i-orang"], ["113", "Pemadam kebakaran", "b-api"]];
 /* kartu tiket (pemilik 19 Nov 2026: "bagusin maksimal"): pita sukses, tiket bersobek dengan nomor, langkah berikutnya, aksi berikon, penilaian */
 function kartuTiket(j) {
   const isi = kartu("tiket", "Laporan terkirim"); const k = isi.closest(".lp-langkah"); k.classList.add("lp-langkah-tiket"); k.querySelector(".lp-langkah-kepala")?.remove();
@@ -734,7 +736,7 @@ function kartuTiket(j) {
   const nasional = el("div", "lp-tk-nomor-penting"), kep = el("div", "lp-tk-np-kepala"); kep.append(el("b", null, "Nomor penting lainnya"));
   const np = el("button", "lp-tk-np-terdekat"); np.type = "button"; np.append(ikon("i-lokasi"), "Lihat yang terdekat"); np.addEventListener("click", () => bukaInfo("penting")); kep.append(np);
   const kisi = el("div", "lp-tk-np-kisi");
-  for (const [n, t, ik] of [["112", "Panggilan darurat", "i-sirene"], ["117", "Call Center BNPB", "i-telepon"], ["115", "Basarnas, pencarian dan pertolongan", "i-cari"], ["119", "Ambulans dan layanan gawat darurat", "i-plus"], ["110", "Polisi", "i-orang"], ["113", "Pemadam kebakaran", "b-api"]]) {
+  for (const [n, t, ik] of NOMOR_NASIONAL) {
     const a = Object.assign(el("a", "lp-tk-np"), {href: `tel:${n}`}), u = el("span", "lp-tk-np-ikon"), tx = el("span"); u.append(ikon(ik)); tx.append(el("b", null, n), el("small", null, t)); a.append(u, tx); kisi.append(a); }
   nasional.append(kep, kisi);
   isi.append(pita, tiket, aksi, hub, nasional, baru);   // penilaian hanya di layar terima kasih (pemilik 21 Nov 2026: "disininya gausah ada lagi")
@@ -1747,7 +1749,8 @@ async function gambarPetaAlun(daftar) {
   const fp = {type: "FeatureCollection", features: [...grup].map(([kunci, g]) => ({type: "Feature", geometry: {type: "Point", coordinates: [g.x / g.k, g.y / g.k]}, properties: {kunci, n: g.n}}))};
   const pas = () => { if (!fc.features.length) return alunPeta.jumpTo({center: [118, -2], zoom: 4});
     const b = new maplibregl.LngLatBounds(); for (const f of fc.features) b.extend(f.geometry.coordinates);
-    alunPeta.fitBounds(b, {padding: padPeta(), maxZoom: 11, duration: 0}); };
+    alunPeta.fitBounds(b, {padding: padPeta(), maxZoom: 11, duration: 0});
+    if (alunProv && alunPeta.getZoom() < ZOOM_KAB + .01) alunPeta.setZoom(ZOOM_KAB + .01); };   // satu provinsi terpilih: selalu tingkat kab/kota
   if (alunPeta) { alunPeta.getSource("alun")?.setData(fc); alunPeta.getSource("alun-prov")?.setData(fp); pas(); return; }
   alunPeta = new maplibregl.Map({container: wp.querySelector(".lp-peta-alun"), style: "https://tiles.openfreemap.org/styles/positron", center: [118, -2], zoom: 4, attributionControl: {compact: true}});
   alunPeta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
@@ -1770,8 +1773,9 @@ async function gambarPetaAlun(daftar) {
     alunPeta.addLayer({id: "kelompok-n", type: "symbol", source: "alun-prov", maxzoom: ZOOM_KAB, layout: {"text-field": ["to-string", ["get", "n"]], "text-size": 13, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true}, paint: {"text-color": tok("--on-head")}});
     alunPeta.addLayer({id: "titik", type: "circle", source: "alun", minzoom: ZOOM_KAB, paint: {"circle-color": ["get", "warna"], "circle-radius": ["step", ["get", "n"], 8, 2, 12], "circle-stroke-width": 2, "circle-stroke-color": tok("--card")}});
     alunPeta.addLayer({id: "titik-n", type: "symbol", source: "alun", minzoom: ZOOM_KAB, filter: [">", ["get", "n"], 1], layout: {"text-field": ["to-string", ["get", "n"]], "text-size": 11, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true}, paint: {"text-color": tok("--card")}});
-    alunPeta.on("click", "kelompok", e => { const g = alunGrup.get(e.features[0].properties.kunci); if (!g) return;
-      alunPeta.fitBounds(g.b, {padding: padPeta(), maxZoom: 9, minZoom: ZOOM_KAB + .01}); });   // satu provinsi: langsung ke tingkat kab/kota
+    alunPeta.on("click", "kelompok", e => { const kunci = e.features[0].properties.kunci; if (/^\d{2}$/.test(kunci) && typeof pilihProv === "function") return pilihProv(kunci);   // satu provinsi: daftar dan peta ikut provinsi itu
+      const g = alunGrup.get(kunci); if (!g) return;
+      alunPeta.fitBounds(g.b, {padding: padPeta(), maxZoom: 9, duration: 0}); if (alunPeta.getZoom() < ZOOM_KAB + .01) alunPeta.setZoom(ZOOM_KAB + .01); });   // satu provinsi: langsung ke tingkat kab/kota
     alunPeta.on("click", "titik", e => { const t = alunTempat.get(e.features[0].properties.kunci); if (!t) return; const box = el("div", "lp-alun-pop");
       box.append(el("small", "lp-redup", t.isi[0].lokasi.kab || ""));
       for (const x of t.isi) { const r = el("div", "lp-alun-pop-baris"), lihat = el("button", "lp-teks-tombol", "Lihat kartu"); lihat.type = "button";
@@ -1848,6 +1852,32 @@ function kartuKejadian(x, ikut) {
   buka.addEventListener("click", () => { const b = bd.hidden; bd.hidden = !b; buka.setAttribute("aria-expanded", String(b)); k.classList.toggle("buka", b); });
   k.append(hd, bd); return k;
 }
+/* Alun-alun per provinsi (pemilik 26 Nov 2026: "harusnya dia ini dikelompokkan kaya gini"): tabel provinsi dulu, klik baris = kartu kejadian provinsi itu.
+   Kolom menghitung kejadian per sumber terpisah (D3: angka antarsumber tidak dijumlah). Nama provinsi dari /instansi_wilayah.js (satu tabel nama wilayah). */
+let alunProv = "";
+const muatWilayah = () => muatWilayah.j ||= new Promise(ok => { if (window.Wilayah) return ok();
+  document.head.append(Object.assign(document.createElement("script"), {src: "/instansi_wilayah.js?v=1", onload: ok, onerror: ok})); });
+const namaProv = k => !k ? "Provinsi belum diketahui" : window.Wilayah?.PROV?.[k] || `Provinsi ${k}`;
+function pilihProv(k) { alunProv = k; gambarAlun(); $("daftarAlun").scrollTop = 0; $("daftarAlun").closest(".lp-alun-panel")?.scrollTo?.({top: 0}); }
+function kepalaProvinsi(k, n) {
+  const b = el("div", "lp-alun-provkep"), kembali = el("button", "lp-teks-tombol"); kembali.type = "button"; kembali.append(ikon("i-kembali"), "Semua provinsi");
+  kembali.addEventListener("click", () => pilihProv("")); b.append(kembali, el("b", null, namaProv(k)), el("span", "lp-pil", `${n.toLocaleString("id-ID")} kejadian`)); return b;
+}
+function tabelProvinsi(w, daftar) {
+  const g = new Map();
+  for (const x of daftar) { const k = x.prov || "", r = g.get(k) || {k, n: 0, jalan: 0, warga: 0, berita: 0}; r.n++; if (x.status === "berjalan") r.jalan++; r.warga += x.warga.length; r.berita += x.nBerita || 0; g.set(k, r); }
+  const baris = [...g.values()].sort((a, b) => b.n - a.n || b.jalan - a.jalan || namaProv(a.k).localeCompare(namaProv(b.k), "id"));
+  const t = el("table", "ex-tabel lp-alun-prov"), th = el("thead"), tb = el("tbody"), f = v => v ? v.toLocaleString("id-ID") : "–";
+  const kep = el("tr"); for (const [teks, judul] of [["", ""], ["Provinsi", ""], ["Kejadian", "Jumlah kejadian di provinsi ini"], ["Berjalan", "Kejadian berstatus berjalan menurut laporan resmi BNPB"], ["Warga", "Klaster laporan warga yang sudah ditindaklanjuti"], ["Berita", "Berita yang cocok dengan kejadian"]]) { const c = el("th", null, teks); c.scope = "col"; if (judul) c.title = judul; kep.append(c); }
+  th.append(kep);
+  const tot = baris.reduce((a, r) => ({n: a.n + r.n, jalan: a.jalan + r.jalan, warga: a.warga + r.warga, berita: a.berita + r.berita}), {n: 0, jalan: 0, warga: 0, berita: 0});
+  const rt = el("tr", "lp-alun-prov-total"); rt.append(el("td"), el("td", null, "Total"), el("td", null, f(tot.n)), el("td", null, f(tot.jalan)), el("td", null, f(tot.warga)), el("td", null, f(tot.berita))); tb.append(rt);
+  baris.forEach((r, i) => { const tr = el("tr"), nm = el("button", "lp-alun-prov-nama", namaProv(r.k)); nm.type = "button"; nm.addEventListener("click", () => pilihProv(r.k));
+    const c = el("td"); c.append(nm); tr.append(el("td", "lp-redup", String(i + 1)), c, el("td", "n", f(r.n)), el("td", null, f(r.jalan)), el("td", null, f(r.warga)), el("td", null, f(r.berita)));
+    tr.addEventListener("click", e => { if (e.target !== nm) pilihProv(r.k); }); tb.append(tr); });
+  t.append(th, tb); w.append(t);
+  if (!window.Wilayah) muatWilayah().then(() => { if (!alunProv) for (const [i, r] of baris.entries()) { const b = tb.children[i + 1]?.querySelector(".lp-alun-prov-nama"); if (b) b.textContent = namaProv(r.k); } });
+}
 function gambarKabar(ikut) {
   const sm = $("sumberAlun"); sm.hidden = alunMode === "peringatan";
   sm.replaceChildren(...SUMBER_ALUN.map(([id, tt, ik]) => { const b = el("button"); b.append(ikon(ik), el("span", null, tt)); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(id === alunSumber));
@@ -1858,7 +1888,10 @@ function gambarKabar(ikut) {
     const JENIS = ["banjir", "longsor", "cuaca", "gempa", "karhutla", "erupsi", "abrasi", "kekeringan"];
     let daftar = saring(gabung(alunKabar, alunData, Date.now()), {jenis: JENIS.includes(alunJenis) ? alunJenis : "", sumber: alunSumber, selesai: alunJenis === "selesai"});
     if (alunJenis === "diikuti") { daftar = daftar.filter(x => x.warga.some(g => ikut[g.id])); const m = ikutiBaca(); for (const x of daftar) for (const g of x.warga) if (m[g.id]) m[g.id] = g.status; ikutiTulis(m); }
+    const semuaProv = daftar;   // tabel per provinsi dihitung dari daftar tersaring, sebelum dipilih satu provinsi
+    if (alunProv) daftar = daftar.filter(x => (x.prov || "") === alunProv);
     gambarPetaAlun(daftar.map(x => ({id: x.id, titik: x.titik, jenis: x.jenisLabel, lokasi: {kab: x.kab}, statusLabel: x.statusLabel, status: x.status, prov: x.prov})));
+    if (!daftar.length && alunProv) { alunProv = ""; return gambarAlun(); }   // provinsi terpilih kosong setelah saringan diganti: kembali ke tabel
     if (!daftar.length) {
       const k = el("div", "lp-kosong-besar"), m = el("div", "lp-kosong-maskot"); m.innerHTML = maskot("berpikir");
       const tx = el("div", "lp-kosong-teks"); tx.append(el("h2", null, alunJenis === "diikuti" ? "Belum ada kejadian yang Anda ikuti" : alunSumber === "medsos" ? "Media sosial belum tersambung" : "Belum ada kejadian untuk saringan ini"),
@@ -1866,6 +1899,8 @@ function gambarKabar(ikut) {
       k.append(m, tx); return w.replaceChildren(k);
     }
     w.replaceChildren(...(alunJenis === "selesai" ? [el("p", "lp-redup lp-kb-catatan", "Kejadian selesai yang tampil hanya yang tercatat dalam 8 hari terakhir.")] : []));
+    if (!alunProv) return tabelProvinsi(w, semuaProv);   // tampilan awal: dikelompokkan per provinsi seperti panel karhutla (pemilik 26 Nov 2026)
+    w.append(kepalaProvinsi(alunProv, daftar.length));
     let i = 0; const lanjut = () => { if (giliran !== alunGiliran) return; const f = document.createDocumentFragment(); for (const x of daftar.slice(i, i + 20)) f.append(kartuKejadian(x, ikut)); w.append(f);
       i += 20; if (i < daftar.length) requestAnimationFrame(lanjut); else if (alunPeta) alunPeta.resize(); }; lanjut();
   });
@@ -2279,4 +2314,33 @@ function mulaiTur() {
   nav.querySelector(".lp-tab-merek")?.after(tb);
   let awal = false; try { awal = localStorage.getItem("lp-menu-ciut") === "1"; } catch { /* tanpa penyimpanan */ }
   atur(awal);
+})();
+
+/* Menu samping: Langganan peringatan dan Nomor darurat (pemilik 26 Nov 2026: "Langganan + nomor darurat"). Keduanya membuka lembar <dialog>;
+   isi langganan = kartu peringatan.js yang sudah ada (paket pwa-peringatan), nomor = daftar nasional + layar nomor terdekat yang sudah ada. */
+(() => {
+  const nav = $("tab"), edu = nav?.querySelector('[data-aksi="edukasi"]'); if (!nav || !edu) return;
+  function lembar(judul, ikonId, isi) {
+    const d = el("dialog", "lp-lembar"), kep = el("header", "lp-lembar-kepala"), h = el("h2"), x = el("button", "lp-lembar-tutup"), b = el("div", "lp-lembar-isi");
+    h.append(ikon(ikonId), judul); x.type = "button"; x.setAttribute("aria-label", "Tutup"); x.append(ikon("i-x")); x.addEventListener("click", () => d.close());
+    kep.append(h, x); d.append(kep, b); d.addEventListener("close", () => d.remove()); d.addEventListener("click", e => { if (e.target === d) d.close(); });   // ketuk latar = tutup
+    document.body.append(d); isi(b, d); d.showModal(); x.focus(); return d;
+  }
+  const bLanggan = el("button", "lp-tab-lebar"), bNomor = el("button", "lp-tab-lebar");   // layar lebar saja; di HP bilah bawah sudah penuh
+  bLanggan.type = bNomor.type = "button";
+  bLanggan.append(ikon("i-lokasi"), "Peringatan dini"); bNomor.append(ikon("i-telepon"), "Nomor darurat");
+  for (const b of [bLanggan, bNomor]) { b.title = b.textContent; b.setAttribute("aria-label", b.textContent); }
+  edu.after(bLanggan, bNomor);
+  bLanggan.addEventListener("click", () => lembar("Langganan peringatan", "i-lokasi", w => {
+    w.append(el("p", "lp-redup lp-lembar-sub", "Pilih sampai tiga kecamatan. Pemberitahuan masuk ke HP ini saat prakiraan di kecamatan itu naik."));
+    const k = el("div"); w.append(k);
+    if (window.pbKartuPeringatan) window.pbKartuPeringatan(k); else k.append(el("p", "lp-redup", "Layanan peringatan belum termuat. Coba lagi sebentar lagi."));
+  }));
+  bNomor.addEventListener("click", () => lembar("Nomor darurat", "i-telepon", (w, d) => {
+    const kisi = el("div", "lp-tk-np-kisi");
+    for (const [n, t, ik] of NOMOR_NASIONAL) { const a = Object.assign(el("a", "lp-tk-np"), {href: `tel:${n}`}), u = el("span", "lp-tk-np-ikon"), tx = el("span"); u.append(ikon(ik)); tx.append(el("b", null, n), el("small", null, t)); a.append(u, tx); kisi.append(a); }
+    const dekat = el("button", "lp-kedua lp-lembar-aksi"); dekat.type = "button"; dekat.append(ikon("i-lokasi"), "Nomor BPBD, rumah sakit, dan polisi terdekat");
+    dekat.addEventListener("click", () => { d.close(); bukaInfo("penting"); });
+    w.append(kisi, dekat);
+  }));
 })();
