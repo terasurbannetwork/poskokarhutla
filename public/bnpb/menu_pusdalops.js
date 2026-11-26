@@ -13,9 +13,10 @@
   /* halaman di dalam bingkai (Ruang Laporan /admin/laporan) tidak memasang panel kedua: menunya milik halaman induk */
   try { if (window.self !== window.top) return; } catch (e) { return; }
   const skrip = document.currentScript, opsional = !!skrip?.hasAttribute("data-opsional");
-  if (opsional) { let ada = false; try { ada = (JSON.parse(sessionStorage.getItem("mp-peta")) || []).length > 0; } catch (e) {}
-    if (!ada) { fetch("/api/peta-situs", {credentials: "same-origin", signal: AbortSignal.timeout(9000)}).then(r => r.ok ? r.json() : null)
-      .then(m => { if (Array.isArray(m) && m.some(p => p?.pintu === "staf" && p.grup?.length)) { const s = document.createElement("script"); s.src = skrip.src; document.head.append(s); } }).catch(() => {});
+  /* peta situs diminta SEKALI per muat halaman: halaman opsional meminta di sini lalu memuat ulang skrip ini, yang memakai janji yang sama (window.__mpPeta) */
+  const ambilPeta = () => window.__mpPeta ||= fetch("/api/peta-situs", {credentials: "same-origin", signal: AbortSignal.timeout(9000)}).then(r => ({status: r.status, m: r.ok ? r.json() : null})).catch(() => ({status: 0, m: null}));
+  if (opsional && !window.__mpPeta) { let ada = false; try { ada = (JSON.parse(sessionStorage.getItem("mp-peta")) || []).length > 0; } catch (e) {}
+    if (!ada) { ambilPeta().then(x => x.m).then(m => { if (Array.isArray(m) && m.some(p => p?.pintu === "staf" && p.grup?.length)) { const s = document.createElement("script"); s.src = skrip.src; document.head.append(s); } }).catch(() => {});
       return; } }
   /* lapisan sistem desain dashboard (data/kajian-bnpb/dashboard/DESIGN-SYSTEM.md) untuk semua halaman Pusdalops */
   if (!document.querySelector('link[href^="/bnpb/menu_pusdalops.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/bnpb/menu_pusdalops.css?v=16"; document.head.append(l); }   // halaman yang lupa memuat gaya panel
@@ -23,7 +24,7 @@
   const IKON = {"banjir": "M3 17c2 0 2-2 4.5-2S10 17 12 17s2.5-2 4.5-2S19 17 21 17|M3 21c2 0 2-2 4.5-2S10 21 12 21s2.5-2 4.5-2S19 21 21 21|M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.500 2-5 5-9z", "daftar": "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01", "simpan": "M5 3h11l3 3v15H5z|M8 3v6h7V3M8 21v-7h8v7", "personel": "M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z|M4 21a8 8 0 0 1 16 0", "pin": "M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z|M12 12a2.500 2.500 0 1 0 0-5 2.500 2.500 0 0 0 0 5z", "peringatan": "M12 3l9 16H3z|M12 10v4M12 17v.5", "kalender": "M4 6h16v15H4zM4 10h16M8 3v4M16 3v4", "sinyal": "M4 20l.01 0M8 16a5.500 5.500 0 0 1 8 0M5 12.500a10 10 0 0 1 14 0|M3 3l18 18", "meja": "M9 3h6v3H9z|M6 5h12v16H6z|M9 11h6M9 15h4", "grafik": "M3 3v18h18|M7 15l4-4 3 3 5-6", "luar": "M7 17L17 7|M9 7h8v8", "awan": "M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.600-1.500A3.500 3.500 0 0 1 17 18z", "atur": "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z|M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"};
   /* peta situs diminta SEKALI per muat halaman, sedini mungkin; pintu.js memakai janji yang sama (MenuPusdalops.peta) */
   let statusPeta = 0;   // jawaban HTTP tanpa butir staf (401, 403, 2xx kosong): simpanan menu tab ini dibuang
-  const peta = fetch("/api/peta-situs", {credentials: "same-origin", signal: AbortSignal.timeout(9000)}).then(r => { statusPeta = r.status; return r.ok ? r.json() : null; }).catch(() => null);
+  const peta = ambilPeta().then(x => { statusPeta = x.status; return x.m; }).catch(() => null);
   /* ikon grup registri (registri tidak menyimpan ikon grup); ikon butir = kunci IKON yang sama dengan src/peta_situs.js */
   const IKON_GRUP = {pantau: "banjir", kejadian: "daftar", operasi: "pin", laporan: "simpan", risiko: "peringatan", pimpinan: "grafik", jejaring: "personel", pengaturan: "atur"};
   /* satu saringan untuk jawaban API DAN simpanan sessionStorage sebelum gambar: rute jalur sendiri (bukan //host, /\\host, skema, atau :pola),

@@ -48,7 +48,9 @@ test("pil dicabut menurut teks: hanya saat BERLAKU dan dicabut_oleh terisi; taut
     await t.tunggu(".hk-hit");
     assert.equal(await n(".hk-hit"), 3);
     assert.equal(await n(".hk-hit [data-cabut]"), 1, "di hasil cari: pil hanya pada hit konflik (1 dari 3)");
-    assert.equal(await n(".hk-hit a [data-cabut]") + await n("a.hk-hit a"), 1 + 0 * 1 === 1 ? 1 : 0, "pil di kartu hasil berada di dalam <a> kartu dan bukan <a> sendiri");
+    // kartu hasil itu sendiri <a class="hk-hit">: pil harus di dalamnya, dan tidak ada <a> bersarang (pemilih lama ".hk-hit a [data-cabut]" mencari <a> di dalam kartu, jadi selalu 0)
+    assert.equal(await n("a.hk-hit [data-cabut]"), 1, "pil di kartu hasil berada di dalam <a> kartu");
+    assert.equal(await n("a.hk-hit a"), 0, "pil bukan <a> sendiri (tanpa <a> bersarang)");
     assert.deepEqual(t.galat().filter(bukanSisi), [], "konsol bersih");
   } finally { t.tutup(); await br.tutup(); srv.close(); }
 });

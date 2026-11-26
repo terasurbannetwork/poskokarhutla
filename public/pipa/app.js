@@ -163,7 +163,7 @@ function kerangkaStaf(akar) {
     dok.body.prepend(h);
   }
   if (!akar.closest("main")) { const m = tambah("main", {}); akar.before(m); m.append(akar); }
-  if (!dok.querySelector('script[src^="/bnpb/menu_pusdalops.js"]')) dok.body.append(tambah("script", {src: "/bnpb/menu_pusdalops.js?v=27"}));
+  if (!dok.querySelector('script[src^="/bnpb/menu_pusdalops.js"]')) dok.body.append(tambah("script", {src: "/bnpb/menu_pusdalops.js?v=28"}));
 }
 
 /* masuk: hanya di halaman cangkang (ada #app), bukan saat diimpor uji Node */
