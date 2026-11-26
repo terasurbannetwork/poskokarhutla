@@ -45,7 +45,7 @@ Sumber: Rancangan Juklak Praktis Bab I huruf D angka 29 sampai angka 34 dan Lamp
 
 Sumber: sama dengan Tabel 4.2.
 
-Pada laporan awal, rumah rusak boleh dilaporkan belum dipilah atau dipilah dengan penilaian visual. Angka itu diberi tanda perkiraan. Kelas yang dihitung dari rumah taksiran diberi tanda sementara.
+Pada laporan awal, rumah rusak boleh dilaporkan belum dipilah atau dipilah dengan penilaian visual. Angka itu diberi tanda perkiraan. Kelas yang dihitung dari rumah taksiran diberi tanda sementara. Apabila sampai penutupan rumah belum didata per rumah, kelas akhir tetap ditetapkan dengan tanda sementara itu.
 
 Tingkat kerusakan fisik dihitung dengan bobot komponen bangunan hanya untuk tiga keadaan berikut:
 
@@ -65,9 +65,9 @@ Tabel 4.3. Aturan menetapkan kelas
 | 2 | Kelas nasional | Intensif apabila jumlah dampak semua kabupaten/kota mencapai batas nomor 1, 2, 3, 6, atau 7 pada Tabel 4.1, atau salah satu kabupaten/kotanya intensif. Batas nomor 4 dan 5 hanya untuk kabupaten/kota |
 | 3 | Indikator penentu | Ditulis di samping kelas, misalnya "intensif (rumah rusak berat terbobot 690 unit)" |
 | 4 | Kelas otomatis | Sistem menghitung kelas setiap kali angka dampak diperbarui sesuai dengan aturan angka pada Tabel 3.2. Kelas pada saat penutupan menjadi kelas akhir |
-| 5 | Tanda sementara | Kelas diberi tanda sementara apabila indikator penentunya berupa angka perkiraan |
+| 5 | Tanda sementara | Kelas diberi tanda sementara apabila indikator penentunya berupa angka perkiraan. Apabila pada penutupan indikator penentunya masih angka perkiraan, termasuk luas terbakar dari taksiran lapangan atau rumah yang belum didata per rumah, kelas akhir tetap ditetapkan dengan tanda sementara, dan tanda itu ikut tersimpan dalam data statis. Kelas akhir tidak menunggu angka terukur |
 | 6 | Pemeriksaan dekat batas | Walidata bencana memeriksa ulang kelas yang nilai indikatornya selisih tidak lebih dari 10 persen dengan batas, di atas maupun di bawah, hanya apabila nilai itu angka perkiraan atau berasal dari satu laporan saja. Pemeriksaan selesai paling lambat 30 hari setelah penutupan; apabila lewat, kelas otomatis berlaku dengan tanda belum diperiksa |
-| 7 | Kelas akhir karhutla | Luas terbakar untuk kelas akhir harus dari pengukuran lapangan, citra satelit resolusi tinggi, atau citra satelit resolusi menengah dari walidata bencana atau kementerian yang membidangi kehutanan. Luas dari taksiran lapangan hanya menghasilkan kelas sementara. Kedua kelompok tutupan lahan dinilai terpisah |
+| 7 | Kelas akhir karhutla | Luas terbakar untuk kelas memakai pengukuran lapangan, citra satelit resolusi tinggi, atau citra satelit resolusi menengah dari walidata bencana atau kementerian yang membidangi kehutanan. Apabila sampai penutupan hanya ada luas dari taksiran lapangan, kelas akhir ditetapkan dari luas itu dengan tanda sementara. Kedua kelompok tutupan lahan dinilai terpisah |
 | 8 | Asap karhutla | Jumlah hari dengan ISPU kategori berbahaya (301 atau lebih) dicatat sebagai keterangan, bukan penentu kelas |
 | 9 | Kerugian rupiah | Tidak dipakai untuk menentukan kelas |
 | 10 | Status keadaan darurat | Bukan penentu kelas; dicatat sebagai keterangan di samping kelas |
@@ -88,7 +88,7 @@ Tabel 4.4. Contoh penerapan kelas (kejadian rekaan)
 | Banjir bandang | 12 meninggal, 350 rumah rusak berat, 200 rusak sedang, 450 tertutup lumpur dan tidak dapat dihuni, dari penilaian visual | Intensif dengan tanda sementara (rumah rusak berat terbobot 350 + 100 + 150 = 600). Nilainya dekat batas, jadi rumah didata per rumah sebelum penutupan |
 | Kekeringan, kabupaten 110.000 jiwa | 25.000 jiwa di desa penerima bantuan air bersih selama 40 hari | Intensif (penduduk desa penerima bantuan air 23 persen penduduk) |
 | Karhutla | 1.400 hektare lahan gambut berhutan terbakar menurut citra satelit resolusi menengah, tanpa korban jiwa | Intensif (luas terbakar 1.400 hektare) |
-| Karhutla | 1.200 hektare hutan terbakar menurut taksiran regu pemadam | Intensif dengan tanda sementara. Kelas akhir menunggu luas dari pengukuran lapangan atau citra satelit |
+| Karhutla | 1.200 hektare hutan terbakar menurut taksiran regu pemadam | Intensif dengan tanda sementara. Apabila luas dari pengukuran lapangan atau citra satelit datang sebelum penutupan, kelas dihitung ulang; apabila tidak, kelas akhir intensif dengan tanda sementara |
 | Banjir di tiga kabupaten dari hujan yang sama | Masing-masing 15 orang meninggal | Ekstensif di tiap kabupaten; intensif nasional (45 meninggal) |
 
 Sumber: contoh rekaan, bukan kejadian nyata.

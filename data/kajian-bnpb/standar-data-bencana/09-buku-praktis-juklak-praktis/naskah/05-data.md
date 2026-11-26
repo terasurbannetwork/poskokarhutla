@@ -7,7 +7,7 @@ Tabel 5.1. Aturan isian
 | No | Aturan | Ketentuan |
 | ---: | --- | --- |
 | 1 | Formulir | Satu formulir umum untuk semua bencana (Tabel 5.2), ditambah lembar khusus per jenis bencana (Tabel 5.8) |
-| 2 | Keadaan isian | Ada nilai, nihil (nol yang sudah dipastikan), atau belum didata. Isian kosong bukan nol. Isian yang sampai penutupan tetap belum didata ditulis tidak tersedia, bukan nol |
+| 2 | Keadaan isian | Selama kejadian berlangsung ada tiga keadaan: ada nilai, nihil (nol yang sudah dipastikan), atau belum didata. Isian kosong bukan nol. Pada penutupan, isian yang tetap belum didata berubah menjadi tidak tersedia, bukan nol |
 | 3 | Tiga lapis isian | Isian inti wajib pada laporan awal, isian penting wajib pada hasil awal *rapid assessment*, dan isian pelengkap dilengkapi pada pemutakhiran atau penutupan (Tabel 5.3) |
 | 4 | Tanda mutu | Setiap angka diberi metode perkiraan, terhitung, atau terukur, beserta sumber dan status konfirmasinya (Tabel 5.5). Tanda mutu tidak membuat data ditolak |
 | 5 | Data terpilah | • Korban dan pengungsi dipilah menurut jenis kelamin, umur (0–17, 18–59, dan 60 tahun ke atas), dan disabilitas apabila datanya ada<br>• Setiap pemilahan punya kategori tidak diketahui<br>• Pemilahan wajib untuk korban meninggal dan hilang yang ada dalam daftar nama<br>• Enam pertanyaan singkat Washington Group tentang kesulitan melihat, mendengar, berjalan, mengingat, merawat diri, dan berkomunikasi hanya dipakai untuk pengungsi yang terdaftar per orang di tempat pengungsian; selain itu, catat jumlah penyandang disabilitas menurut laporan |
@@ -55,7 +55,7 @@ Tabel 5.3. Tiga lapis isian
 | Lapis | Wajib paling lambat | Isian | Menentukan kriteria dan kelas |
 | --- | --- | --- | --- |
 | Inti | Laporan awal, 24 jam setelah kejadian diketahui; boleh lewat telepon, pesan, atau radio | Dua belas isian pada Tabel 5.4 | Ya |
-| Penting | Hasil awal *rapid assessment*, 72 jam setelah kejadian diketahui | Kejadian pemicu, luka berat dan ringan, terdampak, evakuasi pencegahan, titik pengungsian, koordinat dan ketelitiannya, fasilitas publik, jalan, jembatan, layanan vital, sawah, kebun, tambak, ternak, luas terbakar, status keadaan darurat, permintaan bantuan, kebutuhan mendesak, penetapan otoritas sektor untuk bencana nonalam dan sosial, dan foto | Ya |
+| Penting | Hasil awal *rapid assessment*, 72 jam setelah kejadian diketahui | Kejadian pemicu, luka berat dan ringan, terdampak, evakuasi pencegahan, titik pengungsian, koordinat dan ketelitiannya, fasilitas publik, jalan, jembatan, layanan vital, sawah, kebun, hutan, tambak, kolam, ternak, luas terbakar, status keadaan darurat, permintaan bantuan, kebutuhan mendesak, penetapan otoritas sektor untuk bencana nonalam dan sosial, dan foto | Ya |
 | Pelengkap | Pemutakhiran atau penutupan | Pemilahan korban, terancam, kematian tidak langsung, kelompok rentan, jaringan irigasi, usaha, nilai kerusakan dan kerugian, waktu selesai, pos komando, dan sumber daya | Tidak |
 | Otomatis | Diisi sistem | Nomor induk, nama kejadian, zona waktu, waktu laporan, status kejadian, status konfirmasi, status dampak, kriteria, kelas, dan tanda mutu | Hasil hitungan sistem |
 
@@ -115,7 +115,7 @@ Tabel 5.6. Urutan sumber untuk angka yang berbeda antarinstansi
 
 Sumber: Rancangan Juklak Praktis Bab II huruf E angka 9 dan Lampiran I huruf C Tabel I.7.
 
-Apabila internet putus, laporan awal boleh disampaikan lewat telepon, SMS, WA, radio, atau formulir kertas. Pusdalops BPBD provinsi atau BNPB mengentrinya atas nama pelapor. Pengentri mencatat waktu laporan dibuat di lapangan dan waktu diterima sistem, memberi KIB, dan memberi tanda perkiraan pada angka taksiran. Tenggat 24 jam dihitung dari waktu laporan dibuat. Sampaikan delapan baris pada Tabel 5.7 secara berurutan. Isian yang belum diketahui disebut belum didata.
+Apabila internet putus, laporan awal boleh disampaikan lewat telepon, SMS, WA, radio, atau formulir kertas. Laporan diterima dan dientri oleh Pusdalops BPBD kabupaten/kota, yang memberi KIB. Apabila Pusdalops BPBD kabupaten/kota tidak dapat dihubungi, laporan dientri oleh Pusdalops BPBD provinsi atau Pusdalops BNPB atas nama kabupaten/kota tersebut, dan KIB diberikan oleh pengentri. Pengentri mencatat waktu laporan dibuat di lapangan dan waktu diterima sistem, dan memberi tanda perkiraan pada angka taksiran. Tenggat 24 jam dihitung dari waktu laporan dibuat. Sampaikan delapan baris pada Tabel 5.7 secara berurutan. Isian yang belum diketahui disebut belum didata.
 
 Tabel 5.7. Format laporan awal lewat telepon atau WA
 
@@ -148,7 +148,7 @@ Tabel 5.8. Data khusus pokok per jenis bencana
 | Karhutla | • Luas terbakar dan sumbernya<br>• Luas terbakar per tutupan lahan<br>• Tanggal api terakhir | • Jumlah dan *confidence* *hotspot*<br>• Titik api yang dicek di lapangan<br>• Gambut atau bukan gambut<br>• Status kawasan<br>• ISPU dan PM2,5<br>• Jarak pandang<br>• Status pemadaman |
 | Gempa bumi | Gempa susulan: jumlah, magnitudo terbesar, dan tanggal | • Waktu asal<br>• Pusat gempa<br>• Kedalaman<br>• Magnitudo<br>• MMI per desa<br>• Kerusakan per jenis struktur<br>• Likuefaksi<br>• Retakan tanah |
 | Tsunami | Daftar desa yang tergenang air laut | • Peristiwa pemicu<br>• Tingkat dan waktu peringatan<br>• Waktu tiba gelombang<br>• Tinggi *run-up*<br>• Jarak genangan dari pantai<br>• Perahu rusak |
-| Erupsi gunung api | • Level aktivitas<br>• Radius bahaya | • Jenis erupsi<br>• Tinggi kolom abu<br>• Tebal abu per desa<br>• Jarak luncur awan panas<br>• Lahar<br>• Kode VONA |
+| Erupsi gunung api | • Level aktivitas<br>• Radius bahaya | • Jenis erupsi<br>• Tinggi kolom abu<br>• Tebal abu per desa<br>• Jarak luncur awan panas<br>• Lahar letusan<br>• Kode VONA |
 
 Sumber: Rancangan Juklak Praktis Lampiran III, yang memuat lembar isian lengkap.
 
@@ -178,6 +178,6 @@ Sumber: Rancangan Juklak Praktis Bab II huruf B angka 6 sampai angka 8 dan huruf
 
 Sumber: Rancangan Juklak Praktis Bab II huruf B, Bab III huruf B, huruf C, dan huruf D.
 
-Walidata bencana tidak memeriksa semua kejadian. Yang diperiksa sesudah penutupan adalah semua kejadian intensif, kejadian yang kriteria atau kelasnya masih bertanda perkiraan atau beda sumber, dan sampel acak paling sedikit 10 persen kejadian lainnya.
+Walidata bencana tidak memeriksa semua kejadian. Yang diperiksa sesudah penutupan adalah semua kejadian intensif, kejadian yang kriteria atau kelasnya pada saat penutupan masih bertanda perkiraan atau beda sumber, dan sampel acak paling sedikit 10 persen kejadian lainnya.
 
 Koreksi atas data statis dicatat sebagai versi baru beserta alasannya dan tidak menimpa versi sebelumnya. Koreksi diterima sampai rilis tahunan berikutnya. Sesudah itu, hanya koreksi yang mengubah kriteria, kelas, atau jumlah korban jiwa yang dibuatkan versi baru.

@@ -6,5 +6,8 @@
     "gbr": "../../standar-data-bencana/01-kajian-penentuan-kejadian/gbr",
     "keluaran": "../../standar-data-bencana/keluaran/07 Rancangan Juklak Praktis",
     "nama_keluaran": "Perbandingan Juklak Lengkap dan Praktis",
-    "berkas": ["01-perbandingan.md"]
+    "berkas": [
+        "01-perbandingan.md",
+        "02-uji-meja.md"
+    ]
 }
