@@ -58,7 +58,7 @@ uji("PK-7: konfirmasi memuat label logbook positif, hari_logbook dari rekap ok, 
   const r = await api("GET", `/api/prediksi/konfirmasi?sejak=${sejak}`, undefined, PIPA); assert.equal(r.s, 200, r.t);
   const lb = r.j.konfirmasi.filter(x => x.sumber === "logbook").map(x => `${x.kab}|${x.tanggal}|${x.kode}`).sort();
   assert.deepEqual(lb, [`Aceh Utara|${kemarin}|BNJ`, `Bogor|${kemarin}|CEX`, `Kupang|${kemarin}|GEL`, `Pidie Jaya|${kemarin}|BNJ`]);   // dedupe KJ-1/KJ-2, lama dan provinsi dilewati
-  assert.deepEqual(r.j.hari_logbook, [kemarin]);
+  assert.deepEqual(r.j.hari_logbook, [kemarin]); assert.deepEqual(r.j.hari_logbook_provinsi, [kemarin], "hari dengan kejadian tingkat provinsi ditandai, bukan nol");
   assert.ok(r.j.konfirmasi.filter(x => x.sumber === "logbook").every(x => x.terjadi === 1 && x.catatan === null));
   for (const bocor of ["KJ-1", "CATATAN-RAHASIA", "NAMA-PETUGAS"]) assert.ok(!r.t.includes(bocor), bocor);
 });

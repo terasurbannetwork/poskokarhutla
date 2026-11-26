@@ -8,7 +8,7 @@ const PR = {dampak: null, jalan: null, d: null, skor: null, uji: null, kal: null
 const MENGUNGSI_TAMPIL = false, TAHAN_UNGSI = "Perkiraan mengungsi ditahan sampai uji balik lawan DIBI lulus";
 const LEVEL = ["Normal", "Waspada", "Siaga", "Awas"];
 const ISPU = ["Baik/Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"];
-const KODE_NAMA = {HJN: "Hujan", API: "Titik panas", BNJ: "Banjir", LSR: "Longsor", ASP: "Asap PM2,5", ROB: "Rob"};
+const KODE_NAMA = {HJN: "Hujan", API: "Titik panas", BNJ: "Banjir", LSR: "Longsor", ASP: "Asap PM2,5", ROB: "Rob", GEL: "Gelombang", CEX: "Cuaca ekstrem"};
 
 const persen = p => p == null ? "–" : p < 0.05 ? "<5%" : p > 0.95 ? ">95%" : `${Math.round(p * 20) * 5}%`;
 const mm = v => v == null ? "–" : v < 1 ? "<1 mm" : `±${fmt(Math.round(v))} mm`;
@@ -22,8 +22,8 @@ const rentangTahun = th => {
   const s = r.map(([a, b]) => a === b ? `${a}` : `${a}–${b}`);
   return s.length < 3 ? s.join(" dan ") : `${s.slice(0, -1).join(", ")}, dan ${s.at(-1)}`;
 };
-const angka3 = v => v == null ? "–" : fmt(Math.round(v * 1000) / 1000);
-const angka4 = v => v == null ? "–" : fmt(Math.round(v * 10000) / 10000);
+const angka3 = v => v == null ? "–" : v.toLocaleString("id-ID", {minimumFractionDigits: 3, maximumFractionDigits: 3});
+const angka4 = v => v == null ? "–" : v.toLocaleString("id-ID", {minimumFractionDigits: 4, maximumFractionDigits: 4});
 const kol = (kode, r, c) => r ? r[PR.d.kode[kode].kol.indexOf(c)] : null;
 
 function pil(v) {
@@ -366,8 +366,8 @@ function bayanganRapor(b) {
 /* skor label logbook Pusdalops: terpisah dari tabel DIBI di atas, tidak dirata-rata dan tanpa vonis baseline */
 function logbookRapor(l) {
   if (!l) return "";
-  const rows = l.grup.map(x => `<tr><td>${esc(KODE_NAMA[x.kode] || x.kode)}</td><td class="n">+${esc(x.tenggang)}</td><td class="n">${fmt(x.n)}</td><td class="n">${fmt(x.positif)}</td><td class="n">${angka3(x.brier)}</td><td>${esc(x.vonis)}</td></tr>`).join("");
-  return `<section class="card pad pr-sek"><h2>Label logbook Pusdalops</h2><p class="pr-kecil">${esc(l.catatan)} Hari tanpa logbook: ${fmt(l.tak_terukur)} sel tak terukur.</p>${rows ? `<div class="tw"><table><thead><tr><th>Bahaya</th><th class="n">Tenggang</th><th class="n">n</th><th class="n">Kejadian</th><th class="n">Brier</th><th>Vonis</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="pr-kecil">Belum ada pasangan yang terukur.</p>'}</section>`;
+  const rows = l.grup.map(x => `<tr><td>${esc(KODE_NAMA[x.kode] || x.kode)}</td><td class="n">+${esc(x.tenggang)}</td><td class="n">${fmt(x.n)}</td><td class="n">${fmt(x.positif)}</td><td class="n" title="${x.p_asal === "ansambel" ? "Brier dari peluang ansambel" : "Galat kuadrat rata-rata dari tebakan biner level >= 2, bukan peluang"}">${angka3(x.brier)}</td><td>${x.p_asal === "ansambel" ? "Brier (ansambel)" : "Galat (tebakan biner)"}</td><td>${esc(x.vonis)}</td></tr>`).join("");
+  return `<section class="card pad pr-sek"><h2>Label logbook Pusdalops</h2><p class="pr-kecil">${esc(l.catatan)} "Terukur" hanya berarti sudah cukup pasangan untuk dihitung, bukan berarti prakiraannya baik. Sel tak terukur: ${fmt(l.tak_terukur)}.</p>${rows ? `<div class="tw"><table><thead><tr><th>Bahaya</th><th class="n">Tenggang</th><th class="n">n</th><th class="n">Kejadian</th><th class="n">Skor</th><th>Jenis skor</th><th>Vonis</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="pr-kecil">Belum ada pasangan yang terukur.</p>'}</section>`;
 }
 
 function gambarRapor() {

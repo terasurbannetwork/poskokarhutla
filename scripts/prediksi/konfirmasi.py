@@ -37,23 +37,26 @@ def tarik(kini, env=None, buka=urllib.request.urlopen):
             j = json.load(r)
         if j.get("terpotong"):
             log("respons terpotong (batas 5000 baris, urut tanggal naik): baris terbaru hilang, perkecil jendela sejak")
-        return {"konfirmasi": j["konfirmasi"], "hari_logbook": [t for t in j.get("hari_logbook") or [] if isinstance(t, str)]}
+        return {"konfirmasi": j["konfirmasi"], "hari_logbook": [t for t in j.get("hari_logbook") or [] if isinstance(t, str)],
+                "hari_logbook_provinsi": [t for t in j.get("hari_logbook_provinsi") or [] if isinstance(t, str)]}
     except Exception as x:   # HTTPError 401/503, jaringan, JSON rusak: semuanya "lewati"
         log("dilewati:", getattr(x, "code", None) or type(x).__name__, x)
         return None
 
 
 def normal(rows, daftar):
-    """-> (baris [kab id, tanggal, kode, sumber, terjadi, nilai], jumlah tak cocok). Tanpa catatan."""
-    cari, ids, out, tak = D.pencari(daftar), {k["id"] for k in daftar}, [], 0
+    """-> (baris [kab id, tanggal, kode, sumber, terjadi, nilai], jumlah tak cocok, tanggal logbook ber-baris tak cocok). Tanpa catatan."""
+    cari, ids, out, tak, hari_tak = D.pencari(daftar), {k["id"] for k in daftar}, [], 0, set()
     for r in rows:
         kab = str(r.get("kab") or "").strip()
         i = kab if kab in ids else cari(r.get("prov"), kab) or (cari(None, kab) if r.get("prov") else None)
         if not i or r.get("sumber") not in SUMBER or r.get("terjadi") not in (0, 1) or not r.get("tanggal") or not r.get("kode"):
             tak += 1
+            if r.get("sumber") == "logbook" and r.get("tanggal"):
+                hari_tak.add(r["tanggal"])   # kab tak terbaca: hari itu tak boleh jadi nol logbook
             continue
         out.append([i, r["tanggal"], r["kode"], r["sumber"], r["terjadi"], r.get("nilai")])
-    return out, tak
+    return out, tak, sorted(hari_tak)
 
 
 def gabung(lama, baru):
@@ -74,11 +77,12 @@ def perbarui(kini, data=None, env=None, buka=urllib.request.urlopen, daftar=None
     mentah = tarik(kini, env, buka)
     if mentah is None:
         return None
-    baru, tak = normal(mentah["konfirmasi"], daftar or D.kab())
+    baru, tak, hari_tak = normal(mentah["konfirmasi"], daftar or D.kab())
     s = D.baca(jalur(data), {"rows": []})
     # hari_logbook: hari rekap logbook berstatus ok; hanya bertambah (hari di luar daftar = tak teramati, bukan nol)
     hari = sorted(set(s.get("hari_logbook", [])) | set(mentah["hari_logbook"]))
-    s = {"dibuat": kini, "kol": ["kab", "tanggal", "kode", "sumber", "terjadi", "nilai"], "rows": gabung(s.get("rows", []), baru), "tak_cocok": tak, "hari_logbook": hari}
+    s = {"dibuat": kini, "kol": ["kab", "tanggal", "kode", "sumber", "terjadi", "nilai"], "rows": gabung(s.get("rows", []), baru), "tak_cocok": tak, "hari_logbook": hari,
+         "hari_logbook_tak_cocok": sorted(set(s.get("hari_logbook_tak_cocok", [])) | set(hari_tak) | set(mentah.get("hari_logbook_provinsi", [])))}   # kejadian tingkat provinsi: hari itu bukan nol
     D.simpan(jalur(data), s)
     log(f"{len(mentah['konfirmasi'])} baris, {len(baru)} cocok, {tak} kab tak cocok (tidak ditebak)")
     return s
@@ -127,6 +131,8 @@ def uji():
         isi["konfirmasi"] = [{"kab": k0["id"], "tanggal": "2026-10-30", "kode": "BNJ", "terjadi": 1, "sumber": "logbook"}]
         s = perbarui("2026-11-05", tmp, {"PIPA_TOKEN": "t"}, buka2, daftar)
         assert s["hari_logbook"] == ["2026-10-30"] and [k0["id"], "2026-10-30", "BNJ", "logbook", 1, None] in s["rows"], s
+        isi["konfirmasi"] = [{"kab": "negeri antah berantah", "tanggal": "2026-10-30", "kode": "BNJ", "terjadi": 1, "sumber": "logbook"}]
+        assert perbarui("2026-11-05", tmp, {"PIPA_TOKEN": "t"}, buka2, daftar)["hari_logbook_tak_cocok"] == ["2026-10-30"], "baris logbook tak cocok menandai harinya"
         isi.pop("hari_logbook"); isi["konfirmasi"] = []
         assert perbarui("2026-11-06", tmp, {"PIPA_TOKEN": "t"}, buka2, daftar)["hari_logbook"] == ["2026-10-30"]
     print("konfirmasi.py: uji lulus")

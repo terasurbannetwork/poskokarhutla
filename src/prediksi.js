@@ -57,25 +57,26 @@ async function groundcheck(env, ms) {
 
 /* label logbook Pusdalops (prediksi-kejadian PK-7, D8, ALGORITMA "Label logbook"): kab_kode "prov|nama" tiap kejadian Dalops (R2 dalops/<jenis>.json) dengan
    mulai >= sejak, kode menurut pasangan D3; positif saja, tanpa nomor kejadian, catatan, atau nama petugas. Hari tanpa baris dihitung nol hanya bila logbook hari itu
-   ada: Worker menyerahkan `hari_logbook` (tanggal rekap Laporan Masuk berstatus ok) supaya nilai.py yang memutuskan. Kab tingkat provinsi "(provinsi)" dilewati.
+   ada: Worker menyerahkan `hari_logbook` (tanggal rekap Laporan Masuk berstatus ok) supaya nilai.py yang memutuskan. Kab tingkat provinsi "(provinsi)" dilewati, tanggalnya dikirim di `hari_logbook_provinsi` supaya nilai.py tidak menghitungnya nol.
    ponytail: GEL saja untuk gelombang (D3 menyebut GEL dan ROB; ROB belum bisa dibedakan dari abrasi di logbook): tambah ROB bila subjenis logbook sudah terbaca. */
 const LOGBOOK_KODE = {banjir: "BNJ", longsor: "LSR", cuaca: "CEX", gelombang: "GEL"};
 async function logbook(env, sejak) {
   if (!env.MEDIA) return {baris: [], hari: []};
   const baca = async k => { try { return await (await env.MEDIA.get(k))?.json(); } catch { return null; } };
-  const baris = [], lihat = new Set();
+  const baris = [], lihat = new Set(), provinsi = new Set();
   for (const [jenis, kode] of Object.entries(LOGBOOK_KODE)) {
     for (const k of (await baca(`dalops/${jenis}.json`))?.kejadian ?? []) {
       if (!tglSah(k?.mulai || "") || k.mulai < sejak) continue;
       for (const kk of Array.isArray(k.kab_kode) ? k.kab_kode : []) {
         const [prov, nama] = String(kk).split("|"), kunci = [prov, nama, k.mulai, kode].join("|");
-        if (!nama || nama === "(provinsi)" || lihat.has(kunci)) continue;
+        if (nama === "(provinsi)") { provinsi.add(k.mulai); continue; }
+        if (!nama || lihat.has(kunci)) continue;
         lihat.add(kunci); baris.push({prov, kab: nama, tanggal: k.mulai, kode, terjadi: 1, nilai: null, catatan: null, sumber: "logbook"});
       }
     }
   }
   const hari = ((await baca("dalops/laporan.json"))?.hari ?? []).filter(h => h?.status === "ok" && tglSah(h.tanggal || "") && h.tanggal >= sejak).map(h => h.tanggal);
-  return {baris: baris.slice(0, 5000), hari};
+  return {baris: baris.slice(0, 5000), hari, provinsi: [...provinsi].sort()};
 }
 
 async function baca(env, req, url, kini = Date.now()) {
@@ -95,7 +96,7 @@ async function baca(env, req, url, kini = Date.now()) {
   const warga = w.map(r => ({kab: r.kab, tanggal: r.tanggal, kode: BAHAYA_KODE[r.bahaya], terjadi: 1, nilai: null, catatan: null, sumber: "warga"}))
     .filter(r => !ada.has(kunci(r)));
   const lb = await logbook(env, sejak);
-  return json({sejak, ...terpotong && {terpotong: true}, hari_logbook: lb.hari, konfirmasi: [...regu, ...gc, ...warga, ...lb.baris]}, 200, {"cache-control": "no-store"});
+  return json({sejak, ...terpotong && {terpotong: true}, hari_logbook: lb.hari, hari_logbook_provinsi: lb.provinsi, konfirmasi: [...regu, ...gc, ...warga, ...lb.baris]}, 200, {"cache-control": "no-store"});
 }
 
 export const RUTE_PREDIKSI = {

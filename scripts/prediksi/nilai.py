@@ -428,13 +428,13 @@ def ringkas_konfirmasi(rows, am_api=None):
 LOGBOOK_KODE = ("BNJ", "LSR", "CEX", "GEL")
 
 
-def skor_logbook(entri, rows, hari_lb, kini):
+def skor_logbook(entri, rows, hari_lb, kini, hari_tak=()):
     """Skor label logbook Pusdalops (D8), TERPISAH dari dibi: tidak dirata-rata, tidak dijumlah, tidak mengubah pasangan DIBI.
     o = 1 bila ada baris logbook (kode, sasaran, kab); o = 0 HANYA bila sasaran ada di hari_logbook; selain itu sel tak terukur dan dibuang.
     p = peluang ansambel BNJ/LSR (atau 0/1 dari level >= 2 tanpa ansambel); CEX/GEL hanya punya level: p = 1 bila level >= 2.
     Tanpa pembanding baseline di sini: n < N_MIN = 'belum teruji', selain itu hanya 'terukur'. Logbook mencatat kejadian besar saja."""
     pos = {(kd, t, kab) for kab, t, kd, s, o, _ in rows if s == "logbook" and o == 1 and kd in LOGBOOK_KODE}
-    lb, grup, tak = set(hari_lb or ()), {}, 0
+    lb, grup, tak = set(hari_lb or ()) - set(hari_tak or ()), {}, 0   # hari ber-baris tak cocok (kab tak terbaca) tak boleh jadi nol
     for e in entri:
         k = e["k"]
         if k not in LOGBOOK_KODE:
@@ -450,14 +450,16 @@ def skor_logbook(entri, rows, hari_lb, kini):
                 if o is None:
                     tak += 1
                     continue
+                biner = k in ("CEX", "GEL") or r[1] is None
                 p = float(r[1] >= 2) if k in ("CEX", "GEL") else peluang_prakiraan(k, e["kol"], r, 0)
-                grup.setdefault((k, n + 1), []).append((p, o))
+                grup.setdefault((k, n + 1), []).append((p, o, biner))
     g = []
     for (k, n), v in sorted(grup.items()):
         ps, os_ = [x[0] for x in v], [x[1] for x in v]
-        g.append({"kode": k, "tenggang": n, "n": len(v), "positif": sum(os_), "brier": brier(ps, os_), "vonis": "belum teruji" if len(v) < N_MIN else "terukur"})
+        asal = "biner level>=2" if any(x[2] for x in v) else "ansambel"   # ada satu tebakan biner = skornya bukan Brier peluang murni
+        g.append({"kode": k, "tenggang": n, "p_asal": asal, "n": len(v), "positif": sum(os_), "brier": brier(ps, os_), "vonis": "belum teruji" if len(v) < N_MIN else "terukur"})
     return {"label": "logbook", "n_min": N_MIN, "grup": g, "tak_terukur": tak, "hari_logbook": len(lb),
-            "catatan": "Label logbook Pusdalops, terpisah dari DIBI dan tidak dirata-rata. Nol hanya pada hari yang logbooknya ada; selain itu tak terukur. Logbook memuat kejadian besar saja."}
+            "catatan": "Label logbook Pusdalops, terpisah dari DIBI dan tidak dirata-rata. Nol hanya pada hari yang logbooknya ada; selain itu tak terukur. Logbook memuat kejadian besar saja. Skor tebakan biner (level >= 2) adalah galat kuadrat, bukan Brier peluang."}
 
 
 def nilai(kini=None, akar=D.AKAR, folder=None, data=None, unduh=unduh_hujan):
@@ -493,7 +495,7 @@ def nilai(kini=None, akar=D.AKAR, folder=None, data=None, unduh=unduh_hujan):
     skor = {"versi": 1, "dibuat": dt.datetime.now(D.WIB).replace(microsecond=0).isoformat(), "jenis": "prospektif",
             "n_min": N_MIN, "kode": ringkas(pas, n_pra, status), "bayangan": bayangan(pas, n_pra),
             "konfirmasi": ringkas_konfirmasi(kf, am.get("API")),
-            "logbook": skor_logbook(entri, kf, K.muat(data).get("hari_logbook"), kini),
+            "logbook": skor_logbook(entri, kf, K.muat(data).get("hari_logbook"), kini, K.muat(data).get("hari_logbook_tak_cocok")),
             "catatan": "Prospektif: prakiraan dibekukan sebelum kejadian (arsip append-only). HJN tahap 'sementara' dinilai "
                        "terhadap analisis model, bukan observasi; 'final' terhadap ERA5."}
     D.simpan(os.path.join(d, "skor.json"), skor)
@@ -705,6 +707,8 @@ def uji():
     gb = {(x["kode"], x["tenggang"]): x for x in sl["grup"]}
     assert gb[("BNJ", 1)]["n"] == 2 and gb[("BNJ", 1)]["positif"] == 1, "1102 di hari logbook ada = nol sah; 1 positif"
     assert gb[("GEL", 1)]["n"] == 1 and sl["tak_terukur"] == 3 and all(x["tenggang"] == 1 for x in sl["grup"]), "2026-11-01 di luar hari_logbook = tak terukur, bukan nol"
+    assert gb[("GEL", 1)]["p_asal"] == "biner level>=2" and gb[("BNJ", 1)]["p_asal"] == "ansambel"
+    assert skor_logbook(el, kl, [t0], "2026-11-05", [t0])["grup"][0]["n"] == 1, "hari ber-baris tak cocok: hanya positif, tak ada nol"
     assert all(x["vonis"] == "belum teruji" for x in sl["grup"]) and sl["label"] == "logbook"
     assert all(x["n"] == x["positif"] for x in skor_logbook(el, kl, [], "2026-11-05")["grup"]), "tanpa hari_logbook hanya positif yang terukur, tak ada nol"
     assert pasangan(en, amk, "2026-11-05", label_regu(kl)[0]) == pasangan(en, amk, "2026-11-05"), "logbook tidak masuk label regu/DIBI"
