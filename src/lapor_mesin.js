@@ -499,7 +499,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
   sesi.diubah = kini;
   sesi.transkrip.push({dari: "pelapor", teks: teks ? samarkan(teks) : null, lokasi: !!lokasi, waktu: kini});
   const jawab = (balasan, pilihan = null, kirim = false, minta = null, ket = null) => { // minta: "lokasi" | "templat" (petunjuk untuk layar web); ket: penjelasan tiap pilihan
-    sesi.pilihan = pilihan; sesi.pilihanKet = ket; sesi.minta = minta; sesi.banyak = false; sesi.kunci = null; sesi.saran = 0; sesi.grup = null;
+    sesi.pilihan = pilihan; sesi.pilihanKet = ket; sesi.minta = minta; sesi.satuan = null; sesi.banyak = false; sesi.kunci = null; sesi.saran = 0; sesi.grup = null;
     sesi.form = pilihan || minta ? null : formUntuk(sesi.status === "rtrw" ? "rtrw" : sesi.status === "melengkapi" ? sesi.tanya : null, sesi, kini);
     sesi.isiAwal = pilihan ? null : sesi.status === "rtrw" ? "RT: \nRW: " : isiAwal(minta === "templat" ? "cerita" : sesi.status === "melengkapi" ? sesi.tanya : null, kini, sesi);
     if (pesan?.saluran === "web") balasan = balasan.replace(/, atau di WhatsApp: lampiran, \*Lokasi\*/g, "").replace(/\s*Di WhatsApp[^\n]*/g, ""); // petunjuk khusus WA tidak tampil di web
@@ -527,14 +527,18 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
   const CARI_HUB = ["Anak", "Orang tua", "Suami atau istri", "Saudara", "Teman atau tetangga", "Lainnya"], CARI_WAKTU = ["Hari ini", "Kemarin", "2 sampai 3 hari lalu", "Lebih dari 3 hari lalu"];
   const tanyaCari = (langkah, kepala = "") => {
     sesi.status = `cari_${langkah}`; const k = kepala ? `${kepala}\n\n` : "";
-    if (langkah === "nama") return jawab(`${k}*Siapa nama lengkap orang yang Anda cari?*\nTulis sesuai KTP atau kartu keluarga bila tahu.`);
-    if (langkah === "panggilan") return jawab(`${k}*Nama panggilan ${sesi.cari.nama}*\nNama yang biasa dipakai keluarga atau tetangga.`, ["Lewati"], false, null, ["Tidak ada nama panggilan"]);   // pemilik 25 Nov 2026: "Nama lengkap dulu... baru nama panggilan"
+    // isian teks wajib tampil sebagai kartu isian di web (minta "teks"), tanpa Lewati (pemilik 26 Nov 2026)
+    if (langkah === "nama") return jawab(`${k}*Siapa nama lengkap orang yang Anda cari?*\nTulis sesuai KTP atau kartu keluarga bila tahu.`, null, false, "teks");
+    if (langkah === "panggilan") return jawab(`${k}*Nama panggilan ${sesi.cari.nama}*\nNama yang biasa dipakai keluarga atau tetangga.`, null, false, "teks");   // wajib, tanpa Lewati (K-baru, pemilik 26 Nov 2026: "Jangan ada lewati ya cukup kirim ya. Wajib.")   // pemilik 25 Nov 2026: "Nama lengkap dulu... baru nama panggilan"
     if (langkah === "hubungan") return jawab(`${k}*Apa hubungan Anda dengan ${sesi.cari.nama}?*`, CARI_HUB);
     // ciri-ciri ditanya satu per satu (pemilik 26 Nov 2026: "ditanya satu-satu", "umur tulis berapa, jenis kelamin pilih")
     if (langkah === "kelamin") return jawab(`${k}*Jenis kelamin ${sesi.cari.nama}*`, CARI_KELAMIN);
-    if (langkah === "umur") return jawab(`${k}*Umur ${sesi.cari.nama}*\nTulis angkanya saja, misalnya 12.`, ["Tidak tahu"], false, "angka", ["Tidak tahu umurnya"]);
-    if (langkah === "pakaian") return jawab(`${k}*Pakaian terakhir ${sesi.cari.nama}*\nMisalnya kaus merah dan celana jeans.`, ["Lewati"], false, null, ["Tidak ingat pakaiannya"]);
-    if (langkah === "tanda") return jawab(`${k}*Tanda lain yang mudah dikenali*\nMisalnya tinggi badan, kacamata, atau tahi lalat di pipi.`, ["Lewati"], false, null, ["Tidak ada tanda lain"]);
+    // isian angka membawa satuannya dari mesin (pemilik 26 Nov 2026: "di sebelah box nya ada kata tahun"); tinggi dan berat badan sesudah umur
+    if (langkah === "umur") return Object.assign(jawab(`${k}*Umur ${sesi.cari.nama}*\nTulis angkanya saja, misalnya 12.`, ["Tidak tahu"], false, "angka", ["Tidak tahu umurnya"]), {satuan: sesi.satuan = "tahun"});
+    if (langkah === "tinggi") return Object.assign(jawab(`${k}*Tinggi badan ${sesi.cari.nama}*\nPerkiraan saja, misalnya 160.`, ["Tidak tahu"], false, "angka", ["Tidak tahu tingginya"]), {satuan: sesi.satuan = "cm"});
+    if (langkah === "berat") return Object.assign(jawab(`${k}*Berat badan ${sesi.cari.nama}*\nPerkiraan saja, misalnya 55.`, ["Tidak tahu"], false, "angka", ["Tidak tahu beratnya"]), {satuan: sesi.satuan = "kg"});
+    if (langkah === "pakaian") return jawab(`${k}*Pakaian terakhir ${sesi.cari.nama}*\nMisalnya kaus merah dan celana jeans.`, ["Lewati"], false, "teks", ["Tidak ingat pakaiannya"]);
+    if (langkah === "tanda") return jawab(`${k}*Tanda lain yang mudah dikenali*\nMisalnya kacamata, tahi lalat di pipi, atau bekas luka.`, ["Lewati"], false, "teks", ["Tidak ada tanda lain"]);
     if (langkah === "ciri") return jawab(`${k}*Ciri-ciri ${sesi.cari.nama}*\nTulis umur, pakaian terakhir, tinggi badan, atau tanda lain yang mudah dikenali.`, ["Lewati"]);   // sesi lama yang sudah di langkah ini
     if (langkah === "foto") return jawab(`${k}*Foto ${sesi.cari.nama}*\nKirim satu foto yang wajahnya terlihat jelas. Boleh dari galeri, foto lama pun tidak apa-apa. Foto hanya dilihat petugas.\nDi WhatsApp: kirim fotonya di obrolan ini.`, ["Lewati"], false, "foto_cari", ["Lanjut tanpa foto"]);   // pemilik 26 Nov 2026: "Foto orang dicari"
     if (langkah === "waktu") {   // web: kartu tanggal dan jam seperti waktu kejadian (pemilik 26 Nov 2026), jam boleh kosong; WA tetap pilihan bernomor
@@ -544,8 +548,8 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
         {nama: "tanggal", label: "Tanggal", tipe: "tanggal", nilai: tglLokal(kini, geser), maks: tglLokal(kini, geser)}, {nama: "jam", label: `Jam (${zona})`, tipe: "jam"}]};
       sesi.isiAwal = h.isiAwal = null; return h;
     }
-    if (langkah === "nomor") return jawab(`${k}*Nomor WhatsApp ${sesi.cari.nama}*\nBila tahu, tulis nomornya. Petugas memakainya untuk mencocokkan dengan kabar selamat.`, ["Tidak tahu"]);
-    if (langkah === "kontak") return jawab(`${k}*Nomor yang dihubungi bila ${sesi.cari.nama} ditemukan*\nPetugas menelepon atau mengirim WhatsApp ke nomor ini.`, ["Pakai nomor saya"], false, null, ["Nomor WhatsApp yang Anda pakai sekarang"]);
+    if (langkah === "nomor") return jawab(`${k}*Nomor WhatsApp ${sesi.cari.nama}*\nBila tahu, tulis nomornya. Petugas memakainya untuk mencocokkan dengan kabar selamat.`, ["Tidak tahu"], false, "telepon");   // kartu isian telepon, bukan satu ubin (pemilik 26 Nov 2026)
+    if (langkah === "kontak") return jawab(`${k}*Nomor yang dihubungi bila ${sesi.cari.nama} ditemukan*\nPetugas menelepon atau mengirim WhatsApp ke nomor ini.`, ["Pakai nomor saya"], false, "telepon", ["Nomor WhatsApp yang Anda pakai sekarang"]);
     // web: kartu cari tempat (posko, sekolah, jalan di sekitar, atau desa), hasilnya tetap teks; WA tetap mengetik (pemilik 26 Nov 2026: "kaya google maps gitu aja")
     if (langkah === "tempat") return pesan?.saluran === "web" ? jawab(`${k}*Ke mana ${sesi.cari.nama} diantar bila ditemukan?*\nCari tempat Anda menunggu: posko, sekolah, masjid, atau nama jalan.`, null, false, "antar")
       : jawab(`${k}*Ke mana ${sesi.cari.nama} diantar bila ditemukan?*\nTulis tempat Anda menunggu: nama posko pengungsian, atau alamat lengkap dengan nama jalan, RT/RW, dan patokan.`);
@@ -639,8 +643,8 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       c.nama = nama; return tanyaCari("panggilan");
     }
     if (sesi.status === "cari_panggilan") {
-      const pg = p === 0 || KATA_BELUM.test(teks) ? "" : samarkan(teks).replace(/\[[^\]]*\]/g, "").trim().slice(0, 40);
-      if (pg && (pg.length < 2 || /\d/.test(pg))) return tanyaCari("panggilan", "Tulis nama panggilannya tanpa angka, atau pilih *Lewati*.");
+      const pg = /^lewat/i.test(teks.trim()) ? "" : samarkan(teks).replace(/\[[^\]]*\]/g, "").trim().slice(0, 40);
+      if (pg.length < 2 || /\d/.test(pg)) return tanyaCari("panggilan", "Nama panggilan wajib diisi. Tulis tanpa angka; bila sama dengan nama lengkap, tulis nama itu.");
       c.panggilan = pg && pg.toLowerCase() !== c.nama.toLowerCase() ? pg : null; return tanyaCari("hubungan");
     }
     if (sesi.status === "cari_hubungan") {
@@ -653,16 +657,23 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       (c.cr ||= {}).kelamin = g; return tanyaCari("umur");
     }
     if (sesi.status === "cari_umur") {
-      if (p === 0 || KATA_BELUM.test(teks)) { (c.cr ||= {}).umur = null; return tanyaCari("pakaian"); }
+      if (p === 0 || KATA_BELUM.test(teks)) { (c.cr ||= {}).umur = null; return tanyaCari("tinggi"); }
       const m = /^\s*(\d{1,3})\s*(tahun|thn|th)?\s*$/i.exec(teks), n = m ? Number(m[1]) : NaN;
       if (!(n >= 0 && n <= 120)) return tanyaCari("umur", "Tulis umurnya dengan angka, misalnya 12, atau pilih *Tidak tahu*.");
-      (c.cr ||= {}).umur = n; return tanyaCari("pakaian");
+      (c.cr ||= {}).umur = n; return tanyaCari("tinggi");
+    }
+    if (sesi.status === "cari_tinggi" || sesi.status === "cari_berat") {   // batas wajar: tinggi 30-250 cm, berat 2-300 kg; di luar itu ditanya ulang; tidak tahu = null, bukan 0
+      const tg = sesi.status === "cari_tinggi", [lo, hi, sat] = tg ? [30, 250, "cm"] : [2, 300, "kg"], lanjut = tg ? "berat" : "pakaian";
+      if (p === 0 || KATA_BELUM.test(teks)) { (c.cr ||= {})[tg ? "tinggi" : "berat"] = null; return tanyaCari(lanjut); }
+      const m = new RegExp(`^\\s*(\\d{1,3})\\s*(${sat})?\\s*$`, "i").exec(teks), n = m ? Number(m[1]) : NaN;
+      if (!(n >= lo && n <= hi)) return tanyaCari(tg ? "tinggi" : "berat", `Tulis angka antara ${lo} dan ${hi} ${sat}, atau pilih *Tidak tahu*.`);
+      (c.cr ||= {})[tg ? "tinggi" : "berat"] = n; return tanyaCari(lanjut);
     }
     if (sesi.status === "cari_pakaian" || sesi.status === "cari_tanda") {
       const kosong = p === 0 || KATA_BELUM.test(teks) || /^lewati/i.test(teks.trim()), cr = (c.cr ||= {});
       cr[sesi.status === "cari_pakaian" ? "pakaian" : "tanda"] = kosong ? null : samarkan(teks).trim().slice(0, 120) || null;
       if (sesi.status === "cari_pakaian") return tanyaCari("tanda");
-      const bagian = [cr.kelamin, cr.umur != null ? `${cr.umur} tahun` : null, cr.pakaian ? `pakaian terakhir ${cr.pakaian}` : null, cr.tanda || null].filter(Boolean);
+      const bagian = [cr.kelamin, cr.umur != null ? `${cr.umur} tahun` : null, cr.tinggi != null ? `tinggi ${cr.tinggi} cm` : null, cr.berat != null ? `berat ${cr.berat} kg` : null, cr.pakaian ? `pakaian terakhir ${cr.pakaian}` : null, cr.tanda || null].filter(Boolean);
       c.ciri = bagian.join(", ").slice(0, 300) || null; delete c.cr; return tanyaCari("foto");
     }
     if (sesi.status === "cari_ciri") { c.ciri = p === 0 || KATA_BELUM.test(teks) ? null : samarkan(teks).trim().slice(0, 300) || null; return tanyaCari("foto"); }

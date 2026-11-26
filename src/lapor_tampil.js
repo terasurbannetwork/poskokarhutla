@@ -33,14 +33,14 @@ export function isianTampil(sesi) {
       status: !x ? "kosong" : x.nihil ? "nihil" : x.belum ? (x.tidakTahu ? "tidaktahu" : "belum") : "isi", tampil: x ? nilaiTampil(i, x) : "", asal: x?.asal?.sumber || null};
   });
 }
-export const keluaran = (h, sesi) => ({balasan: h.inti, pilihan: h.pilihan, ket: h.pilihanKet || null, minta: h.minta || null, isiAwal: h.isiAwal || null, form: h.form || null,
+export const keluaran = (h, sesi) => ({balasan: h.inti, pilihan: h.pilihan, ket: h.pilihanKet || null, minta: h.minta || null, satuan: h.satuan || sesi.satuan || null, isiAwal: h.isiAwal || null, form: h.form || null,
   banyak: !!h.banyak, grup: h.grup || null, kunci: h.kunci || null, saran: h.saran || 0, sudah: h.sudah || null, status: sesi.status, lengkap: lengkap(sesi), isian: isianTampil(sesi), foto: (sesi.foto || []).length, bisaKembali: !!sesi.jejak?.length, kembali: !!h.kembali});
 /* bagian jawaban yang sama untuk sesi yang sedang berjalan (cek status, GET /sesi) */
-export const lanjutan = lanjut => ({pilihan: lanjut.pilihan, ket: lanjut.pilihanKet, minta: lanjut.minta, form: lanjut.form, banyak: lanjut.banyak, grup: lanjut.grup, kunci: lanjut.kunci, saran: lanjut.saran, isiAwal: lanjut.isiAwal,
+export const lanjutan = lanjut => ({pilihan: lanjut.pilihan, ket: lanjut.pilihanKet, minta: lanjut.minta, satuan: lanjut.satuan || null, form: lanjut.form, banyak: lanjut.banyak, grup: lanjut.grup, kunci: lanjut.kunci, saran: lanjut.saran, isiAwal: lanjut.isiAwal,
   lengkap: lengkap(lanjut), isian: isianTampil(lanjut)});
 export function sesiTampil(s) {
   if (!s) return {transkrip: []};
-  return {transkrip: s.transkrip, nomor: s.nomor || null, pilihan: s.pilihan || null, ket: s.pilihanKet || null, minta: s.minta || null, isiAwal: s.isiAwal || null,
+  return {transkrip: s.transkrip, nomor: s.nomor || null, pilihan: s.pilihan || null, ket: s.pilihanKet || null, minta: s.minta || null, satuan: s.satuan || null, isiAwal: s.isiAwal || null,
     form: s.form || null, banyak: !!s.banyak, grup: s.grup || null, kunci: s.kunci || null, saran: s.saran || 0, status: s.status, lengkap: lengkap(s), isian: isianTampil(s), foto: (s.foto || []).length,
     balasan: s.akhir?.inti || [...(s.transkrip || [])].reverse().find(t => t.dari === "bot")?.teks || null, bisaKembali: !!s.jejak?.length};
 }

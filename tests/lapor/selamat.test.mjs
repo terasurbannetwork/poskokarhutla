@@ -214,7 +214,14 @@ uji("orang dicari lewat obrolan (pemilik 25 Nov 2026): tanpa kode, baris lapor_c
   for (const t of ["orang hilang", "1", "1", "Rina Wati"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
   r = await kirimP({lokasi: {lat: -6.6, lon: 106.8, akurasi: 12}}); assert.equal(r.s, 200, r.t.slice(0, 300));
   if (/Benar/.test(r.t)) r = await kirimP({teks: "1"});   // konfirmasi desa bila pembaca wilayah tersedia
-  for (const t of ["Joko", "Lewati", "4", "Tidak tahu", "Tidak tahu", "Lewati", "Lewati"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
+  r = await kirimP({teks: "Joko"}); assert.equal(r.s, 200, r.t.slice(0, 300));
+  r = await kirimP({teks: "Lewati"}); assert.match(r.t, /Nama panggilan wajib diisi/, "nama panggilan wajib, Lewati ditolak (pemilik 26 Nov 2026)");
+  // nama panggilan, hubungan, kelamin, umur, tinggi tidak tahu, berat, pakaian, tanda 
+  await DB.prepare("DELETE FROM laju_bnpb").run();   // alur ini lebih dari 20 pesan dalam semenit; kuota diuji di berkas lain
+  for (const t of ["Jojo", "4", "Tidak tahu", "Tidak tahu"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
+  assert.match(r.t, /Tinggi badan Joko/); assert.equal(r.j.satuan, "cm");
+  r = await kirimP({teks: "400"}); assert.match(r.t, /antara 30 dan 250 cm/, "tinggi di luar batas wajar ditanya ulang");
+  for (const t of ["Tidak tahu", "55", "Lewati", "Lewati"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
   assert.match(r.t, /Foto Joko/, "sesudah ciri: foto orang dicari");
   const f = await api("POST", "/api/lapor/foto", {wa: WA_CHAT, data: Buffer.from(JPEG_SAH).toString("base64")}, MESIN_H);   // dari galeri: tanpa lokasi, tetap diterima
   assert.equal(f.s, 200, f.t.slice(0, 300)); assert.match(f.t, /Foto diterima/); const fid = f.j.fotoBaru.id;
@@ -227,6 +234,6 @@ uji("orang dicari lewat obrolan (pemilik 25 Nov 2026): tanpa kode, baris lapor_c
   const b = await DB.prepare("SELECT nomor_pencari, nama_dicari, hubungan, waktu_terakhir, nomor_dicari, status FROM lapor_cari ORDER BY dibuat DESC LIMIT 1").first();
   assert.deepEqual(b, {nomor_pencari: WA_CHAT, nama_dicari: "Joko", hubungan: "Saudara", waktu_terakhir: "Hari ini", nomor_dicari: null, status: "buka"});
   const t = await DB.prepare("SELECT cari_id, panggilan, nomor_kontak, tempat_tunggu FROM lapor_cari_temu ORDER BY rowid DESC LIMIT 1").first();
-  assert.deepEqual({...t, cari_id: undefined}, {cari_id: undefined, panggilan: null, nomor_kontak: WA_CHAT, tempat_tunggu: "Posko SDN 1 Paledang, Jl. Paledang"}, "nomor kontak dan tempat tunggu tersimpan (0177)");
+  assert.deepEqual({...t, cari_id: undefined}, {cari_id: undefined, panggilan: "Jojo", nomor_kontak: WA_CHAT, tempat_tunggu: "Posko SDN 1 Paledang, Jl. Paledang"}, "nomor kontak dan tempat tunggu tersimpan (0177)");
   assert.equal((await DB.prepare("SELECT foto_id FROM lapor_cari_foto WHERE cari_id = ?").bind(t.cari_id).first())?.foto_id, fid, "foto tertaut ke laporan (0185)");
 });
