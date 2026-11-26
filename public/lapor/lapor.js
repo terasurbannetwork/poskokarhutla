@@ -8,7 +8,7 @@ import {maskot} from "/lapor/maskot.js?v=24"; // bervesi: berkas .js disajikan i
 import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
 import {BAHAYA_ALUN, barisPrakiraan} from "/lapor/dampak_peringatan.js?v=2";   // Alun-alun tampilan Peringatan (DP-11)
 import {gabung, saring, teksKartu} from "/lapor/alun_kabar.js?v=1";
-import {ikonKebutuhan, ikonSub, bertingkat, ikonOpsi} from "/lapor/ikon_opsi.js?v=1";   // peta ikon pilihan, diuji gerbang ikon   // Kabar Alun-alun (KA-05): gabung resmi, warga, berita
+import {ikonKebutuhan, ikonSub, bertingkat, ikonOpsi} from "/lapor/ikon_opsi.js?v=2";   // peta ikon pilihan, diuji gerbang ikon   // Kabar Alun-alun (KA-05): gabung resmi, warga, berita
 /* Pelapor mengetik nomor WhatsApp tanpa kode (KEPUTUSAN-LAPOR-AI K65, D99-D102); di situs, nomor ketikan diikat ke perangkat lewat kuki HttpOnly
    dari Worker. Sesi /masuk yang sudah ada tetap dipakai bila ada. Kiriman POST wajib x-pb: 1. */
 const LOKAL = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
@@ -165,16 +165,26 @@ function kartuAntar(j) {
   const cari = el("label", "lp-cari"), q = el("input"); q.type = "search"; q.placeholder = "Cari posko, sekolah, atau jalan"; q.setAttribute("aria-label", "Cari tempat menunggu");
   Object.assign(q, {spellcheck: false, autocapitalize: "none", enterKeyHint: "search"}); q.setAttribute("autocorrect", "off");
   cari.append(ikon("i-cari"), q);
-  const hasil = el("ul", "lp-cari-hasil"), hasilW = el("ul", "lp-cari-hasil"), IK = {Sekolah: "i-fasilitas", "Rumah ibadah": "i-fasilitas", Jalan: "i-lokasi", Jembatan: "i-lokasi"};
+  // ikon per jenis tempat (pemilik 26 Nov 2026 "Bagusin": kantor bukan segitiga bahaya, sekolah dan rumah ibadah tidak sama)
+  const hasil = el("ul", "lp-cari-hasil"), hasilW = el("ul", "lp-cari-hasil"), IK = {Sekolah: "k-sekolah", "Rumah ibadah": "k-ibadah", "Kantor atau balai": "k-kantor", "Balai warga": "i-tetangga", "Titik kumpul": "k-kerumunan", Shelter: "k-tenda", Jalan: "k-jalan", Jembatan: "k-jalan"};
+  // titik kumpul dan shelter (tempat evakuasi) didahulukan; pil saring jenis ujung ke ujung dengan jumlah per jenis
+  const UTAMA = new Set(["Titik kumpul", "Shelter"]), saring = el("div", "lp-antar-saring"); saring.setAttribute("role", "group"); saring.setAttribute("aria-label", "Saring jenis tempat"); let jenisPilih = "";
   const pakai = (teks, tampil) => kirim({teks: teks.slice(0, 200), tampil});
   let semua = null, ulang = 0, tunda;
   const awalKata = (h, k) => h.toLowerCase().split(/[^\p{L}\p{N}]+/u).some(w => w.startsWith(k));   // "sd" cocok "SD Negeri", tidak cocok "TK Bustanul"
   const gambar = () => { if (!semua) return;
-    const kata = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean), cocok = semua.filter(x => kata.every(k => awalKata(`${x.nama} ${x.jenis}`, k)));
+    const kata = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean), cocokKata = semua.filter(x => kata.every(k => awalKata(`${x.nama} ${x.jenis}`, k)));
+    const hitung = new Map(); for (const x of cocokKata) hitung.set(x.jenis, (hitung.get(x.jenis) || 0) + 1);
+    if (jenisPilih && !hitung.has(jenisPilih)) jenisPilih = "";
+    saring.replaceChildren(...[["", "Semua", cocokKata.length], ...[...hitung].sort((a, b) => UTAMA.has(b[0]) - UTAMA.has(a[0]) || b[1] - a[1]).map(([jn, n]) => [jn, jn, n])].map(([jn, t, n]) => {
+      const c = el("button", "lp-antar-pil"); c.type = "button"; c.setAttribute("aria-pressed", String(jn === jenisPilih)); if (jn) c.append(ikon(IK[jn] || "i-lokasi")); c.append(el("span", null, t), el("small", null, n.toLocaleString("id-ID")));
+      c.addEventListener("click", () => { jenisPilih = jn; gambar(); }); return c; }));
+    saring.hidden = hitung.size < 2;
+    const cocok = cocokKata.filter(x => !jenisPilih || x.jenis === jenisPilih).sort((a, b) => UTAMA.has(b.jenis) - UTAMA.has(a.jenis) || a.jarakKm - b.jarakKm);
     hasil.replaceChildren(...cocok.slice(0, 8).map(x => { const li = el("li"), b = el("button", "lp-hasil"); b.type = "button";
       const u = el("span", "lp-hasil-ikon"); u.append(ikon(IK[x.jenis] || "i-pengungsian"));
       const t = el("span", "lp-hasil-teks"), atas = el("span", "lp-hasil-atas"), km = `${x.jarakKm.toLocaleString("id-ID")} km`;
-      atas.append(el("b", null, x.nama)); t.append(atas, el("small", null, `${x.jenis}, ${km}`)); b.append(u, t, ikon("i-panah")); b.title = x.nama;
+      atas.append(el("b", null, x.nama)); t.append(atas, el("small", UTAMA.has(x.jenis) ? "lp-antar-evakuasi" : null, `${UTAMA.has(x.jenis) ? "Tempat evakuasi, " : ""}${x.jenis}, ${km}`)); b.append(u, t, ikon("i-panah")); b.title = x.nama;
       b.addEventListener("click", () => pakai(`${x.nama} (${x.jenis.toLowerCase()}), ${km} dari ${dari || "lokasi terakhir terlihat"}`, x.nama)); li.append(b); return li; })); };
   const muat = async () => {
     try { const rs = await Promise.all(["pengungsian", "jalan"].map(jn => fetch(`/api/lapor/sekitar?wa=${encodeURIComponent(wa || "")}&jenis=${jn}&semua=1`, {signal: AbortSignal.timeout(15000)}).then(r => r.ok ? r.json() : {})));
@@ -186,14 +196,14 @@ function kartuAntar(j) {
     if (q.value.trim().length < 3) { hasilW.replaceChildren(); return; }
     tunda = setTimeout(() => cariTempat(q.value.trim(), "", hasilW, d => pakai(`${d.judul}, ${d.sub}`, d.judul), false).catch(() => hasilW.replaceChildren()), 300); });
   // alamat yang tidak ketemu: diketik sendiri (min. 5 huruf, sama dengan mesin)
-  const sendiri = el("button", "lp-kedua"), lA = el("label", "lp-isi"), alamat = el("input"), simpanA = el("button", "lp-utama");
+  const sendiri = el("button", "lp-kedua lp-antar-sendiri"), lA = el("label", "lp-isi"), alamat = el("input"), simpanA = el("button", "lp-utama");
   sendiri.type = simpanA.type = "button"; sendiri.append(ikon("i-tambah-teks"), "Ketik alamat sendiri"); simpanA.append(ikon("i-centang"), "Simpan alamat");
   alamat.type = "text"; alamat.maxLength = 200; alamat.autocomplete = "street-address"; alamat.enterKeyHint = "done"; alamat.placeholder = "Nama posko atau jalan, RT/RW, dan patokan"; lA.append("Alamat tempat menunggu", alamat); lA.hidden = simpanA.hidden = true;
   sendiri.setAttribute("aria-expanded", "false");
   sendiri.addEventListener("click", () => { sendiri.setAttribute("aria-expanded", "true"); sendiri.hidden = true; lA.hidden = simpanA.hidden = false; if (!alamat.value) alamat.value = q.value.trim(); alamat.focus(); });
   simpanA.addEventListener("click", () => { const v = alamat.value.trim(); if (v.length < 5) { statusEl.textContent = "Tulis nama posko atau alamatnya, paling tidak nama jalan."; alamat.focus(); return; } pakai(v, v); });
   alamat.addEventListener("keydown", e => { if (e.key === "Enter" && !e.isComposing) simpanA.click(); });   // Enter = simpan, tidak memotong ketikan IME
-  const blok = el("div", "lp-lok lp-lok-antar"); blok.append(kp, cari, hasil, hasilW, sendiri, lA, simpanA);
+  const blok = el("div", "lp-lok lp-lok-antar"); saring.hidden = true; blok.append(kp, cari, saring, hasil, hasilW, sendiri, lA, simpanA);
   isi.append(blok); isi.closest(".lp-langkah").classList.add("lp-langkah-lok");
   muat(); q.focus();
 }

@@ -3517,3 +3517,18 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
   #lAlun .lp-alun-peta:has(.lp-alun-tanggal:not([hidden])) .lp-alun-menu{top:121px;left:auto;right:16px;width:min(320px,calc(100% - 480px))}
   #lAlun .lp-alun-peta:has(.lp-alun-tanggal:not([hidden])) .maplibregl-ctrl-top-right{top:178px}
 }
+.lp-alun-kj :is(th,td){padding-left:6px;padding-right:6px}
+.lp-kjd-isi > .lp-kabar > .ex-hd{display:none}
+/* kartu tempat menunggu (pemilik 26 Nov 2026 "Bagusin"): kotak cari setinggi isian lain, pil saring jenis ujung ke ujung, ketik alamat sendiri sejajar penuh */
+.lp-lok-antar .lp-cari{min-height:48px!important;border:1.5px solid var(--line)!important;border-radius:12px!important;background:var(--surface)!important}
+.lp-antar-saring{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:6px;margin:4px 0 2px}
+.lp-antar-saring[hidden]{display:none}
+.lp-antar-pil{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:0 8px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:600 .8125rem var(--font);cursor:pointer;min-width:0}
+.lp-antar-pil span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lp-antar-pil small{font-weight:700;color:var(--ink2);font-variant-numeric:tabular-nums}
+.lp-antar-pil svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:2}
+.lp-antar-pil[aria-pressed="true"]{border-color:var(--head-bg);background:var(--head-bg);color:var(--on-head)}
+.lp-antar-pil[aria-pressed="true"] small{color:var(--on-head)}
+.lp-antar-pil:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.lp-lok-antar .lp-antar-sendiri{width:100%;min-height:48px;justify-content:center}
+.lp-lok-antar .lp-antar-evakuasi{color:var(--ok-tx);font-weight:700}
