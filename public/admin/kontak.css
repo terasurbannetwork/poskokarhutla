@@ -9,7 +9,7 @@
 .kt-sembunyi{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .kt-pesan{white-space:pre-wrap;background:var(--soft);border-radius:10px;padding:10px 12px;margin:10px 0 0;font:600 12.5px ui-monospace,Menlo,monospace;color:var(--c1)}.kt-pesan.ok{color:var(--c4)}
 /* lipatan per provinsi: kepala tbody berupa tombol selebar tabel */
-.kt-tabel .kt-prov-kepala th{padding:0;background:var(--db-h2,var(--soft));text-align:left}
+.kt-tabel .kt-prov-kepala th{padding:0;background:var(--db-h2,var(--soft))}
 .kt-prov-b{display:flex;align-items:center;gap:10px;width:100%;min-height:42px;padding:0 16px;border:0;background:none;font:inherit;font-weight:800;color:var(--ink);cursor:pointer;touch-action:manipulation}
 .kt-prov-b::before{content:"›";font-size:1.1rem;line-height:1;transition:transform .15s}
 .kt-prov-b[aria-expanded="true"]::before{transform:rotate(90deg)}
