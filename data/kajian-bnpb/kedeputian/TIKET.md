@@ -152,7 +152,7 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-055 | RRS-3 fasilitas sosial rusak | `ruang-bnpb` | `selera-angka` | 9 | S | tinjau 26 Nov (belum di-commit; banjir aktif saja: 11 kejadian, 253 sekolah, 25 puskesmas dan RS di jejak per 19 Okt; jejak gempa MMI VII ke atas menunggu berkas dari modul `gempa`) |
 | RU-056 | KEU-1 penguji konsistensi LAKIP dan LK | `ruang-bnpb` | `higiene-repo` | 9 | S | tinjau 26 Nov (belum di-commit; `keu1.py --cek` menangkap 8 selisih 5-lakip.md termasuk Biro Keuangan 95,68%; draf di jalur repo terlacak ditolak; belum diuji atas PDF asli karena tidak ada draf atau LAKIP PDF di mesin) |
 | RU-057 | [induk] Tinjauan dan terbit F1 | sesi induk | pemeriksa per lapisan | 9 | M | belum |
-| RU-058 | PERB-2 kolom rusak sedang dan ringan DIBI | `banjir` | `validasi-model` | 10 | S | belum |
+| RU-058 | PERB-2 kolom rusak sedang dan ringan DIBI | `banjir` | `validasi-model` | 10 | S | selesai 3cde79b71 (`scripts/bnpb/risiko_hvc.py`, `public/data/bnpb/dibi_kab_tahun.json`) |
 | RU-059 | PERB-2 kerugian ekonomi berjalan | `ruang-bnpb` | `validasi-model` | 10 | M | tinjau 26 Nov (belum di-commit; `perb2.py`: gerbang 2025 BELUM LAYAK, hitungan hanya rumah rusak berat Rp4,2 triliun lawan Rp51,3 triliun resmi LAKIP (-92%) karena kolom rusak sedang dan ringan 2025 belum ada di `dibi_kab_tahun.json` (RU-058, pemilik `banjir`), jadi kartu tanpa angka rupiah dan tanpa proporsi lawan PDB; jumlah rumah rusak 365 hari dari `dibi_kejadian.json` tetap tampil (92.145 berat, 87.081 sedang, 191.234 ringan di 300 kab); kode kab BPS dipetakan lewat `padanan_kab_dibi`; PDRB kab BPS belum dipakai dan `BPS_KEY` tidak dibutuhkan; jalur layak diuji dengan data sintetik) |
 | RU-060 | PSPB-3 rapor Sendai dan SDGs 11.b | `ruang-bnpb` | `validasi-model` | 10 | S | tinjau 26 Nov (belum di-commit; `pspb3.py`: A-1 nasional 0,43 dan B-1 2.389 per 100.000 rata-rata 2016-2025, 511 kab berdata, 3 tanpa DIBI (None, bukan 0); penduduk Dukcapil satu tahun untuk semua tahun berlabel; C-1 kosong karena PERB-2 belum layak; E-1 tidak diisi mesin (strategi nasional bukan keluaran PSPB-1, menunggu keputusan pemilik); E-2 0,9% pemda ber-RPBD berlaku dari 235 yang bisa dicek (proksi JDIH, batas bawah, 317 situs tak bisa dicek); definisi terdampak DIBI lawan UNDRR di `title`) |
 | RU-061 | MT-2 daerah prioritas mitigasi | `ruang-bnpb` | `validasi-model` | 10 | S | tinjau 26 Nov (belum di-commit; hipotesis, judul "urutan skor", pil "Asumsi: belum lulus uji balik"; kriteria `lab_kriteria/mb4.json` dikunci, uji balik belum dijalankan dan belum bertiket; 35 kab tanpa kode DIBI ditandai, 15 di kuartil atas) |
@@ -1070,7 +1070,7 @@ Pola tiap tiket sistem pipeline: skrip `scripts/bnpb/unit/<nama>.py` dengan `--c
 
 #### RU-058 PERB-2 kolom rusak sedang dan ringan DIBI
 - **Tujuan:** `dibi_kab_tahun.json` membawa rumah rusak sedang dan ringan, tidak hanya berat.
-- **Berkas:** `scripts/banjir/kejadian.py`, `public/data/dibi_kab_tahun.json` (dibangun ulang oleh pipeline).
+- **Berkas:** `scripts/bnpb/risiko_hvc.py`, `public/data/bnpb/dibi_kab_tahun.json` (dibangun ulang oleh pipeline; path dikoreksi 26 Nov 2026, selesai di 3cde79b71).
 - **Di luar:** skrip Ruang Unit.
 - **Dependensi:** RU-057.
 - **Pengerja / pemeriksa:** `banjir` / `validasi-model` (pemakai lama kolom tidak berubah).
@@ -1247,6 +1247,7 @@ Pola tiap tiket sistem pipeline: skrip `scripts/bnpb/unit/<nama>.py` dengan `--c
   - [ ] Probe SPSE BNPB; bila tidak terbaca, catat dan lanjut dengan SIRUP saja.
   - [ ] `--cek` kasus RU §2.7; kata "pemecahan paket" ditolak; label "kandidat konsolidasi".
   - [ ] Jalankan bukti.
+- **Catatan 26 Nov 2026:** kunci Jam Aturan untuk ambang PL ditunda; ambang Rp200 juta berpil asumsi di skrip (`sdu1.py`, `AMBANG_PL`) sampai Perpres dicek, jadi `public/inti/jam_aturan.json` tidak disentuh.
 - **Bukti:** `python3 -I scripts/bnpb/unit/sdu1.py --cek && node --test tests/agen/gerbang-ruang-unit.test.mjs tests/agen/gerbang-privasi-unit.test.mjs`.
 - **Pemilik:** tidak ada.
 - **Rujukan:** DT §6.26; RU §5.2 baris SDU-1. **Ukuran:** M

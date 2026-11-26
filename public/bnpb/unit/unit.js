@@ -132,6 +132,7 @@
     const isi = [];
     for (const k of daftar) { isi.push(R.render(k, j)); await jeda(); }   // satu kartu per tugas: tab lain tetap bisa diklik
     panel.replaceChildren(...isi);
+    if (window.UnitKetuk?.punya(s)) { const antre = await window.UnitKetuk.tampil(s); if (antre) panel.append(antre); }   // MB-7 antrean setuju (RU-034)
   }
 
   function tabelSistem(u, sis, idx, tayang) {

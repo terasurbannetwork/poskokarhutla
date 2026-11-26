@@ -43,6 +43,10 @@ LANGKAH = [
     ("PSPB-3", "pspb3", "bulanan"),    # RU-060 unit/sendai.json (DIBI x penduduk; C-1 dari perb2, E-2 dari pspb1.jalan, jaringan lewat cache MB-3)
     ("OJL-3", "ojl3", "harian"),    # RU-064 unit/klaster_logistik.json (INALOGPAL get_progress via panen.py; jaringan)
     ("RRP-1", "rrp1", "harian"),    # RU-065 unit/neraca_rumah.json (layer verifikasi ArcGIS BNPB via panen.py; jaringan)
+    ("RRS-1", "rrs1", "harian"),    # RU-067 unit/rugi_tani.json (puso.json x irisan WorldCover; rupiah hanya bila kalibrasi lulus kriteria terkunci)
+    ("DIK-1", "dik1", "bulanan"),    # RU-069 unit/diklat_sasaran.json (MB-4 x unggahan angkatan data/raw/unit/diklat_ringkas.json bila ada)
+    ("REN-2", "ren2", "bulanan"),    # RU-070 unit/belanja_risiko.json (cache SIRUP BNPB x terpapar x ikd)
+    ("SDU-1", "sdu1", "bulanan"),    # RU-071 unit/pengadaan.json (kelas T; cache SIRUP BNPB jalur penyedia)
 ]
 
 BASI_JAM = {"harian": 48, "mingguan": 240, "bulanan": 1080}  # DT sec 9.4

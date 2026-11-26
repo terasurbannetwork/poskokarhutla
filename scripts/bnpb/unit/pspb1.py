@@ -11,7 +11,6 @@ RU-034, jadi semua usulan berstatus menunggu dan register memakai status mesin.
 
   python3 -I scripts/bnpb/unit/pspb1.py --cek
 """
-import hashlib
 import json
 import os
 import re
@@ -21,17 +20,13 @@ from datetime import date, datetime, timedelta, timezone
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # -I tidak menaruh folder skrip
 import jdih_daerah as J  # noqa: E402
 import rapor  # noqa: E402
+from terima import usulan_id  # noqa: E402,F401  (MB-7, RU-034; dipakai juga ks1.py lewat pspb1.usulan_id)
 
 AKAR = rapor.AKAR
 BERLAKU = ("berlaku", "sesuai_3_2026")
 LABEL_TIDAK = "tidak terbit di JDIH, bukan berarti tidak punya"
 NAMA_ST = {"sesuai_3_2026": "berlaku, sesuai Perban 3/2026", "berlaku": "berlaku", "habis": "habis", "belum_mulai": "belum mulai",
            "tidak_ditemukan": LABEL_TIDAK, "tidak_bisa_dicek": "situs JDIH provinsi tidak bisa dicek"}
-
-
-def usulan_id(jenis, url, kunci):
-    """DT 4.7: id = sha1(jenis + sumber_url + kunci_baris)[:16]. ponytail: pindah ke terima.py saat RU-034 dibangun."""
-    return hashlib.sha1(f"{jenis}{url or ''}{kunci}".encode()).hexdigest()[:16]
 
 
 def pemda():
@@ -111,7 +106,7 @@ def bangun(jdih, daftar, hari_ini):
             "lisensi": "metadata peraturan daerah, informasi publik"}]
     b = rapor.berkas([k1, k2], src)
     b["data"] = {"hari": hari_ini, "label_tidak_ditemukan": LABEL_TIDAK, "jumlah": len(reg), "jumlah_tingkat": jml, "pemda": reg,
-                 "koreksi": "menunggu RU-034 (terima.py gabung dari unit_ketuk)"}
+                 "koreksi": "keputusan staf lewat antrean setuju (terima.py gabung dari unit_ketuk); register ini memakai status mesin sampai gabung dipasang di langkah"}
     us = {"berkas": "rpbd", "baris": [{"id": usulan_id("rpbd", r["url"], r["kode"]),
                                         "sumber": {"jenis": "jdih", "nama": r["judul"][:200], "url": r["url"]}, "label": "sekunder",
                                         "isi": {"kode": r["kode"], "status": r["status"], "periode": r["periode"], "url": r["url"]},

@@ -134,7 +134,7 @@ def bangun(jdih, sk, hvc, nama, hari):
     src = [{"nama": "JDIH provinsi (jdih_daerah.py, MB-3)", "url": "repo:scripts/bnpb/unit/jdih_situs.json", "diambil": hari.isoformat(), "lisensi": "metadata peraturan daerah, informasi publik"},
            {"nama": "SK status darurat (status_darurat.json)", "url": "repo:public/data/status_darurat.json", "diambil": hari.isoformat(), "lisensi": "data BNPB, agregat"}]
     b = rapor.berkas([k1], src)
-    b["data"] = {"label": LABEL_BAWAH, "hari": hari.isoformat(), "dokumen": baris, "renkon_lama_tidak_dihitung": lama, "koreksi": "menunggu RU-034 (terima.py gabung dari unit_ketuk)"}
+    b["data"] = {"label": LABEL_BAWAH, "hari": hari.isoformat(), "dokumen": baris, "renkon_lama_tidak_dihitung": lama, "koreksi": "keputusan staf lewat antrean setuju (terima.py gabung dari unit_ketuk); register ini memakai status mesin sampai gabung dipasang di langkah"}
     us = {"berkas": "dokumen_siaga", "baris": [{"id": pspb1.usulan_id(r["jenis"], r["url"], r["kode"]),
                                                  "sumber": {"jenis": "jdih", "nama": r["judul"][:200], "url": r["url"]}, "label": "sekunder",
                                                  "isi": {"kode": r["kode"], "jenis": r["jenis"], "bahaya": r["bahaya"], "status": r["status"], "tgl_tetap": r["tgl_tetap"]},

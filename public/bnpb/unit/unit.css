@@ -83,3 +83,21 @@ select.un-g-in{max-width:320px}
 .un-pd3-teks{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;line-height:1.5;resize:vertical}
 .un-pd3-aksi{margin-top:10px}
 .un-g-out .un-g-cat{margin:10px 0 0}
+/* MB-7 antrean setuju (RU-034, DS 7.7) */
+.un-antre-daftar{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:10px}
+.un-antre{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card);min-width:0}
+.un-antre[hidden]{display:none}
+.un-antre p{margin:0}
+.un-antre-judul{font-weight:700;overflow-wrap:anywhere}
+.un-antre-meta,.un-antre-cat{color:var(--ink2);font-size:var(--fs-2)}
+.un-antre-isi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px 16px;margin:8px 0}
+.un-antre-isi dt{font-size:.75rem;color:var(--ink2)}
+.un-antre-isi dd{margin:0;overflow-wrap:anywhere}
+.un-antre-aksi{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;margin-top:8px}
+.un-antre-kor summary{cursor:pointer;font-weight:600;padding:6px 0}
+.un-antre-koreksi{display:grid;gap:8px;margin-top:6px}
+.un-antre-koreksi label{display:grid;gap:2px;font-size:var(--fs-2)}
+.un-antre-koreksi .un-g-in{max-width:none}
+.un-antre-sudah{margin-top:12px}
+.un-antre-sudah>summary{cursor:pointer;font-weight:600}
+@media (max-width:760px){.un-antre-aksi .ad-tombol{min-height:44px}}

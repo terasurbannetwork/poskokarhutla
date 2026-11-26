@@ -23,7 +23,11 @@
   "PERB-2": "perb2.py --cek",
   "PSPB-3": "pspb3.py --cek",
   "OJL-3": "ojl3.py --cek",
-  "RRP-1": "rrp1.py --cek"
+  "RRP-1": "rrp1.py --cek",
+  "RRS-1": "rrs1.py --cek",
+  "DIK-1": "dik1.py --cek",
+  "REN-2": "ren2.py --cek",
+  "SDU-1": "sdu1.py --cek"
  },
  "dikecualikan": {
   "KEU-1": "berjalan di mesin pemilik atas data internal (U9); keu1.py --cek menguji aturannya atas selisih 5-lakip.md"
@@ -43,14 +47,10 @@
   "RRX-1",
   "RRP-2",
   "RRI-1",
-  "RRS-1",
-  "REN-2",
-  "SDU-1",
   "HUK-2",
   "IRT-1",
-  "DIK-1",
   "DIK-4",
   "JF-2"
  ],
- "antre_maks": 22
+ "antre_maks": 18
 }
