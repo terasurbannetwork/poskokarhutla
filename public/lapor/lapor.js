@@ -1847,6 +1847,8 @@ function elDonat(c) {
   return {el: b, lbl};
 }
 function elGunung(g) { const b = el("div", "lp-gunung-tanda"), n = el("span", null, g.nama); b.title = `${g.nama}, ${g.level === 4 ? "Awas" : "Siaga"}`;
+  b.setAttribute("role", "button"); b.tabIndex = 0; b.setAttribute("aria-label", b.title);
+  b.addEventListener("click", e => { e.stopPropagation(); popGunung(g); }); b.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); popGunung(g); } });
   b.innerHTML = '<svg viewBox="0 0 20 18" width="20" height="18" aria-hidden="true"><path d="M10 1.6 18.6 16.4H1.4Z"/></svg>'; b.append(n); return {el: b, lbl: n}; }
 /* label peta biasa tanpa kotak (pemilik 26 Nov 2026: pil putih "jelek"): lebar diukur dari huruf sebenarnya, dicoba kanan, kiri, bawah, atas */
 const lebarTeks = (s, f) => { const x = lebarTeks.k ||= document.createElement("canvas").getContext("2d"); x.font = f; return x.measureText(s).width; };
@@ -2113,7 +2115,6 @@ function pitaPeriode() {
   const ref0 = alunKabar?.hari, kini0 = new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);   // data belum hari ini: tombol pertama memakai tanggal datanya, bukan "Hari ini"
   for (const [n, t] of PERIODE_ALUN) { const b = el("button", null, n === 1 && ref0 && ref0 < kini0 ? tglPendekId(ref0) : t); b.type = "button"; b.setAttribute("role", "radio"); b.setAttribute("aria-checked", String(n === alunPeriode));
     b.addEventListener("click", () => { if (n === alunPeriode) return; alunPeriode = n; for (const c of d.children) c.setAttribute("aria-checked", String(c === b)); gambarAlun(); }); d.append(b); }
-  const ref = alunKabar?.hari; if (ref) { const a = el("small", "lp-redup"); a.textContent = alunPeriode ? `sampai ${tglPendekId(ref)}` : `data ${tglPendekId(akhirAwal())} sampai ${tglPendekId(ref)}`; d.append(a); }
   return d;
 }
 /* layar lebar: periode jadi kartu "Tanggal data" di kanan atas peta seperti peta utama (pemilik 26 Nov 2026); HP: tetap di atas daftar. Hasil = isi untuk daftar */
@@ -2123,7 +2124,6 @@ function taruhPeriode() {
   if (lama) lama.replaceWith(k); else $("petaAlun").append(k); return [];
 }
 const tglPendekId = iso => { const m = /^(\d{4})-(\d\d)-(\d\d)/.exec(iso || ""); return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"}) : ""; };
-const akhirAwal = () => (alunKabar?.kejadian || []).map(k => k.lap_terakhir).filter(Boolean).sort()[0] || alunKabar?.hari;
 const muatWilayah = () => muatWilayah.j ||= new Promise(ok => { if (window.Wilayah) return ok();
   document.head.append(Object.assign(document.createElement("script"), {src: "/instansi_wilayah.js?v=1", onload: ok, onerror: ok})); });
 const lambangAlun = () => lambangAlun.j ||= fetch("/lambang/kabkota.json").then(r => r.ok ? r.json() : {}).catch(() => ({}));   // sama dengan /bnpb/dalops
@@ -2145,26 +2145,63 @@ function sektorBahaya(g) {   // sektor dan jarak terjauh dari kalimat rekomendas
   const arah = m[1].toLowerCase(), singkat = arah.split(/[- ](?=utara|selatan|timur|barat|tenggara)/).map(a => ARAH_SINGKAT[a.trim()] || a).join("-");
   return {km, arah, singkat};
 }
+/* kartu gunung api (pemilik 26 Nov 2026: "kenapa gw ga bisa klik", "bagusin"): baris gunung Siaga/Awas jadi tombol yang menerbangkan peta ke gunungnya
+   dan membuka pop-up rincian yang sama dengan segitiga di peta; hitungan per level jadi deret ringkas, bukan empat kotak berwarna penuh */
+const NAMA_LEVEL = {4: "Awas", 3: "Siaga", 2: "Waspada", 1: "Normal"};
 function kartuGunung() {
-  const sec = el("section", "lp-alun-gunung"), kep = el("header"), isi = el("div"); kep.append(el("b", null, "Status gunung api")); sec.append(kep, isi);
+  const sec = el("section", "lp-alun-gunung"), kep = el("header"), isi = el("div", "lp-alun-gunung-isi"); kep.append(el("b", null, "Status gunung api")); sec.append(kep, isi);
   isi.append(el("p", "lp-redup lp-kecil", "Memuat status gunung api."));
   muatGunung().then(d => {
     const L = d?.gunung || [], j = d?.jumlah_level;
     if (!j || !L.length) return isi.replaceChildren(el("p", "lp-redup lp-kecil", "Status gunung api belum ada data."));
-    if (d.dibuat) { const t = new Date(d.dibuat); if (!isNaN(t)) kep.append(el("small", "lp-redup", `MAGMA PVMBG, data ${t.toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta"})}`)); }
-    const kotak = el("div", "lp-alun-gunung-kotak");
-    for (const [lv, nama] of [[4, "Awas"], [3, "Siaga"], [2, "Waspada"], [1, "Normal"]]) { const k = el("div", `lv${lv}`), n = j[String(lv)];
-      k.append(el("b", null, Number.isFinite(n) ? n.toLocaleString("id-ID") : "–"), el("small", null, nama)); kotak.append(k); }
+    if (d.dibuat) { const t = new Date(d.dibuat); if (!isNaN(t)) kep.append(el("small", "lp-redup", `MAGMA PVMBG, ${t.toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta"})}`)); }
+    const ringkas = el("ul", "lp-alun-gunung-ringkas");
+    for (const lv of [4, 3, 2, 1]) { const li = el("li", `lv${lv}`), n = j[String(lv)];
+      li.append(el("b", null, Number.isFinite(n) ? n.toLocaleString("id-ID") : "–"), el("small", null, NAMA_LEVEL[lv])); ringkas.append(li); }
     const ul = el("ul", "lp-alun-gunung-daftar");
     for (const g of L.filter(g => g.level >= 3).sort((a, b) => b.level - a.level || a.nama.localeCompare(b.nama, "id"))) {
-      const li = el("li"), nm = el("div"); nm.append(el("b", null, g.nama), el("small", "lp-redup", [g.level === 4 ? "Awas" : "Siaga", g.prov].filter(Boolean).join(", ")));
-      const pil = el("div", "lp-alun-gunung-pil");
-      if (Number.isFinite(g.radius_km)) pil.append(el("span", "lp-pil", `Radius ${g.radius_km.toLocaleString("id-ID")} km`));
-      const sb = sektorBahaya(g); if (sb) { const p = el("span", "lp-pil lv3", `Bahaya ${sb.km.toLocaleString("id-ID")} km arah ${sb.singkat}`); p.title = `Sektor ${sb.arah}`; pil.append(p); }
-      li.append(el("i", `lp-alun-gunung-ikon lv${g.level}`), nm, pil); ul.append(li); }
-    isi.replaceChildren(kotak, ...(ul.children.length ? [ul] : [el("p", "lp-redup lp-kecil", "Tidak ada gunung api berstatus Siaga atau Awas.")]));
+      const li = el("li"), bt = el("button", `lp-alun-gunung-baris lv${g.level}`), nm = el("span", "lp-alun-gunung-nama"), pil = el("span", "lp-alun-gunung-pil");
+      bt.type = "button"; nm.append(el("b", null, g.nama), el("small", null, [NAMA_LEVEL[g.level], g.prov].filter(Boolean).join(", ")));
+      if (Number.isFinite(g.radius_km)) pil.append(el("span", null, `Radius ${g.radius_km.toLocaleString("id-ID")} km`));
+      const sb = sektorBahaya(g); if (sb) { const p = el("span", "bahaya", `Bahaya ${sb.km.toLocaleString("id-ID")} km arah ${sb.singkat}`); p.title = `Sektor ${sb.arah}`; pil.append(p); }
+      bt.append(el("i", "lp-alun-gunung-ikon"), nm, ikon("i-panah", "lp-alun-gunung-panah")); if (pil.childElementCount) bt.append(pil);
+      if (Number.isFinite(g.lat) && Number.isFinite(g.lon)) bt.addEventListener("click", () => keGunung(g)); else bt.disabled = true;
+      li.append(bt); ul.append(li); }
+    isi.replaceChildren(ringkas, ...(ul.children.length ? [ul] : [el("p", "lp-redup lp-kecil", "Tidak ada gunung api berstatus Siaga atau Awas.")]));
   });
   return sec;
+}
+// periode MAGMA datang dalam dua bentuk ("Laporan per 6 jam, tanggal 2026-11-25 pukul 12:00 - 18:00 WIB" dan "10 November 2026, periode 06:00-12:00 WIB"): disamakan jadi satu kalimat pendek
+function periodeGunung(p) {
+  if (!p) return "";
+  const iso = /(\d{4}-\d\d-\d\d)/.exec(p), tgl = iso ? tglPendekId(iso[1]) : /\d{1,2} [A-Za-z]+ \d{4}/.exec(p)?.[0], jam = /(\d\d)[:.](\d\d)\s*-\s*(\d\d)[:.](\d\d)/.exec(p);
+  return tgl ? `Laporan PVMBG ${tgl}${jam ? `, pukul ${jam[1]}.${jam[2]} sampai ${jam[3]}.${jam[4]} WIB` : ""}` : "";
+}
+let popGunungAktif = null;
+function popGunung(g) {
+  const box = el("div", "lp-alun-pop lp-pop-kaya lp-pop-gunung"), kp = el("div", "lp-pop-kepala"), nm = el("div");
+  nm.append(el("b", null, g.nama), el("small", null, g.prov || "")); kp.append(el("i", `lp-alun-gunung-ikon lv${g.level}`), nm); box.append(kp);
+  const kj = el("section", "lp-pop-kj"), atas = el("div", "lp-pop-atas"), st = el("span", `lp-pop-st lp-gn-st lv${g.level}`, `Level ${NAMA_LEVEL[g.level] || "belum ada data"}`);
+  atas.append(el("span", "lp-pop-jenis", "Gunung api"), st); kj.append(atas);
+  const dl = el("div", "lp-pop-dampak"), sb = sektorBahaya(g);
+  for (const [nilai, label, ik] of [[Number.isFinite(g.radius_km) ? `${g.radius_km.toLocaleString("id-ID")} km` : null, "radius tanpa aktivitas", "i-lokasi"],
+    [sb ? `${sb.km.toLocaleString("id-ID")} km ${sb.singkat}` : null, sb ? `sektor ${sb.arah}` : "sektor bahaya", "i-arah"]]) {
+    const sel = el("div"), ub = el("span", "lp-pop-ik"), tx = el("span"); ub.append(ikon(ik));
+    tx.append(el("b", nilai ? null : "kosong", nilai || "belum ada data"), el("small", null, label)); sel.append(ub, tx); dl.append(sel); }
+  kj.append(dl);
+  const wk = periodeGunung(g.periode); if (wk) kj.append(el("p", "lp-pop-waktu", wk));
+  if (/^https:\/\/magma\.esdm\.go\.id\//.test(g.laporan || "")) { const a = el("a", "lp-alun-pop-baris lp-pop-buka"), tx = el("span"); a.href = g.laporan; a.target = "_blank"; a.rel = "noopener";
+    tx.append(el("b", null, "Laporan lengkap di MAGMA")); a.append(tx, ikon("i-panah")); kj.append(a); }
+  box.append(kj);
+  popGunungAktif?.remove();
+  popGunungAktif = new maplibregl.Popup({offset: 14, closeButton: false, maxWidth: "300px", focusAfterOpen: false}).setLngLat([g.lon, g.lat]).setDOMContent(box).addTo(alunPeta);
+}
+function keGunung(g) {
+  if (!alunPeta) return;
+  const kv = alunPeta.getContainer(), kr = kv.getBoundingClientRect(), pan = kv.closest("#petaAlun")?.querySelector(".lp-alun-panel"), r = pan?.offsetParent ? pan.getBoundingClientRect() : null;
+  const kiri = r && kr.width > 700 && r.right < kr.left + kr.width * .6 ? Math.max(0, r.right - kr.left) : 0;   // layar lebar: gunung tidak tertutup panel kiri
+  alunPeta.flyTo({center: [g.lon, g.lat], zoom: Math.max(alunPeta.getZoom(), 9), padding: {left: kiri, top: 0, right: 0, bottom: 0}, duration: 900, essential: false});
+  alunPeta.once("moveend", () => popGunung(g));
 }
 function tabelProvinsi(w, daftar) {
   const g = new Map();

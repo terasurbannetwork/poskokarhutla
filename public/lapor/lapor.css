@@ -1899,6 +1899,21 @@ input.lp-isian{font-weight:700;font-size:1.125rem;font-variant-numeric:tabular-n
 .lp-tt-kata article:hover{border-color:color-mix(in oklab,var(--brand2) 35%,var(--line))}
 .lp-tt-ikon{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--brand2);color:var(--on-brand)}
 .lp-tt-ikon svg{width:22px;height:22px}
+/* tiga jenis laporan di Cara melapor (pemilik 26 Nov 2026): warna sama dengan tombol hero, tombol mulai per jenis */
+.lp-tt-jenis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.lp-tt-jenis article{--k:var(--brand-accent);display:flex;flex-direction:column;gap:8px;padding:16px;border:1px solid var(--line);border-top:4px solid var(--k);border-radius:14px;background:var(--card)}
+.lp-tt-jenis .darurat{--k:var(--bad)}.lp-tt-jenis .hilang{--k:var(--info-tx)}
+.lp-tt-jenis-ikon{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--k);color:var(--on-pekat)}
+.lp-tt-jenis-ikon svg{width:18px;height:18px}
+.lp-tt-jenis b{font:800 1rem var(--display);color:var(--ink)}
+.lp-tt-jenis p{margin:0;font:600 .8125rem/1.5 var(--font);color:var(--ink)}
+.lp-tt-jenis ul{display:grid;gap:6px;margin:0 0 4px;padding:0;list-style:none}
+.lp-tt-jenis li{position:relative;padding-left:14px;font-size:.8125rem;line-height:1.5;color:var(--ink2)}
+.lp-tt-jenis li::before{content:"";position:absolute;left:2px;top:.6em;width:5px;height:5px;border-radius:50%;background:var(--k)}
+.lp-tt-jenis button{margin-top:auto;align-self:flex-start;padding:8px 14px;border:0;border-radius:999px;background:color-mix(in oklab,var(--k) 12%,var(--card));color:color-mix(in oklab,var(--k) 72%,var(--ink));font:700 .8125rem var(--font);cursor:pointer;transition:background-color .15s}
+.lp-tt-jenis button:hover{background:color-mix(in oklab,var(--k) 22%,var(--card))}
+.lp-tt-jenis button:focus-visible{outline:2px solid var(--k);outline-offset:2px}
+@media (max-width:900px){.lp-tt-jenis{grid-template-columns:1fr}}
 .lp-tt-langkah{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .lp-tt-langkah li{display:flex;gap:12px;padding:16px;border:1px solid var(--line);border-radius:14px}
 .lp-tt-langkah li > span{display:grid;place-items:center;width:34px;height:34px;flex:none;border-radius:50%;background:var(--brand-accent);color:var(--on-pekat);font:800 .9375rem var(--display)}
@@ -3391,25 +3406,35 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-alun-legenda-isi small{font-size:.6875rem}
 
 /* status gunung api di Alun-alun (pemilik 26 Nov 2026): kotak Awas, Siaga, Waspada, Normal dari token --dp-* dan daftar gunung Siaga/Awas */
-.lp-alun-gunung{display:grid;gap:10px;margin:0 0 14px;padding:12px;border-radius:14px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.lp-alun-gunung{display:grid;gap:12px;margin:0 0 14px;padding:14px;border-radius:16px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
 .lp-alun-gunung > header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 8px}
-.lp-alun-gunung > header b{font:800 .875rem var(--display);color:var(--brand)}
+.lp-alun-gunung > header b{font:800 .9375rem var(--display);color:var(--ink)}
 .lp-alun-gunung > header small{font-size:.6875rem}
-.lp-alun-gunung-kotak{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-.lp-alun-gunung-kotak div{--k:var(--info);display:grid;justify-items:center;gap:1px;padding:6px 4px;border-radius:10px;background:color-mix(in oklab,var(--k) 16%,var(--card));box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--k) 40%,transparent)}
-.lp-alun-gunung-kotak b{font:800 1.125rem var(--display);font-variant-numeric:tabular-nums;color:color-mix(in oklab,var(--k) 55%,var(--ink))}
-.lp-alun-gunung-kotak small{font:700 .6875rem var(--font);color:color-mix(in oklab,var(--k) 45%,var(--ink))}
+.lp-alun-gunung-isi{display:grid;gap:10px}
 .lp-alun-gunung .lv4{--k:var(--dp-3)}.lp-alun-gunung .lv3{--k:var(--dp-2)}.lp-alun-gunung .lv2{--k:var(--dp-1)}.lp-alun-gunung .lv1{--k:var(--info)}
-.lp-alun-gunung-daftar{display:grid;gap:6px;margin:0;padding:0;list-style:none}
-.lp-alun-gunung-daftar li{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:8px;row-gap:4px;padding:8px 10px;border-radius:10px;background:var(--surface)}
-.lp-alun-gunung-daftar li > div:first-of-type{display:grid}
-.lp-alun-gunung-daftar b{font:800 .8125rem var(--font)}
-.lp-alun-gunung-daftar small{font-size:.6875rem}
-.lp-alun-gunung-ikon{--k:var(--lh-gunungapi);width:14px;height:13px;background:var(--k);clip-path:polygon(50% 0,100% 100%,0 100%)}
-.lp-alun-gunung-ikon.lv4{--k:var(--dp-3)}
-.lp-alun-gunung-pil{grid-column:2;display:flex;flex-wrap:wrap;gap:4px}
-.lp-alun-gunung-pil .lp-pil{font-size:.6875rem}
-.lp-alun-gunung-pil .lp-pil.lv3{background:color-mix(in oklab,var(--lh-gunungapi) 16%,var(--card));color:color-mix(in oklab,var(--lh-gunungapi) 60%,var(--ink))}
+/* hitungan per level: satu deret ringkas, warna hanya di garis atas supaya tidak berebut perhatian dengan daftar gunung */
+.lp-alun-gunung-ringkas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;padding:0;list-style:none;border-radius:12px;background:var(--surface);overflow:hidden}
+.lp-alun-gunung-ringkas li{display:grid;justify-items:center;gap:1px;padding:8px 4px 7px;box-shadow:inset 0 3px 0 var(--k)}
+.lp-alun-gunung-ringkas li + li{border-left:1px solid var(--line)}
+.lp-alun-gunung-ringkas b{font:800 1.0625rem/1.2 var(--display);font-variant-numeric:tabular-nums;color:var(--ink)}
+.lp-alun-gunung-ringkas small{font:600 .6875rem var(--font);color:var(--ink2)}
+.lp-alun-gunung-daftar{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.lp-alun-gunung-baris{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:10px;row-gap:6px;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;transition:border-color .15s,background-color .15s}
+.lp-alun-gunung-baris:hover{border-color:color-mix(in oklab,var(--k) 45%,var(--line));background:color-mix(in oklab,var(--k) 5%,var(--card))}
+.lp-alun-gunung-baris:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.lp-alun-gunung-baris:disabled{cursor:default}
+.lp-alun-gunung-nama{display:grid;gap:1px;min-width:0}
+.lp-alun-gunung-nama b{font:800 .875rem var(--font);color:var(--ink)}
+.lp-alun-gunung-nama small{font:500 .75rem var(--font);color:var(--ink2)}
+.lp-alun-gunung-ikon{--k:var(--lh-gunungapi);display:block;width:16px;height:14px;background:var(--k);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.lp-alun-gunung-ikon.lv4,.lv4 > .lp-alun-gunung-ikon{--k:var(--dp-3)}
+.lp-alun-gunung-panah{width:16px;height:16px;fill:none;stroke:var(--ink2);stroke-width:2;transition:transform .15s}
+.lp-alun-gunung-baris:hover .lp-alun-gunung-panah{transform:translateX(2px);stroke:var(--brand2)}
+.lp-alun-gunung-pil{grid-column:2 / -1;display:flex;flex-wrap:wrap;gap:6px}
+.lp-alun-gunung-pil span{padding:3px 9px;border-radius:999px;background:var(--surface);font:700 .6875rem/1.5 var(--font);color:var(--ink2)}
+.lp-alun-gunung-pil .bahaya{background:color-mix(in oklab,var(--lh-gunungapi) 14%,var(--card));color:color-mix(in oklab,var(--lh-gunungapi) 62%,var(--ink))}
+/* pop-up gunung api: kerangka sama dengan pop-up kab/kota */
+.lp-pop-gunung a.lp-pop-buka{text-decoration:none}
 /* ikon Peringatan dini dan Nomor darurat di kanan atas kepala beranda, di sebelah tombol tema (pemilik 26 Nov 2026: "Ya, pindahkan"); ikon polos tanpa garis luar */
 .lp-ikon-atas-grup{position:absolute;top:12px;right:12px;z-index:2;display:flex;align-items:center;gap:4px}
 .lp-ikon-atas-grup > .lp-tema-hp{position:static;display:grid}
@@ -3434,7 +3459,9 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-donat-nama[data-pos=bawah]{left:50%;top:calc(100% + 2px);transform:translateX(-50%)}
 .lp-donat-nama[data-pos=atas]{left:50%;top:auto;bottom:calc(100% + 2px);transform:translateX(-50%)}
 /* gunung api Siaga/Awas di skala provinsi: segitiga oranye bernama, ikut aturan tanpa tumpukan */
-.lp-gunung-tanda{position:relative;width:20px;height:18px;pointer-events:none}
+.lp-gunung-tanda{position:relative;width:20px;height:18px;cursor:pointer}
+.lp-gunung-tanda:focus-visible{outline:2px solid var(--brand2);outline-offset:3px;border-radius:4px}
+.lp-gunung-tanda span{pointer-events:none}
 .lp-gunung-tanda svg{display:block;overflow:visible;filter:drop-shadow(0 1px 1.5px color-mix(in oklab,var(--head-bg) 22%,transparent))}
 .lp-gunung-tanda path{fill:var(--lh-gunungapi);stroke:var(--card);stroke-width:2;stroke-linejoin:round}
 .lp-gunung-tanda span{position:absolute;top:calc(100% + 2px);left:50%;transform:translateX(-50%);white-space:nowrap;font:600 .6875rem/1.273 var(--font);color:color-mix(in oklab,var(--lh-gunungapi) 82%,var(--ink));text-shadow:0 0 2px var(--card),1px 1px 0 var(--card),-1px -1px 0 var(--card),1px -1px 0 var(--card),-1px 1px 0 var(--card),0 1px 0 var(--card),0 -1px 0 var(--card),1px 0 0 var(--card),-1px 0 0 var(--card)}
@@ -3483,7 +3510,7 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 /* pop-up kejadian Alun-alun dibuat seperti pop-up provinsi peta utama (pemilik 26 Nov 2026 "kaku banget kotak gitu, kaya gini dong"):
    kepala tengah berlambang, garis pemisah tipis, angka padat berikon lembut, tombol rincian lunak penuh lebar */
 #lAlun .maplibregl-popup-content:has(.lp-pop-kaya){padding:12px 14px;border-radius:18px;box-shadow:0 10px 30px color-mix(in oklab,var(--head-bg) 22%,transparent)}
-.lp-pop-kaya{width:300px}
+.lp-pop-kaya{width:272px;max-width:100%}   /* 300 px pop-up dikurangi 2 x 14 px bantalan: isi tidak pernah keluar kotak */
 .lp-pop-kaya .lp-pop-kepala{justify-content:center;gap:8px;padding:0 0 10px;border-bottom:1px solid color-mix(in oklab,var(--line) 70%,transparent);text-align:center}
 .lp-pop-kaya .lp-pop-kepala > div{justify-items:start}
 .lp-pop-kaya .lp-pop-lambang{width:26px;height:26px}
@@ -3495,6 +3522,8 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 .lp-pop-kaya .lp-pop-ik{width:26px;height:26px;border-radius:8px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2)}
 .lp-pop-kaya .lp-pop-ik svg{width:14px;height:14px}
 .lp-pop-kaya .lp-pop-dampak b{font:800 .9375rem/1.15 var(--font)}
+.lp-pop-kaya .lp-pop-dampak b.kosong{font:600 .75rem/1.35 var(--font);color:var(--ink2)}
+.lp-pop-kaya .lp-pop-atas{flex-wrap:wrap;row-gap:4px}.lp-pop-kaya .lp-pop-st{white-space:nowrap}
 .lp-pop-kaya .lp-pop-waktu{padding-top:0;border-top:0;text-align:center}
 .lp-pop-kaya .lp-pop-buka{justify-content:center;margin:2px 0 0;padding:8px 12px;border:0;border-radius:12px;background:color-mix(in oklab,var(--brand2) 10%,var(--card))}
 .lp-pop-kaya .lp-pop-buka > span{flex:none}
