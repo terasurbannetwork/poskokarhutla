@@ -3665,3 +3665,5 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 .lp-pw-ubin-kep{padding-bottom:12px;border-bottom:1px solid var(--line)}
 .lp-pw-ubin>.lp-pw-tbl-utama{margin-top:auto}
 .lp-pw-qr{background:var(--surface)}
+/* 26 Nov 2026 (pemilik: "tambahin tanya lanjut draf atau mulai baru"): dua pilihan draf sama lebar */
+.lp-draf-aksi{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))!important;align-items:stretch}

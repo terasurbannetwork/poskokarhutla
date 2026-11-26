@@ -1334,6 +1334,19 @@ function kosongkanChat() { $("mengetik").hidden = true; log.replaceChildren(); w
     kosongkanChat();
     const mulaiCari = () => kirim({teks: "lapor orang hilang", tampil: false});
     return tanyaBahasa(() => wa ? mulaiCari() : tanyaNomor(mulaiCari));
+/* draf belum dikirim saat menekan Lapor: tanya lanjutkan atau mulai baru (pemilik 26 Nov 2026: "tambahin tanya lanjut draf atau mulai baru").
+   Mulai baru = draf dibatalkan di mesin ("batal"), layar dikosongkan, lalu laporan baru dibuka. */
+function tanyaDraf() {
+  const isi = kartu("i-pesan", "Ada laporan yang belum dikirim"); isi.closest(".lp-langkah").querySelector(".lp-kembali-langkah")?.remove();
+  fPesan.hidden = true; const d = el("div", "lp-ringkas-aksi lp-draf-aksi"), lengkap = cache.keadaan?.lengkap || 0;
+  for (const [t, ket, ik, kls, aksi] of [
+    ["Lanjutkan laporan tadi", `Sudah lengkap ${lengkap} persen`, "i-panah", "utama", () => terapkan(cache.keadaan, {dariCache: true})],
+    ["Mulai laporan baru", "Laporan tadi dibatalkan dan tidak dikirim", "i-tambah-teks", "", async () => { await kirim({teks: "batal", tampil: false}); kosongkanChat(); kirim({teks: "lapor", tampil: false}); }]]) {
+    const b = tombolOpsi(t, ket, aksi, kls), u = el("span", "lp-opsi-ubin"); u.append(ikon(ik)); b.prepend(u); d.append(b); }
+  isi.append(d); gulir.scrollTop = gulir.scrollHeight;
+}
+async function bukaChat(darurat = false) {
+  if (darurat === "cari") {   // lapor orang hilang lewat obrolan, tanpa kode WA (pemilik 25 Nov 2026)
   }
   if (darurat === true) {   // K68: laporan darurat selalu dimulai baru; draf laporan biasa yang belum terkirim diganti
     ke("chat"); hangatkanTerima();
@@ -1346,6 +1359,7 @@ function kosongkanChat() { $("mengetik").hidden = true; log.replaceChildren(); w
     tanyaBahasa(() => wa ? mulaiLapor() : tanyaNomor(mulaiLapor)); }   // bahasa dipilih di jendela awal; di chat ditanya hanya bila belum
 }
 
+  if (log.children.length && cache.keadaan?.status && !["terkirim", "batal", "cari_terkirim", "identitas"].includes(cache.keadaan.status)) return tanyaDraf();
 /* bantuan: definisi juklak dan pertanyaan umum */
 const BANTU = [
   ["Melapor", "Apa saja yang perlu disiapkan?", "Siapkan lokasi kejadian (sebaiknya Anda berada di lokasi), perkiraan waktu kejadian, dan foto keadaan di lokasi bila bisa. Data korban dan kerusakan boleh perkiraan. Bila belum tahu, biarkan kosong."],
