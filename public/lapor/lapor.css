@@ -625,6 +625,8 @@ input.lp-isian{font-weight:700;font-size:1.125rem;font-variant-numeric:tabular-n
 .lp-layanan-kartu.darurat small{color:var(--on-head-2)}
 .lp-layanan-kartu.darurat .lp-lk-ikon{top:12px;left:12px;transform:none;background:var(--bad);color:var(--on-pekat)}
 @media (max-width:899px){.lp-layanan-kartu.darurat{grid-column:span 2}}
+/* ikon Lapor orang hilang biru, senada tombol tab-nya (pemilik 26 Nov 2026) */
+.lp-layanan-kartu.hilang .lp-lk-ikon{background:var(--info-tx);color:var(--on-pekat);backdrop-filter:none}
 @media (min-width:900px){.lp-layanan-kartu.darurat{padding:22px;min-height:0}.lp-layanan-kartu.darurat .lp-lk-ikon{top:16px;left:16px}}
 
 /* kompartemen berkepala (pemilik 19 Nov 2026: "gw suka kompartemen"; pola kartu Betutu Sambe) */
