@@ -1915,6 +1915,14 @@ input.lp-isian{font-weight:700;font-size:1.125rem;font-variant-numeric:tabular-n
 .lp-tt-jenis button:focus-visible{outline:2px solid var(--k);outline-offset:2px}
 @media (max-width:900px){.lp-tt-jenis{grid-template-columns:1fr}}
 .lp-tt-langkah{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+/* Cara melapor per jenis (pemilik 26 Nov 2026: "ga cuma lapor kejadian tapi juga orang hilang dan lapor darurat"): tiga kolom, warna jenis */
+.lp-tt-cara{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+.lp-tt-cara-kol{--k:var(--brand-accent);display:grid;gap:10px}.lp-tt-cara-kol.darurat{--k:var(--bad)}.lp-tt-cara-kol.hilang{--k:var(--info-tx)}
+.lp-tt-cara-kol h3{display:flex;align-items:center;gap:10px;margin:0;font:800 1rem var(--display);color:var(--ink)}
+.lp-tt-langkah.satu{grid-template-columns:1fr;gap:8px}
+.lp-tt-cara-kol .lp-tt-langkah li{border-left:4px solid var(--k)}
+.lp-tt-cara-kol .lp-tt-langkah li > span{background:var(--k)}
+@media (max-width:900px){.lp-tt-cara{grid-template-columns:1fr}}
 .lp-tt-langkah li{display:flex;gap:12px;padding:16px;border:1px solid var(--line);border-radius:14px}
 .lp-tt-langkah li > span{display:grid;place-items:center;width:34px;height:34px;flex:none;border-radius:50%;background:var(--brand-accent);color:var(--on-pekat);font:800 .9375rem var(--display)}
 .lp-tt-langkah b{font:800 .9375rem var(--display)}

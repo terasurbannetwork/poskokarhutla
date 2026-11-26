@@ -15,7 +15,7 @@ const TAB = [
 const BAHAYA = ["bnj", "bdg", "lsr", "gel", "kht", "kek", "cex"];
 const HARI = ["ringkas", "0", "1", "2", "3"];
 const KOTAK = [[94, -11.5], [141.5, 6.5]];
-const CSS = ["/potensi/potensi.css?v=2", "/potensi/status.css?v=2", "/lapor/peringatan_potensi.css?v=3"];
+const CSS = ["/potensi/potensi.css?v=2", "/potensi/status.css?v=2", "/lapor/peringatan_potensi.css?v=4"];
 const $ = (id) => document.getElementById(id);
 const hp = matchMedia("(max-width:899px)");
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -70,7 +70,7 @@ function pilih(k, dorong) {
   const lama = kini; kini = k; state.tab = k;
   // chrome urgent: pil, panel, mode terlihat; modul dan isi berat ditunda
   for (const b of $("ppTab").children) b.setAttribute("aria-selected", String(b.dataset.tab === k));
-  $("ppPanel").hidden = !d.peta; $("ppGunung").hidden = k !== "status";
+  $("ppTab").hidden = false; $("ppPanel").hidden = !d.peta; $("ppGunung").hidden = k !== "status";
   for (const s of $("ppPanel").children) s.hidden = s.id !== "pp-" + k;
   $("ppBaca").hidden = !!d.peta; $("ppBawah").hidden = !d.peta;
   for (const s of $("ppBaca").querySelectorAll(".po-pb")) s.hidden = s.id !== "pp-" + k;
@@ -109,14 +109,14 @@ function bangun(kartuGunung) {
   const panel = Object.assign(document.createElement("div"), { id: "ppPanel", className: "pp-panel" });
   panel.innerHTML = pt.map((d) => `<section id="pp-${d.k}" class="po-pt" role="tabpanel" hidden></section>`).join("");
   const gunung = Object.assign(document.createElement("div"), { id: "ppGunung" }); gunung.append(kartuGunung());
-  isi.replaceChildren(pil, panel, gunung);
+  isi.replaceChildren(panel, gunung);
   const bawah = Object.assign(document.createElement("div"), { id: "ppBawah", className: "po-bawah pp-bawah" });
   bawah.setAttribute("role", "group"); bawah.setAttribute("aria-label", "Garis waktu dan legenda");
   bawah.innerHTML = pt.map((d) => `<div id="ppbw-${d.k}" class="po-bw" hidden></div>`).join("");
   const bc = Object.assign(document.createElement("div"), { id: "ppBaca", className: "po-baca pp-baca" });
   bc.innerHTML = '<button type="button" class="pp-balik">Kembali ke peta</button>' + pb.map((d) => `<section id="pp-${d.k}" class="po-pb" role="tabpanel" hidden></section>`).join("");
   bc.querySelector(".pp-balik").addEventListener("click", () => pilih("status", true));
-  aside.before(bc); arena.append(bawah);   // bc sebelum panel: panel (z sama) tetap di atas
+  aside.before(bc); arena.append(bawah, pil);   // pil melayang di tengah atas peta seperti bilah tab Foundry (pemilik 26 Nov 2026)   // bc sebelum panel: panel (z sama) tetap di atas
   addEventListener("popstate", () => { const s = baca(); if (!s.ada || !kini) return; Object.assign(state, s, { tab: kini }); if (s.tab !== kini) pilih(s.tab, false); });
   (window.requestIdleCallback || ((f) => setTimeout(f, 800)))(tabStaf);
 }
@@ -142,6 +142,6 @@ export function buka({ ambilPeta, siap, kamus, kartuGunung, bahaya }) {
 export function tutup() {
   if (kini) mods.get(kini)?.aktif?.(false);
   kini = ""; kamusLayer = [];
-  $("ppBawah").hidden = $("ppBaca").hidden = true;
+  $("ppBawah").hidden = $("ppBaca").hidden = $("ppTab").hidden = true;
   if (baca().ada) history.replaceState(null, "", location.pathname + location.search);
 }
