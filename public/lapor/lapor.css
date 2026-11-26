@@ -3775,3 +3775,6 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 }
 .lp-jalur-tanda{display:flex;justify-content:center}
 .lp-catat-nanti{margin:8px 0 0}
+/* sakelar mode pindah ke bilah atas peta (26 Nov 2026): saringan panel kini paling atas, tidak lagi diturunkan 58px (menimpa kepala tabel) */
+.lp-alun-panel .lp-alun-saring{top:0;padding-top:12px}
+@media (max-width:1299px){.lp-alun-tanggal{top:64px}}   /* layar sedang: Tanggal data turun di bawah bilah atas supaya tidak bertumpuk */
