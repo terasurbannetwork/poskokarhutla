@@ -2,7 +2,7 @@
 
    Tahap 1 dari 2. Tahap 2 (kode kab, angka dampak, episode, berkas terbit) ada di laphar_arsip.py.
 
-   Pakai:  node scripts/umum/laphar_arsip.mjs [--arsip DIR] [--keluar DIR] [--ulang]
+   Pakai:  node scripts/umum/laphar_arsip.mjs [--arsip DIR] [--keluar DIR] [--ulang] [--hari YYYY-MM-DD]
            node scripts/umum/laphar_arsip.mjs uji        self-check luring (pemilihan berkas)
    Bawaan: --arsip  = $LAPHAR_ARSIP atau "D:/Project/Work/BNPB/Pusat Pengendalian Operasi/LAPORAN HARIAN 2026"
            --keluar = data/raw/laphar (di-.gitignore: teks laporan memuat nama korban dan petugas, tidak pernah di-commit)
@@ -17,15 +17,34 @@
    * Teks di-cache per tanggal; cache dipakai ulang bila ukuran + waktu ubah PDF sama (--ulang memaksa ulang).
    * Tanggal yang hanya punya .docx dicatat di indeks.json `tanpa_pdf` (belum diurai).
 
+   * --hari: hanya satu tanggal diurai (KPOD-3, RU-045). hari/<tgl>.json ditimpa utuh (idempoten, tulis sementara lalu rename),
+     indeks.json digabung (hari lain dan tanpa_pdf tidak disentuh), PDF di atas BATAS_PDF ditolak. Tidak ada jaringan: berkas
+     datang dari arsip lokal; unduhan R2 oleh pemanggil (otomatis.mjs) yang membatasi host.
+
    Keluaran: <keluar>/teks/YYYY-MM-DD.txt, <keluar>/hari/YYYY-MM-DD.json {tanggal, berkas, mulai, sampai, kejadian, lewat},
              <keluar>/indeks.json {dibuat, arsip, hari:[{tanggal, berkas, kejadian, lewat}], tanpa_pdf, ganda, peringatan}. */
-import {readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, existsSync, rmSync} from "node:fs";
+import {readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, lstatSync, existsSync, rmSync, renameSync} from "node:fs";
 import {execFileSync} from "node:child_process";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 
 const AKAR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const ARSIP_BAWAAN = process.env.LAPHAR_ARSIP || "D:/Project/Work/BNPB/Pusat Pengendalian Operasi/LAPORAN HARIAN 2026";
+
+const BATAS_PDF = 50 * 1024 * 1024;       // laphar nyata < 5 MB; di atas ini bukan laphar
+const RE_HARI = /^\d{4}-\d{2}-\d{2}$/;
+const hariSah = t => RE_HARI.test(t || "") && new Date(t + "T00:00:00Z").toJSON()?.slice(0, 10) === t;
+
+/* gabungIndeks(lama, tgl, entri|null, kini) -> indeks baru: satu tanggal diganti, sisanya utuh. entri null = tanggal tanpa PDF. */
+export function gabungIndeks(lama, tgl, entri, kini = new Date().toISOString()) {
+  const hari = (lama.hari || []).filter(h => h.tanggal !== tgl), tp = new Set(lama.tanpa_pdf || []);
+  tp.delete(tgl);
+  if (entri) hari.push(entri); else tp.add(tgl);
+  hari.sort((a, b) => a.tanggal.localeCompare(b.tanggal));
+  return {...lama, dibuat: kini, hari, tanpa_pdf: [...tp].sort()};
+}
+
+function tulisAtomik(f, isi) { writeFileSync(f + ".tmp", isi); renameSync(f + ".tmp", f); }
 
 const RE_BERKAS = /^Laporan Harian (?:PUSDALOPS|Dit\. Koordalops BNPB)\s*\(?(\d{2})(\d{2})(\d{4})\)?/i;
 const RE_SALINAN = /^(\d+\.\s|Eks\s|Salinan\s)/i;
@@ -53,7 +72,7 @@ function daftarArsip(arsip) {
     const dp = path.join(arsip, d);
     if (!statSync(dp).isDirectory()) continue;
     for (const f of readdirSync(dp)) {
-      const fp = path.join(dp, f), s = statSync(fp);
+      const fp = path.join(dp, f), s = lstatSync(fp);   // symlink tidak diikuti: arsip bisa diisi unduhan R2 (tinjauan keamanan 26 Nov 2026)
       if (s.isFile()) out.push({dir: d, nama: f, jalur: fp, ukuran: s.size, ubah: Math.round(s.mtimeMs)});
     }
   }
@@ -71,21 +90,24 @@ function teksPdf(e, fTeks, fMeta, ulang) {
   const tanda = `${e.ukuran}:${e.ubah}`;
   if (!ulang && existsSync(fTeks) && existsSync(fMeta) && readFileSync(fMeta, "utf8") === tanda) return readFileSync(fTeks, "utf8");
   rmSync(fTeks, {force: true});            // jangan pernah membaca teks lama bila pdftotext gagal
-  execFileSync(process.env.PDFTOTEXT || "pdftotext", ["-q", "-layout", "-enc", "UTF-8", e.jalur, fTeks], {stdio: "ignore"});
+  execFileSync(process.env.PDFTOTEXT || "pdftotext", ["-q", "-layout", "-enc", "UTF-8", e.jalur, fTeks], {stdio: "ignore", timeout: 60000});   // PDF rusak tidak menggantung proses
   writeFileSync(fMeta, tanda);
   return readFileSync(fTeks, "utf8");
 }
 
 function jalan(arg) {
   const ambil = n => { const i = arg.indexOf(n); return i >= 0 ? arg[i + 1] : null; };
-  const arsip = ambil("--arsip") || ARSIP_BAWAAN, keluar = path.resolve(AKAR, ambil("--keluar") || "data/raw/laphar"), ulang = arg.includes("--ulang");
+  const arsip = ambil("--arsip") || ARSIP_BAWAAN, keluar = path.resolve(AKAR, ambil("--keluar") || "data/raw/laphar"), ulang = arg.includes("--ulang"), satu = ambil("--hari");
+  if (satu !== null && !hariSah(satu)) { console.error(`--hari harus YYYY-MM-DD yang sah: ${satu}`); process.exit(2); }
   if (!existsSync(arsip)) { console.error(`arsip tidak ada: ${arsip}`); process.exit(2); }
   for (const d of ["teks", "hari"]) mkdirSync(path.join(keluar, d), {recursive: true});
   const {pdf, docx, ganda} = pilihBerkas(daftarArsip(arsip));
   const {U, prov} = muatPengurai();
   const hari = [], peringatan = [];
-  for (const tgl of Object.keys(pdf).sort()) {
+  if (satu && !pdf[satu] && !docx.has(satu)) { console.error(`tidak ada laporan untuk ${satu} di ${arsip}; tidak ada yang diubah`); process.exit(3); }
+  for (const tgl of satu ? [satu].filter(t => pdf[t]) : Object.keys(pdf).sort()) {
     const e = pdf[tgl];
+    if (satu && e.ukuran > BATAS_PDF) { console.error(`${tgl}: PDF ${e.ukuran} byte melewati batas; ditolak`); process.exit(4); }
     let teks;
     try { teks = teksPdf(e, path.join(keluar, "teks", `${tgl}.txt`), path.join(keluar, "teks", `${tgl}.tanda`), ulang); }
     catch (err) { peringatan.push(`${tgl}: pdftotext gagal (${e.nama})`); continue; }
@@ -93,8 +115,16 @@ function jalan(arg) {
     if (r.bentuk !== "laphar") { peringatan.push(`${tgl}: bentuk tidak dikenali (${e.nama})`); continue; }
     if (r.mulai && r.mulai !== tgl) peringatan.push(`${tgl}: periode di isi laporan mulai ${r.mulai}, beda dengan nama berkas`);
     const lewat = r.lewat.filter(s => !/tabel status daerah/.test(s));   // bagian I sengaja tidak diambil (status_darurat.py dari CKAN)
-    writeFileSync(path.join(keluar, "hari", `${tgl}.json`), JSON.stringify({tanggal: tgl, berkas: `${e.dir}/${e.nama}`, mulai: r.mulai, sampai: r.sampai, kejadian: r.kejadian, lewat}));
+    tulisAtomik(path.join(keluar, "hari", `${tgl}.json`), JSON.stringify({tanggal: tgl, berkas: `${e.dir}/${e.nama}`, mulai: r.mulai, sampai: r.sampai, kejadian: r.kejadian, lewat}));
     hari.push({tanggal: tgl, berkas: `${e.dir}/${e.nama}`, kejadian: r.kejadian.length, lewat: lewat.length});
+  }
+  if (satu) {
+    const fi = path.join(keluar, "indeks.json");
+    const lama = existsSync(fi) ? JSON.parse(readFileSync(fi, "utf8")) : {arsip, hari: [], tanpa_pdf: [], ganda: [], peringatan: []};
+    tulisAtomik(fi, JSON.stringify(gabungIndeks({...lama, ganda: ganda.includes(satu) ? [...new Set([...(lama.ganda || []), satu])].sort() : lama.ganda}, satu, hari[0] || null), null, 1));
+    console.log(`${satu}: ${hari[0] ? `${hari[0].kejadian} entri kejadian` : "tanpa PDF (hanya .docx)"}; peringatan: ${peringatan.length}`);
+    for (const p of peringatan) console.log("  ! " + p);
+    return;
   }
   const tanpa_pdf = [...docx].filter(t => !pdf[t]).sort();
   writeFileSync(path.join(keluar, "indeks.json"), JSON.stringify({dibuat: new Date().toISOString(), arsip, hari, tanpa_pdf, ganda, peringatan}, null, 1));
@@ -121,6 +151,14 @@ function uji() {
   ok(r.pdf["2026-10-20"].salinan, "salinan kerja mengisi tanggal tanpa PDF utama");
   ok(r.ganda.join() === "2026-08-08", "ganda tercatat");
   ok([...r.docx].sort().join() === "2026-01-01,2026-10-11,2026-10-17,2026-10-29", "tanggal yang hanya punya docx (termasuk salinan) tercatat: " + [...r.docx]);
+  ok(!hariSah("2026-13-01") && !hariSah("2026-02-30") && !hariSah("../x") && hariSah("2026-10-29"), "--hari hanya tanggal sah");
+  const lama = {dibuat: "x", arsip: "a", hari: [{tanggal: "2026-10-28", kejadian: 1}, {tanggal: "2026-10-29", kejadian: 2}], tanpa_pdf: ["2026-10-30"], ganda: []};
+  const g = gabungIndeks(lama, "2026-10-30", {tanggal: "2026-10-30", kejadian: 5}, "t");
+  ok(g.hari.map(h => h.tanggal).join() === "2026-10-28,2026-10-29,2026-10-30" && g.tanpa_pdf.length === 0, "tanggal baru masuk, keluar dari tanpa_pdf");
+  const g2 = gabungIndeks(g, "2026-10-30", {tanggal: "2026-10-30", kejadian: 5}, "t");
+  ok(JSON.stringify(g2) === JSON.stringify(g), "idempoten: diulang hasil sama");
+  ok(gabungIndeks(lama, "2026-10-29", {tanggal: "2026-10-29", kejadian: 9}, "t").hari.length === 2, "tanggal yang ada diganti, tidak dobel");
+  ok(gabungIndeks(lama, "2026-11-01", null, "t").tanpa_pdf.join() === "2026-10-30,2026-11-01", "tanpa PDF dicatat");
   console.log("uji laphar_arsip.mjs: lulus");
 }
 

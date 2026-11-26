@@ -37,6 +37,20 @@ MEDAN = {"md": "jiwa meninggal (MD)", "hilang": "jiwa hilang", "luka": "jiwa luk
          "rumah_terdampak": "rumah terdampak/terendam", "luas_ha": "luas lahan terbakar (ha; karhutla provinsi = kumulatif sejak 1 Jan)"}
 
 
+# KPOD-3 medan pendampingan (ALGORITMA kedeputian 7.3): kelas kata kunci, teks penuh tidak disimpan
+TOLAK = re.compile(r"belum|tidak ada|nihil", re.I)
+KELAS_PEND = {"dsp": re.compile(r"dana siap pakai|\bDSP\b|\bRp", re.I), "logistik": re.compile(r"logistik|sembako|tenda|selimut", re.I),
+              "personel": re.compile(r"\btim\b|\bTRC\b|personel|pendampingan", re.I), "udara": re.compile(r"\bOMC\b|heli|water bombing", re.I)}
+
+
+def pendampingan(teks):
+    """teks medan 'Pendampingan BNPB' -> (isi, [kelas]); kosong atau memuat kata tolak = isi False, kelas []."""
+    t = (teks or "").strip()
+    if not t or TOLAK.search(t):
+        return False, []
+    return True, [k for k, r in KELAS_PEND.items() if r.search(t)]
+
+
 def _muat(nama, rel):
     s = importlib.util.spec_from_file_location(nama, os.path.join(AKAR, rel))
     m = importlib.util.module_from_spec(s)
@@ -237,13 +251,15 @@ def susun(hari, prov, cari_kab, tanpa_pdf=()):
             dibuang["angka_tak_wajar"] += [f"{t} {judul[:60]}: {b}" for b in buang]
             hj["n"] += 1
             hj["jenis"][kunci[0]] = hj["jenis"].get(kunci[0], 0) + 1
+            pi, pk = pendampingan(k.get("pendampingan") or k.get("upaya"))   # keputusan 26 Nov: PDF laphar tak punya kunci pendampingan; "Giat BNPB" (upaya) = pendampingan BNPB; WA memakai kunci pendampingan
             r = muncul.setdefault(kunci, {}).get(t)
             if r is None:
-                muncul[kunci][t] = {"tempat": tempat, "tingkat": tingkat, "angka": a,
+                muncul[kunci][t] = {"tempat": tempat, "tingkat": tingkat, "angka": a, "pend": (pi, set(pk)),
                                     "status": k.get("status") or "", "status_penetapan": (k.get("status_penetapan") or "")[:160]}
             else:                   # dua entri satu kunci satu hari: nilai terbesar per medan
                 for m, v in a.items():
                     r["angka"][m] = max(v, r["angka"].get(m, 0))
+                r["pend"] = (r["pend"][0] or pi, r["pend"][1] | set(pk))
     episode = []
     for kunci, per in muncul.items():
         tgl = sorted(per)
@@ -257,13 +273,15 @@ def susun(hari, prov, cari_kab, tanpa_pdf=()):
             for x in isi:
                 for m, v in per[x]["angka"].items():
                     puncak[m] = max(v, puncak.get(m, 0))
+            pend = {"isi": any(per[x]["pend"][0] for x in isi),
+                    "kelas": sorted(set().union(*(per[x]["pend"][1] for x in isi)))}
             akhir_r = per[t]
             jenis, p, kab = kunci
             episode.append({"id": f"{jenis}-{p}-{(kab or kunci[2]).replace('|', '-').replace(' ', '_')}-{mulai}",
                             "jenis": jenis, "prov": p, "kab": kab if "|" in kab else None,
                             "tempat": akhir_r["tempat"], "tingkat": akhir_r["tingkat"],
                             "mulai": mulai, "terakhir": t, "hari": len(isi),
-                            "status": akhir_r["status"], "status_penetapan": akhir_r["status_penetapan"], "puncak": puncak})
+                            "status": akhir_r["status"], "status_penetapan": akhir_r["status_penetapan"], "puncak": puncak, "pendampingan": pend})
             if i + 1 < len(tgl):
                 mulai = tgl[i + 1]
     episode.sort(key=lambda e: (e["mulai"], e["id"]))
@@ -364,8 +382,19 @@ def uji():
     assert [(x["mulai"], x["terakhir"], x["hari"]) for x in ep] == [("2026-01-01", "2026-01-09", 3), ("2026-01-17", "2026-01-17", 1)], ep
     assert ep[0]["puncak"] == {"terdampak_kk": 40} and ep[0]["kab"] == "33|Pati" and ep[0]["tingkat"] == "kab"
     assert r["dibuang"]["bocor_tabel_sk"] == 1 and r["harian"]["2026-01-17"]["n"] == 1
+    assert ep[0]["pendampingan"] == {"isi": False, "kelas": []}
+    assert pendampingan("Tim TRC BNPB dan DSP Rp100 juta, tenda") == (True, ["dsp", "logistik", "personel"])
+    assert pendampingan("Belum ada pendampingan") == (False, []) and pendampingan("") == (False, []) and pendampingan("Nihil") == (False, [])
+    h2 = [{"tanggal": "2026-02-01", "kejadian": [{"judul": "Banjir di Kab. Pati, Provinsi Jawa Tengah", "jenis": "banjir", "prov": "33",
+                                                  "tempat": "Kab. Pati", "pendampingan": "Heli water bombing"}]},
+          {"tanggal": "2026-02-02", "kejadian": [{"judul": "Banjir di Kab. Pati, Provinsi Jawa Tengah", "jenis": "banjir", "prov": "33",
+                                                  "tempat": "Kab. Pati", "pendampingan": "logistik belum tiba"}]}]
+    assert susun(h2, prov, lambda n, p: "33|Pati")["episode"][0]["pendampingan"] == {"isi": True, "kelas": ["udara"]}
+    h3 = [{"tanggal": "2026-03-01", "kejadian": [{"judul": "Banjir di Kab. Pati, Provinsi Jawa Tengah", "jenis": "banjir", "prov": "33",
+                                                  "tempat": "Kab. Pati", "upaya": "Penyaluran logistik"}]}]
+    assert susun(h3, prov, lambda n, p: "33|Pati")["episode"][0]["pendampingan"] == {"isi": True, "kelas": ["logistik"]}
     # tidak ada teks bebas di keluaran
-    assert set(ep[0]) == {"id", "jenis", "prov", "kab", "tempat", "tingkat", "mulai", "terakhir", "hari", "status", "status_penetapan", "puncak"}
+    assert set(ep[0]) == {"id", "jenis", "prov", "kab", "tempat", "tingkat", "mulai", "terakhir", "hari", "status", "status_penetapan", "puncak", "pendampingan"}
     print("uji laphar_arsip.py: lulus")
 
 
