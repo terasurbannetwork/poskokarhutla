@@ -1,7 +1,7 @@
 """Status prakiraan Centurisk97 per (kab, bahaya) untuk banjir, longsor, cuaca ekstrem (DP-05).
 
 P = prakiraan kita (prediksi.json, hari 1..3; lalu.json untuk hari 0), R = peringatan BMKG aktif (hanya hari 0),
-K = kelas bahaya kab (kelas_bahaya_kab.json). Tabel dan ambang terkunci di status_prakiraan_kriteria.json (sidik).
+K = kelas bahaya kab (public/data/kelas_desa_bnpb.json, kriteria versi 3). Tabel dan ambang terkunci di status_prakiraan_kriteria.json (sidik).
 Hijau Normal hanya bila semua sumber masuk dan segar; selain itu abu "belum terukur" (s = null), tidak pernah 0.
 Hipotesis sampai gerbang (public/data/gerbang/status_prakiraan.json) menyatakan boleh_tampil.
 Pakai: python3 -I scripts/prediksi/status_prakiraan.py [--umpan cap.json] [--keluar jalur] | --cek | --sidik
