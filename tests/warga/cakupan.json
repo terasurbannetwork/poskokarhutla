@@ -1166,6 +1166,7 @@
     "POST /api/logbook/kejadian/:id/sk": "juklak: SK status per kejadian",
     "GET /api/logbook/kejadian/:id/sk": "juklak: SK status per kejadian",
     "POST /api/pusdalops/pemulihan": "pemulihan: buat, progres, daftar, rincian, ringkasan per kab/jenis",
+    "POST /api/pusdalops/pemulihan/terima": "RU-103 terima pemulihan: hak",
     "POST /api/pusdalops/pemulihan/progres": "pemulihan: buat, progres, daftar, rincian, ringkasan per kab/jenis",
     "GET /api/pusdalops/pemulihan": "pemulihan: buat, progres, daftar, rincian, ringkasan per kab/jenis",
     "GET /api/pusdalops/pemulihan/ringkasan": "pemulihan: buat, progres, daftar, rincian, ringkasan per kab/jenis",

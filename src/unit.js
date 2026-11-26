@@ -17,7 +17,7 @@ export const P_UNIT_BACA = ["unit", "pimpinan", "koordalops", "pusdalops", "oper
 export const P_UNIT_TULIS = ["unit", "pimpinan", "koordalops", "pusdalops"];
 export const KODE_UNIT = ["perb", "pspb", "spb", "pus", "pd", "ks", "mt", "kpod", "wil", "plp", "ojl", "rrx", "rrp", "rri", "rrs", "ren", "keu", "sdu", "huk", "irt", "dik", "jf"];
 /* nama tetap R2 unit/<nama>.json; tiap nama wajib tercatat kelasnya di KEAMANAN-PRIVASI §3.2 di commit yang sama (tak tercatat = kelas T) */
-export const DATA_UNIT = ["stok_penyangga", "pendampingan_ikd", "mitigasi_prioritas", "satu_data", "jdih_daerah", "pengadaan", "status_peraturan", "fasilitas_sosial", "kalender_gladi", "kompetensi", "kalender_monev", "rb", "ikk", "hibah_prioritas", "prepositioning", "rpbd", "usulan_rpbd", "dokumen_siaga", "usulan_dokumen_siaga", "peta_nspk", "kerugian", "sendai", "klaster_logistik", "neraca_rumah", "rugi_tani", "diklat_sasaran", "belanja_risiko", "amanat", "usulan_amanat", "rapor_darurat", "meja_wilayah", "akses_putus", "kib_cocok", "rapor_peringatan", "cakupan_ews", "evakuasi", "dana_bersama_katalog", "kampanye"];
+export const DATA_UNIT = ["stok_penyangga", "pendampingan_ikd", "mitigasi_prioritas", "satu_data", "jdih_daerah", "pengadaan", "status_peraturan", "fasilitas_sosial", "kalender_gladi", "kompetensi", "kalender_monev", "rb", "ikk", "hibah_prioritas", "prepositioning", "rpbd", "usulan_rpbd", "dokumen_siaga", "usulan_dokumen_siaga", "peta_nspk", "kerugian", "sendai", "klaster_logistik", "neraca_rumah", "rugi_tani", "diklat_sasaran", "belanja_risiko", "amanat", "usulan_amanat", "usulan_pemulihan", "rapor_darurat", "meja_wilayah", "akses_putus", "kib_cocok", "rapor_peringatan", "cakupan_ews", "evakuasi", "dana_bersama_katalog", "kampanye"];
 export const DATA_UNIT_TERBATAS = ["pengadaan", "rapor_darurat"];   // kelas T: modAtauStaf, akun gerbang AKUN_SITUS* ditolak
 const JAM = 3600e3, MAKS_BYTE = 8 * 1024 * 1024;
 const H_DATA = {"cache-control": "private, max-age=300", vary: "cookie"};
@@ -82,7 +82,7 @@ async function ketukBaca(env, req, url) {
 }
 
 /* hak tulis bersama: akun gerbang AKUN_SITUS* tidak lolos; hak SEBELUM body dan D1. Mengembalikan nama pelaku atau Response galat */
-async function hakTulis(env, req, oleh) {   // oleh = hasil modAtauStaf di handler (gerbang-ruang-unit butir a membaca panggilan hak di handler itu sendiri)
+export async function hakTulis(env, req, oleh) {   // oleh = hasil modAtauStaf di handler (gerbang-ruang-unit butir a membaca panggilan hak di handler itu sendiri)
   if (!oleh || String(oleh).startsWith("pemirsa:")) {   // pemirsa pimpinan lolos modAtauStaf tetapi hanya membaca
     const masuk = await stafPeran(env, req, P_UNIT_BACA) || await pemirsaSesi(env, req);
     return masuk ? gagal(403, "peranmu tidak boleh menulis di Ruang Unit") : gagal(401, "perlu masuk sebagai staf BNPB");

@@ -141,6 +141,8 @@ Ketetapan untuk Ruang Unit:
 | `pasca_hibah.json` | PLP-3 | T | kewajiban per pemda penerima; bisa dibaca sebagai teguran |
 | `pengungsian.json` | WIL-2 | T | rekap; tempat < 10 jiwa tidak per tempat (RU §7.1 butir e) |
 
+**RRP-2 terima pemulihan (RU-103).** `POST /api/pusdalops/pemulihan/terima` hanya untuk Pusdalops, Koordalops, dan Pimpinan (peran tracker `pemulihan`); peran `unit` ditolak 403 sebelum batas laju. Satu URL sumber hanya membuat satu baris pemulihan (409 bila diulang). `pemulihan.catatan` dapat berisi URL luar: siapa pun yang merendernya wajib memakai `esc`/`escUrl` (hanya http dan https) dan `rel="noopener noreferrer"`.
+
 Berkas yang ditambah ke `DATA_UNIT` kelak wajib masuk tabel ini di commit yang sama; bila tidak tercatat, kelasnya T.
 
 ### 3.3 Tabel D1 baru (DT §2.2)
@@ -196,6 +198,8 @@ Penjaga mekanis ada tiga lapis, semuanya wajib:
 1. **Sebelum permintaan:** `DILARANG` di `panen.py`, diuji `--cek` (DT §4.8).
 2. **Sebelum terbit:** G-5 `tests/agen/gerbang-privasi-unit.test.mjs` (RU §7.1), jalan tiap push.
 3. **Di skema:** CHECK tanpa kolom bebas untuk data pribadi; G-5 butir a membaca migrasi 0110 ke atas.
+
+Catatan DIK-4: kode repo tidak punya daftar id pengecualian direktori (KPK, wafat, nama yang disebut pemilik); pengecualian terjadi saat panen. Jangan jalankan `dik4.py` atas data pakar yang belum disaring panen; tanpa `data/raw/unit/pakar/kecuali.json` keluarannya berpil "Asumsi: data pakar sudah disaring panen".
 
 ---
 

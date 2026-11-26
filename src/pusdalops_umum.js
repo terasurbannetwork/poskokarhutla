@@ -9,7 +9,7 @@ import {RE_HP2} from "./logbook.js";
 export {json, gagal, acak};
 
 export const HARI = 864e5, MENIT = 6e4, WIB = 7 * 36e5;
-const PERAN = ["pusdalops", "koordalops", "pimpinan"], MAKS_BODY = 16384;
+export const PERAN = ["pusdalops", "koordalops", "pimpinan"], MAKS_BODY = 16384;
 const KONTROL = /[\u0000-\u001f\u007f​-‏‪-‮﻿]/, RE_TGL = /^\d{4}-\d\d-\d\d$/;
 export const NO_JSON = {"cache-control": "no-store"};
 

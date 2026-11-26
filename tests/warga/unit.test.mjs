@@ -359,3 +359,30 @@ uji("RU-080 draf kaji cepat: gempa dan tsunami tidak pernah Siaga; tanpa data = 
   const hak = hitungDB(DB); await stafOK({...BIND, DB: hak.DB}, new Request(PROD + "/", {headers: unit}), P_UNIT_BACA); assert.ok(d.c.baca <= 2 * hak.c.baca + 12, `rows_read ${d.c.baca}: hak + laju saja, tanpa kueri data`);
 });
 const RUTE_MEJA_DRAF = RUTE_MEJA["GET /api/meja/kaji_cepat/draf"];
+
+/* ---------------------------------------------------------------- RRP-2 terima pemulihan (RU-103; DT §6.22) */
+const ID_P = "5e5e5e5e5e5e5e5e", TERIMA = (h, o) => api("POST", "/api/pusdalops/pemulihan/terima", o, {...h, ...PB, origin: LOKAL});
+const nPem = async () => (await DB.prepare("SELECT count(*) n FROM pemulihan").first()).n;
+const ISI = {usulan_id: ID_P, url: "https://bnpb.example/rilis/huntara", jenis: "huntara", kab: "11|Aceh Tamiang", desa: "Kampung Dalam", target: 120, realisasi: 30, satuan: "unit"};
+uji("RU-103 terima pemulihan: hak, ketuk terima, url, lalu buat dan progres yang sudah ada (catatan = URL)", async () => {
+  for (const [nama, h, s] of [["tamu", {}, 401], ["gerbang", GERBANG, 401], ["verifikator", ver, 401], ["operator_cc", occ, 403], ["pemirsa", pm, 403]]) { const r = await TERIMA(h, ISI); assert.equal(r.s, s, `${nama}: ${r.s} ${r.t}`); }
+  assert.equal((await TERIMA(pim, ISI)).s, 409, "belum ada ketuk");
+  assert.equal((await kirim(pim, {berkas: "usulan_pemulihan", usulan_id: ID_P, keputusan: "tolak"})).s, 201);
+  assert.equal((await TERIMA(pim, ISI)).s, 409, "ketuk terbaru tolak");
+  assert.equal((await kirim(pim, {berkas: "usulan_pemulihan", usulan_id: ID_P, keputusan: "terima"})).s, 201);
+  for (const url of [undefined, "", "javascript:alert(1)", "ftp://x.example/a", "bukan url", "https://x.example/" + "a".repeat(500)]) assert.equal((await TERIMA(pim, {...ISI, url})).s, 400, String(url));
+  assert.equal((await TERIMA(pim, {...ISI, usulan_id: "XYZ"})).s, 400);
+  assert.equal(await nPem(), 0, "yang ditolak tidak membuat baris");
+  const a = await TERIMA(pim, ISI); assert.equal(a.s, 201, a.t); assert.equal(a.j.pemulihan.catatan, ISI.url); assert.equal(a.j.pemulihan.jenis, "huntara");
+  const p = await TERIMA(pim, {usulan_id: ID_P, url: "https://bnpb.example/rilis/huntara-2", id: a.j.pemulihan.id, realisasi: 60});
+  assert.equal(p.s, 201, p.t); assert.equal(p.j.pemulihan.realisasi, 60); assert.equal(p.j.progres.catatan, "https://bnpb.example/rilis/huntara-2");
+  assert.equal(await nPem(), 1);
+  const ulang = await TERIMA(pim, ISI); assert.equal(ulang.s, 409, ulang.t); assert.equal(ulang.j.id, a.j.pemulihan.id); assert.equal(await nPem(), 1, "replay tidak membuat baris kedua");
+});
+uji("RU-103 peran unit 403 sebelum laju terpakai; pimpinan sesudahnya tetap lolos", async () => {
+  const sebelum = (await DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE aksi = 'unit.terima'").first()).n;
+  const r = await TERIMA(unit, {...ISI, usulan_id: "6f6f6f6f6f6f6f6f", url: "https://bnpb.example/rilis/lain"}); assert.equal(r.s, 403, r.t);
+  assert.equal((await DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE aksi = 'unit.terima'").first()).n, sebelum, "jatah laju tidak terpakai");
+  assert.equal((await kirim(pim, {berkas: "usulan_pemulihan", usulan_id: "6f6f6f6f6f6f6f6f", keputusan: "terima"})).s, 201);
+  assert.equal((await TERIMA(pim, {...ISI, usulan_id: "6f6f6f6f6f6f6f6f", url: "https://bnpb.example/rilis/lain"})).s, 201);
+});

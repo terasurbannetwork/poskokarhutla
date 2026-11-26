@@ -2837,6 +2837,9 @@ export const alatSihkaStatus = async env => (await env.DB.prepare("SELECT isi FR
 export const alatSihkaRiwayat = async (env, pos, kini) => (await env.DB.prepare(SQL_RIWAYAT).bind(pos, Math.floor(kini / 1000), kini).first())?.isi;
 
 /* ---------- Ruang Unit MB-7 (migrations/0187_unit.sql; kedeputian DESAIN-TEKNIS §2.2, §4.9): keputusan ketuk, hanya ditambah, terbaru per usulan_id yang berlaku ---------- */
+/* RU-103: ketuk terbaru satu usulan (tanpa batas 5000 daftar) dan pemulihan yang sudah dibuat dari URL sumber yang sama (anti ulang) */
+export const ketukUsulan = (env, berkas, usulanId) => env.DB.prepare("SELECT keputusan FROM unit_ketuk WHERE berkas = ? AND usulan_id = ? AND dummy = 0 ORDER BY id DESC LIMIT 1").bind(berkas, usulanId).first();
+export const pemulihanDariUrl = (env, prov, kab, jenis, url) => env.DB.prepare("SELECT id FROM pemulihan WHERE prov = ? AND kab = ? AND jenis = ? AND catatan = ? LIMIT 1").bind(prov, kab, jenis, url).first();   // lewat indeks pemulihan_wilayah
 export const ketukTerbaru = async (env, berkas) => (await env.DB.prepare(
   "SELECT id, usulan_id, keputusan, koreksi, catatan, oleh, waktu FROM unit_ketuk WHERE id IN (SELECT max(id) FROM unit_ketuk WHERE berkas = ? AND dummy = 0 GROUP BY usulan_id) ORDER BY waktu DESC LIMIT 5000").bind(berkas).all()).results;
 export const ketukTambah = (env, b) => env.DB.prepare(
