@@ -6,7 +6,7 @@ dan public/data/kelas_desa/<kab4>.json (kelas per desa). Cache mentah di data/ra
 Kelas 0 / kosong = belum terukur (null), tidak pernah rendah. Kode kab = Kemendagri dari awalan adm4 desa.
 Pakai: python3 -I scripts/siklus/kelas_desa_bnpb.py --bangun [--cache] | --cek | --banding
 """
-import datetime, hashlib, importlib.util, json, os, sys, time, urllib.request
+import datetime, hashlib, importlib.util, json, os, re, sys, time, urllib.request
 
 AB = os.path.dirname(os.path.abspath(__file__))
 AKAR = os.path.abspath(os.path.join(AB, "../.."))
@@ -47,7 +47,9 @@ def _ambil(nama, url, pakai_cache):
         return open(p, "rb").read()
     time.sleep(1)
     with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=60) as r:
-        b = r.read()
+        b = r.read(50_000_001)
+    if len(b) > 50_000_000:
+        sys.exit("kelas_desa_bnpb: respons %s lebih dari 50 MB, dibatalkan" % nama)
     json.loads(b)  # harus JSON sah sebelum masuk cache
     os.makedirs(CACHE, exist_ok=True)
     open(p, "wb").write(b)
@@ -120,7 +122,8 @@ def teratas(per, n=50):
 def bentuk_sah(hid, idx):
     return (isinstance(hid, dict) and isinstance(hid.get("kab"), list) and len(hid["kab"]) > 400
             and all(len(r.get("hb", [])) == 6 and len(r["hb"][0]) == 4 for r in hid["kab"])
-            and isinstance(idx, dict) and isinstance(idx.get("regions"), list) and idx["regions"])
+            and isinstance(idx, dict) and isinstance(idx.get("regions"), list) and idx["regions"]
+            and all(isinstance(g, dict) and isinstance(g.get("id"), str) and re.fullmatch(r"[A-Za-z0-9_-]{1,32}", g["id"]) for g in idx["regions"]))
 
 
 def bangun(pakai_cache):

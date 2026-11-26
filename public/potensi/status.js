@@ -151,7 +151,7 @@ export function pasang(ctx) {
     lst.innerHTML = `<div class="st-angka" role="group" aria-label="Jumlah kab/kota per status">${kotak.map((k) => `<div class="st-ang"><b>${angka(k[1])}</b><span><i class="st-k st-k${k[2]}"></i>${k[0]}</span></div>`).join("")}</div>
 <div class="st-baris-chip">${chip("hitung", "Jumlah kab/kota dihitung dari status per kab")}${hip ? chip("hipotesis", "Model belum lolos uji balik") : ""}</div>
 <div class="st-bhy" role="group" aria-label="Bahaya">${pil.map((p) => `<button type="button" data-b="${p[0]}" aria-pressed="${state.b === p[0]}" title="Jumlah kab/kota Waspada ke atas: ${angka(p[3])}">${ik(p[2])}<span>${p[1]}</span><em>${angka(p[3])}</em></button>`).join("")}</div>
-<ol class="st-daftar" aria-label="Kab/kota urut prioritas">${rows.map((x) => `<li><button type="button" class="st-br" data-kab="${x.kab}"><span class="st-nm"><b>${esc(x.nama)}</b><small>${esc(PROV[x.kab.slice(0, 2)] || "")}${K ? "" : ", " + NAMA[x.kode.toLowerCase()]}</small></span>${stp(x.s >= 0 ? x.s : null)}</button></li>`).join("")}</ol>`;
+<ol class="st-daftar" aria-label="Kab/kota urut prioritas">${rows.map((x) => `<li><button type="button" class="st-br" data-kab="${esc(x.kab)}"><span class="st-nm"><b>${esc(x.nama)}</b><small>${esc(PROV[x.kab.slice(0, 2)] || "")}${K ? "" : ", " + NAMA[x.kode.toLowerCase()]}</small></span>${stp(x.s >= 0 ? x.s : null)}</button></li>`).join("")}</ol>`;
   }
 
   /* ---------- panel: kab ---------- */
