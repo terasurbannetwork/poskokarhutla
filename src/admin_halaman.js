@@ -88,7 +88,7 @@ ${atas(k, ctx)}${menuPusdalops}
 ${ekor}
 </body></html>`;
 
-export const halamanStatistik = () => halaman("statistik", "Memuat statistik…", `<script src="/admin/bersama.js?v=6"></script>
+export const halamanStatistik = () => halaman("statistik", "Memuat statistik…", `<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/statistik.js?v=3"></script>`);
 
 export const halamanPesan = () => halaman("pesan", "Memuat pesan…", `<script src="/admin/pesan.js?v=2"></script>`);
@@ -104,7 +104,7 @@ export const halamanSosmed = () => halaman("sosmed", "Memuat post…", `<link hr
 <script src="/admin/sosmed.js?v=1"></script>`);
 
 export const halamanPosko = ctx => halaman("posko", "Memuat Ruang Posko…", `<link href="/admin/posko.css?v=2" rel="stylesheet">
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/posko.js?v=3"></script>`, ctx);
 
 /* Akun Instansi & Tugas Api (/admin/instansi): helper bersama bersama.js lalu skrip halaman */
@@ -118,7 +118,7 @@ export const halamanInstansi = ctx => halaman("instansi", "Memuat Akun Instansi�
 <script src="/instansi_akses.js?v=1"></script>
 <script src="/instansi_kartu.js?v=1"></script>
 <script src="/instansi_tugaskan.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/instansi_profil.js?v=1"></script>
 <script src="/admin/instansi.js?v=8"></script>`, ctx);
 
@@ -126,14 +126,14 @@ export const halamanInstansi = ctx => halaman("instansi", "Memuat Akun Instansi�
 export const halamanInventaris = ctx => halaman("inventaris", "Memuat inventaris alat…", `<link href="/admin/inventaris.css?v=2" rel="stylesheet">
 <script src="/inti/format.js"></script>
 <script src="/instansi_wilayah.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/inventaris.js?v=3"></script>`, ctx);
 
 /* Laporan korban jiwa (/admin/korban): peta titik digambar SVG oleh skrip halaman (CSP admin tidak berubah) */
 export const halamanKorban = ctx => halaman("korban", "Memuat laporan korban…", `<link href="/admin/korban.css?v=2" rel="stylesheet">
 <script src="/inti/format.js"></script>
 <script src="/instansi_wilayah.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/inti/foto_kecil.js?v=1"></script>
 <script src="/admin/korban.js?v=3"></script>`, ctx);
 
@@ -141,14 +141,14 @@ export const halamanKorban = ctx => halaman("korban", "Memuat laporan korban…"
 export const halamanLaporanKarhutla = ctx => halaman("laporan-karhutla", "Memuat Laporan Karhutla…", `<link href="/admin/laporan_karhutla.css?v=3" rel="stylesheet">
 <script src="/inti/format.js"></script>
 <script src="/instansi_wilayah.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/laporan_karhutla.js?v=4" type="module"></script>`, ctx);
 
 /* Sortie OMC dan evaluasinya (/admin/omc): peta sasaran digambar SVG oleh skrip halaman (CSP admin tidak berubah) */
 export const halamanOmc = ctx => halaman("omc", "Memuat sortie OMC…", `<link href="/admin/omc.css?v=2" rel="stylesheet">
 <script src="/inti/format.js"></script>
 <script src="/instansi_wilayah.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/omc.js?v=3"></script>`, ctx);
 
 /* Ruang Laporan (/admin/laporan): sidebar kiri + halaman pantau yang sudah ada dalam iframe sesama asal (CSP_ADMIN: frame-ancestors 'self', default-src 'self' sudah mencakup frame-src).
@@ -185,39 +185,39 @@ ${atas("laporan", ctx)}${menuPusdalops}
 /* Segel dokumen (/admin/segel, segel-dokumen SG-10, DESIGN-SYSTEM 4): daftar 100 segel terbaru dan cabut. Data: GET /api/segel, POST /api/segel/cabut (src/segel.js). */
 export const halamanSegel = ctx => halaman("segel", "Memuat daftar segel…", `<link href="/admin/akun.css?v=5" rel="stylesheet">
 <link href="/admin/segel.css?v=1" rel="stylesheet">
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/segel.js?v=1"></script>`, ctx);
 
 /* Akun (/admin/akun): buat akun staf, daftar semua akun dan halaman yang dibukanya. Data dari /api/staf/admin/daftar (Super Admin). */
 export const halamanAkun = () => halaman("akun", "Memuat daftar akun…", `<link href="/admin/akun.css?v=5" rel="stylesheet">
 <script src="/instansi_wilayah.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/akun.js?v=5"></script>
 <link href="/admin/orang_tinjau.css?v=1" rel="stylesheet">
 <script src="/admin/orang_tinjau.js?v=1"></script>`);
 
 /* Kunci API mitra (/admin/kunci-api): terbitkan, salin sekali, daftar, cabut. Data dari /api/kunci-api/admin/*. */
 export const halamanKunciApi = () => halaman("kunci-api", "Memuat daftar kunci…", `<link href="/admin/akun.css?v=5" rel="stylesheet">
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/kunci_api.js?v=3"></script>`);
 
 /* Biaya Claude Bot Laporan BNPB (/admin/biaya-bot, admin saja): harian dari D1 bl_biaya, per kegiatan dan per laporan dari ringkasan mesin bot. Data dari /api/wa/biaya/ringkas. */
 export const halamanBiayaBot = () => halaman("biaya-bot", "Memuat biaya bot…", `<link href="/admin/biaya_bot.css?v=1" rel="stylesheet">
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/biaya_bot.js?v=1"></script>`);
 
 /* Buku kontak pemangku kepentingan (/admin/kontak): kepala daerah, BPBD, TNI, Polri, dll. Data dari /api/kontak/admin (src/kontak.js). */
 export const halamanKontak = () => halaman("kontak", "Memuat buku kontak…", `<link href="/admin/akun.css?v=5" rel="stylesheet">
-<link href="/admin/kontak.css?v=2" rel="stylesheet">
+<link href="/admin/kontak.css?v=3" rel="stylesheet">
 <script src="/instansi_wilayah.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
-<script src="/admin/kontak.js?v=2"></script>`);
+<script src="/admin/bersama.js?v=7"></script>
+<script src="/admin/kontak.js?v=3"></script>`);
 
 /* Ruang Koordinasi BNPB: satu pola untuk keempat halaman (skrip + gaya di public/admin/<k>.js|css) */
 export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=3" rel="stylesheet">
 ${k === "aktivasi" ? `<script src="/inti/pesan.js?v=1"></script>\n` : ""}${k === "pantau" || k === "aktivasi" ? `<script src="/inti/format.js"></script>\n<script src="/instansi_wilayah.js?v=1"></script>
 ` : k === "kinerja" ? `<script src="/inti/nanti.js"></script>
-` : ""}<script src="/admin/bersama.js?v=6"></script>
+` : ""}<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/${k}.js?v=${k === "pantau" ? 6 : k === "aktivasi" ? 2 : 2}"></script>`, ctx);
 
 export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'self'";
@@ -275,7 +275,7 @@ export const halamanSippaLapangan = () => `<!doctype html>
 export const halamanCc = ctx => halaman("command-center", "Memuat command center…", `<link href="/admin/command_bersama.css?v=1" rel="stylesheet">
 <link href="/admin/command_center.css?v=1" rel="stylesheet">
 <script src="/inti/format.js"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/command_bersama.js?v=1"></script>
 <script src="/admin/command_center.js?v=1"></script>`, ctx);
 

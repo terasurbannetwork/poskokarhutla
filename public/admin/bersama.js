@@ -76,6 +76,8 @@ Admin.dasbor = (() => {
     grafik: "M3 3v18h18M7 14l4-4 4 4 5-5", peta: "M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4zM8 2v16M16 6v16",
     pesawat: "M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z",
     api: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z",
+    wa: "M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z",
+    surel: "M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM22 6l-10 7L2 6",
     telepon: "M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z",
     lonceng: "M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0", cari: "M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.35-4.35",
   };
@@ -103,6 +105,8 @@ Admin.dasbor = (() => {
     ubinGrid: (...ubin) => el("div", "db-ubin-grid db-ubin-baris" + (ubin.flat().length === 4 ? " k4" : ""), ...ubin),
     /* tombol ikon polos (tanpa garis/kotak, memori ikon-tanpa-garis-luar); label wajib = title + aria-label */
     ikon: (ik, label, data = {}, kls = "") => atur(el("button", "db-ik " + kls, svg(ik)), {type: "button", title: label, "aria-label": label, ...data}),
+    /* tautan berikon polos (WA, surel): sama dengan tombol ikon, tetapi <a> supaya bisa dibuka di tab baru */
+    tautanIkon: (ik, label, href, kls = "") => atur(el("a", "db-ik " + kls, svg(ik)), {href, title: label, "aria-label": label, ...(/^https?:/.test(href) ? {target: "_blank", rel: "noopener noreferrer"} : {})}),
     aksi: (...tombol) => el("div", "db-aksi", ...tombol),
     /* daftar panjang (pil akses, tab) dilipat jadi satu pil hitungan */
     lipat: (ringkas, ...isi) => el("details", "db-lipat", el("summary", null, ringkas), el("div", "db-lipat-isi", ...isi)),

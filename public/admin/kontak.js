@@ -14,7 +14,6 @@
   const gagalJaringan = {ok: false, status: 0, j: {galat: "jaringan putus; coba lagi"}};
   let D = null, KAB = {}, ubah = null, saring = {q: "", prov: "", kat: "", status: ""}, pesanImpor = null;
 
-  const wil = k => k.prov ? (k.kab ? Wilayah.kab(k.kab) + ", " : "") + Wilayah.prov(k.prov) : "Nasional";
   const opsi = (obj, pilih, semua) => [semua != null ? h("option", {value: "", teks: semua}) : null,
     ...Object.entries(obj).map(([k, v]) => h("option", {value: k, selected: k === pilih, teks: v}))];
   const isian = (label, el, kelas) => h("label", {class: kelas}, label, el);
@@ -65,28 +64,47 @@
   const cocok = k => (!saring.status || k.status === saring.status) && (!saring.prov || (saring.prov === "nasional" ? !k.prov : k.prov === saring.prov)) && (!saring.kat || k.kategori === saring.kat)
     && (!saring.q || [k.nama, k.jabatan, k.lembaga, k.kab, k.wa, k.email, k.ajudan].some(v => v && v.toLowerCase().includes(saring.q)));
 
+  /* satu baris kontak: provinsi dan kab/kota berkolom sendiri; WA dan surel jadi ikon di kolom Aksi (pemilik 26 Nov 2026) */
+  const KOLOM = ["Nama dan jabatan", "Kategori", "Provinsi", "Kab/kota", "Ajudan", "Notifikasi", "Aksi"];
+  const kosong = () => h("span", {class: "db-ik kt-kosong", "aria-hidden": "true"});   // slot ikon tetap supaya kolom Aksi sejajar antarbaris
   function baris(k) {
-    const kontak = [k.wa && h("a", {href: "https://wa.me/" + k.wa, target: "_blank", rel: "noopener noreferrer", teks: "WA " + nomor(k.wa)}),
-      k.email && h("a", {href: "mailto:" + k.email, teks: k.email}), k.telepon && h("small", {teks: "Kantor " + k.telepon})];
+    const wa = (n, siapa) => DB.tautanIkon("wa", `WhatsApp ${siapa} ${nomor(n)}`, "https://wa.me/" + n, "kt-wa");
     const tr = h("tr", {"data-id": k.id},
-      h("td", null, h("b", {teks: k.nama}), h("small", {teks: k.jabatan}), k.lembaga ? h("small", {teks: k.lembaga}) : null),
-      h("td", null, h("span", {class: "ak-pil akses", teks: D.kategori[k.kategori]}), h("small", {teks: wil(k)})),
-      h("td", null, h("div", {class: "kt-kontak"}, ...kontak)),
-      h("td", null, k.ajudan || k.ajudan_wa ? [h("span", {teks: k.ajudan || "Ajudan"}), k.ajudan_wa ? h("a", {href: "https://wa.me/" + k.ajudan_wa, target: "_blank", rel: "noopener noreferrer", teks: "WA " + nomor(k.ajudan_wa)}) : null] : h("small", {teks: "–"})),
+      h("td", null, h("b", {teks: k.nama}), h("small", {teks: k.jabatan}), k.lembaga ? h("small", {teks: k.lembaga}) : null, k.telepon ? h("small", {teks: "Kantor " + k.telepon}) : null),
+      h("td", null, h("span", {class: "ak-pil akses", teks: D.kategori[k.kategori]})),
+      h("td", null, h("span", {teks: k.prov ? Wilayah.prov(k.prov) : "Nasional"})),
+      h("td", null, h("span", {teks: k.kab ? Wilayah.kab(k.kab) : "–"})),
+      h("td", null, k.ajudan || k.ajudan_wa ? h("div", {class: "kt-ajudan"}, h("span", {teks: k.ajudan || "Ajudan"}), k.ajudan_wa ? wa(k.ajudan_wa, "ajudan") : null) : h("small", {teks: "–"})),
       h("td", null, k.status === "menunggu" ? h("span", {class: "ak-pil ganti", teks: "Menunggu"}) : null,
         h("span", {class: "ak-pil " + (k.notif ? "aktif" : "dicabut"), teks: k.notif ? AMBANG[k.ambang] : "Tidak"}),
         k.status === "menunggu" ? h("small", {teks: "Registrasi " + tgl(k.dibuat)}) : null,
         h("small", {teks: k.diverifikasi ? "Dicek " + tgl(k.diverifikasi) : "Belum dicek"})),
-      h("td", null, DB.aksi(k.status === "menunggu" ? DB.ikon("cek", "Setujui " + k.nama, {"data-setujui": "1"}) : null,
+      h("td", null, DB.aksi(k.wa ? wa(k.wa, k.nama) : kosong(), k.email ? DB.tautanIkon("surel", "Email " + k.email, "mailto:" + k.email, "kt-surel") : kosong(),
+        k.status === "menunggu" ? DB.ikon("cek", "Setujui " + k.nama, {"data-setujui": "1"}) : null,
         DB.ikon("ubah", "Ubah " + k.nama, {"data-ubah": "1"}), DB.ikon("hapus", "Hapus " + k.nama, {"data-hapus": "1"}, "bahaya"))));
-    return ubah === k.id ? [tr, h("tr", {class: "ak-ubah"}, h("td", {colspan: "6"}, formulir(k)))] : tr;
+    return ubah === k.id ? [tr, h("tr", {class: "ak-ubah"}, h("td", {colspan: String(KOLOM.length)}, formulir(k)))] : tr;
   }
 
+  /* daftar dilipat per provinsi (pemilik 26 Nov 2026): satu tbody per provinsi, kepalanya tombol buka-tutup. Tertutup bawaan;
+     terbuka semua saat mencari atau menyaring satu provinsi. Provinsi yang dibuka pengguna diingat selama halaman terbuka. */
+  const buka = new Set();
   function gambarDaftar() {
     const l = D.kontak.filter(cocok), w = app.querySelector("#ktDaftar");
     app.querySelector("#ktHitung").textContent = `${angka(l.length)} dari ${angka(D.kontak.length)} kontak`;
-    w.replaceChildren(l.length ? DB.tabel(["Nama dan jabatan", "Kategori dan wilayah", "Kontak", "Ajudan", "Notifikasi", "Aksi"], l.flatMap(baris), "kt-tabel")
-      : h("p", {class: "ak-kosong", teks: D.kontak.length ? "Tidak ada kontak yang cocok." : "Belum ada kontak. Tambah satu per satu atau impor CSV."}));
+    if (!l.length) return void w.replaceChildren(h("p", {class: "ak-kosong", teks: D.kontak.length ? "Tidak ada kontak yang cocok." : "Belum ada kontak. Tambah satu per satu atau impor CSV."}));
+    const grup = new Map();
+    for (const k of l) { const g = k.prov || ""; if (!grup.has(g)) grup.set(g, []); grup.get(g).push(k); }
+    const nama = g => g ? Wilayah.prov(g) : "Nasional", semuaBuka = !!(saring.q || saring.prov);
+    const urut = [...grup.keys()].sort((a, b) => (a === "") - (b === "") || nama(a).localeCompare(nama(b), "id"));
+    const wadah = DB.tabel(KOLOM, [], "kt-tabel"), tabel = wadah.querySelector("table");
+    tabel.querySelector("tbody").remove();
+    for (const g of urut) {
+      const isi = grup.get(g), terbuka = semuaBuka || buka.has(g) || isi.some(k => k.id === ubah);
+      const tombol = h("button", {type: "button", class: "kt-prov-b", "data-prov-lipat": g, "aria-expanded": String(terbuka)}, h("span", {teks: nama(g)}), h("small", {teks: `${angka(isi.length)} kontak`}));
+      tabel.append(h("tbody", {class: "kt-prov" + (terbuka ? " buka" : "")}, h("tr", {class: "kt-prov-kepala"}, h("th", {colspan: String(KOLOM.length), scope: "rowgroup"}, tombol)),
+        ...(terbuka ? isi.flatMap(baris) : [])));
+    }
+    w.replaceChildren(wadah);
   }
 
   /* PF-09 (profil-bpbd K13): PIC BPBD yang sudah disetujui admin, nomor tersamar; nomor penuh hanya lewat meja BNPB (tercatat). */
@@ -184,6 +202,11 @@
       const sel = app.querySelector("select[data-saring=status]"); if (sel) sel.value = saring.status;
       return void requestAnimationFrame(() => setTimeout(gambarDaftar, 0));
     }
+    const lp = e.target.closest("[data-prov-lipat]");
+    if (lp) { const g = lp.dataset.provLipat, tb = lp.closest("tbody"), bukaKini = lp.getAttribute("aria-expanded") !== "true";
+      lp.setAttribute("aria-expanded", String(bukaKini)); bukaKini ? buka.add(g) : buka.delete(g);   // chrome urgent; baris digambar sesudah satu frame (INP)
+      return void requestAnimationFrame(() => setTimeout(() => { tb.classList.toggle("buka", bukaKini); const kp = tb.firstElementChild;
+        tb.replaceChildren(kp, ...(bukaKini ? D.kontak.filter(cocok).filter(k => (k.prov || "") === g).flatMap(baris) : [])); }, 0)); }
     const u = e.target.closest("[data-unduh]"); if (u) return unduh(u.dataset.unduh === "semua");
     if (e.target.closest("[data-batal]")) { ubah = null; return gambarDaftar(); }
     const tr = e.target.closest("tr[data-id]"); if (!tr) return;

@@ -4,9 +4,21 @@
 .ak-form textarea{padding:10px 12px;resize:vertical}
 .kt-cek{display:flex;gap:8px 18px;flex-wrap:wrap}
 .kt-aksi{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.kt-kontak{display:grid;gap:2px}.kt-tabel a[href^="https://wa.me"]{white-space:nowrap}.kt-tabel a{color:var(--c5);font-weight:600;overflow-wrap:anywhere}
 .kt-tabel td span+span{margin-left:4px}
 .kt-tabel tr.ak-ubah td{background:var(--soft)}
 .kt-sembunyi{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .kt-pesan{white-space:pre-wrap;background:var(--soft);border-radius:10px;padding:10px 12px;margin:10px 0 0;font:600 12.5px ui-monospace,Menlo,monospace;color:var(--c1)}.kt-pesan.ok{color:var(--c4)}
+/* lipatan per provinsi: kepala tbody berupa tombol selebar tabel */
+.kt-tabel .kt-prov-kepala th{padding:0;background:var(--db-h2,var(--soft));text-align:left}
+.kt-prov-b{display:flex;align-items:center;gap:10px;width:100%;min-height:42px;padding:0 16px;border:0;background:none;font:inherit;font-weight:800;color:var(--ink);cursor:pointer;touch-action:manipulation}
+.kt-prov-b::before{content:"›";font-size:1.1rem;line-height:1;transition:transform .15s}
+.kt-prov-b[aria-expanded="true"]::before{transform:rotate(90deg)}
+.kt-prov-b small{font-weight:600;color:var(--ink2)}
+.kt-prov-b:focus-visible{outline:2px solid var(--c5);outline-offset:-2px}
+.kt-ajudan{display:flex;align-items:center;gap:6px}
+.kt-kosong{visibility:hidden}
+.kt-tabel td:first-child{width:34%}
+.kt-tabel td:nth-child(6) small{white-space:nowrap}
+.kt-tabel a.db-ik{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){.kt-prov-b::before{transition:none}}
 @media (max-width:720px){.kt-filter{grid-template-columns:1fr}}
