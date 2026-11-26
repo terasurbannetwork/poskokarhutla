@@ -16,3 +16,5 @@ Kerjakan urut; ambil satu tiket, kerjakan hanya cakupannya.
 | KS-10 | Pembukaan ulang gempa: hanya bila Q2 dijawab pemilik dengan metode dan kebenaran baru | siklus (+ validasi-model) | kriteria baru terkunci | Q2 |
 
 Status 26 Nov 2026: KS-02 pipeline selesai dan kalibrasi berjalan dengan kunci v2 berjangkar, tetapi gerbang kelayakan MENUNGGU: n = 11 dari 20 pasangan (anggaran unduhan 2,5 GB habis, terpakai sekitar 2,28 GB); tidak ada ambang layak. KS-03 belum boleh jalan sampai n >= 20 dan satu ambang layak, atau pemilik menambah anggaran. Rincian di KEPUTUSAN-KERUSAKAN.md bagian Kalibrasi KS-02.
+
+Status 26 Nov 2026 (putaran 2): n = 17 dari 20, unduhan baru sekitar 2,18 GB; kelayakan tetap menunggu dan tidak ada ambang layak (proporsi tertinggi 0,5, rasio tertinggi 1,0). KS-03 tidak jalan sesuai kriteria; lanjut hanya bila pemilik menambah anggaran untuk indeks 36 dan seterusnya.

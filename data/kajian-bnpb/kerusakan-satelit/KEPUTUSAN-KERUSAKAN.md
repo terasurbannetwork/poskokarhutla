@@ -104,3 +104,35 @@ Kelayakan di samping, n = 8 (hanya 3, 4, 13 sampai 18, tanpa 209, 212, 218) dan 
 | -20 | 0 | 0 | tidak ada | tidak ada | 1 | 0 | 0,0 | 0 |
 
 Kedua kolom berstatus menunggu (n < 20); beda arah antar kolom menunjukkan angka belum stabil.
+
+## Kalibrasi KS-02 putaran kedua (26 Nov 2026, anggaran tambahan)
+
+Pemilik mengizinkan tambahan unduhan (batas 2,5 GB unduhan baru). Aturan sama: hanya bagian kalibrasi, indeks naik dari sesudah 18, kunci penuh berjangkar, satu per satu, tanpa memilih berdasarkan hasil, pasangan uji tidak dibuka.
+
+Dihitung baru (ok, plasebo ada): 19 (Kota Serang 2026-01-29), 20 (Kota Tangerang 2025-11-01), 24, 25, 26 (Kota Tangerang Selatan 2025-11-01, 2025-11-18, 2026-01-23), 34 (Pandeglang 2026-01-12, 810 MB). Total n = 17 (11 putaran 1 ditambah 6).
+Dikeluarkan mekanis: 21 (Kota Tangerang 2026-03-08) dan 28 (Kota Tangerang Selatan 2026-03-08), tanpa adegan sah; 31, 32, 33 (Pandeglang), `bagian_terliput` 0,8371, 0,6838, 0,8375 di bawah 0,9. Indeks 22, 23, 27, 29, 30 bukan bagian kalibrasi.
+Unduhan baru: sekitar 2,18 GB (di bawah 2,5 GB). Saya berhenti sebelum pasangan berikutnya (indeks 36) karena satu pasangan kabupaten luas bisa 800 MB dan akan melewati batas; n = 17 belum 20.
+
+Fraksi per sumber dan tahun mulai (sumber DIBI publik 2025-10-28 sampai 2026-10-28; semua pasangan): mulai 2025 n 16 (ok 10, dikeluarkan 5, menunggu 1); mulai 2026 n 10 (ok 7, dikeluarkan 3). Revisit: 12 hari 21 pasangan, 6 hari 1 pasangan.
+
+Kelayakan n = 17 (termasuk 209, 212, 218), syarat n >= 20, proporsi >= 0,6, rasio >= 2,0:
+
+| Ambang dB | informatif | menang | proporsi | jumlah satelit | jumlah plasebo | rasio | vonis |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| -16 | 7 | 3 | 0,429 | 84 | 105 | 0,8 | menunggu: n 17 < 20 |
+| -17 | 8 | 4 | 0,5 | 22 | 85 | 0,26 | menunggu: n 17 < 20 |
+| -18 | 5 | 2 | 0,4 | 11 | 54 | 0,2 | menunggu: n 17 < 20 |
+| -19 | 3 | 1 | 0,333 | 12 | 12 | 1,0 | menunggu: n 17 < 20 |
+| -20 | 1 | 0 | 0,0 | 0 | 1 | 0 | menunggu: n 17 < 20 |
+
+Tanpa 209, 212, 218 (n = 14):
+
+| Ambang dB | informatif | menang | proporsi | jumlah satelit | jumlah plasebo | rasio |
+| --- | --- | --- | --- | --- | --- | --- |
+| -16 | 5 | 2 | 0,4 | 42 | 29 | 1,45 |
+| -17 | 6 | 3 | 0,5 | 15 | 21 | 0,71 |
+| -18 | 3 | 2 | 0,667 | 8 | 15 | 0,53 |
+| -19 | 1 | 1 | 1,0 | 2 | 0 | tak hingga |
+| -20 | 0 | 0 | tidak ada | 0 | 0 | tidak ada |
+
+Vonis apa adanya: tidak ada ambang layak; semua menunggu karena n 17 < 20. Pada n = 17 belum ada ambang yang memenuhi syarat angka (andai n cukup): proporsi menang tertinggi 0,5 (di bawah 0,6) dan rasio jumlah tertinggi 1,0 (di bawah 2,0). Ini deskriptif, bukan vonis resmi (n < 20); -19 dan -20 informatif <= 3 tidak bermakna. KS-03 tidak jalan: gerbang butuh paling sedikit satu ambang layak. Tanpa ambang baru. Sisa pasangan kalibrasi berurutan dari indeks 36 belum dihitung; melanjutkannya butuh keputusan pemilik soal anggaran lagi.
