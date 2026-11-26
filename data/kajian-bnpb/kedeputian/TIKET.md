@@ -123,7 +123,7 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-026 | MB-3 `jdih_daerah.py` | `ruang-bnpb` | `security-reviewer` | 10 | M | belum |
 | RU-027 | MB-4 `skor.py` | `ruang-bnpb` | `validasi-model` | 4 | S | selesai 6 Nov (42333fdc1) |
 | RU-028 | MB-5 `neraca.py` | `ruang-bnpb` | `selera-angka` | 4 | S | tinjau 26 Nov (belum di-commit; uji balik PR dan 514 baris PLP-1 ikut tiket sistem PLP-1) |
-| RU-029 | MB-5 `kebutuhanDasar` JS dan uji kembar | `inti-layar` | `penulis-gerbang` | 9 | S | belum |
+| RU-029 | MB-5 `kebutuhanDasar` JS dan uji kembar | `inti-layar` | `penulis-gerbang` | 9 | S | selesai 26 Nov (belum di-commit; pemeriksa penulis-gerbang menyusul) |
 | RU-030 | MB-6 `rapor.py` dan perender `rapor.js` | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 4 | M | belum |
 | RU-031 | G-3 perluasan gerbang kartu standar | `penulis-gerbang` | `general-purpose` baru | 5 | S | belum |
 | RU-032 | MB-7 migrasi 0112 dan uji skema | `warga-api` | `migrasi-idempoten` | 7 | M | belum |
@@ -662,9 +662,9 @@ Kerangka (RU-017 sampai RU-024) bukan mesin bernomor, tetapi dipakai semua mesin
 - **Dependensi:** RU-028, RU-015.
 - **Pengerja / pemeriksa:** `inti-layar` / `penulis-gerbang`.
 - **Langkah:**
-  - [ ] Uji kembar menjalankan JS dan `python3 -I scripts/bnpb/unit/neraca.py --kembar` pada kasus `acuan.json`; toleransi relatif 0,1%.
-  - [ ] Tulis fungsi; standar dari JSON Jam Aturan.
-  - [ ] Jalankan bukti.
+  - [x] Uji kembar menjalankan JS dan `python3 -I scripts/bnpb/unit/neraca.py --kembar` pada kasus `acuan.json`; toleransi relatif 0,1%.
+  - [x] Tulis fungsi; standar dari JSON Jam Aturan.
+  - [x] Jalankan bukti.
 - **Bukti:** `node --test tests/bnpb/unit_kembar.test.mjs`.
 - **Pemilik:** tidak ada.
 - **Rujukan:** DT §4.5; RU §1.1 L3. **Ukuran:** S

@@ -182,3 +182,138 @@ export function tenggat(kunci, mulai) {
     default: return tidak(`satuan ${e.satuan} tidak didukung tenggat()`);
   }
 }
+
+/* MB-5 Neraca kebutuhan (ALGORITMA sec 6, DT sec 4.5, RU-029): kembar JS scripts/bnpb/unit/neraca.py.
+   Takaran hanya dari standar() di atas. Kosong (null) bukan 0: stok tak dilaporkan memberi belum_dilaporkan.
+   Hitungan presisi penuh; pembulatan hanya di tampilan. Masukan negatif, bukan angka, NaN, atau pecahan (untuk cacah) dilempar. */
+export const AMBANG_SELISIH = 0.25; // asumsi (riset/3 W2): panel pusat lawan daerah merah bila selisih di atas ini
+export const MIN_PEMBANDING = 3;    // riset/5 P1: estimasi RB butuh paling sedikit 3 kab pembanding
+const LABEL_SELISIH = "Asumsi: ambang selisih 25%";
+const LABEL_PR_RISIKO = "asumsi platform";
+
+function angka(x, nama, bulat = false) {
+  if (typeof x !== "number" || !Number.isFinite(x) || x < 0) throw new Error(`${nama}=${x} harus angka hingga >= 0`);
+  if (bulat && !Number.isInteger(x)) throw new Error(`${nama}=${x} harus bilangan bulat`);
+  return x;
+}
+
+export function neraca(butuh, ada) {
+  butuh = angka(butuh, "butuh");
+  if (ada == null) return { butuh, ada: null, celah: null, status: "belum_dilaporkan" };
+  ada = angka(ada, "ada");
+  if (ada >= butuh) return { butuh, ada, celah: 0, status: "cukup" }; // batas inklusif (RU S8)
+  return { butuh, ada, celah: butuh - ada, status: "kurang" };
+}
+
+/* Barang yang tidak ada di `tersedia` = belum dilaporkan, bukan nol. */
+export function neracaBarang(kebutuhan, tersedia) {
+  return Object.fromEntries(Object.entries(kebutuhan).map(([b, v]) => [b, neraca(v, tersedia[b])]));
+}
+
+const std = (kunci) => standar(kunci).nilai;
+
+/* WIL-2 per tempat per hari; hari ke-1 = hari buka (hari_sejak_buka 0). */
+export function kebutuhanDasar(jiwa, hari_sejak_buka, kk) {
+  jiwa = angka(jiwa, "jiwa", true);
+  hari_sejak_buka = angka(hari_sejak_buka, "hari_sejak_buka", true);
+  kk = angka(kk, "kk", true);
+  if (kk === 0 && jiwa > 0) throw new Error("kk 0 dengan jiwa > 0 tidak sah (pengungsi tanpa KK)");
+  const air = standar("std_air_bersih_l");
+  const takaranAir = hari_sejak_buka + 1 <= air.awal.hari ? air.awal.nilai : air.nilai;
+  return {
+    beras_kg: std("std_beras_kg") * jiwa,
+    air_bersih_l: takaranAir * jiwa,
+    air_minum_l: std("std_air_minum_l") * jiwa,
+    jamban: Math.ceil(jiwa / std("std_jamban_jiwa")),
+    hunian_m2: std("std_hunian_m2") * jiwa,
+    kantong_sampah: Math.ceil(kk / std("std_sampah_kk")), // per 3 hari
+    sabun_kg: std("std_sabun_kg") * jiwa, // per bulan
+  };
+}
+
+function tgl(s, nama) {
+  const t = typeof s === "string" ? tanggalSah(s) : null;
+  if (!t) throw new Error(`${nama}=${s} bukan tanggal ISO`);
+  return Date.UTC(t[0], t[1] - 1, t[2]);
+}
+
+/* Rekap kab pada `tanggal`: jumlah atas tempat berumur data <= 2 x pengungsi_mutakhir; yang basi ditandai, tidak dijumlah.
+   Tanpa tempat segar: jumlah null (bukan 0). */
+export function rekap(tempat, tanggal) {
+  const d = tgl(tanggal, "tanggal");
+  const batas = 2 * nilai("pengungsi_mutakhir");
+  const hari = (a, b) => Math.round((a - b) / 86400e3);
+  let jumlah = null;
+  const dijumlah = [], basi = [];
+  for (const t of tempat) {
+    if (hari(d, tgl(t.data_tgl, "data_tgl")) > batas) { basi.push(t.id); continue; }
+    const k = kebutuhanDasar(t.jiwa, hari(d, tgl(t.buka, "buka")), t.kk);
+    jumlah = jumlah === null ? k : Object.fromEntries(Object.entries(k).map(([b, v]) => [b, jumlah[b] + v]));
+    dijumlah.push(t.id);
+  }
+  return { jumlah, dijumlah, basi };
+}
+
+/* |P - D| / maks(P, D); P = D = 0 memberi 0; salah satu null: tidak dihitung. */
+export function selisih(pusat, daerah) {
+  if (pusat == null || daerah == null) return { selisih: null, merah: null, label: LABEL_SELISIH };
+  const p = angka(pusat, "pusat"), d = angka(daerah, "daerah");
+  const s = p === 0 && d === 0 ? 0 : Math.abs(p - d) / Math.max(p, d);
+  return { selisih: s, merah: s > AMBANG_SELISIH, label: LABEL_SELISIH };
+}
+
+/* PLP-1 Perka 23/2014 Pasal 11. jp jiwa > 0; pr persen (1 = 1%); balita null = tidak dihitung. */
+export function stokPenyangga(jp, pr, balita = null) {
+  if (angka(jp, "jp") === 0) throw new Error("jp harus > 0");
+  pr = angka(pr, "pr");
+  const h = std("stok_minimal_jam") / 24; // 72 jam = 3 hari
+  const j = std("stok_jiwa_per_paket");
+  const pangan = (jp * pr * h) / 100;
+  return {
+    pr, hari: h,
+    pangan_orang_hari: pangan,
+    sandang_harfiah: pangan / j, papan_harfiah: pangan / j, // bacaan harfiah Pasal 11 huruf b, c
+    sandang_keluarga: (jp * pr) / 100 / j, papan_keluarga: (jp * pr) / 100 / j, // bacaan per keluarga (Q3 terbuka)
+    beras_kg: pangan * std("std_beras_kg"),
+    air_minum_l: pangan * std("std_air_minum_l"),
+    balita_orang_hari: balita == null ? null : (angka(balita, "balita") * pr * h) / 100,
+  };
+}
+
+/* PR skenario ketiga = terpapar tinggi / JP, dijepit ke pr_risiko_rentang (asumsi). */
+export function prRisiko(terpapar_tinggi, jp) {
+  if (angka(jp, "jp") === 0) throw new Error("jp harus > 0");
+  const [lo, hi] = nilai("pr_risiko_rentang");
+  const mentah = (angka(terpapar_tinggi, "terpapar_tinggi") / jp) * 100;
+  const pr = Math.min(Math.max(mentah, lo), hi);
+  return { pr, mentah, dipangkas: pr !== mentah, label: LABEL_PR_RISIKO };
+}
+
+const TINGKAT = ["RB", "RS", "RR"];
+const ada3 = (x) => TINGKAT.every((t) => x[t] != null);
+const total = (x) => (x.total != null ? angka(x.total, "total") : ada3(x) ? TINGKAT.reduce((s, t) => s + angka(x[t], t), 0) : null);
+const beban = (x, tarif) => (ada3(x) ? TINGKAT.reduce((s, t) => s + angka(x[t], t) * tarif[t], 0) : null);
+
+/* RRP-1: kemajuan verifikasi (boleh > 1), rasio susut RB, beban stimulan (juta, estimasi kita, tarif asumsi).
+   Tingkat yang tidak ada memberi null, tidak dianggap nol. */
+export function rumah(lapor, verif) {
+  const tarif = nilai("tarif_stimulan_juta");
+  const tl = total(lapor), tv = total(verif);
+  const lRb = lapor.RB, vRb = verif.RB;
+  return {
+    kemajuan: tl && tv != null ? tv / tl : null,
+    susut_rb: lRb && vRb != null ? angka(vRb, "verif RB") / lRb : null,
+    beban_lapor_juta: beban(lapor, tarif),
+    beban_verif_juta: beban(verif, tarif),
+    label: "estimasi kita",
+  };
+}
+
+/* L_RB x median rasio susut kab pembanding (jenis kejadian sama); kurang dari 3 pembanding: null. */
+export function estimasiRb(lapor_rb, rasio_pembanding) {
+  lapor_rb = angka(lapor_rb, "lapor_rb");
+  const r = rasio_pembanding.filter((x) => x != null).map((x) => angka(x, "rasio")).sort((a, b) => a - b);
+  if (r.length < MIN_PEMBANDING) return { estimasi: null, alasan: "belum ada pembanding", pembanding: r.length };
+  const n = r.length, med = n % 2 ? r[(n - 1) / 2] : (r[n / 2 - 1] + r[n / 2]) / 2;
+  return { estimasi: lapor_rb * med, alasan: null, pembanding: n, label: "estimasi" };
+}
