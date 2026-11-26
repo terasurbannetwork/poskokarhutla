@@ -80,7 +80,9 @@ def olah():
     prov = Poligon(kp)
     h = json.load(open(os.path.join(D, "hotspot.json"))); kw = h["wilayah"]
     tot, dlm = {}, {}
-    for lat, lon, jam, sen, frp, kf, wi, tgl in h["baris"]:
+    c = {n: i for i, n in enumerate(h.get("kolom") or ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib"])}  # 26 Nov 2026: kolom bisa bertambah
+    for r in h["baris"]:
+        lat, lon, frp, wi = (r[c[n]] for n in ("lat", "lon", "frp", "wilayah"))
         p = (kw[wi] if isinstance(kw, list) else str(wi)).split("|")[0]
         tot[p] = tot.get(p, 0) + 1
         if ps.cari(lon, lat):
