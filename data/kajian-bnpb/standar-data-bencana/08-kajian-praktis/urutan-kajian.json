@@ -1,0 +1,18 @@
+{
+    "judul": "Kajian Penentuan Kejadian Bencana, Kelas Bencana, dan Standar Data Lapangan Versi Praktis",
+    "anak_judul": "Dasar akademik dan cara penerapan Rancangan Juklak Praktis Standar Data Kejadian dan Dampak Bencana untuk sembilan jenis bencana alam",
+    "folder": "../../standar-data-bencana/08-kajian-praktis/naskah",
+    "gbr": "../../standar-data-bencana/01-kajian-penentuan-kejadian/gbr",
+    "keluaran": "../../standar-data-bencana/keluaran/08 Kajian Versi Praktis",
+    "nama_keluaran": "Kajian Penentuan Kejadian Bencana Versi Praktis",
+    "berkas": [
+        "00-abstrak.md",
+        "00-ringkasan.md",
+        "01-pendahuluan.md",
+        "02-metode.md",
+        "03-hasil.md",
+        "04-pembahasan.md",
+        "05-kesimpulan.md",
+        "pustaka.md"
+    ]
+}

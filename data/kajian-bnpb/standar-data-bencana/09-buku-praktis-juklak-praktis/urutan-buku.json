@@ -1,0 +1,17 @@
+{
+    "judul": "Penentuan Kejadian Bencana, Kelas Bencana, dan Pengumpulan Data Lapangan",
+    "anak_judul": "Panduan kerja petugas untuk sembilan jenis bencana alam menurut Rancangan Juklak Praktis",
+    "label": "BUKU PRAKTIS BNPB",
+    "folder": "../../standar-data-bencana/09-buku-praktis-juklak-praktis/naskah",
+    "gbr": "../../standar-data-bencana/01-kajian-penentuan-kejadian/gbr",
+    "keluaran": "../../standar-data-bencana/keluaran/09 Buku Praktis Versi Juklak Praktis",
+    "nama_keluaran": "Buku Praktis Penentuan Kejadian Bencana Versi Juklak Praktis",
+    "berkas": [
+        "01-menentukan.md",
+        "02-per-jenis.md",
+        "03-menghitung.md",
+        "04-kelas.md",
+        "05-data.md",
+        "06-daftar-periksa.md"
+    ]
+}
