@@ -1454,9 +1454,15 @@
       "isi": "DP-21: Normal sampai Awas dan abu; pil hipotesis; di mana tampil; penduduk di area peringatan BMKG"
      },
      {
+      "id": "potensi-hidromet",
+      "judul": "Potensi bencana hidrometeorologi",
+      "berkas": "panduan/prediksi/10-potensi-hidromet.md",
+      "isi": "PH-14: tab Status, Dampak, Iklim, Analisis, Lapisan, Ringkasan, Sumber, Rekomendasi; chip fakta; kelas bahaya desa; banjir bandang; ONI dan IOD; debit; hari tanpa hujan"
+     },
+     {
       "id": "batasan",
       "judul": "Batasan dan tanya jawab",
-      "berkas": "panduan/prediksi/10-batasan.md",
+      "berkas": "panduan/prediksi/11-batasan.md",
       "isi": "panduan/07-prediksi.md: Batasan; Pertanyaan umum; Mengapa banyak kolom berlabel \"belum teruji\"?; Apa bedanya tab Besok dan tab Tangga?; Kolom saya kosong atau bertanda \"–\". Apakah itu berarti wilayah saya terbebas dari ancaman itu?; Mengapa angka di tombol bencana lebih kecil dari daftar di bawahnya?; Bisakah prakiraan yang sudah tampil diubah?; Apa arti \"perkiraan, belum diuji balik\" pada angka pengungsi?; Apakah laporan warga ikut menilai prakiraan?; Peluang 60% itu artinya apa?"
      }
     ],
@@ -1534,9 +1540,15 @@
       "isi": "DP-21: tabel status, sumber, batas ketelitian, status uji balik"
      },
      {
+      "id": "potensi-hidromet",
+      "judul": "Potensi bencana: data dan rute",
+      "berkas": "pengembang/prediksi/13-potensi-hidromet.md",
+      "isi": "PH-14: kelas desa BNPB, BDG, analisis wilayah, debit GloFAS, ONI dan IOD, rute potensi, katalog rekomendasi, jadwal"
+     },
+     {
       "id": "batasan",
       "judul": "Batasan dan perbedaan dokumen",
-      "berkas": "pengembang/prediksi/13-batasan.md",
+      "berkas": "pengembang/prediksi/14-batasan.md",
       "isi": "07-prediksi.md: Batasan metode; Selisih antara dokumen dan kode (kode menang); Hal yang sengaja dibatasi"
      }
     ]
