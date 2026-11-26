@@ -2169,3 +2169,18 @@ function mulaiTur() {
   addEventListener("resize", tata); addEventListener("scroll", tata, true); addEventListener("keydown", tombol, true);
   tampil(0);
 }
+
+/* Menu samping bisa diciutkan jadi kolom ikon di layar lebar (pemilik 26 Nov 2026: "gimana kalo ini dia sebenarnya ga selalu terbuka?").
+   Keadaan diingat di perangkat ini; label tiap tombol tetap ada lewat title dan aria-label saat ciut. */
+(() => {
+  const app = document.querySelector(".lp-app"), nav = $("tab"); if (!app || !nav) return;
+  for (const b of nav.querySelectorAll("button")) { const t = b.textContent.trim(); if (t && !b.title) b.title = t; if (t && !b.getAttribute("aria-label")) b.setAttribute("aria-label", t); }
+  const tb = el("button", "lp-tab-ciut"); tb.type = "button"; tb.append(ikon("i-kembali"));
+  const atur = ciut => { app.classList.toggle("menu-ciut", ciut); tb.setAttribute("aria-expanded", String(!ciut)); const t = ciut ? "Buka menu" : "Ciutkan menu"; tb.setAttribute("aria-label", t); tb.title = t;
+    try { localStorage.setItem("lp-menu-ciut", ciut ? "1" : "0"); } catch { /* mode privat: tidak diingat */ }
+    if (typeof alunPeta !== "undefined" && alunPeta) requestAnimationFrame(() => alunPeta.resize()); };   // peta Alun-alun ikut melebar
+  tb.addEventListener("click", () => atur(!app.classList.contains("menu-ciut")));
+  nav.querySelector(".lp-tab-merek")?.after(tb);
+  let awal = false; try { awal = localStorage.getItem("lp-menu-ciut") === "1"; } catch { /* tanpa penyimpanan */ }
+  atur(awal);
+})();

@@ -3142,3 +3142,24 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-resi svg{width:16px;height:16px;flex:none;color:var(--ok)}
 .lp-resi b{font-weight:600}.lp-resi small{display:block}
 .lp-hitung{display:block;text-align:right;color:var(--ink2)}
+
+/* menu samping bisa diciutkan (pemilik 26 Nov 2026): hanya layar lebar; di HP menu tetap bilah bawah */
+.lp-tab > .lp-tab-ciut{display:none}
+@media (min-width:900px){
+  .lp-tab{position:relative}
+  .lp-tab > .lp-tab-ciut{display:grid;place-items:center;position:absolute!important;top:24px;right:-14px;z-index:3;width:28px;height:28px;padding:0!important;min-height:0!important;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink2);box-shadow:var(--shadow)}
+  .lp-tab-ciut svg{width:16px;height:16px;transition:transform var(--dur-1,.15s) ease}
+  .lp-tab-ciut:hover{color:var(--ink);background:var(--card)!important}
+  .lp-tab-ciut:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+  .lp-app.menu-ciut{grid-template-columns:76px minmax(0,1fr)}
+  .lp-app.menu-ciut .lp-tab{padding:20px 10px;align-items:center}
+  .lp-app.menu-ciut .lp-tab-ciut svg{transform:rotate(180deg)}
+  .lp-app.menu-ciut .lp-tab-merek{padding:4px 0 20px}
+  .lp-app.menu-ciut .lp-tab-merek > span,.lp-app.menu-ciut .lp-tab-merek .lp-logo-pantau{display:none}
+  .lp-app.menu-ciut .lp-tab button:not(.lp-tab-ciut){width:52px;justify-content:center;padding:0!important;font-size:0;gap:0}
+  .lp-app.menu-ciut .lp-tab button:not(.lp-tab-ciut) > span:not(.lp-titik-baru){display:none}
+  .lp-app.menu-ciut .lp-tab hr,.lp-app.menu-ciut .lp-tab .lp-sigap,.lp-app.menu-ciut .lp-tab-profil{display:none!important}
+  .lp-app.menu-ciut .lp-tab-aksi{justify-items:center}
+  .lp-app.menu-ciut .lp-titik-baru{position:absolute;margin:0;transform:translate(10px,-10px)}
+}
+@media (min-width:900px) and (prefers-reduced-motion:reduce){.lp-tab-ciut svg{transition:none}}
