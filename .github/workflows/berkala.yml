@@ -42,6 +42,7 @@ jobs:
         run: |
           python3 -I scripts/berkala/hitung.py uji
           python3 -I scripts/berkala/rakit.py uji
+          python3 -I scripts/berkala/kegiatan.py uji
       - name: Pasang wrangler sekali
         run: |
           npm i --prefix "$RUNNER_TEMP/w" wrangler@4.42.0
@@ -49,6 +50,11 @@ jobs:
       - name: Potongan hari kemarin (tidak ditimpa bila sudah ada)
         id: potong
         run: python3 -I scripts/berkala/rakit.py --potong --wrangler "$W"
+      # LB-09: siaran pers bnpb.go.id untuk Bab 6; bnpb.go.id sesekali 500, rakit tetap jalan (sumber kegiatan tertulis belum ada).
+      # Isi mundur sekali: lokal `kegiatan.py panen --dari 2026-01-01`.
+      - name: Panen kegiatan BNPB
+        continue-on-error: true
+        run: python3 -I scripts/berkala/kegiatan.py panen --wrangler "$W"
       # ALUR 1: potongan dulu, lalu harian, mingguan, bulanan, tahunan; satu periode gagal tidak menghentikan berikutnya,
       # tapi job tetap merah di akhir supaya kegagalan terlihat. Jalan juga bila potongan gagal (periode membaca potongan yang ada).
       - name: Berkas angka periode
