@@ -79,3 +79,11 @@
 
 /* kerangka standar staf (pemilik 26 Nov 2026): kepala situs dan panel Pusdalops hanya untuk sesi staf (data-opsional); petugas berkode tampil apa adanya */
 body:not(.mp-model-a)>.ad-top{display:none}
+
+/* WIL-3 (RU-081) draf kaji cepat */
+.mj-draf{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:14px 16px;margin:0 0 14px;display:grid;gap:10px}
+.mj-draf-hd{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}.mj-draf-hd h2{margin:0;font-size:1.0625rem}
+.mj-draf-bag h3{margin:0 0 4px;font-size:.875rem}.mj-draf-bag dl{display:grid;grid-template-columns:minmax(0,1fr);gap:2px 0;margin:0}
+.mj-draf-bag dt{font-weight:700;font-size:.8125rem}.mj-draf-bag dd{margin:0 0 6px;font-size:.8125rem;color:var(--ink2)}
+@media (min-width:700px){.mj-draf-bag dl{grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:4px 14px}.mj-draf-bag dd{margin:0}}
+.mj-draf .mj-aksi{display:flex;flex-wrap:wrap;gap:8px}

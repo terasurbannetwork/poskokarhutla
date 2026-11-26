@@ -52,6 +52,11 @@ LANGKAH = [
     ("WIL-1", "wil1", "harian"),    # RU-079 unit/meja_wilayah.json (status_darurat, saran_status, laphar_riwayat, prediksi; tipe tanpa sumber segar tidak dihitung)
     ("RRI-1", "rri1", "harian"),    # RU-082 unit/akses_putus.json (layer ArcGIS BNPB via panen.py; jaringan; status dari D1 akses_status bila terbaca)
     ("PUS-2", "pus2", "harian"),    # RU-085 unit/kib_cocok.json (logbook D1 lewat wrangler x dibi_kejadian.json; D1 gagal = langkah gagal)
+    ("PD-1", "pd1", "harian"),    # RU-088 unit/rapor_peringatan.json (shim ke scripts/prediksi/rapor_peringatan.py; D1 peringatan lewat wrangler; D1 gagal = langkah gagal)
+    ("PD-2", "pd2", "bulanan"),    # RU-090 unit/cakupan_ews.json (OSM emergency=siren x data/raw/unit/desa_terpapar.json; tanpa keduanya kartu 'belum ada data')
+    ("KS-3", "ks3", "bulanan"),    # RU-091 unit/evakuasi.json (kandidat OSM; desa kurang menunggu data/raw/unit/desa_terpapar.json)
+    ("MT-1", "mt1", "bulanan"),    # RU-092 RU-093 unit/dana_bersama_katalog.json (Juklak 4/2025 gz + standar_biaya_2026.json hasil `mt1.py ekstrak`)
+    ("MT-3", "mt3", "bulanan"),    # RU-095 unit/kampanye.json (siaga x terpapar x ews_tindakan.js lewat node)
 ]
 
 BASI_JAM = {"harian": 48, "mingguan": 240, "bulanan": 1080}  # DT sec 9.4

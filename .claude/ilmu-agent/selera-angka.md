@@ -169,3 +169,4 @@ Vonis per berkas: `bersih`/`temuan`; catat lewat `node scripts/agents/ilmu.mjs c
 - 2026-11-24 · Angka publik yang dibulatkan ke nol (kurang dari 5 = null) harus membawa teks tampil dari server; null hanya berarti 'belum', tidak pernah 'tidak ada'. Sumber: paparan_insiden.py angka_publik + tampil.
 - 2026-11-25 · Pemeriksa kata terlarang yang membuang tag (replace(/<[^>]*>/g)) juga membuang atribut title, jadi 'Sumber:' di title h3 lolos gerbang; cek atribut title terpisah.
 - 2026-11-26 · Kolom skor dan angka kartu tanpa desimal eksplisit jatuh ke fmt default (1 desimal), sehingga kolom 'desimal 0' dan angka kartu sejenis bisa berbeda. Cara tahu: bandingkan desimal di angka[] dan kolom[] pada skrip scripts/bnpb/unit/*.py dengan rapor.js angkaTeks.
+- 2026-11-26 · Total RAB kosong harus dicek dari jumlah isian terisi, bukan dari nilai: rupiah(0) menghasilkan Rp0 dan melanggar kosong bukan nol (mt1.js total).
