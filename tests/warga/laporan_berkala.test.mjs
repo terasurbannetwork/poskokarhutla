@@ -352,6 +352,18 @@ uji("LB-08 kredit dan izin: kredit kosong ditolak, foto media tanpa centang izin
   assert.equal((await api("POST", "/api/laporan-berkala", {periode: P, kode: k, isian: {...LENGKAP, foto: [{bab: "bab2", id: "../x"}]}, diubah: s.j.diubah}, ADMIN)).s, 400);
 });
 
+uji("LB-08 data sesudah EOI dipotong sebelum masuk R2; unggah dari Origin lain 403 tanpa objek", async () => {
+  const k = "2026-05";
+  const ekor = new Uint8Array([...jpeg(6), ...huruf("EKOR-SESUDAH-EOI-GPS")]);
+  const r = await unggah(P, k, ekor); assert.equal(r.s, 201, r.t);
+  const simpan = await isiR2(`berkala/${P}/${k}/foto/${r.j.id}.jpg`);
+  assert.deepEqual([...simpan], [...jpeg(6)], "ekor sesudah EOI ikut tersimpan");
+  assert.equal(r.j.id, sha256(jpeg(6)));
+  /* Origin "null" tanpa cookie sesi sengaja diterima worker (header x-admin-token tak bisa dikirim lintas situs tanpa preflight); yang diuji Origin lain */
+  for (const origin of ["https://jahat.contoh", "http://centurisk97.id.jahat.contoh"]) assert.equal((await unggah(P, k, jpeg(7), {h: {...ADMIN, origin}})).s, 403, origin);
+  assert.equal(await jmlFoto(P, k), 1);
+});
+
 uji("LB-08 foto beku tetap terbaca walau foto draf dihapus; foto belum terunggah 422; sidik beku dicek", async () => {
   const k = "2026-07", q = `periode=${P}&kode=${k}`, f = jpeg(30), id = sha256(f);
   await R2.put(`berkala/${P}/${k}/angka/terbaru.json`, ANGKA.replace(/2026-10/g, k));
