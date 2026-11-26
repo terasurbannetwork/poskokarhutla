@@ -343,6 +343,27 @@ jobs:
           python3 scripts/banjir/arsip_pos.py uji
           python3 scripts/banjir/arsip_pos.py susul --maks 7 || echo "::warning title=arsip pos::susul gagal, dicoba lagi besok"
 
+      # ST-11 (data/kajian-bnpb/satelit): genangan GFM harian per kab aktif (Dalops banjir belum surut + KJ banjir tanggap), staf saja (Q10):
+      # hanya ke R2 data/satelit/, tidak ke public/. Katalog dan cache kab-hari (data/raw/banjir/gfm_nasional) ikut cache banjir di bawah.
+      - name: Genangan GFM harian per kab (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 35
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PIPA_TOKEN: ${{ secrets.PIPA_TOKEN }}
+          GFM_DETIK: "1500"
+        run: |
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "::warning title=genangan harian::tanpa token Cloudflare, dilewati"; exit 0; }
+          python3 -I scripts/banjir/genangan_harian.py uji
+          mkdir -p data/raw/dalops
+          npx --yes wrangler@4.42.0 r2 object get poskokarhutla-foto/dalops/banjir.json --file data/raw/dalops/banjir.json --remote \
+            || echo "::warning title=genangan harian::dalops/banjir.json tidak terbaca, hanya KJ Buku Besar"
+          python3 -I scripts/banjir/genangan_nasional.py katalog --dari "$(date -u -d '75 days ago' +%Y-%m)"
+          python3 -I scripts/banjir/genangan_harian.py jalan --keluar "$RUNNER_TEMP/genangan_harian.json"
+          npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/data/satelit/genangan_harian.json \
+            --file "$RUNNER_TEMP/genangan_harian.json" --content-type application/json --remote
+
       - name: Simpan data banjir untuk jalan berikutnya
         if: always()
         uses: actions/cache/save@v4

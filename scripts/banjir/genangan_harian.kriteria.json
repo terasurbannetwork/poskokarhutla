@@ -1,0 +1,18 @@
+{
+ "versi": 1,
+ "dikunci": "2026-11-26",
+ "tiket": "ST-11",
+ "satuan": "kab-hari WIB berlintasan GFM dengan status sah (genangan_nasional.sah, ambang scripts/siklus/genangan_kriteria.json)",
+ "label": "Dalops banjir kab-hari: tanggal di [mulai, terakhir laporan], tidak diperpanjang ke hari berkas walau belum surut (data/raw/dalops/banjir.json)",
+ "positif_gfm": "gfm_label.positif apa adanya: porsi = baru_ha / teramati_ha >= 0,005 dan teramati >= 20 km2",
+ "negatif": "GFM hanya penguat positif; kab-hari tak teramati atau tak sah tidak dihitung, bukan negatif",
+ "metrik": [
+  "presisi",
+  "recall"
+ ],
+ "n_min": 20,
+ "pembanding": null,
+ "catatan_pembanding": "Q13 belum dijawab: pembanding (persistensi, klimatologi) pada jumlah alarm sama dikunci di versi 2 sebelum vonis lolos mungkin; versi 1 selalu gagal-tertutup",
+ "contoh_negatif": "3 hari UTC sebelum mulai tiap kab aktif ikut dihitung; kab-hari teramati sah tanpa label = negatif",
+ "catatan_dikunci": "Direvisi sebelum vonis pertama dijalankan (temuan validasi-model 26 Nov 2026: label melingkar); belum ada data yang dinilai"
+}
