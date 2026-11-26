@@ -55,7 +55,7 @@ export function pasang(ctx) {
       if (putar) return berhenti();
       t.setAttribute("aria-pressed", "true");
       setHari("0");
-      putar = setInterval(() => setHari(String((+state.h + 1) % 4 || 0)), 1800);
+      putar = setInterval(() => { if (!document.hidden) setHari(String((+state.h + 1) % 4 || 0)); }, 1800);
     } else if (t.classList.contains("st-cara")) {
       $dlg();
       dlg.showModal();

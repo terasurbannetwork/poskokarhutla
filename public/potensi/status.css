@@ -40,7 +40,9 @@
 .st-kartu>.ex-bd:has(>.ex-tabel:only-child){padding:0}
 .ex-tabel.st-lebar{overflow-x:auto}
 .ex-tabel table{width:100%;border-collapse:collapse;font-size:var(--fs-2)}
-.ex-tabel th,.ex-tabel td{padding:6px 8px;text-align:left;vertical-align:top}
+.ex-tabel th,.ex-tabel td{padding:6px 8px;vertical-align:top}
+.ex-tabel th{text-align:center}
+.ex-tabel td{text-align:left}
 .ex-tabel tbody th{font-weight:600}
 .ex-tabel tbody tr+tr>*{border-top:1px solid var(--line)}
 .st-cat{margin:0;font-size:var(--fs-2);color:var(--ink2);display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
@@ -72,5 +74,3 @@
 .ex-tabel.st-lebar th,.ex-tabel.st-lebar td{padding:6px 4px}
 .ex-tabel.st-lebar th:first-child,.ex-tabel.st-lebar td:first-child{padding-left:8px}
 .ex-tabel .st-st{max-width:54px;padding:2px 3px}
-/* perbaikan cangkang: maplibre-gl.css (dimuat belakangan) menimpa position:absolute milik .po-kanvas sehingga peta setinggi 300 px */
-.po-stage>.po-kanvas.maplibregl-map{position:absolute;inset:0}

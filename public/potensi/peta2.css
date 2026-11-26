@@ -31,7 +31,7 @@
 .p2-unduh:disabled{opacity:.5;cursor:default}
 .p2-unduh:focus-visible,.p2-bar select:focus-visible,.p2-top button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .p2-lebar{overflow-x:auto}
-.p2-lebar td.n{text-align:right;white-space:nowrap}
+.p2-lebar td.n{text-align:center;white-space:nowrap}
 
 /* iklim */
 .p2-dua{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:8px}

@@ -4,7 +4,7 @@
 .po-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .po-stage[hidden],.po-baca[hidden],.po-bw[hidden],.po-pt[hidden],.po-pb[hidden]{display:none}
 .po-stage{position:relative;height:100%;overflow:hidden;background:var(--surface)}
-.po-kanvas{position:absolute;inset:0}
+.po-kanvas,.po-kanvas.maplibregl-map{position:absolute;inset:0} /* maplibre-gl.css dimuat belakangan dan menulis .maplibregl-map{position:relative} */
 .po-stage .maplibregl-ctrl-top-right{top:64px}
 
 /* pil tab */
