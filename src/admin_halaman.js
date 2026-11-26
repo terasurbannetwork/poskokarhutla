@@ -76,7 +76,7 @@ const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
 /* semua halaman kerangka admin memakai menu Pusdalops (public/bnpb/menu_pusdalops.js) sebagai satu-satunya menu: panel kiri tetap sama di semua
    halaman staf, tanpa menu atas berkelompok dan tanpa sub-nav grup (pemilik 4 Nov 2026; diperluas ke semua halaman admin 26 Nov 2026
    "di atas ada menu di samping ada menu. Bingung"). Menu atas atas() tetap dikirim sebagai cadangan layar sempit dan tanpa JS; menu_pusdalops.js menggantinya. */
-const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=17" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=30"></script>';
+const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=17" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=31"></script>';
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
 const halaman = (k, memuat, ekor, ctx) => `${kepala(`${HAL[k][1]} · Centurisk97`)}
 <body${ctx ? ` data-staf="1" data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>

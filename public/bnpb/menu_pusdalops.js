@@ -44,7 +44,7 @@
   const LUAR = new Set(["/?operasi", "/pelaporan", "/presiden"]);
   const DALAM = h => !LUAR.has(h);
   const NS = "http://www.w3.org/2000/svg";
-  const ikon = n => { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true");
+  const ikon = n => { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true"); s.setAttribute("width", "16"); s.setAttribute("height", "16"); s.setAttribute("fill", "none"); s.setAttribute("stroke", "currentColor");
     for (const d of IKON[n].split("|")) { const p = document.createElementNS(NS, "path"); p.setAttribute("d", d); s.appendChild(p); } return s; };
   const kepala = document.querySelector("header.ad-top");
   if (!kepala || kepala.querySelector(".mp-menu")) return;
@@ -89,7 +89,7 @@
   const lebar = matchMedia("(min-width:901px)");
   /* tombol tema terang/gelap (pemilik 25 Nov 2026 "tambahin toggle theme"): di baris merek (layar lebar) atau kepala navy (layar sempit), sebelum Keluar */
   const tema = el("button", "mp-tema"); tema.type = "button"; tema.id = "mpTema";
-  const ikTema = d => { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true");
+  const ikTema = d => { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true"); s.setAttribute("width", "16"); s.setAttribute("height", "16"); s.setAttribute("fill", "none"); s.setAttribute("stroke", "currentColor");
     for (const x of d.split("|")) { const p = document.createElementNS(NS, "path"); p.setAttribute("d", x); s.append(p); } return s; };
   const bulan = ikTema("M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"), surya = ikTema("M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z|M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4");
   const temaKini = () => document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
