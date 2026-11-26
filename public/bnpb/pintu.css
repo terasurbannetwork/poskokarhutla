@@ -1,12 +1,12 @@
 /* Pintu /bnpb (rombak 26 Nov 2026). Token dari tema.css lewat bnpb.css; tanpa literal warna, tanpa gaya inline (CSP).
-   Tiga lapis: hero berfoto dengan empat angka utama, pita terang angka lain, lalu kartu per grup berisi daftar baris rapat (dua kartu per baris). */
+   Tiga lapis: hero berfoto dengan enam angka utama, pita terang situasi umum, lalu kartu per grup berisi daftar baris rapat (dua kartu per baris). */
 .pt-daftar{display:grid;gap:16px}
 .pt-daftar svg,.pt-hero svg,.pt-pita svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
 /* hero (rombak 26 Nov 2026, pemilik memilih gaya gabungan "pembatas slide" dan "daftar isi"): panel navy kepala (--head-bg) di kiri dipotong miring,
    gambar Indonesia dari orbit (public/img/hero-nusantara.jpg, dari pemilik) di kanan. Selalu gelap di mode terang dan gelap; teks --on-head, aksen --head-hl.
    Kiri: lambang BNPB di kiri judul, garis aksen di bawah judul, cincin konsentris samar, daftar grup berikon. Kanan: logo KRIS di kotak putih
-   (seperti sampul deck, data/laporan-bnpb/generator/kris.py), empat angka utama di dasar gambar. Garis potongan berlapis: garis tipis bergradasi
+   (seperti sampul deck, data/laporan-bnpb/generator/kris.py), enam angka utama di dasar gambar. Garis potongan berlapis: garis tipis bergradasi
    dan pita jingga tembus pandang ("garis ini terlalu flat"); dicoba tanpa garis lalu dikembalikan pemilik ("balikin lagi"). */
 .pt-hero{--garis:color-mix(in oklch,var(--on-head) 18%,transparent);position:relative;min-height:300px;margin:0 0 12px;border-radius:22px;overflow:hidden;isolation:isolate;
   background:var(--head-bg);color:var(--on-head);box-shadow:var(--bayang)}
@@ -44,15 +44,15 @@
 /* kanan: logo KRIS dan angka utama */
 .pt-hero-kris{position:absolute;top:16px;right:16px;padding:7px 12px;border-radius:10px;background:var(--on-head);box-shadow:0 2px 10px color-mix(in oklch,var(--head-bg) 45%,transparent)}
 .pt-hero-kris img{display:block;width:120px;height:auto}
-.pt-utama{position:absolute;left:calc(44% + 18px);right:22px;bottom:22px;display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr))}
+.pt-utama{position:absolute;left:calc(44% + 18px);right:22px;bottom:20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));row-gap:14px}
 .pt-utama[aria-busy]{min-height:70px}
 .pt-utama-i{display:grid;align-content:start;gap:3px;min-width:0;padding:0 14px;text-decoration:none;color:var(--on-head)}
-.pt-utama-i:first-child{padding-left:0}
-.pt-utama-i+.pt-utama-i{border-left:1px solid var(--garis)}
-.pt-utama-atas{display:flex;align-items:center;gap:9px;min-width:0}
-.pt-utama-ik{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:8px;background:color-mix(in oklch,var(--head-bg) 55%,transparent);border:1px solid var(--garis);color:var(--head-hl)}
-.pt-utama-ik svg{width:15px;height:15px}
-.pt-utama-nilai{font:800 1.875rem/1.05 var(--display,inherit);letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;text-shadow:0 1px 12px var(--head-bg)}
+.pt-utama-i:nth-child(3n+1){padding-left:0}
+.pt-utama-i:not(:nth-child(3n+1)){border-left:1px solid var(--garis)}
+.pt-utama-atas{display:flex;align-items:center;gap:8px;min-width:0}
+.pt-utama-ik{display:grid;place-items:center;flex:none;width:26px;height:26px;border-radius:8px;background:color-mix(in oklch,var(--head-bg) 55%,transparent);border:1px solid var(--garis);color:var(--head-hl)}
+.pt-utama-ik svg{width:14px;height:14px}
+.pt-utama-nilai{font:800 1.625rem/1.05 var(--display,inherit);letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;text-shadow:0 1px 12px var(--head-bg)}
 .pt-utama-ket{font-size:.75rem;font-weight:600;line-height:1.3;color:var(--on-head-2);text-shadow:0 1px 8px var(--head-bg);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .pt-utama-i:focus-visible,.pt-isi a:focus-visible{outline:2px solid var(--on-head);outline-offset:2px}
 
@@ -104,8 +104,7 @@
   .pt-hero-kris{top:12px;right:12px;padding:5px 9px}
   .pt-hero-kris img{width:92px}
   .pt-utama{position:static;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 18px 22px}
-  .pt-utama-i,.pt-utama-i:first-child{padding:9px 12px;border:1px solid var(--garis);border-radius:10px}
-  .pt-utama-i+.pt-utama-i{border-left:1px solid var(--garis)}
+  .pt-utama-i,.pt-utama-i:nth-child(3n+1),.pt-utama-i:not(:nth-child(3n+1)){padding:9px 12px;border:1px solid var(--garis);border-radius:10px}
   .pt-pita-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pt-pita-grid>*{grid-column:auto}
 }
 @media (prefers-reduced-motion:reduce){.pt-kecil{transition:none}.pt-tip{animation:none}}

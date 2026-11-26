@@ -74,10 +74,10 @@
   document.getElementById("admin").append(svg("admin"), "Pintu admin");
 
   /* hero (26 Nov 2026 malam, pemilik: "jadi hero ... tambahin foto sebagai overlay", lalu "masih kurang, bagusin lagi"): kepala berfoto di index.html.
-     Hierarki: empat angka UTAMA besar tanpa kotak (dipisah garis tipis, naik dari nol saat dimuat), lalu PITA angka lain di dasar hero (kecil, tanpa angka nol).
+     Hierarki: enam angka UTAMA di dasar gambar (dipisah garis tipis, naik dari nol saat dimuat), lalu PITA situasi umum di bawah hero.
      Semua angka diambil dulu, baru digambar sekali. Tanpa angka: tidak tampil (bukan 0). Mutu angka (hipotesis, perkiraan, belum diuji balik)
      hanya di tooltip bersama sumber, tanpa pil ("pill2nya hapus", "jadikan tooltip aja"). */
-  const UTAMA = ["/bnpb/dalops", "/sitrep", "/bnpb/siaga", "/risiko"];   // urutan angka utama; yang tak ada diganti angka bukan nol berikutnya
+  const UTAMA = ["/bnpb/dalops", "/sitrep", "/bnpb/siaga", "/risiko", "/bnpb/logbook", "/kinerja-bnpb"];   // Logbook dan Kinerja ditambah pemilik 26 Nov 2026   // urutan angka utama; yang tak ada diganti angka bukan nol berikutnya
   /* tooltip bergaya (pemilik 26 Nov 2026: "yang kayak gini jadiin tooltip", "kasih penjelasan juga itu apa"): nama halaman, penjelasan angka,
      keterangan angka, mutu, sumber. Penjelasan disusun dari cara angka dihitung di ANGKA di atas, bukan definisi baru. */
   const ARTI = {
@@ -123,7 +123,7 @@
       return ambilAngka().catch(() => null).then(x => x && {b, x, pilTetap, sumber}); }));
     utamaW.removeAttribute("aria-busy");
     const ada = hasil.filter(Boolean), bukanNol = ada.filter(r => r.x[0] !== "0");
-    const utama = [...UTAMA.map(u => bukanNol.find(r => r.b.rute === u)).filter(Boolean), ...bukanNol.filter(r => !UTAMA.includes(r.b.rute))].slice(0, 4);
+    const utama = [...UTAMA.map(u => bukanNol.find(r => r.b.rute === u)).filter(Boolean), ...bukanNol.filter(r => !UTAMA.includes(r.b.rute))].slice(0, 6);
     utamaW.replaceChildren(...utama.map(statUtama)); utamaW.style.setProperty("--n", utama.length || 1);
     utamaW.querySelectorAll(".pt-utama-nilai").forEach(naik);
     situasiUmum(pitaW);
