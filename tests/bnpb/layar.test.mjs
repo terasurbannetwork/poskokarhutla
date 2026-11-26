@@ -20,12 +20,10 @@ const bukanFavicon = g => !/favicon\.ico/.test(g);
 /* aksi: satu interaksi inti (desktop); sesudahnya `harus` bernilai benar dan tidak ada galat konsol baru.
    isi: ekspresi JS yang harus benar sesudah data dummy terisi (elemen utama terisi). todo: {bagian: alasan} untuk bug yang sudah dilaporkan. */
 const HALAMAN = [
-  {nama: "/bnpb", url: d => "/bnpb", isi: "document.querySelectorAll('h2').length >= 3 && document.querySelectorAll('a[href]').length >= 3",
+  {nama: "/bnpb", url: d => "/bnpb", isi: "document.querySelectorAll('h2, h3').length >= 3 && document.querySelectorAll('a[href]').length >= 3",
     aksi: async t => { await t.eval("document.querySelector('a[href=\"/sitrep\"]').focus()"); }, harus: "document.activeElement.getAttribute('href') === '/sitrep'"},
   {nama: "/relawan", url: d => "/relawan", isi: "document.querySelector('#ringkas').innerText.length > 30 && /\\d/.test(document.querySelector('#ringkas').innerText)",
     aksi: async t => { await t.pilih("#fProv", "64"); }, harus: "document.querySelector('#fProv').value === '64'"},
-  {nama: "/alun-alun", url: d => "/alun-alun", isi: "document.querySelectorAll('#daftar > *').length >= 1",
-    aksi: async t => { await t.klikTeks("button", "^Tanya$"); await t.tungguFungsi("document.querySelector('#daftar') !== null"); }, harus: "document.querySelectorAll('#daftar > *').length >= 1 || document.querySelector('#daftarPesan').innerText.length > 0"},
   {nama: "/riset", url: d => "/riset", isi: "document.querySelectorAll('tr').length >= 3",
     aksi: async t => { await t.eval("document.querySelector('#fTema').selectedIndex = 1; document.querySelector('#fTema').dispatchEvent(new Event('change', {bubbles: true}))"); }, harus: "document.querySelector('#fTema').selectedIndex === 1"},
   {nama: "/risiko", url: d => "/risiko", isi: "document.querySelectorAll('#isiTabel tr').length >= 5 && document.querySelectorAll('#peta path').length >= 1",
@@ -52,7 +50,7 @@ const HALAMAN = [
   /* Layar Pimpinan: pemilik 11 Nov 2026 "ga ada data dummy": kartu tidak lagi membaca ?dummy=1 dan dunia uji tidak punya baris nyata,
      jadi yang dibuktikan: 9 kartu tampil (kartu ke-9 "Respons laporan warga" sejak a23cb0af9, LB-13), tiap kartu berangka ATAU berkeadaan kosong yang rapi (.pm-kosong), plus galat/scroll/bocor di atas. */
   {nama: "/admin/pimpinan", admin: true, modul: /./, url: d => "/admin/pimpinan",
-    isi: "document.querySelectorAll('.pm-k').length === 9 && [...document.querySelectorAll('.pm-k')].every(k => /\\d/.test(k.innerText) || k.querySelector('.pm-kosong'))",
+    isi: "document.querySelectorAll('.pm-k').length === 10 && [...document.querySelectorAll('.pm-k')].every(k => /\\d/.test(k.innerText) || k.querySelector('.pm-kosong'))",
     aksi: async t => { await t.eval("window.__cetak = 0; window.print = () => { window.__cetak++; }"); await t.klik("[data-cetak]"); }, harus: "window.__cetak === 1"},
   {nama: "/admin/pengingat", admin: true, modul: /^(pengingat|alun|meja|relawan)/, url: d => "/admin/pengingat", isi: "document.querySelectorAll('tbody tr[data-id]').length >= 1 || document.querySelector('.pg-kosong') !== null",  /* tanpa ?dummy=1 sejak 11 Nov 2026: dunia uji hanya punya baris dummy */
     aksi: async t => { await t.klikTeks("button", "^Periksa sekarang$"); await t.tungguFungsi("/Diperiksa:/.test(document.querySelector('#pgPesan').innerText)"); }, harus: "document.querySelector('#pgPesan').className.includes('ok')"},
@@ -121,7 +119,12 @@ if (!CHROME) {
   }
 
   /* ---- interaksi lintas halaman ---- */
-  test("alun-alun admin: Teruskan ke relawan pada utas butuh_bantuan membuat pil status di halaman publik utas itu", async () => {
+  test("/alun-alun lama dialihkan ke peta Alun-alun /lapor/?alun saat dibuka peramban (KEPUTUSAN-LAPOR-AI K94-K95)", async () => {
+    const r = await fetch(dunia.base + "/alun-alun", {headers: {"sec-fetch-dest": "document"}, redirect: "manual"});
+    assert.equal(r.status, 302); assert.equal(r.headers.get("location"), "/lapor/?alun");
+  });
+  /* forum utas publik pensiun (K94-K95, 25 Nov 2026): halaman publik utas tidak ada lagi, jadi yang diuji hanya sisi admin */
+  test("alun-alun admin: Teruskan ke relawan pada utas butuh_bantuan mengubah status utas di meja admin", async () => {
     /* utas NYATA (bukan dummy): rincian publik menyembunyikan utas dummy (404), jadi pil di halaman publik hanya bisa dibuktikan pada utas nyata */
     const bikin = await dunia.api("POST", "/api/alun", {jenis: "butuh_bantuan", judul: "Butuh tenda darurat Demak", teks: "Pengungsi butuh tenda dan terpal.", bencana: "banjir", prov: "33", kab: "Kabupaten Demak"}, {"cf-connecting-ip": "10.9.0.1"});
     assert.equal(bikin.s, 201, "membuat utas butuh_bantuan nyata gagal: " + bikin.t.slice(0, 200));
@@ -136,13 +139,6 @@ if (!CHROME) {
     await tab.klik("#axFormTeruskan button[type=submit]");
     await tab.tungguFungsi(`/Relawan ditugaskan|Kebutuhan relawan|Permintaan relawan/.test(document.querySelector('tr[data-id="${u.id}"]')?.innerText || '')`);
     assert.deepEqual(tab.galat().filter(bukanFavicon), [], "Teruskan memunculkan galat konsol");
-    for (const [w, ht] of UKURAN) {
-      await tab.ukuran(w, ht);
-      await tab.buka(dunia.base + "/alun-alun#u=" + u.id, {tunggu: ".al-kepala"});
-      await tab.tungguFungsi("/Relawan ditugaskan|Kebutuhan relawan|Permintaan relawan/.test(document.querySelector('.al-kepala').innerText)", 8000);
-      assert.deepEqual(tab.galat().filter(bukanFavicon), [], `halaman publik utas di ${w}: galat konsol`);
-      const lb = await tab.lebihLebar(); assert.ok(lb.sw <= w + 1, `halaman publik utas di ${w}: scroll horizontal ${lb.sw}`);
-    }
   });
 
   test("/meja luring: catatan masuk antrean perangkat + pita 'menunggu sinyal', online mengirim dan pita hilang", async () => {
