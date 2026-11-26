@@ -523,13 +523,19 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     return jawab(`*Foto atau video kejadian*\nKirim kalau aman diambil. Keselamatan Anda lebih penting; lewati saja kalau tidak sempat.`, ["Lewati, langsung ke kirim"], false, "foto", ["Laporan darurat tetap terkirim tanpa foto"]); };
   const tanyaDaruratIsi = (kepala = "") => { const i = isianNama[sesi.daruratIsi[0]], jn = sesi.isian.jenis?.nilai, ob = opsiBerlaku(i, jn);
     return jawab(`${kepala}*${i.label}*\n${i.tanyaJenis?.[jn] || i.tanya}`, ob.map(o => o[0]), false, null, ob.map(o => o[1])); };
+  const CARI_KELAMIN = ["Laki-laki", "Perempuan", "Tidak tahu"];
   const CARI_HUB = ["Anak", "Orang tua", "Suami atau istri", "Saudara", "Teman atau tetangga", "Lainnya"], CARI_WAKTU = ["Hari ini", "Kemarin", "2 sampai 3 hari lalu", "Lebih dari 3 hari lalu"];
   const tanyaCari = (langkah, kepala = "") => {
     sesi.status = `cari_${langkah}`; const k = kepala ? `${kepala}\n\n` : "";
     if (langkah === "nama") return jawab(`${k}*Siapa nama lengkap orang yang Anda cari?*\nTulis sesuai KTP atau kartu keluarga bila tahu.`);
     if (langkah === "panggilan") return jawab(`${k}*Nama panggilan ${sesi.cari.nama}*\nNama yang biasa dipakai keluarga atau tetangga.`, ["Lewati"], false, null, ["Tidak ada nama panggilan"]);   // pemilik 25 Nov 2026: "Nama lengkap dulu... baru nama panggilan"
     if (langkah === "hubungan") return jawab(`${k}*Apa hubungan Anda dengan ${sesi.cari.nama}?*`, CARI_HUB);
-    if (langkah === "ciri") return jawab(`${k}*Ciri-ciri ${sesi.cari.nama}*\nTulis umur, pakaian terakhir, tinggi badan, atau tanda lain yang mudah dikenali.`, ["Lewati"]);
+    // ciri-ciri ditanya satu per satu (pemilik 26 Nov 2026: "ditanya satu-satu", "umur tulis berapa, jenis kelamin pilih")
+    if (langkah === "kelamin") return jawab(`${k}*Jenis kelamin ${sesi.cari.nama}*`, CARI_KELAMIN);
+    if (langkah === "umur") return jawab(`${k}*Umur ${sesi.cari.nama}*\nTulis angkanya saja, misalnya 12.`, ["Tidak tahu"], false, "angka", ["Tidak tahu umurnya"]);
+    if (langkah === "pakaian") return jawab(`${k}*Pakaian terakhir ${sesi.cari.nama}*\nMisalnya kaus merah dan celana jeans.`, ["Lewati"], false, null, ["Tidak ingat pakaiannya"]);
+    if (langkah === "tanda") return jawab(`${k}*Tanda lain yang mudah dikenali*\nMisalnya tinggi badan, kacamata, atau tahi lalat di pipi.`, ["Lewati"], false, null, ["Tidak ada tanda lain"]);
+    if (langkah === "ciri") return jawab(`${k}*Ciri-ciri ${sesi.cari.nama}*\nTulis umur, pakaian terakhir, tinggi badan, atau tanda lain yang mudah dikenali.`, ["Lewati"]);   // sesi lama yang sudah di langkah ini
     if (langkah === "foto") return jawab(`${k}*Foto ${sesi.cari.nama}*\nKirim satu foto yang wajahnya terlihat jelas. Boleh dari galeri, foto lama pun tidak apa-apa. Foto hanya dilihat petugas.\nDi WhatsApp: kirim fotonya di obrolan ini.`, ["Lewati"], false, "foto_cari", ["Lanjut tanpa foto"]);   // pemilik 26 Nov 2026: "Foto orang dicari"
     if (langkah === "waktu") return jawab(`${k}*Kapan terakhir terlihat?*`, CARI_WAKTU);
     if (langkah === "nomor") return jawab(`${k}*Nomor WhatsApp ${sesi.cari.nama}*\nBila tahu, tulis nomornya. Petugas memakainya untuk mencocokkan dengan kabar selamat.`, ["Tidak tahu"]);
@@ -631,7 +637,25 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     }
     if (sesi.status === "cari_hubungan") {
       const h = p >= 0 ? CARI_HUB[p] : teks.trim().slice(0, 60); if (h.length < 2) return tanyaCari("hubungan", "Pilih salah satu.");
-      c.hubungan = h; return tanyaCari("ciri");
+      c.hubungan = h; c.cr = {}; return tanyaCari("kelamin");
+    }
+    if (sesi.status === "cari_kelamin") {
+      const g = p === 0 || /^(laki|pria|cowo|l$)/i.test(teks.trim()) ? "Laki-laki" : p === 1 || /^(perempuan|wanita|cewe|p$)/i.test(teks.trim()) ? "Perempuan" : p === 2 || KATA_BELUM.test(teks) ? null : undefined;
+      if (g === undefined) return tanyaCari("kelamin", "Pilih salah satu.");
+      (c.cr ||= {}).kelamin = g; return tanyaCari("umur");
+    }
+    if (sesi.status === "cari_umur") {
+      if (p === 0 || KATA_BELUM.test(teks)) { (c.cr ||= {}).umur = null; return tanyaCari("pakaian"); }
+      const m = /^\s*(\d{1,3})\s*(tahun|thn|th)?\s*$/i.exec(teks), n = m ? Number(m[1]) : NaN;
+      if (!(n >= 0 && n <= 120)) return tanyaCari("umur", "Tulis umurnya dengan angka, misalnya 12, atau pilih *Tidak tahu*.");
+      (c.cr ||= {}).umur = n; return tanyaCari("pakaian");
+    }
+    if (sesi.status === "cari_pakaian" || sesi.status === "cari_tanda") {
+      const kosong = p === 0 || KATA_BELUM.test(teks) || /^lewati/i.test(teks.trim()), cr = (c.cr ||= {});
+      cr[sesi.status === "cari_pakaian" ? "pakaian" : "tanda"] = kosong ? null : samarkan(teks).trim().slice(0, 120) || null;
+      if (sesi.status === "cari_pakaian") return tanyaCari("tanda");
+      const bagian = [cr.kelamin, cr.umur != null ? `${cr.umur} tahun` : null, cr.pakaian ? `pakaian terakhir ${cr.pakaian}` : null, cr.tanda || null].filter(Boolean);
+      c.ciri = bagian.join(", ").slice(0, 300) || null; delete c.cr; return tanyaCari("foto");
     }
     if (sesi.status === "cari_ciri") { c.ciri = p === 0 || KATA_BELUM.test(teks) ? null : samarkan(teks).trim().slice(0, 300) || null; return tanyaCari("foto"); }
     if (sesi.status === "cari_foto") {

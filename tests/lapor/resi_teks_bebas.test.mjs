@@ -12,8 +12,11 @@ test("batang tingkat hanya untuk skala berurutan; hubungan berikon orang", () =>
   assert.equal(f(["Anak", "Orang tua", "Suami atau istri", "Saudara", "Teman atau tetangga", "Lainnya"]), false);
   assert.match(js, /\^\(anak\|orang tua\|suami\|istri/);
 });
-test("isian bebas dengan Lewati: textarea + hitung + Kirim, Lewati tautan kecil", () => {
-  assert.match(js, /RE_LEWATI\.test\(j\.pilihan\[0\]\)\) \{ isiTeksBebas/); assert.match(js, /el\("textarea"\); t\.rows = 3; t\.maxLength = 300/);
-  assert.match(js, /"lp-catatan-kecil lp-tautan-polos", j\.pilihan\[0\]/);
+test("isian bebas: kotak bertoken lp-isian, Lewati dan Kirim sejajar, umur satu baris papan angka (pemilik 26 Nov 2026)", () => {
+  assert.match(js, /j\.minta === "angka" \|\| \(j\.minta !== "setuju" && j\.pilihan\.length === 1 && RE_LEWATI\.test\(j\.pilihan\[0\]\)\)\) \{ isiTeksBebas/);
+  assert.match(js, /el\(angka \? "input" : "textarea", "lp-isian"\)/); assert.match(js, /t\.inputMode = "numeric"/);
+  assert.match(js, /el\("button", "lp-kedua", j\.pilihan\[0\]\)/); assert.doesNotMatch(js, /"lp-catatan-kecil lp-tautan-polos", j\.pilihan\[0\]/);
+  const css = readFileSync(new URL("../../public/lapor/lapor.css", import.meta.url), "utf8");
+  assert.match(css, /\.lp-isian\{[^}]*font:[^}]*var\(--font\)/, "kotak ketik memakai huruf situs, bukan monospace bawaan textarea");
 });
 test("menu Edukasi bernama Edukasi", () => { assert.doesNotMatch(js, /Edukasi siaga"/); assert.match(js, /pilihGrup\("Edukasi"\)/); });

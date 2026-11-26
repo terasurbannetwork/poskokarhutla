@@ -176,11 +176,17 @@ const ikonSub = o => [[/luapan sungai/i, "b-sungai"], [/genangan/i, "b-genangan"
 /* batang bertingkat hanya untuk skala berurutan; pilihan kategori (hubungan, jenis) tidak boleh berbatang sinyal */
 const RE_LEWATI = /^(lewati|lewat)\b/i;
 const bertingkat = ps => { const p = ps.filter(x => !/tidak tahu|ragu|lainnya/i.test(x)); return p.length >= 2 && (p.every(x => /^(tidak ada|sedikit|sedang|banyak|sangat banyak|ringan|berat|rendah|tinggi|kecil|besar)$/i.test(x)) || p.every(x => /^(sekitar |lebih dari |kurang dari )?[\d,.]+/i.test(x))); };
-const isiTeksBebas = (isi, j) => { const t = el("textarea"); t.rows = 3; t.maxLength = 300; t.autocapitalize = "sentences"; t.autocomplete = "off"; t.placeholder = j.ket?.[0] || "Tulis di sini, misalnya umur, pakaian terakhir, atau tanda yang mudah dikenali"; t.setAttribute("aria-label", "Jawaban");
-  const h = el("small", "lp-hitung", "0/300"), k = el("button", "lp-utama", "Kirim"), l = el("button", "lp-catatan-kecil lp-tautan-polos", j.pilihan[0]); k.type = l.type = "button"; k.disabled = true;
-  t.addEventListener("input", () => { h.textContent = `${t.value.length}/300`; k.disabled = !t.value.trim(); });
-  k.addEventListener("click", () => kirim({teks: t.value.trim(), tampil: t.value.trim()})); l.addEventListener("click", () => kirim({teks: "1", tampil: j.pilihan[0]}));
-  isi.append(t, h, k, l); };
+/* isian bebas satu jawaban (pemilik 26 Nov 2026 "bagusin"): kotak bertoken, bukan textarea bawaan peramban; angka = satu baris papan angka;
+   Lewati/Tidak tahu tombol kedua sejajar Kirim; hitungan huruf hanya muncul dekat batas */
+const isiTeksBebas = (isi, j) => { const angka = j.minta === "angka", maks = angka ? 3 : 300;
+  const t = el(angka ? "input" : "textarea", "lp-isian"); t.maxLength = maks; t.autocomplete = "off"; t.setAttribute("aria-label", "Jawaban");
+  if (angka) { t.type = "text"; t.inputMode = "numeric"; t.pattern = "[0-9]*"; t.placeholder = "Contoh: 12"; } else { t.rows = 1; t.autocapitalize = "sentences"; t.placeholder = "Ketik di sini"; }
+  const h = el("small", "lp-hitung"), k = el("button", "lp-utama", "Kirim"), l = el("button", "lp-kedua", j.pilihan[0]), bawah = el("div", "lp-isian-aksi"); k.type = l.type = "button"; h.hidden = true;
+  const sah = () => angka ? /^\d{1,3}$/.test(t.value.trim()) : !!t.value.trim();
+  t.addEventListener("input", () => { if (angka) t.value = t.value.replace(/\D/g, ""); const n = t.value.length; h.hidden = angka || n < maks - 60; h.textContent = `${n}/${maks}`; t.removeAttribute("aria-invalid"); });
+  t.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing && sah()) { e.preventDefault(); k.click(); } });
+  k.addEventListener("click", () => { if (!sah()) { t.setAttribute("aria-invalid", "true"); t.focus(); return; } kirim({teks: t.value.trim(), tampil: angka ? `${t.value.trim()} tahun` : t.value.trim()}); });   // Kirim tetap tombol utama (bukan abu); kosong = kursor kembali ke kotak l.addEventListener("click", () => kirim({teks: "1", tampil: j.pilihan[0]}));
+  bawah.append(l, k); isi.append(t, h, bawah); };
 const ikonOpsi = o => [
   [/^(anak|orang tua|suami|istri|saudara|teman|tetangga|kerabat|keluarga)\b/i, "i-orang"], [/^lainnya$/i, "i-daftar"],
   // dicocokkan dengan pertanyaannya (pemilik 25 Nov 2026: "cari kesesuaian icon dan pertanyaan"); null = skala bertingkat berbatang
@@ -276,7 +282,7 @@ function kartuPilihan(j) {
       const b = tombolOpsi(t, ket, () => kirim({teks: String(i + 1), tampil: j.pilihan[i]}), kls); const u = el("span", "lp-opsi-ubin"); u.append(ikon(ik)); b.prepend(u); d.append(b); }
     isi.append(d); return;
   }
-  if (j.minta !== "setuju" && j.pilihan.length === 1 && RE_LEWATI.test(j.pilihan[0])) { isiTeksBebas(isi, j); return; }   // pertanyaan isian bebas: kotak ketik, Lewati hanya tautan kecil
+  if (j.minta === "angka" || (j.minta !== "setuju" && j.pilihan.length === 1 && RE_LEWATI.test(j.pilihan[0]))) { isiTeksBebas(isi, j); return; }   // pertanyaan isian bebas: kotak ketik, Lewati hanya tautan kecil
   const dua = j.pilihan.length === 2 && !j.ket?.some(Boolean);
   const d = el("div", `lp-opsi${dua ? " dua" : ""}${j.minta === "setuju" ? "" : " lp-opsi-ikon lp-opsi-banyak"}`), n = j.pilihan.length;
   if (j.minta !== "setuju") { d.style.setProperty("--kol", kolomSimetris(n)); d.classList.add("lp-simetris"); if (kolomSimetris(n) >= 5) d.classList.add("lp-tegak"); } // lima sebaris: gambar di atas, teks di bawah supaya tidak terlipat

@@ -146,6 +146,16 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-langkah-kepala svg{width:18px;height:18px}
 .lp-langkah-isi{display:grid;gap:10px;padding:12px}
 .lp-langkah-isi .lp-utama{width:100%}
+/* isian bebas satu jawaban (pemilik 26 Nov 2026 "bagusin"): kotak ketik bertoken seperti kotak nomor, tombol Lewati dan Kirim sejajar */
+.lp-isian{box-sizing:border-box;width:100%;min-height:52px;padding:14px 16px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:500 1rem/1.4 var(--font);outline:none;transition:border-color .15s,box-shadow .15s}
+textarea.lp-isian{field-sizing:content;max-block-size:8lh;resize:none}
+input.lp-isian{font-weight:700;font-size:1.125rem;font-variant-numeric:tabular-nums;max-width:220px}
+.lp-isian::placeholder{color:var(--ink2);font-weight:500;opacity:1}
+.lp-isian:focus-visible{border-color:var(--brand2);box-shadow:0 0 0 3px color-mix(in oklab,var(--brand2) 20%,transparent)}
+.lp-isian-aksi{display:grid;grid-template-columns:auto 1fr;gap:10px}
+.lp-langkah-isi .lp-isian-aksi .lp-utama{width:auto}
+.lp-isian-aksi .lp-kedua{min-height:48px;padding:0 20px}
+.lp-isian[aria-invalid="true"]{border-color:var(--bad);box-shadow:0 0 0 3px color-mix(in oklab,var(--bad) 18%,transparent)}
 .lp-catatan-kecil{font-size:.75rem;color:var(--ink2);text-align:center}
 
 /* pilihan: baris penuh lebar berpenjelasan */
