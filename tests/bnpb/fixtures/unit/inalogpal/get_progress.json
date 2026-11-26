@@ -1,0 +1,315 @@
+{
+ "response": "success",
+ "data": {
+  "files": [
+   {
+    "wilayah_id": 11,
+    "tahun": "2026",
+    "wilayah": "Aceh",
+    "pra_bencana": "11.87",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "11.87",
+    "status_progress": "Kuning",
+    "tahapan": "Aktif"
+   },
+   {
+    "wilayah_id": 33,
+    "tahun": "2026",
+    "wilayah": "Jawa Tengah",
+    "pra_bencana": "11.25",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "11.25",
+    "status_progress": "Kuning",
+    "tahapan": "Aktif"
+   },
+   {
+    "wilayah_id": 35,
+    "tahun": "2026",
+    "wilayah": "Jawa Timur",
+    "pra_bencana": "10.50",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "10.50",
+    "status_progress": "Kuning",
+    "tahapan": "Aktif"
+   },
+   {
+    "wilayah_id": 3304,
+    "tahun": "2026",
+    "wilayah": "Kab. Banjarnegara",
+    "pra_bencana": "9.33",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "9.33",
+    "status_progress": "Kuning",
+    "tahapan": "Aktif"
+   },
+   {
+    "wilayah_id": 62,
+    "tahun": "2026",
+    "wilayah": "Kalimantan Tengah",
+    "pra_bencana": "6.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "6.00",
+    "status_progress": "Kuning",
+    "tahapan": "Aktif"
+   },
+   {
+    "wilayah_id": 51,
+    "tahun": "2026",
+    "wilayah": "Bali",
+    "pra_bencana": "5.63",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "5.63",
+    "status_progress": "Kuning",
+    "tahapan": "Aktif"
+   },
+   {
+    "wilayah_id": 63,
+    "tahun": "2026",
+    "wilayah": "Kalimantan Selatan",
+    "pra_bencana": "5.24",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "5.24",
+    "status_progress": "Kuning",
+    "tahapan": "Aktif"
+   },
+   {
+    "wilayah_id": 52,
+    "tahun": "2026",
+    "wilayah": "Nusa Tenggara Barat",
+    "pra_bencana": "4.77",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "4.77",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 13,
+    "tahun": "2026",
+    "wilayah": "Sumatera Barat",
+    "pra_bencana": "1.36",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "1.36",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 94,
+    "tahun": "2026",
+    "wilayah": "Papua",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 3522,
+    "tahun": "2026",
+    "wilayah": "Kab. Bojonegoro",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 3319,
+    "tahun": "2026",
+    "wilayah": "Kab. Kudus",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 6403,
+    "tahun": "2026",
+    "wilayah": "Kab. Kutai Kartanegara",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 1310,
+    "tahun": "2026",
+    "wilayah": "Kab. Solok Selatan",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 7211,
+    "tahun": "2026",
+    "wilayah": "Kab. Banggai Laut",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 32,
+    "tahun": "2026",
+    "wilayah": "Jawa Barat",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 73,
+    "tahun": "2026",
+    "wilayah": "Sulawesi Selatan",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 3204,
+    "tahun": "2026",
+    "wilayah": "Kab. Bandung",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 34,
+    "tahun": "2026",
+    "wilayah": "Di Yogyakarta",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 3216,
+    "tahun": "2026",
+    "wilayah": "Kab. Bekasi",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 53,
+    "tahun": "2026",
+    "wilayah": "Nusa Tenggara Timur",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 6202,
+    "tahun": "2026",
+    "wilayah": "Kab. Kotawaringin Timur",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 91,
+    "tahun": "2026",
+    "wilayah": "Papua Barat",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 15,
+    "tahun": "2026",
+    "wilayah": "Jambi",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 2103,
+    "tahun": "2026",
+    "wilayah": "Kab. Natuna",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 1406,
+    "tahun": "2026",
+    "wilayah": "Kab. Kampar",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 5101,
+    "tahun": "2026",
+    "wilayah": "Kab. Jembrana",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   },
+   {
+    "wilayah_id": 36,
+    "tahun": "2026",
+    "wilayah": "Banten",
+    "pra_bencana": "0.00",
+    "darurat_bencana": "0.00",
+    "pasca_bencana": "0.00",
+    "total_capaian": "0.00",
+    "status_progress": "Merah",
+    "tahapan": "Tidak Aktif"
+   }
+  ]
+ }
+}

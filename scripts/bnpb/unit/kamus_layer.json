@@ -1,0 +1,24 @@
+{
+ "_tentang": "Kamus layer verifikasi ArcGIS BNPB untuk RRP-1 (DT 6.21): bentuk layer beda tiap kejadian, jadi tiap kejadian satu entri dengan pemetaan kolom ke L (lapor) dan V (verifikasi). Folder berpola 20xx_ yang belum ada di sini dicatat di keluaran sebagai folder_baru; tidak diterka. Hanya kolom di sini yang diminta (daftar putih), geometri tidak pernah.",
+ "base": "https://gis.bnpb.go.id/server/rest/services",
+ "kejadian": [
+  {
+   "id": "gempa-ntt-2026",
+   "nama": "Gempa bumi NTT 2026",
+   "folder": "2026_gempabumi_ntt",
+   "layanan": "mv_gempa_ntt_2026_v2",
+   "tipe": "FeatureServer",
+   "lapis": 40,
+   "kolom": {
+    "kab": "id_kab",
+    "nama_kab": "kabupaten",
+    "provinsi": "provinsi",
+    "tanggal": "tanggal_update",
+    "lapor": {"RB": "rumah_rusak_berat", "RS": "rumah_rusak_sedang", "RR": "rumah_rusak_ringan"},
+    "verif": {"RB": "verif_rb", "RS": "verif_rs", "RR": "verif_rr"},
+    "tmk": "verif_tmk",
+    "verif_total": "total_rumah_verif"
+   }
+  }
+ ]
+}

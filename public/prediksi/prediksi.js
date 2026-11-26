@@ -363,10 +363,18 @@ function bayanganRapor(b) {
     <th class="n">AP bayangan</th><th class="n">AP model lama</th><th class="n">AP persistensi</th><th class="n">AP klimatologi</th><th>Vonis (Brier)</th><th>Vonis (AP)</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="pr-kecil">Belum ada pasangan yang matang. Banjir dan longsor menunggu label DIBI 14 hari, karhutla dan cuaca ekstrem sesudah data harian terkumpul.</p>'}</section>`;
 }
 
+/* skor label logbook Pusdalops: terpisah dari tabel DIBI di atas, tidak dirata-rata dan tanpa vonis baseline */
+function logbookRapor(l) {
+  if (!l) return "";
+  const rows = l.grup.map(x => `<tr><td>${esc(KODE_NAMA[x.kode] || x.kode)}</td><td class="n">+${esc(x.tenggang)}</td><td class="n">${fmt(x.n)}</td><td class="n">${fmt(x.positif)}</td><td class="n">${angka3(x.brier)}</td><td>${esc(x.vonis)}</td></tr>`).join("");
+  return `<section class="card pad pr-sek"><h2>Label logbook Pusdalops</h2><p class="pr-kecil">${esc(l.catatan)} Hari tanpa logbook: ${fmt(l.tak_terukur)} sel tak terukur.</p>${rows ? `<div class="tw"><table><thead><tr><th>Bahaya</th><th class="n">Tenggang</th><th class="n">n</th><th class="n">Kejadian</th><th class="n">Brier</th><th>Vonis</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="pr-kecil">Belum ada pasangan yang terukur.</p>'}</section>`;
+}
+
 function gambarRapor() {
   const s = PR.skor, u = PR.uji, k = PR.kal;
   let h = `<div class="head"><div><h2>Rapor ketepatan</h2><p class="pr-kecil">Brier lebih kecil = lebih baik. Prakiraan harus lebih baik dari persistensi (besok = hari terakhir lengkap) dan klimatologi (frekuensi bulan yang sama). Vonis "mengalahkan" butuh sedikitnya 30 hari sasaran dan selang 90% selisih Brier (diambil ulang per hari) di atas nol terhadap kedua pembanding; kurang dari itu "belum teruji".</p></div></div>`;
   h += `<section class="card pad pr-sek"><h2>Prospektif</h2><p class="pr-kecil">${esc(s?.catatan || "skor.json belum ada")}</p>${s ? Object.entries(s.kode).filter(([kd]) => !kd.endsWith("_B")).map(([kd, g]) => tabelSkor(kd, g)).join("") : ""}</section>`;
+  h += logbookRapor(s?.logbook);
   h += bayanganRapor(s?.bayangan);
   h += `<section class="card pad pr-sek"><h2>Uji balik retrospektif</h2>${u ? `<p class="pr-kecil">${esc(u.catatan)} Periode ${esc(u.periode.join(" s.d. "))}, ${fmt(u.n_terbit)} hari terbit.</p>${tabelSkor("HJN", u.kode.HJN)}` : '<p class="pr-kecil">Belum dijalankan.</p>'}</section>`;
   h += kalenderRapor();

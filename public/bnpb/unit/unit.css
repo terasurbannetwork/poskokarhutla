@@ -78,3 +78,8 @@ select.un-g-in{max-width:320px}
 .un-g-out .un-ringkas{grid-template-columns:1fr}
 .un-st-kurang{color:var(--bad-tx);font-weight:700}
 @media (max-width:760px){.un-g{grid-template-columns:1fr}.un-g-in,select.un-g-in{max-width:none}.ex-std .un-aksi .ad-tombol{min-height:44px}}
+/* RU-052 PD-3 penyusun pesan: kotak pesan enam baris dan pilihan peringatan */
+.un-pd3-pilih{max-width:100%;width:min(100%,520px)}
+.un-pd3-teks{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;line-height:1.5;resize:vertical}
+.un-pd3-aksi{margin-top:10px}
+.un-g-out .un-g-cat{margin:10px 0 0}

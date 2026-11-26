@@ -416,12 +416,48 @@ def ringkas_konfirmasi(rows, am_api=None):
     for kd, per in out.items():
         for sumber, x in per.items():
             x["dipakai"] = {"regu": "label skor" if kd in ("BNJ", "LSR") else "belum dipakai",
-                            "warga": "dihitung saja", "groundcheck": "audit saja"}[sumber]
+                            "warga": "dihitung saja", "groundcheck": "audit saja",
+                            "logbook": "label logbook (skor terpisah dari dibi)"}[sumber]
     if am_api is not None and "groundcheck" in out.get("API", {}):
         gc = [(t, kab) for kab, t, kd, s, o, _ in rows if kd == "API" and s == "groundcheck" and o == 1 and t in am_api]
         out["API"]["groundcheck"]["audit_firms"] = {"n_kabhari": len(gc), "firms_nol": sum(1 for t, kab in gc if not am_api[t]["kab"].get(kab)),
                                                     "catatan": "bersyarat pada tugas yang ada; bukan label Brier"}
     return out
+
+
+LOGBOOK_KODE = ("BNJ", "LSR", "CEX", "GEL")
+
+
+def skor_logbook(entri, rows, hari_lb, kini):
+    """Skor label logbook Pusdalops (D8), TERPISAH dari dibi: tidak dirata-rata, tidak dijumlah, tidak mengubah pasangan DIBI.
+    o = 1 bila ada baris logbook (kode, sasaran, kab); o = 0 HANYA bila sasaran ada di hari_logbook; selain itu sel tak terukur dan dibuang.
+    p = peluang ansambel BNJ/LSR (atau 0/1 dari level >= 2 tanpa ansambel); CEX/GEL hanya punya level: p = 1 bila level >= 2.
+    Tanpa pembanding baseline di sini: n < N_MIN = 'belum teruji', selain itu hanya 'terukur'. Logbook mencatat kejadian besar saja."""
+    pos = {(kd, t, kab) for kab, t, kd, s, o, _ in rows if s == "logbook" and o == 1 and kd in LOGBOOK_KODE}
+    lb, grup, tak = set(hari_lb or ()), {}, 0
+    for e in entri:
+        k = e["k"]
+        if k not in LOGBOOK_KODE:
+            continue
+        for n, t in enumerate(e["hari"]):
+            if kini and t >= kini:
+                continue
+            for kab, rs in e["kab"].items():
+                r = rs[n]
+                if r is None:
+                    continue
+                o = 1 if (k, t, kab) in pos else 0 if t in lb else None
+                if o is None:
+                    tak += 1
+                    continue
+                p = float(r[1] >= 2) if k in ("CEX", "GEL") else peluang_prakiraan(k, e["kol"], r, 0)
+                grup.setdefault((k, n + 1), []).append((p, o))
+    g = []
+    for (k, n), v in sorted(grup.items()):
+        ps, os_ = [x[0] for x in v], [x[1] for x in v]
+        g.append({"kode": k, "tenggang": n, "n": len(v), "positif": sum(os_), "brier": brier(ps, os_), "vonis": "belum teruji" if len(v) < N_MIN else "terukur"})
+    return {"label": "logbook", "n_min": N_MIN, "grup": g, "tak_terukur": tak, "hari_logbook": len(lb),
+            "catatan": "Label logbook Pusdalops, terpisah dari DIBI dan tidak dirata-rata. Nol hanya pada hari yang logbooknya ada; selain itu tak terukur. Logbook memuat kejadian besar saja."}
 
 
 def nilai(kini=None, akar=D.AKAR, folder=None, data=None, unduh=unduh_hujan):
@@ -457,6 +493,7 @@ def nilai(kini=None, akar=D.AKAR, folder=None, data=None, unduh=unduh_hujan):
     skor = {"versi": 1, "dibuat": dt.datetime.now(D.WIB).replace(microsecond=0).isoformat(), "jenis": "prospektif",
             "n_min": N_MIN, "kode": ringkas(pas, n_pra, status), "bayangan": bayangan(pas, n_pra),
             "konfirmasi": ringkas_konfirmasi(kf, am.get("API")),
+            "logbook": skor_logbook(entri, kf, K.muat(data).get("hari_logbook"), kini),
             "catatan": "Prospektif: prakiraan dibekukan sebelum kejadian (arsip append-only). HJN tahap 'sementara' dinilai "
                        "terhadap analisis model, bukan observasi; 'final' terhadap ERA5."}
     D.simpan(os.path.join(d, "skor.json"), skor)
@@ -660,6 +697,18 @@ def uji():
     ea = [{"t": "2026-10-30", "k": "API", "hari": [t0, "2026-11-01", "2026-11-02"], "kol": ["p"], "kab": {"1101": [[0.9]] * 3}}]
     aa = {"API": {"2026-10-30": {"j": "final", "kab": {}}, t0: {"j": "final", "kab": {}}}}
     assert pasangan(ea, aa, "2026-11-05", label_regu(rows)[0]) == pasangan(ea, aa, "2026-11-05")
+    # logbook: hari di luar hari_logbook tak jadi nol; logbook dan dibi tidak tercampur
+    kl = [["1101", t0, "BNJ", "logbook", 1, None], ["1101", t0, "GEL", "logbook", 1, None]]
+    el = [{"t": "2026-10-30", "k": "BNJ", "hari": [t0, "2026-11-01"], "kol": ["lv", "ps"], "kab": {"1101": [[2, 0.6]] * 2, "1102": [[2, 0.6]] * 2}},
+          {"t": "2026-10-30", "k": "GEL", "hari": [t0, "2026-11-01"], "kol": ["hs", "lv"], "kab": {"1101": [[3.0, 2]] * 2}}]
+    sl = skor_logbook(el, kl, [t0], "2026-11-05")
+    gb = {(x["kode"], x["tenggang"]): x for x in sl["grup"]}
+    assert gb[("BNJ", 1)]["n"] == 2 and gb[("BNJ", 1)]["positif"] == 1, "1102 di hari logbook ada = nol sah; 1 positif"
+    assert gb[("GEL", 1)]["n"] == 1 and sl["tak_terukur"] == 3 and all(x["tenggang"] == 1 for x in sl["grup"]), "2026-11-01 di luar hari_logbook = tak terukur, bukan nol"
+    assert all(x["vonis"] == "belum teruji" for x in sl["grup"]) and sl["label"] == "logbook"
+    assert all(x["n"] == x["positif"] for x in skor_logbook(el, kl, [], "2026-11-05")["grup"]), "tanpa hari_logbook hanya positif yang terukur, tak ada nol"
+    assert pasangan(en, amk, "2026-11-05", label_regu(kl)[0]) == pasangan(en, amk, "2026-11-05"), "logbook tidak masuk label regu/DIBI"
+    assert ringkas_konfirmasi(kl)["BNJ"]["logbook"]["dipakai"].startswith("label logbook")
     print("nilai.py: uji lulus")
 
 

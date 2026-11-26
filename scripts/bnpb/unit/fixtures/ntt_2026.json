@@ -1,0 +1,185 @@
+{
+ "_tentang": "Tangkapan agregat per kab layer mv_gempa_ntt_2026_v2/FeatureServer/40 (gis.bnpb.go.id) 26 Nov 2026; outFields daftar putih, returnGeometry=false; tanpa titik dan tanpa kolom pribadi. Layer terus diperbarui BNPB: angka verifikasi bergeser dari riset 5 (RB verifikasi 6.348 jadi 6.353, total 120.574 jadi 120.773), angka lapor sama.",
+ "features": [
+  {
+   "attributes": {
+    "kib": "5316107202608151",
+    "id_kab": "52.72",
+    "provinsi": "Nusa Tenggara Barat",
+    "kabupaten": "Kota Bima",
+    "tanggal_update": 1788080400000,
+    "jenis_bencana": "Gempabumi",
+    "rumah_rusak_berat": 0,
+    "rumah_rusak_sedang": 1,
+    "rumah_rusak_ringan": 2,
+    "verif_rb": 0,
+    "verif_rs": 0,
+    "verif_rr": 0,
+    "verif_tmk": 0,
+    "total_rumah_verif": 0
+   }
+  },
+  {
+   "attributes": {
+    "kib": "5316107202608151",
+    "id_kab": "73.01",
+    "provinsi": "Sulawesi Selatan",
+    "kabupaten": "Kepulauan Selayar",
+    "tanggal_update": 1788080400000,
+    "jenis_bencana": "Gempabumi",
+    "rumah_rusak_berat": 0,
+    "rumah_rusak_sedang": 4,
+    "rumah_rusak_ringan": 9,
+    "verif_rb": 0,
+    "verif_rs": 0,
+    "verif_rr": 0,
+    "verif_tmk": 0,
+    "total_rumah_verif": 0
+   }
+  },
+  {
+   "attributes": {
+    "kib": "5316107202608151",
+    "id_kab": "52.06",
+    "provinsi": "Nusa Tenggara Barat",
+    "kabupaten": "Bima",
+    "tanggal_update": 1788080400000,
+    "jenis_bencana": "Gempabumi",
+    "rumah_rusak_berat": 1,
+    "rumah_rusak_sedang": 4,
+    "rumah_rusak_ringan": 4,
+    "verif_rb": 0,
+    "verif_rs": 0,
+    "verif_rr": 0,
+    "verif_tmk": 0,
+    "total_rumah_verif": 0
+   }
+  },
+  {
+   "attributes": {
+    "kib": "5316107202608151",
+    "id_kab": "53.09",
+    "provinsi": "Nusa Tenggara Timur",
+    "kabupaten": "Ngada",
+    "tanggal_update": 1795006800000,
+    "jenis_bencana": "Gempabumi",
+    "rumah_rusak_berat": 1260,
+    "rumah_rusak_sedang": 2653,
+    "rumah_rusak_ringan": 8384,
+    "verif_rb": 268,
+    "verif_rs": 1665,
+    "verif_rr": 6960,
+    "verif_tmk": 7314,
+    "total_rumah_verif": 16207
+   }
+  },
+  {
+   "attributes": {
+    "kib": "5316107202608151",
+    "id_kab": "53.16",
+    "provinsi": "Nusa Tenggara Timur",
+    "kabupaten": "Nagekeo",
+    "tanggal_update": 1795006800000,
+    "jenis_bencana": "Gempabumi",
+    "rumah_rusak_berat": 4079,
+    "rumah_rusak_sedang": 2727,
+    "rumah_rusak_ringan": 8596,
+    "verif_rb": 319,
+    "verif_rs": 939,
+    "verif_rr": 2392,
+    "verif_tmk": 13515,
+    "total_rumah_verif": 17165
+   }
+  },
+  {
+   "attributes": {
+    "kib": "5316107202608151",
+    "id_kab": "53.10",
+    "provinsi": "Nusa Tenggara Timur",
+    "kabupaten": "Manggarai",
+    "tanggal_update": 1795006846591,
+    "jenis_bencana": "Gempabumi",
+    "rumah_rusak_berat": 7622,
+    "rumah_rusak_sedang": 6686,
+    "rumah_rusak_ringan": 8450,
+    "verif_rb": 2423,
+    "verif_rs": 6431,
+    "verif_rr": 8362,
+    "verif_tmk": 18126,
+    "total_rumah_verif": 35342
+   }
+  },
+  {
+   "attributes": {
+    "kib": "5316107202608151",
+    "id_kab": "53.08",
+    "provinsi": "Nusa Tenggara Timur",
+    "kabupaten": "Ende",
+    "tanggal_update": 1795006800000,
+    "jenis_bencana": "Gempabumi",
+    "rumah_rusak_berat": 1103,
+    "rumah_rusak_sedang": 1546,
+    "rumah_rusak_ringan": 4381,
+    "verif_rb": 55,
+    "verif_rs": 643,
+    "verif_rr": 1328,
+    "verif_tmk": 5004,
+    "total_rumah_verif": 7030
+   }
+  },
+  {
+   "attributes": {
+    "kib": "5316107202608151",
+    "id_kab": "53.07",
+    "provinsi": "Nusa Tenggara Timur",
+    "kabupaten": "Sikka",
+    "tanggal_update": 1795006800000,
+    "jenis_bencana": "Gempabumi",
+    "rumah_rusak_berat": 939,
+    "rumah_rusak_sedang": 852,
+    "rumah_rusak_ringan": 2313,
+    "verif_rb": 152,
+    "verif_rs": 372,
+    "verif_rr": 531,
+    "verif_tmk": 3049,
+    "total_rumah_verif": 4104
+   }
+  },
+  {
+   "attributes": {
+    "kib": "5316107202608151",
+    "id_kab": "53.19",
+    "provinsi": "Nusa Tenggara Timur",
+    "kabupaten": "Manggarai Timur",
+    "tanggal_update": 1795006800000,
+    "jenis_bencana": "Gempabumi",
+    "rumah_rusak_berat": 7516,
+    "rumah_rusak_sedang": 6039,
+    "rumah_rusak_ringan": 10837,
+    "verif_rb": 2648,
+    "verif_rs": 4173,
+    "verif_rr": 7921,
+    "verif_tmk": 12116,
+    "total_rumah_verif": 26858
+   }
+  },
+  {
+   "attributes": {
+    "kib": "5316107202608151",
+    "id_kab": "53.15",
+    "provinsi": "Nusa Tenggara Timur",
+    "kabupaten": "Manggarai Barat",
+    "tanggal_update": 1795006800000,
+    "jenis_bencana": "Gempabumi",
+    "rumah_rusak_berat": 3313,
+    "rumah_rusak_sedang": 1598,
+    "rumah_rusak_ringan": 4831,
+    "verif_rb": 488,
+    "verif_rs": 1589,
+    "verif_rr": 4580,
+    "verif_tmk": 7410,
+    "total_rumah_verif": 14067
+   }
+  }
+ ]
+}

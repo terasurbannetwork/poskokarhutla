@@ -15,7 +15,7 @@ export const P_UNIT_BACA = ["unit", "pimpinan", "koordalops", "pusdalops", "oper
 export const P_UNIT_TULIS = ["unit", "pimpinan", "koordalops", "pusdalops"];
 export const KODE_UNIT = ["perb", "pspb", "spb", "pus", "pd", "ks", "mt", "kpod", "wil", "plp", "ojl", "rrx", "rrp", "rri", "rrs", "ren", "keu", "sdu", "huk", "irt", "dik", "jf"];
 /* nama tetap R2 unit/<nama>.json; tiap nama wajib tercatat kelasnya di KEAMANAN-PRIVASI §3.2 di commit yang sama (tak tercatat = kelas T) */
-export const DATA_UNIT = ["stok_penyangga", "pendampingan_ikd", "mitigasi_prioritas", "satu_data", "jdih_daerah", "pengadaan", "status_peraturan", "fasilitas_sosial", "kalender_gladi", "kompetensi", "kalender_monev", "rb", "ikk", "hibah_prioritas", "prepositioning", "rpbd", "usulan_rpbd", "dokumen_siaga", "usulan_dokumen_siaga", "peta_nspk"];
+export const DATA_UNIT = ["stok_penyangga", "pendampingan_ikd", "mitigasi_prioritas", "satu_data", "jdih_daerah", "pengadaan", "status_peraturan", "fasilitas_sosial", "kalender_gladi", "kompetensi", "kalender_monev", "rb", "ikk", "hibah_prioritas", "prepositioning", "rpbd", "usulan_rpbd", "dokumen_siaga", "usulan_dokumen_siaga", "peta_nspk", "kerugian", "sendai", "klaster_logistik", "neraca_rumah"];
 export const DATA_UNIT_TERBATAS = ["pengadaan"];   // kelas T: modAtauStaf, akun gerbang AKUN_SITUS* ditolak
 const JAM = 3600e3, MAKS_BYTE = 8 * 1024 * 1024;
 const H_DATA = {"cache-control": "private, max-age=300", vary: "cookie"};

@@ -39,6 +39,10 @@ LANGKAH = [
     ("PSPB-1", "pspb1", "mingguan"),    # RU-073 unit/rpbd.json, unit/usulan_rpbd.json (dari jdih_daerah.jalan, cache MB-3)
     ("KS-1", "ks1", "mingguan"),    # RU-074 unit/dokumen_siaga.json, unit/usulan_dokumen_siaga.json (jdih_daerah, status_darurat, Jam Aturan)
     ("SPB-1", "spb1", "harian"),    # RU-075 unit/peta_nspk.json (katalog hukum MB-1 x renstra_nspk.json)
+    ("PERB-2", "perb2", "bulanan"),    # RU-059 unit/kerugian.json (DIBI 365 hari x tarif stimulan; rupiah hanya bila gerbang 2025 layak)
+    ("PSPB-3", "pspb3", "bulanan"),    # RU-060 unit/sendai.json (DIBI x penduduk; C-1 dari perb2, E-2 dari pspb1.jalan, jaringan lewat cache MB-3)
+    ("OJL-3", "ojl3", "harian"),    # RU-064 unit/klaster_logistik.json (INALOGPAL get_progress via panen.py; jaringan)
+    ("RRP-1", "rrp1", "harian"),    # RU-065 unit/neraca_rumah.json (layer verifikasi ArcGIS BNPB via panen.py; jaringan)
 ]
 
 BASI_JAM = {"harian": 48, "mingguan": 240, "bulanan": 1080}  # DT sec 9.4

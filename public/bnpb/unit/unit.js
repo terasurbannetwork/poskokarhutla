@@ -99,13 +99,18 @@
   const panelGalat = (s, t, ulang) => seksi(s.id.toLowerCase(), s.pendek, "data", s.pendek, [],
     h("p", {class: "bn-pesan galat", role: "status", teks: t}), ulang ? h("button", {type: "button", class: "ad-tombol kecil", "data-ulang": s.id, teks: "Muat ulang"}) : null);
 
-  /* KPOD-2 Jam Aturan (DT 5.5): JSON publik, susunan kartunya di jam.js (UnitJam.bangun) */
+  /* JSON publik tanpa R2: KPOD-2 Jam Aturan (DT 5.5, daftar, susunan di jam.js), KPOD-3 cakupan Laphar dan PD-3 peringatan aktif (bentuk G, UnitTampil[id](json) -> [elemen]) */
   async function isiPublik(s, panel) {
     let j = null;
     try { const r = await ambil(s.publik); if (r.ok) j = await r.json(); } catch (e) { j = null; }
-    if (!Array.isArray(j) || !j.length) { panel.dataset.muat = ""; return panel.replaceChildren(panelGalat(s, `Data ${s.pendek} gagal dimuat. Coba lagi beberapa menit lagi.`, true)); }
+    const tampil = window.UnitTampil?.[s.id];
+    const galat = () => { panel.dataset.muat = ""; panel.replaceChildren(panelGalat(s, `Data ${s.pendek} gagal dimuat. Coba lagi beberapa menit lagi.`, true)); };
+    if (tampil ? !j || typeof j !== "object" : !Array.isArray(j) || !j.length) return galat();
     await jeda();
-    panel.replaceChildren(R.render(window.UnitJam.bangun(j), null));
+    if (!tampil) return panel.replaceChildren(R.render(window.UnitJam.bangun(j), null));
+    const isi = await tampil(j);
+    if (!isi.length) return galat();
+    panel.replaceChildren(...isi);
   }
 
   async function isiSistem(s, panel) {

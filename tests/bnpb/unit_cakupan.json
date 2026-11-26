@@ -17,30 +17,30 @@
   "OJL-2": "ojl2.py --cek",
   "PSPB-1": "pspb1.py --cek",
   "KS-1": "ks1.py --cek",
-  "SPB-1": "spb1.py --cek"
+  "SPB-1": "spb1.py --cek",
+  "KPOD-3": "tests/bnpb/unit_kpod3.test.mjs",
+  "PD-3": "tests/bnpb/unit_pd3.test.mjs; tests/bnpb/unit_pd3_layar.test.mjs",
+  "PERB-2": "perb2.py --cek",
+  "PSPB-3": "pspb3.py --cek",
+  "OJL-3": "ojl3.py --cek",
+  "RRP-1": "rrp1.py --cek"
  },
  "dikecualikan": {
   "KEU-1": "berjalan di mesin pemilik atas data internal (U9); keu1.py --cek menguji aturannya atas selisih 5-lakip.md"
  },
  "antre": [
-  "PERB-2",
-  "PSPB-3",
   "PUS-2",
   "PD-1",
   "PD-2",
-  "PD-3",
   "KS-3",
   "MT-1",
   "MT-3",
   "KPOD-1",
-  "KPOD-3",
   "WIL-1",
   "WIL-2",
   "WIL-3",
   "PLP-3",
-  "OJL-3",
   "RRX-1",
-  "RRP-1",
   "RRP-2",
   "RRI-1",
   "RRS-1",
@@ -52,5 +52,5 @@
   "DIK-4",
   "JF-2"
  ],
- "antre_maks": 28
+ "antre_maks": 22
 }

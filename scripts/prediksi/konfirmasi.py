@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dasar as D  # noqa: E402
 
 URL_BAWAAN = "https://centurisk97.id"
-SUMBER = ("regu", "warga", "groundcheck")
+SUMBER = ("regu", "warga", "groundcheck", "logbook")
 
 
 def log(*a):
@@ -25,7 +25,7 @@ def jalur(data=None):
 
 
 def tarik(kini, env=None, buka=urllib.request.urlopen):
-    """-> daftar baris mentah, atau None bila dilewati."""
+    """-> {"konfirmasi": [...], "hari_logbook": [...]}, atau None bila dilewati."""
     env = os.environ if env is None else env
     token = (env.get("PIPA_TOKEN") or "").strip()
     if not token:
@@ -37,7 +37,7 @@ def tarik(kini, env=None, buka=urllib.request.urlopen):
             j = json.load(r)
         if j.get("terpotong"):
             log("respons terpotong (batas 5000 baris, urut tanggal naik): baris terbaru hilang, perkecil jendela sejak")
-        return j["konfirmasi"]
+        return {"konfirmasi": j["konfirmasi"], "hari_logbook": [t for t in j.get("hari_logbook") or [] if isinstance(t, str)]}
     except Exception as x:   # HTTPError 401/503, jaringan, JSON rusak: semuanya "lewati"
         log("dilewati:", getattr(x, "code", None) or type(x).__name__, x)
         return None
@@ -74,11 +74,13 @@ def perbarui(kini, data=None, env=None, buka=urllib.request.urlopen, daftar=None
     mentah = tarik(kini, env, buka)
     if mentah is None:
         return None
-    baru, tak = normal(mentah, daftar or D.kab())
+    baru, tak = normal(mentah["konfirmasi"], daftar or D.kab())
     s = D.baca(jalur(data), {"rows": []})
-    s = {"dibuat": kini, "kol": ["kab", "tanggal", "kode", "sumber", "terjadi", "nilai"], "rows": gabung(s.get("rows", []), baru), "tak_cocok": tak}
+    # hari_logbook: hari rekap logbook berstatus ok; hanya bertambah (hari di luar daftar = tak teramati, bukan nol)
+    hari = sorted(set(s.get("hari_logbook", [])) | set(mentah["hari_logbook"]))
+    s = {"dibuat": kini, "kol": ["kab", "tanggal", "kode", "sumber", "terjadi", "nilai"], "rows": gabung(s.get("rows", []), baru), "tak_cocok": tak, "hari_logbook": hari}
     D.simpan(jalur(data), s)
-    log(f"{len(mentah)} baris, {len(baru)} cocok, {tak} kab tak cocok (tidak ditebak)")
+    log(f"{len(mentah['konfirmasi'])} baris, {len(baru)} cocok, {tak} kab tak cocok (tidak ditebak)")
     return s
 
 
@@ -120,6 +122,13 @@ def uji():
         assert len(s["rows"]) == 2 and s["rows"][0][4] == 1
         isi["konfirmasi"][0]["terjadi"] = 0
         assert perbarui("2026-11-04", tmp, {"PIPA_TOKEN": "t"}, buka2, daftar)["rows"][0][4] == 1
+        # logbook: sumber diterima, hari_logbook disimpan dan hanya bertambah; respons lama tanpa kunci itu tidak menghapus
+        isi.update(hari_logbook=["2026-10-30"])
+        isi["konfirmasi"] = [{"kab": k0["id"], "tanggal": "2026-10-30", "kode": "BNJ", "terjadi": 1, "sumber": "logbook"}]
+        s = perbarui("2026-11-05", tmp, {"PIPA_TOKEN": "t"}, buka2, daftar)
+        assert s["hari_logbook"] == ["2026-10-30"] and [k0["id"], "2026-10-30", "BNJ", "logbook", 1, None] in s["rows"], s
+        isi.pop("hari_logbook"); isi["konfirmasi"] = []
+        assert perbarui("2026-11-06", tmp, {"PIPA_TOKEN": "t"}, buka2, daftar)["hari_logbook"] == ["2026-10-30"]
     print("konfirmasi.py: uji lulus")
 
 

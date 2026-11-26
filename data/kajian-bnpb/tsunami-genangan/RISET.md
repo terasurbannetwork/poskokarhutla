@@ -216,6 +216,24 @@ Keputusan GitHub Actions (ubuntu-latest, 4 vCPU, 16 GB, batas job 6 jam; spek ru
 
 Catatan mesin dan kode: `tsunami_hitung.py` ditambah `siapkan_skenario`, `jalankan_skenario`, mode `skenario <nama> <res 1|3> <tfinal> <t_halus> [kotak]`; setrun lintang-bujur memerlukan `capa_index = 2` dan `aux_type = [center, capacity, yleft]` (tanpa itu GeoClaw berhenti "mcapa does not agree with auxtype"); keluaran dilaporkan `cpu_detik` dan, untuk spek `ringkas`, larik fgmax disimpan di `fgmax.npz` di folder kerja. K12: `hitung()` menolak `manning > 0` kecuali spek bertanda `diagnostik_lab`.
 
+### 4.4 TS-13 (26 Nov 2026): pustaka skenario, pemilih terdekat, kepekaan tingkat B
+
+Kode: `scripts/gempa/tsunami_pustaka.py` (stdlib saat diimpor; hitung di venv lab). Kisi, toleransi, dan aturan ambang di bawah ditulis di kode SEBELUM hitungan pertama dijalankan; hasil tidak mengubahnya.
+
+**Kisi sumber (K6, bawaan Q6).** Megathrust antarmuka selatan Jawa, slip seragam (Q10), Okada per segmen 100 km, M 8,0, 8,5, 8,8 di tiap kotak, satu pusat per kotak. Letak pusat = lintang palung (dari profil kedalaman ETOPO 3 menit pada bujur yang sama) + 0,55 derajat ke utara (setengah proyeksi lebar M 8,5, jadi tepi atas M 8,5 jatuh di palung); kedalaman pusat 20 km, strike 265. Tidak disetel ke kejadian uji (Flores 1992, Banyuwangi 1994, Pangandaran 2006, Mentawai 2010, Palu 2018, Selat Sunda 2018) maupun ke data run-up NCEI; M besar di mana pun di selatan Jawa pasti bersinggungan dengan jejak sumber 1994 dan 2006 secara geometri, itu bukan penyetelan.
+
+| Kotak | Kode | Palung (lintang) | Pusat (LS, BT) | Strike | M |
+| --- | --- | --- | --- | --- | --- |
+| ujung_kulon | uk | -10,50 (perkiraan, profil ETOPO datar di bujur ini) | -9,95; 105,40 | 265 | 8,0; 8,5; 8,8 |
+| pangandaran_cilacap | pc | -10,20 | -9,65; 108,80 | 265 | 8,0; 8,5; 8,8 |
+| banyuwangi_rajegwesi | bw | -11,05 | -10,50; 114,10 | 265 | 8,0; 8,5; 8,8 |
+
+**Temuan konvensi arah (penting untuk TS-14).** Dalam `tsunami_sumber.okada_uz` bidang miring ke KANAN strike (Aki-Richards). TS-11 memakai strike 85, yang membuat bidang miring ke SELATAN: angkatan jatuh di sisi darat dan penurunan di sisi palung, terbalik untuk Jawa (uji numerik 26 Nov: strike 85 memberi +1,57 m di 0,4 derajat utara pusat dan -0,81 m di 0,8 derajat selatan; strike 265 sebaliknya). Jadi angka TS-11 (d_maks 12,2 m, run-up 27,0 m, RISET 4.3) lebih tinggi karena geometri itu, bukan hanya karena DSM dan tanpa gesekan; angka itu jangan dipakai sebagai batas atas. Pustaka ini memakai strike 265. `SKENARIO_TS11` di `tsunami_hitung.py` tidak diubah (berkas bersidik). Kejadian uji dengan strike dari mekanisme fokal harus diperiksa arah miringnya (nodal plane yang miring ke arah daratan) sebelum TS-14 menghitung.
+
+**Beda dari `siapkan_skenario` TS-11.** `tsunami_hitung.siapkan_skenario` menanam domain dan batas utara dtopo -9,0 untuk kotak Banyuwangi saja, jadi tidak dipakai untuk tiga kotak; `tsunami_pustaka.siapkan` adalah padanan umum (domain dari jejak M 8,8 + 0,6 derajat, dtopo di seluruh domain termasuk sisi darat, sehingga penurunan di pantai ikut; TS-11 memotongnya di -9,0). Semua parameter AMR, fgmax, 3 detik busur, tanpa gesekan, kuantisasi mengikuti TS-11 dan TS-12. `fgmax.tstart` = awal lapis halus (sama), dan awal lapis halus dipilih dari perkiraan tiba (Dijkstra c = akar g h pada ETOPO 3 menit, dikurangi 300 s) supaya `tiba_pertama` bermakna; tfinal = perkiraan tiba + 1200 s. Itu hanya awal gelombang: maksimum belum tentu final (seperti TS-11), ditulis di meta.
+
+**Uji kepekaan tingkat B (ALGORITMA 8.7), dua gempa buatan per kotak, tanpa data amatan.** Digeser sepanjang azimut strike dari pusat kisi kotaknya: k1 = M 8,1 digeser 25 km (skenario terdekat M 8,0: selisih 0,1; jarak 25 km), k2 = M 8,3 digeser 75 km ke arah berlawanan (terdekat M 8,5: selisih 0,2; jarak 75 km). Hitung langsung (sumber buatan itu sendiri) lawan skenario pustaka terdekat menurut aturan ALGORITMA 6 (selisih M terkecil, lalu jarak, seri: M lebih besar). Toleransi, ditetapkan sebelum hitung sebagai pilihan agent (bisa dibatalkan pemilik, tidak diturunkan dari data): |ln rasio luas tergenang| dan |ln rasio d_maks| masing-masing paling besar ln 1,5 (0,405), dan |selisih waktu tiba pertama| paling besar 10 menit; satu kasus lolos hanya bila ketiganya terpenuhi, dan yang tak dapat dinilai (luas nol, tiba hanya sekitar awal pencatatan) dihitung tidak lolos, bukan lolos. Jaccard sel tergenang dilaporkan sebagai keterangan, bukan kriteria. Ambang per kotak = kasus terbesar yang lolos bersama semua kasus yang lebih kecil; kasus terkecil gagal berarti tanpa ambang (hanya skenario sama persis); tidak diekstrapolasi di luar yang diuji. Dua kasus per kotak adalah sampel kecil: ambang yang keluar adalah "yang diuji dan lolos", bukan batas yang ditemukan, dan selisih M serta jarak tidak dapat dipisahkan efeknya.
+
 ## 5. Sumber data: bahan dan syarat
 
 | Data | Sumber | Syarat atau catatan |
