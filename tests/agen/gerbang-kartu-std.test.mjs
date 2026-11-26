@@ -31,7 +31,9 @@ const LAYAR = [
   {skrip: 'public/insiden_kaya.js', html: 'public/index.html', lama: []},
   {skrip: 'public/desa-waspada/desa-waspada.js', html: 'public/desa-waspada/index.html', lama: []},
   // Ruang Unit (G-3, RU-031). menunggu = HTML belum dibuat tiketnya; begitu berkasnya ada, syarat kartu.css berlaku tanpa sunting di sini.
-  {skrip: 'public/bnpb/unit/rapor.js', html: 'public/bnpb/unit/unit.html', lama: [], menunggu: 'RU-020'},
+  {skrip: 'public/bnpb/unit/rapor.js', html: 'public/bnpb/unit/unit.html', lama: []},
+  {skrip: 'public/bnpb/unit/unit.js', html: 'public/bnpb/unit/unit.html', lama: []},   // RU-020 cangkang; pintu index.html memakai skrip yang sama
+  {skrip: 'public/bnpb/unit/unit.js', html: 'public/bnpb/unit/index.html', lama: []},
 ]
 
 test('kartu.css memuat semua bagian kartu standar', () => {

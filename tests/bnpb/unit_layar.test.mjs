@@ -2,7 +2,7 @@
    Perender dijalankan sungguhan di vm bersama public/inti/format.js (fmt, esc asli), bukan tiruan. Cangkang /bnpb/unit menyusul di RU-020. */
 import {test} from "node:test";
 import assert from "node:assert/strict";
-import {readFileSync} from "node:fs";
+import {readFileSync, existsSync} from "node:fs";
 import {spawnSync} from "node:child_process";
 import vm from "node:vm";
 import {fileURLToPath} from "node:url";
@@ -115,4 +115,59 @@ test("desimal kartu: angka kecil tidak tampil 0, tanpa desimal tetap fmt bawaan"
   assert.match(h, />0,00026</);
   assert.match(h, />0</);
   assert.match(h, /<td class="n"[^>]*>0,533<\/td>/);
+});
+
+/* ---------- RU-020 katalog dan cangkang (public/bnpb/unit/katalog.js, unit.js) ---------- */
+vm.runInContext(baca("public/bnpb/unit/katalog.js"), ctx);
+const KAT = JSON.parse(JSON.stringify(ctx.window.UnitKatalog));   // salin keluar dari realm vm supaya deepStrictEqual membandingkan isi
+const KA = baca("data/kajian-bnpb/kedeputian/KEPUTUSAN-AWAL.md");
+const KA51 = [...KA.slice(KA.indexOf("### 5.1 Katalog"), KA.indexOf("## 6.")).matchAll(/^\| ([A-Z]+-\d) \| ([^|]+?) \| [^|]+ \| [^|]+ \| (F\d\*?|T) \|/gm)]
+  .map(m => [m[1], m[3]]);
+const KODE_UNIT = JSON.parse(baca("src/unit.js").match(/export const KODE_UNIT = (\[[^\]]+\])/)[1]);
+const DATA_UNIT = JSON.parse(baca("src/unit.js").match(/export const DATA_UNIT = (\[[^\]]+\])/)[1]);
+
+test("katalog: 70 ID persis KEPUTUSAN-AWAL 5.1, fase sama, unit = awalan ID", () => {
+  assert.equal(KA51.length, 70, "pengurai tabel KA 5.1 rusak");
+  assert.deepEqual(KAT.SISTEM.map(s => [s.id, s.fase]), KA51);
+  for (const s of KAT.SISTEM) assert.equal(s.unit, s.id.split("-")[0].toLowerCase(), s.id);
+  const f = x => KAT.SISTEM.filter(s => s.fase.replace("*", "") === x).length;
+  assert.deepEqual([f("F1"), f("F2"), f("F3"), f("T")], [15, 31, 20, 4], "jumlah per fase KA 5.1");
+});
+
+test("katalog: 22 unit = KODE_UNIT src/unit.js, tiap unit tepat satu kelompok, urutan kelompok KA 1", () => {
+  assert.deepEqual(Object.keys(KAT.UNIT).sort(), [...KODE_UNIT].sort());
+  assert.deepEqual(KAT.KELOMPOK.flatMap(g => g.unit).sort(), [...KODE_UNIT].sort(), "unit ganda atau hilang di KELOMPOK");
+  assert.equal(KAT.KELOMPOK.length, 9);
+  for (const u of Object.values(KAT.UNIT)) { assert.ok(u.nama && u.singkat && u.kelompok, u.kode); assert.doesNotMatch(u.nama + u.singkat, /·/); }
+  for (const g of KAT.KELOMPOK) assert.ok(ctx.window.UnitRapor.IKON[g.ikon] || ["risiko", "siaga", "sitrep", "kinerja"].includes(g.ikon), `ikon ${g.ikon}`);
+});
+
+test("katalog: berkas unik, tiap DATA_UNIT yang berkartu punya pemilik sistem, skrip yang ditautkan ada", () => {
+  const b = KAT.SISTEM.map(s => s.berkas).filter(Boolean);
+  assert.equal(new Set(b).size, b.length, "berkas dipakai dua sistem");
+  for (const n of DATA_UNIT.filter(n => n !== "jdih_daerah")) assert.ok(b.includes(n), `${n} di DATA_UNIT tanpa sistem di katalog`);   // jdih_daerah = masukan MB-3, tanpa kartu
+  for (const s of KAT.SISTEM.filter(s => s.skrip)) assert.ok(existsSync(AKAR + s.skrip), `${s.id}: ${s.skrip} tidak ada`);
+  assert.ok(existsSync(AKAR + KAT.DT));
+  assert.deepEqual(KAT.SISTEM.filter(s => s.lokal).map(s => s.id), ["KEU-1", "IRT-1"], "DS 8.6");
+});
+
+test("katalog: F1 dan F2 = registri cakupan unit_cakupan.json", () => {
+  const c = JSON.parse(baca("tests/bnpb/unit_cakupan.json"));
+  const terdaftar = [...Object.keys(c.diuji), ...Object.keys(c.dikecualikan), ...c.antre].sort();
+  assert.deepEqual(KAT.SISTEM.filter(s => /^F[12]/.test(s.fase)).map(s => s.id).sort(), terdaftar);
+});
+
+test("cangkang: urutan muat DS 3, tanpa skrip dan gaya inline, tanpa titik tengah dan kata aman", () => {
+  for (const f of ["public/bnpb/unit/index.html", "public/bnpb/unit/unit.html"]) {
+    const t = baca(f);
+    const i = p => t.indexOf(p);
+    assert.ok(i("/inti/tema.css") > 0 && i("/inti/tema.css") < i("/bnpb/bnpb.css") && i("/bnpb/bnpb.css") < i("/inti/kartu.css") && i("/inti/kartu.css") < i("/bnpb/unit/unit.css"), `${f}: urutan css`);
+    assert.ok(i("/inti/format.js") < i("/bnpb/unit/rapor.js") && i("/bnpb/unit/rapor.js") < i("/bnpb/unit/katalog.js") && i("/bnpb/unit/katalog.js") < i("/bnpb/unit/unit.js"), `${f}: urutan skrip`);
+    assert.match(t, /<header class="ad-top">/); assert.match(t, /menu_pusdalops\.js/); assert.match(t, /noindex,nofollow/);
+    assert.doesNotMatch(t, /<script>(?!<)|<style|style=|\son[a-z]+=/i, `${f}: inline`);
+  }
+  for (const f of ["public/bnpb/unit/unit.js", "public/bnpb/unit/katalog.js", "public/bnpb/unit/unit.css", "public/bnpb/unit/index.html", "public/bnpb/unit/unit.html"]) {
+    const t = baca(f); assert.doesNotMatch(t, /·/, f); assert.doesNotMatch(t.replace(/\/\*[\s\S]*?\*\//g, ""), /\baman\b/i, f); assert.doesNotMatch(t, /innerHTML/, f);
+    assert.doesNotMatch(t, /text-transform:\s*uppercase/i, f);
+  }
 });

@@ -42,7 +42,7 @@ Singkatan: B = baca, T = tulis, `-` = ditolak. Kolom "Kerja lain" = `verifikator
 
 | Rute (DT §4.9, §6.15) | Tamu, pemirsa | Kerja lain | `operator_cc` | `unit` | Dalops | BPBD | Akun gerbang | Moderator |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `GET /bnpb/unit`, `/bnpb/unit/:kode` | 303 ke layar masuk | 403 polos | B | B | B | - | B | B |
+| `GET /bnpb/unit`, `/bnpb/unit/:kode` | tamu: 303 ke layar masuk; pemirsa: 303 ke tab pertamanya (`arahPemirsa`), atau 403 polos bila tidak ada tab tujuan | 403 polos | B | B | B | - | B | B |
 | `GET /api/unit/indeks` | 401 | 401 | B | B | B | - | B | B |
 | `GET /api/unit/data/:nama` kelas S (§3) | 401 | 401 | B | B | B | - | B | B |
 | `GET /api/unit/data/:nama` kelas T (§3) | 401 | 401 | B | B | B | - | **-** (§2.3) | B |
