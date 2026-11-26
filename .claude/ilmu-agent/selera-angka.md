@@ -167,3 +167,4 @@ Vonis per berkas: `bersih`/`temuan`; catat lewat `node scripts/agents/ilmu.mjs c
 - 2026-11-24 · Layar /lapor/data: tanggal ISO mentah (sk_tanggal, tgl_selesai, keluar) dan tanggal id-ID 'Jun 26' melanggar format '4 Juni 2026'; cek dengan grep 'toLocaleDateString\|tgl_\|sk_tanggal' bukan hanya kode angka.
 - 2026-11-24 · Kapital tidak terlihat di JS: .ex-std .ex-ey di kartu.css memakai text-transform uppercase, jadi teks pil 'Daftar' tampil 'DAFTAR' di kit admin. Cek kapital lewat CSS yang dipakai kartu, bukan hanya string di berkas.
 - 2026-11-24 · Angka publik yang dibulatkan ke nol (kurang dari 5 = null) harus membawa teks tampil dari server; null hanya berarti 'belum', tidak pernah 'tidak ada'. Sumber: paparan_insiden.py angka_publik + tampil.
+- 2026-11-25 · Pemeriksa kata terlarang yang membuang tag (replace(/<[^>]*>/g)) juga membuang atribut title, jadi 'Sumber:' di title h3 lolos gerbang; cek atribut title terpisah.
