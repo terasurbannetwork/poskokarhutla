@@ -145,6 +145,12 @@ def _cek():
     # ukur pada keluaran sekarang (kode BPS mentah) lawan sesudah dipetakan
     t = json.load(open(os.path.join(AKAR, "public/data/bnpb/terpapar.json")))["kab"]
     baris = json.load(open(os.path.join(AKAR, "public/data/bnpb/dibi_kab_tahun.json")))["baris"]
+    dbi = json.load(open(os.path.join(AKAR, "public/data/bnpb/dibi_kab_tahun.json")))
+    if dbi.get("kode") == "kemendagri":   # sudah dipetakan: jangan petakan ulang
+        a1, m1 = ukur(baris, t)
+        print(f"padanan_kab_dibi --cek: sudah Kemendagri, kode tak dikenal {len(a1)} {a1}, kab tanpa data {len(m1)} {m1}")
+        print("OK")
+        return
     a0, m0 = ukur(baris, t)
     a1, m1 = ukur(baris, t, petakan)
     salah = sum(1 for b, v in pad.items() if v["kode"] != b and b in t)
