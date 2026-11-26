@@ -38,7 +38,7 @@ Migrasi produksi diterapkan pemilik.
 
 | Tiket | Isi | Cakupan | Pengerja → pemeriksa | Menunggu |
 | ----- | --- | ------- | -------------------- | -------- |
-| SA-22 | Ketinggian dan bahan | `semai.py`: ketinggian dasar awan per zona, deteksi inversi berasap, usulan bahan, jumlah sortie dan bahan (ALGORITMA §7b); `muatan_kg` kosong di `semai_bobot.json`; tampil di kartu Rekomendasi, dialog target, dan renlap OMC (PDF/KML/GPX) | `pipa-data` + `layar-peta` → `validasi-model`, `selera-angka` | SA-05, SA-09; angka jumlah: Q15, Q16 |
+| SA-22 | Ketinggian dan bahan | `semai.py`: ketinggian dasar awan per zona, deteksi inversi berasap, usulan bahan, jumlah sortie dan bahan (ALGORITMA §7b); `muatan_kg` kosong di `semai_bobot.json`; tampil di kartu Rekomendasi, dialog target, dan renlap OMC (PDF/KML/GPX) | `pipa-data` + `layar-peta` → `validasi-model`, `selera-angka` | SA-05, SA-09; angka jumlah: Q15, Q16. Sisa layar selesai 26 Nov 2026: dialog target dan altitude KML/GPX; muatan tetap kosong (Q15) |
 | SA-23 | Mulai dari target | `kandidat_target` di pipeline untuk kab bercluster dan KHG prioritas; pemilih target di kolom kanan; zona target dihitung di peramban (ALGORITMA §7b) | `pipa-data` + `layar-peta` → `inp-reviewer`, `validasi-model` | SA-13 |
 
 ## Fase 3c: kabar dan jejak keputusan

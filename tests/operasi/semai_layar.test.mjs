@@ -109,3 +109,37 @@ test("SB-08 layar: memuat semai_banjir.json dari BAWAH yang sama dan tanpa warna
   const baru = css.slice(css.indexOf("/* SB-08"));
   assert.doesNotMatch(baru, /#[0-9a-f]{3,8}\b|rgb\(|oklch\(/i);
 });
+
+test("SA-22 dialog target: ketinggian, bahan, jumlah; muatan kosong tidak 0", () => {
+  const z = {ketinggian: {kaki: 4000}, bahan: {usul: "NaCl"}, jumlah: {sortie: 1, muatan: "muatan armada belum diisi"}};
+  assert.match(M.ketinggianTeks(z), /4\.000 kaki/);
+  assert.equal(M.bahanTeks(z), "NaCl");
+  assert.equal(M.jumlahTeks(z), "1 sortie, muatan armada belum diisi");
+  assert.equal(M.jumlahTeks({}), "belum tersedia");
+});
+
+test("SA-22 KML/GPX: altitude dari ketinggian semai, bukan 0 palsu", async () => {
+  await import("../../public/renlap_omc.js");
+  const R = globalThis.RenlapOmcMurni;
+  assert.equal(R.mSemai({ketinggian: {kaki: 4000}}), 1219);
+  assert.equal(R.mSemai({ketinggian: {kaki: null}}), null);
+  const {readFileSync} = await import("node:fs"), src = readFileSync(new URL("../../public/renlap_omc.js", import.meta.url), "utf8");
+  assert.ok(!/\$\{c\.lat\},0</.test(src) && !/lat\},0 /.test(src), "tidak ada altitude 0 tertulis");
+  assert.match(src, /clampToGround/);
+});
+
+test("SA-22 KML/GPX: base di tanah, deskripsi dasar awan, XML seimbang", async () => {
+  await import("../../public/renlap_omc.js");
+  const R = globalThis.RenlapOmcMurni, cp = (k, la) => ({kode: k, nama: k, lat: la, lon: 110});
+  const z = {id: "2026112512-A", huruf: "A", ketinggian: {kaki: 4000}, rute: {cp: [cp("B", 1), cp("P1", 2), cp("P2", 3), cp("B", 1)]}};
+  const seimbang = x => { const st = []; for (const [, tutup, nm, sendiri] of x.matchAll(/<(\/?)([A-Za-z]+)[^>]*?(\/?)>/g)) { if (sendiri) continue; if (tutup) { if (st.pop() !== nm) return false; } else st.push(nm); } return !st.length; };
+  const kml = R.bangunBerkas(z, "kml"), gpx = R.bangunBerkas(z, "gpx");
+  assert.ok(seimbang(kml.replace(/<\?xml.*?\?>/, "")) && seimbang(gpx.replace(/<\?xml.*?\?>/, "")));
+  assert.match(kml, /dasar awan perkiraan model, bukan ketinggian terbang/); assert.match(gpx, /<desc>Ketinggian = dasar awan perkiraan model/);
+  assert.match(kml, /<coordinates>110,1 110,2<\/coordinates>/);            // berangkat: base tanpa altitude
+  assert.match(kml, /<coordinates>110,2,1219 110,3,1219<\/coordinates>/);  // terbang absolute
+  assert.match(kml, /<coordinates>110,3 110,1<\/coordinates>/);            // kembali ke base
+  assert.ok(!/<ele>/.test(gpx.split("<rte>")[1].split("</rtept>")[0]) && (gpx.match(/<ele>1219<\/ele>/g) || []).length === 4);
+  const tanpa = R.bangunBerkas({...z, ketinggian: {kaki: null}}, "kml");
+  assert.ok(!/,0[ <]|absolute/.test(tanpa) && /clampToGround/.test(tanpa));
+});
