@@ -366,9 +366,12 @@ test("lapor orang hilang lewat obrolan (pemilik 25 Nov 2026): identitas, lokasi 
   await kirim({lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}}); assert.equal(sesi.status, "wilayah");
   await kirim("1"); assert.equal(sesi.status, "cari_nama", "tanpa RT/RW");
   assert.equal((await kirim("A1")).sesi.status, "cari_nama", "nama berangka ditolak");
+  assert.equal((await kirim("orang hilang")).sesi.status, "cari_nama", "perintah bukan nama (pemilik 26 Nov 2026)"); assert.equal(sesi.cari.nama, undefined);
   await kirim("Siti Aminah"); assert.equal(sesi.status, "cari_panggilan", "nama lengkap dulu, baru nama panggilan"); assert.match(h.balasan, /Nama panggilan Siti Aminah/); assert.equal(h.pilihan, null); assert.equal(h.minta, "teks");
   assert.equal((await kirim("Lewati")).sesi.status, "cari_panggilan", "nama panggilan wajib: Lewati ditolak (pemilik 26 Nov 2026)");
   assert.equal((await kirim("A1")).sesi.status, "cari_panggilan", "panggilan berangka ditolak");
+  // tombol "Lapor orang hilang" ditekan lagi di tengah alur: mulai ulang, tidak tertelan jadi nama
+  { const simpan = sesi; await kirim("lapor orang hilang"); assert.notEqual(sesi.status, "cari_hubungan"); assert.equal(sesi.cari.nama, undefined, "teks perintah tidak jadi nama"); sesi = simpan; }
   await kirim("Ami"); assert.equal(sesi.status, "cari_hubungan"); assert.ok(h.pilihan.includes("Anak"));
   await kirim("1"); assert.equal(sesi.cari.hubungan, "Anak");
   // ciri ditanya satu per satu (pemilik 26 Nov 2026): kelamin dipilih, umur ditulis angka, pakaian dan tanda boleh dilewati

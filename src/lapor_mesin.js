@@ -493,7 +493,8 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
   /* Lapor orang hilang lewat obrolan (pemilik 25 Nov 2026: "kaya Lapor kejadian nanyanya", tanpa kode WA): identitas, lokasi terakhir terlihat, nama, hubungan,
      ciri, foto (boleh dari galeri), waktu, nomor orang itu bila tahu, ringkasan, kirim. Hasilnya baris lapor_cari (pemanggil menulis lewat h.kirimCari), bukan laporan atau tiket. */
   // "lapor orang hilang" (tombol layar, atau diketik utuh) selalu membuka obrolan baru; "orang hilang" saja hanya di awal, supaya jawaban di tengah laporan lain tidak menimpa drafnya
-  if (KATA_CARI.test(teks) && !sesi.cari && (/^lapor /i.test(teks) || !sesi.transkrip?.length || sesi.status === "identitas")) {
+  // tombol "Lapor orang hilang" ditekan lagi di tengah alur cari juga memulai baru; dulu teksnya tertelan jadi nama orang dicari (pemilik 26 Nov 2026: "Kenapa langsung nama panggilan?")
+  if (KATA_CARI.test(teks) && (/^lapor /i.test(teks) || !sesi.cari && (!sesi.transkrip?.length || sesi.status === "identitas"))) {
     sesi = {status: "identitas", langkah: pelapor ? "kenal" : "setuju", isian: {}, ditanya: [], dibuat: kini, transkrip: [], cari: {}};
   }
   sesi.diubah = kini;
@@ -643,6 +644,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     if (sesi.status === "cari_nama") {
       const nama = samarkan(teks).replace(/\[[^\]]*\]/g, "").trim().slice(0, 80);
       if (nama.length < 2 || /\d/.test(nama)) return tanyaCari("nama", "Tulis namanya tanpa angka.");
+      if (KATA_CARI.test(nama) || /^lapor\b/i.test(nama)) return tanyaCari("nama", "Tulis nama orang yang dicari.");   // perintah, bukan nama
       c.nama = nama; return tanyaCari("panggilan");
     }
     if (sesi.status === "cari_panggilan") {
