@@ -205,6 +205,21 @@ function gambarNanti(...bendera) {
 }
 const gambarBesok = () => gambarNanti("data", "tabel");
 
+/* DP-12: status prakiraan Centurisk97, penduduk di area peringatan BMKG, fasilitas. Blok terpisah: bukan kolom Jiwa, bukan jiwa terpapar aturan dampak, tidak dijumlah (D31). Tanpa data = tanpa blok. */
+function blokStatus(id) {
+  const D = window.DampakPeringatan, dp = PR.dp;
+  if (!D || !dp) return "";
+  const ms = ["bnj", "lsr", "cex", "kht"].map(h => ({h, m: D.modelKartu(id, h, {ringkas: dp.ringkas, status: dp.status})}));
+  const m0 = ms[0].m, st = (t, tok, tip, kecil) => `<span class="dp-status${kecil ? " dp-kecil" : ""}" style="--dp-w:var(${tok})" title="${esc(tip)}">${esc(t)}</span>`;
+  const hip = ms.some(x => x.m.pil.includes("Hipotesis")) ? '<span class="dp-pil">Hipotesis</span>' : "";
+  const rs = ms.map(({m}) => `<div class="dp-baris"><span class="dp-lbl">${esc(m.bahaya)}</span>${st(m.tingkat, m.token, m.tip)}${m.pil.filter(p => p !== "Hipotesis").map(p => `<span class="dp-pil">${esc(p)}</span>`).join("")}</div>`).join("");
+  const bmkg = [...new Map(ms.flatMap(x => x.m.peringatan).map(p => [p.teks, p])).values()].map(p => `${esc(p.teks)}. Sumber: BMKG${p.url ? ` <a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">(tautan)</a>` : ""}`).join("<br>");
+  return `<div class="pr-b dp-blok"><span class="pr-lab">Status</span><div><div class="dp-baris"><span class="dp-lbl">Status prakiraan Centurisk97 ${hip}</span></div>${rs}
+    <div class="dp-baris"><span class="dp-lbl">Penduduk di area peringatan BMKG</span><span>${esc(m0.penduduk.join("; "))}</span></div>
+    <div class="dp-baris"><span class="dp-lbl">Fasilitas yang terpeta</span><span>${esc(m0.fasilitas.join("; "))}</span></div>
+    <div class="dp-baris dp-bmkg"><span class="dp-lbl">Peringatan BMKG yang aktif</span><span>${bmkg || "Tidak ada peringatan BMKG untuk kab/kota ini."}</span></div></div></div>`;
+}
+
 /* ---- pop-up rincian ---- */
 function bukaRincian(id, dari) {
   const k = PR.d.kab.find(x => x.id === id), n = PR.hari;
@@ -242,7 +257,7 @@ function bukaRincian(id, dari) {
   const dlg = $("#rincian");
   dlg.innerHTML = `<article class="ex ex-std"><header class="ex-hd"><div class="ex-jd"><h3>${esc(k.nama)} <small>${esc(k.pn)}, ${ribu(k.jiwa)} jiwa${hari ? `, ${esc(tgl(hari))}` : ""}</small></h3>
     <button type="button" class="pr-tutup" aria-label="Tutup" data-tutup>${svgI("M6 6l12 12|M18 6L6 18")}</button></div></header>
-    <div class="ex-bd">${baris.join("") || `<p class="pr-kecil">Tidak ada prakiraan untuk ${esc(hari ? tgl(hari) : "hari ini")}.</p>`}${dampak ? `<div class="pr-b"><span class="pr-lab" data-k="DMP">Dampak</span><ul class="pr-dm">${dampak}</ul></div>` : ""}</div></article>`;
+    <div class="ex-bd">${baris.join("") || `<p class="pr-kecil">Tidak ada prakiraan untuk ${esc(hari ? tgl(hari) : "hari ini")}.</p>`}${dampak ? `<div class="pr-b"><span class="pr-lab" data-k="DMP">Dampak</span><ul class="pr-dm">${dampak}</ul></div>` : ""}${blokStatus(id)}</div></article>`;
   PR.dari = dari || document.activeElement;
   if (!dlg.open) dlg.showModal();
   dlg.querySelector("[data-tutup]").focus({preventScroll: true});
@@ -579,6 +594,8 @@ async function mulai() {
   Object.assign($("#kTgl"), {max: kini, min: new Date(Date.now() + 7 * 36e5 - 7 * 864e5).toISOString().slice(0, 10), value: kini});
   try { $("#kRegu").value = localStorage.getItem("prediksi.regu") || ""; } catch {}
   gambarBesok();
+  /* DP-12: dimuat sesudah tabel tercat; gagal atau belum terukur = rincian tanpa blok status */
+  Promise.all(["ringkas", "status"].map(u => fetch("/api/dampak-peringatan/" + u).then(r => r.ok ? r.json() : null).catch(() => null))).then(([ringkas, status]) => { if (status?.kab && !status.belum_terukur) PR.dp = {ringkas, status}; });
   const tab = location.hash.slice(1).split("/")[0];
   if (["rapor", "dampak", "konfirmasi", "laporan", "tangga"].includes(tab)) pilihTab(tab);
 }

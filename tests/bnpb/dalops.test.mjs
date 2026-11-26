@@ -229,7 +229,7 @@ test("gelombang pasang: kata surut tanpa tinggi air, dan jenis logbook memakai k
 test("dalops.js: tab Data Bencana pertama lalu sebelas tab berurutan (Laporan Masuk tepat sebelum Laporan), gunung api dari JSON publik, jenis tanpa prakiraan melewati status.json dan Peringatan dini", () => {
   const src = readFileSync(new URL("../../public/bnpb/dalops.js", import.meta.url), "utf8");
   const tab = src.match(/const TAB = \[([\s\S]*?)\];/)[1];
-  assert.deepEqual([...tab.matchAll(/\["(\w+)", "/g)].map(m => m[1]), ["ringkasan", "karhutla", "banjir", "longsor", "gunungapi", "gempa", "cuaca", "kekeringan", "gelombang", "permukiman", "udara", "laporan_masuk", "laporan"]);
+  assert.deepEqual([...tab.matchAll(/\["(\w+)", "/g)].map(m => m[1]), ["ringkasan", "karhutla", "banjir", "longsor", "gunungapi", "gempa", "cuaca", "kekeringan", "gelombang", "permukiman", "udara", "dampak", "laporan_masuk", "laporan"]);
   assert.match(tab, /\["gempa", "Gempa & Tsunami"/, "label gempa memuat tsunami (pemilik 11 Nov 2026)");
   assert.match(src, /fetch\("\/banjir\/data\/gunungapi_status\.json"\)/);
   assert.match(src, /JN\[jenis\]\.pra === false \? null : await/, "status.json tidak dimuat untuk jenis tanpa prakiraan");

@@ -1099,7 +1099,7 @@
      Satu panel per jenis, dirender sekali saat pertama dibuka; ganti tab hanya mengganti hidden. J (label per jenis) ikut tab yang tampil,
      supaya pop-up peta dan tombol WA di panel itu memakai kata jenisnya. ---------- */
   const TAB = [["ringkasan", "Data Bencana", "data"], ["karhutla", "Karhutla", "karhutla"], ["banjir", "Banjir", "banjir"], ["longsor", "Longsor", "longsor"], ["gunungapi", "Gunung Api", "gunungapi"], ["gempa", "Gempa & Tsunami", "gempabumi"],
-    ["cuaca", "Cuaca Ekstrem", "cuaca"], ["kekeringan", "Kekeringan", "kekeringan"], ["gelombang", "Gelombang & Abrasi", "gelombang_pasang"], ["permukiman", "Kebakaran Permukiman", "kebakaran_permukiman"], ["udara", "Kualitas Udara", "udara"], ["laporan_masuk", "Laporan Masuk", "daftar"], ["laporan", "Laporan", "simpan"]];
+    ["cuaca", "Cuaca Ekstrem", "cuaca"], ["kekeringan", "Kekeringan", "kekeringan"], ["gelombang", "Gelombang & Abrasi", "gelombang_pasang"], ["permukiman", "Kebakaran Permukiman", "kebakaran_permukiman"], ["udara", "Kualitas Udara", "udara"], ["dampak", "Dampak peringatan", "peringatan"], ["laporan_masuk", "Laporan Masuk", "daftar"], ["laporan", "Laporan", "simpan"]];
   const panel = Object.fromEntries(TAB.map(([k]) => [k, h("div", {class: "dl-panel", id: "tab-" + k, role: "tabpanel", hidden: true})]));
   const sudahBuka = new Set();
   let aktif = "banjir";   // tab yang tampil: J dikembalikan ke jenis ini sesudah tab lain selesai dimuat di latar
@@ -1132,7 +1132,7 @@
     const tombol = TAB.map(([k, t, ik]) => h("button", {type: "button", role: "tab", class: "db-nav-b", "data-tab": k, "aria-selected": "false", "aria-controls": "tab-" + k},
       h("i", {class: "db-nav-ik"}, ikon(ik)), h("span", {class: "db-nav-t", teks: t})));
     const grup = (teks, ik) => window.MenuPusdalops?.grup ? window.MenuPusdalops.grup(teks, ik) : h("p", {class: "db-nav-sub", teks});
-    const seg = h("nav", {class: "db-nav-isi dl-seg-a", role: "tablist", "aria-label": "Jenis pantauan"}, grup("Bencana", "banjir"), ...tombol.slice(0, -2), grup("Laporan", "simpan"), ...tombol.slice(-2));
+    const seg = h("nav", {class: "db-nav-isi dl-seg-a", role: "tablist", "aria-label": "Jenis pantauan"}, grup("Bencana", "banjir"), ...tombol.slice(0, -3), grup("Peringatan", "peringatan"), tombol.at(-3), grup("Laporan", "simpan"), ...tombol.slice(-2));
     seg.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) pilihTab(b.dataset.tab, tombol); });
     const judul = h("h1", {class: "dl-l1", id: "dlJudul", teks: "Pantau Dalops", hidden: true}), slot = window.MenuPusdalops ? h("div", {class: "dl-tampil", role: "tablist", "aria-label": "Tampilan Pantau Dalops"}) : null;   /* panel kiri Pusdalops tetap (pemilik 25 Nov 2026, pilihan A): tiga tampilan jadi tab bergaris bawah di puncak isi, seksi jadi pil di bawahnya */
     if (slot) {
@@ -1247,7 +1247,7 @@
           tMulai.min = tSampai.min = awal; tMulai.max = tSampai.max = akhir; tMulai.value = rentang.dari; tSampai.value = rentang.sampai; tSampai.min = rentang.dari; tMulai.max = rentang.sampai; }
         terapPer(); });
       const pPer = h("div", {class: "dl-pilih dl-per-pilih", role: "group", "aria-label": "Periode"}, ikon("kalender"), hiasPilih(sPer), rTgl);
-      const segarPer = () => { pPer.hidden = aktif === "gunungapi" || aktif === "ringkasan" || aktif.startsWith("laporan"); };
+      const segarPer = () => { pPer.hidden = aktif === "gunungapi" || aktif === "ringkasan" || aktif === "dampak" || aktif.startsWith("laporan"); };
       const lamaSegar = dlSegar; dlSegar = () => { lamaSegar(); segarPer(); const al = panel[aktif]?.querySelector(".maplibregl-map .dl-peta-alat"); if (al && !al.contains(pPer)) al.insertBefore(pPer, al.querySelector(".dl-semua-peta")); }; segarPer();
       app.replaceChildren(h("div", {class: "db-kanan"}, judul, pPer, ...Object.values(panel)));   // tanpa bilah tampilan (pilihan C): slot hanya pemegang tanda, pemilih ada di kepala kartu
     } else {
@@ -1283,6 +1283,7 @@
     if (jenis === "ringkasan") { ringkas = await window.DataBencana.pasang(p, {aktif: aktifDalops, lapor: laporRekon});   // Data Bencana Indonesia, data publik DIBI (data_bencana.js)
       if (window.DibiTren) { const t = h("section", {class: "dt-wadah", "aria-labelledby": "dtJudul"}); p.append(t); window.DibiTren.pasang(t, {}); }   // tren, sebaran, tabel sejak 2008 (dibi_tren.js, sesi DIBI)
       return; }
+    if (jenis === "dampak") return window.DalopsDampak.muat(p, alat());   // peta status dan tabel desa (dalops_dampak.js, DP-15)
     if (jenis === "laporan_masuk") return window.DalopsLaporanMasuk.muat(p, alat());   // rekap harian WA Koordalops (dalops_laporan_masuk.js)
     if (jenis === "gunungapi") {   // data publik tanpa rute baru: status PVMBG dari pipeline banjir
       let g; try { g = await fetch("/banjir/data/gunungapi_status.json"); } catch (e) { return tulis("Tidak ada sinyal. Muat ulang halaman ini."); }
