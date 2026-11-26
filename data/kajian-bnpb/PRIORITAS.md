@@ -25,7 +25,7 @@ Dasar urutan: musim hujan (banjir, longsor, cuaca dipakai tiap hari), modul hamp
 - [ ] Lifeline (LF-09 dibangun 26 Nov, belum tersedia di laporan sampai pemilik memilih jalur data CI; LF-10 lab VNP46A2 dikerjakan sesi lain; LF-11 migrasi oleh pemilik)
 - [ ] Kaji ulang (KU-04..KU-10 selesai 26 Nov, KU-10 menunggu jalur data CI yang sama dengan LF-09; KU-11 migrasi 0147 oleh pemilik; KU-12 menunggu 10 kejadian disahkan)
 - [x] Segel (SG-01..SG-11, SG-13 selesai; SG-12 di luar fase 1 menurut Q4; SG-14 migrasi 0171, 0172 menunggu pemilik)
-- [ ] Lapor ke kejadian, Silang sumber, Desa Waspada terbit publik (Q1), Alat gambar, Tindakan operasi, 3W TW-10, Profil PF-0
+- [ ] Lapor ke kejadian (LK-13 tinjau pemilik, migrasi 0170, saklar LAPOR_USUL), Silang sumber (SS-03 tunggu arsip 30 hari, SS-30 tertahan LogPal, SS-52), Desa Waspada terbit publik (Q1, dikerjakan sesi lain), Alat gambar (AG-00..AG-09 selesai), Tindakan operasi (TO-06 ditutup, TO-07 tinggal tinjau pemilik dan migrasi 0153), 3W TW-10 (migrasi 0143 oleh pemilik), Profil PF-00..PF-09 selesai di kode (migrasi 0166, 0167 dan secret PROFIL_KUNCI oleh pemilik)
 
 ## P2: riset dan validasi satelit (boleh gagal, tetap hipotesis bila gagal)
 
