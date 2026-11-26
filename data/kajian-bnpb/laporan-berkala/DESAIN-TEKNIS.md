@@ -98,11 +98,12 @@ Semua rute memvalidasi `periode` (empat nilai) dan `kode` (bagian 3) sebelum men
 | `/api/laporan-berkala?daftar=1&periode=bulanan` | GET | semua yang masuk | `?periode=` wajib: daftar kode, versi, diubah untuk periode itu (paling baru 400 baris) |
 | `/api/laporan-berkala?periode=bulanan&kode=2026-10[&versi=N]` | GET | semua yang masuk | baris isian; tanpa `versi` = draf bila ada, bila tidak versi beku terakhir; mencatat jejak `buka` |
 | `/api/laporan-berkala/angka?periode=bulanan&kode=2026-10[&versi=N\|&tarik=terbaru]` | GET | semua yang masuk | berkas angka; kunci R2 dibentuk server dari parameter (tidak menerima kunci dari klien); versi beku diperiksa sha256 |
-| `/api/laporan-berkala/foto?periode=bulanan&kode=2026-10&id=<sha256>` | GET | semua yang masuk | foto; `id` harus 64 heksa |
+| `/api/laporan-berkala/foto?periode=bulanan&kode=2026-10&id=<sha256>[&versi=N]` | GET | semua yang masuk | foto; `id` harus 64 heksa; tanpa `versi` atau 0 = draf; versi beku = salinan beku `berkala/<periode>/<kode>/v<N>/foto/`, sidik dicek saat dibaca |
 | `/api/laporan-berkala/kegiatan?periode=&kode=` | GET | admin | tidak dibangun (LB-09): calon ikut berkas angka lewat rute `angka` |
 | `/api/laporan-berkala` | POST | admin | simpan draf `{periode, kode, isian, tarik, diubah}`; server memetakan `tarik` ke kunci `berkala/<periode>/<kode>/angka/<tarik>.json`, memastikan objeknya ada, dan menghitung sha256-nya |
 | `/api/laporan-berkala/bekukan` | POST | admin | `{periode, kode, diubah}`; kelengkapan (ALGORITMA 10) diperiksa ulang di server dari isian tersimpan; 422 dengan daftar kekurangan |
 | `/api/laporan-berkala/foto` | POST | admin | JPEG saja, sudah dikode ulang di peramban (bagian 5); server menolak bila byte awal bukan JPEG atau ada segmen APP1 `Exif`; batas ukuran sama dengan unggah foto yang ada; nama objek = sha256 isi |
+| `/api/laporan-berkala/foto/hapus` | POST | admin | `{periode, kode, id}`: menghapus foto draf; salinan beku tidak tersentuh (`src/laporan_berkala.js:253,274`). Layar memanggilnya hanya sesudah simpan draf berhasil |
 | `/api/laporan-berkala/cetak` | POST | semua yang masuk | `{periode, kode, versi}`: hanya mencatat jejak `cetak` |
 
 ## 5. Layar

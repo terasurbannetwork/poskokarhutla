@@ -473,7 +473,8 @@ const PRAK = {belum_tersedia: "prakiraan belum tersedia", basi: "prakiraan yang 
 const ha = v => typeof v === "number" ? H.luas(v) + " ha" : "tidak diketahui";
 export const namaRingkas = (periode, kode) => { const r = H.rentang(periode, kode); return !r ? "" : periode === "harian" ? tgl(kode) : `${kode} (${tgl(r[0])} sampai ${tgl(r[1])})`; };
 
-function blokRingkas(A, I) {
+function blokRingkas(A, I, ctx) {
+  const dokR = bab => { if ((I.foto || []).some(f => f?.bab === bab && /^[0-9a-f]{64}$/.test(f.id || ""))) { t(sub("Dokumentasi")); t(dokumentasi(I, ctx, bab)); } };
   const harian = A.periode === "harian", No = Penomor(), b1 = A.bab1, b2 = A.bab2, b3 = A.bab3, b4 = A.bab4, b5 = A.bab5, L = A.label_jenis || {};
   const nama = namaRingkas(A.periode, A.kode), ini = harian ? "angka hari itu" : "angka minggu itu", seb = harian ? "hari sebelumnya" : "minggu sebelumnya", prov = namaProv(A);
   const s = A.sumber || {}, tarik = k => s[k]?.tarik ? `, tarik ${tgl(s[k].tarik)}` : "";
@@ -540,7 +541,7 @@ function blokRingkas(A, I) {
   if (pk.length) t(tabel(No.tabel(), `Hotspot, belum padam, dan laporan karhutla DIBI per provinsi, ${nama}`, ["Provinsi", "Hotspot", "Belum padam (ha)", "Laporan karhutla DIBI"],
     pk.map(p => [p.nama, p.hot, {v: H.luas(p.belum), n: true}, p.dibi_karhutla]), {sumber: `${SKAR}; ${SDIBI}. Dua sumber berdampingan, tidak dijumlah; luas adalah perkiraan sistem`}));
   else if (b2.status === "belum_ada") t(`<p>${kosong("data hotspot periode ini belum ada")}</p>`);
-  if (!harian) { t(sub("Action plan")); t(actionPlan(I, "bab2")); t(catatanStaf(I, "bab2")); }
+  if (!harian) { t(sub("Action plan")); t(actionPlan(I, "bab2")); t(catatanStaf(I, "bab2")); dokR("bab2"); }
 
   /* banjir dan longsor */
   if (harian) t(sub("Banjir dan tanah longsor")); else t = B(3, "Banjir dan tanah longsor", "banjir");
@@ -555,7 +556,7 @@ function blokRingkas(A, I) {
   if (!harian) {
     if ((b3.longsor?.kab || []).length) t(tabel(No.tabel(), `Kabupaten/kota terdampak tanah longsor, ${nama}`, ["Provinsi", "Kab/kota", "Kejadian", "Meninggal dan hilang", "Rumah rusak"],
       b3.longsor.kab.slice(0, 14).map(k => [k.prov, k.nama, k.kejadian, tk(k.dampak?.meninggal_hilang), tk(k.dampak?.rumah_rusak)]), {sumber: SDIBI}));
-    t(sub("Action plan")); t(actionPlan(I, "bab3")); t(catatanStaf(I, "bab3"));
+    t(sub("Action plan")); t(actionPlan(I, "bab3")); t(catatanStaf(I, "bab3")); dokR("bab3");
   }
 
   /* cuaca ekstrem dan kekeringan */
@@ -567,7 +568,7 @@ function blokRingkas(A, I) {
     const r4 = (b4.tabel || []).map(r => kab4.get(r.jenis + "|" + r.kode)).filter(Boolean);
     if (r4.length) t(tabel(No.tabel(), `Kabupaten/kota dengan dampak cuaca ekstrem dan kekeringan terbesar, ${nama}`, ["Jenis", "Provinsi", "Kab/kota", "Kejadian", "Terdampak dan mengungsi", "Rumah rusak"],
       r4.map(k => [L[k.jenis] || k.jenis, k.prov, k.nama, k.kejadian, tk(k.dampak?.terdampak_mengungsi), tk(k.dampak?.rumah_rusak)]), {sumber: SDIBI}));
-    t(sub("Action plan")); t(actionPlan(I, "bab4")); t(catatanStaf(I, "bab4"));
+    t(sub("Action plan")); t(actionPlan(I, "bab4")); t(catatanStaf(I, "bab4")); dokR("bab4");
   }
 
   /* geologi */
@@ -581,7 +582,7 @@ function blokRingkas(A, I) {
     : `<p>Tidak ada perubahan level gunung api ${harian ? "pada hari itu" : "selama minggu itu"}.</p>`);
   if ((b5.gempa || []).length) t(tabel(No.tabel(), `Peristiwa gempa bumi, ${nama}`, ["Tanggal", "Magnitudo", "Provinsi", "Laporan kab/kota", "Luka", "Rumah rusak"],
     b5.gempa.map(g => [tgl(g.tanggal), {v: H.angka(g.mag, 1), n: true}, prov(g.prov_kode), g.laporan, tk(g.dampak?.luka), tk(g.dampak?.rumah_rusak)]), {sumber: `${NAMA_SUMBER.gempa}${tarik("gempa")}; ${SDIBI}`}));
-  if (!harian) { t(sub("Action plan")); t(actionPlan(I, "bab5")); t(catatanStaf(I, "bab5")); }
+  if (!harian) { t(sub("Action plan")); t(actionPlan(I, "bab5")); t(catatanStaf(I, "bab5")); dokR("bab5"); }
 
   /* prakiraan, dibaca apa adanya */
   const p = A.prakiraan || {};
@@ -719,7 +720,7 @@ function susunRingkas(ctx, A, I) {
     <dt>Disusun</dt><dd>Pusat Data, Informasi, dan Komunikasi Kebencanaan BNPB</dd>
     <dt>Periode</dt><dd>${esc(harian ? tgl(A.rentang?.[0]) : `${tgl(A.rentang?.[0])} sampai ${tgl(A.rentang?.[1])}`)}</dd>
     <dt>Versi</dt><dd>${ctx.versi > 0 ? `Versi ${n(ctx.versi)}, dibekukan` : "Draf, belum dibekukan"}</dd></dl></div>`);
-  const bagian = blokRingkas(A, I), judulB = ([no, judul]) => no ? `Bab ${no} ${judul}` : judul;
+  const bagian = blokRingkas(A, I, ctx), judulB = ([no, judul]) => no ? `Bab ${no} ${judul}` : judul;
   /* daftar isi diisi baris sementara sebanyak bagian dulu, supaya tingginya sudah terhitung saat isi dialirkan */
   if (!harian) { taruh(ctx, `<h2>Daftar isi</h2>`); taruh(ctx, `<ol class="lbk-di" id="lbDi">${[...bagian.map(b => judulB(b.bab)), "Tentang laporan ini"].map(j => `<li><span>${esc(j)}</span><b>0</b></li>`).join("")}</ol>`); }
   const toc = [];
@@ -1044,7 +1045,7 @@ async function mulai() {
     if (hf) {
       const xs = S.I.foto || [], i = +hf.dataset.fotoHapus, id = xs[i]?.id;
       S.I.foto = xs.filter((_, j) => j !== i);
-      if (id && !S.I.foto.some(f => f?.id === id)) kirim("/api/laporan-berkala/foto/hapus", {periode, kode, id}).catch(() => {});   // salinan versi beku tidak tersentuh
+      if (id) (S.hapusFoto = S.hapusFoto || new Set()).add(id);   // dihapus di server baru sesudah draf tersimpan (simpan()); salinan versi beku tidak tersentuh
       gambarDaftar("foto")?.querySelector("#lbkFotoKredit")?.focus(); ubah(); return;
     }
     const b = e.target.closest("button[data-tambah],button[data-hapus]"); if (!b) return;
@@ -1086,7 +1087,9 @@ async function mulai() {
     const b = $("#lbkSimpan"); b.disabled = true; st("Menyimpan draf…");
     try {
       const {r, j} = await kirim("/api/laporan-berkala", {periode, kode, isian: S.I, tarik: S.tarik, diubah: S.diubah});
-      if (r.ok) { S.diubah = j.diubah ?? S.diubah; S.kotor = false; tandaServer(); st("Draf tersimpan di server."); return true; }
+      if (r.ok) { S.diubah = j.diubah ?? S.diubah; S.kotor = false; tandaServer(); st("Draf tersimpan di server.");
+        for (const id of S.hapusFoto || []) if (!(S.I.foto || []).some(f => f?.id === id)) kirim("/api/laporan-berkala/foto/hapus", {periode, kode, id}).catch(() => {});
+        S.hapusFoto = null; return true; }
       st(belumAda(r) ? "Penyimpanan draf di server belum tersedia. Isian hanya ada di halaman ini dan hilang bila halaman ditutup."
         : r.status === 403 ? "Simpan draf dan Bekukan hanya untuk admin."
         : r.status === 409 ? "Draf ini baru diubah orang lain. Isian di halaman ini belum tersimpan; salin dulu isian yang penting, lalu muat ulang halaman."

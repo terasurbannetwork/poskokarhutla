@@ -39,6 +39,7 @@ else {
       if (q.method === "POST" && u.pathname === "/api/laporan-berkala/foto") {   // LB-08: simpan byte unggahan apa adanya untuk diperiksa
         const b = []; q.on("data", d => b.push(d)); q.on("end", () => { const x = Buffer.concat(b); foto.push([u.searchParams, x]); json({ok: true, id: "a".repeat(63) + foto.length}, 201); }); return;
       }
+      if (q.method === "POST" && u.pathname === "/api/laporan-berkala" && mode.simpanOk) { let b = ""; q.on("data", d => { b += d; }); q.on("end", () => { kiriman.push([u.pathname, b]); json({ok: true, diubah: "2026-11-26T00:00:00Z"}); }); return; }
       if (q.method === "POST") { let b = ""; q.on("data", d => { b += d; }); q.on("end", () => { kiriman.push([u.pathname, b]); json({galat: "tidak ada"}, 404); }); return; }
       if (u.pathname === "/laporan-bnpb") { s.setHeader("content-type", MIME[".html"]); return s.end(readFileSync(path.join(PUB, "laporan_bnpb.html"))); }
       if (u.pathname === "/api/laporan-berkala/angka") return mode.angka ? json(mode.angka) : json({galat: "belum ada"}, 404);
@@ -268,6 +269,14 @@ else {
     assert.match(await tab.eval(`${fig}.closest('figure').querySelector('.lbk-sumber').textContent`), /foto: Kompas/, "kredit di bawah foto");
     await tab.eval("document.querySelector('[data-foto-hapus=\\'0\\']').click(); true");
     assert.equal(await tab.eval("(window.__lbk.I.foto || []).length"), 0);
+    assert.ok(!kiriman.some(([j]) => j === "/api/laporan-berkala/foto/hapus"), "hapus di server menunggu simpan berhasil");
+    mode.simpanOk = true; kiriman = [];
+    await tab.eval("document.querySelector('#lbkSimpan').click(); true");
+    await tab.tungguFungsi("/tersimpan/i.test(document.querySelector('#lbkSt').textContent)", 5000);
+    await tab.tungguFungsi("true", 500).catch(() => {}); await new Promise(r => setTimeout(r, 300));
+    const urut = kiriman.map(([j]) => j);
+    assert.ok(urut.indexOf("/api/laporan-berkala") >= 0 && urut.indexOf("/api/laporan-berkala/foto/hapus") > urut.indexOf("/api/laporan-berkala"), "hapus sesudah simpan: " + urut);
     assert.ok(kiriman.some(([j, x]) => j === "/api/laporan-berkala/foto/hapus" && JSON.parse(x).id === f.id));
+    mode.simpanOk = false;
   });
 }

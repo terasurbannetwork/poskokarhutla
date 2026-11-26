@@ -113,6 +113,17 @@ else {
     assert.ok(lanjut.length >= 1 && lanjut.every(x => x > 0), "tabel panjang dipecah dengan kepala kolom diulang");
   });
 
+  test("LB-08 mingguan: Dokumentasi per bab dengan kredit di bawah foto, 4 foto tanpa luapan, halaman dalam batas", async () => {
+    const id = n => String(n).repeat(64), foto = [["bab2", "1", "Kompas"], ["bab3", "2", "BNPB"], ["bab4", "3", "BNPB"], ["bab5", "4", "Antara"]].map(([bab, d, kredit]) => ({bab, id: id(d), ket: "Keterangan " + bab, kredit}));
+    mode = {angka: fxR("mingguan"), baris: {versi: 0, isian: {foto}}}; await buka(1440, "/laporan-bnpb?jenis=berkala&periode=mingguan&kode=2026-W43");
+    assert.equal(await tab.eval("document.querySelectorAll('#lbkKertas .lbk-dok figure').length"), 4);
+    const teks = await tab.eval("document.querySelector('#lbkKertas').innerText");
+    for (const k of ["Kompas", "Antara"]) assert.match(teks, new RegExp("foto: " + k));
+    const jml = await tab.eval("document.querySelectorAll('.lbk-kertas').length");
+    assert.ok(jml >= 6 && jml <= 12, `mingguan berfoto: ${jml} halaman`);
+    assert.deepEqual(await luap(), [], "kertas meluap");
+  });
+
   test("versi beku: tanpa tanda air (L11), isian staf tampil sebagai teks", async () => {
     mode = {angka: ANGKA, baris: {versi: 1, isian: {pembuka: "<img src=x onerror=alert(1)>Kalimat pembuka staf.", kota: "Jakarta", tanggal: "2026-11-12", arahan: "Arahan staf."}}}; await buka();
     assert.equal(await tab.eval("document.querySelectorAll('.lbk-air').length"), 0);
