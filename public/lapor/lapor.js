@@ -567,12 +567,12 @@ function kartuIsian(j) {
   const isi = kartu("i-orang", judul); isi.closest(".lp-langkah").classList.add("lp-langkah-gabung");
   const kisi = el("div", "lp-gabung"), nilai = {}, pertama = [];
   for (const x of f.isian) {
-    const lb = el(x.tipe === "pilihan" ? "div" : "label", `lp-isi${x.tipe === "pilihan" ? " lebar" : ""}`), atas = el("span", "lp-gabung-label");
+    const lb = el(x.tipe === "pilihan" ? "div" : "label", "lp-isi"), atas = el("span", "lp-gabung-label");
     atas.append(x.label, ...(x.wajib ? [] : [el("small", null, "boleh kosong")])); lb.append(atas);
     nilai[x.nama] = x.nilai == null ? "" : String(x.nilai);
     if (x.tipe === "pilihan") {
       const seg = el("div", "lp-segmen lp-gabung-opsi"); seg.setAttribute("role", "group"); seg.setAttribute("aria-label", x.label);
-      for (const o of x.opsi) { const b = el("button", null, o); b.type = "button"; b.setAttribute("aria-pressed", String(nilai[x.nama] === o));
+      for (const o of x.opsi) { const b = el("button"), ik = ikonOpsi(o); if (ik) b.append(ikon(ik)); b.append(o); b.type = "button";   // pilihan berikon (pemilik 26 Nov 2026: "Kasih icon") b.setAttribute("aria-pressed", String(nilai[x.nama] === o));
         b.addEventListener("click", () => { nilai[x.nama] = o; seg.querySelectorAll("button").forEach(y => y.setAttribute("aria-pressed", String(y === b))); }); seg.append(b); }
       lb.append(seg); pertama.push(seg.firstChild);
     } else {

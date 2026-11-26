@@ -3826,3 +3826,8 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 .lp-legal-kartu[hidden]{display:none!important}
 /* bilah tab Peringatan kini tampil sejak mode Kejadian dan melebar: Tanggal data selalu di bawah bilah atas (pemilik 26 Nov 2026) */
 .lp-alun-tanggal{top:64px}
+/* kartu isian gabungan: pilihan berikon sebaris dengan isian lain (pemilik 26 Nov 2026: "Kasih icon", "Agar dibuat sebaris") */
+.lp-gabung-opsi button{gap:6px;padding-inline:6px}
+.lp-gabung-opsi button svg{width:18px;height:18px;flex:none;color:var(--brand2)}
+.lp-gabung-opsi button[aria-pressed="true"] svg{color:currentColor}
+.lp-gabung-satuan input{min-height:46px}

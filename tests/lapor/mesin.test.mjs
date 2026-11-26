@@ -437,8 +437,10 @@ test("lapor orang hilang di web (pemilik 26 Nov 2026): nama, panggilan, kelamin,
   await kirim({form: {nama: "Siti Aminah", panggilan: "", kelamin: "Perempuan", umur: "9"}});
   assert.equal(sesi.status, "cari_nama", "panggilan wajib"); assert.equal(h.form.isian[0].nilai, "Siti Aminah", "isian yang sudah diketik kembali terisi");
   await kirim({form: {nama: "Siti Aminah", panggilan: "Ami", kelamin: "Perempuan", umur: "200"}}); assert.equal(sesi.status, "cari_nama", "umur di luar batas");
-  await kirim({form: {nama: "Siti Aminah", panggilan: "Ami", kelamin: "Perempuan", umur: ""}});
-  assert.equal(sesi.status, "cari_hubungan"); assert.deepEqual(sesi.cari.cr, {kelamin: "Perempuan", umur: null}, "umur kosong = null, bukan 0");
+  await kirim({form: {nama: "Siti Aminah", panggilan: "Ami", kelamin: "Perempuan", umur: ""}}); assert.equal(sesi.status, "cari_nama", "umur wajib (pemilik 26 Nov 2026)");
+  assert.equal(h.form.isian.find(x => x.nama === "umur").wajib, true);
+  await kirim({form: {nama: "Siti Aminah", panggilan: "Ami", kelamin: "Perempuan", umur: "9"}});
+  assert.equal(sesi.status, "cari_hubungan"); assert.deepEqual(sesi.cari.cr, {kelamin: "Perempuan", umur: 9});
   await kirim("1"); assert.equal(sesi.status, "cari_tinggi", "kelamin dan umur tidak ditanya lagi"); assert.deepEqual(h.form.isian.map(x => x.nama), ["tinggi", "berat"]);
   await kirim({form: {tinggi: "20", berat: ""}}); assert.equal(sesi.status, "cari_tinggi", "tinggi di luar batas");
   await kirim({form: {tinggi: "120", berat: ""}}); assert.equal(sesi.status, "cari_pakaian");

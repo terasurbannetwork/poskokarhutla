@@ -533,9 +533,9 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     if (web && langkah === "nama") { const h = jawab(`${k}*Siapa orang yang Anda cari?*\nTulis nama sesuai KTP atau kartu keluarga bila tahu.`);
       sesi.form = h.form = {jenis: "isian", kirim: "Lanjut", isian: [
         {nama: "nama", label: "Nama lengkap", tipe: "teks", wajib: true, maks: 80, nilai: v("nama")},
-        {nama: "panggilan", label: "Nama panggilan", tipe: "teks", wajib: true, maks: 40, ket: "Nama yang biasa dipakai keluarga atau tetangga", nilai: v("panggilan")},
+        {nama: "panggilan", label: "Nama panggilan", tipe: "teks", wajib: true, maks: 40, nilai: v("panggilan")},
         {nama: "kelamin", label: "Jenis kelamin", tipe: "pilihan", opsi: ["Laki-laki", "Perempuan", "Tidak tahu"], wajib: true, nilai: v("kelamin")},
-        {nama: "umur", label: "Umur", tipe: "angka", satuan: "tahun", min: 0, maks: 120, ket: "Kosongkan bila tidak tahu", nilai: v("umur")}]};
+        {nama: "umur", label: "Umur", tipe: "angka", satuan: "tahun", wajib: true, min: 0, maks: 120, nilai: v("umur")}]};
       sesi.isiAwal = h.isiAwal = null; return h; }
     if (web && langkah === "tinggi") { const h = jawab(`${k}*Tinggi dan berat badan ${sesi.cari.nama}*\nPerkiraan saja. Kosongkan bila tidak tahu.`);
       sesi.form = h.form = {jenis: "isian", kirim: "Lanjut", isian: [
@@ -662,7 +662,8 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       if (nama.length < 2 || /\d/.test(nama) || KATA_CARI.test(nama) || /^lapor\b/i.test(nama)) return tanyaCari("nama", "Tulis nama lengkap orang yang dicari, tanpa angka.", isi);
       if (pg.length < 2 || /\d/.test(pg)) return tanyaCari("nama", "Nama panggilan wajib diisi, tanpa angka. Bila sama, tulis nama yang sama.", isi);
       if (!kel) return tanyaCari("nama", "Pilih jenis kelamin.", isi);
-      if (n !== null && !(n >= 0 && n <= 120)) return tanyaCari("nama", "Umur ditulis dengan angka 0 sampai 120, atau dikosongkan.", isi);
+      // umur wajib di kartu web (pemilik 26 Nov 2026: "Ga boleh kosong"); perkiraan boleh
+      if (n === null || !(n >= 0 && n <= 120)) return tanyaCari("nama", "Umur wajib diisi dengan angka 0 sampai 120. Perkiraan juga boleh.", isi);
       c.nama = nama; c.panggilan = pg.toLowerCase() !== nama.toLowerCase() ? pg : null; c.cr = {kelamin: kel === "Tidak tahu" ? null : kel, umur: n};
       return tanyaCari("hubungan");
     }
