@@ -3665,8 +3665,6 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 .lp-pw-ubin-kep{padding-bottom:12px;border-bottom:1px solid var(--line)}
 .lp-pw-ubin>.lp-pw-tbl-utama{margin-top:auto}
 .lp-pw-qr{background:var(--surface)}
-/* 26 Nov 2026 (pemilik: "tambahin tanya lanjut draf atau mulai baru"): dua pilihan draf sama lebar */
-.lp-draf-aksi{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))!important;align-items:stretch}
 /* 26 Nov 2026 (pemilik: "daripada dibuat vertikal gini mending dibuat horizontal kaya meti"): daftar isi privasi jadi bilah pil berikon mendatar
    yang menempel di atas isi, satu baris digulir mendatar; isi selebar halaman. Menggantikan tata letak tegak 25 Nov. */
 .lp-legal{grid-template-columns:minmax(0,1fr)!important}
@@ -3762,6 +3760,8 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 /* kartu Peringatan dini sejajar kartu prakiraan, tombol satu baris; deretan opsi lanjut lima tombol (pemilik 26 Nov 2026) */
 .lp-pw-info{margin-left:40px;min-width:0}
 .lp-pw-info .lp-pw-kartu{box-sizing:border-box;width:100%;min-width:0}
+/* 26 Nov 2026 (pemilik: "tambahin tanya lanjut draf atau mulai baru"): dua pilihan draf sama lebar */
+.lp-draf-aksi{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))!important;align-items:stretch}
 .lp-pw-form .lp-utama,.lp-pw-tbl-utama{white-space:nowrap}
 .lp-opsi button.darurat{background:var(--bad);border-color:var(--bad);color:var(--on-pekat)}
 .lp-opsi button.darurat small{color:var(--on-pekat)}
@@ -3778,3 +3778,32 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 /* sakelar mode pindah ke bilah atas peta (26 Nov 2026): saringan panel kini paling atas, tidak lagi diturunkan 58px (menimpa kepala tabel) */
 .lp-alun-panel .lp-alun-saring{top:0;padding-top:12px}
 @media (max-width:1299px){.lp-alun-tanggal{top:64px}}   /* layar sedang: Tanggal data turun di bawah bilah atas supaya tidak bertumpuk */
+
+/* 26 Nov 2026: Lacak laporan di dalam aplikasi (kepala dan rel kiri tetap), kembali berupa tombol */
+#lLacak .lk{width:100%;box-sizing:border-box}
+.lk button.lk-kembali{cursor:pointer;font-family:inherit}
+/* 26 Nov 2026: statistik Laporan saya satu kartu kaca gelap, maskot menempel di kirinya (pemilik: "masih jelek") */
+.lp-pita-kartu{display:grid;min-width:0}
+.lp-pita-kartu > .lp-pita-maskot{display:none!important}
+.lp-pita-kartu .lp-ringkas-laporan{padding:18px 8px!important;border-radius:20px!important;background:color-mix(in oklab,var(--head-bg) 58%,transparent)!important;border:1px solid color-mix(in oklab,var(--on-head) 18%,transparent)!important;
+  box-shadow:0 24px 48px -24px color-mix(in oklab,var(--head-bg) 90%,transparent)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.lp-pita-kartu .lp-stat{--k:var(--on-head-2);grid-template-columns:1fr;grid-template-areas:"i" "n" "t";justify-items:center;text-align:center;gap:6px;padding:4px 10px;border-left:1px solid color-mix(in oklab,var(--on-head) 20%,transparent)}
+.lp-pita-kartu .lp-stat:first-child{border-left:0;padding-left:10px}
+.lp-pita-kartu .lp-stat:nth-child(1){--k:var(--head-hl)}
+.lp-pita-kartu .lp-stat:nth-child(2){--k:var(--brand-accent)}
+.lp-pita-kartu .lp-stat:nth-child(3){--k:var(--ok)}
+.lp-pita-kartu .lp-stat.nol{--k:var(--on-head-2)}
+.lp-pita-kartu .lp-stat svg{width:34px;height:34px;padding:8px;box-sizing:border-box;border-radius:50%;background:color-mix(in oklab,var(--k) 30%,transparent);color:var(--k)}
+.lp-pita-kartu .lp-stat b{font:800 2.5rem/1 var(--display);color:var(--on-head)}
+.lp-pita-kartu .lp-stat.nol b{color:var(--on-head-2)}
+.lp-pita-kartu .lp-stat small{font:600 .8125rem/1.3 var(--font);color:var(--on-head-2)}
+@media (min-width:900px){
+  .lp-pita.lp-pita-dua:has(.lp-pita-kartu){grid-template-columns:minmax(0,1fr) minmax(400px,500px)!important;gap:24px!important}
+  .lp-pita:has(.lp-pita-kartu) .lp-ringkas-laporan{align-self:auto}
+}
+@media (min-width:1200px){
+  .lp-pita.lp-pita-dua:has(.lp-pita-kartu){grid-template-columns:minmax(0,1fr) minmax(580px,700px)!important}
+  .lp-pita-kartu{grid-template-columns:150px minmax(0,1fr);align-items:end;gap:14px}
+  .lp-pita-kartu > .lp-pita-maskot{display:block!important;width:150px;margin:0 0 -36px;align-self:end}
+  .lp-pita-kartu .lp-pita-ucap{width:230px;left:0;right:auto;transform:none}
+}

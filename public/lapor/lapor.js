@@ -8,6 +8,7 @@ import {maskot} from "/lapor/maskot.js?v=24"; // bervesi: berkas .js disajikan i
 import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
 import {barisPrakiraan} from "/lapor/dampak_peringatan.js?v=2";   // Alun-alun tampilan Peringatan (DP-11)
 import {gabung, saring, teksKartu} from "/lapor/alun_kabar.js?v=1";
+import {pasangLacak} from "/lapor/lacak_isi.js?v=1";   // Lacak laporan sebagai layar di dalam aplikasi (pemilik 26 Nov 2026)
 import {ikonKebutuhan, ikonSub, bertingkat, ikonOpsi} from "/lapor/ikon_opsi.js?v=2";   // peta ikon pilihan, diuji gerbang ikon   // Kabar Alun-alun (KA-05): gabung resmi, warga, berita
 /* Pelapor mengetik nomor WhatsApp tanpa kode (KEPUTUSAN-LAPOR-AI K65, D99-D102); di situs, nomor ketikan diikat ke perangkat lewat kuki HttpOnly
    dari Worker. Sesi /masuk yang sudah ada tetap dipakai bila ada. Kiriman POST wajib x-pb: 1. */
@@ -39,6 +40,16 @@ const kunciCache = () => `lapor-cache-${wa}`;
 const simpanCache = () => simpan.tulis(kunciCache(), cache);
 
 /* ============ navigasi ============ */
+let lacakIni = null;
+function bukaLacak(token) {   // layar Lacak di dalam aplikasi: rel kiri dan kepala tetap, data dari rute yang sama dengan halaman lacak (pemilik 26 Nov 2026)
+  ke("lacak"); lacakIni?.henti(); $("lacakIsi").replaceChildren();
+  lacakIni = pasangLacak($("lacakIsi"), {token, kembali: () => ke("laporan")}); $("lLacak").scrollTop = 0;
+}
+// tautan lacak (kartu Laporan saya, kartu terbaru, tiket terkirim) membuka layar dalam aplikasi; klik tengah atau dengan tombol ubah tetap membuka halaman sendiri
+document.addEventListener("click", e => {
+  const a = e.target.closest?.('a[href*="/lapor/lacak.html?t="]'); if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || a.target === "_blank") return;
+  const t = new URL(a.href, location.href).searchParams.get("t"); if (!t) return; e.preventDefault(); bukaLacak(t);
+});
 function ke(tab) {
   for (const s of document.querySelectorAll(".lp-layar")) s.hidden = s.dataset.tab !== tab;
   if (tab !== "privasi") kembaliKe = tab;
@@ -47,7 +58,8 @@ function ke(tab) {
   app.classList.toggle("di-lapor", tab === "chat");   // obrolan lapor: tombol Lapor kejadian di menu samping disembunyikan (pemilik 24 Nov 2026)
   app.classList.toggle("di-alun", tab === "alun");   // peta Alun-alun: menu samping ciut sendiri, melebar saat disorot (pemilik 26 Nov 2026)
   for (const b of document.querySelectorAll("#tab button")) b.toggleAttribute("aria-current", b.dataset.ke === tab) || b.removeAttribute("aria-current");
-  for (const b of document.querySelectorAll("#tab button")) { if (b.dataset.ke === tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); }
+  for (const b of document.querySelectorAll("#tab button")) { if (b.dataset.ke === (tab === "lacak" ? "laporan" : tab)) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); }
+  if (tab !== "lacak" && lacakIni) { lacakIni.henti(); lacakIni = null; $("lacakIsi").replaceChildren(); }   // token tidak tinggal di layar yang sudah ditinggalkan
   if (tab === "laporan") { $("titikBaru").hidden = true; tampilDaftarLaporan(); muatCari(); }
   if (tab === "alun") tampilAlun();
   if (tab === "tentang" && !$("heroTentang").querySelector(".lp-hero-tengah")) { // salin maskot dan kartu kontak beranda tanpa id ganda
@@ -1020,8 +1032,6 @@ function tampilIsian(isian, lengkap) {
   // kepala chat: bilah kemajuan kecil + persen, bukan kalimat polos (pemilik 19 Nov 2026: "bagusin")
   // kemajuan cukup satu tempat: kartu Isian laporan di kiri (pemilik 19 Nov 2026: "ini kan sama ya, digabung di yang kiri aja, dilengkapi")
   $("langkahTeks").textContent = "Asisten AI, dipandu sampai lengkap"; $("barIsian").style.width = `${lengkap}%`;
-  if (!isian.length) { $("ringkasIsian").textContent = "Terisi otomatis dari percakapan"; $("isian").replaceChildren(el("p", "lp-redup lp-kecil", "Isian muncul begitu Anda mulai melapor.")); return; }
-  const jawab = x => !["kosong", "belum"].includes(x.status);
   // label jalur laporan di kepala chat dan panel (pemilik 26 Nov 2026), dari nama isian yang dikirim server; kosong bila belum memilih jalur
   const jalur = !isian.length ? null : isian.some(x => x.nama.startsWith("cari_")) ? ["Laporan Orang Hilang", "hilang"] : isian.some(x => x.nama === "darurat_korban") ? ["Laporan Darurat", "darurat"] : ["Laporan Kejadian", "kejadian"];
   for (const id of ["jalurChat", "jalurIsian"]) { const e = $(id); e.hidden = !jalur; e.textContent = jalur?.[0] || ""; e.className = `lp-jalur ${jalur?.[1] || ""}`; }
@@ -1029,6 +1039,8 @@ function tampilIsian(isian, lengkap) {
   if (jalur && ![...log.querySelectorAll(".lp-jalur-tanda")].some(x => x.dataset.j === jalur[1])) { const t = el("li", "tengah lp-jalur-tanda"), p = el("b", `lp-jalur ${jalur[1]}`, jalur[0]); t.dataset.j = jalur[1]; t.append(p); log.querySelector(".lp-jalur-tanda") ? log.querySelector(".lp-jalur-tanda").replaceWith(t) : log.prepend(t); }   // penanda jalur di awal obrolan
   const belum = isian.filter(x => !jawab(x));
   // 24 Nov 2026 (pemilik: "bagusin"): hitungan dan perkiraan waktu jadi dua keping, isian berikutnya jadi pil, bukan satu kalimat padat
+  if (!isian.length) { $("ringkasIsian").textContent = "Terisi otomatis dari percakapan"; $("isian").replaceChildren(el("p", "lp-redup lp-kecil", "Isian muncul begitu Anda mulai melapor.")); return; }
+  const jawab = x => !["kosong", "belum"].includes(x.status);
   const pk = perkiraan(isian), rk = $("ringkasIsian"); rk.replaceChildren(el("b", null, `${isian.filter(jawab).length} dari ${isian.length}`), " terjawab");
   if (pk.teks && belum.length) { const w = el("span", "lp-panel-waktu"); w.append(ikon("k-jam"), pk.teks); rk.append(w); }
   $("sisaIsian").hidden = false;
@@ -2110,7 +2122,11 @@ async function gambarPetaAlun(daftar) {
 }
 /* /lapor/?alun: tujuan /alun-alun lama (dialihkan Worker, KEPUTUSAN-LAPOR-AI K94); langsung ke peta Alun-alun tanpa animasi pembuka */
 const BUKA_ALUN = new URLSearchParams(location.search).has("alun") || location.hash.startsWith("#peringatan");   // #peringatan/<tab>: tautan langsung ke mode Peringatan (K7)
-const layarAwal = () => ke(BUKA_ALUN ? "alun" : "beranda");
+/* tautan lacak lama (/lapor/lacak.html?t=) dari peramban yang sudah punya sesi dialihkan ke /lapor/#lacak=<token>: token di fragmen (tidak dikirim ke server, tidak masuk log),
+   dibaca sekali lalu dihapus dari alamat */
+const BUKA_LACAK = (/^#lacak=([0-9a-f]{16,64})$/i.exec(location.hash) || [])[1] || null;
+if (BUKA_LACAK) history.replaceState(null, "", location.pathname + location.search);
+const layarAwal = () => { if (BUKA_LACAK) bukaLacak(BUKA_LACAK); else ke(BUKA_ALUN ? "alun" : "beranda"); };
 /* Kabar Alun-alun (KA-06, KA-07): satu kartu per kejadian, empat pita tetap urutannya: Resmi BNPB, Laporan warga, Berita, Media sosial.
    Angka tiap sumber tampil di pitanya sendiri dan tidak pernah dijumlah (D3). Daftar digambar bertahap lewat requestAnimationFrame supaya klik tidak membeku. */
 const SUMBER_ALUN = [["", "Semua", "i-daftar"], ["resmi", "Resmi", "i-status"], ["warga", "Warga", "i-orang"], ["berita", "Berita", "i-pesan"], ["medsos", "Medsos", "i-bantuan"]];
@@ -2627,7 +2643,7 @@ const pasangMaskot = (m, aksi) => { m.innerHTML = maskot("semangat", "", aksi); 
   const g = el("div", "lp-pita-ucap"); g.append(el("b", null, u[0]), el("span", null, u[1])); m.prepend(g); };
 for (const m of document.querySelectorAll("[data-maskot]")) pasangMaskot(m, m.dataset.maskot);
 if (!$("sigapMaskot").childElementCount) { $("sigapMaskot").innerHTML = maskot("sapa"); poseSigap = "sapa"; }   // Sigap di menu samping tampil sejak awal, bukan setelah chat jalan
-const pernah = BUKA_ALUN;   // tautan langsung ke Alun-alun: tanpa animasi pembuka
+const pernah = BUKA_ALUN || !!BUKA_LACAK;   // tautan langsung ke Alun-alun: tanpa animasi pembuka
 if (!pernah) {
   const pb = $("pembuka"); $("maskotPembuka").innerHTML = maskot("sapa", "Sigap, maskot Pantau Bencana"); pb.hidden = false;
   // tampil lebih lama (pemilik 19 Nov 2026: "agak lamain"); ketuk atau tekan tombol apa saja untuk melewati
