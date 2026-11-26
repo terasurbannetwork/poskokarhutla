@@ -3346,7 +3346,7 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-donat svg{display:block;overflow:visible}
 .lp-donat-isi{fill:var(--card)}
 .lp-donat-potong{fill:none;stroke:var(--k,var(--kat-lain))}
-.lp-donat-angka{fill:var(--head-bg);font:800 13px var(--font)}
+.lp-donat-angka{fill:var(--head-bg);font:800 .8125rem var(--font)}
 .lp-donat-nama{position:absolute;left:calc(100% + 4px);top:50%;transform:translateY(-50%);white-space:nowrap;font:800 .6875rem var(--font);color:var(--head-bg);text-shadow:0 0 2px var(--card),0 0 2px var(--card),0 0 3px var(--card);pointer-events:none}
 .lp-donat:focus-visible{outline:2px solid var(--brand2);outline-offset:3px;border-radius:50%}
 .lp-donat:hover .lp-donat-isi{fill:color-mix(in oklab,var(--brand2) 10%,var(--card))}
