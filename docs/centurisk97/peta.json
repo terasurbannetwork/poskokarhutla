@@ -1448,9 +1448,15 @@
       "isi": "panduan/07-prediksi.md: Prediksi kekeringan dan bulan rawan; Model percobaan"
      },
      {
+      "id": "status-dampak",
+      "judul": "Status prakiraan dan dampak peringatan",
+      "berkas": "panduan/prediksi/09-status-dampak.md",
+      "isi": "DP-21: Normal sampai Awas dan abu; pil hipotesis; di mana tampil; penduduk di area peringatan BMKG"
+     },
+     {
       "id": "batasan",
       "judul": "Batasan dan tanya jawab",
-      "berkas": "panduan/prediksi/09-batasan.md",
+      "berkas": "panduan/prediksi/10-batasan.md",
       "isi": "panduan/07-prediksi.md: Batasan; Pertanyaan umum; Mengapa banyak kolom berlabel \"belum teruji\"?; Apa bedanya tab Besok dan tab Tangga?; Kolom saya kosong atau bertanda \"–\". Apakah itu berarti wilayah saya terbebas dari ancaman itu?; Mengapa angka di tombol bencana lebih kecil dari daftar di bawahnya?; Bisakah prakiraan yang sudah tampil diubah?; Apa arti \"perkiraan, belum diuji balik\" pada angka pengungsi?; Apakah laporan warga ikut menilai prakiraan?; Peluang 60% itu artinya apa?"
      }
     ],
@@ -1522,9 +1528,15 @@
       "isi": "07-prediksi.md: Pertanyaan pemilik yang masih terbuka"
      },
      {
+      "id": "status-dampak",
+      "judul": "Metode status prakiraan dan dampak",
+      "berkas": "pengembang/prediksi/12-status-dampak.md",
+      "isi": "DP-21: tabel status, sumber, batas ketelitian, status uji balik"
+     },
+     {
       "id": "batasan",
       "judul": "Batasan dan perbedaan dokumen",
-      "berkas": "pengembang/prediksi/12-batasan.md",
+      "berkas": "pengembang/prediksi/13-batasan.md",
       "isi": "07-prediksi.md: Batasan metode; Selisih antara dokumen dan kode (kode menang); Hal yang sengaja dibatasi"
      }
     ]
