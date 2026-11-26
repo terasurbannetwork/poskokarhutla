@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {arahPandang, pilihAksi, pilihReaksi, MIMIK, DASAR, gaya, maskot} from "../../public/lapor/maskot.js";
+import {arahPandang, pilihAksi, pilihReaksi, MIMIK, DASAR, gaya, gayaFoto, maskot, maskotSvg, fotoUntuk, POSE_FOTO, AKSI_FOTO, GILIR} from "../../public/lapor/maskot.js";
+import {existsSync, statSync} from "node:fs";
 
 test("arahPandang tidak melebihi maks dan nol di pusat", () => {
   assert.deepEqual(arahPandang(0, 0), {x: 0, y: 0});
@@ -26,8 +27,17 @@ test("CSS tanpa literal hex; tiap mimik punya aturan; SVG kompak dan punya rig",
   assert.ok(!/#[0-9a-f]{3,6}\b/i.test(c), "CSS baru memuat hex");
   for (const k of Object.keys(MIMIK)) assert.ok(c.includes(`data-mimik="${k}"`), `mimik ${k} tanpa aturan`);
   for (const p of ["sapa", "semangat", "senang", "sedih"]) {
-    const s = maskot(p);
+    const s = maskotSvg(p);
     assert.ok(s.length < 12000, `${p}: ${s.length} byte`);
     for (const g of ["mk-kp", "mk-ir", "mk-l1", "mk-lk", "mk-rk", "mk-fitur", "mk-hm"]) assert.ok(s.includes(g), `${p} tanpa ${g}`);
   }
+});
+test("maskot render 3D: tiap pose dan aksi menunjuk berkas yang ada, kecil, tanpa hex; sedih dan darurat tidak bergilir", () => {
+  const semua = new Set([...Object.values(POSE_FOTO), ...Object.values(AKSI_FOTO), ...GILIR]);
+  for (const k of semua) { const f = new URL(`../../public/lapor/sigap/${k}.webp`, import.meta.url); assert.ok(existsSync(f), `berkas ${k}.webp hilang`); assert.ok(statSync(f).size < 120e3, `${k}.webp terlalu besar`); }
+  assert.ok(!GILIR.includes("ht"), "wajah tegang tidak ikut bergilir");
+  assert.equal(fotoUntuk("sapa", "darurat"), "ht"); assert.equal(fotoUntuk("sedih"), "pikir"); assert.equal(fotoUntuk("tak-dikenal"), "lambai");
+  const s = maskot("sapa", "Sigap"); assert.match(s, /^<svg class="mk sg mk-foto"/); assert.match(s, /data-gilir="1"/); assert.match(s, /role="img" aria-label="Sigap"/);
+  assert.doesNotMatch(maskot("sedih"), /data-gilir/); assert.doesNotMatch(maskot("semangat", "", "darurat"), /data-gilir/);
+  assert.ok(!/#[0-9a-f]{3,6}\b/i.test(gayaFoto()), "CSS foto memuat hex");
 });

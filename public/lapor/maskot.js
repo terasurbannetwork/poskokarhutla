@@ -250,7 +250,7 @@ const LENGAN = {
       <g class="mk-ucap2"><rect x="186" y="96" width="34" height="22" rx="9" class="sg-gelembung dua"/><path d="M193 105h20" class="sg-hp-teks" stroke-width="2.4" stroke-linecap="round"/></g></g>`,
 };
 LENGAN.laporan = LENGAN.status;
-export function maskot(pose = "sapa", judul = "", aksi = "") {
+export function maskotSvg(pose = "sapa", judul = "", aksi = "") {   // gambar vektor lama; cadangan dan uji rig
   const i = `sg${++n}`, u = x => `url(#${i}${x})`, ao = (x, y, rx, ry, o = .4) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${u("bayang")}" opacity="${o}"/>`;
   const rim = (d, o = .4, w = 2.5) => `<path d="${d}" style="stroke:var(--on-head)" opacity="${o}" stroke-width="${w}" stroke-linecap="round" fill="none"/>`;
   const lengan = LENGAN[aksi]?.(u("kulit")) || "", ik = PAPAN[aksi];
@@ -347,4 +347,50 @@ export function maskot(pose = "sapa", judul = "", aksi = "") {
     </g>
   </g></g>
 </svg>`;
+}
+
+/* ===== Sigap render 3D (pemilik 26 Nov 2026: "harusnya 3D", enam render dari pemilik, lambang BNPB ditempel di helm).
+   Gambar satu foto utuh per pose, jadi geraknya dari luar badan: napas, melayang (mk-tubuh di lapor.css), miring, lompat saat diketuk,
+   dan ganti pose bergilir dengan pudar halus bila tidak sedang menjelaskan aksi tertentu. Bingkai tetap svg.mk.sg 240x280 supaya ukuran di semua layar sama. */
+const FOTO = "/lapor/sigap/";
+export const POSE_FOTO = {sapa: "lambai", semangat: "lambai", senang: "lambai", sedih: "pikir", berpikir: "pikir"};
+export const AKSI_FOTO = {lapor: "hp", pasang: "hp", status: "hp", laporan: "hp", edukasi: "baca", penting: "ht", darurat: "ht", peringatan: "ht", hilang: "pikir", info: "tunjuk", bahasa: "tunjuk"};
+export const GILIR = ["lambai", "tunjuk", "hp", "baca", "pikir"];   // tanpa "ht": wajah tegang hanya untuk darurat
+export function fotoUntuk(pose = "sapa", aksi = "") { return AKSI_FOTO[aksi] || POSE_FOTO[pose] || "lambai"; }
+export function maskot(pose = "sapa", judul = "", aksi = "") {
+  const f = fotoUntuk(pose, aksi), gilir = !AKSI_FOTO[aksi] && pose !== "sedih" && pose !== "berpikir";
+  const img = (k, o) => `<image href="${FOTO}${k}.webp" x="-22" y="-6" width="284" height="284" class="mk-ft"${o ? "" : ' opacity="0"'} preserveAspectRatio="xMidYMax meet"/>`;
+  return `<svg class="mk sg mk-foto" data-pose="${pose}" data-foto="${f}"${gilir ? ' data-gilir="1"' : ""} viewBox="0 0 240 280" ${judul ? `role="img" aria-label="${judul}"` : 'aria-hidden="true"'}>
+  <ellipse cx="120" cy="272" rx="62" ry="7" class="mk-bayang mk-ft-bayang"/>
+  <g class="mk-tubuh"><g class="mk-gb"><g class="mk-ftn">${img(f, true)}${gilir ? img(f, false) : ""}</g></g></g></svg>`;
+}
+export function gayaFoto() {
+  return `.mk-foto .mk-ft-bayang{fill:var(--head-bg);opacity:.28}
+.mk-foto .mk-ft{transition:opacity .45s ease}
+.mk-foto .mk-ftn{transform-box:view-box;transform-origin:120px 272px}
+@media (prefers-reduced-motion:no-preference){
+.mk-foto .mk-ftn{animation:mk-ft-napas 3.2s ease-in-out infinite}
+.mk-foto.mk-a-miring .mk-gb{transform:rotate(4deg);transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
+.mk-foto.mk-a-angguk .mk-gb{animation:mk-ft-angguk .7s ease-in-out}}
+@keyframes mk-ft-napas{50%{transform:scale(1.012,.988)}}
+@keyframes mk-ft-angguk{30%{transform:translateY(4px) scale(1.03,.97)}60%{transform:translateY(-3px)}}`;
+}
+/* ganti pose bergilir: dua <image> bertumpuk, yang baru dipudarkan masuk */
+function gantiFoto(svg, k) {
+  const [a, b] = svg.querySelectorAll(".mk-ft"); if (!b || svg.dataset.foto === k) return;
+  const kini = a.getAttribute("opacity") === "0" ? b : a, baru = kini === a ? b : a;
+  baru.setAttribute("href", FOTO + k + ".webp"); baru.setAttribute("opacity", "1"); kini.setAttribute("opacity", "0"); svg.dataset.foto = k;
+}
+if (D) {
+  if (!D.getElementById("mk-gaya-foto")) { const s = D.createElement("style"); s.id = "mk-gaya-foto"; s.textContent = gayaFoto(); D.head.appendChild(s); }
+  for (const k of GILIR) { const l = D.createElement("link"); l.rel = "prefetch"; l.as = "image"; l.href = FOTO + k + ".webp"; D.head.appendChild(l); }
+  setInterval(() => {   // satu pewaktu untuk semua maskot foto; berhenti saat tab tersembunyi atau gerak dikurangi
+    if (D.hidden || kurang()) return;
+    for (const svg of D.querySelectorAll("svg.mk-foto")) {
+      const r = svg.getBoundingClientRect(); if (!r.width || r.bottom < 0 || r.top > innerHeight || Math.random() < .45) continue;
+      const x = Math.random();
+      if (svg.dataset.gilir && x < .5) { const p = GILIR.filter(k => k !== svg.dataset.foto); gantiFoto(svg, p[Math.floor(Math.random() * p.length)]); }
+      else { const c = x < .75 ? "mk-a-miring" : "mk-a-angguk"; svg.classList.add(c); setTimeout(() => svg.classList.remove(c), 1400); }
+    }
+  }, 2600);
 }
