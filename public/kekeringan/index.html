@@ -107,6 +107,7 @@
         <details open><summary>Sumber air dan lahan</summary>
           <label><input type="checkbox" data-l="embung"> Embung dan waduk (OSM)</label>
           <label><input type="checkbox" data-l="gambut"> Konsesi gambut di sel Siaga atau Awas (teratas)</label>
+          <label title="hipotesis"><input type="checkbox" data-l="dp_kek"> Status prakiraan kekeringan (hipotesis)</label>
         </details>
         <details open hidden><summary>Kejadian</summary>
           <label hidden><input type="checkbox" data-l="kejadian"> Kejadian kekeringan</label>
@@ -149,6 +150,7 @@
 <script src="../inti/peringatan-berita.js"></script>
 <script>PeringatanBerita.pasang("#pbBerita","kekeringan")</script>
 <script src="app.js"></script>
+<script src="status_dampak.js?v=1" defer></script>
 <script src="../inti/kalender.js"></script>
 <script src="../inti/pilih_tanggal.js"></script>
 <script src="peta.js"></script>
