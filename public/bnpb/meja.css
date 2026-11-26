@@ -1,6 +1,6 @@
 /* Meja Kerja petugas (/meja). Layout dari bnpb.css; pil, tabel, tombol dasar dari /admin/meja.css (satu salinan); di sini hanya yang khas halaman petugas. */
 .mj-kop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 14px}
-.mj-kop .mj-ruang{margin-left:auto}
+.mj-kop h1{font-size:1.25rem;font-weight:800}.mj-kop .mj-ruang{margin-left:auto}
 .mj-meja{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(max-content,1fr);gap:4px;background:var(--card);border-radius:16px;padding:5px;box-shadow:var(--bayang);overflow-x:auto;scrollbar-width:none;margin-bottom:14px}
 .mj-meja button{height:42px;border:0;background:none;border-radius:12px;padding:0 14px;cursor:pointer;font-weight:700;font-size:0.8125rem;color:var(--ink2);display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
 .mj-meja button[aria-pressed="true"]{background:var(--gradien);color:var(--on-brand);box-shadow:0 0 0 1px color-mix(in srgb,var(--emas) 50%,transparent)}
@@ -22,7 +22,7 @@
 .mj-pesan.galat{background:color-mix(in srgb,var(--c1) 12%,transparent);color:var(--c1)}
 .mj-rincian{font-size:0.7812rem;color:var(--ink2);margin:4px 0 0}
 .mj-jejak{margin:8px 0 0;padding-left:16px;font-size:0.75rem;color:var(--ink2)}
-@media (max-width:640px){.mj-tabel{font-size:0.7812rem;min-width:0}.mj-tabel th:nth-child(4),.mj-tabel td:nth-child(4){display:none}}
+@media (max-width:640px){.mj-kop h1{font-size:1.125rem}.mj-tabel{font-size:0.7812rem;min-width:0}.mj-tabel th:nth-child(4),.mj-tabel td:nth-child(4){display:none}}
 .mj-form h2 svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* meja dampak: formulir per bagian, Nihil, meter, impor */

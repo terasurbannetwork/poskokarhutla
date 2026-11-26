@@ -3383,10 +3383,10 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-jn-tanda{width:10px;height:10px;flex:none;border-radius:50%;background:var(--k,var(--kat-lain))}
 .lp-alun-legenda ul.lp-alun-legenda-tingkat{display:flex;flex-wrap:wrap;gap:6px 14px}
 .lp-alun-legenda-tingkat li i{width:16px;height:12px;border-radius:3px;box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--f2) 30%,transparent)}
-.lp-alun-legenda-tingkat li:nth-child(1) i{background:color-mix(in oklab,var(--f2) 15%,var(--card))}
-.lp-alun-legenda-tingkat li:nth-child(2) i{background:color-mix(in oklab,var(--f2) 27%,var(--card))}
-.lp-alun-legenda-tingkat li:nth-child(3) i{background:color-mix(in oklab,var(--f2) 40%,var(--card))}
-.lp-alun-legenda-tingkat li:nth-child(4) i{background:color-mix(in oklab,var(--f2) 55%,var(--card))}
+.lp-alun-legenda-tingkat li:nth-child(1) i{background:color-mix(in oklab,var(--f2) 18%,var(--card))}
+.lp-alun-legenda-tingkat li:nth-child(2) i{background:color-mix(in oklab,var(--f2) 32%,var(--card))}
+.lp-alun-legenda-tingkat li:nth-child(3) i{background:color-mix(in oklab,var(--f2) 50%,var(--card))}
+.lp-alun-legenda-tingkat li:nth-child(4) i{background:color-mix(in oklab,var(--f2) 70%,var(--card))}
 .lp-alun-legenda-isi small{font-size:.6875rem}
 
 /* status gunung api di Alun-alun (pemilik 26 Nov 2026): kotak Awas, Siaga, Waspada, Normal dari token --dp-* dan daftar gunung Siaga/Awas */
@@ -3517,5 +3517,3 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
   #lAlun .lp-alun-peta:has(.lp-alun-tanggal:not([hidden])) .lp-alun-menu{top:121px;left:auto;right:16px;width:min(320px,calc(100% - 480px))}
   #lAlun .lp-alun-peta:has(.lp-alun-tanggal:not([hidden])) .maplibregl-ctrl-top-right{top:178px}
 }
-.lp-alun-kj :is(th,td){padding-left:6px;padding-right:6px}
-.lp-kjd-isi > .lp-kabar > .ex-hd{display:none}

@@ -321,7 +321,8 @@ async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama
     ...(lanjut ? [] : stmtMilikSesi(env, perangkat, s.id)), ...g]);
   if (!r[0].meta.changes) return {bentrok: true};
   if (h.kirimTemu && tambahan.cari) await H.ctTambah(env, P, {cari_id: tambahan.cari.id, ...h.kirimTemu}).catch(e => tabelBelum(e) || console.error("lapor_cari_temu", e?.message));   // ponytail: di luar batch sampai 0177 terpasang di produksi
-  if (h.kirimTemu?.foto_id && tambahan.cari) await H.cfTambah(env, P, tambahan.cari.id, h.kirimTemu.foto_id).catch(e => tabelBelum(e) || console.error("lapor_cari_foto", e?.message));   // sampai 0185 terpasang: laporan tetap masuk tanpa tautan foto
+  // foto pertama di lapor_cari_foto (0185), sisanya sampai 10 di lapor_cari_foto_lain (0186)
+  if (tambahan.cari) for (const [n, fid] of (h.kirimTemu?.foto_ids || []).slice(0, 10).entries()) await (n ? H.cfTambahLain : H.cfTambah)(env, P, tambahan.cari.id, fid).catch(e => tabelBelum(e) || console.error("lapor_cari_foto", e?.message));   // sampai 0185 terpasang: laporan tetap masuk tanpa tautan foto
   return {tambahan, token};
 }
 const teksWaDari = (h, tambahan, token, url) => h.kirim ? `${h.inti}\n\nLacak laporan: ${url.origin}/lapor/lacak.html?t=${token}` : h.balasan;
@@ -719,6 +720,8 @@ export async function bersihkanLapor(env, kini = Date.now()) {
   await H.crAnonimkan(env, H.pelakuLpCron, kini - H.CARI_SIMPAN_HARI * HARI).catch(e => tabelBelum(e) || console.error("lapor_cari", e?.message));
   try { const f = await H.cfAnonimFoto(env, H.pelakuLpCron); if (f.length && env.MEDIA) await env.MEDIA.delete(f.map(id => `lapor/foto/${id}.jpg`)); await H.cfAnonim(env, H.pelakuLpCron); }   // foto orang dicari: berkas dulu, baru barisnya
   catch (e) { if (!tabelBelum(e)) console.error("lapor_cari_foto", e?.message); }
+  try { const f = await H.cfAnonimFotoLain(env, H.pelakuLpCron); if (f.length && env.MEDIA) await env.MEDIA.delete(f.map(id => `lapor/foto/${id}.jpg`)); await H.cfAnonimLain(env, H.pelakuLpCron); }   // foto ke-2 sampai ke-10 (0186), aturan sama
+  catch (e) { if (!tabelBelum(e)) console.error("lapor_cari_foto_lain", e?.message); }
   await H.ctAnonim(env, H.pelakuLpCron).catch(e => tabelBelum(e) || console.error("lapor_cari_temu", e?.message));   // orang dicari ditutup >2 tahun dianonimkan (Q67 bawaan sementara)
   await H.ljKabarBersih(env, H.pelakuLpCron, kini - 864e5, kini - 30 * 864e5, kini - 7 * 864e5).catch(e => tabelBelum(e) || console.error("lj_kabar", e?.message));   // LJ-11: pembuka dan tim belum terkirim >1 hari (token mentah), lain belum terkirim >7 hari, terkirim >30 hari
   await bersihSesiLanjut(env, kini).catch(e => console.error("lj_sesi", e?.message));   // draf WA tahap 2 lebih dari 24 jam (LJ-05)

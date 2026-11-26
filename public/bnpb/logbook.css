@@ -110,7 +110,8 @@
 /* ===== rombak 11 Nov 2026 (pemilik "atur ulang semua, redesign relayout") =====
    1. tab analisis tidak menampilkan form Catat di bawahnya (grid .lb-kolom menimpa [hidden]) */
 .lb-kolom[hidden],.lb-turunan[hidden]{display:none!important}
-/* kepala navy tetap tampil di model panel kiri (pemilik 26 Nov 2026 "satukan sistem tampilan semua") */
+/* 2. kepala halaman navy disembunyikan: bagian aktif terbaca di panel kiri dan kepala kartu */
+body.mp-model-a .lb-wrap>.bn-judul{display:none}
 /* 3. pilihan (jenis kejadian, tahun, saring) = pil ringkas sebaris yang membungkus, bukan kotak besar dua baris */
 .lb-wrap .lb-seg:not(.lb-tab){display:flex;flex-wrap:wrap;gap:6px}
 .lb-wrap .lb-seg:not(.lb-tab) label{min-height:34px;padding:0 12px;border-radius:999px;justify-content:center;white-space:nowrap;font-size:.8125rem;font-weight:600;color:var(--ink);background:var(--card)}

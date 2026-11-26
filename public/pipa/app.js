@@ -156,14 +156,14 @@ function mulai(akar) {
    sebagai satu-satunya menu situs. Idempoten: bila cangkang worker sudah menyediakan salah satunya, bagian itu dilewati. /pipa hanya untuk staf, jadi tanpa data-opsional. */
 function kerangkaStaf(akar) {
   const dok = document, tambah = (tag, atribut) => { const e = dok.createElement(tag); Object.assign(e, atribut); return e; };
-  if (!dok.querySelector('link[href^="/bnpb/menu_pusdalops.css"]')) dok.head.append(tambah("link", {rel: "stylesheet", href: "/bnpb/menu_pusdalops.css?v=17"}));
+  if (!dok.querySelector('link[href^="/bnpb/menu_pusdalops.css"]')) dok.head.append(tambah("link", {rel: "stylesheet", href: "/bnpb/menu_pusdalops.css?v=16"}));
   if (!dok.querySelector(".ad-top")) {
     const h = tambah("header", {className: "ad-top"});
     h.innerHTML = '<a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep">SIPPA</span>';
     dok.body.prepend(h);
   }
   if (!akar.closest("main")) { const m = tambah("main", {}); akar.before(m); m.append(akar); }
-  if (!dok.querySelector('script[src^="/bnpb/menu_pusdalops.js"]')) dok.body.append(tambah("script", {src: "/bnpb/menu_pusdalops.js?v=29"}));
+  if (!dok.querySelector('script[src^="/bnpb/menu_pusdalops.js"]')) dok.body.append(tambah("script", {src: "/bnpb/menu_pusdalops.js?v=28"}));
 }
 
 /* masuk: hanya di halaman cangkang (ada #app), bukan saat diimpor uji Node */

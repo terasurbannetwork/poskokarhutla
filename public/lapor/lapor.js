@@ -677,14 +677,18 @@ function kartuFoto(j) {
 
 /* foto orang dicari (pemilik 26 Nov 2026): satu foto wajah, boleh dari galeri atau foto lama; tanpa syarat kamera, waktu, atau lokasi, dan tanpa GPS dikirim */
 function kartuFotoCari(j) {
-  const isi = kartu("foto", "Foto orang yang dicari"), kisi = el("div", "lp-foto-kisi");
+  // sampai 10 foto (pemilik 26 Nov 2026), kisi pratinjau seperti kartuFoto; Lewati sebelum ada foto, Lanjut sesudahnya. Batas juga di mesin dan rute unggah
+  if (j.pilihan?.[0] === "Lewati") { cache.fotoCari = []; simpanCache(); }   // mesin belum menerima foto: pratinjau lama dari laporan lain dibuang
+  const MAKS = 10, ada = cache.fotoCari || [], isi = kartu("foto", "Foto orang yang dicari"), kisi = el("div", "lp-foto-kisi");
   const masukan = el("input"); masukan.type = "file"; masukan.accept = "image/jpeg,image/*"; masukan.hidden = true;
-  const z = el("button", "lp-foto-ajak"); z.type = "button";
-  z.append(ikon("i-kamera"), el("b", null, "Pilih foto"), el("small", null, "Dari galeri atau kamera. Pilih yang wajahnya terlihat jelas."));
-  z.addEventListener("click", () => masukan.click()); kisi.append(z);
+  for (const src of ada) { const fig = el("figure", "lp-foto tanpa-titik"), g = el("div", "lp-foto-gambar"), im = el("img"); im.src = src; im.alt = "Foto orang yang dicari"; g.append(im); fig.append(g); kisi.append(fig); }
+  if (ada.length < MAKS) { const z = el("button", `lp-foto-ajak${ada.length ? " kecil" : ""}`); z.type = "button";
+    z.append(ikon(ada.length ? "i-plus" : "i-kamera"), el("b", null, ada.length ? "Tambah foto" : "Pilih foto"), el("small", null, ada.length ? `Sisa ${MAKS - ada.length} foto` : "Dari galeri atau kamera. Pilih yang wajahnya terlihat jelas."));
+    z.addEventListener("click", () => masukan.click()); kisi.append(z); }
   masukan.addEventListener("change", () => { if (masukan.files[0]) unggahFoto(masukan.files[0], {cari: true}); });
-  const lanjut = el("div", "lp-opsi"); j.pilihan.forEach((o, i) => lanjut.append(tombolOpsi(o, j.ket?.[i], () => kirim({teks: String(i + 1), tampil: o}))));
-  isi.append(kisi, lanjut, masukan);
+  const hitung = el("p", "lp-foto-hitung"); hitung.append(ikon("i-kamera"), `${ada.length} dari ${MAKS} foto`);
+  const lanjut = el("div", "lp-opsi"); (j.pilihan || []).forEach((o, i) => { const b = tombolOpsi(o, j.ket?.[i], () => kirim({teks: String(i + 1), tampil: o}), ada.length ? "utama" : ""); lanjut.append(b); });
+  isi.append(hitung, kisi, lanjut, masukan);
 }
 
 /* layar terima kasih sesudah laporan terkirim (pemilik 19 Nov 2026: "harusnya ada animasi terima kasih, kaya waktu pertama kali buka"):
@@ -1014,6 +1018,7 @@ async function unggahFoto(file, {cari = false} = {}) {
     const j = await r.json(); sibuk = false;
     if (!r.ok) throw new Error(j.galat || "Foto belum terkirim");
     const fb = j.fotoBaru || {};
+    if (cari) { cache.fotoCari = [...(cache.fotoCari || []), data].slice(-10); simpanCache(); }   // pratinjau foto orang dicari, paling banyak 10
     if (!cari) cache.fotoSesi = [...(cache.fotoSesi || []), {src: data, lencana: fb.lencana, lencanaTeks: fb.lencanaTeks, lat: fb.lat, lon: fb.lon, waktuTeks: fb.waktuTeks, sumberWaktu: fb.sumberWaktu}]; simpanCache();
     selesaiBalas(j);
   } catch (e) { sibuk = false; $("mengetik").hidden = true; tambah("bot", `${e.message}.`, {galat: true, simpanKe: false}); if (cache.keadaan) terapkan(cache.keadaan, {dariCache: true}); }
@@ -1783,7 +1788,7 @@ const singkatProv = n => SINGKAT_PROV[n] || n.replace(/^Sumatera /, "Sum. ").rep
 let alunGrup = new Map(), alunTempat = new Map(), alunProvTerdampak = [];
 let alunKjId = new Map();   // id kejadian -> data lengkap kartu (gambarKabar), untuk jendela rincian dari pop-up peta
 /* arsiran provinsi satu warna bertingkat menurut total kejadian (pemilik 26 Nov 2026); tanpa kejadian = tanpa isi. Ambang bawah tiap tingkat, sama dengan legenda */
-const TINGKAT_PROV = [[1, .15, "1 sampai 2"], [3, .27, "3 sampai 5"], [6, .4, "6 sampai 10"], [11, .55, "lebih dari 10"]];   // arsiran oranye --f2 (pemilik 26 Nov 2026 "jangan pakai abu, pakai orange")
+const TINGKAT_PROV = [[1, .18, "1 sampai 2"], [3, .32, "3 sampai 5"], [6, .5, "6 sampai 10"], [11, .7, "lebih dari 10"]];   // arsiran oranye --f2 (pemilik 26 Nov 2026 "jangan pakai abu, pakai orange")
 const tingkatProv = n => TINGKAT_PROV.reduce((o, [a, v]) => n >= a ? v : o, 0);
 const isiProv = () => { const m = []; for (const [k, g] of alunGrup) if (/^\d{2}$/.test(k)) m.push(k, tingkatProv(g.n)); return m.length ? ["match", ["get", "kode"], ...m, 0] : 0; };
 /* ruang untuk panel daftar (kiri di layar lebar, bawah di HP) dan legenda bersaringan jenis di bawah */
@@ -2284,7 +2289,7 @@ async function tampilAlun() {
     alunData = j.baris || [];
     gambarAlun();
     if (dpDok === undefined) muatDp().then(() => { if (dpDok && alunKabar && alunMode === "kejadian") gambarAlun(); });   // baris prakiraan menyusul, tidak menahan daftar
-  } catch { w.replaceChildren(el("p", "lp-redup", "Situasi terkini belum bisa dimuat. Coba lagi.")); }
+  } catch { w.replaceChildren(el("p", "lp-redup", "Alun-alun belum bisa dimuat. Coba lagi.")); }
 }
 
 /* ============ bahasa (K58, D80): dipilih pelapor, tidak ditebak; disimpan di perangkat. Percakapan diterjemahkan server, data tetap Indonesia ============ */

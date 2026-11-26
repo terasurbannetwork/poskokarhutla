@@ -33,13 +33,7 @@
   body.mp-model-a .mp-a>main.db-a>aside.db-nav,body.mp-model-a .mp-a>main.sr-a>aside.sr-nav{position:static;width:auto;height:auto;max-height:none;overflow:visible}
   body.mp-model-a .mp-a>main.db-a>aside.db-nav :is(.db-nav-id,.db-nav-g,.db-tarik),body.mp-model-a .mp-a>main.sr-a>aside.sr-nav :is(.sr-nav-id,.sr-nav-g,.sr-nav-kk){display:none}
   body.mp-model-a .mp-a>main.db-a>aside.db-nav :is(.db-nav-isi,.db-nav-kaki),body.mp-model-a .mp-a>main.sr-a>aside.sr-nav :is(.sr-nav-isi,.sr-nav-kaki){flex:none;flex-direction:row;flex-wrap:wrap;min-height:0;overflow:visible}
-  body.mp-model-a .mp-a>main.db-a>aside.db-nav :is(.db-nav-b,.db-nav-pb),body.mp-model-a .mp-a>main.sr-a>aside.sr-nav :is(.sr-nav-b,.sr-nav-pb){width:auto;flex:1 1 auto;justify-content:center}
-  /* kepala navy halaman tetap paling atas, deretan seksi di bawahnya (pemilik 26 Nov 2026: tidak ada isi di atas kepala): kolom kanan dilebur ke grid main lalu diurutkan */
-  body.mp-model-a .mp-a>main.db-a>aside.db-nav>.db-nav-kaki,body.mp-model-a .mp-a>main.sr-a>aside.sr-nav>.sr-nav-kaki{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:2px 16px}
-  body.mp-model-a .mp-a>main.db-a>.db-kanan,body.mp-model-a .mp-a>main.sr-a>.sr-kanan{display:contents}
-  body.mp-model-a .mp-a>main.db-a>.db-kanan>*,body.mp-model-a .mp-a>main.sr-a>.sr-kanan>*{order:2;min-width:0}
-  body.mp-model-a .mp-a>main.db-a>aside.db-nav,body.mp-model-a .mp-a>main.sr-a>aside.sr-nav{order:1}
-  body.mp-model-a .mp-a>main.db-a>.db-kanan>.bn-judul,body.mp-model-a .mp-a>main.sr-a>.sr-kanan>.bn-judul{order:0}
+  body.mp-model-a .mp-a>main.db-a>aside.db-nav :is(.db-nav-b,.db-nav-pb),body.mp-model-a .mp-a>main.sr-a>aside.sr-nav :is(.sr-nav-b,.sr-nav-pb){width:auto;flex:0 0 auto}
 }
 
 /* Akun pemirsa bertab 'pusdalops' = baca saja. Worker menulis <html data-baca-saja> (src/worker.js bacaSaja); satu blok ini menyembunyikan kontrol tulis
@@ -89,7 +83,7 @@ aside.db-nav .db-nav-b.mp-induk{font-weight:800}
    Layar sempit (< 901px) tetap memakai bilah atas karena panel kiri tersembunyi di sana. */
 .mp-merek{display:none}
 @media (min-width:901px){
-  body.mp-model-a>header.ad-top,html.mp-pra body>header.ad-top,html.mp-pra .mp-sub{display:none}
+  body.mp-model-a>header.ad-top{display:none}
   body.mp-model-a .mp-a>.mp-side{top:12px;height:calc(100dvh - 24px)}
   .mp-merek{display:flex;align-items:center;gap:6px;flex:none;padding:4px 2px 12px;border-bottom:1px solid var(--line)}
   .mp-merek-a{display:flex;align-items:center;gap:10px;flex:1;min-width:0;color:var(--brand);text-decoration:none}

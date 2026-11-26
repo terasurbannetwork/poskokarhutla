@@ -26,21 +26,22 @@
 <link rel="stylesheet" href="/inti/insight.css">
 <link rel="stylesheet" href="/inti/kartu.css">
 <link rel="stylesheet" href="/paparan.css">
-<link rel="stylesheet" href="/laporan_bnpb.css?v=2">
+<link rel="stylesheet" href="/laporan_bnpb.css">
 <link rel="stylesheet" href="/kerangka_staf.css?v=1">
-<link rel="stylesheet" href="/bnpb/menu_pusdalops.css?v=17">
+<link rel="stylesheet" href="/bnpb/menu_pusdalops.css?v=16">
 </head>
 <body>
 <header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep">Laporan BNPB</span>
 </header>
-<script src="/bnpb/menu_pusdalops.js?v=29"></script>
+<script src="/bnpb/menu_pusdalops.js?v=28"></script>
 
 <main>
-  <div class="bn-judul"><h1>Laporan BNPB</h1></div>
   <section class="page on scroll" id="p-paparan" aria-label="Laporan BNPB">
     <div class="pp">
-      <section class="pp-kep" title="Isi angka, pratinjau berubah langsung, simpan, lalu unduh PPTX atau PDF.">
+      <section class="lb-bl" id="lbBelumLapor" aria-label="Titik panas tinggi, belum ada laporan BPBD" hidden></section>
+      <section class="pp-kep">
+        <div class="pp-jd"><h1>Laporan BNPB</h1><p>Isi angka, pratinjau berubah langsung, simpan, lalu unduh PPTX atau PDF.</p></div>
         <div class="lb-jenis" id="lbJenis" role="group" aria-label="Jenis laporan">
           <button type="button" data-j="harian" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v15H4zM4 10h16M9 3v4M15 3v4"/></svg>Laporan Kejadian Bencana Harian</button>
           <button type="button" data-j="presiden" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v11H3zM12 15v5M8 20h8"/></svg>Paparan Presiden (Karhutla)</button>
@@ -66,7 +67,6 @@
         </div>
         <div class="pp-st" id="lbSt" role="status" aria-live="polite">Memuat…</div>
       </section>
-      <section class="lb-bl" id="lbBelumLapor" aria-label="Titik panas tinggi, belum ada laporan BPBD" hidden></section>
       <div class="lb-badan">
         <aside class="pp-atur lb-isian" aria-label="Isian laporan">
           <div id="lbForm"></div>
@@ -118,6 +118,6 @@
 <script src="/laporan_impor.js"></script>
 <script src="/laporan_bnpb.js?v=4"></script>
 <script src="/laporan_belum_lapor.js"></script>
-<script type="module" src="/laporan_berkala.js?v=2"></script>
+<script type="module" src="/laporan_berkala.js"></script>
 </body>
 </html>

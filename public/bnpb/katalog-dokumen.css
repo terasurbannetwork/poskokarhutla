@@ -145,8 +145,7 @@ svg.kd-ik{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;st
 .kd-muat:hover{background:var(--surface)}
 .bn-pesan a{color:inherit;font-weight:700}
 /* tombol ikon polos, toggle tampilan */
-.kd-ringkas{margin:0 0 10px;font-size:.9375rem;font-weight:600}
-.kd-kanan{margin-left:auto;display:flex;align-items:center;gap:8px;flex:none}
+.kd-kanan{display:flex;align-items:center;gap:8px;flex:none}
 .kd-kanan .seg{background:rgb(255 255 255 / .14);border:0;box-shadow:none}
 .kd-kanan .seg button{color:#d6e4f5}
 :is(html,#_) .kd-kanan .seg button[aria-pressed="true"]{background:#fff;color:#0b2545}

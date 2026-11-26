@@ -540,7 +540,10 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     if (langkah === "pakaian") return jawab(`${k}*Pakaian terakhir ${sesi.cari.nama}*\nMisalnya kaus merah dan celana jeans.`, ["Lewati"], false, "teks", ["Tidak ingat pakaiannya"]);
     if (langkah === "tanda") return jawab(`${k}*Tanda lain yang mudah dikenali*\nMisalnya kacamata, tahi lalat di pipi, atau bekas luka.`, ["Lewati"], false, "teks", ["Tidak ada tanda lain"]);
     if (langkah === "ciri") return jawab(`${k}*Ciri-ciri ${sesi.cari.nama}*\nTulis umur, pakaian terakhir, tinggi badan, atau tanda lain yang mudah dikenali.`, ["Lewati"]);   // sesi lama yang sudah di langkah ini
-    if (langkah === "foto") return jawab(`${k}*Foto ${sesi.cari.nama}*\nKirim satu foto yang wajahnya terlihat jelas. Boleh dari galeri, foto lama pun tidak apa-apa. Foto hanya dilihat petugas.\nDi WhatsApp: kirim fotonya di obrolan ini.`, ["Lewati"], false, "foto_cari", ["Lanjut tanpa foto"]);   // pemilik 26 Nov 2026: "Foto orang dicari"
+    // sampai 10 foto (pemilik 26 Nov 2026: "Oke ini bisa sampai 10 foto ya"); Lewati sebelum ada foto, Lanjut sesudahnya; batas juga di rute unggah (MAKS_FOTO)
+    if (langkah === "foto") { const n = sesi.cari.fotoIds?.length || 0;
+      return jawab(`${k}*Foto ${sesi.cari.nama}*\nKirim sampai 10 foto yang wajahnya terlihat jelas. Boleh dari galeri, foto lama pun tidak apa-apa. Foto hanya dilihat petugas.${n ? `\nSudah ${n} dari 10 foto.` : ""}\nDi WhatsApp: kirim fotonya di obrolan ini.`,
+        [n ? "Lanjut" : "Lewati"], false, "foto_cari", [n ? `Lanjut dengan ${n} foto` : "Lanjut tanpa foto"]); }
     if (langkah === "waktu") {   // web: kartu tanggal dan jam seperti waktu kejadian (pemilik 26 Nov 2026), jam boleh kosong; WA tetap pilihan bernomor
       if (pesan?.saluran !== "web") return jawab(`${k}*Kapan terakhir terlihat?*`, CARI_WAKTU);
       const h = jawab(`${k}*Kapan terakhir terlihat?*\nPilih tanggalnya. Isi jam bila ingat.`), [zona, geser] = zonaProv(sesi.isian.lokasi?.nilai?.wilayah?.provKode);
@@ -678,9 +681,12 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     }
     if (sesi.status === "cari_ciri") { c.ciri = p === 0 || KATA_BELUM.test(teks) ? null : samarkan(teks).trim().slice(0, 300) || null; return tanyaCari("foto"); }
     if (sesi.status === "cari_foto") {
-      if (pesan?.foto) { sesi.foto = [pesan.foto]; c.foto = pesan.foto.id; return tanyaCari("waktu", "*Foto diterima*"); }   // satu foto; berkas dan baris lapor_foto ditulis pemanggil (fotoPost)
-      if (p === 0 || KATA_BELUM.test(teks) || /^lewati/i.test(teks.trim())) { c.foto = null; return tanyaCari("waktu"); }
-      return tanyaCari("foto", "Kirim fotonya, atau pilih *Lewati*.");
+      if (pesan?.foto) {   // berkas dan baris lapor_foto ditulis pemanggil (fotoPost); paling banyak 10
+        if ((c.fotoIds?.length || 0) >= 10) return tanyaCari("waktu", "*Sudah 10 foto*");
+        sesi.foto = [...(c.fotoIds?.length ? sesi.foto || [] : []), pesan.foto]; c.fotoIds = [...(c.fotoIds || []), pesan.foto.id]; c.foto = c.fotoIds[0];
+        return c.fotoIds.length >= 10 ? tanyaCari("waktu", "*10 foto diterima*") : tanyaCari("foto", "*Foto diterima*"); }
+      if (p === 0 || KATA_BELUM.test(teks) || /^(lewati|lanjut)/i.test(teks.trim())) { c.foto = c.fotoIds?.[0] || null; return tanyaCari("waktu"); }
+      return tanyaCari("foto", `Kirim fotonya, atau pilih *${c.fotoIds?.length ? "Lanjut" : "Lewati"}*.`);
     }
     if (sesi.status === "cari_waktu" && pesan?.form) {   // kartu tanggal (wajib) dan jam (boleh kosong); tidak di masa depan, paling lama setahun lalu
       const [, zona, geser] = [null, ...zonaProv(sesi.isian.lokasi?.nilai?.wilayah?.provKode)], tg = String(pesan.form.tanggal || ""), jm = String(pesan.form.jam || "");
@@ -723,7 +729,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       const kirimCari = {nama_dicari: c.nama, ciri: c.ciri, lokasi_terakhir: `Desa/Kel. ${w.desa}, Kec. ${w.kec}`.slice(0, 200), waktu_terakhir: c.waktu, nomor_dicari: c.nomor, hubungan: c.hubungan, kab: w.kabKode};
       sesi.cari = {nama: c.nama};   // rincian hanya di lapor_cari (ikut aturan simpan dan anonim Q67), tidak tertinggal di salinan sesi
       const h = jawab(`*Laporan orang dicari diterima*\nPetugas BNPB dan BPBD wilayah ${w.kab} menerima laporan tentang ${c.nama}. Bila ditemukan, petugas menghubungi nomor yang Anda berikan dan mengantar ke ${c.tempat}. Bila orang itu dalam bahaya sekarang, hubungi 112.`);
-      h.kirimCari = kirimCari; h.kirimTemu = {panggilan: c.panggilan || null, nomor_kontak: c.kontak, tempat_tunggu: c.tempat, foto_id: c.foto || null};
+      h.kirimCari = kirimCari; h.kirimTemu = {panggilan: c.panggilan || null, nomor_kontak: c.kontak, tempat_tunggu: c.tempat, foto_id: c.foto || null, foto_ids: c.fotoIds || (c.foto ? [c.foto] : [])};
       return h;
     }
   }

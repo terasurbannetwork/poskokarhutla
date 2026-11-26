@@ -69,11 +69,3 @@
 
 /* dibingkai Ruang Laporan (/admin/laporan): kelas .sematan ditambah induk */
 .sematan{--top:0px}.sematan header.top{display:none}
-/* kerangka standar (26 Nov 2026): kepala bn-judul di atas, tab penuh lebar dan kontrol dalam kartu terang */
-#p-paparan.scroll{padding:0 0 48px}
-#p-paparan .pp-kep:not(.lbk-alat){background:var(--card);color:var(--ink);border:1px solid var(--line);align-items:stretch}
-#p-paparan .pp-kep:not(.lbk-alat) .lb-jenis{background:var(--surface,var(--card));border:1px solid var(--line)}
-#p-paparan .pp-kep:not(.lbk-alat) .lb-jenis button{color:var(--ink)}
-#p-paparan .pp-kep:not(.lbk-alat) .lb-jenis button[aria-pressed=true]{background:var(--db-navy,var(--brand));color:var(--on-head,var(--card))}
-#p-paparan .pp-kep:not(.lbk-alat) .pp-btn.ke2{background:var(--card);color:var(--ink);border:1px solid var(--line)}
-#p-paparan .pp-kep:not(.lbk-alat) .pp-ctl input[type=date],#p-paparan .pp-kep:not(.lbk-alat) .pp-ctl select{border:1px solid var(--line)}

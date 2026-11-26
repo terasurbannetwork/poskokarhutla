@@ -754,7 +754,7 @@ function kartuBukti(j, nomor, kirim) {
   const k = el("section", "mj-kartu"), h = el("h3"); h.append(ikon("m-foto"), `Foto penanganan${j.bukti?.length ? ` (${j.bukti.length})` : ""}`);
   const w = el("div", "mj-isi-kartu"), kisi = el("div", "mj-bukti");
   for (const b of j.bukti || []) { const f = el("figure"), im = el("img"); im.src = b.url; im.alt = "Foto penanganan"; im.loading = "lazy";
-    const lb = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = b.publik; lb.append(cb, "Tampil di Situasi terkini"); lb.title = "Pastikan tidak ada wajah korban atau pelat kendaraan";
+    const lb = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = b.publik; lb.append(cb, "Tampil di Alun-alun"); lb.title = "Pastikan tidak ada wajah korban atau pelat kendaraan";
     cb.addEventListener("change", () => kirim("bukti-publik", {id: b.id, publik: cb.checked}, cb));
     f.append(im, el("small", null, `${b.waktu}${b.lokasi ? "" : ", tanpa lokasi"}`), lb); kisi.append(f); }
   const masuk = el("input"); masuk.type = "file"; masuk.accept = "image/jpeg,image/*"; masuk.capture = "environment"; masuk.hidden = true;
@@ -843,11 +843,11 @@ const LABEL_KOMEN = {tampil: "Tampil", dilaporkan: "Diadukan warga", tersembunyi
 const LABEL_ISIAN = {rumah_berat: "Rusak berat", rumah_sedang: "Rusak sedang", rumah_ringan: "Rusak ringan"};
 const LABEL_PUTUS = {terima: "Diterima", tolak: "Ditolak", sembunyi: "Disembunyikan", tampil: "Ditampilkan lagi"};
 function kartuKabarWarga(nomor, kartu, segarkan) {
-  const w = el("div", "mj-isi-kartu"), k = kartu("Kabar warga di Situasi terkini", "m-pesan", w); k.hidden = true;
+  const w = el("div", "mj-isi-kartu"), k = kartu("Kabar warga di Alun-alun", "m-pesan", w); k.hidden = true;
   const waktu = ms => new Date(ms).toLocaleString("id-ID", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"});
   const gambarKomen = j => {
     if (!j.kartu) { k.hidden = true; return; }
-    k.hidden = false; k.querySelector("h3").lastChild.textContent = `Kabar warga di Situasi terkini (${F(j.komen.length)})`;
+    k.hidden = false; k.querySelector("h3").lastChild.textContent = `Kabar warga di Alun-alun (${F(j.komen.length)})`;
     const gl = el("p", "mj-pesan-galat"); gl.setAttribute("role", "alert");
     const putus = async (badan, tb) => { gl.textContent = ""; tb.disabled = true;
       try { const r = await fetch(`/api/lapor/meja/${nomor}/komen`, {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify(badan)}), h = await r.json();

@@ -60,7 +60,7 @@
   function gambar(x) {
     const r = x.relawan, st = STATUS[r.status], idx = x.alur.indexOf(r.status), berhenti = idx < 0;
     $("isi").hidden = false;
-    $("isi").innerHTML = `<section class="bn-blok"><div class="bn-judul"><h2 class="rl-nama">${esc(r.nama)}</h2><div class="bn-aksi">${sp(st)}<button class="bn-tombol sekunder" type="button" data-keluar>Keluar</button></div></div>
+    $("isi").innerHTML = `<section class="bn-blok"><div class="bn-judul"><h1>${esc(r.nama)}</h1><div class="bn-aksi">${sp(st)}<button class="bn-tombol sekunder" type="button" data-keluar>Keluar</button></div></div>
       <ol class="bn-alur" aria-label="Alur relawan">${x.alur.map((s, i) => `<li ${s === r.status ? 'aria-current="step"' : ""} class="${!berhenti && i < idx ? "lewat" : ""}">${NAMA_ALUR[s]}</li>`).join("")}</ol>
       ${r.alasan ? `<p>Catatan dari admin: ${esc(r.alasan)}</p>` : ""}
       <div class="rl-baris"><span class="rl-kecil">${esc(r.kab)}, ${esc(d.provinsi[r.prov] || r.prov)}</span>${r.kampus ? pil("p-kuning", "orang", r.kampus) : ""}

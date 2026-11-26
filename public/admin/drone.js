@@ -87,7 +87,7 @@ function kerangka() {
   const B = R.BAWAAN;
   app.innerHTML = `<div class="dr-tata">
   <section class="dr-panel">
-    <div class="ad-kartu"><h2>Cluster gambut membara</h2><ul class="dr-daftar" id="drDaftar"></ul></div>
+    <h2>Cluster gambut membara</h2><ul class="dr-daftar" id="drDaftar"></ul>
     <form id="drForm" class="dr-form" hidden>
       <h2>Drone dan rute</h2>
       <label>Drone<select name="drone">${Object.entries(R.DRONE).map(([k, d]) => `<option value="${k}" ${k === B.drone ? "selected" : ""}>${esc(d.nama)}</option>`).join("")}</select></label>
@@ -105,7 +105,7 @@ function kerangka() {
     </form>
     <div id="drHasil"></div>
   </section>
-  <section class="dr-peta ad-kartu"><div id="drPeta" role="img" aria-label="Peta sel gambut membara dan rute drone"></div>
+  <section class="dr-peta"><div id="drPeta" role="img" aria-label="Peta sel gambut membara dan rute drone"></div>
     <p class="dr-legenda"><i class="dr-l1"></i>sel persisten <i class="dr-l0"></i>sel gambut lain <i class="dr-lr"></i>rute <i class="dr-ll"></i>lepas landas</p></section>
   </div>`;
   isiDrone(B.drone);

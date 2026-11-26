@@ -186,5 +186,6 @@
   "0182_semai_sasaran_indeks.sql": "8ae278b6ef766e78dcea0603b4cd11a76858cb523945db5f8573cecb2dbb974e",
   "0183_lp_komen_putus.sql": "b5ecf86e5d8ca38e1a083a000f0bcfa2b6f2ee69eec7a940ffbcea4d26fba7e1",
   "0184_pw_status_prakiraan.sql": "504b6805053602ff52438e241a91128f3d58fb9f14617b6053a96bd92e2feb16",
-  "0185_lapor_cari_foto.sql": "b33c0a3da8d016bf0e2573b3c3845d595bf2ee2014e72b25c00791e8701af12f"
+  "0185_lapor_cari_foto.sql": "b33c0a3da8d016bf0e2573b3c3845d595bf2ee2014e72b25c00791e8701af12f",
+  "0186_lapor_cari_foto_banyak.sql": "70dc38a3cd6f9cddd9f1da31b8212a0e7982708c372adc07d8584a892302bb54"
 }

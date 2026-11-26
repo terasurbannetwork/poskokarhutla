@@ -23,10 +23,8 @@ export const halamanDrone = ctx => `<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/vendor/maplibre/maplibre-gl.css" rel="stylesheet">
-<link href="/admin/admin.css?v=15" rel="stylesheet">
-<link href="/inti/kartu.css?v=2" rel="stylesheet">
-<link href="/admin/drone.css?v=2" rel="stylesheet">
-<script src="/inti/dasbor_admin.js?v=3" defer></script>
+<link href="/admin/admin.css?v=7" rel="stylesheet">
+<link href="/admin/drone.css?v=1" rel="stylesheet">
 </head>
 <body data-staf="1" data-super="${ctx.super ? 1 : 0}">
 <header class="ad-top">
@@ -34,7 +32,7 @@ export const halamanDrone = ctx => `<!doctype html>
   <nav aria-label="Halaman"><a href="/">🗺️ Peta</a><a href="/admin/drone" aria-current="page">🛸 Atur drone gambut</a><a href="/panduan/sop-drone-gambut.pdf" download>📄 SOP lapangan (PDF)</a></nav>
   ${ctx.nama ? `<span class="ad-staf-nama">${esc(ctx.nama)}</span>` : ""}
 </header>
-<link href="/inti/dasbor.css?v=31" rel="stylesheet"><link href="/bnpb/menu_pusdalops.css?v=17" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=29"></script>
+<link href="/inti/dasbor.css?v=30" rel="stylesheet"><link href="/bnpb/menu_pusdalops.css?v=16" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=28"></script>
 <main class="ad-wrap dr-wrap">
   <div class="ad-judul"><span class="ad-ikon" aria-hidden="true">🛸</span><h1>Atur drone gambut</h1><div class="ad-judul-aksi" id="aksiJudul"></div></div>
   <div class="ad-isi" id="app"><p class="ad-redup">Memuat cluster gambut membara…</p></div>
@@ -43,7 +41,7 @@ export const halamanDrone = ctx => `<!doctype html>
 <script src="/laporan_koordalops.js?v=1"></script>
 <script src="/admin/bersama.js?v=5"></script>
 <script src="/admin/drone_rute.js?v=1"></script>
-<script src="/admin/drone.js?v=2"></script>
+<script src="/admin/drone.js?v=1"></script>
 </body></html>`;
 
 async function konteks(env, req, kini) {

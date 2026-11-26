@@ -59,7 +59,7 @@ const _HALAMAN = [
     ["/lapor/hari-ini", "Kejadian hari ini", "kalender", L, "tamu", null, "/lapor"],
     ["/lapor/s", "Kabar selamat bertautan", "sinyal", L, "tamu", null, "/lapor", true],
     ["/kabar", "Kabar api per kabupaten", "sinyal", L],
-    ["/alun-alun", "Situasi terkini", "personel", L, "tamu"],
+    ["/alun-alun", "Alun-alun", "personel", L, "tamu"],
     ["/lapor/poster.html", "Poster QR desa", "simpan", L, "sesi", null, "/lapor"],
     ["/bantu", "Tawaran bantuan organisasi", "personel", L, "tamu", null, null, true],
     ["/masuk", "Masuk", "personel", "masuk", "tamu"],

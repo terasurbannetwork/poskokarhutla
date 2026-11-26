@@ -18,12 +18,9 @@
   if (opsional && !window.__mpPeta) { let ada = false; try { ada = (JSON.parse(sessionStorage.getItem("mp-peta")) || []).length > 0; } catch (e) {}
     if (!ada) { ambilPeta().then(x => x.m).then(m => { if (Array.isArray(m) && m.some(p => p?.pintu === "staf" && p.grup?.length)) { const s = document.createElement("script"); s.src = skrip.src; document.head.append(s); } }).catch(() => {});
       return; } }
-  /* layar lebar: kepala atas lama disembunyikan SEJAK skrip ini jalan, bukan sesudah halaman selesai dimuat (pemilik 26 Nov 2026: saat pindah menu
-     sempat muncul halaman lain dulu, yaitu bilah navy bermenu mendatar sebelum panel kiri terpasang) */
-  document.documentElement.classList.add("mp-pra");
   /* lapisan sistem desain dashboard (data/kajian-bnpb/dashboard/DESIGN-SYSTEM.md) untuk semua halaman Pusdalops */
-  if (!document.querySelector('link[href^="/bnpb/menu_pusdalops.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/bnpb/menu_pusdalops.css?v=17"; document.head.append(l); }   // halaman yang lupa memuat gaya panel
-  if (!document.querySelector('link[href^="/inti/dasbor.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/dasbor.css?v=31"; document.head.append(l); }
+  if (!document.querySelector('link[href^="/bnpb/menu_pusdalops.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/bnpb/menu_pusdalops.css?v=16"; document.head.append(l); }   // halaman yang lupa memuat gaya panel
+  if (!document.querySelector('link[href^="/inti/dasbor.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/dasbor.css?v=30"; document.head.append(l); }
   const IKON = {"banjir": "M3 17c2 0 2-2 4.5-2S10 17 12 17s2.5-2 4.5-2S19 17 21 17|M3 21c2 0 2-2 4.5-2S10 21 12 21s2.5-2 4.5-2S19 21 21 21|M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.500 2-5 5-9z", "daftar": "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01", "simpan": "M5 3h11l3 3v15H5z|M8 3v6h7V3M8 21v-7h8v7", "personel": "M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z|M4 21a8 8 0 0 1 16 0", "pin": "M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z|M12 12a2.500 2.500 0 1 0 0-5 2.500 2.500 0 0 0 0 5z", "peringatan": "M12 3l9 16H3z|M12 10v4M12 17v.5", "kalender": "M4 6h16v15H4zM4 10h16M8 3v4M16 3v4", "sinyal": "M4 20l.01 0M8 16a5.500 5.500 0 0 1 8 0M5 12.500a10 10 0 0 1 14 0|M3 3l18 18", "meja": "M9 3h6v3H9z|M6 5h12v16H6z|M9 11h6M9 15h4", "grafik": "M3 3v18h18|M7 15l4-4 3 3 5-6", "luar": "M7 17L17 7|M9 7h8v8", "awan": "M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.600-1.500A3.500 3.500 0 0 1 17 18z", "atur": "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z|M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"};
   /* peta situs diminta SEKALI per muat halaman, sedini mungkin; pintu.js memakai janji yang sama (MenuPusdalops.peta) */
   let statusPeta = 0;   // jawaban HTTP tanpa butir staf (401, 403, 2xx kosong): simpanan menu tab ini dibuang
@@ -138,7 +135,7 @@
   /* keluar (tombol #keluar dari /inti/keluar.js, data-staf-keluar, atau form /admin/keluar): simpanan menu tab ini dibuang sebelum sesi dicabut */
   const buangKeluar = e => { if (e.target.closest?.('#keluar, [data-staf-keluar], .ad-keluar, form[action="/admin/keluar"]')) try { sessionStorage.removeItem("mp-peta"); } catch (x) {} };
   document.addEventListener("click", buangKeluar, true); document.addEventListener("submit", buangKeluar, true);
-  const gagal = () => { if (opsional) { document.documentElement.classList.remove("mp-pra"); const w = samping.closest(".mp-a"); samping.remove(); nav.remove(); sub?.remove(); document.body.classList.remove("mp-model-a"); if (w) w.replaceWith(...w.childNodes); return; }   // sesi bukan staf lagi: halaman kembali apa adanya
+  const gagal = () => { if (opsional) { const w = samping.closest(".mp-a"); samping.remove(); nav.remove(); sub?.remove(); document.body.classList.remove("mp-model-a"); if (w) w.replaceWith(...w.childNodes); return; }   // sesi bukan staf lagi: halaman kembali apa adanya
     gambar([]); const t = "Menu belum bisa dimuat. Muat ulang halaman.";
     isi.replaceChildren(el("p", "db-nav-sub", t), butir("/bnpb", "Pintu staf BNPB", "daftar", false)); nav.replaceChildren(el("span", null, t), tautan("/bnpb", "Pintu staf BNPB", "daftar", false)); };
   gambar(adaSimpan ? simpanan : []);
@@ -188,10 +185,5 @@
     if (u.origin !== location.origin || sudahAmbil.has(u.pathname)) return; sudahAmbil.add(u.pathname);
     const l = document.createElement("link"); l.rel = "prefetch"; l.href = u.pathname; document.head.append(l); };
   for (const x of [samping, nav]) { x.addEventListener("pointerover", ambilDulu, {passive: true}); x.addEventListener("focusin", ambilDulu); }
-  /* panel dipasang begitu <main> muncul di DOM, tidak menunggu DOMContentLoaded (skrip berat sesudah main menunda event itu sampai
-     ratusan milidetik, dan selama itu halaman tampil tanpa panel lalu melompat); parser tetap mengisi main walau main sudah dipindah ke .mp-a */
-  if (document.querySelector("body > main") || document.readyState !== "loading") pasangSamping();
-  else { const amati = new MutationObserver(() => { if (document.querySelector("body > main")) { amati.disconnect(); pasangSamping(); } });
-    amati.observe(document.documentElement, {childList: true, subtree: true});
-    document.addEventListener("DOMContentLoaded", () => { amati.disconnect(); pasangSamping(); }, {once: true}); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", pasangSamping); else pasangSamping();
 })();

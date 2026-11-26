@@ -16,9 +16,9 @@ const kepala = judul => `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=15" rel="stylesheet">
+<link href="/admin/admin.css?v=14" rel="stylesheet">
 <link href="/inti/kartu.css?v=2" rel="stylesheet">
-<link href="/inti/dasbor.css?v=31" rel="stylesheet">
+<link href="/inti/dasbor.css?v=30" rel="stylesheet">
 <script src="/inti/dasbor_admin.js?v=3" defer></script>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
@@ -76,7 +76,7 @@ const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
 /* semua halaman kerangka admin memakai menu Pusdalops (public/bnpb/menu_pusdalops.js) sebagai satu-satunya menu: panel kiri tetap sama di semua
    halaman staf, tanpa menu atas berkelompok dan tanpa sub-nav grup (pemilik 4 Nov 2026; diperluas ke semua halaman admin 26 Nov 2026
    "di atas ada menu di samping ada menu. Bingung"). Menu atas atas() tetap dikirim sebagai cadangan layar sempit dan tanpa JS; menu_pusdalops.js menggantinya. */
-const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=17" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=29"></script>';
+const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=16" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=28"></script>';
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
 const halaman = (k, memuat, ekor, ctx) => `${kepala(`${HAL[k][1]} · Centurisk97`)}
 <body${ctx ? ` data-staf="1" data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
@@ -174,9 +174,8 @@ export const ruangLaporan = ctx => { const ok = new Set(menuSesi(ctx).flatMap(p 
 export const halamanRuangLaporan = ctx => `${kepala("Ruang Laporan · Centurisk97")}
 <body class="rl-badan" data-staf="${ctx ? "1" : "0"}"${ctx ? ` data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
 ${atas("laporan", ctx)}${menuPusdalops}
-<link href="/admin/ruang_laporan.css?v=3" rel="stylesheet">
+<link href="/admin/ruang_laporan.css?v=2" rel="stylesheet">
 <main class="rl-tubuh">
-  <div class="bn-judul"><h1>Ruang laporan</h1></div>
   <nav class="rl-rel" aria-label="Menu Ruang Laporan">${ruangLaporan(ctx).map((g, i) => `${g.kel ? `<h2 class="ad-ey rl-kel" id="rl-kel-${i}">${g.kel}</h2>` : ""}<ul${g.kel ? ` aria-labelledby="rl-kel-${i}"` : ""}>${g.item.map(([k, l, ke, ik]) => `<li><a href="#${k}" data-ke="${ke}">${ik}<span>${l}</span></a></li>`).join("")}</ul>`).join("")}</nav>
   <iframe id="rlBingkai" class="rl-bingkai rl-muat" title="Isi Ruang Laporan" src="about:blank"></iframe>
 </main>
@@ -239,7 +238,7 @@ export const halamanSippa = (layar, ctx) => `<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/inti/tema.css?v=1" rel="stylesheet">
-<link href="/admin/admin.css?v=8" rel="stylesheet">
+<link href="/admin/admin.css?v=7" rel="stylesheet">
 <link href="/inti/kartu.css?v=1" rel="stylesheet">
 <link href="/inti/insight.css?v=1" rel="stylesheet">
 <link href="/pipa/pipa.css?v=11" rel="stylesheet">
@@ -262,7 +261,7 @@ export const halamanSippaLapangan = () => `<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>SIPPA Lapangan, Centurisk97</title>
-<link href="/admin/admin.css?v=8" rel="stylesheet">
+<link href="/admin/admin.css?v=7" rel="stylesheet">
 <link href="/pipa/pipa.css?v=11" rel="stylesheet">
 </head>
 <body>
@@ -292,7 +291,7 @@ export const halamanPublik = () => new Response(`<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=8" rel="stylesheet">
+<link href="/admin/admin.css?v=7" rel="stylesheet">
 </head>
 <body class="pb">
 <header class="ad-top"><a class="ad-logo" href="/">Centurisk97</a><span class="ad-sep">Statistik</span>

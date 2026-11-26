@@ -2510,24 +2510,3 @@ main{position:static;inset:auto}   /* gaya.css memfixkan main; halaman ini mengg
   body.mp-model-a{padding-top:0;--top:0px}
   body.mp-model-a .ak-lbpeta .ak-pta,body.mp-model-a .ak-pta.ak-ptaisi{width:100%;margin-left:0;height:calc(100svh - 24px)}
 }
-
-/* kerangka standar (26 Nov 2026): kepala bn-judul navy di atas; kotak cari, statistik, dan tab dalam kartu terang, bukan hero */
-main>.bn-judul{max-width:1240px;margin:16px auto 14px;padding:0 20px}
-main>.bn-judul>h1{margin:0;padding:9px 16px;border-radius:14px;background:var(--db-navy,var(--brand));color:var(--on-head);text-align:center;font-size:1.0625rem;font-weight:800}
-body.mp-model-a main>.bn-judul{max-width:none;margin:0 0 14px;padding:0}
-.ak-kepala{background:var(--card);color:var(--ink);padding:18px 20px 20px!important;max-width:1240px;margin:0 auto;box-sizing:border-box;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
-body.mp-model-a .ak-kepala{max-width:none}
-.ak-kepala-isi{align-items:stretch}
-.ak-cari-besar{margin:0 auto}
-.ak-ringkas{border-top:1px solid var(--line);padding-top:14px}
-.ak-ringkas div{border-left-color:var(--line)}
-.ak-ringkas svg{stroke:var(--brand);background:var(--surface)}
-.ak-ringkas b,.ak-ringkas span{color:var(--ink)}
-.ak-kepala-nav{margin-top:14px}
-.ak-kepala .ak-seg{background:var(--surface);border-color:var(--line)}
-.ak-kepala .ak-seg button{color:var(--ink)}
-.ak-kepala .ak-seg button:hover:not([aria-pressed="true"]){background:var(--card);color:var(--ink)}
-.ak-kepala .ak-seg button[aria-pressed="true"]{background:var(--db-navy,var(--brand));color:var(--on-head)}
-.ak-kepala .ak-tabpanah{background:var(--card)}
-@media (max-width:600px){.ak-kepala{padding:14px 12px!important;border-radius:12px;margin:0 12px;max-width:none}main>.bn-judul{padding:0 12px}}
-.ak-cari-besar .ak-cari input:focus{border-color:var(--brand2);box-shadow:0 0 0 4px color-mix(in oklab,var(--brand2) 25%,transparent)}

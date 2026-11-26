@@ -9,7 +9,7 @@ const VERSI = "pb-lapor-3", SIMPAN = `${VERSI}-cangkang`;
 const DASAR = ["/lapor/", "/lapor/manifest.webmanifest", "/lapor/ikon/192.png", "/lapor/lambang-bnpb.png", "/lapor/edukasi.json", "/bencana.json", "/bagi.css"];
 /* aset yang dimuat index.html dibaca dari halamannya sendiri, jadi daftar ini tidak perlu disunting tiap versi aset naik */
 const asetHalaman = html => [...html.matchAll(/(?:src|href)="(\/[^"#]+)"/g)].map(m => m[1]).filter(u => !u.startsWith("/api/") && /\.(css|js|png|svg|json|webmanifest)(\?|$)/.test(u));
-const imporCss = css => [...css.matchAll(/@import\s+url\(\s*["']?(\/[^"')]+)["']?\s*\)/g)].map(m => m[1]);   // mis. /bnpb/bnpb.css -> /admin/admin.css?v=7
+const imporCss = css => [...css.matchAll(/@import\s+url\(\s*["']?(\/[^"')]+)["']?\s*\)/g)].map(m => m[1]);   // mis. /bnpb/bnpb.css -> /admin/admin.css?v=6
 const AWALAN = ["/lapor/", "/inti/", "/img/", "/bnpb/", "/admin/admin.css", "/halaman_awal.js", "/bagi.js", "/bagi.css", "/bencana.json"];
 const statis = u => /\.(css|js|png|svg|webp|json|webmanifest|woff2?)$/.test(u.pathname) && AWALAN.some(a => u.pathname.startsWith(a));
 self.addEventListener("install", e => e.waitUntil((async () => {
