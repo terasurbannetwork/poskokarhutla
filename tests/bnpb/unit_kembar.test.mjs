@@ -203,9 +203,9 @@ for (const k of ACUAN.jam_aturan) {
   });
 }
 
-// Python menolak tanggal/jam yang tidak ada di dalam cap waktu; Date.parse JS menggulirkannya. Pemilik jam_aturan.js: inti-layar.
+// Python dan JS (capSah di jam_aturan.js) sama-sama menolak tanggal/jam yang tidak ada di dalam cap waktu.
 for (const k of ACUAN.jam_aturan_beda_js) {
-  test(`kembar ${k.id} ${k.kunci} ${k.mulai}: tanggal tidak ada di cap waktu ditolak`, { todo: "jam_aturan.js capMs belum memeriksa tanggal (inti-layar)" }, () => {
+  test(`kembar ${k.id} ${k.kunci} ${k.mulai}: tanggal tidak ada di cap waktu ditolak`, () => {
     assert.equal(tenggat(k.kunci, k.mulai).hasil, k.harap.hasil);
   });
 }

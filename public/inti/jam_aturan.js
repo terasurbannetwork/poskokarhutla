@@ -109,7 +109,12 @@ function tanggalSah(s) {
   return mo >= 1 && mo <= 12 && d >= 1 && d <= hariDalamBulan(y, mo) ? [y, mo, d] : null;
 }
 const CAP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/;
-const capMs = (s) => (typeof s === "string" && CAP.test(s) ? Date.parse(s) : NaN);
+/* tanggal dan jam harus ada (Date.parse menggulirkan 30 Feb ke Maret dan 24:00 ke hari berikutnya); sama dengan pembaca Python scripts/bnpb/unit/aturan.py */
+const capSah = (s) => {
+  const [y, m, d, j, n, t = "0"] = [s.slice(0, 4), s.slice(5, 7), s.slice(8, 10), s.slice(11, 13), s.slice(14, 16), s.slice(17, 19)].map(Number);
+  return m >= 1 && m <= 12 && d >= 1 && d <= new Date(Date.UTC(y, m, 0)).getUTCDate() && j < 24 && n < 60 && (s[16] !== ":" || t < 60);
+};
+const capMs = (s) => (typeof s === "string" && CAP.test(s) && capSah(s) ? Date.parse(s) : NaN);
 
 /* tanggal WIB [y,m,d] dari tanggal ISO atau cap waktu bersel zona */
 function tanggalWib(mulai) {
