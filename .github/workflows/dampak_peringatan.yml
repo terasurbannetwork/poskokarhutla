@@ -30,7 +30,8 @@ jobs:
   jam:
     if: github.event_name == 'schedule' && github.event.schedule == '20 * * * *' || github.event_name == 'workflow_dispatch' && !inputs.bulanan
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    # putaran dingin terukur 23 menit, hangat 12 menit (DP-03, 26 Nov 2026); cache di bawah membuat putaran berikutnya hangat
+    timeout-minutes: 40
     concurrency: {group: dampak-peringatan, cancel-in-progress: false}
     steps:
       - uses: actions/checkout@v4
@@ -40,11 +41,39 @@ jobs:
         run: |
           npm i --prefix "$RUNNER_TEMP/w" wrangler@4.42.0
           echo "W=$RUNNER_TEMP/w/node_modules/.bin/wrangler" >> "$GITHUB_ENV"
+      - name: Pulihkan cache paparan (grid bangunan, Dukcapil, kelas sel, hasil putaran lalu)
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            data/terkunci/bangunan
+            data/raw/siklus/dukcapil_*.json
+            data/raw/siklus/kelas_sel
+            data/raw/dampak_peringatan/hasil.json
+          key: dampak-${{ github.run_id }}
+          restore-keys: dampak-
+      - name: Unduh grid halus bangunan dari R2 (hanya yang belum ada di cache)
+        run: |
+          mkdir -p data/terkunci/bangunan; n=0
+          for p in 11 12 13 14 15 16 17 18 19 21 31 32 33 34 35 36 51 52 53 61 62 63 64 65 71 72 73 74 75 76 81 82 91 92 93 94 95 96; do
+            f="data/terkunci/bangunan/halus_$p.json"; [ -s "$f" ] && { n=$((n+1)); continue; }
+            if "$W" r2 object get "poskokarhutla-foto/bangunan/halus_$p.json" --file "$f" --remote >/dev/null 2>&1; then n=$((n+1)); else rm -f "$f"; fi
+          done
+          echo "grid halus tersedia: $n/38"
       - name: Keterpaparan peringatan (umpan CAP, batas waktu per panggilan ada di skrip)
         run: |
           mkdir -p data/raw/dampak_peringatan
           python3 -I scripts/siklus/dampak_peringatan.py --base "$BASIS" \
             --lama data/raw/dampak_peringatan/hasil.json --keluar data/raw/dampak_peringatan/hasil.json
+      - name: Simpan cache paparan
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data/terkunci/bangunan
+            data/raw/siklus/dukcapil_*.json
+            data/raw/siklus/kelas_sel
+            data/raw/dampak_peringatan/hasil.json
+          key: dampak-${{ github.run_id }}
       - name: Status prakiraan dan arsip harian
         run: python3 -I scripts/prediksi/status_prakiraan.py
       - name: Unggah ke R2 dampak_peringatan/ (hanya berkas yang ada)
