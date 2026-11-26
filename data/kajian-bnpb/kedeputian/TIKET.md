@@ -111,7 +111,7 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-014 | MB-1 status `tidak_bisa_dicek` | `ruang-bnpb` | `penulis-gerbang` | 4 | S | selesai 6 Nov (a2ed1d5d5; seed produksi bersama RU-057) |
 | RU-015 | MB-2 lengkap: semua kunci dan `tenggat()` | `inti-layar` | `penulis-gerbang` | 4 | M | selesai 6 Nov (30c771b1d) |
 | RU-016 | MB-2 pembaca Python dan uji kembar | `ruang-bnpb` | `penulis-gerbang` | 5 | S | tinjau 26 Nov (belum di-commit; 3 kasus cap waktu bertanggal tidak ada ditandai todo di JS, perbaikan `jam_aturan.js` milik `inti-layar`) |
-| RU-017 | Uji layar masuk `uji` dan `terbit.yml` | `mekanik-mesin` | `higiene-repo` | 1 | S | jalan (1204033d2 hanya timeout terbit.yml; `uji:layar` belum dirangkai ke `uji` dan terbit.yml) |
+| RU-017 | Uji layar masuk `uji` dan `terbit.yml` | `mekanik-mesin` | `higiene-repo` | 1 | S | BERHENTI 26 Nov 2026 (langkah 1): `uji:layar` merah di checkout kerja, 8 dari 71 gagal (`/bnpb`, `/alun-alun`, `/admin/pimpinan` di 1440 dan 390 px, interaksi alun-alun, pil status utas). Tidak dirangkai sampai pemilik layar (`layar-peta`, `ruang-bnpb`, `warga-api`) membetulkan; gerbang tidak dilonggarkan. Skip tanpa Chrome sudah ada (`cariChrome()` null dilewati dengan pesan). Waktu `uji:layar` penuh 6 mnt 57 dtk di mesin ini (pembanding: terbit.yml sudah 59 mnt langkah uji dari batas job 70, jadi merangkai butuh langkah 8-10 mnt dan batas job naik) |
 | RU-018 | Migrasi 0111 peran `unit` | `warga-api` | `migrasi-idempoten` | 4 | S | kode selesai 23 Nov (c616a7d17, migrasi jadi 0168); terap produksi oleh pemilik |
 | RU-019 | Rute baca `src/unit.js` dan gerbang host | `warga-api` | `guard-api`, `security-reviewer` | 5 | M | belum |
 | RU-020 | Cangkang `/bnpb/unit`, katalog 70 ID, registri | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 5 | M | belum |
@@ -124,12 +124,12 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-027 | MB-4 `skor.py` | `ruang-bnpb` | `validasi-model` | 4 | S | selesai 6 Nov (42333fdc1) |
 | RU-028 | MB-5 `neraca.py` | `ruang-bnpb` | `selera-angka` | 4 | S | tinjau 26 Nov (belum di-commit; uji balik PR dan 514 baris PLP-1 ikut tiket sistem PLP-1) |
 | RU-029 | MB-5 `kebutuhanDasar` JS dan uji kembar | `inti-layar` | `penulis-gerbang` | 9 | S | selesai 26 Nov (belum di-commit; pemeriksa penulis-gerbang menyusul) |
-| RU-030 | MB-6 `rapor.py` dan perender `rapor.js` | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 4 | M | belum |
+| RU-030 | MB-6 `rapor.py` dan perender `rapor.js` | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 4 | M | tinjau 26 Nov (belum di-commit; kepala kartu nama seksi berikon per AGENTS.md 3.5, angka temuan di baris ringkas isi; `unit.css` baru berisi `.un-lbl`, `.un-per`; cangkang RU-020 dan entri `LAYAR` RU-031 belum) |
 | RU-031 | G-3 perluasan gerbang kartu standar | `penulis-gerbang` | `general-purpose` baru | 5 | S | belum |
 | RU-032 | MB-7 migrasi 0112 dan uji skema | `warga-api` | `migrasi-idempoten` | 7 | M | belum |
 | RU-033 | MB-7 rute ketuk | `warga-api` | `guard-api`, `security-reviewer` | 7 | S | belum |
 | RU-034 | MB-7 `terima.py` dan layar `ketuk.js` | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 7 | M | belum |
-| RU-035 | MB-8 `panen.py` inti dan CKAN | `ruang-bnpb` | `security-reviewer` | 4 | M | belum |
+| RU-035 | MB-8 `panen.py` inti dan CKAN | `ruang-bnpb` | `security-reviewer` | 4 | M | tinjau 26 Nov (belum di-commit; `--cek` hijau; fixture CKAN disusun tangan karena data.bnpb.go.id tidak terjangkau, ganti tangkapan bersih saat tarikan pertama; bukti G-5 tertahan RU-024) |
 | RU-036 | MB-8 ArcGIS, INALOGPAL, SIRUP | `ruang-bnpb` | `security-reviewer` | 10 | M | belum |
 | RU-037 | HUK-1 kartu status peraturan | `ruang-bnpb` | `selera-angka` | 6 | S | belum |
 | RU-038 | KPOD-2 kartu Jam Aturan | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 6 | S | belum |
@@ -676,10 +676,10 @@ Kerangka (RU-017 sampai RU-024) bukan mesin bernomor, tetapi dipakai semua mesin
 - **Dependensi:** RU-020.
 - **Pengerja / pemeriksa:** `ruang-bnpb` / `selera-angka`, `inp-reviewer`.
 - **Langkah:**
-  - [ ] Uji perender dulu: pil label selalu ada; `.hl` hanya pada angka dari `angka`; tiap `.hl` dan sel angka membawa `data-sumber` dan `title`; tanpa titik tengah; indikator tanpa masukan tampil "belum ada data" dan tidak ikut rata-rata (RU §4 baris MB-6).
-  - [ ] Skema persis DT §4.6; rupa persis DS §7.6 dan §5.2 (`.un-lbl`, `.un-per`).
-  - [ ] `rapor.py --cek` menolak kartu tanpa `label` atau dengan label di luar daftar.
-  - [ ] Jalankan bukti.
+  - [x] Uji perender dulu: pil label selalu ada; `.hl` hanya pada angka dari `angka`; tiap `.hl` dan sel angka membawa `data-sumber` dan `title`; tanpa titik tengah; indikator tanpa masukan tampil "belum ada data" dan tidak ikut rata-rata (RU §4 baris MB-6).
+  - [x] Skema DT §4.6 dengan satu selisih: `judul` nama seksi tanpa `{n}` dan `angka` berbentuk `[{k, label, nilai}]` (AGENTS.md §3.5 11 Nov menang atas DT); rupa DS §7.6 dan §5.2 (`.un-lbl`, `.un-per`).
+  - [x] `rapor.py --cek` menolak kartu tanpa `label` atau dengan label di luar daftar.
+  - [x] Jalankan bukti.
 - **Bukti:** `python3 -I scripts/bnpb/unit/rapor.py --cek && node --test tests/bnpb/unit_layar.test.mjs`.
 - **Pemilik:** tidak ada.
 - **Rujukan:** DT §4.6; DS §5.2, §7.6; RU §4 baris MB-6. **Ukuran:** M
@@ -747,9 +747,9 @@ Kerangka (RU-017 sampai RU-024) bukan mesin bernomor, tetapi dipakai semua mesin
 - **Dependensi:** RU-021, RU-024.
 - **Pengerja / pemeriksa:** `ruang-bnpb` / `security-reviewer`.
 - **Langkah:**
-  - [ ] `--cek` dengan `urlopen` tiruan: cache segar tidak memanggil jaringan; coba ulang 2, 4, 8 detik; gagal keras menyebut URL dan kode HTTP; `DILARANG` menolak `survey123`; sumber berubah bentuk keluar bukan 0.
-  - [ ] Tiap keluaran membawa `sumber: [{nama, url, diambil, lisensi}]`.
-  - [ ] Jalankan bukti.
+  - [x] `--cek` dengan `urlopen` tiruan: cache segar tidak memanggil jaringan; coba ulang 2, 4, 8 detik; gagal keras menyebut URL dan kode HTTP; `DILARANG` menolak `survey123`; sumber berubah bentuk keluar bukan 0.
+  - [x] Tiap keluaran membawa `sumber: [{nama, url, diambil, lisensi}]`.
+  - [ ] Jalankan bukti: `panen.py --cek` hijau; `gerbang-privasi-unit.test.mjs` belum ada (RU-024, `penulis-gerbang`).
 - **Bukti:** `python3 -I scripts/bnpb/unit/panen.py --cek && node --test tests/agen/gerbang-privasi-unit.test.mjs`.
 - **Pemilik:** tidak ada (U4 bawaan: ya, agregat, layar staf saja).
 - **Rujukan:** DT §4.8, §8; RU §4 baris MB-8. **Ukuran:** M

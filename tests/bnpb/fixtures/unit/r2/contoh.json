@@ -1,0 +1,123 @@
+{
+ "dibuat": "2026-11-26T00:00:00Z",
+ "basi_jam": 48,
+ "label": [
+  "resmi",
+  "hitungan_kita"
+ ],
+ "sumber": [
+  {
+   "nama": "Portal Satu Data BNPB, data.bnpb.go.id",
+   "url": "https://data.bnpb.go.id/api/3/action/package_search",
+   "diambil": "2026-11-25T23:00:00Z",
+   "lisensi": "tidak tertulis"
+  }
+ ],
+ "kartu": [
+  {
+   "id": "pus1-produsen",
+   "sistem": "PUS-1",
+   "pil": "Rapor walidata",
+   "ikon": "data",
+   "judul": "Per produsen data",
+   "angka": [
+    {
+     "k": "produsen",
+     "label": "Produsen data",
+     "nilai": 3
+    },
+    {
+     "k": "kosong",
+     "label": "Belum menyetor dataset",
+     "nilai": 1
+    },
+    {
+     "k": "umur_median",
+     "label": "Umur median (hari)",
+     "nilai": null,
+     "title": "Median hari sejak metadata_modified"
+    }
+   ],
+   "kolom": [
+    {
+     "k": "produsen",
+     "label": "Produsen"
+    },
+    {
+     "k": "n_dataset",
+     "label": "Dataset",
+     "title": "Jumlah paket CKAN milik organisasi",
+     "angka": true
+    },
+    {
+     "k": "umur_median_hari",
+     "label": "Umur median (hari)",
+     "title": "Median (hari ini - metadata_modified)",
+     "angka": true
+    },
+    {
+     "k": "persen_metadata",
+     "label": "Metadata lengkap (%)",
+     "title": "100 x paket dengan notes, license_id, maintainer, frequency terisi / n_dataset",
+     "angka": true
+    }
+   ],
+   "baris": [
+    {
+     "produsen": "Direktorat A",
+     "n_dataset": 0,
+     "umur_median_hari": null,
+     "persen_metadata": null
+    },
+    {
+     "produsen": "Direktorat B",
+     "n_dataset": 12,
+     "umur_median_hari": 40.5,
+     "persen_metadata": 75
+    },
+    {
+     "produsen": "Pusat C",
+     "n_dataset": 1234,
+     "umur_median_hari": 3,
+     "persen_metadata": 100
+    }
+   ],
+   "rumus": "persen_metadata = 100 x paket bermetadata lengkap / n_dataset",
+   "aturan": [
+    {
+     "kunci": "ikd_ambang_kelas",
+     "acuan": null,
+     "letak": null,
+     "kutipan": null,
+     "asumsi": true
+    }
+   ],
+   "label": [
+    "resmi",
+    "hitungan_kita"
+   ],
+   "sumber": [
+    "ckan_package_search",
+    "ckan_organization_list"
+   ]
+  },
+  {
+   "id": "pus1-kosong",
+   "sistem": "PUS-1",
+   "pil": "Rapor walidata",
+   "ikon": "kalender",
+   "judul": "Data prioritas",
+   "angka": [],
+   "kolom": [],
+   "baris": [],
+   "rumus": null,
+   "aturan": [],
+   "label": [
+    "resmi"
+   ],
+   "sumber": [
+    "data_prioritas"
+   ]
+  }
+ ]
+}

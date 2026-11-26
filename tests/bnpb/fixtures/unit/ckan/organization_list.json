@@ -1,0 +1,43 @@
+{
+ "help": "https://data.bnpb.go.id/api/3/action/help_show?name=organization_list",
+ "success": true,
+ "_catatan": "Bentuk CKAN API v3 (action organization_list, package_search). Disusun tangan 26 Nov 2026 karena data.bnpb.go.id tidak terjangkau dari mesin pengerja; ganti dengan tangkapan yang dibersihkan dari nama dan email saat tarikan terjadwal pertama.",
+ "result": [
+  {
+   "id": "org-direktorat-a",
+   "name": "direktorat-a",
+   "title": "Direktorat A",
+   "display_name": "Direktorat A",
+   "package_count": 0,
+   "state": "active",
+   "type": "organization",
+   "is_organization": true,
+   "image_url": "",
+   "description": ""
+  },
+  {
+   "id": "org-direktorat-b",
+   "name": "direktorat-b",
+   "title": "Direktorat B",
+   "display_name": "Direktorat B",
+   "package_count": 2,
+   "state": "active",
+   "type": "organization",
+   "is_organization": true,
+   "image_url": "",
+   "description": ""
+  },
+  {
+   "id": "org-pusat-c",
+   "name": "pusat-c",
+   "title": "Pusat C",
+   "display_name": "Pusat C",
+   "package_count": 1,
+   "state": "active",
+   "type": "organization",
+   "is_organization": true,
+   "image_url": "",
+   "description": ""
+  }
+ ]
+}
