@@ -1778,10 +1778,17 @@ async function gambarPetaAlun(daftar) {
       alunPeta.fitBounds(g.b, {padding: padPeta(), maxZoom: 9, duration: 0}); if (alunPeta.getZoom() < ZOOM_KAB + .01) alunPeta.setZoom(ZOOM_KAB + .01); });   // satu provinsi: langsung ke tingkat kab/kota
     alunPeta.on("click", "titik", e => { const t = alunTempat.get(e.features[0].properties.kunci); if (!t) return; const box = el("div", "lp-alun-pop");
       box.append(el("small", "lp-redup", t.isi[0].lokasi.kab || ""));
-      for (const x of t.isi) { const r = el("div", "lp-alun-pop-baris"), lihat = el("button", "lp-teks-tombol", "Lihat kartu"); lihat.type = "button";
-        lihat.addEventListener("click", () => { const k = document.getElementById(`alun-${x.id}`); if (!k) return; const bk = k.querySelector(".lp-kb-buka"); if (bk?.getAttribute("aria-expanded") === "false") bk.click(); k.scrollIntoView({behavior: "smooth", block: "nearest"}); k.classList.remove("sorot"); void k.offsetWidth; k.classList.add("sorot"); });
-        r.append(el("b", null, x.jenis), el("small", null, x.statusLabel), lihat); box.append(r); }
-      new maplibregl.Popup({offset: 12, closeButton: false, maxWidth: "280px"}).setLngLat(e.features[0].geometry.coordinates).setDOMContent(box).addTo(alunPeta); });
+      // tiap kejadian satu baris tombol penuh berpanah (pemilik 26 Nov 2026 "jelek banget"): tanpa tautan "Lihat kartu", tanpa cincin fokus saat terbuka
+      for (const x of t.isi) { const r = el("button", "lp-alun-pop-baris"), tx = el("span"); r.type = "button"; tx.append(el("b", null, x.jenis), el("small", null, x.statusLabel)); r.append(tx, ikon("i-panah"));
+        r.addEventListener("click", () => {
+          if (x.prov && alunProv !== x.prov && typeof pilihProv === "function") pilihProv(x.prov);
+          const cari = (n = 0) => { const tr = document.querySelector(`.lp-alun-kj tr[data-id="${CSS.escape(String(x.id))}"]`);
+            if (!tr) return n < 20 && requestAnimationFrame(() => cari(n + 1));
+            if (tr.getAttribute("aria-expanded") !== "true") tr.click();   // baris memegang data kejadian lengkap; titik peta hanya ringkasan
+            tr.scrollIntoView({behavior: "smooth", block: "nearest"}); tr.classList.remove("sorot"); void tr.offsetWidth; tr.classList.add("sorot"); };
+          cari(); });
+        box.append(r); }
+      new maplibregl.Popup({offset: 12, closeButton: false, maxWidth: "280px", focusAfterOpen: false}).setLngLat(e.features[0].geometry.coordinates).setDOMContent(box).addTo(alunPeta); });
     for (const l of ["kelompok", "titik"]) { alunPeta.on("mouseenter", l, () => { alunPeta.getCanvas().style.cursor = "pointer"; }); alunPeta.on("mouseleave", l, () => { alunPeta.getCanvas().style.cursor = ""; }); }
     pas();
   });
@@ -1878,6 +1885,29 @@ function tabelProvinsi(w, daftar) {
   t.append(th, tb); w.append(t);
   if (!window.Wilayah) muatWilayah().then(() => { if (!alunProv) for (const [i, r] of baris.entries()) { const b = tb.children[i + 1]?.querySelector(".lp-alun-prov-nama"); if (b) b.textContent = namaProv(r.k); } });
 }
+/* kejadian dalam satu provinsi sebagai tabel (pemilik 26 Nov 2026); kartu lengkap digambar hanya saat barisnya dibuka, jadi klik ringan */
+function bukaBarisKejadian(tr, x, ikut) {
+  const lalu = tr.nextElementSibling?.classList.contains("lp-alun-kj-rinci") ? tr.nextElementSibling : null, buka = !lalu;
+  tr.setAttribute("aria-expanded", String(buka)); if (lalu) { lalu.remove(); return null; }
+  const r = el("tr", "lp-alun-kj-rinci"), td = el("td"); td.colSpan = tr.children.length; r.append(td); tr.after(r);
+  requestAnimationFrame(() => { const k = kartuKejadian(x, ikut); td.append(k); k.querySelector(".lp-kb-buka")?.click(); });
+  return r;
+}
+function tabelKejadianProv(w, daftar, ikut, giliran) {
+  const t = el("table", "ex-tabel lp-alun-prov lp-alun-kj"), th = el("thead"), tb = el("tbody"), kep = el("tr");
+  for (const [teks, judul] of [["Kab/kota", ""], ["Bencana", ""], ["Status", "Status menurut laporan resmi BNPB"], ["Berita", "Berita yang cocok dengan kejadian"]]) { const c = el("th", null, teks); c.scope = "col"; if (judul) c.title = judul; kep.append(c); }
+  th.append(kep); t.append(th, tb); w.append(t);
+  let i = 0; const lanjut = () => { if (giliran !== alunGiliran) return; const f = document.createDocumentFragment();
+    for (const x of daftar.slice(i, i + 40)) {
+      const tr = el("tr"), jn = el("span", "lp-alun-kj-jenis"); tr.dataset.id = x.id; tr.tabIndex = 0; tr.setAttribute("aria-expanded", "false");
+      jn.append(ikon(IKON_JENIS[x.jenis] || "i-kejadian"), x.jenisLabel);
+      const tdJ = el("td"); tdJ.append(jn); const tdS = el("td"); tdS.append(el("span", `lp-pil ${x.status || ""}`, x.statusLabel || "–"));
+      tr.append(el("td", "lp-alun-kj-kab", x.kab || "Lokasi belum diketahui"), tdJ, tdS, el("td", null, x.nBerita ? x.nBerita.toLocaleString("id-ID") : "–"));
+      const tekan = () => bukaBarisKejadian(tr, x, ikut); tr.addEventListener("click", e => { if (!e.target.closest(".lp-alun-kj-rinci")) tekan(); });
+      tr.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tekan(); } }); f.append(tr);
+    }
+    tb.append(f); i += 40; if (i < daftar.length) requestAnimationFrame(lanjut); else if (alunPeta) alunPeta.resize(); }; lanjut();
+}
 function gambarKabar(ikut) {
   const sm = $("sumberAlun"); sm.hidden = alunMode === "peringatan";
   sm.replaceChildren(...SUMBER_ALUN.map(([id, tt, ik]) => { const b = el("button"); b.append(ikon(ik), el("span", null, tt)); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(id === alunSumber));
@@ -1901,8 +1931,7 @@ function gambarKabar(ikut) {
     w.replaceChildren(...(alunJenis === "selesai" ? [el("p", "lp-redup lp-kb-catatan", "Kejadian selesai yang tampil hanya yang tercatat dalam 8 hari terakhir.")] : []));
     if (!alunProv) return tabelProvinsi(w, semuaProv);   // tampilan awal: dikelompokkan per provinsi seperti panel karhutla (pemilik 26 Nov 2026)
     w.append(kepalaProvinsi(alunProv, daftar.length));
-    let i = 0; const lanjut = () => { if (giliran !== alunGiliran) return; const f = document.createDocumentFragment(); for (const x of daftar.slice(i, i + 20)) f.append(kartuKejadian(x, ikut)); w.append(f);
-      i += 20; if (i < daftar.length) requestAnimationFrame(lanjut); else if (alunPeta) alunPeta.resize(); }; lanjut();
+    tabelKejadianProv(w, daftar, ikut, giliran);   // pemilik 26 Nov 2026: "ga bisa dibuat kaya tabel gitu aja?": satu baris per kejadian, kartu lengkap terbuka di bawah baris yang diketuk
   });
 }
 /* ---- tampilan Peringatan (DP-11): modul bersama inti/dampak_peringatan.js dipasang per bahaya; kartu kejadian tidak pernah bercampur dengan kartu prakiraan (D23) ---- */

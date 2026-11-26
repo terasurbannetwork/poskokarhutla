@@ -3157,9 +3157,29 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-kb-berita li.ada-gambar{grid-template-columns:96px minmax(0,1fr);column-gap:10px;align-items:start}
 .lp-kb-berita li > div{display:grid;gap:2px;min-width:0}
 .lp-kb-thumb{width:96px;height:64px;object-fit:cover;border-radius:8px;background:var(--surface)}
-.lp-alun-pop-baris{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:10px;padding:6px 0;border-top:1px solid var(--line)}
-.lp-alun-pop-baris small{grid-column:1}
-.lp-alun-pop-baris .lp-teks-tombol{grid-column:2;grid-row:1 / span 2;font-size:.75rem}
+/* pop-up titik peta: tiap kejadian satu baris tombol penuh berpanah (pemilik 26 Nov 2026) */
+.lp-alun-pop-baris{display:flex;align-items:center;gap:10px;width:100%;padding:8px 6px;margin:0 -6px;border:0;border-top:1px solid var(--line);border-radius:8px;background:none;color:var(--ink);text-align:left;cursor:pointer;font:inherit}
+.lp-alun-pop-baris:first-of-type{border-top:0}
+.lp-alun-pop-baris > span{display:grid;gap:1px;flex:1;min-width:0}
+.lp-alun-pop-baris b{font:700 .8125rem var(--font)}
+.lp-alun-pop-baris small{color:var(--ink2);font-size:.75rem}
+.lp-alun-pop-baris svg{width:16px;height:16px;flex:none;color:var(--ink2);fill:none;stroke:currentColor;stroke-width:2}
+.lp-alun-pop-baris:hover{background:var(--surface)}
+.lp-alun-pop-baris:hover svg{color:var(--brand2)}
+.lp-alun-pop-baris:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
+/* kejadian dalam satu provinsi: tabel, kartu lengkap terbuka di bawah baris (pemilik 26 Nov 2026) */
+.lp-alun-kj td{text-align:left}
+.lp-alun-kj td:last-child,.lp-alun-kj th:last-child{text-align:center}
+.lp-alun-kj td:first-child{width:auto;font-size:.8125rem}
+.lp-alun-kj-kab{font-weight:700;color:var(--ink)}
+.lp-alun-kj-jenis{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.lp-alun-kj-jenis svg{width:15px;height:15px;flex:none;color:var(--brand2);fill:none;stroke:currentColor;stroke-width:1.8}
+.lp-alun-kj tbody tr[aria-expanded]{cursor:pointer}
+.lp-alun-kj tbody tr[aria-expanded="true"]{background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
+.lp-alun-kj tbody tr[aria-expanded]:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
+.lp-alun-kj tbody tr.sorot{animation:lp-sorot 1.6s ease-out}
+.lp-alun-kj-rinci > td{padding:8px 0 12px;background:var(--surface);cursor:default}
+.lp-alun-kj-rinci .lp-kabar{margin:0}
 .lp-kabar .ex-jd h3{width:100%}
 /* tabel provinsi Alun-alun (pemilik 26 Nov 2026), pola panel karhutla */
 .lp-alun-prov{width:100%;border-collapse:collapse;font-size:.8125rem;font-variant-numeric:tabular-nums}
