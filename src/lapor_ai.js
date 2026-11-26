@@ -491,7 +491,9 @@ async function nilaiPost(env, req, url, kini) {
   const b = await bacaBody(req, 1024); if (b.galat) return galat(b.status || 400, b.galat);
   const id = await pelapor(env, req, url, b.o); if (id instanceof Response) return id;
   const lj = await kuota(env, req, id, kini, "lapor.nilai"); if (lj) return lj;
-  const n = b.o.nilai, baris = RE_NOMOR.test(b.o.nomor || "") ? await H.lpSesiNomor(env, P, b.o.nomor) : null;
+  // cari orang tidak bernomor tiket: penilaian menempel pada sesi terakhir pelapor itu, hanya bila sesinya baru selesai sebagai laporan orang dicari
+  const n = b.o.nilai, cariS = b.o.cari === true && !b.o.nomor ? await H.lpSesiAktif(env, P, id.wa) : null;
+  const baris = RE_NOMOR.test(b.o.nomor || "") ? await H.lpSesiNomor(env, P, b.o.nomor) : cariS && dariBaris(cariS).status === "cari_terkirim" ? cariS : null;
   if (!await milikSesi(env, id, baris) || !angka(n) || !Number.isInteger(n) || n < 1 || n > 5) return galat(400, "Nilai tidak sah.");
   const s = dariBaris(baris); s.nilai = {nilai: n, waktu: kini};
   if (!await H.lpSesiUbah(env, P, {id: s.id, status: s.status, tingkat: s.tingkat, jenis: s.isian.jenis?.nilai, kab: s.isian.lokasi?.nilai?.wilayah?.kabKode, lat: s.isian.lokasi?.nilai?.lat, lon: s.isian.lokasi?.nilai?.lon, kerja: JSON.stringify(s)}, baris.rev, kini))

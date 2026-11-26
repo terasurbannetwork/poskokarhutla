@@ -3532,3 +3532,7 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 .lp-antar-pil:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
 .lp-lok-antar .lp-antar-sendiri{width:100%;min-height:48px;justify-content:center}
 .lp-lok-antar .lp-antar-evakuasi{color:var(--ok-tx);font-weight:700}
+/* kartu tiket cari orang: tanpa kolom nomor dan QR, langkah selebar kartu; Nomor penting di akhir obrolan: kolom mengikuti isinya, rata atas (pemilik 26 Nov 2026) */
+.lp-tk.lp-tk-cari{grid-template-columns:minmax(0,1fr)!important}
+.lp-langkah-wadah .lp-kontak-kolom{align-items:start!important}
+.lp-tk-cari .lp-tk-langkah{grid-template-columns:repeat(4,minmax(0,1fr))}

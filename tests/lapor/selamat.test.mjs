@@ -230,6 +230,8 @@ uji("orang dicari lewat obrolan (pemilik 25 Nov 2026): tanpa kode, baris lapor_c
   assert.match(r.t, /Foto: ada/);
   assert.match(r.t, /Ringkasan laporan orang dicari/);
   r = await kirimP({teks: "1"}); assert.equal(r.s, 200, r.t.slice(0, 300)); assert.match(r.t, /Laporan orang dicari diterima/);
+  // penilaian di layar terima kasih cari orang (tanpa nomor tiket) menempel pada sesi itu (pemilik 26 Nov 2026: "Pengalamannya gimana?")
+  const nl = await api("POST", "/api/lapor/nilai", {wa: WA_CHAT, nilai: 5, cari: true}, MESIN_H); assert.equal(nl.s, 200, nl.t.slice(0, 300));
   assert.equal(await n("lapor_cari"), cari0 + 1); assert.equal(await n("lapor_tiket"), tiket0, "tidak membuat tiket");
   const b = await DB.prepare("SELECT nomor_pencari, nama_dicari, hubungan, waktu_terakhir, nomor_dicari, status FROM lapor_cari ORDER BY dibuat DESC LIMIT 1").first();
   assert.deepEqual(b, {nomor_pencari: WA_CHAT, nama_dicari: "Joko", hubungan: "Saudara", waktu_terakhir: "Hari ini", nomor_dicari: null, status: "buka"});

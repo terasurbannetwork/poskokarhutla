@@ -151,9 +151,20 @@ function kartuBatal(ik = "i-tutup", judul = "Laporan dibatalkan") {
   aksi.append(pulang, baru); isi.append(aksi); baru.focus();
 }
 /* sesudah laporan orang dicari (pemilik 26 Nov 2026: "Jangan cuma chat gini dong"): jalan keluar, lalu kartu Nomor penting terdekat dari lokasi terakhir terlihat */
-function kartuCariTerkirim() {
-  kartuBatal("i-centang", "Laporan orang dicari diterima"); wadah.querySelector(".lp-kembali-langkah")?.remove();
-  wadah.append(kartuPentingLapor(cache.lokasiLapor));
+/* selesai cari orang memakai alur sukses yang sama dengan Lapor Bencana (pemilik 26 Nov 2026: "Terima kasihnya mana? Pengalamannya gimana?"):
+   layar terima kasih (ucapanTerimaKasih, dengan penilaian) lalu kartu tiket hijau. Cari orang tidak punya nomor tiket, halaman lacak, atau unduhan,
+   jadi bagian itu tidak digambar; tahapnya dari status lapor_cari (src/lapor_selamat.js STATUS_CARI), tidak dikarang */
+function kartuCariTerkirim(j = {}) {
+  const isi = kartu("tiket", "Laporan orang dicari diterima"), k = isi.closest(".lp-langkah"); k.classList.add("lp-langkah-tiket"); k.querySelector(".lp-langkah-kepala")?.remove();
+  const pita = el("div", "lp-tk-pita"), ok = el("span", "lp-ok"); ok.append(ikon("i-centang"));
+  const pt = el("div"); pt.append(el("b", null, "Terima kasih, laporan orang dicari sudah kami terima"), el("span", null, "Bila ada kabar, petugas menghubungi nomor yang Anda berikan.")); pita.append(ok, pt);
+  const tiket = el("div", "lp-tk lp-tk-cari"), kanan = el("div", "lp-tk-kanan"), langkah = el("ol", "lp-tk-langkah");
+  for (const [t, ket, aktif, ik] of [["Diterima", "Sekarang", true, "i-centang"], ["Dicari", "Petugas BNPB, BPBD, dan SAR", false, "i-cari"], ["Ditemukan", "Anda dikabari", false, "i-telepon"], ["Ditutup", "Laporan selesai", false, "i-status"]]) {
+    const li = el("li", aktif ? "aktif" : ""), u = el("span"); u.append(ikon(ik)); li.append(u, el("b", null, t), el("small", null, ket)); langkah.append(li); }
+  kanan.append(el("small", null, "Langkah berikutnya"), langkah); tiket.append(kanan);
+  const baru = el("button", "lp-tk-baru"); baru.type = "button"; baru.append(ikon("i-plus"), "Buat laporan baru"); baru.addEventListener("click", () => kirim({teks: "lapor", tampil: "Buat laporan baru"}));
+  isi.append(pita, tiket, baru); wadah.append(kartuPentingLapor(cache.lokasiLapor));
+  ucapanTerimaKasih("", `cari-${j.cari?.id || (cache.transkrip?.length || 0)}`);
 }
 /* tempat menunggu orang dicari, dicari seperti di peta (pemilik 26 Nov 2026: "Sekolah atau Jalan apa yang tinggal cari"): posko, sekolah, rumah ibadah,
    dan jalan di sekitar lokasi terakhir terlihat (OpenStreetMap, /api/lapor/sekitar, sumber yang sama dengan titik pengungsian), atau desa/kelurahan
@@ -712,18 +723,18 @@ function kotakPenilaian(nomor, sesudah) {
   const nilai = el("div", "lp-nilai"), tanya = el("b", null, TEKS_TERIMA[5]);
   ["😠", "🙁", "😐", "🙂", "🤩"].forEach((e, i) => { const b = el("button", null, e); b.dataset.label = ["Buruk", "Kurang", "Biasa", "Baik", "Sangat baik"][i]; b.type = "button"; b.setAttribute("aria-label", `Nilai ${i + 1} dari 5`);
     b.addEventListener("click", async () => { nilai.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); tanya.textContent = TEKS_TERIMA[6]; sesudah?.();
-      try { await fetch("/api/lapor/nilai", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, nomor, nilai: i + 1})}); } catch {} }); nilai.append(b); });
+      try { await fetch("/api/lapor/nilai", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, nomor, nilai: i + 1, ...(nomor ? {} : {cari: true})})}); } catch {} }); nilai.append(b); });
   return {tanya, nilai};
 }
-function ucapanTerimaKasih(nomor) {
-  const kunci = `lapor-tk-${nomor}`; try { if (sessionStorage.getItem(kunci) || localStorage.getItem(kunci)) return; } catch { return; }
+function ucapanTerimaKasih(nomor, kunciLain = "") {   // kunciLain: alur tanpa nomor tiket (cari orang), layar sekali per laporan
+  const kunci = `lapor-tk-${nomor || kunciLain}`; try { if (sessionStorage.getItem(kunci) || localStorage.getItem(kunci)) return; } catch { return; }
   if (document.querySelector(".lp-terima")) return;
   const pb = el("div", "lp-pembuka lp-terima"); pb.setAttribute("role", "alertdialog"); pb.setAttribute("aria-modal", "true");
   const riak = el("span", "lp-pb-riak"); riak.setAttribute("aria-hidden", "true"); riak.append(el("i"), el("i"), el("i"));
   const m = el("div", "lp-pembuka-maskot"); m.innerHTML = maskot("senang");
   // teks tetap dipisah dari nama dan nomor supaya terjemahannya sudah ada di perangkat (disiapkan saat chat dibuka, hangatkanTerima)
   const judul = el("p", "lp-pembuka-judul"); judul.append(el("span", null, TEKS_TERIMA[1]), cache.pelapor ? el("span", "lp-nama-orang", `, ${cache.pelapor}!`) : "!");
-  const bnpb = el("p", "lp-pembuka-bnpb"); bnpb.append(el("span", null, TEKS_TERIMA[2]), " ", el("b", "lp-tk-nomor", nomor), el("br"), el("span", null, TEKS_TERIMA[3]));
+  const bnpb = el("p", "lp-pembuka-bnpb"); if (nomor) bnpb.append(el("span", null, TEKS_TERIMA[2]), " ", el("b", "lp-tk-nomor", nomor), el("br")); bnpb.append(el("span", null, TEKS_TERIMA[3]));
   // dua tahap (pemilik 21 Nov 2026): terima kasih dulu, diketuk baru penilaian besar di tengah, dipilih baru kembali.
   // Penilaian tetap wajib: layar tidak bisa ditutup sebelum satu emoji dipilih (pemilik 20 Nov 2026)
   const tutup = () => { try { localStorage.setItem(kunci, "1"); } catch {} setTimeout(() => { pb.classList.add("pergi"); setTimeout(() => pb.remove(), 400); }, 350); };   // langsung pindah sesudah emoji diketuk (pemilik 21 Nov 2026: "susah banget di hape")
@@ -814,7 +825,7 @@ function terapkan(j, {dariCache = false} = {}) {
   else if (j.form) kartuAngka(j);
   else if (j.pilihan?.length || KETIK.has(j.minta)) kartuPilihan(j);
   else if (j.status === "batal") kartuBatal();
-  else if (j.status === "cari_terkirim") kartuCariTerkirim();   // sesudah dibatalkan tetap ada jalan keluar (pemilik 21 Nov 2026: "gw ga bisa klik")
+  else if (j.status === "cari_terkirim") kartuCariTerkirim(j);   // sesudah dibatalkan tetap ada jalan keluar (pemilik 21 Nov 2026: "gw ga bisa klik")
   else tulis = j.status !== "terkirim" && j.status !== "batal";
   fPesan.hidden = !tulis;
   if (tulis && j.isiAwal && !iTeks.value.trim()) { iTeks.value = j.isiAwal; const n1 = iTeks.value.indexOf("\n1. "), t = n1 >= 0 ? n1 + 4 : iTeks.value.indexOf(":") + 2; iTeks.setSelectionRange(t, t); } // daftar bernomor: kursor di belakang "1. "
