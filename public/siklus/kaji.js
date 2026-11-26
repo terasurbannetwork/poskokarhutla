@@ -41,7 +41,7 @@ async function daftar(isi, sk) {
   const S = {status: "semua", baris: null, kej: new Map()}, pj = penjaga();
   sk.periode = () => { const sampai = tglWib(); return {dari: geser(sampai, -30), sampai}; };
   const hasil = h("div", {}), ctl = h("div", {class: "sk-ctl"});
-  const kart = kartu({ey: [ik("gelombang", 12), "Kaji cepat"], judul: ["Kaji cepat ", hl("menunggu"), " data"], isi: [ctl, hasil], id: "daftar"}), judul = kart.querySelector("h3");
+  const kart = kartu({ey: [ik("gelombang", 12), "Kaji cepat"], judul: ["Kaji cepat ", hl("menunggu"), " data"], isi: [ctl, hasil], id: "daftar"}), judul = kart.querySelector(".sk-ring");
   ctl.append(seg([["semua", "Semua", "semua"], ...Object.entries(STATUS).map(([v, [t, i]]) => [v, t, i])], S.status, v => { S.status = v; gambar(); }, "Status kaji"));
 
   function gambar() {

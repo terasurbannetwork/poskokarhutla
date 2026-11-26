@@ -167,3 +167,6 @@ main#sk-gulir{padding:0 16px}
 main#sk-gulir>.bn-judul{display:flex;align-items:center;gap:12px;margin:12px 0 14px}
 main#sk-gulir>.bn-judul>h1{flex:1 1 auto;margin:0;padding:9px 16px;border-radius:14px;background:var(--db-navy,var(--head-bg));color:var(--on-head);text-align:center;font-size:1.0625rem;font-weight:800}
 main.peta>.bn-judul{display:none}
+/* baris ringkas di awal isi kartu: angka temuan, bukan kepala (kepala = nama seksi) */
+.sk-ring{margin:0;font-size:.8125rem;color:var(--ink2);line-height:1.5}
+.sk-ring .hl{color:var(--ink);font-weight:700}

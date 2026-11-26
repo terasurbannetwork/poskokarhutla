@@ -74,10 +74,15 @@ export function nilai(n, y, isi = {}) {
 }
 
 /* ---------- kartu standar dan keadaan ---------- */
+/* kepala kartu = NAMA SEKSI (AGENTS.md 3.5, pemilik 11 Nov dan 26 Nov 2026); kalimat temuan (judul yang memuat .hl) pindah ke baris ringkas .sk-ring di awal isi.
+   Nama diambil dari teks ey bila tidak diberi judul biasa. Pemanggil yang memperbarui angka menulis ke kart.querySelector(".sk-ring"), bukan h3. */
+const adaHl = judul => [judul].flat(Infinity).some(n => n?.nodeType === 1 && (n.classList.contains("hl") || n.querySelector(".hl")));
+const namaDariEy = ey => [ey].flat(Infinity).filter(x => typeof x === "string").join("").trim();
 export function kartu({ey, judul, kanan, isi, id}) {
+  const ringkas = adaHl(judul);
   return h("section", {class: "ex ex-std", id},
-    h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ey), h("div", {class: "ex-jd"}, h("h3", {}, judul), kanan || null)),
-    h("div", {class: "ex-bd"}, isi));
+    h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ey), h("div", {class: "ex-jd"}, h("h3", {}, ringkas ? namaDariEy(ey) : judul), kanan || null)),
+    h("div", {class: "ex-bd"}, ringkas ? h("p", {class: "sk-ring"}, judul) : null, isi));
 }
 /* wadah kelompok isi di dalam kartu (memori bagian-dalam-kartu): putih, bergaris, judul kecil kapital */
 export const wadah = (judul, ...isi) => h("div", {class: "sk-blok"}, judul ? h("h4", {}, judul) : null, ...isi);

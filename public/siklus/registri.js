@@ -13,7 +13,7 @@ export function gabung(reg, atr) {
 
 export async function buka(isi, sk) {
   sk.periode = () => null;
-  const hasil = h("div", {}), kart = kartu({ey: [ik("tiga", 12), "Registri sumber"], judul: ["Registri sumber ", hl("menunggu"), " data"], isi: hasil, id: "registri"}), judul = kart.querySelector("h3");
+  const hasil = h("div", {}), kart = kartu({ey: [ik("tiga", 12), "Registri sumber"], judul: ["Registri sumber ", hl("menunggu"), " data"], isi: hasil, id: "registri"}), judul = kart.querySelector(".sk-ring");
   async function muat() {
     kosongkan(hasil).append(kead("memuat"));
     const [r, a] = await Promise.all([api("/api/siklus/registri"), api("/siklus/data/atribusi.json")]);

@@ -68,7 +68,7 @@ test('layar kejadian di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome 
         const T = await pb.tab(); await T.ukuran(1440, 900);
         await T.buka(`${s.url}/siklus/kejadian`, {tunggu: '#daftar table'});
         assert.ok(!/\bnull\b/.test(await T.eval('document.body.innerText')), 'kata null bocor ke layar');
-        const d = await T.eval(`(() => { const k = document.querySelector('#daftar'); return {ex: k.classList.contains('ex-std'), ey: !!k.querySelector('.ex-ey'), hl: !!k.querySelector('h3 .hl'), baris: k.querySelectorAll('tbody tr').length,
+        const d = await T.eval(`(() => { const k = document.querySelector('#daftar'); return {ex: k.classList.contains('ex-std'), ey: !!k.querySelector('.ex-ey'), hl: !!k.querySelector('.sk-ring .hl'), baris: k.querySelectorAll('tbody tr').length,
           kepala: [...k.querySelectorAll('thead th')].map(x => x.textContent), titles: [...k.querySelectorAll('thead th')].every(x => x.title), penuh: !!k.querySelector('.seg.penuh'), ft: !!k.querySelector('.ex-ft'), teks: k.innerText, seg: k.querySelector('.seg.penuh').getBoundingClientRect().width, kartu: k.getBoundingClientRect().width}; })()`);
         assert.ok(d.ex && d.ey && d.hl && !d.ft); assert.equal(d.baris, 3); assert.ok(d.titles, 'definisi kolom di title kepala');
         assert.ok(!d.kepala.some((x) => /total/i.test(x)), 'tanpa kolom total');
@@ -97,7 +97,7 @@ test('layar kejadian di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome 
       try {
         const T = await pb.tab(); await T.ukuran(1440, 900);
         await T.buka(`${s.url}/siklus/kejadian/${KJ}`, {tunggu: '#k-dampak .sk-ber'});
-        const d = await T.eval(`(() => ({ber: document.querySelector('#k-dampak .sk-ber').innerText, kepala: [...document.querySelectorAll('#k-dampak thead th')].map(x => x.textContent), judul: document.querySelector('#k-kepala h3').innerText,
+        const d = await T.eval(`(() => ({ber: document.querySelector('#k-dampak .sk-ber').innerText, kepala: [...document.querySelectorAll('#k-dampak thead th')].map(x => x.textContent), judul: document.querySelector('#k-kepala .sk-ring').innerText,
           garis: document.querySelectorAll('#k-waktu .sk-garis li').length, fase: document.querySelector('#k-kepala .sk-fase').textContent, tombol: [...document.querySelectorAll('#k-kepala [data-aksi]')].map(x => x.textContent.trim()), tid: document.querySelector('#k-dampak').innerText}))()`);
         assert.match(d.ber, /DIBI 12, Logbook Pusdalops 15, selisih 3/); assert.ok(d.kepala.includes('Selisih')); assert.ok(!d.kepala.some((x) => /total/i.test(x)));
         assert.match(d.judul, /12 jiwa menurut DIBI, 15 menurut Logbook, selisih 3/); assert.equal(d.garis, 2); assert.match(d.fase, /Tanggap/);

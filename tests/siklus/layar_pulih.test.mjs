@@ -103,7 +103,7 @@ test('layar pulih di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome tid
       try {
         for (const [w, hh] of [[1440, 900], [390, 844]]) {
           const T = await pb.tab(); await T.ukuran(w, hh); await T.buka(`${s.url}/siklus/pulih/${JP}`, {tunggu: '#pl-r3p .sk-baris'});
-          const d = await T.eval(`(() => ({kep: document.querySelector('#pl-kepala').innerText, jd: document.querySelector('#pl-kepala h3').innerText, isian: document.querySelector('#pl-isian').innerText, hasil: document.querySelector('#pl-hasil').innerText, r3p: document.querySelector('#pl-r3p').innerText,
+          const d = await T.eval(`(() => ({kep: document.querySelector('#pl-kepala').innerText, jd: document.querySelector('#pl-kepala .sk-ring').innerText, isian: document.querySelector('#pl-isian').innerText, hasil: document.querySelector('#pl-hasil').innerText, r3p: document.querySelector('#pl-r3p').innerText,
             lak: document.querySelector('#pl-lak').innerText, tanda: document.querySelector('#pl-tanda').innerText, semua: document.body.innerText, ft: !!document.querySelector('.ex-ft'), ex: document.querySelectorAll('.ex.ex-std').length,
             asumsi: document.querySelectorAll('#pl-hasil .sk-pil[data-y=asumsi-kebijakan]').length, aksi: [...document.querySelectorAll('#pl-kepala [data-aksi], #pl-r3p [data-aksi]')].map((x) => x.textContent.trim())}))()`);
           assert.match(d.jd, /Rp2\.606\.000\.000/); assert.match(d.jd, /diusulkan/i); assert.ok(d.asumsi >= 3, `pil asumsi-kebijakan di hasil: ${d.asumsi}`);
@@ -147,7 +147,7 @@ test('layar pulih di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome tid
       try {
         for (const [w, hh] of [[1440, 900], [390, 844]]) {
           const T = await pb.tab(); await T.ukuran(w, hh); await T.buka(`${s.url}/siklus/pulih`, {tunggu: '#daftar table'});
-          const d = await T.eval(`({jd: document.querySelector('#daftar h3').innerText, n: document.querySelectorAll('#daftar tbody tr').length, t: document.querySelector('#daftar').innerText, ft: !!document.querySelector('.ex-ft'), semua: document.body.innerText, aksi: [...document.querySelectorAll('#daftar [data-aksi]')].map((x) => x.textContent.trim())})`);
+          const d = await T.eval(`({jd: document.querySelector('#daftar .sk-ring').innerText, n: document.querySelectorAll('#daftar tbody tr').length, t: document.querySelector('#daftar').innerText, ft: !!document.querySelector('.ex-ft'), semua: document.body.innerText, aksi: [...document.querySelectorAll('#daftar [data-aksi]')].map((x) => x.textContent.trim())})`);
           assert.equal(d.n, 2); assert.match(d.jd, /2 Jitupasna berjalan/); assert.match(d.t, /Rp2\.600\.000\.000/); assert.match(d.t, /menunggu/i); assert.doesNotMatch(d.semua, SALAH); assert.ok(!d.ft); assert.ok(d.aksi.includes('Buka Jitupasna'));
           const r = await T.eval(`(async () => { const t0 = performance.now(); const b = [...document.querySelectorAll('#daftar .seg.penuh button')].find((x) => /Final/.test(x.textContent)); b.click(); const p = b.getAttribute('aria-pressed'); await new Promise((o) => requestAnimationFrame(() => requestAnimationFrame(o))); return {p, ms: performance.now() - t0}; })()`);
           assert.equal(r.p, 'true'); assert.ok(r.ms < 200, `${Math.round(r.ms)} ms`);

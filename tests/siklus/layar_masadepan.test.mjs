@@ -47,13 +47,13 @@ test('layar masa depan di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrom
       try {
         for (const [w, hh] of [[1440, 900], [390, 844]]) {
           const T = await pb.tab(); await T.ukuran(w, hh); await T.buka(`${s.url}/siklus/masa-depan?prov=32`, {tunggu: '#masadepan tbody tr'});
-          const d = await T.eval(`({jd: document.querySelector('#masadepan h3').innerText, t: document.querySelector('#masadepan').innerText, semua: document.body.innerText, baris: document.querySelector('#masadepan .ex-tabel').querySelectorAll('tbody tr').length,
+          const d = await T.eval(`({jd: document.querySelector('#masadepan .sk-ring').innerText, t: document.querySelector('#masadepan').innerText, semua: document.body.innerText, baris: document.querySelector('#masadepan .ex-tabel').querySelectorAll('tbody tr').length,
             hip: document.querySelector('#masadepan .ex-tabel').querySelectorAll('tbody .sk-pil[data-y=hipotesis]').length, rentang: document.querySelectorAll('#masadepan .sk-rentang').length, ft: !!document.querySelector('.ex-ft'), seg: [...document.querySelectorAll('#masadepan .seg.penuh button')].map((b) => b.textContent.trim())})`);
           assert.match(d.jd, /naik 16,8 persen pada 2050/); assert.match(d.jd, /bukan ramalan kejadian/); assert.equal(d.baris, 3); assert.equal(d.hip, 3, 'pil hipotesis di tiap baris'); assert.ok(d.rentang >= 4, 'bilah rentang indeks dan muka laut');
           assert.match(d.t, /bukan ramalan kejadian/); assert.match(d.t, /17 sampai 26 cm/); assert.match(d.t, /Muka laut/i); assert.match(d.t, /Bangunan tumbuh di zona bahaya/i); assert.match(d.t, /RTRW: tidak ada sumber otomatis/); assert.match(d.t, /penurunan muka tanah/i);
           assert.deepEqual(d.seg.slice(0, 4), ['2030', '2050', 'SSP2-4.5 (sedang)', 'SSP5-8.5 (tinggi)']); assert.ok(!d.ft); assert.doesNotMatch(d.semua, SALAH); assert.doesNotMatch(d.semua, /akan terjadi|pasti|·|—/);
           const r = await T.eval(`(async () => { const t0 = performance.now(); const b = [...document.querySelectorAll('#masadepan .seg.penuh button')].find((x) => x.textContent.trim() === '2030'); b.click(); const p = b.getAttribute('aria-pressed');
-            await new Promise((o) => requestAnimationFrame(() => requestAnimationFrame(o))); return {p, ms: performance.now() - t0, jd: document.querySelector('#masadepan h3').innerText, t: document.querySelector('#masadepan').innerText}; })()`);
+            await new Promise((o) => requestAnimationFrame(() => requestAnimationFrame(o))); return {p, ms: performance.now() - t0, jd: document.querySelector('#masadepan .sk-ring').innerText, t: document.querySelector('#masadepan').innerText}; })()`);
           assert.equal(r.p, 'true'); assert.ok(r.ms < 200, `${Math.round(r.ms)} ms`); assert.match(r.jd, /naik 8,4 persen pada 2030/); assert.match(r.t, /horizon tidak ada di tabel AR6/); assert.match(r.t, /menunggu/i);
           const l = await T.lebihLebar(); assert.ok(l.sw <= l.iw + 1, `gulir mendatar di ${w}`); assert.deepEqual(galatNyata(T), []); await T.tutup();
         }
@@ -73,7 +73,7 @@ test('layar masa depan di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrom
       const s = await sajikan(api()), s2 = await sajikan(api({ring: null}));
       try {
         const T = await pb.tab(); await T.ukuran(390, 844); await T.buka(`${s.url}/siklus/masa-depan`, {tunggu: '#masadepan tbody tr'});
-        const d = await T.eval(`({jd: document.querySelector('#masadepan h3').innerText, t: document.querySelector('#masadepan').innerText, hip: document.querySelectorAll('#masadepan tbody .sk-pil[data-y=hipotesis]').length})`);
+        const d = await T.eval(`({jd: document.querySelector('#masadepan .sk-ring').innerText, t: document.querySelector('#masadepan').innerText, hip: document.querySelectorAll('#masadepan tbody .sk-pil[data-y=hipotesis]').length})`);
         assert.match(d.jd, /1 provinsi punya sinyal perubahan iklim hipotesis, bukan ramalan kejadian/); assert.equal(d.hip, 3); assert.match(d.t, /12,4/); assert.doesNotMatch(d.t, SALAH);
         const l = await T.lebihLebar(); assert.ok(l.sw <= l.iw + 1, 'gulir mendatar 390'); await T.tutup();
         const T2 = await pb.tab(); await T2.buka(`${s2.url}/siklus/masa-depan`, {tunggu: '#masadepan .sk-kead'});

@@ -31,7 +31,7 @@ export async function buka(isi, sk) {
   const S = {prov: new URLSearchParams(location.search).get("prov") || prov0 || "", kab4: "", hor: "2050", ssp: "ssp245", idx: [], ring: null, data: null, tumbuh: null, contoh: false, sa: false}, pj = penjaga(), simpan = new Map();
   sk.periode = () => ({kab4: S.kab4 || null});
   const hasil = h("div", {}), ctl = h("div", {class: "sk-ctl"});
-  const kart = kartu({ey: [ik("jampasir", 12), "Masa depan", " ", pil("hipotesis")], judul: ["Risiko masa depan ", hl("menunggu"), " data"], isi: [ctl, hasil], id: "masadepan"}), judul = kart.querySelector("h3");
+  const kart = kartu({ey: [ik("jampasir", 12), "Masa depan", " ", pil("hipotesis")], judul: ["Risiko masa depan ", hl("menunggu"), " data"], isi: [ctl, hasil], id: "masadepan"}), judul = kart.querySelector(".sk-ring");
   const kabDari = prov => Object.keys(K.kab ?? {}).filter(k => k.startsWith(prov)).sort();
 
   function kontrol() {

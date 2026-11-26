@@ -63,7 +63,7 @@ async function daftar(isi, sk) {
   sk.periode = () => { const sampai = tglWib(); return {dari: geser(sampai, -(S.rentang === "7" ? 7 : S.rentang === "365" ? 365 : 30)), sampai}; };
   const hasil = h("div", {}), ctl = h("div", {class: "sk-ctl"});
   const kart = kartu({ey: [ik("bolak", 12), "Kejadian"], judul: ["Buku Besar ", hl("menunggu"), " data"], isi: [ctl, hasil], id: "daftar"});
-  const judul = kart.querySelector("h3");
+  const judul = kart.querySelector(".sk-ring");
   const setJudul = (n, a, arsip) => judul.replaceChildren(...(n == null ? ["Buku Besar ", hl("menunggu"), " data"] : n === 0 ? ["Belum ada ", hl("kejadian"), arsip ? " pada tahun dan provinsi ini" : " pada rentang ini"] : [hl(angka(n)), arsip ? " kejadian arsip pada tahun dan provinsi ini, " : " kejadian pada rentang ini, ", hl(angka(a)), " belum terpetakan wilayahnya"]));
 
   const optProv = [["", "Semua provinsi"], ...Object.keys(K.provinsi || {}).map(k => [k, namaProv(k)])];
@@ -194,7 +194,7 @@ async function baru(sesudah) {
 
 /* ---------- antrean ambigu dan tanpa wilayah (PD, KO) ---------- */
 async function antrean(isi) {
-  const hasil = h("div", {class: "sk-kb"}), kart = kartu({ey: [ik("tanya", 12), "Antrean"], judul: ["Antrean ", hl("menunggu"), " keputusan"], isi: [hasil], id: "antrean"}), judul = kart.querySelector("h3");
+  const hasil = h("div", {class: "sk-kb"}), kart = kartu({ey: [ik("tanya", 12), "Antrean"], judul: ["Antrean ", hl("menunggu"), " keputusan"], isi: [hasil], id: "antrean"}), judul = kart.querySelector(".sk-ring");
   isi.append(kart); hasil.append(kead("memuat"));
   async function muat() {
     const r = await api("/api/siklus/antrean?batas=20");

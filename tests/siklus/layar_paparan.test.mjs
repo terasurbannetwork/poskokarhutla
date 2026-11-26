@@ -49,14 +49,14 @@ test('layar paparan di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome t
       const s = await sajikan(api('ko'));
       try {
         const T = await pb.tab(); await T.ukuran(1440, 900); await T.buka(`${s.url}/siklus/paparan?kab4=3301`, {tunggu: '#p-utama .sk-ber'});
-        const d = await T.eval(`(() => { const k = document.querySelector('#p-utama'); return {t: k.innerText, ex: k.classList.contains('ex-std'), hl: !!k.querySelector('h3 .hl'), ft: !!k.querySelector('.ex-ft'), ber: [...k.querySelectorAll('.sk-ber > div:not(.sk-sel) small')].map(x => x.textContent),
+        const d = await T.eval(`(() => { const k = document.querySelector('#p-utama'); return {t: k.innerText, ex: k.classList.contains('ex-std'), hl: !!k.querySelector('.sk-ring .hl'), ft: !!k.querySelector('.ex-ft'), ber: [...k.querySelectorAll('.sk-ber > div:not(.sk-sel) small')].map(x => x.textContent),
           segPenuh: k.querySelectorAll('.seg.penuh').length, tarik: !!document.querySelector('.panel .tarik'), mapa: !!document.querySelector('#peta')}; })()`);
         assert.match(d.t, /0,70/); assert.match(d.t, /0,8 km/); assert.match(d.t, /bukan klasifikasi resmi/i); assert.match(d.t, /WorldPop 1\.500, Dukcapil 1\.580, GHSL 670, selisih 910/);
         assert.deepEqual(d.ber.map((x) => x.toLowerCase()), ['worldpop', 'dukcapil', 'ghsl']); assert.ok(d.ex && d.hl && !d.ft && d.segPenuh >= 2 && d.tarik && d.mapa);
         assert.match(d.t, /350\s+bangunan berada di zona banjir/i); assert.match(d.t, /Sekolah/);
         // chrome urgent: segmen berubah di tick klik; bahaya tanpa data menulis menunggu, bukan 0
         assert.equal(await T.eval(`(() => { const b = [...document.querySelectorAll('#p-utama .seg.penuh button')].find(x => /Gempa/.test(x.textContent)); b.click(); return b.getAttribute('aria-pressed'); })()`), 'true');
-        await T.tungguFungsi(`/menunggu/i.test(document.querySelector('#p-utama h3').innerText)`);
+        await T.tungguFungsi(`/menunggu/i.test(document.querySelector('#p-utama .sk-ring').innerText)`);
         assert.deepEqual(galatNyata(T), []); assert.deepEqual(s.hilang, []); await T.tutup();
       } finally { await s.tutup(); }
     });
@@ -101,7 +101,7 @@ test('layar paparan di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome t
           for (const nama of ['Gempa', 'Banjir']) {
             const r = await frame(T, `[...document.querySelectorAll('#p-utama .seg.penuh button')].find((x) => /${nama}/.test(x.textContent)).click()`);
             assert.ok(r.ms < 200, `${nama}: ${Math.round(r.ms)} ms`); assert.match(r.c, new RegExp(nama));
-            await T.tungguFungsi(`document.querySelector('#p-utama h3').innerText.length > 0`);
+            await T.tungguFungsi(`document.querySelector('#p-utama .sk-ring').innerText.length > 0`);
           }
           const l = await T.lebihLebar(); assert.ok(l.sw <= l.iw + 1, `gulir mendatar di ${w}`);
           assert.ok(!/\bnull\b/.test(await T.eval('document.body.innerText'))); assert.deepEqual(galatNyata(T), []); await T.tutup();
