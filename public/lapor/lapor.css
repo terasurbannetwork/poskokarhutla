@@ -3125,7 +3125,9 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-sampul-atas img.lp-logo-pantau,.lp-tab-merek img.lp-logo-pantau{border-radius:10px!important;padding:0!important;background:none!important;box-shadow:none!important;margin-left:-2px}
 
 /* pembuka: lambang BNPB dan tanda Pantau Bencana berdampingan, teks di bawah keduanya */
-.lp-pb-merek{display:grid!important;grid-template-columns:auto auto;justify-content:center;column-gap:16px}
+/* kolom luar 1fr menyerap lebar teks, dua lambang rapat di tengah (pemilik 26 Nov 2026: "jauh banget sama BNPB nya") */
+.lp-pb-merek{display:grid!important;grid-template-columns:1fr auto auto 1fr;justify-content:center;column-gap:14px}
+.lp-pb-merek img:first-of-type{grid-column:2}.lp-pb-merek img.lp-logo-pantau{grid-column:3}
 .lp-pb-merek span{grid-column:1/-1}
 .lp-pb-merek img.lp-logo-pantau{border-radius:22%}
 .lp-resi{display:flex;gap:8px;align-items:flex-start;margin:4px 0 4px 36px;color:var(--ink2);font-size:.8125rem;list-style:none}
