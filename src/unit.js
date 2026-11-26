@@ -1,9 +1,12 @@
-/* Ruang Unit BNPB: rute baca (RU-019; data/kajian-bnpb/kedeputian/DESAIN-TEKNIS.md §1.4, §4.9, §9.4; KEAMANAN-PRIVASI.md §2.3, §3.2).
+/* Ruang Unit BNPB: rute baca (RU-019) dan ketuk MB-7 (RU-033; tulis lewat modAtauStaf: akun gerbang 401, pemirsa dan operator_cc 403); data/kajian-bnpb/kedeputian/DESAIN-TEKNIS.md §1.4, §4.9, §9.4; KEAMANAN-PRIVASI.md §2.3, §3.2).
    Staf saja. Halaman: hak dulu, tamu 303 ke /admin/masuk?ke= (P-8) tanpa memeriksa kode atau berkas; sesi sah tanpa peran 403 polos (cegah pantulan);
    pemirsa ke tab pertamanya. Data: hak SEBELUM nama dan R2, gagal = 401 (tamu tidak tahu berkas ada); nama di luar DATA_UNIT 404 tanpa menyentuh R2.
    Tanpa D1 selain pemeriksaan sesi di stafOK/modAtauStaf (kuota, RU §7.2). /bnpb/unit* dikecualikan dari gerbang host (src/gerbang_halaman.js halamanTerkunci). */
-import {json, gagal, catatHTML} from "./worker.js";
-import {stafOK, modAtauStaf, stafSesiSemua} from "./staf.js";
+import {json, gagal, catatHTML, bacaBody} from "./worker.js";
+import {tx} from "./posko.js";
+import {laju} from "./bnpb.js";
+import {ketukTerbaru, ketukTambah} from "./hak.js";
+import {stafOK, stafPeran, modAtauStaf, stafSesiSemua} from "./staf.js";
 import {pemirsaSesi} from "./pemirsa.js";
 import {arahPemirsa} from "./gerbang_halaman.js";
 import {halamanBnpbPublik} from "./bnpb.js";
@@ -62,10 +65,53 @@ async function data(env, req, url, kini, ctx, nama) {
   return new Response(o.body, {headers: {"content-type": "application/json; charset=utf-8", ...H_DATA, "x-content-type-options": "nosniff"}});
 }
 
+/* MB-7: keputusan staf atas usulan baris. Berkas usulan_<x> harus di DATA_UNIT; medan koreksi dari daftar putih per berkas (DT §6.2 untuk usulan_rpbd;
+   usulan_dokumen_siaga belum punya daftar di dokumen: koreksi ditolak, terima dan tolak jalan). Kunci tak terdaftar = 400, tanpa penyimpanan. */
+export const MEDAN_KOREKSI = {usulan_rpbd: ["status", "periode", "url"], usulan_dokumen_siaga: []};
+const KEPUTUSAN = ["terima", "tolak", "koreksi"], RE_USULAN = /^[0-9a-f]{16}$/, RE_BERKAS = /^usulan_[a-z0-9_]{1,32}$/;
+const berkasKetuk = b => RE_BERKAS.test(b || "") && DATA_UNIT.includes(b) ? b : null;
+
+async function ketukBaca(env, req, url) {
+  if (!await stafOK(env, req, P_UNIT_BACA)) return gagal(401, "perlu masuk sebagai staf BNPB");
+  const berkas = berkasKetuk(url.searchParams.get("berkas"));
+  if (!berkas) return gagal(400, "berkas harus salah satu usulan_* yang dikenal");
+  const baris = (await ketukTerbaru(env, berkas)).map(({id, ...r}) => ({...r, koreksi: r.koreksi ? JSON.parse(r.koreksi) : null}));
+  return json({berkas, keputusan: baris}, 200, {"cache-control": "private, no-store", vary: "cookie"});
+}
+
+async function ketukTulis(env, req, url, kini) {
+  const oleh = await modAtauStaf(env, req, P_UNIT_TULIS);   // akun gerbang AKUN_SITUS* tidak lolos; hak SEBELUM body dan D1
+  if (!oleh || String(oleh).startsWith("pemirsa:")) {   // pemirsa pimpinan lolos modAtauStaf tetapi hanya membaca
+    const masuk = await stafPeran(env, req, P_UNIT_BACA) || await pemirsaSesi(env, req);
+    return masuk ? gagal(403, "peranmu tidak boleh memutuskan usulan") : gagal(401, "perlu masuk sebagai staf BNPB");
+  }
+  const b = await bacaBody(req, 4096); if (b.galat) return gagal(b.status || 400, b.galat);
+  const o = b.o, x = Object.keys(o).find(k => !["berkas", "usulan_id", "keputusan", "koreksi", "catatan"].includes(k)); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
+  const berkas = berkasKetuk(o.berkas); if (!berkas) return gagal(400, "berkas harus salah satu usulan_* yang dikenal");
+  if (typeof o.usulan_id !== "string" || !RE_USULAN.test(o.usulan_id)) return gagal(400, "usulan_id harus 16 heks");
+  if (!KEPUTUSAN.includes(o.keputusan)) return gagal(400, "keputusan harus terima, tolak, atau koreksi");
+  const catatan = tx(o.catatan, 200); if (catatan === undefined) return gagal(400, "catatan maksimal 200 huruf");
+  let koreksi = null;
+  if (o.keputusan === "koreksi") {
+    const k = o.koreksi; if (!k || typeof k !== "object" || Array.isArray(k) || !Object.keys(k).length) return gagal(400, "koreksi wajib berupa objek berisi medan");
+    const daftar = MEDAN_KOREKSI[berkas] || [], luar = Object.keys(k).find(m => !daftar.includes(m)); if (luar) return gagal(400, `medan "${luar.slice(0, 40)}" tidak boleh dikoreksi di ${berkas}`);
+    const bersih = {}; for (const m of Object.keys(k)) { const v = tx(k[m], 200); if (v === undefined || v === null) return gagal(400, `medan "${m}" harus teks 1-200 huruf`);
+      if (m === "url" && !(/^https?:\/\//i.test(v) && URL.canParse(v))) return gagal(400, "url harus alamat http atau https");   // tanpa javascript: atau data: (tinjauan keamanan 26 Nov 2026)
+      bersih[m] = v; }
+    koreksi = JSON.stringify(bersih);
+  } else if (o.koreksi != null) return gagal(400, "koreksi hanya untuk keputusan koreksi");
+  const lj = await laju(env, oleh, "unit.ketuk", [[JAM, 300]], kini); if (lj) return lj;
+  const baris = {berkas, usulan_id: o.usulan_id, keputusan: o.keputusan, koreksi, catatan, oleh: String(oleh).slice(0, 40), waktu: kini};
+  await ketukTambah(env, baris);
+  return json({berkas, usulan_id: baris.usulan_id, keputusan: baris.keputusan, koreksi: koreksi && JSON.parse(koreksi), catatan, waktu: kini}, 201);
+}
+
 /* router src/worker.js: /bnpb/unit/:kode ([a-z]{2,4}) dan /api/unit/data/:nama ([a-z0-9_]{1,40}) diteruskan sebagai argumen ke-6 */
 export const RUTE_UNIT = {
   "GET /bnpb/unit": (env, req, url, kini, ctx) => halaman(env, req, url, ctx, "unit/index"),
   "GET /bnpb/unit/:kode": (env, req, url, kini, ctx, kode) => halaman(env, req, url, ctx, "unit/unit", kode),
   "GET /api/unit/indeks": (env, req, url, kini) => indeks(env, req, url, kini),
   "GET /api/unit/data/:nama": data,
+  "GET /api/unit/ketuk": (env, req, url) => ketukBaca(env, req, url),
+  "POST /api/unit/ketuk": (env, req, url, kini) => ketukTulis(env, req, url, kini),
 };

@@ -226,6 +226,8 @@ uji("orang dicari lewat obrolan (pemilik 25 Nov 2026): tanpa kode, baris lapor_c
   const f = await api("POST", "/api/lapor/foto", {wa: WA_CHAT, data: Buffer.from(JPEG_SAH).toString("base64")}, MESIN_H);   // dari galeri: tanpa lokasi, tetap diterima
   assert.equal(f.s, 200, f.t.slice(0, 300)); assert.match(f.t, /Foto diterima/); const fid = f.j.fotoBaru.id;
   assert.ok(await U.mf.getR2Bucket("MEDIA").then(b => b.head(`lapor/foto/${fid}.jpg`)), "berkas foto di R2");
+  const f2 = await api("POST", "/api/lapor/foto", {wa: WA_CHAT, data: Buffer.from(JPEG_SAH).toString("base64")}, MESIN_H);   // foto ke-2 masuk lapor_cari_foto_lain (0186)
+  assert.equal(f2.s, 200, f2.t.slice(0, 300)); const fid2 = f2.j.fotoBaru.id;
   for (const t of ["Lanjut", "1", "Tidak tahu", "Pakai nomor saya", "Posko SDN 1 Paledang, Jl. Paledang"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
   assert.match(r.t, /Foto: ada/);
   assert.match(r.t, /Ringkasan laporan orang dicari/);
@@ -233,6 +235,8 @@ uji("orang dicari lewat obrolan (pemilik 25 Nov 2026): tanpa kode, baris lapor_c
   // penilaian di layar terima kasih cari orang (tanpa nomor tiket) menempel pada sesi itu (pemilik 26 Nov 2026: "Pengalamannya gimana?")
   const nl = await api("POST", "/api/lapor/nilai", {wa: WA_CHAT, nilai: 5, cari: true}, MESIN_H); assert.equal(nl.s, 200, nl.t.slice(0, 300));
   assert.equal(await n("lapor_cari"), cari0 + 1); assert.equal(await n("lapor_tiket"), tiket0, "tidak membuat tiket");
+  const lain = await DB.prepare("SELECT foto_id FROM lapor_cari_foto_lain WHERE cari_id = (SELECT id FROM lapor_cari ORDER BY dibuat DESC LIMIT 1)").all();
+  assert.deepEqual(lain.results.map(r => r.foto_id), [fid2], "foto ke-2 tersimpan di lapor_cari_foto_lain");
   const b = await DB.prepare("SELECT nomor_pencari, nama_dicari, hubungan, waktu_terakhir, nomor_dicari, status FROM lapor_cari ORDER BY dibuat DESC LIMIT 1").first();
   assert.deepEqual(b, {nomor_pencari: WA_CHAT, nama_dicari: "Joko", hubungan: "Saudara", waktu_terakhir: "Hari ini", nomor_dicari: null, status: "buka"});
   const t = await DB.prepare("SELECT cari_id, panggilan, nomor_kontak, tempat_tunggu FROM lapor_cari_temu ORDER BY rowid DESC LIMIT 1").first();

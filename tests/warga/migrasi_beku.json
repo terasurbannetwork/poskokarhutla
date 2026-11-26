@@ -187,5 +187,6 @@
   "0183_lp_komen_putus.sql": "b5ecf86e5d8ca38e1a083a000f0bcfa2b6f2ee69eec7a940ffbcea4d26fba7e1",
   "0184_pw_status_prakiraan.sql": "504b6805053602ff52438e241a91128f3d58fb9f14617b6053a96bd92e2feb16",
   "0185_lapor_cari_foto.sql": "b33c0a3da8d016bf0e2573b3c3845d595bf2ee2014e72b25c00791e8701af12f",
-  "0186_lapor_cari_foto_banyak.sql": "70dc38a3cd6f9cddd9f1da31b8212a0e7982708c372adc07d8584a892302bb54"
+  "0186_lapor_cari_foto_banyak.sql": "70dc38a3cd6f9cddd9f1da31b8212a0e7982708c372adc07d8584a892302bb54",
+  "0187_unit.sql": "4fb574a0b6a973cf6c72e41a1886da9c2903a697e4608ecacc07925445141c06"
 }

@@ -2828,3 +2828,9 @@ export const alatSensorSatu = (env, id) => env.DB.prepare("SELECT id, jenis, amb
 export const alatSensorSeri = async (env, id, dari, sampai) => (await env.DB.prepare(`SELECT waktu, nilai FROM sensor_baca WHERE alat_id = ? AND waktu > ? AND waktu <= ? ORDER BY waktu DESC LIMIT ${ALAT_MAKS_TITIK}`).bind(id, dari, sampai).all()).results.reverse();
 export const alatSihkaStatus = async env => (await env.DB.prepare("SELECT isi FROM cuaca_sumber WHERE kunci = 'sihka_status'").first())?.isi;
 export const alatSihkaRiwayat = async (env, pos, kini) => (await env.DB.prepare(SQL_RIWAYAT).bind(pos, Math.floor(kini / 1000), kini).first())?.isi;
+
+/* ---------- Ruang Unit MB-7 (migrations/0187_unit.sql; kedeputian DESAIN-TEKNIS §2.2, §4.9): keputusan ketuk, hanya ditambah, terbaru per usulan_id yang berlaku ---------- */
+export const ketukTerbaru = async (env, berkas) => (await env.DB.prepare(
+  "SELECT id, usulan_id, keputusan, koreksi, catatan, oleh, waktu FROM unit_ketuk WHERE id IN (SELECT max(id) FROM unit_ketuk WHERE berkas = ? AND dummy = 0 GROUP BY usulan_id) ORDER BY waktu DESC LIMIT 5000").bind(berkas).all()).results;
+export const ketukTambah = (env, b) => env.DB.prepare(
+  "INSERT INTO unit_ketuk (berkas, usulan_id, keputusan, koreksi, catatan, oleh, waktu) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(b.berkas, b.usulan_id, b.keputusan, b.koreksi, b.catatan, b.oleh, b.waktu).run();
