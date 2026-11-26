@@ -190,10 +190,10 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-093 | MT-1 standar biaya Juklak 2/2026 | `ruang-bnpb` | `selera-angka` | 12 | M | belum |
 | RU-094 | MT-1 penyusun usulan di peramban | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 12 | M | belum |
 | RU-095 | MT-3 kalender kampanye | `ruang-bnpb` | `selera-angka` | 12 | S | belum |
-| RU-096 | WIL-2 migrasi 0113 dan uji skema | `warga-api` | `migrasi-idempoten` | 12 | M | belum |
-| RU-097 | WIL-2 rute pengungsian dan uji alur | `warga-api` | `guard-api`, `security-reviewer` | 12 | M | belum |
-| RU-098 | WIL-2 isian 11 angka di layar instansi | `warga-api` | `inp-reviewer`, `security-reviewer` | 12 | S | belum |
-| RU-099 | WIL-2 rekap, panel selisih, tab layar | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 12 | M | belum |
+| RU-096 | WIL-2 migrasi 0113 dan uji skema | `warga-api` | `migrasi-idempoten` | 12 | M | gugur 26 Nov (pemilik: pakai register `titik_pengungsian` dan meja `pengungsi` yang ada; KEPUTUSAN-AWAL jawaban 26 Nov) |
+| RU-097 | WIL-2 rute pengungsian dan uji alur | `warga-api` | `guard-api`, `security-reviewer` | 12 | M | gugur 26 Nov (tulis lewat meja `pengungsi` dan rute titik pengungsian yang ada) |
+| RU-098 | WIL-2 isian 11 angka di layar instansi | `warga-api` | `inp-reviewer`, `security-reviewer` | 12 | S | gugur 26 Nov (isian meja `pengungsi` yang ada) |
+| RU-099 | WIL-2 rekap, panel selisih, tab layar | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 12 | M | belum (sumber daerah: agregat meja `pengungsi`, bukan tabel 0113) |
 | RU-100 | PLP-3 impor BAST dan rekap | `ruang-bnpb` | `security-reviewer` | 12 | S | tertahan (U10) |
 | RU-101 | PLP-3 rute laporan pasca-hibah | `warga-api` | `guard-api` | 12 | S | tertahan (U10) |
 | RU-102 | RRP-2 leksikon berita pemulihan | `pipa-umum` | `validasi-model` | 12 | S | belum |

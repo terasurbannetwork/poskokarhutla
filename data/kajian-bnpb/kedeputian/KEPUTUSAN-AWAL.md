@@ -205,3 +205,11 @@ Bagian §8 ini menang atas `PRD.md` dan dokumen lain untuk hal yang tercantum di
 
 Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
 
+## Jawaban pemilik 26 Nov 2026: WIL-2 memakai register yang sudah ada
+
+Pemilik, ditanya apakah WIL-2 dibangun di atas register titik pengungsian yang sudah ada: "Ya, pakai yang ada".
+
+- Tabel `pengungsian_tempat` dan `pengungsian_harian` (DESAIN-TEKNIS §6.15, rencana migrasi 0113) **tidak dibuat**. Tempat pengungsian tetap satu register, `titik_pengungsian` berkode `TP-` (migrasi 0134, paket Keterpaduan D9). Angka terpilah per tempat per hari tetap satu sumber, isian meja `pengungsi` (`src/meja_spek.js`, unik per titik dan tanggal lewat 0135).
+- RU-096 (migrasi) dan RU-097 (rute tulis) gugur: penulisan sudah lewat meja kerja dan rute titik pengungsian. RU-098 gugur: BPBD mengisi lewat meja `pengungsi` yang sudah ada.
+- RU-099 tetap: rekap harian per kab dan panel selisih pusat lawan daerah di `/bnpb/unit/wil`, membaca agregat meja `pengungsi`; tempat basi (lebih dari 2 hari) tidak dijumlah; tempat di bawah 10 jiwa tidak tampil per tempat; selisih di atas 25% merah; sistem tidak memilih angka yang benar.
+
