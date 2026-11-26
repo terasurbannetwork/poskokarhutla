@@ -1798,6 +1798,40 @@ const singkatProv = n => SINGKAT_PROV[n] || n.replace(/^Sumatera /, "Sum. ").rep
 let alunGrup = new Map(), alunTempat = new Map(), alunProvTerdampak = [];
 /* ruang untuk panel daftar (kiri di layar lebar, bawah di HP), saringan di atas, dan legenda di bawah */
 const padPeta = () => matchMedia("(min-width:900px)").matches ? {top: 110, bottom: 150, left: 440, right: 60} : {top: 100, bottom: 48 + innerHeight * .42, left: 32, right: 32};
+/* cincin donat per provinsi (pemilik 26 Nov 2026: "Ya, pakai donat"): satu penanda SVG per provinsi, angka total di tengah, potongan cincin per jenis
+   sebanding jumlahnya dengan warna yang sama dengan pil tabel (kelas lp-jenis-*), diameter mengikuti akar total. Penanda DOM ringan, hanya di skala provinsi. */
+const ZOOM_NASIONAL = 5.2;   // sama dengan peta karhutla (public/index.html): diperkecil pengguna di bawah ini = tingkat provinsi dilepas ke Indonesia
+const NAMA_JENIS_KECIL = {banjir: "banjir", longsor: "tanah longsor", cuaca: "cuaca ekstrem", gempa: "gempa bumi", erupsi: "erupsi", karhutla: "karhutla", abrasi: "gelombang pasang dan abrasi", kekeringan: "kekeringan", lainnya: "lainnya"};
+let alunDonat = [], alunGerakProgram = false;
+const diameterDonat = n => Math.round(Math.min(58, Math.max(30, 20 + 10 * Math.sqrt(n))));
+function elDonat(kunci, g) {
+  const NS = "http://www.w3.org/2000/svg", d = diameterDonat(g.n), w = Math.max(6, Math.round(d * .2)), r = (d - w) / 2, C = 2 * Math.PI * r;
+  const svg = document.createElementNS(NS, "svg"); svg.setAttribute("viewBox", `0 0 ${d} ${d}`); svg.setAttribute("width", d); svg.setAttribute("height", d); svg.setAttribute("aria-hidden", "true");
+  const isi = document.createElementNS(NS, "circle"); Object.entries({cx: d / 2, cy: d / 2, r: r + w / 2, class: "lp-donat-isi"}).forEach(([k, v]) => isi.setAttribute(k, v)); svg.append(isi);
+  const jenis = [...g.j].sort((a, b) => b[1] - a[1]); let jalan = 0;
+  for (const [j, n] of jenis) { const pj = C * n / g.n, c = document.createElementNS(NS, "circle");
+    Object.entries({cx: d / 2, cy: d / 2, r, class: `lp-donat-potong lp-jenis-${j}`, "stroke-width": w, "stroke-dasharray": `${Math.max(0, pj - (jenis.length > 1 ? 1.5 : 0))} ${C}`, "stroke-dashoffset": -jalan, transform: `rotate(-90 ${d / 2} ${d / 2})`}).forEach(([k, v]) => c.setAttribute(k, v));
+    svg.append(c); jalan += pj; }
+  const t = document.createElementNS(NS, "text"); Object.entries({x: d / 2, y: d / 2, "text-anchor": "middle", "dominant-baseline": "central", class: "lp-donat-angka"}).forEach(([k, v]) => t.setAttribute(k, v)); t.textContent = g.n.toLocaleString("id-ID"); svg.append(t);
+  const nama = /^\d{2}$/.test(kunci) ? singkatProv(namaProv(kunci)) : "", rinci = jenis.map(([j, n]) => `${NAMA_JENIS_KECIL[j] || j} ${n.toLocaleString("id-ID")}`).join(", ");
+  const b = el("button", "lp-donat"); b.type = "button"; b.style.setProperty("--d", `${d}px`); b.title = `${nama || "Provinsi"}: ${rinci}`; b.setAttribute("aria-label", `${nama || "Provinsi"}, ${g.n.toLocaleString("id-ID")} kejadian: ${rinci}`);
+  b.append(svg, el("span", "lp-donat-nama", nama));
+  b.addEventListener("click", e => {
+    if (e.pointerType === "touch") {   // HP: ketuk pertama menampilkan rincian, tombol di dalamnya membuka provinsi
+      const box = el("div", "lp-alun-pop"), buka = el("button", "lp-alun-pop-baris"), tx = el("span"); buka.type = "button";
+      tx.append(el("b", null, nama || "Provinsi"), el("small", null, rinci)); buka.append(tx, ikon("i-panah"));
+      buka.addEventListener("click", () => { pop.remove(); if (/^\d{2}$/.test(kunci)) pilihProv(kunci); }); box.append(buka);
+      const pop = new maplibregl.Popup({offset: d / 2 + 4, closeButton: false, maxWidth: "260px"}).setLngLat([g.x / g.k, g.y / g.k]).setDOMContent(box).addTo(alunPeta); return; }
+    if (/^\d{2}$/.test(kunci)) pilihProv(kunci); else alunPeta.fitBounds(g.b, {padding: padPeta(), maxZoom: 9}); });
+  return b;
+}
+function pasangDonat(grup) {
+  for (const m of alunDonat) m.remove(); alunDonat = [];
+  if (!alunPeta) return;
+  for (const [kunci, g] of grup) alunDonat.push(new maplibregl.Marker({element: elDonat(kunci, g), anchor: "center"}).setLngLat([g.x / g.k, g.y / g.k]).addTo(alunPeta));
+  aturDonat();
+}
+const aturDonat = () => { const tampak = alunPeta && alunPeta.getZoom() < ZOOM_KAB && alunMode !== "peringatan"; for (const m of alunDonat) m.getElement().hidden = !tampak; };
 const TEKS_JENIS = {};   // diisi saat peta dibuat: warna angka di dalam tanda (gelap untuk warna terang)
 async function gambarPetaAlun(daftar) {
   const wp = $("petaAlun"), titik = daftar.filter(x => x.titik), W = {selesai: tok("--ok"), belum: tok("--info"), tanpa: tok("--ink2")}, warnaWarn = tok("--warn");   // peta selalu tampil penuh; tanpa titik = seluruh Indonesia. tok() membaca piksel kanvas: sekali per gambar, bukan per titik
@@ -1822,11 +1856,11 @@ async function gambarPetaAlun(daftar) {
   if (!window.Wilayah) muatWilayah().then(() => { for (const f of fp.features) if ("lbl" in f.properties && /^\d{2}$/.test(f.properties.kunci)) f.properties.lbl = singkatProv(namaProv(f.properties.kunci)); alunPeta?.getSource("alun-prov")?.setData(fp); });
   alunProvTerdampak = [...grup.keys()].filter(k => /^\d{2}$/.test(k));
   alunPeta?.getLayer("prov-terdampak") && alunPeta.setFilter("prov-terdampak", ["in", ["get", "kode"], ["literal", alunProvTerdampak]]);
-  const pas = () => { if (!fc.features.length) return alunPeta.jumpTo({center: [118, -2], zoom: 4});
+  const pas = () => { alunGerakProgram = true; try { if (!fc.features.length) return alunPeta.jumpTo({center: [118, -2], zoom: 4});
     const b = new maplibregl.LngLatBounds(); for (const f of fc.features) b.extend(f.geometry.coordinates);
     alunPeta.fitBounds(b, {padding: padPeta(), maxZoom: 11, duration: 0});
-    if (alunProv && alunPeta.getZoom() < ZOOM_KAB + .01) alunPeta.setZoom(ZOOM_KAB + .01); };   // satu provinsi terpilih: selalu tingkat kab/kota
-  if (alunPeta) { alunPeta.getSource("alun")?.setData(fc); alunPeta.getSource("alun-prov")?.setData(fp); pas(); return; }
+    if (alunProv && alunPeta.getZoom() < ZOOM_KAB + .01) alunPeta.setZoom(ZOOM_KAB + .01); } finally { alunGerakProgram = false; } };   // gerak program tidak dianggap zoom pengguna   // satu provinsi terpilih: selalu tingkat kab/kota
+  if (alunPeta) { alunPeta.getSource("alun")?.setData(fc); alunPeta.getSource("alun-prov")?.setData(fp); if (alunPeta.loaded() || alunDonat.length) pasangDonat(grup); pas(); return; }
   alunPeta = new maplibregl.Map({container: wp.querySelector(".lp-peta-alun"), style: "https://tiles.openfreemap.org/styles/positron", center: [118, -2], zoom: 4, attributionControl: {compact: true}});
   alunPeta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
   // legenda di bawah peta seperti peta karhutla, bisa dilipat; label sama dengan status di kartu (alun_kabar.js STATUS_LABEL), warna sama dengan W di atas
@@ -1839,7 +1873,7 @@ async function gambarPetaAlun(daftar) {
   const jl = el("ul", "lp-alun-legenda-jenis");   // satu baris seperti legenda peta deck harian
   for (const [j, teks] of [["banjir", "Banjir"], ["cuaca", "Cuaca ekstrem"], ["longsor", "Tanah longsor"], ["gempa", "Gempa bumi"], ["erupsi", "Gunung api Siaga"]]) {
     const li = el("li", null, teks), t = el("i", `lp-jn-tanda lp-jenis-${j}`); li.prepend(t); jl.append(li); }
-  g2.append(jl, el("small", "lp-redup", "Angka di dalam lingkaran = jumlah kejadian per jenis. Ketuk untuk melihat kab/kota.")); lgI.append(g2, g1);
+  g2.append(jl, el("small", "lp-redup", "Cincin per provinsi: warna potongan = jenis bencana, panjangnya sebanding jumlah; angka di tengah = total kejadian. Ketuk untuk melihat kab/kota.")); lgI.append(g2, g1);
   lgT.addEventListener("click", () => { const buka = lgI.hidden; lgI.hidden = !buka; lgT.setAttribute("aria-expanded", String(buka)); });
   if (!matchMedia("(min-width:900px)").matches) { lgI.hidden = true; lgT.setAttribute("aria-expanded", "false"); }   // HP: terlipat, peta tetap lega
   lg.append(lgT, lgI); wp.append(lg);
@@ -1863,8 +1897,10 @@ async function gambarPetaAlun(daftar) {
       alunPeta.addLayer({id: "prov-terdampak", type: "fill", source: "prov-batas", filter: ["in", ["get", "kode"], ["literal", alunProvTerdampak]], paint: {"fill-color": tok("--lh-terdampak"), "fill-opacity": .85}}, lapisBawah);
       alunPeta.addLayer({id: "prov-garis", type: "line", source: "prov-batas", paint: {"line-color": putih, "line-width": .8}}, lapisBawah);
       if (alunMode === "peringatan") for (const l of ["prov-wilayah", "prov-terdampak", "prov-garis"]) alunPeta.setLayoutProperty(l, "visibility", "none"); }).catch(() => {});
-    alunPeta.addLayer({id: "kelompok", type: "symbol", source: "alun-prov", maxzoom: ZOOM_KAB, filter: ["has", "jenis"], layout: {"icon-image": ["concat", "jn-", ["get", "jenis"]], "icon-size": ["get", "sz"], "icon-offset": ["get", "off"], "icon-allow-overlap": true, "icon-ignore-placement": true,
-      "text-field": ["to-string", ["get", "n"]], "text-offset": ["get", "ofs"], "text-size": ["get", "ts"], "text-font": ["Noto Sans Bold"], "text-allow-overlap": true, "text-ignore-placement": true}, paint: {"text-color": ["get", "tw"]}});
+    pasangDonat(alunGrup);
+    alunPeta.on("zoom", aturDonat);
+    // seperti peta karhutla: diperkecil sendiri oleh pengguna di bawah skala provinsi = pilihan provinsi dilepas, kembali ke tabel semua provinsi
+    alunPeta.on("zoomend", () => { if (!alunGerakProgram && alunProv && alunPeta.getZoom() < ZOOM_NASIONAL) pilihProv(""); });   // roda tetikus MapLibre tidak membawa originalEvent; gerak program ditandai di pas()
     // gunung api berstatus Siaga dan Awas: segitiga oranye dengan nama di bawahnya (status MAGMA/PVMBG, public/banjir/data/gunungapi_status.json)
     fetch("/banjir/data/gunungapi_status.json").then(r => r.ok ? r.json() : null).then(d => { const L = (d?.gunung || []).filter(g => g.level >= 3 && Number.isFinite(g.lat) && Number.isFinite(g.lon));
       if (!L.length || alunPeta.getSource("gunung-siaga")) return;
@@ -1872,13 +1908,8 @@ async function gambarPetaAlun(daftar) {
       alunPeta.addLayer({id: "gunung-siaga", type: "symbol", source: "gunung-siaga", layout: {"icon-image": "jn-erupsi", "icon-size": 1.1, "icon-allow-overlap": true, "text-field": ["get", "nama"], "text-anchor": "top", "text-offset": [0, 1.1], "text-size": 11, "text-font": ["Noto Sans Bold"], "text-optional": true},
         paint: {"text-color": tok("--lh-gunungapi"), "text-halo-color": putih, "text-halo-width": 1.6}});
       if (alunMode === "peringatan") alunPeta.setLayoutProperty("gunung-siaga", "visibility", "none"); }).catch(() => {});
-    alunPeta.addLayer({id: "kelompok-n", type: "symbol", source: "alun-prov", maxzoom: ZOOM_KAB, filter: ["has", "lbl"], layout: {"text-field": ["get", "lbl"], "text-anchor": "left", "text-offset": ["get", "ofs"], "text-size": 11, "text-font": ["Noto Sans Bold"], "text-allow-overlap": false, "text-optional": true},
-      paint: {"text-color": tok("--head-bg"), "text-halo-color": putih, "text-halo-width": 1.6}});
     alunPeta.addLayer({id: "titik", type: "circle", source: "alun", minzoom: ZOOM_KAB, paint: {"circle-color": ["get", "warna"], "circle-radius": ["step", ["get", "n"], 8, 2, 12], "circle-stroke-width": 2, "circle-stroke-color": tok("--card")}});
     alunPeta.addLayer({id: "titik-n", type: "symbol", source: "alun", minzoom: ZOOM_KAB, filter: [">", ["get", "n"], 1], layout: {"text-field": ["to-string", ["get", "n"]], "text-size": 11, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true}, paint: {"text-color": tok("--card")}});
-    alunPeta.on("click", "kelompok", e => { const kunci = e.features[0].properties.kunci; if (/^\d{2}$/.test(kunci) && typeof pilihProv === "function") return pilihProv(kunci);   // satu provinsi: daftar dan peta ikut provinsi itu
-      const g = alunGrup.get(kunci); if (!g) return;
-      alunPeta.fitBounds(g.b, {padding: padPeta(), maxZoom: 9, duration: 0}); if (alunPeta.getZoom() < ZOOM_KAB + .01) alunPeta.setZoom(ZOOM_KAB + .01); });   // satu provinsi: langsung ke tingkat kab/kota
     alunPeta.on("click", "titik", e => { const t = alunTempat.get(e.features[0].properties.kunci); if (!t) return; const box = el("div", "lp-alun-pop");
       box.append(el("small", "lp-redup", t.isi[0].lokasi.kab || ""));
       // tiap kejadian satu baris tombol penuh berpanah (pemilik 26 Nov 2026 "jelek banget"): tanpa tautan "Lihat kartu", tanpa cincin fokus saat terbuka
