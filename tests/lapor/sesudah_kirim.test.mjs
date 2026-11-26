@@ -19,8 +19,8 @@ async function keTempat(saluran) {
   await kirim({lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}});
   if (saluran === "web") {   // web: nama, panggilan, kelamin, umur satu kartu; tinggi dan berat satu kartu (pemilik 26 Nov 2026)
     await kirim("1"); await kirim({form: {nama: "Siti Aminah", panggilan: "Ami", kelamin: "Perempuan", umur: "9"}}); await kirim("1"); await kirim({form: {tinggi: "", berat: ""}});
-    for (const t of ["kaos merah", "Lewati", "Lewati"]) await kirim(t);
-  } else for (const t of ["1", "Siti Aminah", "Ami", "1", "2", "9", "1", "1", "kaos merah", "1", "Lewati"]) await kirim(t);   // tinggi dan berat: Tidak tahu
+    for (const t of ["kaos merah", "tidak ada", "Lewati"]) await kirim(t);   // tanda lain wajib, tanpa Lewati (pemilik 26 Nov 2026)
+  } else for (const t of ["1", "Siti Aminah", "Ami", "1", "2", "9", "1", "1", "kaos merah", "tidak ada", "Lewati"]) await kirim(t);   // tinggi dan berat: Tidak tahu
   if (saluran === "web") await kirim({form: {tanggal: "1970-01-01", jam: ""}}); else await kirim("1");
   for (const t of ["0813 1122 4455", "1"]) await kirim(t);
   return {h, kirim, sesi: () => sesi};
@@ -45,7 +45,7 @@ test("layar: minta antar dan cari_terkirim punya kartu; kartu tempat memakai sum
   const t = potong("function terapkan(", "\n}\n");
   assert.match(t, /j\.minta === "antar"\) kartuAntar\(j\)/); assert.match(t, /j\.status === "cari_terkirim"\) kartuCariTerkirim\(j?\)/);
   const a = potong("function kartuAntar(", "\n}\n");
-  assert.match(a, /\/api\/lapor\/sekitar\?/); assert.match(a, /cariTempat\(/); assert.match(a, /"lp-cari-hasil"/); assert.match(a, /Ketik alamat sendiri/);
+  assert.match(a, /\/api\/lapor\/sekitar\?/); assert.doesNotMatch(a, /cariTempat\(/, "tanpa pencarian wilayah se-Indonesia (pemilik 26 Nov 2026)"); assert.match(a, /Tampilkan \$\{/, "daftar bertahap"); assert.match(a, /"lp-cari-hasil"/); assert.match(a, /Ketik alamat sendiri/);
   assert.doesNotMatch(a, /https?:\/\//, "tanpa penyedia peta baru");
   assert.doesNotMatch(a, /\baman\b|·/);
 });

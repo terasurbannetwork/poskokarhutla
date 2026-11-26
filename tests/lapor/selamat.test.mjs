@@ -221,7 +221,7 @@ uji("orang dicari lewat obrolan (pemilik 25 Nov 2026): tanpa kode, baris lapor_c
   for (const t of ["Jojo", "4", "Tidak tahu", "Tidak tahu"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
   assert.match(r.t, /Tinggi badan Joko/); assert.equal(r.j.satuan, "cm");
   r = await kirimP({teks: "400"}); assert.match(r.t, /antara 30 dan 250 cm/, "tinggi di luar batas wajar ditanya ulang");
-  for (const t of ["Tidak tahu", "55", "Kaus merah", "Lewati"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
+  for (const t of ["Tidak tahu", "55", "Kaus merah", "tidak ada"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
   assert.match(r.t, /Foto Joko/, "sesudah ciri: foto orang dicari");
   const f = await api("POST", "/api/lapor/foto", {wa: WA_CHAT, data: Buffer.from(JPEG_SAH).toString("base64")}, MESIN_H);   // dari galeri: tanpa lokasi, tetap diterima
   assert.equal(f.s, 200, f.t.slice(0, 300)); assert.match(f.t, /Foto diterima/); const fid = f.j.fotoBaru.id;

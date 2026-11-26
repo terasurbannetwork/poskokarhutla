@@ -389,7 +389,8 @@ test("lapor orang hilang lewat obrolan (pemilik 25 Nov 2026): identitas, lokasi 
   { const {isianTampil} = await import("../../src/lapor_tampil.js"), d = isianTampil(sesi);
     assert.ok(d.some(x => x.nama === "cari_nama" && x.tampil === "Siti Aminah")); assert.ok(d.some(x => x.nama === "cari_umur" && x.tampil === "9 tahun")); assert.ok(!d.some(x => x.nama === "jenis")); }
   await kirim("kaos merah"); assert.equal(sesi.status, "cari_tanda");
-  await kirim("1"); assert.equal(sesi.status, "cari_foto", "sesudah ciri: foto (pemilik 26 Nov 2026)"); assert.equal(h.minta, "foto_cari"); assert.deepEqual(h.pilihan, ["Lewati"]); assert.match(h.balasan, /galeri/);
+  assert.equal(h.pilihan, null, "tanda lain tanpa Lewati (pemilik 26 Nov 2026)"); await kirim("lewati"); assert.equal(sesi.status, "cari_tanda", "tanda lain wajib");
+  await kirim("tahi lalat di pipi"); assert.equal(sesi.status, "cari_foto", "sesudah ciri: foto (pemilik 26 Nov 2026)"); assert.equal(h.minta, "foto_cari"); assert.deepEqual(h.pilihan, ["Lewati"]); assert.match(h.balasan, /galeri/);
   assert.equal((await kirim("apa ini")).sesi.status, "cari_foto", "teks lain ditanya ulang");
   // sampai 10 foto (pemilik 26 Nov 2026): sesudah foto pertama tetap di langkah foto, pilihan jadi Lanjut
   await kirim({foto: {id: "f".repeat(16), lencana: "tanpa"}}); assert.equal(sesi.cari.foto, "f".repeat(16)); assert.equal(sesi.foto.length, 1); assert.equal(sesi.status, "cari_foto"); assert.match(h.balasan, /Foto diterima/); assert.deepEqual(h.pilihan, ["Lanjut"]); assert.match(h.balasan, /1 dari 10/);
@@ -413,7 +414,7 @@ test("lapor orang hilang lewat obrolan (pemilik 25 Nov 2026): identitas, lokasi 
   await kirim("1");
   assert.equal(sesi.status, "cari_terkirim"); assert.ok(!h.kirim, "bukan laporan bertiket");
   assert.deepEqual(sesi.cari, {nama: "Siti Aminah"}, "ciri, nomor, hubungan tidak tertinggal di salinan sesi");
-  assert.deepEqual(h.kirimCari, {nama_dicari: "Siti Aminah", ciri: "Perempuan, 9 tahun, tinggi 150 cm, pakaian terakhir kaos merah", lokasi_terakhir: "Desa/Kel. Sukamaju, Kec. Cibinong", waktu_terakhir: "1 Januari 1970", nomor_dicari: "6281311224455", hubungan: "Anak", kab: "32.01"});
+  assert.deepEqual(h.kirimCari, {nama_dicari: "Siti Aminah", ciri: "Perempuan, 9 tahun, tinggi 150 cm, pakaian terakhir kaos merah, tahi lalat di pipi", lokasi_terakhir: "Desa/Kel. Sukamaju, Kec. Cibinong", waktu_terakhir: "1 Januari 1970", nomor_dicari: "6281311224455", hubungan: "Anak", kab: "32.01"});
   assert.deepEqual(h.kirimTemu, {panggilan: "Ami", nomor_kontak: "6280000000000", tempat_tunggu: "Posko Masjid Al Ikhlas, Jl. Raya Cibinong No 12", foto_id: "f".repeat(16),
     foto_ids: ["f".repeat(16), "e".repeat(16), ...Array.from({length: 8}, (_, i) => String(i + 3).padStart(16, "0"))]});
   assert.match(h.balasan, /mengantar ke Posko Masjid Al Ikhlas/);

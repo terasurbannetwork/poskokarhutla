@@ -3831,3 +3831,5 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 .lp-gabung-opsi button svg{width:18px;height:18px;flex:none;color:var(--brand2)}
 .lp-gabung-opsi button[aria-pressed="true"] svg{color:currentColor}
 .lp-gabung-satuan input{min-height:46px}
+/* tempat menunggu: tampilkan lebih banyak, selebar daftar (pemilik 26 Nov 2026: "see more gitu deh") */
+.lp-lok-antar .lp-antar-lagi{width:100%;min-height:44px;justify-content:center}

@@ -42,7 +42,8 @@ export function buatWilayah(muat) {
     // kab/kota dan kecamatan ikut dicari dan ditaruh di atas (pemilik 19 Nov 2026: "kenapa langsung desa? kenapa ga semuanya bisa");
     // dalam = awalan kode (kab "31.75" atau kec "31.75.07") untuk mempersempit desa sesudah kab/kec dipilih
     const kata = String(q || "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter(w => w.length > 1).slice(0, 5);
-    const N = await nama(), cocok = t => kata.every(w => t.toLowerCase().includes(w));
+    // tiap kata cocok di AWAL sebuah kata nama, bukan di tengah: "al bar" tidak lagi menangkap semua kab "Kalimantan Barat" (pemilik 26 Nov 2026)
+    const N = await nama(), cocok = t => { const ws = t.toLowerCase().split(/[^a-z0-9]+/); return kata.every(w => ws.some(x => x.startsWith(w))); };
     const hasil = [];
     if (!dalam && kata.length) {
       for (const [kab, n] of Object.entries(N.kab)) if (cocok(`${n} ${PROV[kab.slice(0, 2)] || ""}`))
