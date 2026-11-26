@@ -61,6 +61,8 @@ export function pasang(ctx) {
       peta.setFeatureState({ source: "dm-pol", id: i }, { pilih: true });
     }
     lama = i;
+    panel.querySelectorAll("details[data-pilih]").forEach((x) => x.removeAttribute("data-pilih"));
+    panel.querySelector(`details[data-i="${i}"]`)?.setAttribute("data-pilih", "");
     const d = panel.querySelector(`details[data-i="${i}"]`);
     if (d) { if (!daftar) { d.open = true; d.scrollIntoView({ block: "nearest" }); } else d.open = true; }
     const f = fc?.features.find((x) => x.id === i);
@@ -84,20 +86,31 @@ export function pasang(ctx) {
     return `<p class="p2-cat">${chip(DP, "sumber", "Poligon dan waktu berlaku dari BMKG")} ${chip(DP, "hitung", "Penduduk dan fasilitas dihitung dari irisan area peringatan dengan desa")}</p>${blok}<p class="p2-cat">Tiga sumber jiwa ditampilkan berdampingan, tidak dijumlah, dan bukan jiwa terpapar aturan dampak.</p>`;
   }
 
+  const judul = (t) => String(t || "").toLocaleLowerCase("id-ID").replace(/(^|[\s(\-])(\p{L})/gu, (_, a, c) => a + c.toLocaleUpperCase("id-ID"));
+  const IKON = { petir: "\u26C8", hujan: "\u{1F327}" };
+  const jam = (iso) => { const t = new Date(iso); if (Number.isNaN(+t)) return BELUM; const m = String(iso).match(/([+-])(\d\d):/), z = m ? ({ "+07": "WIB", "+08": "WITA", "+09": "WIT" })[m[1] + m[2]] : ""; return "s.d. " + String(iso).slice(11, 16).replace(":", ".") + " " + (z || "WIB"); };
+  function kartuP(p, i) {
+    const kec = String(p.wilayah || "").split(",").map((x) => judul(x.trim())).filter(Boolean);
+    const kabN = (p.kab || []).map(namaKab), t = p.tingkat_bmkg, ts = DP.token(t), nt = DP.namaTingkat(t);
+    const ikon = /petir/i.test(p.event) ? IKON.petir : IKON.hujan;
+    const ringkasKec = kec.length > 3 ? `${esc(kec.slice(0, 3).join(", "))} dan ${kec.length - 3} lainnya` : esc(kec.join(", "));
+    return `<li><details data-i="${i}" style="--dp-w:var(${ts})"><summary><span class="p2-b1"><span class="p2-ik" aria-hidden="true">${ikon}</span><span class="p2-ev">${esc(p.event || "Peringatan BMKG")}</span>${Number.isInteger(t) ? `<span class="p2-tk">${esc(nt)}</span>` : ""}<span class="p2-jam">${esc(jam(p.berlaku_sampai))}</span></span>${kabN.length ? `<span class="p2-kb">${esc(kabN.slice(0, 2).join(", "))}${kabN.length > 2 ? ` dan ${kabN.length - 2} lainnya` : ""}</span>` : ""}${kec.length ? `<span class="p2-kc">Kecamatan: ${ringkasKec}</span>` : ""}</summary><div class="p2-isi" data-kosong="1">${kec.length > 3 ? `<p class="p2-info">Semua kecamatan: ${esc(kec.join(", "))}</p>` : ""}</div></details></li>`;
+  }
   function daftar() {
     const P = R.peringatan || [];
     const basi = R.umpan && R.umpan !== "segar";
     const cap = R.umpan_cap ? ` Umpan terakhir ${esc(waktu(R.umpan_cap))}.` : "";
     const catatan = basi ? `<p class="p2-info" role="status">Umpan peringatan BMKG belum segar.${cap}</p>` : "";
     const tak = R.tak_dipetakan?.n > 0 ? `<p class="p2-info">${R.tak_dipetakan.n} peringatan belum bisa dipetakan ke kab/kota.</p>` : "";
-    const isi = P.length
-      ? `<ol class="p2-daftar">${P.map((p, i) => `<li><details data-i="${i}"><summary><span class="p2-ev">${esc(p.event || "Peringatan BMKG")}</span><span class="p2-sub">${esc((p.bahaya || []).map(namaB).join(", ") || "Tidak dipetakan ke banjir atau longsor")}${p.wilayah ? ", " + esc(p.wilayah) : ""}</span><span class="p2-sub">Berlaku sampai ${esc(waktu(p.berlaku_sampai))}</span></summary><div class="p2-isi" data-kosong="1"></div></details></li>`).join("")}</ol>`
-      : `<p class="p2-kosong">Tidak ada peringatan BMKG yang aktif saat ini.</p>`;
-    panel.innerHTML = kartu("BMKG", `Peringatan aktif${P.length ? ", " + P.length.toLocaleString("id-ID") : ""}`, catatan + isi + tak);
+    const grup = (jd, ids) => ids.length ? `<h4 class="p2-gr">${esc(jd)}</h4><ol class="p2-daftar">${ids.map((i) => kartuP(P[i], i)).join("")}</ol>` : "";
+    const ya = [], tidak = [];
+    P.forEach((p, i) => ((p.bahaya || []).length ? ya : tidak).push(i));
+    const isi = P.length ? grup("Dipetakan ke bahaya", ya) + grup("Belum dipetakan, keterpaparan belum terukur", tidak) : `<p class="p2-kosong">Tidak ada peringatan BMKG yang aktif saat ini.</p>`;
+    panel.innerHTML = `<section class="ex ex-std p2-kartu"><header class="ex-hd"><span class="ex-ey">BMKG</span><div class="ex-jd"><h3>Peringatan BMKG aktif${P.length ? ` <span class="p2-n">${P.length.toLocaleString("id-ID")}</span>` : ""}</h3></div></header><div class="ex-bd">${catatan + isi + tak}</div></section>`;
     panel.querySelectorAll("details").forEach((d) => d.addEventListener("toggle", () => {
       if (!d.open) return;
       const i = +d.dataset.i, w = d.querySelector(".p2-isi");
-      if (w.dataset.kosong) { w.removeAttribute("data-kosong"); w.innerHTML = isiPeringatan(P[i]); }
+      if (w.dataset.kosong) { w.removeAttribute("data-kosong"); w.insertAdjacentHTML("beforeend", isiPeringatan(P[i])); }
       if (lama !== i) nanti(() => pilih(i, true));
     }));
   }

@@ -1022,6 +1022,11 @@ function tampilIsian(isian, lengkap) {
   $("langkahTeks").textContent = "Asisten AI, dipandu sampai lengkap"; $("barIsian").style.width = `${lengkap}%`;
   if (!isian.length) { $("ringkasIsian").textContent = "Terisi otomatis dari percakapan"; $("isian").replaceChildren(el("p", "lp-redup lp-kecil", "Isian muncul begitu Anda mulai melapor.")); return; }
   const jawab = x => !["kosong", "belum"].includes(x.status);
+  // label jalur laporan di kepala chat dan panel (pemilik 26 Nov 2026), dari nama isian yang dikirim server; kosong bila belum memilih jalur
+  const jalur = !isian.length ? null : isian.some(x => x.nama.startsWith("cari_")) ? ["Laporan Orang Hilang", "hilang"] : isian.some(x => x.nama === "darurat_korban") ? ["Laporan Darurat", "darurat"] : ["Laporan Kejadian", "kejadian"];
+  for (const id of ["jalurChat", "jalurIsian"]) { const e = $(id); e.hidden = !jalur; e.textContent = jalur?.[0] || ""; e.className = `lp-jalur ${jalur?.[1] || ""}`; }
+  $("catatDarurat").hidden = jalur?.[1] !== "darurat";   // catatan jalur darurat (26 Nov 2026)
+  if (jalur && ![...log.querySelectorAll(".lp-jalur-tanda")].some(x => x.dataset.j === jalur[1])) { const t = el("li", "tengah lp-jalur-tanda"), p = el("b", `lp-jalur ${jalur[1]}`, jalur[0]); t.dataset.j = jalur[1]; t.append(p); log.querySelector(".lp-jalur-tanda") ? log.querySelector(".lp-jalur-tanda").replaceWith(t) : log.prepend(t); }   // penanda jalur di awal obrolan
   const belum = isian.filter(x => !jawab(x));
   // 24 Nov 2026 (pemilik: "bagusin"): hitungan dan perkiraan waktu jadi dua keping, isian berikutnya jadi pil, bukan satu kalimat padat
   const pk = perkiraan(isian), rk = $("ringkasIsian"); rk.replaceChildren(el("b", null, `${isian.filter(jawab).length} dari ${isian.length}`), " terjawab");
@@ -1229,9 +1234,9 @@ function tampilDaftarLaporan() {
   const w = $("daftarLaporan"), daftar = cache.laporan || [];
   const aktif = cache.keadaan && !["terkirim", "batal", "cari_terkirim"].includes(cache.keadaan.status) && cache.transkrip.length;
   const selesai = daftar.filter(l => l.status === "selesai").length;
-  const ring = $("ringkasLaporan"); ring.replaceChildren(el("b", null, "Ringkasan"));
+  const ring = $("ringkasLaporan"); ring.replaceChildren();
   for (const [t, n, ik] of [["Laporan terkirim", daftar.length, "i-kirim"], ["Sedang ditangani", daftar.length - selesai, "i-status"], ["Selesai", selesai, "i-centang"]]) {
-    const u = el("div", "lp-pita-ubin"), ic = el("span"); ic.append(ikon(ik)); const tx = el("span"); tx.append(el("b", null, String(n)), el("small", null, t)); u.append(ic, tx); ring.append(u); }
+    const u = el("div", n ? "lp-stat" : "lp-stat nol"); u.append(el("b", null, String(n)), ikon(ik), el("small", null, t)); ring.append(u); }   // angka besar, tanpa kotak; nol netral (26 Nov 2026)
   const isi = [];
   if (aktif) { const b = el("button", "lp-lap-kartu draf"); b.type = "button"; const g = el("div", "lp-lap-gambar"); const ic = el("span", "lp-lap-ikon"); ic.append(ikon("i-pesan")); const mk = el("span", "lp-lap-maskot"); mk.innerHTML = maskot("semangat"); g.append(ic, el("span", "lp-pil ditelaah", "Belum dikirim"), mk);
     const tx = el("div", "lp-lap-isi"), bar = el("span", "lp-lap-bar"), bi = el("i"); bi.style.width = `${cache.keadaan.lengkap || 0}%`; bar.append(bi);
@@ -1241,18 +1246,19 @@ function tampilDaftarLaporan() {
   for (const l of daftar) {
     const id = ID_JENIS[l.jenis], a = Object.assign(el("a", "lp-lap-kartu"), {href: l.lacak}), g = el("div", "lp-lap-gambar");
     // foto asli yang diunggah pelapor; foto contoh jenis hanya bila laporan tanpa foto (pemilik 19 Nov 2026: "pakai foto real yang diupload")
-    if (l.foto) { g.style.setProperty("background-image", `url("${l.foto}")`, "important"); g.classList.add("asli"); } else if (GAMBAR[id]) g.style.backgroundImage = `url(/img/bencana-${GAMBAR[id]}.jpg)`;
+    if (l.foto) { g.style.setProperty("background-image", `url("${l.foto}")`, "important"); g.classList.add("asli"); } else g.classList.add("tanpa");   // tanpa foto: latar warna jenis lembut (26 Nov 2026)
     if (!l.foto && l.fotoCek2 !== true && l.lacak) { const t = new URL(l.lacak, location.href).searchParams.get("t"); // laporan lama: ambil foto pertama dari halaman lacak sekali
-      fetch(`/api/lapor/lacak?t=${encodeURIComponent(t || "")}`).then(r => r.json()).then(x => { l.fotoCek2 = true; const f = x.fotoPertama; if (f) { l.foto = f; g.style.setProperty("background-image", `url("${f}")`, "important"); g.classList.add("asli"); } simpanCache(); }).catch(() => {}); }
-    const ic = el("span", "lp-lap-ikon"); ic.style.setProperty("--jn", warnaJenis(id)); ic.append(ikon(IKON_JENIS[id] || "i-kejadian")); g.append(ic, STATUS_PIL(l));
+      fetch(`/api/lapor/lacak?t=${encodeURIComponent(t || "")}`).then(r => r.json()).then(x => { l.fotoCek2 = true; const f = x.fotoPertama; if (f) { l.foto = f; g.style.setProperty("background-image", `url("${f}")`, "important"); g.classList.add("asli"); g.classList.remove("tanpa"); } simpanCache(); }).catch(() => {}); }
+    const ic = el("span", "lp-lap-ikon"); ic.style.setProperty("--jn", warnaJenis(id)); ic.append(ikon(IKON_JENIS[id] || "i-kejadian")); g.append(ic);
     const tx = el("div", "lp-lap-isi"), n = Math.max(0, URUT_STATUS.indexOf(l.status)), lk = el("span", "lp-terbaru-langkah");
-    lk.append(...[["Diterima", "i-centang"], ["Dilihat", "i-cari"], ["Ditelaah", "i-daftar"], ["Ditindaklanjuti", "i-status"], ["Selesai", "i-centang"]].map(([t, ik], i) => { const sp = el("span", i <= n ? "aktif" : i === n + 1 ? "berikut" : ""); sp.append(ikon(ik), t); return sp; }));
+    lk.append(...[["Diterima", "i-centang"], ["Dilihat", "i-cari"], ["Ditelaah", "i-daftar"], ["Ditindaklanjuti", "i-status"], ["Selesai", "i-centang"]].map(([t, ik], i) => { const sp = el("span", i === n ? "aktif kini" : i < n ? "aktif" : i === n + 1 ? "berikut" : ""); sp.append(ikon(ik), t); return sp; }));
     const aksi = el("span", "lp-lap-aksi"); aksi.append(ikon("i-status"), l.balasan ? `${l.balasan} balasan petugas, lihat` : "Lacak laporan");
     // baris meta: nomor tiket dan waktu kirim berikon (pemilik 19 Nov 2026 "bagusin")
     const meta = el("span", "lp-lap-meta"), m1 = el("span"), m2 = el("span"); m1.append(ikon("i-daftar"), l.nomor);
     m2.append(ikon("i-kalender"), l.waktu ? new Date(l.waktu).toLocaleString("id-ID", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(":", ".") : "Terkirim"); meta.append(m1, m2);
     const rk = l.ringkas, rkEl = [];
-    if (rk?.lokasi) { const p = el("span", "lp-lap-lokasi"); p.append(ikon("i-lokasi"), rk.lokasi); rkEl.push(p); }
+    { const lok = (rk?.lokasi || "").replace(/\s*\(?-?\d{1,3}[.,]\d+\s*[,;]\s*-?\d{1,3}[.,]\d+\)?.*$/, "").replace(/\s*\(-?\d.*$/, "").replace(/Desa\/Kel\./, "Kel.").trim();   // tanpa koordinat, satu baris
+      const p = el("span", lok ? "lp-lap-lokasi" : "lp-lap-lokasi kosong"); p.title = lok; p.append(ikon("i-lokasi"), lok || "Lokasi belum dicatat"); rkEl.push(p); }
     if (rk?.angka?.length) { const d = el("span", "lp-lap-angka"); for (const [v, t, ik] of rk.angka) { const c = el("span"); c.append(ikon(ik), el("b", null, v.toLocaleString("id-ID")), ` ${t}`); d.append(c); } rkEl.push(d); }
     // laporan susulan (F-28): Tambah kabar 72 jam sejak terkirim, sebelum laporan selesai (Q26); server memeriksa ulang
     const bisaSusul = l.bisaSusul ?? (l.waktu && Date.now() - l.waktu < 72 * 3600e3 && !["selesai", "tidak_valid"].includes(l.status));
@@ -1260,7 +1266,7 @@ function tampilDaftarLaporan() {
     if (bisaSusul) { const tk = el("button", "lp-lap-susul"); tk.type = "button"; tk.append(ikon("i-tambah-teks"), "Tambah kabar");
       tk.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); mulaiSusulan(l.nomor); }); tombolKep.append(tk); }
     // judul dan meta di atas, langkah di tengah, tombol di kaki kartu supaya semua kartu rata (pemilik 21 Nov 2026: "bagusin lagi")
-    tombolKep.append(aksi); tombolKep.classList.add("lp-lap-kaki"); kep.append(el("b", null, l.ringkas?.sub && !/tidak tahu/i.test(l.ringkas.sub) ? l.ringkas.sub : l.jenis || "Laporan"), meta, ...rkEl);
+    tombolKep.append(aksi); tombolKep.classList.add("lp-lap-kaki"); const jd = el("span", "lp-lap-judul"); jd.append(el("b", null, l.ringkas?.sub && !/tidak tahu/i.test(l.ringkas.sub) ? l.ringkas.sub : l.jenis || "Laporan"), STATUS_PIL(l)); kep.append(jd, meta, ...rkEl);
     tx.append(kep, lk, tombolKep); a.append(g, tx); isi.push(a);
   }
   // laporan orang dicari milik nomor ini (pemilik 25 Nov 2026: "disini agar ada masuk juga"), dari /api/lapor/selamat/saya
@@ -1511,7 +1517,7 @@ function bukaPrivasi() {
     const IK_LEGAL = PRIVASI.map(x => x[2] || "i-daftar");
     PRIVASI.forEach(([judul, blok], i) => {   // daftar isi berikon sama dengan kartunya (pemilik 25 Nov 2026: "kasih icon")
       const id = `privasi-${i + 1}`, a = Object.assign(el("a"), {href: `#${id}`}), u = el("span"); u.append(ikon(IK_LEGAL[i % IK_LEGAL.length])); a.append(u, judul);
-      a.addEventListener("click", e => { e.preventDefault(); $(id).scrollIntoView({behavior: "smooth", block: "start"}); });
+      a.addEventListener("click", e => { e.preventDefault(); for (const x of daftar.querySelectorAll("a")) x.removeAttribute("aria-current"); a.setAttribute("aria-current", "true"); $(id).scrollIntoView({behavior: "smooth", block: "start"}); });
       const li = el("li"); li.append(a); daftar.append(li);
       isi.append(Object.assign(el("h2", null, `${i + 1}. ${judul}`), {id}));
       // butir "Label: isi" jadi ubin berlabel, kalimat "Kami tidak ..." jadi catatan tegas (pemilik 25 Nov 2026: "terlalu kata-kata banget")
@@ -1681,7 +1687,7 @@ function opsiLanjut(q) {
   const d = el("div", "lp-opsi lp-opsi-ikon lp-opsi-banyak lp-lanjut");
   const pilih = [["info", "Info dan prediksi", "i-lokasi"], ["penting", "Nomor penting", "i-telepon"]].filter(([m]) => m !== infoMode && !(m === "info" && infoMode === "prediksi"))
     .map(([m, t, ik]) => [t, ik, () => { infoMode = m; ambilDaerah(q, t); }]);
-  for (const [t, ik, f, kelas] of [...pilih, ["Lapor kejadian", "i-kirim", bukaChat, "utama"], ["Daerah lain", "i-cari", kartuLokasiInfo]]) {
+  for (const [t, ik, f, kelas] of [...pilih, ["Lapor darurat", "i-sirene", () => bukaChat(true), "darurat"], ["Lapor kejadian", "i-kirim", () => bukaChat(), "utama"], ["Lapor orang hilang", "i-orang", () => bukaChat("cari")], ["Daerah lain", "i-cari", kartuLokasiInfo]]) {
     const b = tombolOpsi(t, null, f, kelas || ""); const u = el("span", "lp-opsi-ubin"); u.append(ikon(ik)); b.prepend(u); d.append(b); }
   d.style.setProperty("--kol", d.children.length); // sebaris sampai ujung (pemilik 19 Nov 2026)
   return d;
@@ -2406,7 +2412,7 @@ const muatDp = () => muatDp.j ||= Promise.all([dpModul(), dpJson("/api/dampak-pe
 const KAMUS_PETA = ["kelompok", "kelompok-n", "titik", "titik-n", "prov-terdampak", "prov-garis", "gunung-siaga"];
 const petaAlunSiap = async () => { for (let i = 0; i < 100 && !alunPeta; i++) await new Promise(r => setTimeout(r, 100));
   if (!alunPeta) return false; if (!alunPeta.getLayer("titik")) await new Promise(r => alunPeta.once("load", r)); return true; };
-const potensi = () => potensi.j ||= import("/lapor/peringatan_potensi.js?v=5");   // K7: isi /potensi pindah ke sini; dimuat malas saat mode Peringatan pertama kali
+const potensi = () => potensi.j ||= import("/lapor/peringatan_potensi.js?v=6");   // K7: isi /potensi pindah ke sini; dimuat malas saat mode Peringatan pertama kali
 function setModeAlun(mode, bahaya) {
   const per = mode === "peringatan"; alunMode = mode;
   for (const b of $("modeAlun").children) b.setAttribute("aria-selected", String(b.dataset.mode === mode));   // chrome langsung

@@ -15,7 +15,7 @@ const TAB = [
 const BAHAYA = ["bnj", "bdg", "lsr", "gel", "kht", "kek", "cex"];
 const HARI = ["ringkas", "0", "1", "2", "3"];
 const KOTAK = [[94, -11.5], [141.5, 6.5]];
-const CSS = ["/potensi/potensi.css?v=2", "/potensi/status.css?v=2", "/lapor/peringatan_potensi.css?v=4"];
+const CSS = ["/potensi/potensi.css?v=2", "/potensi/status.css?v=2", "/lapor/peringatan_potensi.css?v=5"];
 const $ = (id) => document.getElementById(id);
 const hp = matchMedia("(max-width:899px)");
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -116,7 +116,7 @@ function bangun(kartuGunung) {
   const bc = Object.assign(document.createElement("div"), { id: "ppBaca", className: "po-baca pp-baca" });
   bc.innerHTML = '<button type="button" class="pp-balik">Kembali ke peta</button>' + pb.map((d) => `<section id="pp-${d.k}" class="po-pb" role="tabpanel" hidden></section>`).join("");
   bc.querySelector(".pp-balik").addEventListener("click", () => pilih("status", true));
-  aside.before(bc); arena.append(bawah, pil);   // pil melayang di tengah atas peta seperti bilah tab Foundry (pemilik 26 Nov 2026)   // bc sebelum panel: panel (z sama) tetap di atas
+  aside.before(bc); arena.append(bawah); $("atasAlun").append(pil);   // pil melayang di tengah atas peta seperti bilah tab Foundry (pemilik 26 Nov 2026)   // bc sebelum panel: panel (z sama) tetap di atas
   addEventListener("popstate", () => { const s = baca(); if (!s.ada || !kini) return; Object.assign(state, s, { tab: kini }); if (s.tab !== kini) pilih(s.tab, false); });
   (window.requestIdleCallback || ((f) => setTimeout(f, 800)))(tabStaf);
 }

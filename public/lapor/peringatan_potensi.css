@@ -3,7 +3,8 @@
 .pp-pil.lp-alun-sumber{position:absolute;z-index:4;top:12px;left:12px;right:12px;display:flex;flex-wrap:nowrap;gap:2px;width:auto;margin:0;padding:5px;overflow-x:auto;scrollbar-width:none;border-radius:999px;background:color-mix(in oklab,var(--brand) 86%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:var(--shadow)}
 .pp-pil[hidden]{display:none}
 .pp-pil.lp-alun-sumber button{flex:none;min-height:36px;padding:0 16px;border:0;border-radius:999px;background:none;color:color-mix(in oklab,var(--on-brand) 72%,transparent);font:600 .875rem var(--font);box-shadow:none;cursor:pointer}
-.pp-pil.lp-alun-sumber button svg{display:none}
+.pp-pil.lp-alun-sumber button{display:inline-flex;align-items:center;gap:7px}
+.pp-pil.lp-alun-sumber button svg{display:block;width:16px;height:16px}
 .pp-pil.lp-alun-sumber button:hover{color:var(--on-brand)}
 .pp-pil.lp-alun-sumber button[aria-selected="true"]{background:color-mix(in oklab,var(--on-brand) 18%,transparent);color:var(--on-brand)}
 .pp-pil.lp-alun-sumber button:focus-visible{outline:2px solid var(--on-brand);outline-offset:-2px}
@@ -22,3 +23,5 @@
 .lp-alun-tanggal[hidden]{display:none}   /* mode Peringatan: garis waktu hari menggantikan Tanggal data (K7) */
 .lp-alun:has(#isiPeringatan:not([hidden])) .lp-alun-tanggal,body:has(#isiPeringatan:not([hidden])) #periodeAlun{display:none}   /* Tanggal data dibuat sesudah mode dinyalakan; disembunyikan lewat CSS */
 .pp-bawah .st-hari{flex-wrap:wrap;overflow:visible}
+/* satu bilah sebaris rata tengah di atas peta: sakelar Kejadian | Peringatan lalu tab Peringatan (pemilik 26 Nov 2026) */
+.pp-pil.lp-alun-sumber{position:static;transform:none;max-width:none;padding:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;border-radius:0;overflow:visible}
