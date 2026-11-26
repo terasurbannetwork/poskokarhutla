@@ -56,6 +56,7 @@ export function saring(item, {jenis = "", sumber = "", selesai = false} = {}) {
 
 const urlOk = u => /^https?:\/\//i.test(u || "") ? u : null;
 const gambarOk = g => /^\/data\/alun\/thumb\/[0-9a-f]{8,64}\.(?:webp|jpe?g|png)$/.test(g || "") ? g : null;   // thumbnail berita hanya dari folder kita (K6), bukan hotlink media
+const logoOk = g => /^\/data\/alun\/logo\/[0-9a-f]{8,64}\.(?:webp|jpe?g|png)$/.test(g || "") ? g : null;   // logo media, juga dari folder kita
 const DAMPAK_WARGA = [["meninggal", "meninggal"], ["hilang", "hilang"], ["luka", "luka"], ["mengungsi", "mengungsi"], ["rumah", "rumah rusak"], ["terendam", "rumah terendam"]];
 
 export function teksKartu(x, sekarang = Date.now()) {
@@ -72,7 +73,7 @@ export function teksKartu(x, sekarang = Date.now()) {
     return {id: g.id, status: g.status, statusLabel: g.statusLabel, waktu: g.waktu || "waktu belum didata", tempat: [g.lokasi?.desa && `Desa ${g.lokasi.desa}`, g.lokasi?.kec && `Kec. ${g.lokasi.kec}`].filter(Boolean).join(", "),
       nWarga: g.nWarga > 0 ? `${angkaID(g.nWarga)} warga melapor` : null, angka, kosongAngka: angka.length ? null : "Belum ada angka dampak"};
   }), kosong: "Belum ada laporan warga"};
-  const berita = {baris: x.berita.slice(0, 5).map(b => ({judul: b.judul, media: b.media, tgl: tglPendek(b.tgl), url: urlOk(b.url), gambar: gambarOk(b.gambar)})),
+  const berita = {baris: x.berita.slice(0, 5).map(b => ({judul: b.judul, media: b.media, tgl: tglPendek(b.tgl), url: urlOk(b.url), gambar: gambarOk(b.gambar), logo: logoOk(b.logo)})),
     lebih: Math.max(0, (x.nBerita || 0) - Math.min(5, x.berita.length)), kosong: x.catatan === "berita tidak terjangkau" ? "Berita belum bisa dimuat" : "Belum ada berita yang cocok"};
   const medsos = {teks: "Belum tersambung", ket: "Pantauan media sosial belum dihubungkan, jadi belum ada unggahan atau jumlah yang ditampilkan."};
   return {judul, resmi, warga, berita, medsos};

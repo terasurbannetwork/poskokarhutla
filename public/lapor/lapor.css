@@ -658,7 +658,7 @@ input.lp-isian{font-weight:700;font-size:1.125rem;font-variant-numeric:tabular-n
 .lp-alun-kartu.sorot{animation:lp-sorot 1.6s ease-out}
 @keyframes lp-sorot{0%,40%{box-shadow:0 0 0 3px var(--head-bg)}}
 @media (min-width:900px){
-  .lp-alun-panel{top:16px;left:16px;right:auto;bottom:auto;width:420px;max-height:calc(100% - 32px)}   /* setinggi isinya */
+  .lp-alun-panel{top:16px;left:16px;right:auto;bottom:auto;width:min(520px,calc(100% - 32px));max-height:calc(100% - 32px)}   /* setinggi isinya; lebar bawaan 520 px (pemilik 26 Nov 2026 "defaultnya selebar ini") */
 }
 .lp-alun-warga{display:inline-flex;align-items:center;gap:6px;margin:4px 0 0;padding:4px 10px;justify-self:start;border-radius:999px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2);font-size:.75rem;font-weight:800}
 .lp-alun-warga svg{width:14px;height:14px}
@@ -3178,6 +3178,8 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-kb-thumb{width:96px;height:64px;object-fit:cover;border-radius:8px;background:var(--surface)}
 .lp-kb-thumb.kosong{display:grid;place-items:center;color:var(--ink2)}
 .lp-kb-thumb.kosong svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.75}
+.lp-kb-thumb.logo{display:grid;place-items:center;background:var(--card);border:1px solid var(--line)}
+.lp-kb-thumb.logo img{width:40px;height:40px;object-fit:contain;border-radius:6px}
 /* pop-up titik peta: tiap kejadian satu baris tombol penuh berpanah (pemilik 26 Nov 2026) */
 .lp-alun-pop-baris{display:flex;align-items:center;gap:10px;width:100%;padding:8px 6px;margin:0 -6px;border:0;border-top:1px solid var(--line);border-radius:8px;background:none;color:var(--ink);text-align:left;cursor:pointer;font:inherit}
 .lp-alun-pop-baris:first-of-type{border-top:0}
@@ -3613,3 +3615,32 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 .lp-langkah-rantai i.isi{background:var(--brand2)}
 .lp-langkah-rantai i.kini{width:22px;background:var(--brand-accent)}
 @media (prefers-reduced-motion:reduce){.lp-langkah-rantai i{transition:none}}
+/* pop-up gunung api (pemilik 26 Nov 2026 "Bagusin"): kepala rata kiri dengan pil level, satu sel angka selebar kartu, waktu laporan berikon jam */
+.lp-pop-gunung .lp-pop-kepala{justify-content:flex-start;gap:10px;text-align:left}
+.lp-pop-gunung .lp-pop-kepala > div{flex:1}
+.lp-pop-gunung .lp-pop-kepala .lp-pop-st{flex:none;align-self:center}
+.lp-pop-gunung .lp-pop-dampak.satu{grid-template-columns:minmax(0,1fr)}
+.lp-pop-gunung .lp-pop-dampak > div{padding:8px 10px;border-radius:12px;background:var(--surface)}
+.lp-pop-gunung .lp-pop-waktu{display:flex;align-items:center;gap:6px;text-align:left}
+.lp-pop-gunung .lp-pop-waktu svg{flex:none;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+/* tabel kejadian per kab (pemilik 26 Nov 2026): kepala kolom bisa diurutkan, jenis berjejer, status berikon, panel sempit = ikon jenis saja */
+.lp-alun-panel{container:alunpanel / inline-size}
+.lp-alun-kj th{padding:0}
+.lp-urut{display:inline-flex;align-items:center;justify-content:center;gap:4px;width:100%;padding:8px 6px;border:0;background:none;color:inherit;font:inherit;cursor:pointer}
+.lp-urut-ik{width:11px;height:11px;flex:none;fill:none;stroke:currentColor;stroke-width:2.4;opacity:0;transform:rotate(90deg);transition:opacity .15s,transform .15s}
+.lp-urut:hover .lp-urut-ik,[aria-sort] .lp-urut-ik{opacity:1}
+[aria-sort="ascending"] .lp-urut-ik{transform:rotate(-90deg)}
+.lp-urut:focus-visible{outline:2px solid var(--on-head);outline-offset:-3px}
+.lp-alun-kj-jeniskol{display:flex;flex-wrap:wrap;gap:4px}
+.lp-alun-kj td.lp-alun-kj-kab{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0}
+.lp-alun-kj-st{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.lp-alun-kj-st svg{width:12px;height:12px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2}
+.lp-alun-kj-jeniskol.ikon .lp-alun-kj-jenis{padding:4px}
+.lp-alun-kj-jeniskol.ikon .teks{display:none}
+.lp-alun-kj-jeniskol.ikon svg{width:15px;height:15px}
+@container alunpanel (max-width:480px){
+  .lp-alun-kj-jenis{padding:4px}
+  .lp-alun-kj-jenis .teks{display:none}
+  .lp-alun-kj-jenis svg{width:15px;height:15px}
+}
+@media (prefers-reduced-motion:reduce){.lp-urut-ik{transition:none}}

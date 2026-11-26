@@ -2139,7 +2139,9 @@ function kartuKejadian(x, ikut) {
       tx.append(judul, el("small", "lp-redup", [b.media, b.tgl].filter(Boolean).join(", ")));
       // tiap berita punya kotak gambar (pemilik 26 Nov 2026: "Kasih thumbnail berita"): thumbnail kita bila ada, selain itu ikon berita di kotak yang sama, jadi daftar rata
       li.className = "ada-gambar"; const kosongG = () => { const k = el("span", "lp-kb-thumb kosong"); k.append(ikon("i-pesan")); return k; };
-      if (b.gambar) { const img = Object.assign(el("img", "lp-kb-thumb"), {src: b.gambar, alt: "", loading: "lazy", decoding: "async", width: 96, height: 64}); img.addEventListener("error", () => img.replaceWith(kosongG())); li.append(img); } else li.append(kosongG());
+      // tanpa gambar berita: logo media di kotak yang sama (pemilik 26 Nov 2026 "Mana logonya"), baru ikon berita bila logo juga tidak ada
+      const logoG = () => { if (!b.logo) return kosongG(); const k = el("span", "lp-kb-thumb logo"), im = Object.assign(el("img"), {src: b.logo, alt: b.media ? `Logo ${b.media}` : "", loading: "lazy", decoding: "async", width: 40, height: 40}); im.addEventListener("error", () => k.replaceWith(kosongG())); k.append(im); return k; };
+      if (b.gambar) { const img = Object.assign(el("img", "lp-kb-thumb"), {src: b.gambar, alt: "", loading: "lazy", decoding: "async", width: 96, height: 64}); img.addEventListener("error", () => img.replaceWith(logoG())); li.append(img); } else li.append(logoG());
       li.append(tx); ul.append(li); }
     pb.append(ul); if (t.berita.lebih) pb.append(el("small", "lp-redup", `Dan ${t.berita.lebih.toLocaleString("id-ID")} berita lain yang cocok.`)); }
   // Media sosial (KA-07) belum tersambung: tidak diulang di tiap kartu; keterangannya tampil sekali lewat saringan Medsos
@@ -2231,16 +2233,18 @@ function periodeGunung(p) {
 let popGunungAktif = null;
 function popGunung(g) {
   const box = el("div", "lp-alun-pop lp-pop-kaya lp-pop-gunung"), kp = el("div", "lp-pop-kepala"), nm = el("div");
-  nm.append(el("b", null, g.nama), el("small", null, g.prov || "")); kp.append(el("i", `lp-alun-gunung-ikon lv${g.level}`), nm); box.append(kp);
-  const kj = el("section", "lp-pop-kj"), atas = el("div", "lp-pop-atas"), st = el("span", `lp-pop-st lp-gn-st lv${g.level}`, `Level ${NAMA_LEVEL[g.level] || "belum ada data"}`);
-  atas.append(el("span", "lp-pop-jenis", "Gunung api"), st); kj.append(atas);
-  const dl = el("div", "lp-pop-dampak"), sb = sektorBahaya(g);
-  for (const [nilai, label, ik] of [[Number.isFinite(g.radius_km) ? `${g.radius_km.toLocaleString("id-ID")} km` : null, "radius tanpa aktivitas", "i-lokasi"],
-    [sb ? `${sb.km.toLocaleString("id-ID")} km ${sb.singkat}` : null, sb ? `sektor ${sb.arah}` : "sektor bahaya", "i-arah"]]) {
+  // kepala rata kiri: nama, jenis dan provinsi, pil level di kanan (pemilik 26 Nov 2026 "Bagusin")
+  const st = el("span", `lp-pop-st lp-gn-st lv${g.level}`, `Level ${NAMA_LEVEL[g.level] || "belum ada data"}`);
+  nm.append(el("b", null, g.nama), el("small", null, ["Gunung api", g.prov].filter(Boolean).join(", "))); kp.append(el("i", `lp-alun-gunung-ikon lv${g.level}`), nm, st); box.append(kp);
+  const kj = el("section", "lp-pop-kj"), dl = el("div", "lp-pop-dampak"), sb = sektorBahaya(g);
+  // sektor tanpa data tidak ditampilkan sebagai sel kosong; radius tanpa data tetap tertulis "belum ada data", tidak pernah 0
+  for (const [nilai, label, ik] of [[Number.isFinite(g.radius_km) ? `${g.radius_km.toLocaleString("id-ID")} km` : null, "radius warga dilarang beraktivitas", "i-lokasi"],
+    ...(sb ? [[`${sb.km.toLocaleString("id-ID")} km ${sb.singkat}`, `sektor ${sb.arah}`, "i-arah"]] : [])]) {
     const sel = el("div"), ub = el("span", "lp-pop-ik"), tx = el("span"); ub.append(ikon(ik));
     tx.append(el("b", nilai ? null : "kosong", nilai || "belum ada data"), el("small", null, label)); sel.append(ub, tx); dl.append(sel); }
+  if (dl.childElementCount === 1) dl.classList.add("satu");
   kj.append(dl);
-  const wk = periodeGunung(g.periode); if (wk) kj.append(el("p", "lp-pop-waktu", wk));
+  const wk = periodeGunung(g.periode); if (wk) { const p = el("p", "lp-pop-waktu"); p.append(ikon("k-jam"), el("span", null, wk)); kj.append(p); }
   if (/^https:\/\/magma\.esdm\.go\.id\//.test(g.laporan || "")) { const a = el("a", "lp-alun-pop-baris lp-pop-buka"), tx = el("span"); a.href = g.laporan; a.target = "_blank"; a.rel = "noopener";
     tx.append(el("b", null, "Laporan lengkap di MAGMA")); a.append(tx, ikon("i-panah")); kj.append(a); }
   box.append(kj);
@@ -2287,28 +2291,61 @@ function bukaRincianKejadian(id) {
   d.addEventListener("click", e => { if (e.target === d) d.close(); });   // klik latar menutup
   d.showModal(); k.querySelector(".lp-kb-buka")?.click(); tutup.focus();
 }
-function bukaBarisKejadian(tr, x, ikut) {
+function bukaBarisKejadian(tr, xs, ikut) {
   const lalu = tr.nextElementSibling?.classList.contains("lp-alun-kj-rinci") ? tr.nextElementSibling : null, buka = !lalu;
   tr.setAttribute("aria-expanded", String(buka)); if (lalu) { lalu.remove(); return null; }
   const r = el("tr", "lp-alun-kj-rinci"), td = el("td"); td.colSpan = tr.children.length; r.append(td); tr.after(r);
-  requestAnimationFrame(() => { const k = kartuKejadian(x, ikut); td.append(k); k.querySelector(".lp-kb-buka")?.click(); });
+  requestAnimationFrame(() => { for (const x of xs) { const k = kartuKejadian(x, ikut); td.append(k); k.querySelector(".lp-kb-buka")?.click(); } });
   return r;
 }
+/* nama kab/kota dipersingkat (pemilik 26 Nov 2026 "nama daerahnya agar kaya di persingkat"): arah mata angin disingkat, nama lengkap di title */
+const SINGKAT_ARAH = [[/\bUtara\b/g, "Utr."], [/\bSelatan\b/g, "Sel."], [/\bBarat\b/g, "Bar."], [/\bTimur\b/g, "Tim."], [/\bTengah\b/g, "Teng."]];
+const singkatKab = n => SINGKAT_ARAH.reduce((t, [r, g]) => t.replace(r, g), n);
+const URUT_KJ = {berjalan: 0, belum: 1, tanpa: 2, selesai: 3}, IKON_KJ = {berjalan: "k-jam", belum: "i-bantuan", tanpa: "i-bantuan", selesai: "i-centang"};
+/* satu baris per kab/kota (pemilik 26 Nov 2026 "nias harusnya bisa dimerge"): beberapa kejadian di kab yang sama jadi satu baris,
+   jenis berjejer sebagai ikon berwarna, mulai = paling awal, status = yang paling mendesak, berita dijumlah (angka satu sumber, D3 tetap) */
+function barisKab(daftar) {
+  const g = new Map();
+  for (const x of daftar) { const k = x.kab || `id-${x.id}`, r = g.get(k) || {kab: x.kab || "Lokasi belum diketahui", xs: [], jenis: new Map(), mulai: "", status: "selesai", berita: 0}; r.xs.push(x);
+    if (!r.jenis.has(x.jenis)) r.jenis.set(x.jenis, x.jenisLabel);
+    const m = x.resmi?.mulai || x.warga.map(w => String(w.waktu || "").slice(0, 10)).filter(Boolean).sort()[0] || "";   // pemilik 26 Nov 2026 "mana tanggal mulainya?"
+    if (m && (!r.mulai || m < r.mulai)) r.mulai = m;
+    const st = x.status in URUT_KJ ? x.status : "tanpa"; if (URUT_KJ[st] < URUT_KJ[r.status]) r.status = st;
+    r.berita += x.nBerita || 0; g.set(k, r); }
+  return [...g.values()].map(r => ({...r, statusLabel: r.xs.find(x => (x.status in URUT_KJ ? x.status : "tanpa") === r.status)?.statusLabel || "–"}));
+}
+const KOLOM_KJ = [["kab", "Kab/kota", "", (a, b) => a.kab.localeCompare(b.kab, "id")], ["jenis", "Bencana", "", (a, b) => [...a.jenis.values()].join().localeCompare([...b.jenis.values()].join(), "id")],
+  ["mulai", "Mulai", "Tanggal mulai menurut laporan resmi; bila belum ada, laporan warga pertama", (a, b) => (a.mulai || "9").localeCompare(b.mulai || "9")],
+  ["status", "Status", "Status menurut laporan resmi BNPB", (a, b) => URUT_KJ[a.status] - URUT_KJ[b.status]], ["berita", "Berita", "Berita yang cocok dengan kejadian", (a, b) => a.berita - b.berita]];
+let urutKj = {kol: "", turun: false};   // urutan kolom diingat selama halaman terbuka; bawaan = urutan daftar (terbaru dulu)
 function tabelKejadianProv(w, daftar, ikut, giliran) {
-  const t = el("table", "ex-tabel lp-alun-prov lp-alun-kj"), th = el("thead"), tb = el("tbody"), kep = el("tr");
-  for (const [teks, judul] of [["Kab/kota", ""], ["Bencana", ""], ["Mulai", "Tanggal mulai menurut laporan resmi; bila belum ada, laporan warga pertama"], ["Status", "Status menurut laporan resmi BNPB"], ["Berita", "Berita yang cocok dengan kejadian"]]) { const c = el("th", null, teks); c.scope = "col"; if (judul) c.title = judul; kep.append(c); }
+  const t = el("table", "ex-tabel lp-alun-prov lp-alun-kj"), th = el("thead"), tb = el("tbody"), kep = el("tr"), asal = barisKab(daftar);
+  // kolom bisa diurutkan (pemilik 26 Nov 2026 "agar bisa sort"): ketuk kepala kolom, ketuk lagi membalik
+  for (const [kol, teks, judul] of KOLOM_KJ) { const c = el("th"), bt = el("button", "lp-urut"); c.scope = "col"; if (judul) c.title = judul;
+    bt.type = "button"; bt.append(el("span", null, teks), ikon("i-panah", "lp-urut-ik")); c.append(bt);
+    if (urutKj.kol === kol) c.setAttribute("aria-sort", urutKj.turun ? "descending" : "ascending");
+    bt.addEventListener("click", () => { urutKj = {kol, turun: urutKj.kol === kol ? !urutKj.turun : kol === "berita"}; for (const h of kep.children) h.removeAttribute("aria-sort");
+      c.setAttribute("aria-sort", urutKj.turun ? "descending" : "ascending"); isi(); });
+    kep.append(c); }
   th.append(kep); t.append(th, tb); w.append(t);
-  let i = 0; const lanjut = () => { if (giliran !== alunGiliran) return; const f = document.createDocumentFragment();
-    for (const x of daftar.slice(i, i + 40)) {
-      const tr = el("tr"), jn = el("span", `lp-alun-kj-jenis lp-jenis-${x.jenis || "lainnya"}`);   // pil berwarna per jenis dari token --kat-* (pemilik 26 Nov 2026: "harusnya ada labelnya dan kasih warna") tr.dataset.id = x.id; tr.tabIndex = 0; tr.setAttribute("aria-expanded", "false");
-      jn.append(ikon(IKON_JENIS[x.jenis] || "i-kejadian"), x.jenisLabel);
-      const tdJ = el("td"); tdJ.append(jn); const tdS = el("td"); tdS.append(el("span", `lp-pil ${x.status || ""}`, x.statusLabel || "–"));
-      const mulai = x.resmi?.mulai || x.warga.map(g => String(g.waktu || "").slice(0, 10)).filter(Boolean).sort()[0] || "";   // pemilik 26 Nov 2026 "mana tanggal mulainya?"
-      tr.append(el("td", "lp-alun-kj-kab", x.kab || "Lokasi belum diketahui"), tdJ, el("td", "lp-alun-kj-mulai", mulai ? tglPendekId(mulai) : "–"), tdS, el("td", null, x.nBerita ? x.nBerita.toLocaleString("id-ID") : "–"));
-      const tekan = () => bukaBarisKejadian(tr, x, ikut); tr.addEventListener("click", e => { if (!e.target.closest(".lp-alun-kj-rinci")) tekan(); });
-      tr.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tekan(); } }); f.append(tr);
-    }
-    tb.append(f); i += 40; if (i < daftar.length) requestAnimationFrame(lanjut); else if (alunPeta) alunPeta.resize(); }; lanjut();
+  const isi = () => {
+    const f = KOLOM_KJ.find(k => k[0] === urutKj.kol)?.[3], baris = f ? [...asal].sort((a, b) => (urutKj.turun ? -1 : 1) * f(a, b)) : asal;
+    tb.replaceChildren(); let i = 0;
+    const lanjut = () => { if (giliran !== alunGiliran) return; const fr = document.createDocumentFragment();
+      for (const r of baris.slice(i, i + 40)) {
+        const tr = el("tr"), tdJ = el("td"), jk = el("div", "lp-alun-kj-jeniskol"), tdS = el("td"), st = el("span", `lp-pil lp-alun-kj-st ${r.status}`);
+        tr.dataset.id = r.xs[0].id; tr.tabIndex = 0; tr.setAttribute("aria-expanded", "false");
+        // pil berwarna per jenis dari token --kat-* (pemilik 26 Nov 2026); panel sempit: ikon saja, nama jenis di title (pemilik 26 Nov 2026)
+        for (const [id, label] of r.jenis) { const jn = el("span", `lp-alun-kj-jenis lp-jenis-${id || "lainnya"}`); jn.title = label; jn.append(ikon(IKON_JENIS[id] || "i-kejadian"), el("span", "teks", label)); jk.append(jn); } if (r.jenis.size > 1) jk.classList.add("ikon"); tdJ.append(jk);   // dua jenis atau lebih: ikon berjejer, nama di title
+        st.append(ikon(IKON_KJ[r.status] || "i-bantuan"), r.statusLabel); tdS.append(st);   // status berikon (pemilik 26 Nov 2026 "Kasih icon")
+        const kb = el("td", "lp-alun-kj-kab", singkatKab(r.kab)); kb.title = r.xs.length > 1 ? `${r.kab}, ${r.xs.length} kejadian` : r.kab;
+        tr.append(kb, tdJ, el("td", "lp-alun-kj-mulai", r.mulai ? tglPendekId(r.mulai) : "–"), tdS, el("td", null, r.berita ? r.berita.toLocaleString("id-ID") : "–"));
+        const tekan = () => bukaBarisKejadian(tr, r.xs, ikut); tr.addEventListener("click", e => { if (!e.target.closest(".lp-alun-kj-rinci")) tekan(); });
+        tr.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tekan(); } }); fr.append(tr);
+      }
+      tb.append(fr); i += 40; if (i < baris.length) requestAnimationFrame(lanjut); else if (alunPeta) alunPeta.resize(); }; lanjut();
+  };
+  isi();
 }
 function gambarKabar(ikut) {
   muatWilayah();   // nama provinsi dimuat sejak awal supaya tabel tidak sempat menampilkan kode

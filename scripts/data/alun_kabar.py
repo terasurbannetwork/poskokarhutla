@@ -132,8 +132,8 @@ def pasang_berita(per, hari, cocok, muat):
             lihat.add(j); unik.append(a)
         hit = unik
         k["n_berita"] = len(hit)
-        k["berita"] = [{"judul": a.get("judul"), "media": a.get("sumber"), "tgl": (a.get("tgl") or "")[:10], "url": a.get("url")}
-                       for a in hit[:MAKS_BERITA]]
+        k["berita"] = [{"judul": a.get("judul"), "media": a.get("sumber"), "tgl": (a.get("tgl") or "")[:10], "url": a.get("url"),
+                        **({"domain": a["domain"]} if a.get("domain") else {})} for a in hit[:MAKS_BERITA]]   # domain hanya untuk logo media, dibuang sebelum ditulis
 
 
 def bangun(hari, harian, pusat_kab, cocok, muat, kini, log=print):
@@ -274,6 +274,9 @@ def main(argv):
     dok, dobel = bangun(hari, HARIAN, pusat, DK.cocok, DK.muat_bahan, kini)
     if "--tanpa-gambar" not in argv:
         _muat_modul("alun_gambar", "scripts/data/alun_gambar.py").pasang(dok, os.path.join(os.path.dirname(KELUAR), "thumb"))
+    for k in dok["kejadian"]:
+        for b in k["berita"]:
+            b.pop("domain", None)
     tulis(dok, KELUAR)
     kej = dok["kejadian"]
     print(f"alun_kabar {hari}: {len(kej)} kejadian, {sum(1 for k in kej if k['titik'])} bertitik, "

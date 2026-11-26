@@ -66,7 +66,18 @@ def og_image(html, dasar):
     return None
 
 
-def perkecil(mentah, keluar):
+def ikon_situs(html, dasar):
+    """ikon media dari <link rel=apple-touch-icon|icon> halaman artikel; cadangan /favicon.ico situsnya."""
+    calon = []
+    for tag in re.findall(r"<link\b[^>]*>", html, re.I):
+        rel = re.search(r'rel\s*=\s*["\']([^"\']+)', tag, re.I)
+        href = re.search(r'href\s*=\s*["\']([^"\']+)', tag, re.I)
+        if rel and href and "icon" in rel.group(1).lower() and not href.group(1).lower().endswith(".svg"):
+            calon.append((0 if "apple" in rel.group(1).lower() else 1, urllib.parse.urljoin(dasar, href.group(1).replace("&amp;", "&"))))
+    return min(calon)[1] if calon else urllib.parse.urljoin(dasar, "/favicon.ico")
+
+
+def perkecil(mentah, keluar, lebar=LEBAR):
     """bytes gambar -> jpeg <= MAKS_BYTE di `keluar`; True bila berhasil. Alat pertama yang tersedia."""
     d = tempfile.mkdtemp()
     try:
@@ -78,14 +89,15 @@ def perkecil(mentah, keluar):
             try:
                 try:
                     from PIL import Image
-                    im = Image.open(src).convert("RGB")
-                    im.thumbnail((LEBAR, LEBAR * 2))
+                    im = Image.open(src).convert("RGBA")   # ikon transparan diberi latar putih, bukan hitam
+                    alas = Image.new("RGB", im.size, "white"); alas.paste(im, mask=im.split()[3]); im = alas
+                    im.thumbnail((lebar, lebar * 2))
                     im.save(dst, "JPEG", quality=q)
                 except ImportError:
                     if shutil.which("sips"):
-                        cmd = ["sips", "-s", "format", "jpeg", "-s", "formatOptions", str(q), "-Z", str(LEBAR), src, "--out", dst]
+                        cmd = ["sips", "-s", "format", "jpeg", "-s", "formatOptions", str(q), "-Z", str(lebar), src, "--out", dst]
                     elif shutil.which("magick") or shutil.which("convert"):
-                        cmd = [shutil.which("magick") or shutil.which("convert"), src, "-resize", f"{LEBAR}x", "-quality", str(q), dst]
+                        cmd = [shutil.which("magick") or shutil.which("convert"), src, "-resize", f"{lebar}x", "-quality", str(q), dst]
                     else:
                         return False
                     subprocess.run(cmd, check=True, capture_output=True, timeout=20)
@@ -112,6 +124,19 @@ def satu(url, jalur, ambil=_ambil, kecil=perkecil):
         return False
 
 
+def logo(domain, jalur, ambil=_ambil, kecil=perkecil):
+    """logo media (pemilik 26 Nov 2026 "Mana logonya"): ikon situs dari beranda media (domain <source> RSS, tanpa Google),
+    diperkecil 64 px, disimpan di kita, bukan hotlink."""
+    try:
+        asli = f"https://{domain}/"
+        if not re.fullmatch(r"[a-z0-9.-]+\.[a-z]{2,}", domain or "") or not url_aman(asli):
+            return False
+        ik = ikon_situs(ambil(asli, 400_000).decode("utf-8", "replace"), asli)
+        return bool(ik and url_aman(ik)) and kecil(ambil(ik, 1_000_000), jalur, 64)
+    except Exception:
+        return False
+
+
 def pasang(dok, folder, ambil=_ambil, kecil=perkecil, maks_baru=MAKS_BARU, log=print):
     """isi berita[].gambar bila berkas thumb ada di disk; mengunduh paling banyak maks_baru yang belum ada."""
     os.makedirs(folder, exist_ok=True)
@@ -128,5 +153,29 @@ def pasang(dok, folder, ambil=_ambil, kecil=perkecil, maks_baru=MAKS_BARU, log=p
             if os.path.exists(jalur):
                 b["gambar"] = "/data/alun/thumb/" + nama
                 ada += 1
-    log(f"alun_gambar: {ada}/{total} berita bergambar, {baru} baru dari {coba} percobaan")
+    # logo per domain media (satu berkas per situs)
+    flogo = os.path.join(os.path.dirname(folder), "logo")
+    os.makedirs(flogo, exist_ok=True)
+    nlogo = cobaL = 0
+    fgagal = os.path.join(flogo, "gagal.txt")   # domain yang ikonnya gagal diambil: tidak dicoba ulang tiap jalan
+    gagal = set(open(fgagal).read().split()) if os.path.exists(fgagal) else set()
+    for k in dok["kejadian"]:
+        for b in k["berita"]:
+            b.pop("logo", None)
+            dom = b.pop("domain", None)
+            if not dom:
+                continue
+            nama = hashlib.sha1(dom.encode()).hexdigest()[:16] + ".jpg"
+            jalur = os.path.join(flogo, nama)
+            if not os.path.exists(jalur) and cobaL < maks_baru and nama not in gagal:
+                cobaL += 1
+                if not logo(dom, jalur, ambil, kecil):
+                    gagal.add(nama)
+            if os.path.exists(jalur):
+                b["logo"] = "/data/alun/logo/" + nama
+                nlogo += 1
+    if gagal:
+        with open(fgagal, "w") as f:
+            f.write("\n".join(sorted(gagal)) + "\n")
+    log(f"alun_gambar: {ada}/{total} berita bergambar, {baru} baru dari {coba} percobaan; {nlogo} berita berlogo media, {cobaL} logo dicoba")
     return ada, total

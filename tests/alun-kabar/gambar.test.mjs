@@ -42,3 +42,12 @@ assert g.og_image('<meta content="/a.jpg" property="og:image">', "https://x.id/b
 `;
   execFileSync("python3", ["-I", "-c", py], {cwd: ROOT});
 });
+
+test("G4 logo media yang dirujuk ada di disk, <= 30 KB, dan hanya untuk berita tanpa domain mentah", () => {
+  for (const k of kabar.kejadian) for (const b of k.berita) {
+    assert.ok(!("domain" in b), "Field domain hanya untuk pipeline logo; dibuang sebelum kabar.json ditulis.");
+    if (!b.logo) continue;
+    assert.match(b.logo, /^\/data\/alun\/logo\/[0-9a-f]{16}\.jpg$/, "Logo media harus dari folder kita, bukan hotlink.");
+    assert.ok(statSync(ROOT + "public" + b.logo).size <= 30_000, `${b.logo} lebih dari 30 KB.`);
+  }
+});
