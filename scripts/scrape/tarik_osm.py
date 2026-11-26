@@ -38,10 +38,12 @@ out geom tags;"""
 
 def q_fasilitas(kode):
     # tanpa name~"puskesmas",i: regex nama atas semua amenity membuat kueri 504; puskesmas di OSM umumnya clinic/healthcare=centre
+    # sekolah hanya 9 provinsi prioritas (Dapodik/EMIS menutup sekolah nasional; OSM sekolah 38 provinsi terlalu berat); kesehatan 38 provinsi (DP-26)
+    amen = "school|kindergarten|hospital|clinic|doctors" if kode in PRIORITAS else "hospital|clinic|doctors"
     return f"""[out:json][timeout:300];
 area["ISO3166-2"="ID-{ISO[kode]}"]->.a;
 (
-  nwr[amenity~"^(school|kindergarten|hospital|clinic|doctors)$"](area.a);
+  nwr[amenity~"^({amen})$"](area.a);
   nwr[healthcare~"^(centre|hospital|clinic)$"](area.a);
 );
 out center tags;"""
@@ -104,10 +106,10 @@ def semua(kode, jenis):
 if __name__ == "__main__":
     jenis = [a for a in sys.argv[1:] if a in JENIS] or list(JENIS)
     kodes = [a for a in sys.argv[1:] if a not in JENIS]
-    # cakupan bawaan (tanpa kode): fasilitas 9 provinsi prioritas, jalan 38 provinsi, sungai/kanal prioritas + bergambut
+    # cakupan bawaan (tanpa kode): fasilitas 38 provinsi (sekolah hanya prioritas), jalan 38 provinsi, sungai/kanal prioritas + bergambut
     from wilayah import PROVINSI
     from kanal import GAMBUT_LAIN
-    bawaan = {"fasilitas": PRIORITAS, "jalan": list(PROVINSI), "sungai": PRIORITAS + GAMBUT_LAIN, "air": PRIORITAS + GAMBUT_LAIN, "vital": list(PROVINSI)}
+    bawaan = {"fasilitas": list(PROVINSI), "jalan": list(PROVINSI), "sungai": PRIORITAS + GAMBUT_LAIN, "air": PRIORITAS + GAMBUT_LAIN, "vital": list(PROVINSI)}
     for j in jenis:
         for kode in kodes or bawaan[j]:
             n = sum(1 for _ in semua(kode, j))
