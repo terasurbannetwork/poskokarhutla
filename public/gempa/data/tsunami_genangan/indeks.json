@@ -1,0 +1,73 @@
+{
+ "dibuat": "2026-11-26T09:56:14Z",
+ "versi_model": "genangan-1",
+ "skema": 1,
+ "status": "hipotesis",
+ "catatan": "simulasi, bukan peringatan; status tsunami resmi hanya BMKG dan PTWC",
+ "dem_diizinkan": [
+  "demnas",
+  "glo30"
+ ],
+ "atribusi": {
+  "glo30": "Produced using Copernicus WorldDEM-30 (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved.",
+  "gebco": "GEBCO Compilation Group (2020) GEBCO 2020 Grid, doi:10.5285/a29c5465-b138-234d-e053-6c86abc040b9",
+  "demnas": "BIG (DEMNAS)"
+ },
+ "anggaran": {
+  "skenario_b": 102400,
+  "pustaka_b": 2621440,
+  "animasi_bingkai": 24,
+  "animasi_b": 122880
+ },
+ "batas_mesin": [
+  "tanpa gesekan dasar (manning 0, K10 dan K12): genangan dan run-up cenderung lebih jauh dan lebih tinggi dari kenyataan",
+  "BP04 tak pecah tanpa gesekan +12,2% lawan lab (batas mesin, bukan lulus 5%, bukan tervalidasi NOAA)",
+  "DSM: atap dan kanopi ikut tinggi, genangan di bawah kanopi cenderung tersempitkan",
+  "simulasi bukan peringatan; status tsunami resmi hanya BMKG dan PTWC"
+ ],
+ "pantai": {
+  "ujung_kulon": {
+   "nama": "Ujung Kulon (Banten)",
+   "kotak": [
+    104.95,
+    -6.95,
+    105.75,
+    -6.3
+   ],
+   "dem": null,
+   "dem_atribusi": null,
+   "resolusi_m": null,
+   "status": "belum dihitung",
+   "skenario": []
+  },
+  "pangandaran_cilacap": {
+   "nama": "Pangandaran sampai Cilacap",
+   "kotak": [
+    108.25,
+    -7.95,
+    109.3,
+    -7.35
+   ],
+   "dem": null,
+   "dem_atribusi": null,
+   "resolusi_m": null,
+   "status": "belum dihitung",
+   "skenario": []
+  },
+  "banyuwangi_rajegwesi": {
+   "nama": "Banyuwangi sampai Rajegwesi",
+   "kotak": [
+    113.75,
+    -8.9,
+    114.5,
+    -8.4
+   ],
+   "dem": null,
+   "dem_atribusi": null,
+   "resolusi_m": null,
+   "status": "belum dihitung",
+   "skenario": []
+  }
+ },
+ "skenario": {}
+}
