@@ -5,8 +5,11 @@ tanpa teks bebas dan tanpa nama orang), public/data/dibi_kejadian.json (365 hari
 Gagal membaca D1 = galat jelas, keluaran kemarin tetap di R2 (bukan daftar kosong).
   KIB usulan = prov(2) + kab(2) + kode bencana(3) + tanggal mulai YYYYMMDD(8) + indeks 1-9 (rumus sama dengan kib() di src/pusdalops_umum.js, Juknis 7/2023 hal. 7-8);
     jenis tanpa kode tidak diberi KIB. Selalu berlabel "KIB usulan", bukan nomor kejadian resmi.
+  dampak = nilai TERAKHIR yang terisi per kolom (kolom kosong di entri terbaru tidak menghapus angka entri sebelumnya)
   ambang kejadian (Juknis 7/2023), sebatas kolom yang ada di D1: meninggal 1 atau lebih; luka atau mengungsi 50 jiwa atau lebih; rumah rusak (berat, sedang, ringan) 5 atau lebih;
     lahan 1 ha atau lebih; ada SK status darurat. Terdampak dan permintaan bantuan nasional tidak ada di kolom itu: tidak dihitung, bukan dianggap nol.
+  ambang True bila satu kolom melewati; False hanya bila semua kolom dampak terisi dan tidak ada yang melewati; selain itu belum bisa dinilai
+  DIBI dipasangkan ke SELURUH logbook (yang memenuhi ambang didahulukan bila sama dekat); pasangan dengan kejadian di bawah ambang atau belum dinilai dipisahkan dari "DIBI tanpa logbook"
   cocok ke DIBI bila kab, kode bencana sama dan selisih tanggal paling lama 2 hari; satu baris DIBI hanya dipasangkan ke satu kejadian (selisih terkecil, lalu urutan catat)
   tiga daftar: cocok; logbook tanpa DIBI lewat 7 hari; DIBI tanpa logbook. Kejadian di luar rentang DIBI tidak dibandingkan.
 
@@ -39,11 +42,9 @@ TENGGANG_HARI = 7
 MAKS_BARIS = 100
 AMBANG = {"md": 1, "luka": 50, "mengungsi_jiwa": 50, "rumah": 5, "luas_ha": 1}
 SQL = ("SELECT k.jenis, k.prov, k.kab, substr(k.mulai, 1, 10) AS mulai, k.dibuat, "
-       "e.md, e.luka, e.mengungsi_jiwa, e.rumah_rb, e.rumah_rs, e.rumah_rr, e.luas_ha, "
+       "(SELECT x.md FROM logbook_entri x WHERE x.kejadian_id = k.id AND x.md IS NOT NULL ORDER BY x.waktu DESC, x.id DESC LIMIT 1) AS md, (SELECT x.luka FROM logbook_entri x WHERE x.kejadian_id = k.id AND x.luka IS NOT NULL ORDER BY x.waktu DESC, x.id DESC LIMIT 1) AS luka, (SELECT x.mengungsi_jiwa FROM logbook_entri x WHERE x.kejadian_id = k.id AND x.mengungsi_jiwa IS NOT NULL ORDER BY x.waktu DESC, x.id DESC LIMIT 1) AS mengungsi_jiwa, (SELECT x.rumah_rb FROM logbook_entri x WHERE x.kejadian_id = k.id AND x.rumah_rb IS NOT NULL ORDER BY x.waktu DESC, x.id DESC LIMIT 1) AS rumah_rb, (SELECT x.rumah_rs FROM logbook_entri x WHERE x.kejadian_id = k.id AND x.rumah_rs IS NOT NULL ORDER BY x.waktu DESC, x.id DESC LIMIT 1) AS rumah_rs, (SELECT x.rumah_rr FROM logbook_entri x WHERE x.kejadian_id = k.id AND x.rumah_rr IS NOT NULL ORDER BY x.waktu DESC, x.id DESC LIMIT 1) AS rumah_rr, (SELECT x.luas_ha FROM logbook_entri x WHERE x.kejadian_id = k.id AND x.luas_ha IS NOT NULL ORDER BY x.waktu DESC, x.id DESC LIMIT 1) AS luas_ha, "
        "EXISTS (SELECT 1 FROM logbook_sk s WHERE s.kejadian_id = k.id) AS ada_sk "
-       "FROM logbook_kejadian k LEFT JOIN logbook_entri e ON e.id = "
-       "(SELECT x.id FROM logbook_entri x WHERE x.kejadian_id = k.id ORDER BY x.waktu DESC, x.id DESC LIMIT 1) "
-       "WHERE k.dummy = 0 ORDER BY k.dibuat, k.id")
+       "FROM logbook_kejadian k WHERE k.dummy = 0 ORDER BY k.dibuat, k.id")
 KOLOM_TERLARANG = ("catatan", "kendala", "kebutuhan", "kec", "desa", "oleh", "dibuat_oleh", "sumber_instansi", "korban", "rentan", "pemberi", "posko", "dokumentasi", "lat", "lon")
 
 
@@ -64,15 +65,16 @@ def kib(prov, kab, jenis, tanggal, indeks=1):
 
 
 def memenuhi_ambang(r):
-    """-> True, False, atau None (semua angka dampak kosong dan tanpa SK: belum bisa dinilai, bukan di bawah ambang)."""
-    nilai = [r.get(k) for k in ("md", "luka", "mengungsi_jiwa", "rumah_rb", "rumah_rs", "rumah_rr", "luas_ha")]
+    """True bila ada kolom yang melewati ambang (atau ada SK status darurat), tanpa menunggu kolom lain terisi (angka terisi sebagian sudah batas bawah);
+    False hanya bila SEMUA kolom dampak terisi dan tidak ada yang melewati; selain itu None (belum bisa dinilai, bukan di bawah ambang)."""
     if r.get("ada_sk"):
         return True
-    if all(v is None for v in nilai):
-        return None
-    rumah = sum(r.get(k) or 0 for k in ("rumah_rb", "rumah_rs", "rumah_rr")) if any(r.get(k) is not None for k in ("rumah_rb", "rumah_rs", "rumah_rr")) else 0
-    return ((r.get("md") or 0) >= AMBANG["md"] or (r.get("luka") or 0) >= AMBANG["luka"] or (r.get("mengungsi_jiwa") or 0) >= AMBANG["mengungsi_jiwa"]
-            or rumah >= AMBANG["rumah"] or (r.get("luas_ha") or 0) >= AMBANG["luas_ha"])
+    rumah = [r.get(k) for k in ("rumah_rb", "rumah_rs", "rumah_rr")]
+    if ((r.get("md") or 0) >= AMBANG["md"] or (r.get("luka") or 0) >= AMBANG["luka"] or (r.get("mengungsi_jiwa") or 0) >= AMBANG["mengungsi_jiwa"]
+            or sum(v or 0 for v in rumah) >= AMBANG["rumah"] or (r.get("luas_ha") or 0) >= AMBANG["luas_ha"]):
+        return True
+    semua = [r.get(k) for k in ("md", "luka", "mengungsi_jiwa", "luas_ha")] + rumah
+    return False if all(v is not None for v in semua) else None
 
 
 def siapkan_logbook(rows, kunci_kab):
@@ -124,10 +126,10 @@ def pasangkan(logbook, dibi):
         for j in per.get((l["kab"], l["jenis"]), []):
             s = abs((date.fromisoformat(dibi[j]["tgl"]) - t).days)
             if s <= TOLERANSI_HARI:
-                cand.append((s, i, j))
+                cand.append((s, 0 if l.get("ambang") is True else 1, i, j))   # sama dekat: kejadian yang memenuhi ambang didahulukan
     cand.sort()
     pl, pd = {}, set()
-    for s, i, j in cand:
+    for s, _, i, j in cand:
         if i not in pl and j not in pd:
             pl[i] = j
             pd.add(j)
@@ -138,22 +140,29 @@ def bangun(rows, dibi, kunci_kab, atribusi, dibuat, hari_ini, peta=PAD.petakan):
     lb, lb_tak, lb_tanpa = siapkan_logbook(rows, kunci_kab)
     db, db_tak, db_tanpa = siapkan_dibi(dibi, peta)
     dari, sampai = date.fromisoformat(dibi["dari"]), date.fromisoformat(dibi["sampai"])
-    pembanding, luar, bawah, belum_nilai = [], 0, 0, 0
-    for l in lb:
+    pas = pasangkan(lb, db)   # DIBI dipasangkan ke SELURUH logbook, termasuk yang di bawah ambang atau belum dinilai: baris DIBI itu bukan "tanpa logbook"
+    dipakai = set(pas.values())
+    cocok = [(lb[i], db[j]) for i, j in sorted(pas.items()) if lb[i]["ambang"] is True]
+    pasangan_lain = sum(1 for i in pas if lb[i]["ambang"] is not True)
+    luar = bawah = belum_nilai = menunggu = 0
+    pembanding, tanpa_dibi = [], []
+    for i, l in enumerate(lb):
         t = date.fromisoformat(l["tgl"])
-        if not (dari + timedelta(days=TOLERANSI_HARI) <= t <= sampai - timedelta(days=TOLERANSI_HARI)):
+        dalam = dari + timedelta(days=TOLERANSI_HARI) <= t <= sampai - timedelta(days=TOLERANSI_HARI)
+        if l["ambang"] is True and dalam:
+            pembanding.append(l)
+        if i in pas:
+            continue
+        if not dalam:
             luar += 1
         elif l["ambang"] is None:
             belum_nilai += 1
         elif l["ambang"] is False:
             bawah += 1
+        elif (hari_ini - t).days > TENGGANG_HARI:
+            tanpa_dibi.append(l)
         else:
-            pembanding.append(l)
-    pas = pasangkan(pembanding, db)
-    dipakai = set(pas.values())
-    cocok = [(pembanding[i], db[j]) for i, j in sorted(pas.items())]
-    tanpa_dibi = [l for i, l in enumerate(pembanding) if i not in pas and (hari_ini - date.fromisoformat(l["tgl"])).days > TENGGANG_HARI]
-    menunggu = sum(1 for i, l in enumerate(pembanding) if i not in pas) - len(tanpa_dibi)
+            menunggu += 1
     # DIBI tanpa logbook hanya untuk baris yang tanggalnya di dalam rentang logbook yang kita punya (logbook D1 mulai dari catatan paling awal)
     tgl_lb = [date.fromisoformat(l["tgl"]) for l in lb]
     awal_lb = min(tgl_lb) if tgl_lb else None
@@ -165,9 +174,11 @@ def bangun(rows, dibi, kunci_kab, atribusi, dibuat, hari_ini, peta=PAD.petakan):
     bar = lambda l: {"kib": l["kib"], "kab": l["kab_nama"], "jenis": nama(l["jenis"]), "tgl": l["tgl"]}  # noqa: E731
     k_cocok = rapor.kartu(
         id="pus2-cocok", sistem="PUS-2", pil="KIB dan DIBI", ikon="data", judul="Kejadian logbook yang cocok dengan DIBI",
-        angka=[{"k": "cocok", "label": "Kejadian logbook yang cocok dengan satu baris DIBI", "nilai": len(cocok) if pembanding else None, "title": f"kab dan jenis sama, selisih tanggal paling lama {TOLERANSI_HARI} hari"},
+        angka=[{"k": "cocok", "label": "Kejadian logbook yang cocok dengan satu baris DIBI", "nilai": len(cocok) if pembanding else None, "title": f"kab dan jenis sama, selisih tanggal paling lama {TOLERANSI_HARI} hari. DIBI = Data dan Informasi Bencana Indonesia; KIB = Kode Identitas Bencana"},
                {"k": "pembanding", "label": "Kejadian logbook yang memenuhi ambang dan bisa dibandingkan", "nilai": len(pembanding) if lb else None,
-                "title": "ambang Juknis 7/2023 sebatas kolom yang ada di logbook; di dalam rentang DIBI"},
+                "title": "ambang Juknis 7/2023 sebatas kolom yang ada di logbook, memakai nilai terakhir yang terisi per kolom"},
+               {"k": "pasangan_lain", "label": "Berpasangan dengan DIBI tetapi di bawah ambang atau belum dinilai", "nilai": pasangan_lain if lb else None,
+                "title": "baris DIBI-nya tidak dihitung sebagai tanpa logbook; kejadian logbook-nya tidak dihitung cocok"},
                {"k": "luar", "label": "Di luar rentang DIBI, tidak dibandingkan", "nilai": luar if lb else None},
                {"k": "bawah", "label": "Di bawah ambang", "nilai": bawah if lb else None},
                {"k": "belum_nilai", "label": "Angka dampak belum dilaporkan, belum bisa dinilai", "nilai": belum_nilai if lb else None, "title": "kosong bukan nol: tidak dihitung sebagai di bawah ambang"}],
@@ -178,7 +189,7 @@ def bangun(rows, dibi, kunci_kab, atribusi, dibuat, hari_ini, peta=PAD.petakan):
     k_tanpa_dibi = rapor.kartu(
         id="pus2-tanpa-dibi", sistem="PUS-2", pil="KIB dan DIBI", ikon="kalender", judul="Logbook tanpa DIBI lewat 7 hari",
         angka=[{"k": "tanpa_dibi", "label": "Kejadian logbook memenuhi ambang, belum ada di DIBI sesudah 7 hari", "nilai": len(tanpa_dibi) if pembanding else None,
-                "title": "kandidat untuk dilengkapi BPBD; bukan kesalahan pelaporan"},
+                "title": "kandidat untuk dilengkapi BPBD; bukan kesalahan pelaporan. DIBI = Data dan Informasi Bencana Indonesia"},
                {"k": "menunggu", "label": "Belum ada di DIBI tetapi belum lewat 7 hari", "nilai": menunggu if pembanding else None}],
         kolom=sama_kolom_l, baris=[bar(l) for l in sorted(tanpa_dibi, key=lambda l: (l["tgl"], l["kab"]))[:MAKS_BARIS]],
         rumus="logbook memenuhi ambang dan tanpa baris DIBI yang cocok, dengan tanggal mulai lebih dari 7 hari yang lalu",
@@ -186,7 +197,7 @@ def bangun(rows, dibi, kunci_kab, atribusi, dibuat, hari_ini, peta=PAD.petakan):
     k_tanpa_log = rapor.kartu(
         id="pus2-tanpa-logbook", sistem="PUS-2", pil="KIB dan DIBI", ikon="kaca", judul="DIBI tanpa logbook",
         angka=[{"k": "tanpa_logbook", "label": "Baris DIBI yang tidak punya kejadian logbook", "nilai": len(tanpa_logbook) if db and awal_lb else None,
-                "title": "hanya baris DIBI sejak tanggal logbook paling awal"},
+                "title": "hanya baris DIBI (Data dan Informasi Bencana Indonesia) sejak tanggal logbook paling awal, yang tidak berpasangan dengan kejadian logbook mana pun"},
                {"k": "sebelum", "label": "Baris DIBI sebelum logbook ada, tidak dibandingkan", "nilai": diluar_logbook if db and awal_lb else None}],
         kolom=[{"k": "kab", "label": "Kab/kota"}, {"k": "jenis", "label": "Jenis"}, {"k": "tgl", "label": "Tanggal di DIBI"}],
         baris=[{"kab": d["kab_nama"], "jenis": nama(d["jenis"]), "tgl": d["tgl"]} for d in sorted(tanpa_logbook, key=lambda d: (d["tgl"], d["kab"]), reverse=True)[:MAKS_BARIS]],
@@ -245,15 +256,17 @@ def cek():
         D("2026-10-05", "11.16", "Banjir"),                       # DIBI tanpa logbook
         D("2026-10-06", "11.16", "Banjir", bencana=0),            # di bawah ambang DIBI: tidak dihitung
         D("2026-10-07", "11.16", "Gelombang pasang / Abrasi"),    # tanpa kode: dihitung terpisah
-        D("2026-10-08", "99.99", "Banjir")]}                      # tak terpetakan
+        D("2026-10-08", "99.99", "Banjir"),
+        D("2026-10-15", "11.16", "Banjir")]}              # DIBI tanpa logbook kedua                      # tak terpetakan
     peta = lambda k: {"3201": "3201", "1116": "1116"}.get(str(k)[:4] if k else None)  # noqa: E731
     rows = [L("banjir", "32", "Kab. Bogor", "2026-09-19", md=1),                  # L1 cocok, KIB indeks 1
             L("banjir", "32", "Bogor", "2026-09-19", luka=60),                    # L1b: sama kab, jenis, hari -> indeks 2; DIBI 19 Sep dan 21 Sep sudah dipakai yang lebih dekat
             L("banjir", "32", "Bogor", "2026-09-22", rumah_rb=5),                 # L2: dipasangkan ke DIBI 21 Sep (selisih 1)
             L("banjir", "11", "Aceh Tamiang", "2026-11-10", luas_ha=1),           # tanpa DIBI, lewat 7 hari
             L("banjir", "11", "Aceh Tamiang", "2026-11-20", ada_sk=1),            # tanpa DIBI, baru 6 hari: menunggu
-            L("banjir", "32", "Bogor", "2026-09-25", md=0, luka=10),              # di bawah ambang
+            L("banjir", "32", "Bogor", "2026-09-25", md=0, luka=10, mengungsi_jiwa=0, rumah_rb=0, rumah_rs=0, rumah_rr=0, luas_ha=0),   # semua kolom terisi, tak ada yang lewat: di bawah ambang
             L("banjir", "32", "Bogor", "2026-09-26"),                             # angka belum dilaporkan: tak bisa dinilai
+            L("banjir", "11", "Aceh Tamiang", "2026-10-05", md=0, luka=0, mengungsi_jiwa=0, rumah_rb=0, rumah_rs=0, rumah_rr=0, luas_ha=0),   # di bawah ambang, tetapi berpasangan dengan DIBI 5 Okt
             L("kecelakaan", "32", "Bogor", "2026-09-19", md=3),                   # tanpa kode bencana
             L("banjir", "32", "Kabupaten Tak Dikenal", "2026-09-19", md=1),       # tak terpetakan
             L("banjir", "32", "Bogor", "2025-12-30", md=1)]                       # di luar rentang DIBI (sebelum dari + 2)
@@ -268,10 +281,18 @@ def cek():
     tdb = k["pus2-tanpa-dibi"]["baris"]
     assert [r["tgl"] for r in tdb] == ["2026-09-19", "2026-11-10"] and tdb[0]["kib"] == "3201101202609192", tdb      # L1b: indeks 2 menurut urutan catat, DIBI sudah dipakai L1
     assert a("pus2-tanpa-dibi", "tanpa_dibi") == 2 and a("pus2-tanpa-dibi", "menunggu") == 1
-    assert a("pus2-tanpa-logbook", "tanpa_logbook") == 1 and [r["tgl"] for r in k["pus2-tanpa-logbook"]["baris"]] == ["2026-10-05"]
+    assert a("pus2-tanpa-logbook", "tanpa_logbook") == 1 and [r["tgl"] for r in k["pus2-tanpa-logbook"]["baris"]] == ["2026-10-15"], k["pus2-tanpa-logbook"]   # DIBI 5 Okt berpasangan dengan logbook di bawah ambang
+    assert a("pus2-cocok", "pasangan_lain") == 1 and a("pus2-cocok", "bawah") == 1 and a("pus2-cocok", "belum_nilai") == 1
     d = b["data"]
     assert (d["logbook_tanpa_kode"], d["logbook_tak_terpetakan"], d["dibi_tanpa_kode"], d["dibi_tak_terpetakan"], d["label"]) == (1, 1, 1, 1, "KIB usulan"), d
     assert all("KIB usulan" in x["title"] for x in k["pus2-cocok"]["kolom"] if x["k"] == "kib")
+    # ambang: satu kolom lewat = True walau kolom lain kosong; False hanya bila semua kolom terisi; selain itu belum bisa dinilai
+    assert memenuhi_ambang(L("banjir", "32", "Bogor", "2026-09-19", md=1)) is True and memenuhi_ambang(L("banjir", "32", "Bogor", "2026-09-19", rumah_rb=3, rumah_rs=2)) is True
+    assert memenuhi_ambang(L("banjir", "32", "Bogor", "2026-09-19", md=0, luka=10)) is None and memenuhi_ambang(L("banjir", "32", "Bogor", "2026-09-19")) is None
+    assert memenuhi_ambang(L("banjir", "32", "Bogor", "2026-09-19", md=0, luka=0, mengungsi_jiwa=0, rumah_rb=0, rumah_rs=0, rumah_rr=0, luas_ha=0.5)) is False
+    assert memenuhi_ambang(L("banjir", "32", "Bogor", "2026-09-19", ada_sk=1)) is True
+    # kueri memakai nilai terakhir yang terisi per kolom, bukan entri terbaru yang mungkin berisi NULL
+    assert SQL.count("IS NOT NULL ORDER BY x.waktu DESC") == 7, "tiap kolom dampak harus mengambil nilai terakhir yang terisi"
     # selisih 3 hari tidak cocok; satu baris DIBI hanya untuk satu kejadian (yang terdekat)
     lb2 = [{"kab": "3201", "jenis": "banjir", "tgl": "2026-09-19"}, {"kab": "3201", "jenis": "banjir", "tgl": "2026-09-20"}]
     db2 = [{"kab": "3201", "jenis": "banjir", "tgl": "2026-09-20"}, {"kab": "3201", "jenis": "banjir", "tgl": "2026-09-23"}]

@@ -6,9 +6,9 @@ public/data/osm_nasional/<prov>.json (jembatan); status terbaru dari tabel D1 ak
   titik disatukan bila jaraknya paling jauh 200 m dan desa serta kabupatennya sama (satu desa, tautan berantai); id = 16 heks terkecil dari
     sha1(sumber|uid) anggota gugus, jadi urutan masukan tidak mengubahnya (id bisa berubah bila titik baru berhash lebih kecil bergabung; layer sudah berhenti diperbarui)
   tgl_putus = tanggal WIB paling awal di gugus; umur_putus = hari ini dikurangi tgl_putus
-  kelas pemilik = ruas OSM terdekat paling jauh 50 m: highway trunk atau primary, atau ref hanya angka, = nasional; secondary = provinsi; selain itu kab_desa;
-    tanpa ruas atau tanpa tag highway = tidak diketahui. Selalu berlabel estimasi.
-  aset desa: kelas kab_desa dan ruas tanpa ref = tanda "tidak bisa hibah RR (Perban 4/2024 Pasal 5 huruf e)"; kelas lain tidak ditandai, tidak diketahui = tanpa tanda
+  kelas pemilik = ruas OSM terdekat paling jauh 50 m: highway trunk atau primary = nasional; secondary = provinsi; tertiary ke bawah tanpa ref = kab_desa;
+    tertiary ke bawah DENGAN ref (nomor bisa jalan nasional, provinsi, atau kabupaten) = tidak diketahui; tanpa ruas atau tanpa tag highway = tidak diketahui. Selalu berlabel estimasi.
+  aset desa: kelas kab_desa dan ruas tanpa ref = tanda "kemungkinan aset kabupaten atau desa, perlu dicek ke BPBD" (bukan putusan; tanpa menyebut pasal); kelas lain tidak ditandai, tidak diketahui = tanpa tanda
   status bawaan putus bila D1 belum punya catatan atau belum terbaca (status_d1 mencatat keadaannya)
 Keluaran R2 unit/akses_putus.json: {titik: [{id, ...}], kartu, data} (kontrak Worker RU-083: titik[].id 16 heks).
 
@@ -39,7 +39,7 @@ MAKS_BARIS = 100
 STATUS = ("putus", "darurat", "pulih")
 SQL_STATUS = "SELECT titik_id, tgl, status FROM akses_status WHERE dummy = 0 ORDER BY tgl, id"
 RE_ID = re.compile(r"^[0-9a-f]{16}$")
-TANDA_ASET = "aset desa, tidak bisa hibah rehabilitasi dan rekonstruksi (Perban 4/2024 Pasal 5 huruf e)"
+TANDA_ASET = "kemungkinan aset kabupaten atau desa, perlu dicek ke BPBD"
 
 
 def url_layer():
@@ -63,9 +63,16 @@ def tgl_wib(ms):
     return (datetime.fromtimestamp(ms / 1000, timezone.utc) + timedelta(hours=7)).date()
 
 
+RE_TAG = re.compile(r"<[^>]*>")
+RE_TELEPON = re.compile(r"\+?\d[\d\s-]{8,}")
+
+
 def bersih(t):
-    """Teks bebas layer (name, cause, damage) kadang berisi tag HTML: buang tag, urai entitas, rapatkan spasi, potong 300 huruf; kosong = None."""
-    t = " ".join(html.unescape(re.sub(r"<[^>]*>", " ", str(t or ""))).split())[:300]
+    """Teks bebas layer (name, cause, damage): buang tag, urai entitas, buang tag lagi (entitas bisa memunculkan tag), buang deretan angka yang menyerupai nomor telepon,
+    rapatkan spasi, potong 300 huruf; kosong = None."""
+    t = RE_TAG.sub(" ", html.unescape(RE_TAG.sub(" ", str(t or ""))))
+    t = RE_TELEPON.sub(" ", t)
+    t = " ".join(t.split())[:300]
     return t or None
 
 
@@ -124,15 +131,16 @@ def satukan(titik):
 
 
 def kelas_ruas(row):
-    """Satu baris OSM jembatan: [lat, lon, nama, highway?, ref?] -> (kelas, punya_ref) atau (None, None) bila highway tidak dicatat."""
+    """Satu baris OSM jembatan: [lat, lon, nama, highway?, ref?] -> (kelas, punya_ref). trunk dan primary = nasional; secondary = provinsi; tertiary ke bawah tanpa ref = kab_desa.
+    Tertiary ke bawah dengan ref, atau tanpa tag highway: (None, None), tidak diketahui (nomor ref saja tidak membuktikan pemilik)."""
     if len(row) < 4 or not row[3]:
         return None, None
     hw, ref = str(row[3]).lower(), (str(row[4]).strip() if len(row) > 4 and row[4] else "")
-    if hw in ("trunk", "primary") or re.fullmatch(r"\d{1,3}", ref):
+    if hw in ("trunk", "primary"):
         return "nasional", bool(ref)
     if hw == "secondary":
         return "provinsi", bool(ref)
-    return "kab_desa", bool(ref)
+    return ("kab_desa", False) if not ref else (None, None)
 
 
 def beri_kelas(gugus, osm_per_prov, kode_prov):
@@ -173,6 +181,7 @@ def baca_status(jalankan):
 
 def bangun(gugus, buang, status_d1, atribusi, dibuat, hari_ini):
     n = len(gugus)
+    terbaca = not str(status_d1).startswith("belum terbaca")
     aktif = [g for g in gugus if g["status"] != "pulih"]
     umur = sorted(g["umur_putus"] for g in aktif)
     median = umur[len(umur) // 2] if umur else None
@@ -183,8 +192,10 @@ def bangun(gugus, buang, status_d1, atribusi, dibuat, hari_ini):
     k1 = rapor.kartu(
         id="rri1-akses", sistem="RRI-1", pil="Akses putus", ikon="peta", judul="Daftar akses putus",
         angka=[{"k": "titik", "label": "Titik akses putus (sesudah penyatuan)", "nilai": n if n else None, "title": f"{GUGUS_M} m dan desa sama disatukan; baris tanpa koordinat atau tanggal dibuang: {buang}"},
-               {"k": "aktif", "label": "Belum dicatat pulih", "nilai": len(aktif) if n else None, "title": "status terbaru bukan pulih; bawaan putus bila staf belum mencatat"},
-               {"k": "median", "label": "Umur putus tengah, hari", "nilai": median, "title": "median hari sejak tanggal putus paling awal di gugus"},
+               {"k": "aktif", "label": "Belum dicatat pulih", "nilai": len(aktif) if n and terbaca else None,
+                "title": "status terbaru bukan pulih; bawaan putus bila staf belum mencatat" if terbaca else "catatan status dari staf belum terbaca, jadi jumlah yang sudah pulih belum diketahui"},
+               {"k": "median", "label": "Umur putus tengah sejak laporan terakhir layer, hari", "nilai": median,
+                "title": "median hari sejak tanggal putus paling awal di gugus" + ("" if terbaca else "; status pulih belum diketahui")},
                {"k": "aset", "label": "Bertanda aset desa", "nilai": aset if n and tdk < n else None, "title": "hanya untuk titik yang kelas ruasnya diketahui dari OpenStreetMap"},
                {"k": "kelas_tdk", "label": "Kelas pemilik tidak diketahui", "nilai": tdk if n else None, "title": f"tanpa ruas OpenStreetMap dalam {OSM_M} m atau ruas tanpa keterangan kelas jalan"}],
         kolom=[{"k": "lokasi", "label": "Lokasi"}, {"k": "kab", "label": "Kab/kota"}, {"k": "umur", "label": "Umur putus, hari", "angka": True},
@@ -278,9 +289,13 @@ def cek():
     assert besar["id"] == min(ids) and RE_ID.fullmatch(besar["id"])
     assert [x["id"] for x in satukan(list(reversed(t)))] == [x["id"] for x in g], "id bergantung urutan masukan"
     assert bersih('<p>Jalan <span style="x">amblas</span> &amp; putus</p>') == "Jalan amblas & putus" and bersih("<p></p>") is None and bersih(None) is None
+    assert bersih("Hubungi Pak X 0812-3456-7890 atau +62 812 3456 7890, jembatan putus") == "Hubungi Pak X atau , jembatan putus", bersih("Hubungi Pak X 0812-3456-7890 atau +62 812 3456 7890, jembatan putus")
+    assert bersih("Jembatan &lt;b&gt;putus&lt;/b&gt; &lt;script&gt;x&lt;/script&gt;") == "Jembatan putus x", bersih("Jembatan &lt;b&gt;putus&lt;/b&gt; &lt;script&gt;x&lt;/script&gt;")
+    assert bersih("Km 12 sepanjang 70 m, tahun 2025") == "Km 12 sepanjang 70 m, tahun 2025", "angka biasa tidak boleh terbuang"
     # kelas pemilik dari OSM paling jauh 50 m, label estimasi; tanpa tag highway = tidak diketahui
     assert kelas_ruas([4.0, 96.0, "x", "primary", ""]) == ("nasional", False) and kelas_ruas([4.0, 96.0, "x", "secondary", "12.1"]) == ("provinsi", True)
-    assert kelas_ruas([4.0, 96.0, "x", "residential", ""]) == ("kab_desa", False) and kelas_ruas([4.0, 96.0, "x", "tertiary", "7"]) == ("nasional", True)
+    assert kelas_ruas([4.0, 96.0, "x", "residential", ""]) == ("kab_desa", False) and kelas_ruas([4.0, 96.0, "x", "tertiary", "7"]) == (None, None), "ref angka pada tertiary bukan bukti jalan nasional"
+    assert kelas_ruas([4.0, 96.0, "x", "residential", "Kab-12"]) == (None, None) and kelas_ruas([4.0, 96.0, "x", "trunk", "1"]) == ("nasional", True)
     assert kelas_ruas([4.0, 96.0, "x"]) == (None, None) and kelas_ruas([4.0, 96.0, "x", None]) == (None, None)
     dekat = 0.00036   # sekitar 40 m
     u4 = 4.0 + 2 * dlat + 0.00225
@@ -296,7 +311,7 @@ def cek():
     k_desa = beri_kelas([dict(g[0], lat=4.0, lon=96.0)], {"11": [[4.0, 96.0, "Jl D", "residential", ""]]}, kp)[0]
     assert k_desa["kelas_pemilik"] == "kab_desa" and k_desa["aset_desa"] is True
     k_ref = beri_kelas([dict(g[0], lat=4.0, lon=96.0)], {"11": [[4.0, 96.0, "Jl D", "residential", "Kab-12"]]}, kp)[0]
-    assert k_ref["aset_desa"] is False
+    assert k_ref["kelas_pemilik"] == "tidak_diketahui" and k_ref["aset_desa"] is None, "ruas bernomor di kelas tertiary ke bawah tidak ditandai aset desa"
     # status: terakhir menang, bawaan putus, catatan rusak ditolak
     hari = date(2025, 12, 4)
     st = terapkan_status(g2, [{"titik_id": besar["id"], "tgl": "2025-12-01", "status": "darurat"}, {"titik_id": besar["id"], "tgl": "2025-12-03", "status": "pulih"}], hari)
@@ -317,7 +332,9 @@ def cek():
         except ValueError:
             pass
     # berkas penuh: kontrak Worker (titik[].id), kartu lolos skema, bukan 0 untuk yang tak diketahui
-    b = bangun(st, buang, "belum terbaca: uji", [{"nama": "uji", "url": "https://gis.bnpb.go.id/x", "diambil": "2026-11-26", "lisensi": "uji"}], "2026-11-26T00:00:00Z", hari)
+    bt = bangun(st, buang, "belum terbaca: uji", [{"nama": "uji", "url": "https://gis.bnpb.go.id/x", "diambil": "2026-11-26", "lisensi": "uji"}], "2026-11-26T00:00:00Z", hari)
+    assert bt["kartu"][0]["angka"][1]["nilai"] is None and "belum diketahui" in bt["kartu"][0]["angka"][1]["title"] and "sejak laporan terakhir layer" in bt["kartu"][0]["angka"][2]["label"], "status tak terbaca: jumlah aktif tidak boleh tampil"
+    b = bangun(st, buang, "terbaca 2 catatan", [{"nama": "uji", "url": "https://gis.bnpb.go.id/x", "diambil": "2026-11-26", "lisensi": "uji"}], "2026-11-26T00:00:00Z", hari)
     assert len(b["titik"]) == 4 and all(RE_ID.fullmatch(x["id"]) for x in b["titik"]) and b["titik"][0]["umur_putus"] >= b["titik"][-1]["umur_putus"]
     assert b["kartu"][0]["angka"][1]["nilai"] == 3, "titik pulih tidak boleh dihitung aktif"
     assert "kelas_label" in b["titik"][0] and b["titik"][0]["kelas_label"] == "estimasi"

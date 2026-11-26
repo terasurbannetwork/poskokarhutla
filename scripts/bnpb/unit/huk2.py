@@ -171,13 +171,13 @@ def bangun(dok, segmen, kat, hari_ini, dibuat):
     k1 = rapor.kartu(
         id="huk2-amanat", sistem="HUK-2", pil="Amanat turunan", ikon="timbang", judul="Amanat pengaturan turunan",
         angka=[{"k": "amanat", "label": "Kalimat delegasi pada peraturan berlaku efektif", "nilai": n if n else None, "title": "pola: ditetapkan oleh Kepala, diatur dengan Peraturan Badan, diatur lebih lanjut, tercantum dalam Keputusan"},
-               {"k": "kandidat", "label": "Punya kandidat pemenuhan menurut mesin", "nilai": len(punya) if n else None, "title": "belum ditandai staf; dokumen lebih baru yang merujuk pasalnya atau berjudul mirip"},
+               {"k": "kandidat", "label": "Punya kandidat pemenuhan menurut mesin", "nilai": len(punya) if n else None, "title": f"belum ditandai staf; dokumen lebih baru yang merujuk pasalnya atau berjudul mirip. Hipotesis: jumlah ini berasal dari satu titik setel ambang kemiripan judul ({AMANAT_BM25_MIN:g}) yang belum diuji"},
                {"k": "belum", "label": "Belum ditemukan pemenuhnya", "nilai": (n - len(punya)) if n else None, "title": "dalam korpus JDIH lokal; bisa terbit dengan judul lain atau belum terurai"}],
         kolom=[{"k": "peraturan", "label": "Peraturan", "tautan": "peraturan_url"}, {"k": "pasal", "label": "Pasal"}, {"k": "topik", "label": "Topik amanat", "title": "frasa sebelum kata kerja delegasi, paling banyak 12 kata"},
                {"k": "usia", "label": "Usia, hari", "angka": True, "title": "hari sejak tanggal ditetapkan peraturan induk"}, {"k": "status", "label": "Status menurut mesin"}],
         baris=[baris(a) for a in am],
         rumus="amanat = kalimat delegasi per pasal; kandidat pemenuhan = dokumen lebih baru yang merujuk pasalnya atau judulnya mirip topik; tanda staf menyusul",
-        sumber=["hukum_seed", "katalog_hukum"], label=["hitungan_kita"], asumsi=["Asumsi: ambang kemiripan judul 8"],
+        sumber=["hukum_seed", "katalog_hukum"], label=["hitungan_kita"], asumsi=["Asumsi: ambang kemiripan judul 8", "Asumsi: kandidat dari satu titik setel, hipotesis"],
         tautan=[["/bnpb/hukum", "Buka pustaka hukum"]], unduh="amanat_turunan.csv")
     kartu = [k1]
     cat = catatan_inspektorat(dok, segmen)
