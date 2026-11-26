@@ -2243,6 +2243,13 @@ export async function lpRekonCalon(env, p, dari, sampai, prov) {
   try { return (await sedia(env, p, "lapor_sesi", "baca", sql(true)).bind(dari, sampai, prov || null).all()).results; }
   catch (e) { if (!/no such table: lapor_versi/i.test(String(e?.message))) throw e; return (await sedia(env, p, "lapor_sesi", "baca", sql(false)).bind(dari, sampai, prov || null).all()).results; }
 }
+/* titik laporan untuk peta Dalops (prediksi-kejadian PK-4, D10): laporan terkirim bukan tidak_valid, hanya kolom tanpa nama, WA, isi, foto.
+   periksa = hasil pengecekan terakhir (null = belum diperiksa). jenis = daftar jenis lapor_sesi hasil pemetaan rute. Maks 2000, terbaru dulu. */
+export const lpTitikDalops = async (env, p, jenis, dari) => (await sedia(env, p, "lapor_sesi", "baca",
+  `SELECT s.nomor tiket, s.jenis, s.tingkat, s.kab, s.lat, s.lon, s.terkirim waktu, t.status,
+     (SELECT r.hasil FROM lapor_periksa r WHERE r.nomor = s.nomor ORDER BY r.id DESC LIMIT 1) periksa
+   FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor
+   WHERE s.terkirim >= ?1 AND s.jenis IN (SELECT value FROM json_each(?2)) AND t.status != 'tidak_valid' ORDER BY s.terkirim DESC LIMIT 2000`).bind(dari, JSON.stringify(jenis)).all()).results;
 /* tarikan halaman publik (migrasi 0170, LK-03, A8): semua baris untuk sekumpulan kode kejadian laporan, urut waktu lalu id, supaya penentu
    terverifikasiBpbd memakai baris terakhir. ponytail: IN sampai 100 kode per panggilan, sama dengan lpPeriksaAkunNomor */
 export const lpTarikKode = async (env, p, kode) => kode.length ? (await sedia(env, p, "lk_tarik", "baca",

@@ -1485,6 +1485,7 @@
     "table dl_tindak": "T3-T4: simpan selesai lalu proses",
     "table dl_tindak_log": "T6-T7: terkini dan riwayat membawa nama pengisi",
     "GET /api/dalops/tindak": "T6-T7: terkini dan riwayat membawa nama pengisi",
+    "GET /api/dalops/lapor": "isi: hanya kolom titik, tidak_valid dibuang",
     "GET /api/dalops/tindak/riwayat": "T6-T7: terkini dan riwayat membawa nama pengisi",
     "POST /api/dalops/tindak": "T3-T4: simpan selesai lalu proses",
     "table mk_kode": "masuk U-1:",

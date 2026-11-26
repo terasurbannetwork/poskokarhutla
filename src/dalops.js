@@ -7,6 +7,9 @@ import {modAtauStaf} from "./staf.js";   // RU-109: akun gerbang AKUN_SITUS* buk
 import {halamanBnpbPublik} from "./bnpb.js";
 import {bacaLaporan, dummyLaporan} from "./dalops_laporan.js";
 import {RUTE_TINDAK} from "./dalops_tindak.js";
+import {lajuIP} from "./bnpb.js";
+import {tglSah, wib} from "./posko.js";
+import {lpTitikDalops, pelakuLpStaf} from "./hak.js";
 
 import {PERAN_DALOPS} from "./gerbang_halaman.js";   // nilai tinggal di modul daun gerbang (dipakai bolehHalaman tanpa mengimpor modul ini)
 export {PERAN_DALOPS};
@@ -20,6 +23,24 @@ async function data(env, req, jenis) {
   if (!o) return gagal(404, `data ${jenis} belum diunggah, jalankan scripts/data/dalops_banjir.py --unggah`);
   return new Response(o.body, {headers: {"content-type": "application/json; charset=utf-8", "cache-control": "private, no-store", vary: "cookie",
     "x-content-type-options": "nosniff", "x-diperbarui": o.uploaded.toISOString()}});
+}
+
+/* Titik laporan Lapor Bencana di peta Dalops (data/kajian-bnpb/prediksi-kejadian/, PK-4, D10). Jenis Dalops -> jenis lapor (ALGORITMA "Pasangan jenis").
+   Sesi staf Dalops yang sama dengan /api/dalops/* (Q3). Hanya tiket, jenis, tingkat, kab, lat, lon, waktu, status, periksa: tanpa nama, WA, isi, foto. tidak_valid dibuang di SQL. */
+const JENIS_LAPOR = {banjir: ["banjir"], longsor: ["longsor"], cuaca: ["cuaca"], gelombang: ["abrasi", "tsunami"], karhutla: ["karhutla"]};
+const MAKS_SEJAK_HARI = 14, HARI_MS = 864e5;
+async function titikLaporan(env, req, url, kini = Date.now()) {
+  if (!(await modAtauStaf(env, req, PERAN_DALOPS))) return gagal(401, "masuk sebagai staf Pusdalops, Koordalops, atau Pimpinan");
+  const lim = await lajuIP(env, req, "dalops.lapor", [[600e3, 60]], kini); if (lim) return lim;
+  const jenis = url.searchParams.get("jenis") || "", sejak = url.searchParams.get("sejak") || wib(kini - 7 * HARI_MS);
+  if (!Object.hasOwn(JENIS_LAPOR, jenis)) return gagal(400, "jenis harus salah satu dari: " + Object.keys(JENIS_LAPOR).join(", "));
+  if (!tglSah(sejak)) return gagal(400, "sejak harus YYYY-MM-DD");
+  if (sejak < wib(kini - MAKS_SEJAK_HARI * HARI_MS)) return gagal(400, `sejak maksimal ${MAKS_SEJAK_HARI} hari lalu`);
+  let baris;
+  try { baris = await lpTitikDalops(env, pelakuLpStaf, JENIS_LAPOR[jenis], Date.parse(sejak + "T00:00:00+07:00")); }
+  catch (e) { if (/no such table: lapor_/i.test(String(e?.message))) return gagal(503, "laporan belum tersedia (migrasi Lapor Bencana belum diterapkan)"); throw e; }
+  const laporan = baris.map(r => ({tiket: r.tiket, jenis: r.jenis, tingkat: r.tingkat === "bpbd" ? "bpbd" : "warga", kab: r.kab, lat: r.lat, lon: r.lon, waktu: r.waktu, status: r.status, periksa: r.periksa || null}));
+  return new Response(JSON.stringify({laporan}), {headers: {"content-type": "application/json; charset=utf-8", "cache-control": "private, no-store", vary: "cookie", "x-content-type-options": "nosniff"}});
 }
 
 export const RUTE_DALOPS = {
@@ -36,5 +57,6 @@ export const RUTE_DALOPS = {
   "GET /api/dalops/gunungapi": (env, req) => data(env, req, "gunungapi"),     // gunung api dari logbook dan MAGMA (PB-46b)
   "GET /api/dalops/udara": (env, req) => data(env, req, "udara"),             // kualitas udara dan asap (PB-38b)
   "GET /api/dalops/laporan": (env, req, url) => bacaLaporan(env, req, url, data),   // Laporan Masuk: ringkasan rekap WA 07.00 (src/dalops_laporan.js)
+  "GET /api/dalops/lapor": (env, req, url, kini) => titikLaporan(env, req, url, kini),   // titik Lapor Bencana untuk peta (PK-4)
   "POST /api/dalops/laporan/dummy": (env, req, url, kini) => dummyLaporan(env, req, kini),
 };
