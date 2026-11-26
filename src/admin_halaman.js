@@ -76,7 +76,7 @@ const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
 /* semua halaman kerangka admin memakai menu Pusdalops (public/bnpb/menu_pusdalops.js) sebagai satu-satunya menu: panel kiri tetap sama di semua
    halaman staf, tanpa menu atas berkelompok dan tanpa sub-nav grup (pemilik 4 Nov 2026; diperluas ke semua halaman admin 26 Nov 2026
    "di atas ada menu di samping ada menu. Bingung"). Menu atas atas() tetap dikirim sebagai cadangan layar sempit dan tanpa JS; menu_pusdalops.js menggantinya. */
-const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=15" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=26"></script>';
+const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=16" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=27"></script>';
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
 const halaman = (k, memuat, ekor, ctx) => `${kepala(`${HAL[k][1]} · Centurisk97`)}
 <body${ctx ? ` data-staf="1" data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
@@ -173,12 +173,12 @@ export const ruangLaporan = ctx => { const ok = new Set(menuSesi(ctx).flatMap(p 
   return RUANG_LAPORAN.map(g => ({...g, item: g.item.filter(i => ok.has(i[2]))})).filter(g => g.item.length); };
 export const halamanRuangLaporan = ctx => `${kepala("Ruang Laporan · Centurisk97")}
 <body class="rl-badan" data-staf="${ctx ? "1" : "0"}"${ctx ? ` data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
-${atas("laporan", ctx)}
-<link href="/admin/ruang_laporan.css?v=1" rel="stylesheet">
-<div class="rl-tubuh">
+${atas("laporan", ctx)}${menuPusdalops}
+<link href="/admin/ruang_laporan.css?v=2" rel="stylesheet">
+<main class="rl-tubuh">
   <nav class="rl-rel" aria-label="Menu Ruang Laporan">${ruangLaporan(ctx).map((g, i) => `${g.kel ? `<h2 class="ad-ey rl-kel" id="rl-kel-${i}">${g.kel}</h2>` : ""}<ul${g.kel ? ` aria-labelledby="rl-kel-${i}"` : ""}>${g.item.map(([k, l, ke, ik]) => `<li><a href="#${k}" data-ke="${ke}">${ik}<span>${l}</span></a></li>`).join("")}</ul>`).join("")}</nav>
   <iframe id="rlBingkai" class="rl-bingkai rl-muat" title="Isi Ruang Laporan" src="about:blank"></iframe>
-</div>
+</main>
 <script src="/admin/ruang_laporan.js?v=1"></script>
 </body></html>`;
 
@@ -241,7 +241,7 @@ export const halamanSippa = (layar, ctx) => `<!doctype html>
 <link href="/admin/admin.css?v=7" rel="stylesheet">
 <link href="/inti/kartu.css?v=1" rel="stylesheet">
 <link href="/inti/insight.css?v=1" rel="stylesheet">
-<link href="/pipa/pipa.css?v=10" rel="stylesheet">
+<link href="/pipa/pipa.css?v=11" rel="stylesheet">
 </head>
 <body data-staf="1" data-peran="${esc(ctx.peran.join(","))}" data-layar="${esc(layar)}" data-tulis="${ctx.tulis ? 1 : 0}" data-mod="${ctx.mod ? 1 : 0}" data-super="${ctx.super ? 1 : 0}" data-nama="${esc(ctx.nama || "")}">
 <div id="app"><p class="ad-redup">Memuat SIPPA…</p></div>
@@ -251,7 +251,7 @@ export const halamanSippa = (layar, ctx) => `<!doctype html>
 <script src="/inti/tabel.js"></script>
 <script src="/inti/nanti.js"></script>
 <script src="/inti/kartu.js"></script>
-<script type="module" src="/pipa/app.js?v=4"></script>
+<script type="module" src="/pipa/app.js?v=5"></script>
 </body></html>`;
 /* /pipa/lapangan: form luring operator berkode, tanpa sesi dan tanpa data staf; gaya dan skrip hanya 'self' (CSP_LAPANGAN di src/posko.js) */
 export const halamanSippaLapangan = () => `<!doctype html>
@@ -262,7 +262,7 @@ export const halamanSippaLapangan = () => `<!doctype html>
 <meta name="robots" content="noindex,nofollow">
 <title>SIPPA Lapangan, Centurisk97</title>
 <link href="/admin/admin.css?v=7" rel="stylesheet">
-<link href="/pipa/pipa.css?v=10" rel="stylesheet">
+<link href="/pipa/pipa.css?v=11" rel="stylesheet">
 </head>
 <body>
 <div id="app"><p>Memuat form lapangan…</p></div>

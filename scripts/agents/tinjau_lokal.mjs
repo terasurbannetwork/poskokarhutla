@@ -59,7 +59,11 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
     /* halaman modul yang dilayani Worker modulnya sendiri (layaniKm, layaniSk, LogPal, SIPPA) */
     const MODUL = [["/kemitraan", "/kemitraan.html"], ["/kemitraan/masuk", "/kemitraan/masuk.html"], ["/kemitraan/daftar", "/kemitraan/daftar.html"], ["/kemitraan/buku", "/kemitraan/buku.html"], ["/kemitraan/panduan", "/kemitraan/panduan.html"], ["/siklus", "/siklus/index.html"], ["/instansi", "/instansi.html"], ["/instansi/logpal", "/logpal/index.html"], ["/instansi/data-bencana", "/bnpb/data-bencana.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"], ["/lapor", "/lapor/index.html"]];
     rute = [...w.HTML_RUTE, ...Object.entries(w.BNPB_BERSIH || {}).map(([k, j]) => [{test: p => p === j || p === j + "/"}, `/bnpb/${k}.html`]),
-      ...MODUL.map(([j, f]) => [{test: p => p === j || p === j + "/"}, f])]; } catch { rute = []; } }
+      ...MODUL.map(([j, f]) => [{test: p => p === j || p === j + "/"}, f]),
+      [{test: p => /^\/siklus\/[a-z-]+\/?$/.test(p)}, "/siklus/index.html"],   // bagian Siklus satu ruas (/siklus/kejadian, /siklus/paparan, ...) = cangkang yang sama; /siklus/kejadian/KJ-... tetap hulu
+      [{test: p => p === "/rumah-rusak" || p === "/rumah-rusak/"}, "/rumah_rusak.html"], [{test: p => p === "/meja" || p === "/meja/"}, "/bnpb/meja.html"],
+      /* halaman /bnpb/<nama> yang dilayani Worker lewat halamanBnpbPublik (mis. /bnpb/inarisk): berkas public/bnpb/<nama>.html bila ada, selain itu HTML hulu */
+      [{test: p => /^\/bnpb\/[a-z0-9-]+\/?$/.test(p)}, null, null, p => p.replace(/\/$/, "") + ".html"]]; } catch { rute = []; } }
   const H = new URL(hulu);
   return http.createServer(async (req, res) => {
     try {

@@ -159,3 +159,8 @@ main.peta .ex-leg{background:var(--card);border:1px solid var(--line);border-rad
   .sk-detail[data-m="gfm"] #kj-peta{order:2}
   .sk-peta{height:220px}
 }
+/* kerangka standar staf (26 Nov 2026): main tidak lagi menempel di bawah kepala situs lama; panel Pusdalops yang membungkusnya */
+main#sk-gulir{position:relative;inset:auto;height:calc(100dvh - var(--top))}
+body.mp-model-a .mp-a>main#sk-gulir{height:100dvh}
+.sk-alat{display:flex;justify-content:flex-end;max-width:1280px;margin:0 auto;padding:12px 16px 0}
+main.peta .sk-alat{display:none}

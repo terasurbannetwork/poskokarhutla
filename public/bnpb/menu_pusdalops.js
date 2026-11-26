@@ -8,7 +8,17 @@
   "use strict";
   /* tema tersimpan (kunci bersama "pk-tema", sama dengan /prediksi dan /lapor/meja) dipasang sedini mungkin supaya tidak berkedip */
   try { const t = JSON.parse(localStorage.getItem("pk-tema")); if (t === "dark" || t === "light") document.documentElement.dataset.theme = t; } catch (e) {}
+  /* halaman yang juga dibuka bukan-staf (BPBD, petugas berkode, tamu) memuat skrip ini dengan atribut data-opsional: panel hanya dipasang
+     bila sesi ini punya menu staf (pemilik 26 Nov 2026 "satukan sistem tampilan semua"); tanpa menu staf halaman tampil apa adanya */
+  /* halaman di dalam bingkai (Ruang Laporan /admin/laporan) tidak memasang panel kedua: menunya milik halaman induk */
+  try { if (window.self !== window.top) return; } catch (e) { return; }
+  const skrip = document.currentScript, opsional = !!skrip?.hasAttribute("data-opsional");
+  if (opsional) { let ada = false; try { ada = (JSON.parse(sessionStorage.getItem("mp-peta")) || []).length > 0; } catch (e) {}
+    if (!ada) { fetch("/api/peta-situs", {credentials: "same-origin", signal: AbortSignal.timeout(9000)}).then(r => r.ok ? r.json() : null)
+      .then(m => { if (Array.isArray(m) && m.some(p => p?.pintu === "staf" && p.grup?.length)) { const s = document.createElement("script"); s.src = skrip.src; document.head.append(s); } }).catch(() => {});
+      return; } }
   /* lapisan sistem desain dashboard (data/kajian-bnpb/dashboard/DESIGN-SYSTEM.md) untuk semua halaman Pusdalops */
+  if (!document.querySelector('link[href^="/bnpb/menu_pusdalops.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/bnpb/menu_pusdalops.css?v=16"; document.head.append(l); }   // halaman yang lupa memuat gaya panel
   if (!document.querySelector('link[href^="/inti/dasbor.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/dasbor.css?v=30"; document.head.append(l); }
   const IKON = {"banjir": "M3 17c2 0 2-2 4.5-2S10 17 12 17s2.5-2 4.5-2S19 17 21 17|M3 21c2 0 2-2 4.5-2S10 21 12 21s2.5-2 4.5-2S19 21 21 21|M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.500 2-5 5-9z", "daftar": "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01", "simpan": "M5 3h11l3 3v15H5z|M8 3v6h7V3M8 21v-7h8v7", "personel": "M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z|M4 21a8 8 0 0 1 16 0", "pin": "M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z|M12 12a2.500 2.500 0 1 0 0-5 2.500 2.500 0 0 0 0 5z", "peringatan": "M12 3l9 16H3z|M12 10v4M12 17v.5", "kalender": "M4 6h16v15H4zM4 10h16M8 3v4M16 3v4", "sinyal": "M4 20l.01 0M8 16a5.500 5.500 0 0 1 8 0M5 12.500a10 10 0 0 1 14 0|M3 3l18 18", "meja": "M9 3h6v3H9z|M6 5h12v16H6z|M9 11h6M9 15h4", "grafik": "M3 3v18h18|M7 15l4-4 3 3 5-6", "luar": "M7 17L17 7|M9 7h8v8", "awan": "M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.600-1.500A3.500 3.500 0 0 1 17 18z", "atur": "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z|M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"};
   /* peta situs diminta SEKALI per muat halaman, sedini mungkin; pintu.js memakai janji yang sama (MenuPusdalops.peta) */
@@ -25,9 +35,10 @@
   const dariPeta = m => saring((m.find(p => p && p.pintu === "staf")?.grup || []).map(g => [g?.nama, IKON_GRUP[g?.id] || "daftar",
     (Array.isArray(g?.butir) ? g.butir : []).map(b => [b?.rute, b?.nama, ikonAman(b?.ikon) ? b.ikon : "daftar"])]));
   /* halaman yang memuat menu ini; tautan lain membuka dashboard lain (kerangka sendiri) dan diberi ikon panah keluar (pemilik 25 Nov 2026) */
-  /* semua halaman kerangka admin (src/admin_halaman.js halaman()) ikut menu ini sejak 26 Nov 2026; Ruang Laporan (/admin/laporan) berkerangka bingkai sendiri */
-  const DALAM = h => /^\/bnpb(\/|$)/.test(h) && !/^\/bnpb\/(inarisk|data-bencana)$/.test(h) || /^\/admin\/(?!laporan$)[a-z-]+$/.test(h) || ["/command-center", "/daftar-kontak", "/risiko", "/risiko-kebakaran", "/kebutuhan", "/sitrep",
-    "/kinerja-bnpb", "/relawan", "/relawan/saya", "/riset", "/riset/mitra"].includes(h);
+  /* satu sistem tampilan (pemilik 26 Nov 2026 "Satukan sistem tampilan semua. gw ga mau beda"): semua halaman staf memuat menu ini, jadi panel
+     kiri tetap saat pindah halaman. Panah "membuka dashboard lain" hanya untuk halaman peta publik yang berkerangka sendiri. */
+  const LUAR = new Set(["/?operasi", "/pelaporan", "/presiden"]);
+  const DALAM = h => !LUAR.has(h);
   const NS = "http://www.w3.org/2000/svg";
   const ikon = n => { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true");
     for (const d of IKON[n].split("|")) { const p = document.createElementNS(NS, "path"); p.setAttribute("d", d); s.appendChild(p); } return s; };
@@ -123,7 +134,8 @@
   /* keluar (tombol #keluar dari /inti/keluar.js, data-staf-keluar, atau form /admin/keluar): simpanan menu tab ini dibuang sebelum sesi dicabut */
   const buangKeluar = e => { if (e.target.closest?.('#keluar, [data-staf-keluar], .ad-keluar, form[action="/admin/keluar"]')) try { sessionStorage.removeItem("mp-peta"); } catch (x) {} };
   document.addEventListener("click", buangKeluar, true); document.addEventListener("submit", buangKeluar, true);
-  const gagal = () => { gambar([]); const t = "Menu belum bisa dimuat. Muat ulang halaman.";
+  const gagal = () => { if (opsional) { const w = samping.closest(".mp-a"); samping.remove(); nav.remove(); sub?.remove(); document.body.classList.remove("mp-model-a"); if (w) w.replaceWith(...w.childNodes); return; }   // sesi bukan staf lagi: halaman kembali apa adanya
+    gambar([]); const t = "Menu belum bisa dimuat. Muat ulang halaman.";
     isi.replaceChildren(el("p", "db-nav-sub", t), butir("/bnpb", "Pintu staf BNPB", "daftar", false)); nav.replaceChildren(el("span", null, t), tautan("/bnpb", "Pintu staf BNPB", "daftar", false)); };
   gambar(adaSimpan ? simpanan : []);
   new MutationObserver(tandai).observe(slot, {childList: true});

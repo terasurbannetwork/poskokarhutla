@@ -11,27 +11,21 @@
 /* cangkang: bilah konteks, rel, isi, bilah bawah */
 .sp-cangkang{display:grid;gap:var(--sp-4);min-width:0;box-sizing:border-box;max-width:1680px;margin-inline:auto;padding-inline:var(--sp-6)}
 .sp-isi>*{min-width:0}
-/* bilah konteks = header peta utama (header.top kepala.css): pita gradien penuh lebar, kontrol putih di atasnya */
-.sp-konteks{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3);min-height:var(--top,58px);box-sizing:border-box;margin-inline:calc(50% - 50vw);padding:var(--sp-2) 14px;background:var(--gradien);color:#fff}
-.sp-konteks .ad-seg{background:color-mix(in srgb,#fff 14%,transparent)}
-.sp-konteks .ad-seg button{color:color-mix(in srgb,#fff 82%,transparent)}
-.sp-konteks .ad-seg button[aria-checked="true"]{color:var(--ink)}
-.sp-konteks .sp-data-per{border-color:color-mix(in srgb,#fff 45%,transparent);color:#fff}
-.sp-konteks .sp-data-per .sp-yakin{background:color-mix(in srgb,#fff 16%,transparent);border-color:transparent;color:#fff}
-.sp-konteks .sp-tema{background:color-mix(in srgb,#fff 14%,transparent);color:#fff;border:0}
+/* kepala halaman: kepala navy .ad-top dan panel kiri Pusdalops dipasang menu_pusdalops.js (satu menu situs, pemilik 26 Nov 2026); di sini hanya kontrol milik SIPPA, sebagai kartu di dalam main */
+.sp-konteks{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+.sp-menu{display:grid;gap:var(--sp-2);padding:var(--sp-3);background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+.sp-menu-kel{margin:var(--sp-1) var(--sp-2) 0;font-size:10.5px;letter-spacing:.08em;color:var(--ink3)}
+.sp-menu-baris{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:var(--sp-1)}
+.sp-menu a{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);min-height:38px;padding:0 var(--sp-3);border-radius:12px;color:var(--ink2);font-size:13px;font-weight:600;text-decoration:none;transition:background var(--sp-sedang),color var(--sp-sedang)}
+.sp-menu a[aria-current="page"]{background:color-mix(in srgb,var(--navy2) 10%,var(--card));color:var(--navy);font-weight:800}
+@media (hover:hover) and (pointer:fine){.sp-menu a:not([aria-current]):hover{background:var(--surface);color:var(--ink)}}
+:root[data-theme="dark"] .sp-menu a[aria-current="page"]{color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sp-menu a[aria-current="page"]{color:#fff}}
+@media (max-width:767px){.sp-konteks .ad-seg{width:100%}.sp-konteks .ad-seg button{flex:1;padding:0 var(--sp-2)}.sp-konteks .pc,.sp-konteks select{width:100%}}
 .sp-pita{flex-basis:100%;min-width:0}.sp-pita:empty{display:none}
-.sp-badan{display:grid;grid-template-columns:232px minmax(0,1fr);gap:var(--sp-6);align-items:start}
-.sp-rel{position:sticky;top:calc(var(--top) + 12px);display:grid;gap:var(--sp-1);padding:var(--sp-2);background:var(--card);border-radius:var(--r);box-shadow:var(--bayang)}
-.sp-rel ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
-.sp-rel-kel{margin:var(--sp-3) var(--sp-2) 2px}
-.sp-rel a,.sp-bawah a,.sp-lainnya a,.sp-lain-tombol{display:flex;align-items:center;gap:var(--sp-2);min-height:38px;padding:0 var(--sp-3);border-radius:12px;color:var(--ink);font-size:13px;font-weight:700;text-decoration:none;transition:background var(--sp-sedang),color var(--sp-sedang)}
 .sp-ikon{width:18px;height:18px;flex:none}
-.sp-rel a[aria-current="page"],.sp-bawah a[aria-current="page"],.sp-lainnya a[aria-current="page"]{background:var(--gradien);color:#fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--emas) 50%,transparent)}
-@media (hover:hover) and (pointer:fine){.sp-rel a:not([aria-current]):hover,.sp-lainnya a:not([aria-current]):hover{background:var(--surface)}}
 .sp-isi{min-width:0;display:grid;gap:var(--sp-4);align-content:start;outline:0}
 .sp-judul{margin:0;font:800 22px/1.2 var(--display);letter-spacing:-.02em}
-.sp-tema{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0}
-.sp-bawah,.sp-lainnya{display:none}
 
 /* segmen radio (aria-checked, bukan aria-pressed): rupa sama dengan .ad-seg (admin.css:256-260) */
 .ad-seg button[aria-checked="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgb(11 37 69 / .14)}
@@ -160,24 +154,10 @@
 
 /* tablet: rel menyusut ke ikon 64px, label tetap ada untuk pembaca layar */
 @media (max-width:1279px){
-  .sp-badan{grid-template-columns:64px minmax(0,1fr);gap:var(--sp-4)}
-  .sp-rel a span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-  .sp-rel a{justify-content:center;padding:0}.sp-rel .sp-ikon{width:20px;height:20px}
-  .sp-rel-kel{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 }
 @media (max-width:900px){.sp-kisi.k3{grid-template-columns:1fr}}
 /* HP: bilah bawah lima tombol 56px, tanpa rel */
 @media (max-width:767px){
-  .sp-badan{grid-template-columns:minmax(0,1fr)}
-  .sp-rel{display:none}
-  .sp-bawah{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:12;background:var(--card);box-shadow:0 -6px 16px -8px rgb(11 37 69 / .25);padding-bottom:env(safe-area-inset-bottom)}
-  .sp-bawah a,.sp-lain-tombol{flex-direction:column;justify-content:center;gap:2px;min-height:56px;padding:0;border:0;background:none;font-size:11px;cursor:pointer;color:var(--ink)}
-  .sp-bawah .sp-ikon{width:20px;height:20px}
-  .sp-lainnya:not([hidden]){display:grid;position:fixed;left:0;right:0;bottom:calc(56px + env(safe-area-inset-bottom));z-index:8;gap:2px;padding:var(--sp-3);background:var(--card);border-radius:18px 18px 0 0;box-shadow:var(--shadow-lg)}
-  .sp-lainnya a{min-height:44px}
-  .sp-cangkang{padding-bottom:72px}
-  .sp-seg-lebar,.sp-konteks .ad-seg{width:100%}.sp-konteks .ad-seg button{flex:1;padding:0 var(--sp-2)}
-  .sp-konteks .pc,.sp-konteks select{width:100%}
 }
 @media (max-width:560px){.sp-cangkang{gap:var(--sp-3);padding-inline:var(--sp-4)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
@@ -387,7 +367,6 @@
 
 /* tombol dummy Super Admin (DS §3.19): dua .ad-bulat 40px di header kanan, tema menyusul di kanannya */
 .sp-dummy{display:inline-flex;gap:var(--sp-2);margin-left:auto}
-.sp-dummy+.sp-tema{margin-left:var(--sp-2)}
 .sp-dummy button:disabled{opacity:.5;cursor:progress}
 .sp-dummy[aria-busy="true"] button:first-child{animation:sp-kilau 1.2s ease-in-out infinite alternate}
 .sp-info:not(:empty){flex-basis:100%}
@@ -408,20 +387,11 @@
 /* ============ rupa 27 Okt: tenang, rapat, tanpa ruang kosong (aturan pemilik A1, A3, A5, A7, A18) ============
    Lapisan terakhir: menimpa rupa lama tanpa mengubah kelas. Satu aksen navy, pil berwarna lembut tanpa garis tebal,
    isi selebar layar, kondisi kosong jadi satu kartu rapi. */
-.sp-cangkang{max-width:none;padding-inline:var(--sp-5)}
-.sp-badan{grid-template-columns:216px minmax(0,1fr);gap:var(--sp-5)}
+.sp-cangkang{max-width:none;padding-inline:var(--sp-5);gap:var(--sp-6)}
 .sp-isi{gap:var(--sp-5)}
 .sp-judul{font-size:24px;letter-spacing:-.025em;margin-top:2px}
 
 /* rel: panel putih rata, butir aktif berwarna lembut + bilah kiri, bukan gradien bercincin emas */
-.sp-rel{padding:var(--sp-2) var(--sp-2) var(--sp-3);box-shadow:none;border:1px solid var(--line)}
-.sp-rel a{position:relative;min-height:36px;font-weight:600;color:var(--ink2)}
-.sp-rel a .sp-ikon{opacity:.8}
-.sp-rel a[aria-current="page"]{background:color-mix(in srgb,var(--navy2) 10%,var(--card));color:var(--navy);box-shadow:none;font-weight:800}
-.sp-rel a[aria-current="page"] .sp-ikon{opacity:1}
-.sp-rel a[aria-current="page"]::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--navy2)}
-.sp-rel-kel{font-size:10.5px;letter-spacing:.08em;color:var(--ink3)}
-@media (hover:hover) and (pointer:fine){.sp-rel a:not([aria-current]):hover{background:var(--surface);color:var(--ink)}}
 
 /* tombol, chip, tab: aktif = isi navy lembut, bukan blok gradien; tombol utama tetap navy pekat */
 .sp-isi .ad-chip{height:34px;box-shadow:none;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-weight:600}
@@ -434,7 +404,6 @@
 /* pil keyakinan, status, tingkat: berwarna lembut seperti pil Insight; garis tipis, isi tipis */
 .sp-yakin,.sp-status,.sp-pemicu,.sp-vonis,.sp-gerbang,.sp-tingkat,.sp-jadwal,.sp-laik,.sp-data-per{border-width:1px;background:color-mix(in srgb,var(--w,var(--ink3)) 10%,var(--card));border-color:color-mix(in srgb,var(--w,var(--ink3)) 45%,transparent);font-weight:700;font-size:11px;height:22px}
 .sp-yakin.resmi{background:var(--ink);border-color:var(--ink)}
-.sp-konteks .sp-data-per{background:color-mix(in srgb,#fff 10%,transparent);border-color:color-mix(in srgb,#fff 30%,transparent)}
 .sp-data-per[hidden]{display:none}
 
 /* kartu: satu rupa, sudut 16, bayangan halus, tanpa kepala bergradien */
@@ -455,15 +424,9 @@
 .sp-ringkas>[data-kartu="keputusan"]{order:1}.sp-ringkas>[data-kartu="zona"]{order:2}.sp-ringkas>[data-kartu="pemicu"]{order:3}
 .sp-ringkas>[data-kartu="kit"]{order:4}.sp-ringkas>[data-kartu="pilot"]{order:5}.sp-ringkas>[data-kartu="gerak"]{order:6}.sp-ringkas>[data-kartu="alarm"]{order:7}
 
-:root[data-theme="dark"] .sp-rel a[aria-current="page"]{color:#fff}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sp-rel a[aria-current="page"]{color:#fff}}
-@media (max-width:1279px){.sp-badan{grid-template-columns:64px minmax(0,1fr)}.sp-rel a[aria-current="page"]::before{display:none}}
-@media (max-width:767px){.sp-badan{grid-template-columns:minmax(0,1fr)}}
 .sp-kontrol[hidden]{display:none}
 .sp-ringkas>[data-kartu="keputusan"]{flex-basis:100%}
 /* bilah atas penuh tanpa 100vw: 100vw ikut menghitung lebar scrollbar tegak sehingga halaman bergeser ke samping (scrollbar bawah di semua layar) */
-.sp-konteks{margin-inline:calc(-1 * var(--sp-5))}
-@media (max-width:560px){.sp-konteks{margin-inline:calc(-1 * var(--sp-4))}}
 #sp-air-isi{display:grid;gap:var(--sp-4);min-width:0}
 /* Studio: angka matriks bawaannya estimasi model; pil itu hanya mengulang di tiap baris. Yang beda (asumsi kebijakan, menunggu) tetap tampil. */
 .sp-tabel-studio tbody th .sp-yakin.estimasi-model{display:none}

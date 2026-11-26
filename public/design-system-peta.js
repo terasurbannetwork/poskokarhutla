@@ -24,9 +24,5 @@ async function mulai() {
       `<a class="pt-kecil" href="#papan-${p.no}"><b><i>${p.no}</i>${esc(p.judul)}</b><div aria-hidden="true">${papan(p)}</div></a>`).join("") + "</div>").join("") +
     d.grup.map(g => `<h2>${esc(g.nama)}</h2>` + g.papan.map(p => papan(p, "papan-" + p.no)).join("")).join("");
   if (location.hash.length > 1) document.getElementById(location.hash.slice(1))?.scrollIntoView({behavior: "instant"});
-  document.getElementById("ds-tema").addEventListener("click", () => {
-    akar.dataset.theme = gelap() ? "light" : "dark";
-    try { localStorage.setItem("pk-tema", JSON.stringify(akar.dataset.theme)); } catch (e) {}
-  });
 }
 mulai();

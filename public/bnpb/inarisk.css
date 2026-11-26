@@ -4,12 +4,12 @@
 .ir-bag{display:grid;gap:20px;min-inline-size:0}
 .ir-bag[hidden]{display:none}
 
-/* navigasi bagian di kepala situs: satu baris, gulir bila sempit */
-.ad-top .ir-nav{position:static;transform:none;max-width:none;margin-left:auto;scroll-snap-type:inline proximity}
-.ir-nav a{scroll-snap-align:start}
-.ir-nav a[aria-current]{position:relative}
-.ir-nav a[aria-current]::after{content:"";position:absolute;inset:auto 12px 2px;border-block-end:2px solid var(--brand-accent,var(--on-head))}
-@media (max-width:900px){.ad-top{flex-wrap:wrap}.ad-top .ir-nav{order:2;inline-size:100%;margin:0}}
+/* menu bagian: deretan pilihan ujung ke ujung di dalam main (panel kiri Pusdalops = satu-satunya menu situs) */
+.ir-nav{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;padding:5px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow-x:auto;scrollbar-width:none}
+.ir-nav a{display:inline-flex;align-items:center;justify-content:center;block-size:40px;padding:0 14px;border-radius:10px;color:var(--ink2);font-weight:700;font-size:var(--fs-3);white-space:nowrap;text-decoration:none}
+@media (hover:hover) and (pointer:fine){.ir-nav a:not([aria-current]):hover{background:var(--surface);color:var(--ink)}}
+.ir-nav a[aria-current]{background:var(--brand2);color:var(--on-brand)}
+.ir-nav a:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
 
 /* kartu */
 .ir-kartu{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;min-inline-size:0;display:grid;gap:12px;align-content:start}

@@ -127,3 +127,5 @@ aside.db-nav .db-nav-b.mp-luar .db-nav-t{flex:0 1 auto}
 
 /* panel kiri bisa ditarik (menu_pusdalops.js tarik(), D7 paket peta-situs): kolom panel mengikuti --db-w di .mp-a; pegangan .db-tarik bergaya dasbor.css */
 @media (min-width:901px){body.mp-model-a .mp-a{grid-template-columns:var(--db-w,284px) minmax(0,1fr)}}
+/* panel kiri berhuruf sendiri: halaman yang tidak memuat tema.css (mis. /rumah-rusak) tidak boleh mengubah ukuran dan keluarga huruf panel (pemilik 26 Nov 2026, satu sistem tampilan) */
+aside.mp-side{font-family:var(--font,"Inter",system-ui,-apple-system,"Segoe UI",sans-serif);font-size:.875rem;line-height:1.4}

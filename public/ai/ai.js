@@ -413,7 +413,7 @@ function mulai() {
   const tampil = () => {
     const h = location.hash, kelola = h === "#agen", peng = h === "#pengetahuan";
     $("#aiObrolView").hidden = kelola || peng; $("#aiKelolaView").hidden = !kelola; $("#aiPengView").hidden = !peng;
-    document.querySelectorAll(".ad-top nav a").forEach(x => x.toggleAttribute("aria-current", x.getAttribute("href") === (peng ? "#pengetahuan" : kelola ? "#agen" : "#")));
+    document.querySelectorAll("#aiTab button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.h === (peng ? "#pengetahuan" : kelola ? "#agen" : ""))));
     if (peng) muatSumber().catch(e => pesanGalat(e.message));
   };
 
@@ -650,6 +650,7 @@ function mulai() {
   $("#aiPilihSemua").addEventListener("click", () => centangSemua(true));
   $("#aiKosongkan").addEventListener("click", () => centangSemua(false));
   addEventListener("hashchange", tampil);
+  $("#aiTab").addEventListener("click", e => { const b = e.target.closest("button[data-h]"); if (b) location.hash = b.dataset.h; });
   tampil();
 
   (async () => {

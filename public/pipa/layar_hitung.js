@@ -468,8 +468,7 @@ export async function pasang(akar, konteks) {
   }
 
   /* vonis menempel di bawah bilah konteks: tingginya diukur (bilah bisa membungkus di ponsel) */
-  const ukurAtas = () => { const b = document.querySelector(".sp-konteks"); akar.style.setProperty("--sp-atas", `calc(var(--top) + ${b ? b.offsetHeight : 0}px)`); };
-  ukurAtas(); addEventListener("resize", ukurAtas, {signal: sinyal});
+  akar.style.setProperty("--sp-atas", "var(--top)");   // bilah konteks tidak lagi menempel di atas (kerangka standar staf)
 
   perbarui();
   jadwalkanGrafik();

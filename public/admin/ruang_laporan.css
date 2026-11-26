@@ -1,10 +1,13 @@
-/* Ruang Laporan (/admin/laporan): rel kiri gaya SIPPA (.sp-rel) + bingkai penuh tinggi. Token dari admin.css. Tanpa gaya inline (CSP admin). */
+/* Ruang Laporan (/admin/laporan): bilah pilihan di atas + bingkai penuh tinggi; menu situs = panel kiri Pusdalops (pemilik 26 Nov 2026, satu menu).
+   Token dari admin.css. Tanpa gaya inline (CSP admin). */
 body.rl-badan{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
-.rl-tubuh{flex:1;min-height:0;display:grid;grid-template-columns:232px minmax(0,1fr);gap:12px;padding:12px}
-.rl-rel{align-self:start;max-height:100%;overflow-y:auto;display:grid;gap:4px;padding:8px 8px 12px;background:var(--card);border:1px solid var(--line,rgb(11 37 69 / .1));border-radius:16px}
-.rl-rel ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
-.rl-kel{margin:12px 8px 2px}
-.rl-rel a{display:flex;align-items:center;gap:8px;min-height:36px;padding:0 12px;border-radius:12px;color:var(--ink2);font-size:13px;font-weight:600;text-decoration:none;transition:background .15s,color .15s}
+.rl-tubuh{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:12px;padding:12px}
+body.mp-model-a .mp-a>main.rl-tubuh{height:calc(100dvh - 24px);padding:0!important}
+body.rl-badan.mp-model-a{height:auto;overflow:visible}
+.rl-rel{display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:thin;padding:6px;background:var(--card);border:1px solid var(--line,rgb(11 37 69 / .1));border-radius:16px}
+.rl-rel ul{list-style:none;margin:0;padding:0;display:flex;gap:2px}
+.rl-kel{margin:0 4px 0 10px;white-space:nowrap}
+.rl-rel a{display:flex;align-items:center;gap:8px;min-height:36px;white-space:nowrap;padding:0 12px;border-radius:12px;color:var(--ink2);font-size:13px;font-weight:600;text-decoration:none;transition:background .15s,color .15s}
 .rl-ikon{width:18px;height:18px;flex:none;opacity:.8}
 .rl-rel a[aria-current="page"]{background:color-mix(in srgb,var(--navy2) 10%,var(--card));color:var(--navy);font-weight:800}
 .rl-rel a[aria-current="page"] .rl-ikon{opacity:1}

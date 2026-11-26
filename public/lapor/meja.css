@@ -1186,3 +1186,25 @@ dialog.mj-oc{height:auto!important;max-height:calc(100dvh - 48px)!important}
 .mj-usul.terima{border-color:color-mix(in oklab,var(--ok) 45%,var(--line))}
 .mj-usul.tolak{opacity:.72}
 .mj-usul select{min-height:36px}
+
+/* ===== kerangka standar staf (pemilik 26 Nov 2026): tanpa menu staf (BPBD) halaman tampil apa adanya; dengan panel Pusdalops (body.mp-model-a)
+   menu samping meja jadi satu kartu di dalam isi: antrean kerja ujung ke ujung, tanpa merek dan tema (sudah di panel Pusdalops) ===== */
+body:not(.mp-model-a)>.ad-top{display:none}
+@media (min-width:901px){
+  body.mp-model-a .mp-a{flex:1;min-height:0;align-items:stretch;box-sizing:border-box}
+  body.mp-model-a .mp-a>.mj{height:auto!important;min-height:0;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr)!important;grid-template-areas:"samping" "isi"!important;gap:12px}
+  body.mp-model-a .mj-samping{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:8px 12px;padding:10px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px}
+  body.mp-model-a .mj-samping :is(.mj-merek-baris,.mj-tarik){display:none}
+  body.mp-model-a .mj-samping .mj-segar{grid-column:2;grid-row:1;margin:0}
+  body.mp-model-a .mj-samping .mj-nav{grid-column:1;grid-row:1;display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;padding:0;overflow:visible}
+  body.mp-model-a .mj-nav-grup{flex:0 0 100%;margin:0;color:var(--ink2)}
+  body.mp-model-a .mj-nav-grup:not(:first-child){margin-top:4px}
+  body.mp-model-a .mj-nav-b{flex:1 1 130px;border:1px solid var(--line);color:var(--ink);font-weight:600}
+  body.mp-model-a .mj-nav-b svg{color:var(--st,var(--brand2))}
+  body.mp-model-a .mj-nav-b b{background:var(--surface);color:var(--ink)}
+  body.mp-model-a .mj-nav-b:hover{background:var(--surface)}
+  body.mp-model-a .mj-nav-b[aria-current="true"]{background:color-mix(in oklab,var(--brand2) 10%,var(--card));color:var(--brand);border-color:var(--st,var(--brand2))}
+  body.mp-model-a .mj-nav-b[aria-current="true"]::before{content:none}
+  body.mp-model-a .mj-nav-b[aria-current="true"] b{background:var(--head-bg);color:var(--on-head)}
+  body.mp-model-a .mj-nav-b[aria-current="true"] svg{color:var(--st,var(--brand2))}
+}

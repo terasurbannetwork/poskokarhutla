@@ -845,8 +845,7 @@ export async function pasang(akar, konteks) {
   }, {signal: sinyal});
 
   /* ----- vonis dan kontrol menempel di bawah bilah konteks ----- */
-  const ukurAtas = () => { const b = document.querySelector(".sp-konteks"); akar.style.setProperty("--sp-atas", `calc(var(--top) + ${b ? b.offsetHeight : 0}px)`); };
-  ukurAtas(); addEventListener("resize", ukurAtas, {signal: sinyal});
+  akar.style.setProperty("--sp-atas", "var(--top)");   // bilah konteks tidak lagi menempel di atas (kerangka standar staf)
 
   sinkronKontrol(true);
   st.hasil = nilaiHasil(st.state);

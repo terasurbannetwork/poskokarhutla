@@ -61,7 +61,7 @@ test("index.html memuat setiap id yang dipakai ai.js, tanpa id ganda", () => {
   const dipakai = new Set([...js.matchAll(/\$\("#([A-Za-z0-9_]+)"\)/g)].map(m => m[1]));
   for (const id of dipakai) assert.ok(ada.has(id), `ai.js memakai #${id} yang tidak ada di index.html`);
   for (const id of ["aiPengView", "aiPengTabel", "aiUnggah", "aiSumberDaftar", "aiSumberGalat"]) assert.ok(dipakai.has(id), id);
-  assert.match(html, /<a href="#pengetahuan">Pengetahuan<\/a>/);
+  assert.match(html, /<button type="button" data-h="#pengetahuan" aria-pressed="false">Pengetahuan<\/button>/);
 });
 
 test("ai.js: data berkas hanya lewat textContent, alasan 409 pemasangan dan kegagalan indeks tampil", () => {

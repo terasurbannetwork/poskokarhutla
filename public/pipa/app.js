@@ -15,7 +15,6 @@ const SEMUA = GRUP.flatMap(g => g.item || [g]);
 /* aset = rincian /pipa/aset/:id (PRD §9.4.12): modul layar, bukan butir menu; judulnya ada di sini supaya tampil() menemukannya */
 const RINCIAN = [{k: "aset", n: "Rincian aset"}, {k: "akses", n: "Akses"}];   // akses (jembatan): disembunyikan dari menu atas permintaan pemilik 27 Okt, rute tetap
 export const LAYAR = [...SEMUA, ...RINCIAN].map(x => x.k);
-const BAWAH = ["ringkas", "peta", "kit", "log"];
 const href = k => k === "ringkas" ? "/pipa" : `/pipa/${k}`;
 const VERSI_ZONA = [["k", "Konservatif"], ["o", "Optimistis"], ["v", "Terverifikasi"]];
 const BASI_MS = 48 * 36e5;   // data harian lebih tua dari 48 jam = basi (PRD §9.2.1)
@@ -69,25 +68,18 @@ function mulai(akar) {
   akar.className = (akar.className + " sp-cangkang").trim();
   const lompat = el("a", "sr", {href: "#sp-isi"}); lompat.textContent = "Lompat ke isi";
   const bilah = el("div", "sp-konteks", {role: "group", "aria-label": "Konteks"});
-  const badan = el("div", "sp-badan");
-  const rel = el("nav", "sp-rel", {"aria-label": "Menu SIPPA"});
+  const rel = el("nav", "sp-menu", {"aria-label": "Menu SIPPA"});
   const isi = akar.closest("main") ? el("div", "sp-isi", {id: "sp-isi", tabindex: "-1"}) : el("main", "sp-isi", {id: "sp-isi", tabindex: "-1"});
-  const bawah = el("nav", "sp-bawah", {"aria-label": "Menu utama"});
-  const lain = el("div", "sp-lainnya", {id: "sp-lainnya", hidden: ""});
   const tautan = x => { const a = el("a", "", {href: href(x.k), "data-layar": x.k}); a.innerHTML = `${ikon(x.i)}<span>${esc(x.n)}</span>`; return a; };
 
-  rel.append(tautan(GRUP[0]));
+  /* menu bagian SIPPA: deretan pilihan ujung ke ujung per grup di dalam <main>; menu situs = panel kiri Pusdalops (menu_pusdalops.js) */
+  const baris = (...x) => { const d = el("div", "sp-menu-baris"); d.append(...x.map(tautan)); return d; };
+  rel.append(baris(GRUP[0]));
   GRUP.slice(1).forEach(g => {
-    const h = el("h2", "ad-ey sp-rel-kel", {id: `sp-kel-${g.kel}`}); h.textContent = g.kel;
-    const ul = el("ul", "", {"aria-labelledby": h.id});
-    g.item.forEach(x => { const li = el("li"); li.append(tautan(x)); ul.append(li); });
-    rel.append(h, ul);
+    const h = el("h2", "ad-ey sp-menu-kel", {id: `sp-kel-${g.kel}`}); h.textContent = g.kel;
+    const d = baris(...g.item); d.setAttribute("role", "group"); d.setAttribute("aria-labelledby", h.id);
+    rel.append(h, d);
   });
-  BAWAH.map(k => SEMUA.find(x => x.k === k)).forEach(x => bawah.append(tautan(x)));
-  const tLain = el("button", "sp-lain-tombol", {type: "button", "aria-expanded": "false", "aria-controls": "sp-lainnya"});
-  tLain.innerHTML = `${ikon("menu")}<span>Lainnya</span>`;
-  bawah.append(tLain);
-  SEMUA.filter(x => !BAWAH.includes(x.k)).forEach(x => lain.append(tautan(x)));
 
   /* bilah konteks: Provinsi + Versi zona + batas data + pita luring */
   const sel = el("select", "", {"aria-label": "Provinsi"});
@@ -104,20 +96,11 @@ function mulai(akar) {
   bilah.append(sel, seg, batas, pita, info);
   const tulisInfo = t => info.replaceChildren(...(t ? [el("p", "ad-spanduk", t)] : []));
 
-  badan.append(rel, isi);
-  akar.append(lompat, bilah, badan, bawah, lain);
+  akar.append(lompat, bilah, rel, isi);
   try { if (typeof PilihCantik !== "undefined") { PilihCantik.hias(sel); if (document.querySelector("main")) PilihCantik.pasang(); } } catch { /* pemilih biasa tetap jalan */ }
 
-  /* tema: tombol di header (.ad-top) milik cangkang */
-  const tema = el("button", "sp-tema ad-tombol", {type: "button", "aria-label": "Ganti tema"});
-  const terapkanTema = t => { document.documentElement.dataset.theme = t; tema.innerHTML = ikon(t === "dark" ? "sun" : "moon"); tema.setAttribute("aria-pressed", String(t === "dark")); };
-  terapkanTema(baca("sp-tema") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
-  tema.addEventListener("click", () => { const t = document.documentElement.dataset.theme === "dark" ? "light" : "dark"; terapkanTema(t); simpan("sp-tema", t); });
-  /* tombol dummy 🧪 🧹 (DS §3.19): Super Admin saja, di header kanan sebelum tema, sama di tiap layar */
-  const kepala = document.querySelector(".ad-top") || bilah;
-  // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: ganti `if (false && ...)` jadi `if (...)`
-  if (false && bolehDummy(document.body?.dataset)) pasangDummy(kepala, {layar: () => layarDummy(cocokkanJalur(location.pathname)?.layar), kirim: (u, b) => konteks.kirim(u, b), pesan: tulisInfo});
-  kepala.append(tema);
+  /* tema dan Keluar: milik panel kiri Pusdalops. Tombol dummy dimatikan (pemilik 11 Nov 2026); pulihkan: ganti `if (false && ...)` jadi `if (...)` */
+  if (false && bolehDummy(document.body?.dataset)) pasangDummy(bilah, {layar: () => layarDummy(cocokkanJalur(location.pathname)?.layar), kirim: (u, b) => konteks.kirim(u, b), pesan: tulisInfo});
 
   /* luring */
   const tandaiLuring = () => pita.replaceChildren(...(navigator.onLine === false ? [luring(konteks.per)] : []));
@@ -148,17 +131,11 @@ function mulai(akar) {
   akar.addEventListener("click", e => {
     const a = e.target.closest("a[data-layar]");
     if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    e.preventDefault(); tutupLain();
+    e.preventDefault();
     if (a.pathname === location.pathname) return;
     tandaiAktif(a.dataset.layar); history.pushState(null, "", a.pathname + location.search); tunda(tampil);
   });
   addEventListener("popstate", () => { tandaiAktif(cocokkanJalur(location.pathname)?.layar ?? null); tunda(tampil); });   // chrome urgen, layar sesudah satu frame
-
-  /* Lainnya: lembar bawah, Esc dan klik luar menutup, fokus kembali ke tombol */
-  function tutupLain(fokus) { if (lain.hidden) return; lain.hidden = true; tLain.setAttribute("aria-expanded", "false"); if (fokus) tLain.focus(); }
-  tLain.addEventListener("click", () => { const buka = lain.hidden; lain.hidden = !buka; tLain.setAttribute("aria-expanded", String(buka)); if (buka) lain.querySelector("a")?.focus(); });
-  document.addEventListener("keydown", e => { if (e.key === "Escape") tutupLain(true); });
-  document.addEventListener("click", e => { if (!lain.hidden && !lain.contains(e.target) && !tLain.contains(e.target)) tutupLain(); });
 
   /* Provinsi dan Versi zona: chrome seketika, query ditulis replaceState, layar digambar ulang sesudah satu frame */
   const tulisQuery = () => { const u = new URL(location.href); u.searchParams.set("prov", konteks.prov); u.searchParams.set("zona", konteks.zona); history.replaceState(null, "", u); simpan("sp-prov", konteks.prov); simpan("sp-zona", konteks.zona); };
@@ -175,8 +152,23 @@ function mulai(akar) {
   const sisa = ambilPesan(); if (sisa) tulisInfo(sisa);   // hasil isi atau hapus sebelum muat ulang, tampil sekali
 }
 
+/* kerangka standar staf (pemilik 26 Nov 2026 "satukan sistem tampilan semua"): kepala navy .ad-top, <main> anak langsung <body>, lalu panel kiri Pusdalops
+   sebagai satu-satunya menu situs. Idempoten: bila cangkang worker sudah menyediakan salah satunya, bagian itu dilewati. /pipa hanya untuk staf, jadi tanpa data-opsional. */
+function kerangkaStaf(akar) {
+  const dok = document, tambah = (tag, atribut) => { const e = dok.createElement(tag); Object.assign(e, atribut); return e; };
+  if (!dok.querySelector('link[href^="/bnpb/menu_pusdalops.css"]')) dok.head.append(tambah("link", {rel: "stylesheet", href: "/bnpb/menu_pusdalops.css?v=16"}));
+  if (!dok.querySelector(".ad-top")) {
+    const h = tambah("header", {className: "ad-top"});
+    h.innerHTML = '<a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep">SIPPA</span>';
+    dok.body.prepend(h);
+  }
+  if (!akar.closest("main")) { const m = tambah("main", {}); akar.before(m); m.append(akar); }
+  if (!dok.querySelector('script[src^="/bnpb/menu_pusdalops.js"]')) dok.body.append(tambah("script", {src: "/bnpb/menu_pusdalops.js?v=27"}));
+}
+
 /* masuk: hanya di halaman cangkang (ada #app), bukan saat diimpor uji Node */
 if (typeof document !== "undefined" && document.getElementById("app")) {
   const akar = document.getElementById("app");
+  kerangkaStaf(akar);
   pastikanInti().then(() => mulai(akar)).catch(e => { console.error(e); akar.replaceChildren(galat(0, "SIPPA tidak bisa dimuat. Coba lagi.", () => location.reload())); });
 }

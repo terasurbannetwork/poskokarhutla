@@ -664,14 +664,12 @@ $("#lbBuang").onclick = () => { if (!confirm("Buang perubahan yang belum disimpa
 window.addEventListener("resize", () => requestAnimationFrame(skala));
 window.addEventListener("beforeunload", e => { tulisDraf(); if (S.ubah) e.preventDefault(); });
 document.addEventListener("visibilitychange", () => { if (document.hidden) tulisDraf(); });
-$("#tema").onclick = () => { const t = document.documentElement.dataset.theme === "dark" ? "light" : "dark"; document.documentElement.dataset.theme = t; try { localStorage.setItem("pk-tema", JSON.stringify(t)); } catch (e) {} };
 
 (async () => {
   const [L, geo] = await Promise.all([fetch("/data/laporan.json").then(r => r.json()).catch(() => null), fetch("/geo/provinsi.json").then(r => r.json()).catch(() => null), muatAset()]);
   S.laporan = L; S.geo = geo;
   if (L) { for (const [k, v] of Object.entries(L.prov)) S.prov[k] = v.nama; PROV_OPSI = Object.entries(S.prov).sort((a, b) => a[1].localeCompare(b[1], "id")); }
-  $("#upd").textContent = "Laporan BNPB";
-  /* Tautan dalam dari arsip tab Laporan: ?tanggal= membuka laporan hari itu, ?out= memilih keluaran,
+    /* Tautan dalam dari arsip tab Laporan: ?tanggal= membuka laporan hari itu, ?out= memilih keluaran,
      ?unduh=pptx|pdf langsung menyusun berkasnya begitu isiannya termuat. */
   const q = new URLSearchParams(location.search);
   const tglQ = q.get("tanggal"), outQ = q.get("out"), unduhQ = q.get("unduh");

@@ -1,7 +1,11 @@
 /* Layar staf /ai. Token, kepala navy, tabel, tombol dari /bnpb/bnpb.css (yang memuat admin.css); di sini hanya tata letak /ai. */
 [hidden]{display:none!important}
 .ai-dialog textarea{font:14px/1.5 var(--font)}
-.ai{max-width:1440px;margin:0 auto;padding:16px 20px 24px}
+.ai{max-width:1440px;margin:0 auto;padding:16px 20px 24px;display:flex;flex-direction:column;gap:12px}
+.ai>*{margin:0}
+/* tinggi layar: hanya saat obrolan tampil; kepala ad-top (76px) ada, atau hilang di bawah panel kiri Pusdalops (24px) */
+.ai:has(#aiObrolView:not([hidden])){height:calc(100dvh - 76px)}
+@media (min-width:901px){body.mp-model-a .ai{padding:0;max-width:none}body.mp-model-a .ai:has(#aiObrolView:not([hidden])){height:calc(100dvh - 24px)}}
 .ai-galat{margin:0 0 12px}
 
 /* tombol ikon polos: tanpa kotak, garis, atau latar */
@@ -14,7 +18,7 @@
 .ai-burger{display:none}
 
 /* ruang obrol: panel kiri (bisa ditarik lebarnya) + ruang */
-.ai-obrol-view{display:flex;gap:16px;height:calc(100dvh - 92px);min-height:420px}
+.ai-obrol-view{display:flex;gap:16px;flex:1;min-height:0}
 .ai-panel{flex:none;width:300px;min-width:220px;max-width:520px;resize:horizontal;overflow:auto;display:grid;grid-template-rows:auto auto;align-content:start;gap:18px;
   background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:14px}
 .ai-bagian h2{font-size:13px;font-weight:800;margin-bottom:8px}
@@ -144,14 +148,13 @@
 @media (max-width:860px){
   .ai{padding:10px 10px 12px}
   .ai-burger{display:inline-grid}
-  .ai-obrol-view{height:calc(100dvh - 76px)}
   .ai-panel{position:fixed;z-index:6;top:0;bottom:0;left:0;width:min(320px,86vw);max-width:none;resize:none;border-radius:0 16px 16px 0;transform:translateX(-105%);transition:transform .2s}
   .ai-panel.buka{transform:none}
   .ai-pesan{max-width:94%}
   .ai-seg-jelas{grid-auto-flow:row}
 }
 @media (max-width:560px){
-  .ai-obrol-view{height:calc(100dvh - 118px)}
+  .ai:has(#aiObrolView:not([hidden])){height:calc(100dvh - 118px)}
 }
 
 /* pengetahuan */

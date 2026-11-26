@@ -2,14 +2,14 @@
    Tanpa huruf kapital semua (selera pemilik). Di layar: halaman bertumpuk dengan bayangan; saat cetak: satu halaman A4 per bagian. */
 @page{size:A4 landscape;margin:0}
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,Roboto,"Helvetica Neue",Arial,sans-serif;color:#0b2545;background:#e9eef5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.alat{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;padding:10px 18px;background:#0b2545;color:#fff;font-size:.875rem}
+body{margin:0;font:1rem/normal Inter,Roboto,"Helvetica Neue",Arial,sans-serif;letter-spacing:normal;color:#0b2545;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.alat{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:10px 16px;margin:0 0 14px;background:var(--card);border:1px solid var(--db-h2-garis,var(--line));border-radius:14px;color:var(--ink);font-size:.875rem}
 .alat label{display:flex;align-items:center;gap:8px;font-weight:600}
-.alat select{height:34px;border:0;border-radius:8px;padding:0 10px;font:600 .8125rem Inter,Arial;color:#0b2545}
-.alat .info{padding:2px 10px;border-radius:999px;background:rgb(255 255 255 / .14);font-size:.75rem;font-weight:700}
-.alat button{margin-left:auto;height:36px;padding:0 16px;border:0;border-radius:999px;background:#fff;color:#0b2545;font:800 .8125rem Inter,Arial;cursor:pointer}
-.pesan{margin:24px auto;max-width:900px;font-size:.875rem;color:#3d4b60}
-#isi{display:grid;justify-content:center;gap:16px;padding:16px 0 40px}
+.alat select{height:34px;border:1px solid var(--line);border-radius:8px;padding:0 10px;font:600 .8125rem Inter,Arial;color:var(--ink);background:var(--card)}
+.alat .info{padding:2px 10px;border-radius:999px;background:var(--surface);color:var(--ink2);font-size:.75rem;font-weight:700}
+.alat button{margin-left:auto;height:36px;padding:0 16px;border:0;border-radius:999px;background:var(--brand);color:var(--on-brand);font:800 .8125rem Inter,Arial;cursor:pointer}
+.pesan{margin:0 0 14px;font-size:.875rem;color:#3d4b60}
+#isi{display:grid;justify-content:safe center;gap:16px;padding:0 0 40px;overflow-x:auto}
 .hal{width:297mm;height:210mm;padding:9mm 10mm 7mm;position:relative;overflow:hidden;background:#fff;box-shadow:0 6px 24px rgb(11 37 69 / .14)}
 .ey{font-size:7.5pt;font-weight:700;letter-spacing:.02em;color:#5b6b82}
 h1{font-size:17pt;margin:1mm 0 0;font-weight:800}
@@ -48,7 +48,7 @@ ul,ol{margin:2mm 3mm 2mm 7mm;padding:0;font-size:7.6pt;line-height:1.45}li{margi
 .mini{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin:3mm 0}
 .mini div{background:#f6f8fb;border-radius:1.5mm;padding:2mm 3mm;font-size:7pt;color:#3d4b60}.mini b{font-size:11pt;color:#0b2545}
 .nocp{display:flex;gap:4mm;align-items:center}.nocp .bul{width:11mm;height:11mm;font-size:15pt}
-@media print{body{background:#fff}.alat,.pesan{display:none}#isi{display:block;padding:0}.hal{box-shadow:none;page-break-after:always}}
+@media print{body{background:#fff}.alat,.pesan{display:none}#isi{display:block;padding:0;overflow:visible}.hal{box-shadow:none;page-break-after:always}}
 .bul.a{background:#0284c7}
 .leg i.a{background:#0284c7;border-radius:1px;transform:rotate(45deg)}
 .kartu.air{margin-bottom:3mm}.kartu.air h3{border-left-color:#0284c7}
