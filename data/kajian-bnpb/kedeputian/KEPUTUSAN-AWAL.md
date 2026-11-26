@@ -175,6 +175,7 @@ Pertanyaan yang paling menentukan. Pertanyaan teknis per unit ada di bagian pert
 | U10 | Data yang bisa dimintakan ke direktorat: daftar Destana (KS-2), penerima paket sirine (PD-2), penerima hibah logpal 3 tahun (PLP-2), ekspor E-Pelaporan dan Mapping Aset RR (RRI-3), nilai IKD 2025 per kab (PERB-1) | Tidak dianggap tersedia; sistem yang bergantung padanya memakai proksi berlabel atau ditunda |
 | U11 | Gateway WA boleh mengirim pertanyaan satu ketuk ke kontak BPBD (umpan balik peringatan PD-1, kewajiban pasca-hibah PLP-3, pengungsian WIL-2)? | Belum; menunggu akun WA OTP (OUTSTANDING E1) dan gateway hidup lagi |
 | U12 | Urutan mulai | F0 dulu, lalu F1 dimulai dari mesin MB-1, MB-2, MB-6, dan sistem yang memakainya: HUK-1, KPOD-2, RRX-1, PLP-1, PERB-1, PUS-1 |
+| U13 | PERB-1: biaya proksi jarak ke Jakarta membuat kab di sekitar Jakarta (Jakarta Pusat 1,1 km) selalu teratas. Pakai lantai jarak, biaya lain, atau tanpa biaya? | Bawaan sementara (sesi induk 26 Nov 2026): biaya = maks(jarak, 100 km), konstanta `BIAYA_MIN_KM` di `scripts/bnpb/unit/perb1.py`, berpil Asumsi di kartu |
 
 ## 8. Nama baku teknis (keputusan sesi induk, 5 Nov 2026)
 

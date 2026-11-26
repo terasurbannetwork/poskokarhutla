@@ -111,7 +111,7 @@ export function halamanTerkunci(url) {
   if (/^\/command-center(\/|$)/.test(jalur)) return false;
   if (jalur === "/instansi/data-bencana") return false;   // menjaga dirinya sendiri (src/instansi.js): staf atau akun instansi aktif, tanpa sesi 303 ke /instansi
   if (jalur === "/instansi/logpal" || jalur === "/logpal/index.html") return false;   // LogPal menjaga dirinya sendiri (src/logpal.js halaman): tanpa sesi sah 303 ke /instansi; BUKAN daftar putih (keputusan pemilik 9 Nov 2026: wajib login)   // meja menjaga dirinya sendiri (src/command_center.js): tamu 303 ke /admin/masuk?ke=
-  return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur);   // /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/masuk?ke= (satu pintu)
+  return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur) && !/^\/bnpb\/unit(\/|$)/.test(jalur);   // /bnpb/unit* (src/unit.js, kedeputian DT §1.4) dan /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/masuk?ke= (satu pintu)
 }
 /* Peran staf yang membuka halaman terkunci di centurisk97.id (selain admin): operator command center melihat semuanya, staf berperan Direktori membuka /direktori, peran Dalops membuka menu Pusdalops. Satu sumber untuk gerbang di fetch() DAN bolehHalaman. */
 export const perananGerbang = jalur => /^\/direktori\/?$/.test(jalur) ? ["operator_cc", ...P_AKADEMISI] : MENU_PUSDALOPS.test(jalur) ? ["operator_cc", ...PERAN_DALOPS] : ["operator_cc"];

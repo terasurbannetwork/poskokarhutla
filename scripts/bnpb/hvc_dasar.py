@@ -2,7 +2,7 @@
 
   ambil(url, ...)      GET/POST dengan User-Agent, coba ulang, jeda antarpanggilan (ramah ke server pemerintah)
   simpan_plafon(...)   simpan JSON ringkas atomik (kunci `dibuat` pertama) dan MENOLAK berkas > 2 MB (aturan panen data)
-  kab_kode()           {"prov|nama peta": kode BPS 4 digit} dari scripts/udara/kota.json (Kepmendagri 300.2.2-2138/2025)
+  kab_kode()           {"prov|nama peta": kode Kemendagri 4 digit} dari scripts/udara/kota.json (Kepmendagri 300.2.2-2138/2025)
   kode_dukcapil(p, k)  no_prop + no_kab Dukcapil -> kode 4 digit
 Pakai:  python3 scripts/bnpb/hvc_dasar.py --cek
 """

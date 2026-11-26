@@ -348,3 +348,4 @@ html:has(> body.ad-masuk){height:100%}
 
 /* dibingkai Ruang Laporan (/admin/laporan): induk menambah kelas .sematan; header dan sub-nav disembunyikan */
 .sematan .ad-top,.sematan .ad-sub{display:none}
+.sematan .ad-judul:not(:has(.ad-judul-aksi>*)){display:none}

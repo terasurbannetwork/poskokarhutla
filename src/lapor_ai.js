@@ -321,7 +321,8 @@ async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama
     ...(lanjut ? [] : stmtMilikSesi(env, perangkat, s.id)), ...g]);
   if (!r[0].meta.changes) return {bentrok: true};
   if (h.kirimTemu && tambahan.cari) await H.ctTambah(env, P, {cari_id: tambahan.cari.id, ...h.kirimTemu}).catch(e => tabelBelum(e) || console.error("lapor_cari_temu", e?.message));   // ponytail: di luar batch sampai 0177 terpasang di produksi
-  if (h.kirimTemu?.foto_id && tambahan.cari) await H.cfTambah(env, P, tambahan.cari.id, h.kirimTemu.foto_id).catch(e => tabelBelum(e) || console.error("lapor_cari_foto", e?.message));   // sampai 0185 terpasang: laporan tetap masuk tanpa tautan foto
+  // foto pertama di lapor_cari_foto (0185), sisanya sampai 10 di lapor_cari_foto_lain (0186)
+  if (tambahan.cari) for (const [n, fid] of (h.kirimTemu?.foto_ids || []).slice(0, 10).entries()) await (n ? H.cfTambahLain : H.cfTambah)(env, P, tambahan.cari.id, fid).catch(e => tabelBelum(e) || console.error("lapor_cari_foto", e?.message));   // sampai 0185 terpasang: laporan tetap masuk tanpa tautan foto
   return {tambahan, token};
 }
 const teksWaDari = (h, tambahan, token, url) => h.kirim ? `${h.inti}\n\nLacak laporan: ${url.origin}/lapor/lacak.html?t=${token}` : h.balasan;
@@ -490,7 +491,9 @@ async function nilaiPost(env, req, url, kini) {
   const b = await bacaBody(req, 1024); if (b.galat) return galat(b.status || 400, b.galat);
   const id = await pelapor(env, req, url, b.o); if (id instanceof Response) return id;
   const lj = await kuota(env, req, id, kini, "lapor.nilai"); if (lj) return lj;
-  const n = b.o.nilai, baris = RE_NOMOR.test(b.o.nomor || "") ? await H.lpSesiNomor(env, P, b.o.nomor) : null;
+  // cari orang tidak bernomor tiket: penilaian menempel pada sesi terakhir pelapor itu, hanya bila sesinya baru selesai sebagai laporan orang dicari
+  const n = b.o.nilai, cariS = b.o.cari === true && !b.o.nomor ? await H.lpSesiAktif(env, P, id.wa) : null;
+  const baris = RE_NOMOR.test(b.o.nomor || "") ? await H.lpSesiNomor(env, P, b.o.nomor) : cariS && dariBaris(cariS).status === "cari_terkirim" ? cariS : null;
   if (!await milikSesi(env, id, baris) || !angka(n) || !Number.isInteger(n) || n < 1 || n > 5) return galat(400, "Nilai tidak sah.");
   const s = dariBaris(baris); s.nilai = {nilai: n, waktu: kini};
   if (!await H.lpSesiUbah(env, P, {id: s.id, status: s.status, tingkat: s.tingkat, jenis: s.isian.jenis?.nilai, kab: s.isian.lokasi?.nilai?.wilayah?.kabKode, lat: s.isian.lokasi?.nilai?.lat, lon: s.isian.lokasi?.nilai?.lon, kerja: JSON.stringify(s)}, baris.rev, kini))
@@ -719,6 +722,8 @@ export async function bersihkanLapor(env, kini = Date.now()) {
   await H.crAnonimkan(env, H.pelakuLpCron, kini - H.CARI_SIMPAN_HARI * HARI).catch(e => tabelBelum(e) || console.error("lapor_cari", e?.message));
   try { const f = await H.cfAnonimFoto(env, H.pelakuLpCron); if (f.length && env.MEDIA) await env.MEDIA.delete(f.map(id => `lapor/foto/${id}.jpg`)); await H.cfAnonim(env, H.pelakuLpCron); }   // foto orang dicari: berkas dulu, baru barisnya
   catch (e) { if (!tabelBelum(e)) console.error("lapor_cari_foto", e?.message); }
+  try { const f = await H.cfAnonimFotoLain(env, H.pelakuLpCron); if (f.length && env.MEDIA) await env.MEDIA.delete(f.map(id => `lapor/foto/${id}.jpg`)); await H.cfAnonimLain(env, H.pelakuLpCron); }   // foto ke-2 sampai ke-10 (0186), aturan sama
+  catch (e) { if (!tabelBelum(e)) console.error("lapor_cari_foto_lain", e?.message); }
   await H.ctAnonim(env, H.pelakuLpCron).catch(e => tabelBelum(e) || console.error("lapor_cari_temu", e?.message));   // orang dicari ditutup >2 tahun dianonimkan (Q67 bawaan sementara)
   await H.ljKabarBersih(env, H.pelakuLpCron, kini - 864e5, kini - 30 * 864e5, kini - 7 * 864e5).catch(e => tabelBelum(e) || console.error("lj_kabar", e?.message));   // LJ-11: pembuka dan tim belum terkirim >1 hari (token mentah), lain belum terkirim >7 hari, terkirim >30 hari
   await bersihSesiLanjut(env, kini).catch(e => console.error("lj_sesi", e?.message));   // draf WA tahap 2 lebih dari 24 jam (LJ-05)

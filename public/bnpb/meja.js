@@ -9,7 +9,7 @@ import {bacaXlsx, barisDariLembar, potong, angkaId} from "/inti/impor.js";
 import {bedaLapor, dariDaftar, rekapBaru, dataUbah} from "/bnpb/meja_lapor.js";
 import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/titik_pengungsian.js";
 {
-  const app = document.getElementById("app"), KUNCI = "meja_kode", HAL = 15;
+  const app = document.getElementById("app"), KUNCI = "meja_kode", HAL = 15, JUDUL = '<div class="bn-judul"><h1>Meja kerja</h1></div>';
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
   const ID = new Intl.NumberFormat("id-ID", {maximumFractionDigits: 2});
   const svg = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
@@ -340,7 +340,7 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
   }
   function gambar() {
     const m = M(), n = daftar.length;
-    app.innerHTML = `<div class="mj-kop"><h1>Meja Kerja</h1><span class="mj-pil t-info">${IK.kab}${esc(saya.petugas.kab)}</span><span class="mj-redup">${esc(saya.petugas.nama)}</span>
+    app.innerHTML = JUDUL + `<div class="mj-kop"><span class="mj-pil t-info">${IK.kab}${esc(saya.petugas.kab)}</span><span class="mj-redup">${esc(saya.petugas.nama)}</span>
       <button class="mj-btn kecil mj-ruang" data-keluar="1">${IK.keluar}Keluar</button></div>
       <nav class="mj-meja" aria-label="Pilih meja">${S.meja.filter(x => saya.petugas.meja.includes(x.id)).map(x => `<button data-meja="${x.id}" aria-pressed="${x.id === meja}">${svg(x.ikon)}${esc(x.nama)}</button>`).join("")}</nav>
       <p class="mj-pesan ${pesanOk ? "ok" : "galat"}" role="status">${esc(pesanT)}</p>
@@ -504,13 +504,13 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
     if (dariUrl) { sessionStorage.setItem(KUNCI, dariUrl[1].toLowerCase()); history.replaceState(null, "", location.pathname); }   // kode tidak tertinggal di bilah alamat
     kode = sessionStorage.getItem(KUNCI) || "";
     if (kode) { segarkanPita = antre.pasang(document.body, () => { if (meja) muat(); }); antre.pindah().then(() => antre.pindahLokal()); }   // kirim ulang segera, tanpa menunggu spek
-    if (!kode) { app.innerHTML = '<p class="mj-pesan galat">Halaman ini hanya untuk petugas yang punya tautan dari admin. Buka lagi tautan yang dikirim kepadamu.</p>'; return; }
+    if (!kode) { app.innerHTML = JUDUL + '<p class="mj-pesan galat">Halaman ini hanya untuk petugas yang punya tautan dari admin. Buka lagi tautan yang dikirim kepadamu.</p>'; return; }
     const [sp, sy] = await Promise.all([fetch("/api/meja/spek").then(r => r.json()).catch(() => null), api("GET", "/api/meja/saya")]);
-    if (sy.s === 0 || !sp) { app.innerHTML = '<p class="mj-pesan galat">Tidak ada sinyal, Meja Kerja belum bisa dibuka. Kiriman yang sudah disimpan di perangkat tetap dikirim otomatis saat sinyal kembali.</p>'; return; }
-    if (!sy.ok || sy.j.peran !== "petugas") { sessionStorage.removeItem(KUNCI); app.innerHTML = `<p class="mj-pesan galat">${esc(sy.j.galat || "Kodemu tidak berlaku.")} Minta tautan baru dari admin.</p>`; return; }
+    if (sy.s === 0 || !sp) { app.innerHTML = JUDUL + '<p class="mj-pesan galat">Tidak ada sinyal, Meja Kerja belum bisa dibuka. Kiriman yang sudah disimpan di perangkat tetap dikirim otomatis saat sinyal kembali.</p>'; return; }
+    if (!sy.ok || sy.j.peran !== "petugas") { sessionStorage.removeItem(KUNCI); app.innerHTML = JUDUL + `<p class="mj-pesan galat">${esc(sy.j.galat || "Kodemu tidak berlaku.")} Minta tautan baru dari admin.</p>`; return; }
     S = sp; saya = sy.j; meja = S.meja.find(m => saya.petugas.meja.includes(m.id))?.id;
-    if (!meja) { app.innerHTML = '<p class="mj-pesan galat">Kodemu belum punya meja yang boleh diisi.</p>'; return; }
+    if (!meja) { app.innerHTML = JUDUL + '<p class="mj-pesan galat">Kodemu belum punya meja yang boleh diisi.</p>'; return; }
     muat();
   }
-  mulai().catch(() => { app.innerHTML = '<p class="mj-pesan galat">Gagal memuat Meja Kerja. Periksa sambunganmu lalu muat ulang.</p>'; });
+  mulai().catch(() => { app.innerHTML = JUDUL + '<p class="mj-pesan galat">Gagal memuat Meja Kerja. Periksa sambunganmu lalu muat ulang.</p>'; });
 }

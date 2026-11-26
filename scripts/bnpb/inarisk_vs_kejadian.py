@@ -140,6 +140,8 @@ def muat():
     hvc = json.load(open(os.path.join(BD, "risiko_hvc.json")))
     ker = json.load(open(os.path.join(BD, "kerentanan.json")))["kab"]
     dibi = json.load(open(os.path.join(BD, "dibi_kab_tahun.json")))
+    if dibi.get("kode") != "kemendagri":   # kode BPS mentah menaruh kejadian satu kab di kab lain (padanan_kab_dibi.py)
+        raise RuntimeError("dibi_kab_tahun.json belum berkode Kemendagri: jalankan risiko_hvc.py --tanpa-jaringan")
     prov = _wilayah()
     kab = {}
     for kode, v in hvc["kab"].items():
@@ -205,6 +207,9 @@ def cek():
     # sejalan: normalisasi sama (penduduk dan luas seragam) -> True
     assert hitung(kab, 8)["banjir"]["sejalan"]["rendah_sering"] is True, hitung(kab, 8)["banjir"]["sejalan"]
     assert kesimpulan(30, 25, 40) == "sekitar" and kesimpulan(40, 25, 40) == "lebih" and kesimpulan(10, 25, 40) == "kurang" and kesimpulan(90, 25, 9) is None
+    # data nyata: berkas berkode Kemendagri (muat menolak kode BPS); Kutai Barat 6407 punya kejadian (kode BPS 6407 = Kutai Kartanegara)
+    kn, _ = muat()
+    assert sum(kn["6407"]["kej"].values()) > 0 and sum(1 for v in kn.values() if not v["kej"]) <= 5, "kab tanpa kejadian 2018-2025: padanan kode?"
     print("inarisk_vs_kejadian.py --cek hijau")
 
 

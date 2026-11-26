@@ -240,4 +240,34 @@ export function tindakanUntuk(bencana, t) {
   return T[pilih];
 }
 
-export default {TINGKAT, HARI, BENCANA, tindakanUntuk};
+/* RU-051 PD-3: pesan peringatan enam baris (Perban 2/2024 Pasal 20 ayat 2), murni: tanpa kirim, tanpa jaringan.
+   peringatan: {jenis, tingkat (angka 1-3 atau Waspada/Siaga/Awas), kab, dibuat, berlaku_hingga} dari /api/peringatan/aktif.
+   konteks: {turunan, kelas_bahaya ("rendah"|"sedang"|"tinggi"), jiwa_terpapar (angka), sumber_daya (teks)}; yang kosong ditulis "belum ada data". */
+const NAMA_TINGKAT = {waspada: 1, siaga: 2, awas: 3};
+const WARNA_NAMA = {1: "kuning", 2: "jingga", 3: "merah"};   // warna tingkat Pasal 20 ayat 4
+const BELUM = "belum ada data";
+const adaIsi = v => v !== null && v !== undefined && v !== "" && !(typeof v === "number" && !Number.isFinite(v));
+const wib = t => {
+  const d = new Date(t); if (!adaIsi(t) || isNaN(d)) return null;
+  return new Intl.DateTimeFormat("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false}).format(d).replace(".", ":") + " WIB";
+};
+export function pesanStandar(peringatan = {}, konteks = {}) {
+  const p = peringatan || {}, k = konteks || {};
+  const tg = typeof p.tingkat === "number" ? p.tingkat : NAMA_TINGKAT[String(p.tingkat || "").toLowerCase()];
+  const b = BENCANA[p.jenis];
+  const jenis = b ? b.nama + (adaIsi(k.turunan) ? ` (${k.turunan})` : "") + (adaIsi(p.kab) ? `, ${p.kab}` : "") : BELUM;
+  const tingkat = TINGKAT[tg] ? `${TINGKAT[tg].nama}, warna ${WARNA_NAMA[tg]}` : BELUM;
+  const dari = wib(p.dibuat), hingga = wib(p.berlaku_hingga);
+  const waktu = dari && hingga ? `${dari} sampai ${hingga}` : BELUM;
+  const baris = [
+    ["Jenis potensi bencana", jenis],
+    ["Tingkatan", tingkat],
+    ["Daya rusak (kelas bahaya)", adaIsi(k.kelas_bahaya) ? k.kelas_bahaya : BELUM],
+    ["Potensi jiwa terpapar", adaIsi(k.jiwa_terpapar) ? `${new Intl.NumberFormat("id-ID").format(k.jiwa_terpapar)} jiwa` : BELUM],
+    ["Prakiraan waktu", waktu],
+    ["Sumber daya", adaIsi(k.sumber_daya) ? k.sumber_daya : BELUM],
+  ];
+  return baris.map(([a, v]) => `${a}: ${v}`).join("\n");
+}
+
+export default {TINGKAT, HARI, BENCANA, tindakanUntuk, pesanStandar};

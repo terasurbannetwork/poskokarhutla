@@ -1,0 +1,550 @@
+[
+ {
+  "kode": "11",
+  "nama": "Aceh",
+  "url": "https://jdih.acehprov.go.id/",
+  "cari": null,
+  "catatan": "pencarian lewat formulir POST bertoken CSRF",
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "12",
+  "nama": "Sumatera Utara",
+  "url": "https://jdih.sumutprov.go.id/",
+  "cari": "https://jdih.sumutprov.go.id/search-produk-hukum?judul={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Laravel",
+   "cari": "terbaca",
+   "judul_terbaca": 1,
+   "dikenali": 0
+  }
+ },
+ {
+  "kode": "13",
+  "nama": "Sumatera Barat",
+  "url": "https://jdih.sumbarprov.go.id/",
+  "cari": null,
+  "catatan": "alamat tebakan, belum ditemukan alamat yang menjawab",
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "tidak_bisa_dicek: https://jdih.sumbarprov.go.id/: robots.txt tak terjangkau (URLError), tidak diambil",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "14",
+  "nama": "Riau",
+  "url": "https://jdih.riau.go.id/",
+  "cari": null,
+  "catatan": "pencarian lewat formulir POST bertoken",
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "15",
+  "nama": "Jambi",
+  "url": "https://jdih.jambiprov.go.id/",
+  "cari": "https://jdih.jambiprov.go.id/dokumen_hukum.php?q={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": null,
+   "cari": "terbaca",
+   "judul_terbaca": 4,
+   "dikenali": 0
+  }
+ },
+ {
+  "kode": "16",
+  "nama": "Sumatera Selatan",
+  "url": "https://jdih.sumselprov.go.id/",
+  "cari": "https://jdih.sumselprov.go.id/pencarian-lanjut?keyword={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": null,
+   "cari": "terbaca",
+   "judul_terbaca": 1,
+   "dikenali": 0
+  }
+ },
+ {
+  "kode": "17",
+  "nama": "Bengkulu",
+  "url": "https://jdih.bengkuluprov.go.id/",
+  "cari": null,
+  "catatan": "Livewire, tanpa formulir GET di beranda",
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Laravel Livewire",
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "18",
+  "nama": "Lampung",
+  "url": "https://jdih.lampungprov.go.id/",
+  "cari": "https://jdih.lampungprov.go.id/product-hukum/provinsi?judul={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Laravel",
+   "cari": "terbaca",
+   "judul_terbaca": 1,
+   "dikenali": 0
+  }
+ },
+ {
+  "kode": "19",
+  "nama": "Kepulauan Bangka Belitung",
+  "url": "https://jdih.babelprov.go.id/",
+  "cari": "https://jdih.babelprov.go.id/indeks-produk-hukum?title={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Drupal 7 (http://drupal.org)",
+   "cari": "terbaca",
+   "judul_terbaca": 18,
+   "dikenali": 0
+  }
+ },
+ {
+  "kode": "21",
+  "nama": "Kepulauan Riau",
+  "url": "https://jdih.kepriprov.go.id/",
+  "cari": "https://jdih.kepriprov.go.id/produk-hukum?q={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Laravel",
+   "cari": "terbaca",
+   "judul_terbaca": 1,
+   "dikenali": 1
+  }
+ },
+ {
+  "kode": "31",
+  "nama": "DKI Jakarta",
+  "url": "https://jdih.jakarta.go.id/",
+  "cari": "https://jdih.jakarta.go.id/pencarianHome?kata_pencarian={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Laravel",
+   "cari": "terbaca",
+   "judul_terbaca": 4,
+   "dikenali": 3
+  }
+ },
+ {
+  "kode": "32",
+  "nama": "Jawa Barat",
+  "url": "https://jdih.jabarprov.go.id/",
+  "cari": null,
+  "catatan": "aplikasi Vue, tanpa formulir GET di beranda",
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "diblokir: https://jdih.jabarprov.go.id/: HTTP 403, dihormati tanpa ulang",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "33",
+  "nama": "Jawa Tengah",
+  "url": "https://jdih.jatengprov.go.id/",
+  "cari": "https://jdih.jatengprov.go.id/pencarian/pencarian?dokumen={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": null,
+   "cari": "terbaca",
+   "judul_terbaca": 5,
+   "dikenali": 0
+  }
+ },
+ {
+  "kode": "34",
+  "nama": "DI Yogyakarta",
+  "url": "https://jdih.jogjaprov.go.id/",
+  "cari": null,
+  "catatan": "beranda hanya pengalih kecil",
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "35",
+  "nama": "Jawa Timur",
+  "url": "https://jdih.jatimprov.go.id/",
+  "cari": null,
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "diblokir: https://jdih.jatimprov.go.id/: robots.txt HTTP 403, dihormati",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "36",
+  "nama": "Banten",
+  "url": "https://jdih.bantenprov.go.id/",
+  "cari": null,
+  "catatan": "pencarian lewat formulir POST bertoken",
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Laravel",
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "51",
+  "nama": "Bali",
+  "url": "https://jdih.baliprov.go.id/",
+  "cari": null,
+  "catatan": "aplikasi Next.js, hasil dimuat di peramban",
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Next.js",
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "52",
+  "nama": "Nusa Tenggara Barat",
+  "url": "https://jdih.ntbprov.go.id/",
+  "cari": "https://jdih.ntbprov.go.id/produk-hukum/filter/search?keyword={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Laravel Livewire",
+   "cari": "terbaca",
+   "judul_terbaca": 4,
+   "dikenali": 0
+  }
+ },
+ {
+  "kode": "53",
+  "nama": "Nusa Tenggara Timur",
+  "url": "https://jdih.nttprov.go.id/",
+  "cari": "https://jdih.nttprov.go.id/dokumen/index?DokumenSearch%5Bjudul%5D={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "diblokir: https://jdih.nttprov.go.id/: robots.txt melarang, dihormati",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "61",
+  "nama": "Kalimantan Barat",
+  "url": "https://jdih.kalbarprov.go.id/",
+  "cari": "https://jdih.kalbarprov.go.id/cari/?judul={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Django",
+   "cari": "terbaca",
+   "judul_terbaca": 4,
+   "dikenali": 0
+  }
+ },
+ {
+  "kode": "62",
+  "nama": "Kalimantan Tengah",
+  "url": "https://jdih.kalteng.go.id/",
+  "cari": "https://jdih.kalteng.go.id/produk-hukum?q={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": null,
+   "cari": "terbaca",
+   "judul_terbaca": 4,
+   "dikenali": 0
+  }
+ },
+ {
+  "kode": "63",
+  "nama": "Kalimantan Selatan",
+  "url": "https://jdih.kalselprov.go.id/",
+  "cari": null,
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "diblokir: https://jdih.kalselprov.go.id/: HTTP 403, dihormati tanpa ulang",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "64",
+  "nama": "Kalimantan Timur",
+  "url": "https://jdih.kaltimprov.go.id/",
+  "cari": null,
+  "catatan": "Livewire, tanpa formulir GET di beranda",
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Laravel Livewire",
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "65",
+  "nama": "Kalimantan Utara",
+  "url": "https://jdih.kaltaraprov.go.id/",
+  "cari": "https://jdih.kaltaraprov.go.id/pencarian?q={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": null,
+   "cari": "terbaca",
+   "judul_terbaca": 13,
+   "dikenali": 1
+  }
+ },
+ {
+  "kode": "71",
+  "nama": "Sulawesi Utara",
+  "url": "https://jdih.sulutprov.go.id/",
+  "cari": "https://jdih.sulutprov.go.id/dokumen/cari?q={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Next.js",
+   "cari": "diblokir: utprov.go.id/dokumen/cari?q=rencana+penanggulangan+bencana: robots.txt melarang, dihormati",
+   "judul_terbaca": 0,
+   "dikenali": 0
+  }
+ },
+ {
+  "kode": "72",
+  "nama": "Sulawesi Tengah",
+  "url": "https://jdih.sultengprov.go.id/",
+  "cari": "https://jdih.sultengprov.go.id/produkhukum?q={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Laravel",
+   "cari": "terbaca",
+   "judul_terbaca": 4,
+   "dikenali": 0
+  }
+ },
+ {
+  "kode": "73",
+  "nama": "Sulawesi Selatan",
+  "url": "https://jdih.sulselprov.go.id/",
+  "cari": "https://jdih.sulselprov.go.id/dokumen/cari?q={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": null,
+   "cari": "terbaca",
+   "judul_terbaca": 11,
+   "dikenali": 1
+  }
+ },
+ {
+  "kode": "74",
+  "nama": "Sulawesi Tenggara",
+  "url": "https://jdih.sultraprov.go.id/",
+  "cari": "https://jdih.sultraprov.go.id/dokumen/index?DokumenSearch%5Bjudul%5D={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "diblokir: https://jdih.sultraprov.go.id/: robots.txt melarang, dihormati",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "75",
+  "nama": "Gorontalo",
+  "url": "https://jdih.gorontaloprov.go.id/",
+  "cari": null,
+  "catatan": "pencarian lewat formulir POST bertoken",
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "76",
+  "nama": "Sulawesi Barat",
+  "url": "https://jdih.sulbarprov.go.id/",
+  "cari": null,
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "diblokir: https://jdih.sulbarprov.go.id/: HTTP 403, dihormati tanpa ulang",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "81",
+  "nama": "Maluku",
+  "url": "https://jdih.malukuprov.go.id/",
+  "cari": null,
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "tidak_bisa_dicek: https://jdih.malukuprov.go.id/: robots.txt tak terjangkau (timeout), tidak diambil",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "82",
+  "nama": "Maluku Utara",
+  "url": "https://jdih.malutprov.go.id/",
+  "cari": null,
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "tidak_bisa_dicek: https://jdih.malutprov.go.id/: robots.txt tak terjangkau (URLError), tidak diambil",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "91",
+  "nama": "Papua",
+  "url": "https://jdih.papua.go.id/",
+  "cari": "https://jdih.papua.go.id/dokumen/index?DokumenSearch%5Bjudul%5D={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "terbaca",
+   "aplikasi": "Yii2 PHP Framework (www.yiiframework.com)",
+   "cari": "terbaca",
+   "judul_terbaca": 1,
+   "dikenali": 0
+  }
+ },
+ {
+  "kode": "92",
+  "nama": "Papua Barat",
+  "url": "https://jdih.papuabaratprov.go.id/",
+  "cari": null,
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "diblokir: https://jdih.papuabaratprov.go.id/: robots.txt HTTP 403, dihormati",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "93",
+  "nama": "Papua Selatan",
+  "url": "https://jdih.papuaselatan.go.id/",
+  "cari": null,
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "tidak_bisa_dicek: https://jdih.papuaselatan.go.id/: robots.txt tak terjangkau (URLError), tidak diambil",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "94",
+  "nama": "Papua Tengah",
+  "url": "https://jdih.papuatengahprov.go.id/",
+  "cari": null,
+  "catatan": "alamat tebakan, belum ditemukan alamat yang menjawab",
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "tidak_bisa_dicek: https://jdih.papuatengahprov.go.id/: robots.txt tak terjangkau (URLError), tidak diambil",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "95",
+  "nama": "Papua Pegunungan",
+  "url": "https://jdih.papuapegunungan.go.id/",
+  "cari": null,
+  "catatan": "alamat tebakan, belum ditemukan alamat yang menjawab",
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "tidak_bisa_dicek: https://jdih.papuapegunungan.go.id/: robots.txt tak terjangkau (URLError), tidak diambil",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ },
+ {
+  "kode": "96",
+  "nama": "Papua Barat Daya",
+  "url": "https://jdih.papuabaratdayaprov.go.id/",
+  "cari": "https://jdih.papuabaratdayaprov.go.id/dokumen/index?DokumenSearch%5Bjudul%5D={q}",
+  "catatan": null,
+  "probe": {
+   "tanggal": "2026-11-26",
+   "beranda": "diblokir: https://jdih.papuabaratdayaprov.go.id/: robots.txt HTTP 403, dihormati",
+   "aplikasi": null,
+   "cari": null,
+   "judul_terbaca": 0
+  }
+ }
+]

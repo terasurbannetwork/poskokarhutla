@@ -1816,6 +1816,7 @@ Object.assign(MATRIKS, {
   lapor_cari_riwayat:  {lp_staf: ["baca", "tambah"]},   // migrasi 0173: append-only
   lapor_cari_temu:     {lp_pelapor: ["tambah"], lp_staf: ["baca"], lp_cron: ["hapus"]},   // migrasi 0177: panggilan, nomor kontak, tempat tunggu (pemilik 25 Nov 2026); dihapus bersama anonim Q67
   lapor_cari_foto:     {lp_pelapor: ["tambah"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},   // migrasi 0185: foto orang dicari (pemilik 26 Nov 2026); berkas R2 dan baris dihapus bersama anonim Q67
+  lapor_cari_foto_lain: {lp_pelapor: ["tambah"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},   // migrasi 0186: foto ke-2 sampai ke-10 orang dicari, aturan sama dengan lapor_cari_foto
   lp_komen:            {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"]},   // migrasi 0180: komentar kartu Alun-alun (K95, D136); publik hanya kolom id, teks, dibuat
   lp_komen_aduan:      {lp_pelapor: ["baca", "tambah"], lp_staf: ["baca"]},
   lp_komen_usul:       {lp_mesin: ["tambah"], lp_staf: ["baca", "ubah"]},   // LA-86 menulis, LA-88 memutus
@@ -1947,6 +1948,15 @@ export const ctBaca = async (env, p, ids) => ids.length ? (await sedia(env, p, "
   "SELECT cari_id, panggilan, nomor_kontak, tempat_tunggu FROM lapor_cari_temu WHERE cari_id IN (SELECT value FROM json_each(?1))").bind(JSON.stringify(ids)).all()).results : [];
 export const cfTambah = (env, p, cari_id, foto_id) => sedia(env, p, "lapor_cari_foto", "tambah",
   "INSERT OR IGNORE INTO lapor_cari_foto (cari_id, foto_id) VALUES (?1, ?2)").bind(cari_id, foto_id).run();
+/* foto ke-2 sampai ke-10 (0186); pemanggil menangkap galat tabel belum ada seperti 0185 */
+export const cfBacaLain = async (env, p, ids) => ids.length ? (await sedia(env, p, "lapor_cari_foto_lain", "baca",
+  "SELECT cari_id, foto_id FROM lapor_cari_foto_lain WHERE cari_id IN (SELECT value FROM json_each(?1)) ORDER BY rowid").bind(JSON.stringify(ids)).all()).results : [];
+export const cfTambahLain = (env, p, cari_id, foto_id) => sedia(env, p, "lapor_cari_foto_lain", "tambah",
+  "INSERT OR IGNORE INTO lapor_cari_foto_lain (cari_id, foto_id) VALUES (?1, ?2)").bind(cari_id, foto_id).run();
+export const cfAnonimFotoLain = async (env, p) => (await sedia(env, p, "lapor_cari_foto_lain", "baca",
+  "SELECT foto_id FROM lapor_cari_foto_lain WHERE cari_id IN (SELECT id FROM lapor_cari WHERE nomor_pencari = ?1)").bind(CARI_NOMOR_ANONIM).all()).results.map(r => r.foto_id);
+export const cfAnonimLain = (env, p) => sedia(env, p, "lapor_cari_foto_lain", "hapus",
+  "DELETE FROM lapor_cari_foto_lain WHERE cari_id IN (SELECT id FROM lapor_cari WHERE nomor_pencari = ?1)").bind(CARI_NOMOR_ANONIM).run();
 export const cfBaca = async (env, p, ids) => ids.length ? (await sedia(env, p, "lapor_cari_foto", "baca",
   "SELECT cari_id, foto_id FROM lapor_cari_foto WHERE cari_id IN (SELECT value FROM json_each(?1))").bind(JSON.stringify(ids)).all()).results : [];
 export const cfAnonimFoto = async (env, p) => (await sedia(env, p, "lapor_cari_foto", "baca",

@@ -93,6 +93,8 @@ export function buatSelamat(wilayahDari) {
     for (const r of baris) { const t = temu.get(r.id); if (t) Object.assign(r, {panggilan: t.panggilan, nomor_kontak: t.nomor_kontak, tempat_tunggu: t.tempat_tunggu}); }
     const foto = new Map((await H.cfBaca(env, STAF, baris.map(r => r.id)).catch(e => { if (tabelBelum(e)) return []; throw e; })).map(t => [t.cari_id, t.foto_id]));
     for (const r of baris) if (foto.has(r.id)) r.foto = `/api/lapor/foto/${foto.get(r.id)}`;   // 0185
+    // foto ke-2 sampai ke-10 (0186), hanya untuk staf; r.foto tetap foto pertama untuk tampilan lama
+    for (const t of await H.cfBacaLain(env, STAF, baris.map(r => r.id)).catch(e => { if (tabelBelum(e)) return []; throw e; })) { const r = baris.find(x => x.id === t.cari_id); if (r) (r.foto_lain ||= []).push(`/api/lapor/foto/${t.foto_id}`); }
     const tanda = new Map((await H.slAktifNomor(env, STAF, [...new Set(baris.map(r => r.nomor_dicari).filter(Boolean))], kini)).map(t => [t.nomor, t]));
     return kirim(200, {akun: {jenis: h.c.jenis, label: h.c.label}, baris: baris.map(r => { const t = r.nomor_dicari && tanda.get(r.nomor_dicari);
       return {...r, cocok: !!t, tanda: t ? {status: t.status, label: LABEL[t.status], waktu: t.dibuat} : null}; })});

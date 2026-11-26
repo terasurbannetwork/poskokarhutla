@@ -9,21 +9,24 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/bnpb/hukum.css?v=2" rel="stylesheet">
-<link href="/bnpb/menu_pusdalops.css?v=16" rel="stylesheet">
+<link href="/inti/kartu.css" rel="stylesheet">
+<link href="/inti/dasbor.css?v=31" rel="stylesheet">
+<link href="/bnpb/hukum.css?v=3" rel="stylesheet">
+<link href="/bnpb/menu_pusdalops.css?v=17" rel="stylesheet">
 </head>
 <body>
 <header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a>
   <span class="ad-sep">Pustaka Hukum</span>
 </header>
-<script src="/bnpb/menu_pusdalops.js?v=28"></script>
+<script src="/bnpb/menu_pusdalops.js?v=29"></script>
 <main class="bn-wrap">
+  <div class="bn-judul"><h1>Pustaka hukum</h1></div>
   <nav class="ad-tabs" id="tab" aria-label="Bagian pustaka hukum"></nav>
 
   <section id="pCari" class="hk-panel" aria-labelledby="hCari">
     <div class="hk-hero">
-      <h1 id="hCari">Temukan pasal yang kamu butuhkan</h1>
+      <h2 id="hCari">Temukan pasal yang kamu butuhkan</h2>
       <p>Peraturan BNPB dari jdih.bnpb.go.id, dicari per pasal.</p>
       <form id="fCari" class="hk-cari" role="search">
         <label class="hk-kotak"><span class="hk-sr">Kata kunci</span><input id="q" type="search" maxlength="200" placeholder="Contoh: dana siap pakai" autocomplete="off" enterkeyhint="search"></label>
@@ -44,7 +47,7 @@
 
   <section id="pTanya" class="hk-panel" aria-labelledby="hTanya" hidden>
     <div class="hk-hero">
-      <h1 id="hTanya">Tanya peraturan BNPB</h1>
+      <h2 id="hTanya">Tanya peraturan BNPB</h2>
       <p>Jawaban disusun hanya dari pasal yang ditemukan. Tiap kutipan dicocokkan ke teks aslinya sebelum tampil.</p>
       <form id="fTanya" class="hk-tanya">
         <label class="bn-isian"><span class="hk-sr">Pertanyaan</span><textarea id="tanya" maxlength="500" rows="3" placeholder="Contoh: Siapa yang berwenang menetapkan status keadaan darurat bencana?"></textarea></label>
@@ -61,6 +64,6 @@
     <div id="dok"></div>
   </section>
 </main>
-<script src="/bnpb/hukum.js?v=4"></script>
+<script src="/bnpb/hukum.js?v=5"></script>
 </body>
 </html>
