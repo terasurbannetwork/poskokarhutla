@@ -440,6 +440,49 @@ def jalan(kini=None):
     print(f"lampu_malam: {len(calon)} pemicu, {len(kej)} kejadian terbaca")
 
 
+# ---------- LAADS (LF-10) ----------
+
+LAADS = "https://ladsweb.modaps.eosdis.nasa.gov"
+
+
+def ambil_laads(url, maks=2_000_000):
+    """GET bertoken Earthdata (Authorization: Bearer). Mengikuti alih ke LAADS saja; tanpa token -> RuntimeError."""
+    tok = os.environ.get("EARTHDATA_TOKEN", "").strip()
+    if not tok:
+        raise RuntimeError("EARTHDATA_TOKEN kosong")
+    q = urllib.request.Request(url, headers={"Authorization": f"Bearer {tok}", "User-Agent": "centurisk97-lampu-malam"})
+    with urllib.request.urlopen(q, timeout=120) as r:
+        return r.status, r.geturl(), r.headers.get("content-type", ""), r.read(maks)
+
+
+def laads_cek():
+    """Probe sekali jalan: daftar ubin VNP46A2 Palu 2018 (h29v09, h30v09), lalu DDS dan subset kecil OPeNDAP satu ubin."""
+    hasil = []
+    def coba(nama, url, n=1500):
+        try:
+            st, akhir, ct, b = ambil_laads(url)
+            t = b[:n].decode("utf-8", "replace")
+            hasil.append(f"== {nama}\n{st} {ct} {akhir}\n{t}")
+            return b.decode("utf-8", "replace")
+        except Exception as e:
+            hasil.append(f"== {nama}\nGAGAL {type(e).__name__}: {e}")
+            return ""
+    for kol in ("5200", "5000"):
+        t = coba(f"daftar {kol}", f"{LAADS}/api/v2/content/details/allData/{kol}/VNP46A2/2018/271?format=json", 600)
+        nama = sorted(set(re.findall(r"VNP46A2\.A2018271\.h(?:29|30)v09\.[0-9]{3}\.[0-9]+\.h5", t)))
+        hasil.append(f"ubin {kol}: {nama}")
+        if not nama:
+            continue
+        g = f"{LAADS}/opendap/RemoteResources/laads/allData/{kol}/VNP46A2/2018/271/{nama[0]}"
+        dds = coba("dds", g + ".dds", 6000)
+        v = [x for x in re.findall(r"([A-Za-z0-9_./-]*(?:NTL|Quality_Flag|Cloud_Mask)[A-Za-z0-9_./-]*)\[", dds)]
+        hasil.append(f"variabel: {v}")
+        for x in v[:3]:
+            coba(f"ascii {x}", g + ".ascii?" + urllib.parse.quote(f"{x}[210:1:212][2366:1:2368]", safe=":[]"), 1200)
+        break
+    print("\n\n".join(hasil))
+
+
 # Uji balik: gempa Palu-Donggala M 7,5, 28 Sep 2018 10.02 UTC (USGS us1000h3p4). Pembanding dari laporan PLN di media,
 # dikutip di lampu_malam_validasi.json; semuanya angka tingkat kota/provinsi, bukan kecamatan.
 PALU = {"id": "usgs:us1000h3p4", "jenis": "gempa", "nama": "Palu-Donggala, Sulawesi Tengah", "besaran": "M 7,5",
@@ -549,4 +592,4 @@ def uji():
 
 if __name__ == "__main__":
     a = sys.argv[1] if len(sys.argv) > 1 else ""
-    uji() if a == "uji" else validasi() if a == "validasi" else jalan()
+    uji() if a == "uji" else validasi() if a == "validasi" else laads_cek() if a == "laads_cek" else jalan()
