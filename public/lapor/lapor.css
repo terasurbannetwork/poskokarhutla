@@ -3210,7 +3210,7 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-alun-provkep b{font:800 1rem var(--display);color:var(--brand)}
 .lp-kb-belum{margin:0;padding-top:12px;border-top:1px dashed var(--line);font-size:.75rem;color:var(--ink2)}
 .lp-kb-belum:first-child{padding-top:0;border-top:0}
-.lp-alun:has(.lp-kabar){display:grid;grid-template-columns:minmax(0,1fr)}
+.lp-alun:has(.lp-kabar,.lp-alun-prov,.lp-alun-gunung){display:grid;grid-template-columns:minmax(0,1fr)}
 /* kepala kartu kejadian terang, teks navy (AGENTS 3.5: latar gelap hanya kepala halaman) */
 .lp-kabar > .ex-hd{background:color-mix(in oklab,var(--brand2) 8%,var(--card))!important;color:var(--ink)!important;border-bottom:1px solid var(--line)}
 .lp-kabar > .ex-hd h3{color:var(--brand)!important}
@@ -3308,3 +3308,24 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-jn-tanda.lp-jenis-gempa{border-radius:3px}
 .lp-jn-tanda.lp-jenis-erupsi{border-radius:0;clip-path:polygon(50% 0,100% 100%,0 100%);box-shadow:none}
 .lp-alun-legenda-isi small{font-size:.6875rem}
+
+/* status gunung api di Alun-alun (pemilik 26 Nov 2026): kotak Awas, Siaga, Waspada, Normal dari token --dp-* dan daftar gunung Siaga/Awas */
+.lp-alun-gunung{display:grid;gap:10px;margin:0 0 14px;padding:12px;border-radius:14px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.lp-alun-gunung > header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 8px}
+.lp-alun-gunung > header b{font:800 .875rem var(--display);color:var(--brand)}
+.lp-alun-gunung > header small{font-size:.6875rem}
+.lp-alun-gunung-kotak{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.lp-alun-gunung-kotak div{--k:var(--info);display:grid;justify-items:center;gap:1px;padding:6px 4px;border-radius:10px;background:color-mix(in oklab,var(--k) 16%,var(--card));box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--k) 40%,transparent)}
+.lp-alun-gunung-kotak b{font:800 1.125rem var(--display);font-variant-numeric:tabular-nums;color:color-mix(in oklab,var(--k) 55%,var(--ink))}
+.lp-alun-gunung-kotak small{font:700 .6875rem var(--font);color:color-mix(in oklab,var(--k) 45%,var(--ink))}
+.lp-alun-gunung .lv4{--k:var(--dp-3)}.lp-alun-gunung .lv3{--k:var(--dp-2)}.lp-alun-gunung .lv2{--k:var(--dp-1)}.lp-alun-gunung .lv1{--k:var(--info)}
+.lp-alun-gunung-daftar{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.lp-alun-gunung-daftar li{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:8px;row-gap:4px;padding:8px 10px;border-radius:10px;background:var(--surface)}
+.lp-alun-gunung-daftar li > div:first-of-type{display:grid}
+.lp-alun-gunung-daftar b{font:800 .8125rem var(--font)}
+.lp-alun-gunung-daftar small{font-size:.6875rem}
+.lp-alun-gunung-ikon{--k:var(--lh-gunungapi);width:14px;height:13px;background:var(--k);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.lp-alun-gunung-ikon.lv4{--k:var(--dp-3)}
+.lp-alun-gunung-pil{grid-column:2;display:flex;flex-wrap:wrap;gap:4px}
+.lp-alun-gunung-pil .lp-pil{font-size:.6875rem}
+.lp-alun-gunung-pil .lp-pil.lv3{background:color-mix(in oklab,var(--lh-gunungapi) 16%,var(--card));color:color-mix(in oklab,var(--lh-gunungapi) 60%,var(--ink))}
