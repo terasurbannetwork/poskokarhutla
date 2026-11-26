@@ -18,7 +18,7 @@ const kepala = judul => `<!doctype html>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/admin/admin.css?v=14" rel="stylesheet">
 <link href="/inti/kartu.css?v=2" rel="stylesheet">
-<link href="/inti/dasbor.css?v=29" rel="stylesheet">
+<link href="/inti/dasbor.css?v=30" rel="stylesheet">
 <script src="/inti/dasbor_admin.js?v=3" defer></script>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
@@ -214,7 +214,7 @@ export const halamanKontak = () => halaman("kontak", "Memuat buku kontak…", `<
 <script src="/admin/kontak.js?v=2"></script>`);
 
 /* Ruang Koordinasi BNPB: satu pola untuk keempat halaman (skrip + gaya di public/admin/<k>.js|css) */
-export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=${k === "pantau" ? 3 : 2}" rel="stylesheet">
+export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=3" rel="stylesheet">
 ${k === "aktivasi" ? `<script src="/inti/pesan.js?v=1"></script>\n` : ""}${k === "pantau" || k === "aktivasi" ? `<script src="/inti/format.js"></script>\n<script src="/instansi_wilayah.js?v=1"></script>
 ` : k === "kinerja" ? `<script src="/inti/nanti.js"></script>
 ` : ""}<script src="/admin/bersama.js?v=6"></script>

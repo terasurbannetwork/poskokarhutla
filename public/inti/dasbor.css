@@ -293,7 +293,8 @@ aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true
 .db-lipat>summary::after{content:"›";transition:transform .15s}.db-lipat[open]>summary::after{transform:rotate(90deg)}
 .db-lipat-isi{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
 @media (prefers-reduced-motion:reduce){.db-ik:active{transform:none}.db-lipat>summary::after{transition:none}}
-.db-ubin-grid.db-ubin-baris{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+/* ubin admin: satu baris rata ujung ke ujung di layar lebar, tanpa ubin yatim di baris kedua (pemilik 26 Nov 2026); layar sempit dua kolom */
+@media (min-width:901px){.db-ubin-grid.db-ubin-baris{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}}
 /* mode gelap: teks dan ikon beraksen navy ikut token tema supaya tidak tenggelam di kartu gelap */
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--db-tx:var(--ink);--db-ikon:var(--brand);--db-ikon-tx:var(--on-brand)}}
 :root[data-theme="dark"]{--db-tx:var(--ink);--db-ikon:var(--brand);--db-ikon-tx:var(--on-brand)}
