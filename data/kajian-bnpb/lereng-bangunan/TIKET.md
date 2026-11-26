@@ -4,7 +4,7 @@ Status per 23 Nov 2026. Ambil satu tiket, kerjakan hanya cakupannya. Pengulas di
 
 | ID | Tiket | Cakupan | Pengerja | Pengulas | Status |
 | --- | --- | --- | --- | --- | --- |
-| LT-00 | Paket dokumen `data/kajian-bnpb/lereng-bangunan/` | folder ini | longsor | pemeriksa bersih | selesai (tulis), diperiksa validasi-model 26 Nov (lulus) |
+| LT-00 | Paket dokumen `data/kajian-bnpb/lereng-bangunan/` | folder ini | longsor | pemeriksa bersih | selesai (tulis), menunggu pemeriksa |
 | LT-01 | Bagian "baca dulu, baru bangun" di AGENTS.md dan penunjuk di ilmu `longsor` | `AGENTS.md`, ilmu agent | sesi induk | higiene-repo | belum dimulai; di luar wilayah longsor |
 | LT-02 | Riset sumber: bunyi ambang 40 persen (nama peraturan), lisensi DEMNAS, ODbL untuk agregat, atribusi GLO-30, datum vertikal tiap DEM | `RISET.md` (perbarui) | longsor | validasi-model | selesai 24 Nov 2026: RISET.md bagian 7 (Keppres 32/1990 Ps 8 "40% atau lebih", Permen PU 22/2007 "lebih dari 40%", ODbL, atribusi GLO-30); lisensi DEMNAS dan garis ODbL agregat tetap tidak terverifikasi; diperiksa validasi-model 26 Nov (lulus) |
 | LT-03 | Batas: asal dan nama desa pada `public/geo/desa`, tally desa dengan kecamatan BIG longsor, status grid Open Buildings (kini hanya 13, 33, 63; Jawa Barat 32 tidak ada) dan usulan membuatnya lewat `bangunan.yml` (usulan ke mekanik-mesin dan pipa-umum) | `scripts/longsor/lereng_bangunan.py` (bagian batas), catatan | longsor | validasi-model | selesai 24 Nov 2026: `lereng_bangunan.py batas` 611 desa, 0 tanpa kecamatan; RISET.md bagian 8; grid Jawa Barat belum ada (usulan ke mekanik-mesin/pipa-umum); diperiksa validasi-model 26 Nov (lulus) |
