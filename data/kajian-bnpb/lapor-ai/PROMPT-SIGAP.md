@@ -18,7 +18,7 @@ sebelumnya kecuali bagian yang bergerak.
 4. **Kamera dan skala sama**: badan penuh, di tengah, ujung sepatu di garis yang sama
    (sekitar 3 persen dari bawah), ukuran badan sama di semua bingkai.
 5. **Lingkaran di helm dibiarkan putih polos.** Lambang BNPB asli ditempel mesin
-   (`sigap.py`); AI jangan disuruh menggambar lambang, hurufnya pasti rusak.
+   (`scripts/lapor/sigap.py`); AI jangan disuruh menggambar lambang, hurufnya pasti rusak.
 6. Simpan dengan **nama berkas di kolom Berkas** (huruf kecil, `.webp` atau `.png`), kumpulkan dalam
    satu folder, kirim ke Claude.
 
@@ -202,5 +202,5 @@ Kolom **Dasar** = gambar rujukan yang dilampirkan. Kolom **Prompt skenario** dit
 | Tur beranda | P1 sampai P4 sesuai arah sorotan |
 | Diam lama | P5 lalu P6 |
 
-Tiap gambar diproses `sigap.py`: lambang BNPB ditempel di helm, diperkecil ke 640 px WebP di bawah 120 KB.
+Tiap gambar diproses `python3 scripts/lapor/sigap.py <folder>`: lambang BNPB ditempel di helm, diperkecil ke 640 px WebP di bawah 120 KB.
 Bingkai satu urutan dimuat lebih dulu supaya tidak berkedip saat berganti.
