@@ -141,13 +141,60 @@ function tambah(dari, teks, {galat = false, foto = null, berkas = null, simpanKe
 }
 
 /* ============ kartu langkah ============ */
-function kartuBatal() {
-  const isi = kartu("i-tutup", "Laporan dibatalkan"), aksi = el("div", "lp-aksi-dua");
+function kartuBatal(ik = "i-tutup", judul = "Laporan dibatalkan") {
+  const isi = kartu(ik, judul), aksi = el("div", "lp-aksi-dua");
   const baru = el("button", "lp-utama"), pulang = el("button", "lp-kedua"); baru.type = pulang.type = "button";
   baru.append(ikon("i-plus"), "Buat laporan baru"); pulang.append(ikon("i-rumah-tab"), "Ke beranda");
   baru.addEventListener("click", () => kirim({teks: "lapor", tampil: "Buat laporan baru"}));
   pulang.addEventListener("click", () => { ke("beranda"); tampilBeranda(); });
   aksi.append(pulang, baru); isi.append(aksi); baru.focus();
+}
+/* sesudah laporan orang dicari (pemilik 26 Nov 2026: "Jangan cuma chat gini dong"): jalan keluar, lalu kartu Nomor penting terdekat dari lokasi terakhir terlihat */
+function kartuCariTerkirim() {
+  kartuBatal("i-centang", "Laporan orang dicari diterima"); wadah.querySelector(".lp-kembali-langkah")?.remove();
+  wadah.append(kartuPentingLapor(cache.lokasiLapor));
+}
+/* tempat menunggu orang dicari, dicari seperti di peta (pemilik 26 Nov 2026: "Sekolah atau Jalan apa yang tinggal cari"): posko, sekolah, rumah ibadah,
+   dan jalan di sekitar lokasi terakhir terlihat (OpenStreetMap, /api/lapor/sekitar, sumber yang sama dengan titik pengungsian), atau desa/kelurahan
+   (/api/lapor/cari, sumber kartu lokasi). Pilihan dikirim ke mesin sebagai teks nama + alamat ringkas; alamat ketikan tetap bisa. */
+function kartuAntar(j) {
+  const isi = kartu("i-pengungsian", "Tempat menunggu"), dari = ((j.isian || []).find(x => x.nama === "lokasi" && x.tampil)?.tampil || "").replace(/\s*\(.*$/, "").split(", ").slice(0, 3).join(", ");   // desa, kec, kab; tanpa koordinat
+  const kp = el("div", "lp-lok-kepala"), ik = el("span", "lp-lok-ikon"); ik.append(ikon("i-lokasi"));
+  const tx = el("div"); tx.append(el("b", null, "Cari tempat Anda menunggu"), el("small", null, "Terdekat dari lokasi terakhir terlihat. Petugas mengantar ke tempat yang Anda pilih.")); kp.append(ik, tx);
+  const cari = el("label", "lp-cari"), q = el("input"); q.type = "search"; q.placeholder = "Cari posko, sekolah, atau jalan"; q.setAttribute("aria-label", "Cari tempat menunggu");
+  Object.assign(q, {spellcheck: false, autocapitalize: "none", enterKeyHint: "search"}); q.setAttribute("autocorrect", "off");
+  cari.append(ikon("i-cari"), q);
+  const hasil = el("ul", "lp-cari-hasil"), hasilW = el("ul", "lp-cari-hasil"), IK = {Sekolah: "i-fasilitas", "Rumah ibadah": "i-fasilitas", Jalan: "i-lokasi", Jembatan: "i-lokasi"};
+  const pakai = (teks, tampil) => kirim({teks: teks.slice(0, 200), tampil});
+  let semua = null, ulang = 0, tunda;
+  const awalKata = (h, k) => h.toLowerCase().split(/[^\p{L}\p{N}]+/u).some(w => w.startsWith(k));   // "sd" cocok "SD Negeri", tidak cocok "TK Bustanul"
+  const gambar = () => { if (!semua) return;
+    const kata = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean), cocok = semua.filter(x => kata.every(k => awalKata(`${x.nama} ${x.jenis}`, k)));
+    hasil.replaceChildren(...cocok.slice(0, 8).map(x => { const li = el("li"), b = el("button", "lp-hasil"); b.type = "button";
+      const u = el("span", "lp-hasil-ikon"); u.append(ikon(IK[x.jenis] || "i-pengungsian"));
+      const t = el("span", "lp-hasil-teks"), atas = el("span", "lp-hasil-atas"), km = `${x.jarakKm.toLocaleString("id-ID")} km`;
+      atas.append(el("b", null, x.nama)); t.append(atas, el("small", null, `${x.jenis}, ${km}`)); b.append(u, t, ikon("i-panah")); b.title = x.nama;
+      b.addEventListener("click", () => pakai(`${x.nama} (${x.jenis.toLowerCase()}), ${km} dari ${dari || "lokasi terakhir terlihat"}`, x.nama)); li.append(b); return li; })); };
+  const muat = async () => {
+    try { const rs = await Promise.all(["pengungsian", "jalan"].map(jn => fetch(`/api/lapor/sekitar?wa=${encodeURIComponent(wa || "")}&jenis=${jn}&semua=1`, {signal: AbortSignal.timeout(15000)}).then(r => r.ok ? r.json() : {})));
+      semua = rs.flatMap(r => r.tempat || []).sort((a, b) => a.jarakKm - b.jarakKm);
+      if (rs.some(r => r.sebagian) && ulang++ < 2) setTimeout(muat, 4000);   // rumah ibadah dan jalan menyusul dari Overpass
+      gambar(); } catch { semua ||= []; }
+  };
+  q.addEventListener("input", () => { gambar(); clearTimeout(tunda);
+    if (q.value.trim().length < 3) { hasilW.replaceChildren(); return; }
+    tunda = setTimeout(() => cariTempat(q.value.trim(), "", hasilW, d => pakai(`${d.judul}, ${d.sub}`, d.judul), false).catch(() => hasilW.replaceChildren()), 300); });
+  // alamat yang tidak ketemu: diketik sendiri (min. 5 huruf, sama dengan mesin)
+  const sendiri = el("button", "lp-kedua"), lA = el("label", "lp-isi"), alamat = el("input"), simpanA = el("button", "lp-utama");
+  sendiri.type = simpanA.type = "button"; sendiri.append(ikon("i-tambah-teks"), "Ketik alamat sendiri"); simpanA.append(ikon("i-centang"), "Simpan alamat");
+  alamat.type = "text"; alamat.maxLength = 200; alamat.autocomplete = "street-address"; alamat.enterKeyHint = "done"; alamat.placeholder = "Nama posko atau jalan, RT/RW, dan patokan"; lA.append("Alamat tempat menunggu", alamat); lA.hidden = simpanA.hidden = true;
+  sendiri.setAttribute("aria-expanded", "false");
+  sendiri.addEventListener("click", () => { sendiri.setAttribute("aria-expanded", "true"); sendiri.hidden = true; lA.hidden = simpanA.hidden = false; if (!alamat.value) alamat.value = q.value.trim(); alamat.focus(); });
+  simpanA.addEventListener("click", () => { const v = alamat.value.trim(); if (v.length < 5) { statusEl.textContent = "Tulis nama posko atau alamatnya, paling tidak nama jalan."; alamat.focus(); return; } pakai(v, v); });
+  alamat.addEventListener("keydown", e => { if (e.key === "Enter" && !e.isComposing) simpanA.click(); });   // Enter = simpan, tidak memotong ketikan IME
+  const blok = el("div", "lp-lok lp-lok-antar"); blok.append(kp, cari, hasil, hasilW, sendiri, lA, simpanA);
+  isi.append(blok); isi.closest(".lp-langkah").classList.add("lp-langkah-lok");
+  muat(); q.focus();
 }
 function kartu(kunci, judul) {
   const [ik, jd] = KEPALA[kunci] || [kunci, judul];
@@ -731,15 +778,9 @@ function kartuTiket(j) {
     const tel = Object.assign(el("a", "lp-tk-tel"), {href: `tel:${bp.nomor.replace(/[^\d+]/g, "")}`}); tel.append(ikon("i-telepon"), `Telepon ${bp.nomor}`);
     hub.append(t, tel);
   } else { const t = el("div"); t.append(el("b", null, "Butuh pertolongan sekarang?"), el("span", null, "Telepon 112 untuk keadaan darurat.")); const tel = Object.assign(el("a", "lp-tk-tel"), {href: "tel:112"}); tel.append(ikon("i-telepon"), "Telepon 112"); hub.append(t, tel); }
-  // nomor penting di akhir obrolan (pemilik 25 Nov 2026: "hubungi BPBD dan kasih nomor penting"): rumah sakit, polisi, pemadam terdekat
-  // nomor darurat nasional selalu tampak, nomor terdekat lewat tombol (pemilik 25 Nov 2026: "kasih juga nomor penting lainnya")
-  const nasional = el("div", "lp-tk-nomor-penting"), kep = el("div", "lp-tk-np-kepala"); kep.append(el("b", null, "Nomor penting lainnya"));
-  const np = el("button", "lp-tk-np-terdekat"); np.type = "button"; np.append(ikon("i-lokasi"), "Lihat yang terdekat"); np.addEventListener("click", () => bukaInfo("penting")); kep.append(np);
-  const kisi = el("div", "lp-tk-np-kisi");
-  for (const [n, t, ik] of NOMOR_NASIONAL) {
-    const a = Object.assign(el("a", "lp-tk-np"), {href: `tel:${n}`}), u = el("span", "lp-tk-np-ikon"), tx = el("span"); u.append(ikon(ik)); tx.append(el("b", null, n), el("small", null, t)); a.append(u, tx); kisi.append(a); }
-  nasional.append(kep, kisi);
-  isi.append(pita, tiket, aksi, hub, nasional, baru);   // penilaian hanya di layar terima kasih (pemilik 21 Nov 2026: "disininya gausah ada lagi")
+  // nomor penting di akhir obrolan (pemilik 25 dan 26 Nov 2026): kartu Nomor penting yang sama dengan menunya, terdekat dari lokasi laporan, di bawah tiket
+  isi.append(pita, tiket, aksi, hub, baru);   // penilaian hanya di layar terima kasih (pemilik 21 Nov 2026: "disininya gausah ada lagi")
+  wadah.append(kartuPentingLapor(cache.lokasiLapor));
 }
 
 async function unduh(e, url) { // dokumen dibuat di latar; bila belum jadi, beri tahu, jangan buka halaman kosong
@@ -771,11 +812,13 @@ function terapkan(j, {dariCache = false} = {}) {
   else if (j.minta === "foto") kartuFoto(j);
   else if (j.minta === "foto_cari") kartuFotoCari(j);
   else if (j.minta?.startsWith("tempat")) kartuTempat(j);
+  else if (j.minta === "antar") kartuAntar(j);
   else if (j.form?.isian?.[0]?.tipe === "tanggal") kartuWaktu(j);
   else if (j.form?.isian?.[0]?.nama === "rt") kartuRtRw(j);
   else if (j.form) kartuAngka(j);
   else if (j.pilihan?.length) kartuPilihan(j);
-  else if (j.status === "batal") kartuBatal();   // sesudah dibatalkan tetap ada jalan keluar (pemilik 21 Nov 2026: "gw ga bisa klik")
+  else if (j.status === "batal") kartuBatal();
+  else if (j.status === "cari_terkirim") kartuCariTerkirim();   // sesudah dibatalkan tetap ada jalan keluar (pemilik 21 Nov 2026: "gw ga bisa klik")
   else tulis = j.status !== "terkirim" && j.status !== "batal";
   fPesan.hidden = !tulis;
   if (tulis && j.isiAwal && !iTeks.value.trim()) { iTeks.value = j.isiAwal; const n1 = iTeks.value.indexOf("\n1. "), t = n1 >= 0 ? n1 + 4 : iTeks.value.indexOf(":") + 2; iTeks.setSelectionRange(t, t); } // daftar bernomor: kursor di belakang "1. "
@@ -790,6 +833,7 @@ function terapkan(j, {dariCache = false} = {}) {
 async function kirim({teks = "", lokasi = null, form = null, pilih = null, tampil = null, foto = null, lain = null, kembali = false}) {
   if (sibuk) return;
   sibuk = true; statusEl.textContent = "";
+  if (lokasi) { cache.lokasiLapor = acuanPenting(lokasi); simpanCache(); }   // nomor penting terdekat sesudah laporan terkirim; dibulatkan ~100 m
   if (tampil !== false && (tampil || teks)) tambah("saya", tampil ? trTampil(tampil) : teks, {foto}); // tampil:false = perintah diam (membuka laporan)
   wadah.replaceChildren(); fPesan.hidden = true; $("mengetik").hidden = false;
   try {
@@ -1207,6 +1251,7 @@ function sekaliKetuk() {
       st.textContent = `Terkirim ke petugas BNPB dan BPBD. Nomor laporan ${j.nomor}.${j.wilayah ? ` Lokasi: Desa/Kel. ${j.wilayah.desa}, Kec. ${j.wilayah.kec}.` : " Lokasi belum terbaca; sebutkan desa Anda saat menelepon."}`;
       if (j.bpbd?.nomor && j.bpbd.nomor !== "117") telp.append(tel(j.bpbd.nomor.replace(/[^\d+]/g, ""), `Telepon ${j.bpbd.nama}`, j.bpbd.nomor));
       lengkapi.hidden = false; lengkapi.addEventListener("click", () => { d.close(); mulaiSusulan(j.nomor); }, {once: true});
+      if (terbaik) f.before(kartuPentingLapor(acuanPenting(terbaik)));   // nomor penting terdekat dari titik yang terkirim (pemilik 26 Nov 2026)
       segarkanLaporan().then(tampilBeranda).catch(() => {});
     } catch { await simpanHp(); }
   };
@@ -1455,7 +1500,7 @@ async function ambilDaerah(q, tampil) {
       const r = await fetch(`/api/lapor/penting?${qs}`), j = await r.json(); if (!r.ok) throw new Error(j.galat);
       cache.daerah = {q, wilayah: j.wilayah}; simpanCache();
       tambahInfo("bot", j.wilayah.desa ? `*Nomor penting sekitar Desa/Kel. ${j.wilayah.desa}*\nKec. ${j.wilayah.kec}, ${j.wilayah.kab}` : `*Nomor penting di ${j.wilayah.kab}*\nJarak dihitung dari kantor BPBD. Pakai lokasi saat ini untuk jarak dari tempat Anda.`);
-      kartuPenting(j); $("kartuInfo").append(opsiLanjut(q));
+      $("kartuInfo").replaceChildren(kartuPenting(j), opsiLanjut(q));
     } else {
       const rap = infoMode === "info" ? fetch(`/api/lapor/rapor?${qs}`).then(r => r.ok ? r.json() : null).catch(() => null) : null;   // rapor daerah ikut di Info (K89), gagal = dilewati
       const r = await fetch(`/api/lapor/daerah?${qs}`), j = await r.json(); if (!r.ok) throw new Error(j.galat);
@@ -1578,7 +1623,7 @@ function kartuPenting(j) {
     if (km != null) { const l = el("span", "lp-fas-jarak"); l.append(ikon("i-lokasi"), `${km.toLocaleString("id-ID")} km`); atas.append(l); }
     t.append(atas); if (alamat) t.append(el("small", null, alamat)); a.append(u, t);
     if (kanan) { const k = el("span", `no${merah ? " merah" : ""}`); k.append(ikon(merah ? "i-telepon" : "i-arah"), el("span", "lp-no-teks", kanan)); k.title = kanan; a.append(k); } return a; };
-  grup("BPBD", "i-status", daftar => {
+  if (j.bpbd) grup("BPBD", "i-status", daftar => {   // tanpa j.bpbd: kartu sementara berisi nomor nasional saja (kartuPentingLapor)
     for (const b of j.bpbd) daftar.append(baris(b.nama, {ik: "i-status", km: b.jarakKm, alamat: b.alamat}, b.nomor ? "Telepon" : "Arah", b.nomor ? `tel:${b.nomor.replace(/[^\d+]/g, "")}` : peta(b.lat, b.lon), !!b.nomor));
     if (!j.bpbd.length) daftar.append(baris("BPBD setempat", {ik: "i-status", alamat: "Nomor belum tercatat di data kami. Hubungi 112."}, "112", "tel:112", true)); });
   for (const [judul, list, ik] of [["Rumah sakit terdekat", j.rs, "i-fasilitas"], ["Puskesmas terdekat", j.puskesmas, "i-korban"], ["Kantor polisi terdekat", j.polisi, "i-orang"]])
@@ -1592,8 +1637,19 @@ function kartuPenting(j) {
   k.classList.add("lp-langkah-penting");
   kolom.style.setProperty("--kol", kolom.childElementCount);
   const nas = el("section", "lp-kontak-grup nasional"), hn = el("h3"); hn.append(ikon("i-telepon"), "Nomor darurat nasional"); nas.append(hn, kisi);
-  isi.append(nas, kolom);
-  k.append(kp, isi); $("kartuInfo").replaceChildren(k);
+  isi.append(nas); if (kolom.childElementCount) isi.append(kolom);
+  k.append(kp, isi); return k;
+}
+/* nomor penting sesudah laporan terkirim (pemilik 26 Nov 2026: "harusnya dia dikasih nomor penting ini"): kartu yang sama dengan menu Nomor penting,
+   terdekat dari lokasi laporan. Nomor nasional tampil seketika (jalan tanpa data); bila lokasi tidak ada atau gagal dimuat, tombol membuka menu Nomor penting. */
+const acuanPenting = L => L?.kode ? {kode: L.kode} : L && Number.isFinite(L.lat) && Number.isFinite(L.lon) ? {lat: +L.lat.toFixed(3), lon: +L.lon.toFixed(3)} : null;
+function kartuPentingLapor(lok) {
+  const k = kartuPenting({nasional: NOMOR_NASIONAL.map(([nomor, label]) => ({nomor, label}))}), kp = k.querySelector(".lp-langkah-kepala");
+  const dekat = () => { const b = el("button", "lp-tk-np-terdekat"); b.type = "button"; b.append(ikon("i-lokasi"), "Lihat yang terdekat"); b.addEventListener("click", () => { b.closest("dialog")?.close(); bukaInfo("penting"); }); kp.append(b); };
+  if (!lok) { dekat(); return k; }
+  fetch(`/api/lapor/penting?${new URLSearchParams(lok)}`, {signal: AbortSignal.timeout(15000)}).then(r => r.ok ? r.json() : null)
+    .then(j => { if (j?.wilayah && k.isConnected) k.replaceWith(kartuPenting(j)); else dekat(); }).catch(dekat);
+  return k;
 }
 $("bTutupInfo").addEventListener("click", () => { ke("beranda"); tampilBeranda(); });
 

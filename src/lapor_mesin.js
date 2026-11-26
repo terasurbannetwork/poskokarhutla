@@ -546,7 +546,9 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     }
     if (langkah === "nomor") return jawab(`${k}*Nomor WhatsApp ${sesi.cari.nama}*\nBila tahu, tulis nomornya. Petugas memakainya untuk mencocokkan dengan kabar selamat.`, ["Tidak tahu"]);
     if (langkah === "kontak") return jawab(`${k}*Nomor yang dihubungi bila ${sesi.cari.nama} ditemukan*\nPetugas menelepon atau mengirim WhatsApp ke nomor ini.`, ["Pakai nomor saya"], false, null, ["Nomor WhatsApp yang Anda pakai sekarang"]);
-    if (langkah === "tempat") return jawab(`${k}*Ke mana ${sesi.cari.nama} diantar bila ditemukan?*\nTulis tempat Anda menunggu: nama posko pengungsian, atau alamat lengkap dengan nama jalan, RT/RW, dan patokan.`);
+    // web: kartu cari tempat (posko, sekolah, jalan di sekitar, atau desa), hasilnya tetap teks; WA tetap mengetik (pemilik 26 Nov 2026: "kaya google maps gitu aja")
+    if (langkah === "tempat") return pesan?.saluran === "web" ? jawab(`${k}*Ke mana ${sesi.cari.nama} diantar bila ditemukan?*\nCari tempat Anda menunggu: posko, sekolah, masjid, atau nama jalan.`, null, false, "antar")
+      : jawab(`${k}*Ke mana ${sesi.cari.nama} diantar bila ditemukan?*\nTulis tempat Anda menunggu: nama posko pengungsian, atau alamat lengkap dengan nama jalan, RT/RW, dan patokan.`);
     const w = sesi.isian.lokasi?.nilai?.wilayah, c = sesi.cari;
     return jawab(`${k}*Ringkasan laporan orang dicari*\nNama: ${c.nama}${c.panggilan ? ` (panggilan ${c.panggilan})` : ""}\nHubungan: ${c.hubungan}\nCiri: ${c.ciri || "tidak diisi"}\nFoto: ${c.foto ? "ada" : "tidak ada"}\nTerakhir terlihat: ${w ? `Desa/Kel. ${w.desa}, Kec. ${w.kec}, ${w.kab}` : "lokasi belum terbaca"}, ${c.waktu.toLowerCase()}\nNomor WhatsApp: ${c.nomor ? "diisi" : "tidak tahu"}\nDihubungi bila ditemukan: ${c.kontak === pesan?.wa ? "nomor Anda" : "nomor lain yang Anda tulis"}\nDiantar ke: ${c.tempat}\n\nLaporan ini hanya dilihat petugas BNPB dan BPBD, tidak tampil di publik.`,
       ["Kirim", "Batal"], false, null, ["Kirim ke petugas BNPB dan BPBD", "Tidak jadi melapor"]);

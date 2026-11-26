@@ -3287,3 +3287,13 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-lembar-isi{display:grid;gap:14px;padding:16px 20px 20px;overflow-y:auto;overscroll-behavior:contain}
 .lp-lembar-sub{margin:0;font-size:.875rem}
 .lp-lembar-aksi{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px}
+/* tempat menunggu orang dicari (kartuAntar) dan nomor penting sesudah laporan terkirim (pemilik 26 Nov 2026) */
+.lp-lok.lp-lok-antar{grid-template-columns:minmax(0,1fr)}
+.lp-lok-antar > *{grid-column:1 / -1}
+.lp-lok-antar .lp-cari-hasil:empty{display:none!important}
+.lp-lok-antar > .lp-kedua{justify-self:start}
+.lp-langkah-penting > .lp-langkah-kepala .lp-tk-np-terdekat{margin-left:auto}
+.lp-langkah-penting > .lp-langkah-kepala .lp-tk-np-terdekat svg{width:15px;height:15px;padding:0;border-radius:0;background:none;color:inherit}
+.lp-langkah-wadah > .lp-langkah + .lp-langkah,.lp-sekali .lp-langkah-penting{margin-top:20px}
+/* di kolom obrolan dan jendela darurat kartu Nomor penting lebih sempit dari layar Info: kolom fasilitas mengalir, tidak dipaksa 4 berjajar */
+.lp-langkah-wadah .lp-kontak-kolom,.lp-sekali .lp-kontak-kolom{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))!important}
