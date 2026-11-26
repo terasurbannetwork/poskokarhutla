@@ -214,3 +214,24 @@ test('layar Tangga menampilkan pil ambang untuk pernyataan kita', () => {
   assert.match(js, /t\.ambang\?\.\[e\.s\]/)
   assert.match(js, /perlu cek/)
 })
+
+// DP-28 (K14): status prakiraan jadi sinyal Tangga di h3, berlabel hipotesis sampai gerbang boleh_tampil; berkas tidak ada = tanpa sinyal
+test('status prakiraan di Tangga: hipotesis, terpisah dari BMKG, tanpa berkas = tanpa sinyal', () => {
+  const py = `import json,sys,datetime as dt; sys.path.insert(0, sys.argv[1]); import tangga as T, dasar as D
+kini=dt.datetime(2026,11,10,12,0,tzinfo=D.WIB)
+kab=[{"id":"1101","nama":"Kab. Aceh Selatan","prov":"11","pn":"Aceh","geo":"11|Aceh Selatan"}]
+sp={"dibuat":"2026-11-10T08:00+07:00","kab":{"1101":{"BNJ":{"s":2},"LSR":{"s":None},"CEX":{"s":0},"KHT":{"s":1}}}}
+m={k:None for k in T.MASUKAN}; m["kab_daftar"]=kab
+r={}
+for n,(a,g) in {"hip":(sp,None),"ok":(sp,{"boleh_tampil":True}),"tanpa":(None,None)}.items():
+    t=T.susun(dict(m,status_prakiraan=a,gerbang_status=g),kini); e=t["kab"]["1101"]
+    r[n]={"h3":[[x["j"],x["tk"],x["u"]] for x in e.get("h3",[]) if x["s"]=="kita_status"],"status":e.get("status"),"sg":e["sg"]["b"]["r"]}
+print(json.dumps(r))`
+  const r = JSON.parse(execFileSync('python3', ['-I', '-c', py, new URL('scripts/prediksi', akar).pathname], { encoding: 'utf8' }))
+  assert.deepEqual(r.hip.h3, [['banjir', 2, 'hipotesis'], ['cuaca', 0, 'hipotesis'], ['karhutla', 1, 'hipotesis']])
+  assert.deepEqual(r.hip.status, { h: true, k: 1, b: 2 })
+  assert.ok(r.ok.h3.every((x) => x[2] === 'teruji') && r.ok.status.h === false)
+  assert.deepEqual(r.tanpa.h3, []) // berkas tidak ada: tanpa pernyataan, bukan nol
+  assert.equal(r.tanpa.status, null)
+  assert.deepEqual(r.hip.sg, r.tanpa.sg, 'sinyal BMKG tidak berubah')
+})

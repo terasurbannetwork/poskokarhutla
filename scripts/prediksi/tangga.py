@@ -42,6 +42,7 @@ AMBANG = {
         "karhutla": {"kode": "peluang FWI Sangat Tinggi 0,6 atau lebih dan hujan 3 hari kurang dari 3 mm", "di": "scripts/prediksi/aturan.json API.ps"},
         "asap": {"kode": "kategori ISPU dari PM2,5 24 jam (Tidak sehat di atas 55,4 µg/m³)", "di": "scripts/prediksi/aturan.json ASP.kat"},
     },
+    "kita_status": {"*": {"kode": "tingkat tabel status_prakiraan_kriteria.json (terkunci, sidik)", "di": "scripts/prediksi/status_prakiraan.py status_kab"}},
     "kita_kering": {"hth": {"kode": "kelas hari tanpa hujan 5, 10, 20, 30, 60 hari; hari hujan 1 mm atau lebih", "di": "scripts/prediksi/tangga.py HTH_KELAS"}},
     "kita_bulan": {"kekeringan": {"kode": "peluang model saja, tanpa tingkat", "di": "scripts/prediksi/tangga.py p_model_t1"}},
     "kita_musim": {"*": {"kode": "bulan puncak pola kejadian DIBI, bukan ambang peringatan", "di": "scripts/prediksi/musim_rawan.py puncak"}},
@@ -472,6 +473,26 @@ def muat_kering_kita(H, m, kini):
             H.taruh("kab", i, "bulan", item("k", "kekeringan", None, f"Peluang {D_persen(v[ix])}", f"Prediksi model (hipotesis): peluang kekeringan bulan {bulan_id(p['bulan_t1'])} {D_persen(v[ix])}" + (f"; pada uji balik {round(far * 100)}% alarmnya keliru (FAR), jadi hanya acuan" if far else "") + ". Bukan peringatan.", "kita_bulan", "kab", p=bulan_id(p["bulan_t1"]), u="hipotesis"))
 
 
+STATUS_KODE = {"BNJ": ("b", "banjir"), "LSR": ("b", "longsor"), "CEX": ("b", "cuaca"), "KHT": ("k", "karhutla")}
+
+
+def muat_status_kita(H, m, kini):
+    """DP-28 (K14): status prakiraan Centurisk97 jadi masukan Tangga di skala h3, terpisah dari BMKG (jenis kita, tanpa ikut peringkat resmi).
+    Berkas status tidak ada, basi, atau s null = tidak ada pernyataan (bukan nol). Pil hipotesis sampai gerbang boleh_tampil."""
+    d = m.get("status_prakiraan")
+    if not d or not isinstance(d.get("kab"), dict) or not segar(d.get("dibuat"), BASI_JAM["harian"], kini):
+        H.lewat("status_prakiraan: berkas tidak ada atau lebih dari 48 jam")
+        return
+    boleh = (m.get("gerbang_status") or {}).get("boleh_tampil") is True
+    H.src("kita_status", lembaga="Centurisk97", nama="Status prakiraan Centurisk97" + ("" if boleh else " (hipotesis)"), terbit=None, diambil=d.get("dibuat"), cakupan="kabupaten", url=None, jenis="kita")
+    for i, v in d["kab"].items():
+        for kd, (a, nama) in STATUS_KODE.items():
+            s = (v.get(kd) or {}).get("s")
+            if s not in (0, 1, 2, 3):
+                continue
+            H.taruh("kab", i, "h3", item(a, nama, s, LEVEL[s], f"Status prakiraan Centurisk97 untuk {nama}: {LEVEL[s]} (tiga hari ke depan). Terpisah dari peringatan BMKG.", "kita_status", "kab", u="teruji" if boleh else "hipotesis"))
+
+
 MR_ANCAMAN = {"banjir": "b", "longsor": "b", "cuaca": "b", "karhutla": "k", "kekeringan": "k"}
 MR_NAMA = {"banjir": "banjir", "longsor": "longsor", "cuaca": "cuaca ekstrem", "karhutla": "kebakaran hutan dan lahan", "kekeringan": "kekeringan"}
 BASI_MUSIM_RAWAN = 400  # hari: pola dihitung ulang tiap tahun sesudah DIBI final
@@ -615,7 +636,7 @@ def peringkat(H, prov, i):
             res[a].append(top[0] if top else None)
             cak[a].append(top[2] if top else None)
             if sk == "h3":
-                kt = [x for x in (tk_a(e, a) for e in pool if H.sumber[e["s"]]["jenis"] == "kita") if x is not None]
+                kt = [x for x in (tk_a(e, a) for e in pool if H.sumber[e["s"]]["jenis"] == "kita" and e["s"] != "kita_status") if x is not None]
                 kita[a] = max(kt) if kt else None
     return res, cak, kita
 
@@ -626,14 +647,14 @@ def susun(m, kini):
     kab_daftar = m["kab_daftar"]
     cari = D.pencari(kab_daftar)
     for fn, args in ((muat_iklim, (H, m, cari, kini)), (muat_kekeringan, (H, m, cari, kini)), (muat_h10, (H, m, cari, kini)), (muat_sepekan, (H, m, kini)),
-                     (muat_h3_bmkg, (H, m, kini)), (muat_h3_kita, (H, m, kini)), (muat_kering_kita, (H, m, kini)), (muat_musim_rawan, (H, m, kini)), (muat_jam, (H, m, cari, kini))):
+                     (muat_h3_bmkg, (H, m, kini)), (muat_h3_kita, (H, m, kini)), (muat_kering_kita, (H, m, kini)), (muat_status_kita, (H, m, kini)), (muat_musim_rawan, (H, m, kini)), (muat_jam, (H, m, cari, kini))):
         try:
             fn(*args)
         except Exception as e:  # gagal-lunak: satu sumber rusak tidak menjatuhkan tangga lain
             H.lewat(f"{fn.__name__}: {type(e).__name__}: {e}")
     prov_kab = {k["id"]: k["prov"] for k in kab_daftar}
     kab_out, cak = {}, {s: {"kab": 0, "prov": 0, "nas": 0, "kosong": 0} for s in ORDE}
-    menguat, searah, selaras = {"k": 0, "b": 0}, {"k": 0, "b": 0}, {"k": 0, "b": 0}
+    menguat, searah, selaras, status_n = {"k": 0, "b": 0}, {"k": 0, "b": 0}, {"k": 0, "b": 0}, {"k": 0, "b": 0}
     for k in kab_daftar:
         i, p = k["id"], k["prov"]
         e = {s: H.kab[i][s] for s in ORDE if i in H.kab and s in H.kab[i]}
@@ -644,6 +665,11 @@ def susun(m, kini):
             searah[a] += sg[a]["d"]
             selaras[a] += sg[a]["s"]
         e["sg"], e["kita"] = sg, kita
+        st = {a: [x["tk"] for x in H.kab.get(i, {}).get("h3", []) if x["s"] == "kita_status" and x["a"] == a] for a in ("k", "b")}
+        if any(st.values()):   # sinyal status kita: terpisah dari sg (BMKG), hanya bila ada pernyataan
+            e["status"] = {"h": any(x["u"] == "hipotesis" for x in H.kab[i]["h3"] if x["s"] == "kita_status"), **{a: max(v) if v else None for a, v in st.items()}}
+            for a in ("k", "b"):
+                status_n[a] += bool(e["status"][a])
         for s in ORDE:
             if s in e:
                 cak[s]["kab"] += 1
@@ -657,7 +683,7 @@ def susun(m, kini):
     skala = [{"id": s, "nama": n, "ok": {a: bool(H.ok.get((s, a))) for a in ("k", "b")}, "gagal": [g for g in H.gagal if g.lower().startswith(tuple(PREFIKS.get(s, ())))]} for s, n in SKALA]
     return {"versi": 1, "dibuat": kini.isoformat(timespec="seconds"), "hari": kini.date().isoformat(), "skala": skala, "sumber": H.sumber, "ambang": AMBANG, "nasional": H.nas,
             "prov": H.prov, "kab": kab_out,
-            "ringkas": {"n_kab": len(kab_out), "cakupan": cak, "menguat": menguat, "searah": searah, "belum_selaras": selaras, "tak_cocok": H.tak_cocok},
+            "ringkas": {"n_kab": len(kab_out), "cakupan": cak, "menguat": menguat, "searah": searah, "belum_selaras": selaras, "status_kita": status_n, "tak_cocok": H.tak_cocok},
             "catatan": ["Peringkat 0 sampai 3 hanya untuk sinyal; label resmi tidak diubah. Sinyal hanya dari BMKG; prediksi kita terpisah.",
                         "Pernyataan yang hanya sampai provinsi atau nasional ditandai cakupannya dan tidak diklaim sebagai kabupaten.",
                         "Anak tangga musim: pemetaan ZOM ke kabupaten belum ada, tampil tingkat nasional."],
@@ -665,7 +691,7 @@ def susun(m, kini):
 
 
 PREFIKS = {"musim": ("prediksi musim", "iklim_bmkg_arsip"), "bulan": ("bulan", "iklim_bmkg_arsip", "peluang"), "dasarian": ("dasarian", "peringatan kekeringan", "peringatan_bmkg", "iklim_bmkg_arsip"),
-           "h10": ("cuaca_bmkg_kab10",), "sepekan": ("prakiraan sepekan", "cuaca_sepekan", "karhutla_bmkg", "prediksi kering kita"), "h3": ("cuaca_factsheet", "prediksi.json"),
+           "h10": ("cuaca_bmkg_kab10",), "sepekan": ("prakiraan sepekan", "cuaca_sepekan", "karhutla_bmkg", "prediksi kering kita"), "h3": ("cuaca_factsheet", "prediksi.json", "status_prakiraan"),
            "jam": ("peringatan.json", "cuaca_petir", "awan_himawari")}
 
 
@@ -676,7 +702,9 @@ MASUKAN = {"iklim_arsip": os.path.join(BANJIR, "iklim_bmkg_arsip.json"), "pering
            "peringatan": os.path.join(BANJIR, "peringatan.json"), "petir": os.path.join(BANJIR, "cuaca_petir.json"),
            "awan": os.path.join(UDARA, "awan_himawari.json"), "prediksi": os.path.join(D.DATA, "prediksi.json"),
            "hujan_harian": os.path.join(D.DATA, "bayangan", "hujan_harian.json"), "peluang_kering": os.path.join(AKAR, "public", "kekeringan", "data", "peluang_bayangan.json"),
-           "musim_rawan": os.path.join(D.DATA, "musim_rawan.json")}
+           "musim_rawan": os.path.join(D.DATA, "musim_rawan.json"),
+           "status_prakiraan": os.path.join(AKAR, "data", "raw", "prediksi", "status.json"),   # keluaran status_prakiraan.py (DP-05), dibaca saja
+           "gerbang_status": os.path.join(AKAR, "public", "data", "gerbang", "status_prakiraan.json")}
 
 
 LIVE_REL = {"peringatan": "banjir/data/peringatan.json", "petir": "banjir/data/cuaca_petir.json", "awan": "udara/data/awan_himawari.json"}
@@ -894,6 +922,19 @@ def uji():
     assert t6["ringkas"]["tak_cocok"].get("kita_musim") == 1 and t6["sumber"]["kita_musim"]["jenis"] == "kita"
     assert t6["kab"]["1101"]["sg"] == t["kab"]["1101"]["sg"] and t6["kab"]["1101"]["kita"] == t["kab"]["1101"]["kita"], "bulan rawan tidak mengubah sinyal maupun peringkat kita"
     assert not [e for e in susun(dict(m, musim_rawan=dict(mr, dibuat="2024-01-01T00:00+07:00")), kini)["kab"]["1101"].get("bulan", []) if e["s"] == "kita_musim"], "pola basi dilewati"
+    # DP-28 (K14): status prakiraan kita di h3, terpisah dari BMKG; berkas hilang = tanpa sinyal (bukan nol); hipotesis sampai gerbang boleh_tampil
+    sp = {"dibuat": "2026-11-10T08:00+07:00", "kab": {"1101": {"BNJ": {"s": 2}, "LSR": {"s": None}, "CEX": {"s": 0}, "KHT": {"s": 1}}, "1102": {"BNJ": {"s": None}}}}
+    t7 = susun(dict(m, status_prakiraan=sp, gerbang_status=None), kini)
+    ss = [e for e in t7["kab"]["1101"]["h3"] if e["s"] == "kita_status"]
+    assert {e["j"]: e["tk"] for e in ss} == {"banjir": 2, "cuaca": 0, "karhutla": 1}, "s null dilewati, 0 tetap 0"
+    assert all(e["u"] == "hipotesis" and e["c"] == "kab" for e in ss) and t7["sumber"]["kita_status"]["jenis"] == "kita"
+    assert t7["kab"]["1101"]["status"] == {"h": True, "k": 1, "b": 2} and "status" not in t7["kab"]["1102"] and t7["ringkas"]["status_kita"] == {"k": 1, "b": 1}
+    assert t7["kab"]["1101"]["sg"] == k1["sg"] and t7["kab"]["1101"]["kita"] == k1["kita"], "status tidak mengubah sinyal BMKG maupun peringkat kita"
+    assert all(e["u"] == "teruji" for e in susun(dict(m, status_prakiraan=sp, gerbang_status={"boleh_tampil": True}), kini)["kab"]["1101"]["h3"] if e["s"] == "kita_status")
+    assert all(e["u"] == "hipotesis" for e in susun(dict(m, status_prakiraan=sp, gerbang_status={"boleh_tampil": "ya"}), kini)["kab"]["1101"]["h3"] if e["s"] == "kita_status"), "hanya True"
+    t8 = susun(dict(m, status_prakiraan=None), kini)
+    assert "status" not in t8["kab"]["1101"] and not [e for e in t8["kab"]["1101"]["h3"] if e["s"] == "kita_status"] and t8["ringkas"]["status_kita"] == {"k": 0, "b": 0} and any("status_prakiraan" in g for g in t8["gagal"])
+    assert not susun(dict(m, status_prakiraan=dict(sp, dibuat="2026-11-01T00:00+07:00")), kini)["kab"]["1101"].get("status"), "basi dilewati"
     # menguat basah Aceh Selatan: bulan 0, h10 2, sepekan 2, h3 2, jam 2 -> tidak menurun, >=2 skala >=1
     assert k1["sg"]["b"]["m"] is False and k1["sg"]["b"]["d"] is True and k1["sg"]["b"]["s"] is False, k1["sg"]["b"]   # 2,2,2 pada provinsi: searah, datar
     assert k1["sg"]["b"]["c"][ORDE.index("sepekan")] == "prov" and k1["sg"]["b"]["c"][ORDE.index("h10")] is None
