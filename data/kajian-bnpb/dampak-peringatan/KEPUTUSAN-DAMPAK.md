@@ -24,6 +24,10 @@ Dashboard hidromet InaRISK (diamati 26 Nov 2026, lihat RISET) menampilkan tabel 
 | K12 | (26 Nov 2026, jawaban Q5) "Data fasilitas OSM lengkapi semua": fasilitas OSM ditarik untuk semua provinsi, bukan 9 provinsi prioritas. Tiket DP-26. |
 | K13 | (26 Nov 2026, jawaban Q10) Pemilik meminta sumber jenis kelamin dicari. Sampai sumber terbukti (riset di DP-27), kolom laki-laki dan perempuan tidak tampil. |
 | K14 | (26 Nov 2026, jawaban Q8) Status prakiraan ikut sinyal Tangga. Menggantikan `tangga` D2, K6, Q4 dan `kemampuan-inti` D7 hanya untuk status ini; selama uji balik DP-07 belum lulus, sinyalnya berpil hipotesis. Tiket DP-28. |
+| K15 | (26 Nov 2026, jawaban Q15) Bahaya berikutnya hanya kekeringan dan gelombang, karena pemicunya sudah ada di sistem kita. Gempa dan gunung api tidak diberi status (tidak bisa diprakirakan 3 hari; gunung api punya level resmi PVMBG). Pesisir lain dan kualitas udara belum. |
+| K16 | (26 Nov 2026, jawaban Q11) Sumber poligon hanya CAP BMKG; layanan ArcGIS `nowcasting_public` butuh token, DP-24 ditutup. |
+| K17 | (26 Nov 2026, jawaban Q16) Penduduk terpapar karhutla dihitung dari zona kluster api aktif ditambah radius, lewat mesin paparan yang sama. |
+| K18 | (26 Nov 2026) Titik tanpa data InaRISK tetap "belum terukur", tidak pernah dianggap tidak berbahaya (menguatkan D34). |
 
 ### Keputusan lama yang bersinggungan
 
@@ -91,11 +95,11 @@ Dashboard hidromet InaRISK (diamati 26 Nov 2026, lihat RISET) menampilkan tabel 
 | Q8 | **Terjawab K14.** Bolehkah status prakiraan kelak ikut sinyal Tangga atau dikirim sebagai kanal baru? Bertentangan dengan `tangga` D2 dan `kemampuan-inti` D7 bila ya. | **[BAWAAN SEMENTARA]** tidak; hanya lewat kanal push yang sudah ada dengan label hipotesis. |
 | Q9 | **Terjawab K9 dan K10.** Penempatan: publik `/prediksi` tab Besok; warga Alun-alun `/lapor` dan notifikasi; staf `/bnpb/dalops`; kartu ringkas di Layar Pimpinan. | selesai |
 | Q10 | **Terjawab K13 dan D29.** Sumber jenis kelamin: kolom `pria` dan `wanita` Dukcapil per desa, dikali rasio, berlabel perkiraan; tahun dan lisensi tidak tertulis. | selesai |
-| Q11 | Layanan ArcGIS `nowcasting_public` sublayer 2 dipakai sebagai sumber kedua? | **[BAWAAN SEMENTARA]** tidak; hanya CAP (D2). DP-01: layanan menjawab 404/499 (token), tidak terbaca tanpa kredensial. |
+| Q11 | **Terjawab K16.** Layanan ArcGIS `nowcasting_public` sublayer 2 dipakai sebagai sumber kedua? | **[BAWAAN SEMENTARA]** tidak; hanya CAP (D2). DP-01: layanan menjawab 404/499 (token), tidak terbaca tanpa kredensial. |
 | Q12 | Pesan push memuat angka penduduk terpapar? | **[BAWAAN SEMENTARA]** tidak (D16). |
 | Q13 | Penerima status Waspada: seluruh pelanggan kab atau hanya pelanggan yang memilih ambang Waspada (bawaan PW)? | **[BAWAAN SEMENTARA]** mengikuti ambang pelanggan di `pwa-peringatan` D7. |
 | Q14 | Laporan Berkala Kepala BNPB memuat status dan keterpaparan peringatan? | **[BAWAAN SEMENTARA]** tidak; paket `laporan-berkala` tidak disentuh. |
-| Q15 | Pemicu dan halaman untuk bahaya yang belum dicakup (pesisir, kekeringan, udara, gempa, gunung api)? Kekeringan kita sudah punya status wilayah (`public/data/kekeringan_wilayah.json`) tetapi prakiraan kekeringan kita tanpa peringkat dan tidak ikut sinyal (`prediksi-besok` bagian Aturan). | **[BAWAAN SEMENTARA]** tidak menyala; tiket berikutnya per bahaya sesudah pemicunya jelas. |
-| Q16 | Penduduk terpapar untuk karhutla: dari zona apa (kluster aktif, bukan poligon BMKG)? | **[BAWAAN SEMENTARA]** tidak dihitung; kartu karhutla hanya status per kab dan label. |
+| Q15 | **Terjawab K15.** Pemicu dan halaman untuk bahaya yang belum dicakup (pesisir, kekeringan, udara, gempa, gunung api)? Kekeringan kita sudah punya status wilayah (`public/data/kekeringan_wilayah.json`) tetapi prakiraan kekeringan kita tanpa peringkat dan tidak ikut sinyal (`prediksi-besok` bagian Aturan). | **[BAWAAN SEMENTARA]** tidak menyala; tiket berikutnya per bahaya sesudah pemicunya jelas. |
+| Q16 | **Terjawab K17.** Penduduk terpapar untuk karhutla: dari zona apa (kluster aktif, bukan poligon BMKG)? | **[BAWAAN SEMENTARA]** tidak dihitung; kartu karhutla hanya status per kab dan label. |
 | Q17 | Untuk karhutla, halaman peta utama memakai status taktis yang sudah ada per kluster; apakah status per kab (maksimum kluster) cukup, atau perlu tetap per kluster saja? | **[BAWAAN SEMENTARA]** per kab sebagai lapisan baru, status per kluster tetap apa adanya. |
 | Q18 | Sesudah satu notifikasi per hari per (kab, jenis), kenaikan ke Awas yang terjadi kemudian tetap tidak dikirim lagi (D30). Apakah kenaikan ke Awas perlu pengecualian? | **[BAWAAN SEMENTARA]** tidak ada pengecualian; kartu di aplikasi menampilkan tingkat terbaru. |
