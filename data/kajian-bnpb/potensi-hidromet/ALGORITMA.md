@@ -35,11 +35,11 @@ Kelas kab per bahaya dari jumlah desa [n0 tanpa kelas, n1 rendah, n2 sedang, n3 
 - sedang bila n3/N paling sedikit 0,10, atau n3 paling sedikit 10, atau (n2+n3)/N paling sedikit 0,60;
 - selain itu rendah.
 
-Aturan ini dipinjam dari `ews-engine.js` dashboard hidromet (RISET 1) dan dikunci lewat `.sidik.v3`. Gelombang hanya untuk kab yang punya desa berkelas gelombang. Cuaca ekstrem tidak punya kelas desa; K-nya tetap dari induk (IRBI, Q6 induk).
+Aturan ini dipinjam dari `ews-engine.js` dashboard hidromet (RISET 1) dan dikunci lewat amandemen 3 kriteria status (`.sidik` aktif memuat amandemen 3; isi aktif sebelumnya diarsip sebagai `.sidik.v3`, konvensi `.vN` = isi aktif sebelum amandemen ke-N). Gelombang hanya untuk kab yang punya desa berkelas gelombang. Cuaca ekstrem tidak punya kelas desa; K-nya tetap dari induk (IRBI, Q6 induk).
 
 ## 6. Debit
 
-Per kab: puncak ansambel rerata hari 0 sampai 3 dibagi Q2 titik kab. Q2 tidak ada = null.
+Per kab: puncak ansambel rerata hari 0 sampai 2 (horizon ramalan 3 hari) dibagi Q2 titik kab. Q2 tidak ada = null.
 
 ## 7. ONI dan IOD
 
