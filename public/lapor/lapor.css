@@ -3442,7 +3442,11 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-pop-st.lp-gn-st.lv4{background:color-mix(in oklab,var(--dp-3) 16%,var(--card));color:color-mix(in oklab,var(--dp-3) 62%,var(--ink))}
 /* ikon Peringatan dini dan Nomor darurat di kanan atas kepala beranda, di sebelah tombol tema (pemilik 26 Nov 2026: "Ya, pindahkan"); ikon polos tanpa garis luar */
 .lp-ikon-atas-grup{position:absolute;top:12px;right:12px;z-index:2;display:flex;align-items:center;gap:4px}
-.lp-ikon-atas-grup > .lp-tema-hp{position:static;display:grid}
+.lp-ikon-atas-grup > .lp-tema-hp{position:relative;display:grid;width:40px;height:40px;border:0;background:none;color:var(--on-head);margin-left:9px}   /* tema sama polosnya dengan ikon lain (ikon tanpa garis luar), dipisah garis tipis */
+.lp-ikon-atas-grup > .lp-tema-hp::before{content:"";position:absolute;left:-7px;top:10px;width:1px;height:20px;background:color-mix(in oklab,var(--on-head) 25%,transparent)}
+.lp-ikon-atas-grup > .lp-tema-hp svg{width:21px;height:21px;stroke-linecap:round;stroke-linejoin:round}
+.lp-ikon-atas-grup > .lp-tema-hp:hover{background:color-mix(in oklab,var(--on-head) 10%,transparent)}
+.lp-ikon-atas-grup > .lp-tema-hp:focus-visible{outline:2px solid var(--on-head);outline-offset:2px}
 .lp-ikon-atas{position:relative;display:grid;place-items:center;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:none;color:var(--on-head);cursor:pointer}
 .lp-ikon-atas svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .lp-ikon-atas:hover{color:var(--head-hl,var(--on-head));background:color-mix(in oklab,var(--on-head) 10%,transparent)}
