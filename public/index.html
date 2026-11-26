@@ -1575,6 +1575,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
           <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
           <label><input type="checkbox" data-l="kabluas"> Luas terbakar per kabupaten</label><!-- peta_kab.js; kabluas dan kabbelum saling eksklusif -->
           <label><input type="checkbox" data-l="kabbelum"> Masih terdeteksi per kabupaten (perkiraan satelit)</label>
+          <label title="Status prakiraan Normal sampai Awas per kab/kota (hipotesis sampai uji balik lulus). Ketuk kab/kota untuk kartunya"><input type="checkbox" data-l="dampakstatus"> Status prakiraan karhutla per kab/kota</label><!-- DP-17: modul bersama inti/dampak_peringatan.js, bawaan mati -->
           <label><input type="checkbox" data-l="langganan"> Lokasi langganan api (pencegahan)</label><!-- riwayat_sel.py langganan: jendela ~16 km terbakar >= 1/3 tahun 2012-2025 -->
           <label><input type="checkbox" data-l="satelit" checked> Citra satelit &amp; titik api Himawari 10 menit</label>
           <label title="Zoom jauh: VIIRS NOAA-20 lintasan siang terbaru (±375 m). Diperbesar: Sentinel-2 terbaru 14 hari (10 m), bisa berawan"><input type="checkbox" data-l="harian"> Citra harian (asap terlihat)</label>
@@ -7339,6 +7340,22 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="pesan.js?v=1014c" defer></script>
 <script>/* Overlay: semua grup (termasuk yang ditambah modul) selalu terbuka; judul grup hanya kepala */
 document.addEventListener("click", e => { if (e.target.closest("#lapisBtn")) setTimeout(() => document.querySelectorAll("#lapis details").forEach(d => d.open = true), 0); });</script>
+<script>/* DP-17: lapisan status prakiraan karhutla (modul bersama, dimuat malas saat kotak dinyalakan; chrome urgent, kerja berat di rAF) */
+(() => { const L = document.getElementById("lapis"); if (!L) return; let h = null;
+  const muatSkrip = u => new Promise((ok, no) => { const e = document.createElement("script"); e.src = u; e.onload = ok; e.onerror = no; document.head.append(e); });
+  async function siapkan() {
+    if (!document.getElementById("dpCss")) document.head.insertAdjacentHTML("beforeend", '<link id="dpCss" rel="stylesheet" href="/inti/dampak_peringatan.css?v=1">');
+    if (!window.DampakPeringatan) await muatSkrip("/inti/dampak_peringatan.js?v=2");
+    const nama = await fetch("/bencana.json").then(r => r.json()).then(j => (j.bencana || j).find?.(b => b.id === "karhutla")?.tingkat?.map(t => t.nama) || null, () => null);
+    let kartu = document.getElementById("dpKartu");
+    if (!kartu) { kartu = document.createElement("div"); kartu.id = "dpKartu"; kartu.hidden = true; kartu.style.cssText = "width:min(520px,100%)"; document.getElementById("dok").prepend(kartu); }
+    h = DampakPeringatan.pasang(peta, {bahaya: "kht", nama, kartu});
+  }
+  L.addEventListener("change", e => { const i = e.target.closest('input[data-l="dampakstatus"]'); if (!i) return;
+    e.stopImmediatePropagation();
+    requestAnimationFrame(async () => { try { if (!h) await siapkan();
+      if (i.checked) { if (!(await h.nyalakan())) { i.checked = false; typeof toast === "function" && toast("Status prakiraan belum tersedia"); } } else h.matikan();
+    } catch (er) { console.warn("status prakiraan", er); i.checked = false; } }); }, true); })();</script>
 <script type="module" src="/inti/kepala.js"></script>
 <script src="/inti/alarm.js" defer></script>
 <script src="/inti/peta/nasa.js"></script>
