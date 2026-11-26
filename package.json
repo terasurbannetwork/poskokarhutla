@@ -35,6 +35,7 @@
     "token:ukur": "node scripts/agents/token-ukur.mjs",
     "dorong": "sh scripts/agents/dorong.sh",
     "tinjau": "node scripts/agents/tinjau_lokal.mjs 8800",
+    "pasut:pasang": "sed \"s#REPO#$PWD#g\" scripts/agents/pasut_lokal.plist > ~/Library/LaunchAgents/id.centurisk97.pasut-lokal.plist && (launchctl bootout gui/$(id -u)/id.centurisk97.pasut-lokal 2>/dev/null; launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/id.centurisk97.pasut-lokal.plist) && echo pasut-lokal terpasang",
     "tinjau:pasang": "sed \"s#REPO#$PWD#g\" scripts/agents/tinjau_lokal.plist > ~/Library/LaunchAgents/id.centurisk97.tinjau-lokal.plist && (launchctl bootout gui/$(id -u)/id.centurisk97.tinjau-lokal 2>/dev/null; launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/id.centurisk97.tinjau-lokal.plist) && echo http://localhost:8800",
     "uji:e2e": "node --test --test-concurrency=1 tests/e2e/*.test.mjs"
   },
