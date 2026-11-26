@@ -248,7 +248,9 @@ export default {
           "peta_kab": false,
           "cari": [],
           "ukuran_provinsi": [],
-          "status_dampak": []
+          "status_dampak": [
+            "kht"
+          ]
         }
       }
     },
@@ -486,7 +488,10 @@ export default {
           "peta_kab": false,
           "cari": [],
           "ukuran_provinsi": [],
-          "status_dampak": []
+          "status_dampak": [
+            "bnj",
+            "lsr"
+          ]
         }
       }
     },
@@ -688,7 +693,9 @@ export default {
             "bpbd"
           ],
           "ukuran_provinsi": [],
-          "status_dampak": []
+          "status_dampak": [
+            "gel"
+          ]
         }
       }
     },
@@ -887,7 +894,9 @@ export default {
             "bpbd"
           ],
           "ukuran_provinsi": [],
-          "status_dampak": []
+          "status_dampak": [
+            "cex"
+          ]
         }
       }
     },
@@ -1669,7 +1678,9 @@ export default {
             "spi",
             "jiwa"
           ],
-          "status_dampak": []
+          "status_dampak": [
+            "kek"
+          ]
         }
       }
     },

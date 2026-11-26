@@ -8,9 +8,9 @@
    Warna hanya dari token tema.css (--dp-0..3, --dp-belum). Teks sumber luar lewat textContent. */
 (() => {
   const TINGKAT = ["Normal", "Waspada", "Siaga", "Awas"];
-  const BAHAYA = {bnj: "Banjir", lsr: "Longsor", cex: "Cuaca ekstrem", kht: "Karhutla"};
+  const BAHAYA = {bnj: "Banjir", lsr: "Longsor", cex: "Cuaca ekstrem", kht: "Karhutla", kek: "Kekeringan", gel: "Gelombang tinggi"};
   /* kata kunci jenis peringatan BMKG per bahaya; karhutla tidak punya poligon BMKG (D26) */
-  const JENIS = {bnj: ["banjir", "hujan lebat"], lsr: ["longsor", "hujan lebat"], cex: ["angin kencang", "puting beliung", "cuaca ekstrem", "petir"], kht: []};
+  const JENIS = {bnj: ["banjir", "hujan lebat"], lsr: ["longsor", "hujan lebat"], cex: ["angin kencang", "puting beliung", "cuaca ekstrem", "petir"], kht: [], kek: [], gel: ["gelombang tinggi"]};
   const SUMBER = {worldpop: "WorldPop", dukcapil: "Dukcapil", ghsl: "GHSL"};
   const FASILITAS = {sekolah_dapodik: "Sekolah (Dapodik)", faskes_osm: "Fasilitas kesehatan (OpenStreetMap)"};
   const PEMICU = {prakiraan: "prakiraan Centurisk97", bmkg: "peringatan BMKG", keduanya: "prakiraan Centurisk97 dan peringatan BMKG"};

@@ -247,7 +247,7 @@
           "peta_kab": false,
           "cari": [],
           "ukuran_provinsi": [],
-          "status_dampak": []
+          "status_dampak": ["kht"]
         }
       }
     },
@@ -479,7 +479,7 @@
           "peta_kab": false,
           "cari": [],
           "ukuran_provinsi": [],
-          "status_dampak": []
+          "status_dampak": ["bnj", "lsr"]
         }
       }
     },
@@ -681,7 +681,7 @@
             "bpbd"
           ],
           "ukuran_provinsi": [],
-          "status_dampak": []
+          "status_dampak": ["gel"]
         }
       }
     },
@@ -880,7 +880,7 @@
             "bpbd"
           ],
           "ukuran_provinsi": [],
-          "status_dampak": []
+          "status_dampak": ["cex"]
         }
       }
     },
@@ -1656,7 +1656,7 @@
             "spi",
             "jiwa"
           ],
-          "status_dampak": []
+          "status_dampak": ["kek"]
         }
       }
     },

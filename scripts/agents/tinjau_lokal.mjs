@@ -86,6 +86,21 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
           res.writeHead(r.status, Object.fromEntries(r.headers)); return res.end(Buffer.from(await r.arrayBuffer()));
         }
       }
+      /* Dampak peringatan dini (data/kajian-bnpb/dampak-peringatan) sebelum rutenya terbit: rute publik src/dampak_peringatan.js
+         dijalankan lokal, R2 diganti berkas keluaran pipeline di folder kerja (data/raw/dampak_peringatan, data/raw/prediksi/status.json) */
+      if (req.method === "GET" && /^\/api\/dampak-peringatan\/(ringkas|status)$/.test(jalur)) {
+        const {RUTE_DAMPAK_PERINGATAN} = await import(pathToFileURL(path.join(akar, "src/dampak_peringatan.js")).href);
+        const fn = RUTE_DAMPAK_PERINGATAN[`GET ${jalur}`];
+        if (fn) {
+          const BERKAS = {"ringkas.json": "data/raw/dampak_peringatan/ringkas.json", "status.json": "data/raw/prediksi/status.json"};
+          const MEDIA = {get: async k => { const f = BERKAS[k.replace(/^dampak_peringatan\//, "")]; if (!f) return null;
+            try { const t = await fs.readFile(path.join(akar, f), "utf8"); return {text: async () => t, json: async () => JSON.parse(t), size: t.length}; } catch { return null; } }};
+          const DB = {prepare: () => ({bind: () => ({first: async () => ({n: 0}), run: async () => ({}), all: async () => ({results: []})})})};
+          globalThis.caches ??= {default: {match: async () => undefined, put: async () => {}}};
+          const r = await fn({DB, MEDIA, IP_SALT: "lokal"}, new Request(new URL(req.url, "http://lokal")), url, {waitUntil() {}});
+          res.writeHead(r.status, {...Object.fromEntries(r.headers), "cache-control": "no-store"}); return res.end(Buffer.from(await r.arrayBuffer()));
+        }
+      }
       const kepala = {};
       for (const [k, v] of Object.entries(req.headers)) if (!["host", "connection", "accept-encoding", "content-length"].includes(k)) kepala[k] = v;
       if (kepala.origin) kepala.origin = H.origin;
