@@ -21,6 +21,8 @@ test("RRP-3 kalkulator di peramban: J1, ganda, isian liar, tanpa POST", {skip: C
   const r = spawnSync("python3", ["-I", "-c", "import sys,json;sys.path.insert(0,'scripts/bnpb');from unit import ikk;print(json.dumps(ikk.jalan()['ikk'],ensure_ascii=False))"], {cwd: AKAR, encoding: "utf8"});
   assert.equal(r.status, 0, r.stderr);
   const kini = new Date().toISOString(), IKK = {...JSON.parse(r.stdout), dibuat: kini, basi_jam: 1080};
+  // klon bersih (pre-push, CI) tanpa cache data/raw/unit/ikk dan tanpa BPS_KEY: ikk.py menulis semua kab kosong; isi satu kab tiruan supaya jalur hitung tetap diuji
+  if (!Object.values(IKK.data.kab).some(v => v != null)) { const k0 = Object.keys(IKK.data.kab)[0]; IKK.data.kab[k0] = 101.46; (IKK.data.nama_kab ||= {})[k0] ||= "Kab. Uji"; }
   const kab = Object.keys(IKK.data.kab).find(k => IKK.data.kab[k] != null);
   const post = [];
   const srv = http.createServer((q, s) => {
