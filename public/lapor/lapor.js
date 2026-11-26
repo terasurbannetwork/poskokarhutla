@@ -1327,19 +1327,22 @@ function sekaliKetuk() {
 }
 async function bukaChat(darurat = false) {
   if (darurat === "cari") {   // lapor orang hilang lewat obrolan, tanpa kode WA (pemilik 25 Nov 2026)
+/* tiap laporan baru mulai dari layar kosong: obrolan laporan sebelumnya tidak ikut tampil (pemilik 26 Nov 2026: "histori yang sebelumnya dihilangkan aja").
+   Laporan lama tetap ada di halaman Laporan; draf yang belum dikirim dilanjutkan lewat kartu "Lanjutkan melapor", bukan dihapus. */
+function kosongkanChat() { $("mengetik").hidden = true; log.replaceChildren(); wadah.replaceChildren(); cache.transkrip = []; if (wa) simpanCache(); }
     ke("chat"); hangatkanTerima();
-    if (log.children.length) log.append(el("li", "tengah", "Lapor orang hilang"));
+    kosongkanChat();
     const mulaiCari = () => kirim({teks: "lapor orang hilang", tampil: false});
     return tanyaBahasa(() => wa ? mulaiCari() : tanyaNomor(mulaiCari));
   }
   if (darurat === true) {   // K68: laporan darurat selalu dimulai baru; draf laporan biasa yang belum terkirim diganti
     ke("chat"); hangatkanTerima();
-    if (log.children.length) log.append(el("li", "tengah", "Laporan darurat"));
+    kosongkanChat();
     const mulaiDarurat = () => kirim({teks: "darurat", tampil: false});
     return tanyaBahasa(() => wa ? mulaiDarurat() : tanyaNomor(mulaiDarurat));
   }
   ke("chat"); hangatkanTerima();
-  if (!log.children.length || ["terkirim", "batal", "cari_terkirim"].includes(cache.keadaan?.status)) { if (["terkirim", "batal", "cari_terkirim"].includes(cache.keadaan?.status)) { log.append(el("li", "tengah", "Laporan baru")); } const mulaiLapor = () => kirim({teks: "lapor", tampil: false});
+  if (!log.children.length || ["terkirim", "batal", "cari_terkirim"].includes(cache.keadaan?.status)) { kosongkanChat(); const mulaiLapor = () => kirim({teks: "lapor", tampil: false});
     tanyaBahasa(() => wa ? mulaiLapor() : tanyaNomor(mulaiLapor)); }   // bahasa dipilih di jendela awal; di chat ditanya hanya bila belum
 }
 

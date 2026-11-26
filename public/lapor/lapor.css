@@ -3644,3 +3644,12 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
   .lp-alun-kj-jenis svg{width:15px;height:15px}
 }
 @media (prefers-reduced-motion:reduce){.lp-urut-ik{transition:none}}
+/* 26 Nov 2026 (pemilik: "Bagusin" kartu Pasang aplikasi): tanpa kartu di dalam kartu dan tanpa judul ganda; langkah tidak merenggang; ubin perangkat sama tinggi, tombol di dasar */
+.lp-pw .lp-pw-pasang{padding:0;border:0;border-radius:0;background:none;gap:16px}
+.lp-pw .lp-pw-pasang>.lp-pw-kep>.lp-pw-ik,.lp-pw .lp-pw-pasang>.lp-pw-kep b{display:none}
+.lp-pw .lp-pw-pasang>.lp-pw-kep small{margin:0;font-size:.875rem;color:var(--ink2)}
+.lp-pw-ubin .lp-pw-langkah{align-content:start}
+.lp-pw-ubin .lp-pw-langkah li::before{margin-top:1px}
+.lp-pw-ubin-kep{padding-bottom:12px;border-bottom:1px solid var(--line)}
+.lp-pw-ubin>.lp-pw-tbl-utama{margin-top:auto}
+.lp-pw-qr{background:var(--surface)}
