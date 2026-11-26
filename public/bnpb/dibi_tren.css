@@ -699,7 +699,7 @@ button.dbt-nav[aria-selected="true"]::before{display:none}
 .db-sisi .db-segar{flex:none;margin:0}
 .db-tabs{grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;overflow-x:auto;scrollbar-width:none}
 .db-tabs button.dbt-nav{inline-size:auto;grid-template-columns:auto auto;justify-content:center;gap:8px;padding:4px 14px 4px 6px}
-body.mp-model-a .db-app{block-size:calc(100dvh - 24px)}
+body.mp-model-a .db-app{block-size:calc(100dvh - 76px)}   /* 52px untuk kepala halaman .bn-judul */
 body.mp-model-a .db-aksi .db-tema{display:none}
-body.mp-model-a .db-peta{block-size:calc(100dvh - 150px)}
+body.mp-model-a .db-peta{block-size:calc(100dvh - 202px)}
 @media (max-width:1024px){body.mp-model-a .db-app{block-size:auto}}

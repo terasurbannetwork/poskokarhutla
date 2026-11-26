@@ -7,6 +7,8 @@
 .ai:has(#aiObrolView:not([hidden])){height:calc(100dvh - 76px)}
 @media (min-width:901px){body.mp-model-a .ai{padding:0;max-width:none}body.mp-model-a .ai:has(#aiObrolView:not([hidden])){height:calc(100dvh - 24px)}}
 .ai-galat{margin:0 0 12px}
+/* kepala standar: navy penuh dari dasbor.css (>=901px); di sini hanya jarak dari tepi karena .ai tanpa padding */
+@media (min-width:901px){body.mp-model-a .ai>.bn-judul{margin:12px 12px 0}}
 
 /* tombol ikon polos: tanpa kotak, garis, atau latar */
 .ai-ik{border:0;background:none;padding:6px;margin:0;color:var(--ink2);cursor:pointer;display:inline-grid;place-items:center;border-radius:0;box-shadow:none}
@@ -47,7 +49,7 @@
 .ai-ruang{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--card);border-radius:16px;box-shadow:var(--bayang);overflow:hidden}
 .ai-kepala{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
 .ai-judul{margin-right:auto;min-width:0;display:grid;gap:2px}
-.ai-kepala h1{font-size:17px;font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ai-kepala h2{font-size:17px;font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ai-pembuat{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--ink2)}
 .ai-pembuat:not(:has(:not([hidden]))){display:none}
 .ai-pil-staf{--pil:var(--c2)}

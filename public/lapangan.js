@@ -197,9 +197,9 @@
   $("bukaRR").addEventListener("click", async () => {
     const t = $("bukaRR"); t.disabled = true; $("rrWadah").hidden = false;
     try {
-      sisip("link", {rel: "stylesheet", href: "/rumah_rusak.css?v=1"}).catch(() => {});
+      sisip("link", {rel: "stylesheet", href: "/rumah_rusak.css?v=2"}).catch(() => {});
       sisip("link", {rel: "stylesheet", href: "/inti/lapor-gelap.css?v=1&k=2"}).catch(() => {});   // ulang SESUDAH rumah_rusak.css: :root terang-nya menimpa mode gelap bila yang pertama
-      await Promise.all([muatMapLibre().catch(() => {}), sisip("script", {src: "/rumah_rusak.js?v=1"})]);
+      await Promise.all([muatMapLibre().catch(() => {}), sisip("script", {src: "/rumah_rusak.js?v=2"})]);
       window.RumahRusak.pasang($("rrWadah"), {kode});
       t.hidden = true;
     } catch (e) { pesan("Formulir rumah rusak belum termuat. Periksa sinyal lalu ketuk lagi.", "galat"); t.disabled = false; $("rrWadah").hidden = true; }

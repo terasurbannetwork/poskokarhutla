@@ -917,7 +917,7 @@ async function mulai() {
   if (!wadah) return;
   if (lama) lama.hidden = true;
   const sek = document.createElement("div"); sek.className = "pp lbk";
-  sek.innerHTML = `<section class="pp-kep lbk-alat"><div class="pp-jd"><h1>Laporan BNPB</h1><p id="lbkJudul"></p></div>
+  sek.innerHTML = `<section class="pp-kep lbk-alat"><div class="pp-jd"><p id="lbkJudul"></p></div>
     <form class="lbk-pilih" id="lbkPilih" novalidate aria-label="Pilih periode laporan">
       <fieldset class="lbk-seg"><legend class="lbk-sr">Periode</legend>${PERIODE.map(([v, l, ik]) => `<label><input type="radio" name="periode" value="${v}"${v === periode ? " checked" : ""}>${ikon(ik)}<span>${l}</span></label>`).join("")}</fieldset>
       <div class="lbk-kode"><label for="lbkKode" id="lbkKodeL"></label><div class="lbk-kode-b"><input id="lbkKode" name="kode" required autocomplete="off" spellcheck="false" aria-describedby="lbkKodeH">

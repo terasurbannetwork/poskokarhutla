@@ -40,12 +40,12 @@
     const inp = h("input", {type: "password", autocomplete: "off", spellcheck: "false", maxlength: "26", required: true, placeholder: "26 karakter"}), pesan = h("p", {class: "bn-pesan galat", role: "status", teks: galat || ""});
     const f = h("form", {class: "bn-kartu mt-masuk"}, h("h2", null, svg("kunci"), "Kode mitra"), h("label", {class: "bn-isian"}, "Tempel kode dari admin", inp), pesan, h("button", {class: "bn-tombol", type: "submit", teks: "Masuk"}));
     f.addEventListener("submit", e => { e.preventDefault(); sessionStorage.setItem(KUNCI, inp.value.trim().toLowerCase()); muat(); });
-    app.replaceChildren(f);
+    app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Mitra riset"})), f);
   }
 
   async function muat(bukaId) {
-    let r; try { r = await api("GET", "/api/riset/mitra/saya"); } catch (e) { if (e.message === "kode") return; app.replaceChildren(h("p", {class: "rs-kosong", teks: "Gagal memuat. Coba lagi."})); return; }
-    if (!r.ok) { app.replaceChildren(h("p", {class: "rs-kosong", teks: r.status === 503 ? "Fitur riset belum diaktifkan." : r.status === 429 ? "Terlalu banyak percobaan. Coba lagi nanti." : "Gagal memuat (" + r.status + ")."})); return; }
+    let r; try { r = await api("GET", "/api/riset/mitra/saya"); } catch (e) { if (e.message === "kode") return; app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Mitra riset"})), h("p", {class: "rs-kosong", teks: "Gagal memuat. Coba lagi."})); return; }
+    if (!r.ok) { app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Mitra riset"})), h("p", {class: "rs-kosong", teks: r.status === 503 ? "Fitur riset belum diaktifkan." : r.status === 429 ? "Terlalu banyak percobaan. Coba lagi nanti." : "Gagal memuat (" + r.status + ")."})); return; }
     D = r.j; utama(); if (bukaId) { const u = D.usulan.find(x => x.id === bukaId); if (u) detail(u); }
   }
 
@@ -65,7 +65,7 @@
       return h("tr", null, h("td", {"data-label": "Data", class: "rs-judul"}, h("b", {teks: namaData[q.dataset] || q.dataset})), h("td", {"data-label": "Tujuan"}, q.tujuan, q.catatan ? h("span", {class: "rs-redup", teks: q.catatan}) : null),
         h("td", {"data-label": "Status"}, pil(s[0], s[1], s[2])), h("td", {"data-label": "Jalur"}, q.jalur ? tautan(q.jalur, "Buka data", true) : "–"), h("td", {"data-label": "Diminta"}, wkt(q.dibuat))); }), "Belum ada permintaan data.");
     const pecah = (j, t) => h("section", {class: "mt-blok"}, h("h2", {class: "mt-kepala", teks: j}), t);
-    app.replaceChildren(kep, pecah("Usulan riset", usulan), pecah("Permintaan data", minta));
+    app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Mitra riset"})), kep, pecah("Usulan riset", usulan), pecah("Permintaan data", minta));
     app.querySelector("#baru").onclick = () => dialogUsulan(null);
     app.querySelector("#minta").onclick = dialogMinta;
     app.querySelector(".mt-blok").addEventListener("click", e => { const b = e.target.closest("[data-u]"); if (b) detail(D.usulan.find(u => u.id === b.dataset.u)); });

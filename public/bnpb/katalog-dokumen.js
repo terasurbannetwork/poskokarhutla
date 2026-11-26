@@ -57,7 +57,8 @@
   const ukuran = b => b == null ? "" : b >= 1048576 ? (b / 1048576).toLocaleString("id-ID", {maximumFractionDigits: 1}) + " MB" : Math.max(1, Math.round(b / 1024)).toLocaleString("id-ID") + " KB";
   const tautan = p => GITHUB + p.split("/").map(encodeURIComponent).join("/");
   const kunciBerkas = p => btoa(String.fromCharCode(...new TextEncoder().encode(p))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");   // alamat tanpa ".pdf": pengelola unduhan menangkap dari nama
-  const pesan = (kelas, ...isi) => app.replaceChildren(h("p", {class: "bn-pesan " + kelas, role: "status"}, ...isi));
+  const kepala = () => h("div", {class: "bn-judul"}, h("h1", {teks: "Katalog dokumen"}));
+  const pesan = (kelas, ...isi) => app.replaceChildren(kepala(), h("p", {class: "bn-pesan " + kelas, role: "status"}, ...isi));
 
   /* ---------- tema terang/gelap: kunci sama dengan halaman lain ---------- */
   const temaKini = () => document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
@@ -136,7 +137,7 @@
       return {...e, fmt: new Set(semua.map(b => b[0])), c: [e.j, e.d, nama[e.k], e.r, ...(e.v || []).map(v => v.l), ...semua.map(b => b[1])].join(" ").toLowerCase()}; });
     const hitung = {}; for (const e of dok) hitung[e.k] = (hitung[e.k] || 0) + 1;
     const buka = buatPanel();
-    const judul = h("h3"), badan = h("tbody"), grid = h("div", {class: "kd-grid"}), kal = h("div", {class: "kd-hm"}), muat = h("button", {type: "button", class: "kd-muat", hidden: ""});
+    const judul = h("p", {class: "kd-ringkas"}), badan = h("tbody"), grid = h("div", {class: "kd-grid"}), kal = h("div", {class: "kd-hm"}), muat = h("button", {type: "button", class: "kd-muat", hidden: ""});
     let hasil = dok;
 
     const berkas = (b, jd) => h("div", {class: "kd-berkas"}, b.map(([x, p, u]) => {
@@ -276,9 +277,9 @@
     let tunda; input.addEventListener("input", () => { clearTimeout(tunda); tunda = setTimeout(() => { S.cari = input.value.trim(); saring(); }, 120); });
     muat.addEventListener("click", () => { const dari = S.n; S.n += PER_MUAT; const tambah = daftarAktif().slice(dari, S.n); if (S.tampil === "kartu") grid.append(...tambah.map(kartu)); else badan.append(...tambah.map(baris)); tombolMuat(); });   // ditambahkan, bukan digambar ulang: folder yang sedang terbuka tetap terbuka
 
-    app.replaceChildren(h("section", {class: "ex ex-std"},
-      h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ikon("kajian"), "Katalog dokumen"), h("div", {class: "ex-jd"}, judul, h("div", {class: "kd-kanan"}, pilihTampil, tombolTema()))),
-      h("div", {class: "ex-bd"}, h("div", {class: "kd-alat"},
+    app.replaceChildren(kepala(), h("section", {class: "ex ex-std"},
+      h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ikon("kajian"), "Katalog dokumen"), h("div", {class: "ex-jd"}, h("div", {class: "kd-kanan"}, pilihTampil, tombolTema()))),
+      h("div", {class: "ex-bd"}, judul, h("div", {class: "kd-alat"},
         h("div", {class: "kd-saring"}, h("label", {class: "kd-cari"}, ikon("cari"), input), menuFmt.tombol, menuTgl.tombol), h("div", {class: "kd-grup"}, h("span", {class: "kd-grup-label", teks: "Kategori"}), opsiKat), terpilih)),
       wadah));
     gambar();

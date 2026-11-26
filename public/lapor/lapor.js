@@ -1783,7 +1783,7 @@ const singkatProv = n => SINGKAT_PROV[n] || n.replace(/^Sumatera /, "Sum. ").rep
 let alunGrup = new Map(), alunTempat = new Map(), alunProvTerdampak = [];
 let alunKjId = new Map();   // id kejadian -> data lengkap kartu (gambarKabar), untuk jendela rincian dari pop-up peta
 /* arsiran provinsi satu warna bertingkat menurut total kejadian (pemilik 26 Nov 2026); tanpa kejadian = tanpa isi. Ambang bawah tiap tingkat, sama dengan legenda */
-const TINGKAT_PROV = [[1, .18, "1 sampai 2"], [3, .32, "3 sampai 5"], [6, .5, "6 sampai 10"], [11, .7, "lebih dari 10"]];   // arsiran oranye --f2 (pemilik 26 Nov 2026 "jangan pakai abu, pakai orange")
+const TINGKAT_PROV = [[1, .15, "1 sampai 2"], [3, .27, "3 sampai 5"], [6, .4, "6 sampai 10"], [11, .55, "lebih dari 10"]];   // arsiran oranye --f2 (pemilik 26 Nov 2026 "jangan pakai abu, pakai orange")
 const tingkatProv = n => TINGKAT_PROV.reduce((o, [a, v]) => n >= a ? v : o, 0);
 const isiProv = () => { const m = []; for (const [k, g] of alunGrup) if (/^\d{2}$/.test(k)) m.push(k, tingkatProv(g.n)); return m.length ? ["match", ["get", "kode"], ...m, 0] : 0; };
 /* ruang untuk panel daftar (kiri di layar lebar, bawah di HP) dan legenda bersaringan jenis di bawah */
@@ -2284,7 +2284,7 @@ async function tampilAlun() {
     alunData = j.baris || [];
     gambarAlun();
     if (dpDok === undefined) muatDp().then(() => { if (dpDok && alunKabar && alunMode === "kejadian") gambarAlun(); });   // baris prakiraan menyusul, tidak menahan daftar
-  } catch { w.replaceChildren(el("p", "lp-redup", "Alun-alun belum bisa dimuat. Coba lagi.")); }
+  } catch { w.replaceChildren(el("p", "lp-redup", "Situasi terkini belum bisa dimuat. Coba lagi.")); }
 }
 
 /* ============ bahasa (K58, D80): dipilih pelapor, tidak ditebak; disimpan di perangkat. Percakapan diterjemahkan server, data tetap Indonesia ============ */
