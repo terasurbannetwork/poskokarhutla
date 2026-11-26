@@ -228,5 +228,5 @@ uji("orang dicari lewat obrolan (pemilik 25 Nov 2026): tanpa kode, baris lapor_c
   assert.deepEqual(b, {nomor_pencari: WA_CHAT, nama_dicari: "Joko", hubungan: "Saudara", waktu_terakhir: "Hari ini", nomor_dicari: null, status: "buka"});
   const t = await DB.prepare("SELECT cari_id, panggilan, nomor_kontak, tempat_tunggu FROM lapor_cari_temu ORDER BY rowid DESC LIMIT 1").first();
   assert.deepEqual({...t, cari_id: undefined}, {cari_id: undefined, panggilan: null, nomor_kontak: WA_CHAT, tempat_tunggu: "Posko SDN 1 Paledang, Jl. Paledang"}, "nomor kontak dan tempat tunggu tersimpan (0177)");
-  assert.equal((await DB.prepare("SELECT foto_id FROM lapor_cari_foto WHERE cari_id = ?").bind(t.cari_id).first())?.foto_id, fid, "foto tertaut ke laporan (0183)");
+  assert.equal((await DB.prepare("SELECT foto_id FROM lapor_cari_foto WHERE cari_id = ?").bind(t.cari_id).first())?.foto_id, fid, "foto tertaut ke laporan (0185)");
 });

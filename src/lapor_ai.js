@@ -321,7 +321,7 @@ async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama
     ...(lanjut ? [] : stmtMilikSesi(env, perangkat, s.id)), ...g]);
   if (!r[0].meta.changes) return {bentrok: true};
   if (h.kirimTemu && tambahan.cari) await H.ctTambah(env, P, {cari_id: tambahan.cari.id, ...h.kirimTemu}).catch(e => tabelBelum(e) || console.error("lapor_cari_temu", e?.message));   // ponytail: di luar batch sampai 0177 terpasang di produksi
-  if (h.kirimTemu?.foto_id && tambahan.cari) await H.cfTambah(env, P, tambahan.cari.id, h.kirimTemu.foto_id).catch(e => tabelBelum(e) || console.error("lapor_cari_foto", e?.message));   // sampai 0183 terpasang: laporan tetap masuk tanpa tautan foto
+  if (h.kirimTemu?.foto_id && tambahan.cari) await H.cfTambah(env, P, tambahan.cari.id, h.kirimTemu.foto_id).catch(e => tabelBelum(e) || console.error("lapor_cari_foto", e?.message));   // sampai 0185 terpasang: laporan tetap masuk tanpa tautan foto
   return {tambahan, token};
 }
 const teksWaDari = (h, tambahan, token, url) => h.kirim ? `${h.inti}\n\nLacak laporan: ${url.origin}/lapor/lacak.html?t=${token}` : h.balasan;
