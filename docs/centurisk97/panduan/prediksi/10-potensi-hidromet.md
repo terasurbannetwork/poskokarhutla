@@ -42,7 +42,7 @@ Kelas bahaya tiap desa (rendah, sedang, tinggi) berasal dari data BNPB tingkat d
 
 - Yang tampil bawaan adalah kelas baseline.
 - Kelas proyeksi tampil sebagai kolom terpisah berlabel "tahun dan skenario tidak tercantum di sumber". Kelas proyeksi hanya pembanding dan tidak dipakai menghitung status.
-- Kelas kab/kota diturunkan dari sebaran kelas desanya. Kab/kota berkelas tinggi bila paling sedikit 40 persen desanya berkelas tinggi. Aturan ini diperketat atas keputusan pemilik sistem sesudah sebaran awalnya dilihat, karena aturan semula membuat terlalu banyak kab/kota berkelas tinggi.
+- Kelas kab/kota diturunkan dari sebaran kelas desanya. Kab/kota berkelas tinggi bila paling sedikit 40 persen desanya berkelas tinggi.
 - Rincian kelas per desa tampil publik. Penduduk, fasilitas, dan keterpaparan per desa tetap hanya untuk staf.
 
 ## Banjir bandang
@@ -57,11 +57,11 @@ ONI menunjukkan kondisi El Nino atau La Nina di Pasifik. IOD menunjukkan kondisi
 
 ### Debit sungai
 
-Debit adalah banyaknya air yang lewat di sungai tiap detik, dari model global. Angkanya perkiraan, selalu berlabel hipotesis, dan tidak menaikkan status banjir. Perbandingan dengan debit banjir dua tahunan belum terukur, sehingga kolom itu kosong.
+Debit adalah banyaknya air yang lewat di sungai tiap detik, dari model global. Angkanya perkiraan, selalu berlabel hipotesis, dan tidak menaikkan status banjir. Debit puncak ditulis bilangan bulat dalam m³/detik. Rasio terhadap debit banjir dua tahunan (Q2) ditulis "Belum terukur" karena Q2 tiap kab/kota belum ada; bila kelak tersedia, rasio tampil satu desimal dengan tanda "×".
 
 ### Hari tanpa hujan
 
-Jumlah hari berturut-turut tanpa hujan sampai kemarin, dihitung dari hujan model. Ini bukan prakiraan dan bukan hasil pos hujan BMKG. Bila datanya lebih tua dari tiga hari, blok ini ditulis "belum terukur".
+Jumlah hari berturut-turut tanpa hujan sampai kemarin, dihitung dari hujan model. Ini bukan prakiraan dan bukan hasil pos hujan BMKG. Bila datanya lebih tua dari tiga hari, blok ini ditulis "belum diperbarui sejak" disusul tanggal data terakhir, dan angkanya tidak ditampilkan.
 
 ## Yang sengaja tidak diambil dari dashboard InaRISK
 

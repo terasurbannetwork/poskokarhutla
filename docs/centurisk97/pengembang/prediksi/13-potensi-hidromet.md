@@ -19,7 +19,7 @@ Ambang tinggi 0,40 dikunci pemilik pada 26 November 2026 (K6): syarat "30 desa d
 
 ## Status dan BDG
 
-Kriteria status ditambah BDG di `scripts/prediksi/status_prakiraan_kriteria.json:4`. Kelas kab BDG dari kelas bandang (`status_prakiraan_kriteria.json:5`), E sama dengan BNJ hari yang sama (`status_prakiraan_kriteria.json:7`). Amandemen 3 (26 November 2026) menggeser K banjir dan longsor ke kelas desa BNPB, menambah `e` per hari, dan mencatat `versi_kriteria` di arsip harian (`status_prakiraan_kriteria.json:8`). Sidik aktif ditulis ulang sebagai `.sidik.v3` dan sidik lama diarsipkan. Uji balik memisahkan label banjir bandang dari BNJ, dan BNJ memakai label lamanya. Status BDG berpil hipotesis (`scripts/prediksi/status_prakiraan.py:374`). Tabel status induk ada di halaman Metode status prakiraan dan dampak.
+Kriteria status ditambah BDG di `scripts/prediksi/status_prakiraan_kriteria.json:4`. Kelas kab BDG dari kelas bandang (`status_prakiraan_kriteria.json:5`), E sama dengan BNJ hari yang sama (`status_prakiraan_kriteria.json:7`). Amandemen 3 (26 November 2026) menggeser K banjir dan longsor ke kelas desa BNPB, menambah `e` per hari, dan mencatat `versi_kriteria` di arsip harian (`status_prakiraan_kriteria.json:8`). Sidik aktif `.sidik` ditulis ulang untuk amandemen 3, dan isi aktif sebelumnya diarsipkan sebagai `.sidik.v3` (konvensi `.vN` = isi aktif sebelum amandemen ke-N). Uji balik memisahkan label banjir bandang dari BNJ, dan BNJ memakai label lamanya. Status BDG berpil hipotesis (`scripts/prediksi/status_prakiraan.py:374`). Tabel status induk ada di halaman Metode status prakiraan dan dampak.
 
 ## Analisis wilayah
 
@@ -40,7 +40,7 @@ Batas basi hari tanpa hujan 3 hari (`analisis_wilayah.py:14`). Sumber hilang mem
 
 ### Debit GloFAS
 
-`python3 -I scripts/banjir/debit_glofas.py terbit` menulis `public/banjir/data/debit_kab.json` (`debit_glofas.py:276`): puncak ansambel hari 0 sampai 3, hari puncak, dan rasio terhadap Q2 (`debit_glofas.py:253`). Q2 titik kab belum ada di repo, jadi `q2_m3s` dan `rasio_q2` null (`debit_glofas.py:282`). Berkas bertanda `hipotesis: true`. Debit tidak menaikkan status (Q6, bawaan sementara: tidak).
+`python3 -I scripts/banjir/debit_glofas.py terbit` menulis `public/banjir/data/debit_kab.json` (`debit_glofas.py:276`): puncak ansambel hari 0 sampai 2 (horizon ramalan 3 hari), hari puncak, dan rasio terhadap Q2 (`debit_glofas.py:253`). Q2 titik kab belum ada di repo, jadi `q2_m3s` dan `rasio_q2` null (`debit_glofas.py:282`). Berkas bertanda `hipotesis: true`. Debit tidak menaikkan status (Q6, bawaan sementara: tidak).
 
 ### ONI dan IOD
 
