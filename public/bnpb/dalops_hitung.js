@@ -4,7 +4,7 @@
    dihitung terhadap hari logbook terakhir (data.hari), bukan jam perangkat: logbook periode 07.00-07.00 WIB. */
 (g => {
   "use strict";
-  const SEPEKAN = 6, NAMA_LEVEL = ["Aman", "Waspada", "Siaga", "Awas"];
+  const SEPEKAN = 6, NAMA_LEVEL = ["Normal", "Waspada", "Siaga", "Awas"];
   const hari = s => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)) / 864e5;
   const selisih = (a, b) => hari(a) - hari(b);   // a - b dalam hari
   const tutup = s => (s || "").replace(/^(Kab\.|Kabupaten)\s+/i, "");
@@ -116,9 +116,11 @@
     for (const [k, v] of Object.entries(st?.kec || {})) {
       const [p, kab] = k.split("|"), kode = p + "|" + kab, x = out[kode] || (out[kode] = {kab_kode: kode, prov_kode: p, nama: kab, b: [], h3: null, h3d: []});
       (v[f] || []).forEach((l, i) => { if (l != null && !(x.b[i] >= l)) x.b[i] = l; });
+      if ((v[f] || []).length > x.b.length) x.b.length = v[f].length;   // panjang hari tetap walau hari terakhir kosong
       if (v.h3 != null && !(x.h3 >= v.h3)) x.h3 = v.h3;
       (v.h3d || []).forEach((m, i) => { if (m != null && !(x.h3d[i] >= m)) x.h3d[i] = m; });
     }
+    for (const x of Object.values(out)) { x.b = Array.from(x.b, l => l ?? null); x.h3d = Array.from(x.h3d, m => m ?? null); }   // hari tanpa data = null, bukan lubang (spread lubang jadi NaN)
     return out;
   }
   /* kab dengan level >= min di salah satu hari. Urut: level tertinggi, yang sepekan ini sudah banjir dulu, lalu hujan tiga hari. */
@@ -157,9 +159,9 @@
       `Bila ada kebutuhan mendesak (${j.alat}), mohon disampaikan sekalian. Terima kasih.`;
   }
 
-  /* pesan peringatan dini untuk kab berstatus Waspada ke atas: status dan hujan tiga hari per tanggal, minta siaga dan kabar bila banjir */
+  /* pesan peringatan dini untuk kab berstatus Waspada ke atas: status dan hujan 24 jam per tanggal, minta siaga dan kabar bila banjir */
   function pesanSiaga(x, hari, j = KATA.banjir) {
-    const baris = hari.map((t, i) => `${i + 1}. ${tglPanjang(t)}: ${NAMA_LEVEL[x.b[i] ?? 0]}${x.h3d?.[i] != null ? `, hujan tiga hari ${Math.round(x.h3d[i])} mm` : ""}`);
+    const baris = hari.map((t, i) => `${i + 1}. ${tglPanjang(t)}: ${x.b[i] == null ? "tidak ada prakiraan" : NAMA_LEVEL[x.b[i]]}${x.h3d?.[i] != null ? `, hujan 24 jam ${Math.round(x.h3d[i])} mm` : ""}`);
     const K = j.kata[0].toUpperCase() + j.kata.slice(1);
     return `Yth. rekan BPBD ${x.nama}. Pusdalops BNPB menyampaikan prakiraan status ${j.kata} ${x.nama}:\n${baris.join("\n")}\n` +
       (x.sudah ? `${K} sepekan ini sudah tercatat di logbook. Mohon kabar kondisi terkini dan ${j.tanya}.\n` : "") +
@@ -208,17 +210,18 @@
       const [p, nama] = kode.split("|");
       if (lv >= 2) {
         const idx = Math.min(...kecs.flatMap(c => c.b.map((v, i) => v >= lv ? i : 99)));
-        const tinggi = kecs.filter(c => maksArr(c.b) >= lv).map(c => c.nama).sort();
+        const tinggi = kecs.filter(c => maksArr(c.b) >= lv).map(c => c.nama).filter(Boolean).sort();   // prediksi.json per kab: nama kecamatan kosong
         const ps = new Set((posko?.lapangan || []).filter(o => o.prov === p && o.kab === nama && (o.jenis === "permanen" || o.jenis === "siaga")).map(o => (o.kec || "").toLowerCase()));
         const dgPosko = tinggi.filter(n => ps.has(n.toLowerCase())), evak = tinggi.filter(n => !ps.has(n.toLowerCase()));
-        const lereng = kecs.filter(c => maksArr(c.l) >= 2).map(c => c.nama).sort();
-        const l = [dgPosko.length && "Posko " + sebut(dgPosko), evak.length && "siapkan evakuasi " + sebut(evak), lereng.length && "pantau lereng " + sebut(lereng)].filter(Boolean);
+        const lereng = kecs.filter(c => maksArr(c.l) >= 2).map(c => c.nama).filter(Boolean).sort();
+        const tanpaNama = !tinggi.length && kecs.some(c => !c.nama), lerengKab = tanpaNama && kecs.some(c => maksArr(c.l) >= 2);   // status per kab tanpa kecamatan: langkah tanpa nama tempat
+        const l = [dgPosko.length && "Posko " + sebut(dgPosko), evak.length && "siapkan evakuasi " + sebut(evak), tanpaNama && "Siapkan posko dan evakuasi di wilayah rawan", lereng.length && "pantau lereng " + sebut(lereng), lerengKab && "pantau lereng di wilayah rawan"].filter(Boolean);
         l[0] = l[0][0].toUpperCase() + l[0].slice(1);
         pakai.add(kode);
         per[lv >= 3 ? 3 : 2].push({kab_kode: kode, nama, prov_kode: p, langkah: l.join("; "), tenggat: tgl(idx), _i: idx, _n: tinggi.length});
       } else if (lv === 1 && adaPekan.get(kode)?.surut) {
-        const w = kecs.filter(c => maksArr(c.b) >= 1).map(c => c.nama).sort();
-        pantau.push({kab_kode: kode, nama, prov_kode: p, langkah: "Pantauan khusus: " + sebut(w, 4), tenggat: "", _n: w.length});
+        const w = kecs.filter(c => maksArr(c.b) >= 1).map(c => c.nama).filter(Boolean).sort();
+        pantau.push({kab_kode: kode, nama, prov_kode: p, langkah: w.length ? "Pantauan khusus: " + sebut(w, 4) : "Pantauan khusus", tenggat: "", _n: w.length});
       }
     }
     const urut = xs => xs.sort((a, b) => (a._i ?? 0) - (b._i ?? 0) || b._n - a._n || a.nama.localeCompare(b.nama)).map(({_i, _n, ...r}) => r);
@@ -356,6 +359,62 @@
       ...lembar.map((L, i) => [`xl/worksheets/sheet${i + 1}.xml`, sheet(L)])]);
   }
 
-  const X = {pesanKurang, xlsx, crc32, gabungLuar, ringkasLuar, WASPADA_LUAR, kunciKejadian, normLokasi, ringkasLaporan, tanggalPantau, tglLogbook, cocokLogbook, labelKejadian, kataJenis, pesanTagih, NAMA_JENIS, mitigasi, KATA, SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, adaAngka, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
+  /* ---------- Prakiraan lawan kejadian (data/kajian-bnpb/prediksi-kejadian/, PK-1..PK-3) ----------
+     Dalops hanya MEMBACA prakiraan mesin /prediksi (public/prediksi/data/prediksi.json dan lalu.json). Level sel dari window.Besok.levelSel
+     (public/prediksi/besok_inti.js) disuntik lewat parameter levelSel, jadi tidak ada aturan level kedua di sini (D1). */
+  /* kunci status lama (b, l, ...) -> kode prakiraan (D3). Gelombang = maks(GEL, ROB). */
+  const PRAK_KUNCI = {b: ["BNJ"], l: ["LSR"], c: ["CEX"], g: ["GEL", "ROB"], u: ["ASP"], k: ["API"]};
+  const PRAK = {banjir: "b", longsor: "l", cuaca: "c", gelombang: "g", udara: "u", karhutla: "k"};   // jenis Dalops -> kunci
+  const levelGabung = (levelSel, kodes, KOL, baris) => { const a = kodes.map(c => levelSel(c, KOL, baris(c))).filter(v => v != null); return a.length ? Math.max(...a) : null; };
+  /* prediksi.json -> bentuk status lama (kec per kab, kunci "prov|nama|" tanpa nama kecamatan) supaya statusKab, siaga, dan mitigasi tidak berubah.
+     hari = tiga hari ke depan (H+1..H+3), indeks 0 = besok. h3d = hujan 24 jam per hari (mm), h3 = jumlah tiga hari bila ketiganya ada. */
+  function statusDariPrediksi(pred, levelSel) {
+    const KOL = Object.fromEntries(Object.entries(pred?.kode || {}).map(([c, v]) => [c, v.kol]));
+    const hari = pred?.kode?.BNJ?.hari || Object.values(pred?.kode || {})[0]?.hari || [], kec = {};
+    const it = KOL.HJN ? KOL.HJN.indexOf("tot") : -1;
+    for (const k of pred?.kab || []) {
+      if (!k.geo) continue;
+      const v = {};
+      for (const [f, kodes] of Object.entries(PRAK_KUNCI)) v[f] = hari.map((_, i) => levelGabung(levelSel, kodes, KOL, c => k[c]?.[i]));
+      v.h3d = hari.map((_, i) => it >= 0 ? k.HJN?.[i]?.[it] ?? null : null);
+      v.h3 = v.h3d.length && v.h3d.every(m => m != null) ? v.h3d.reduce((a, m) => a + m, 0) : null;
+      kec[k.geo + "|"] = v;
+    }
+    return {hari, kec};
+  }
+  /* level sel per kab untuk tanggal lampau T dari lalu.json (prakiraan H+1 yang dibekukan, D9): {idKab: level}; kab tanpa nilai tidak ikut (bukan 0) */
+  function levelTanggal(jenis, lalu, T, levelSel) {
+    const out = {}, hariT = lalu?.hari?.[T] || {};
+    for (const kode of PRAK_KUNCI[PRAK[jenis]] || []) {
+      const e = hariT[kode]; if (!e) continue;
+      for (const [id, row] of Object.entries(e.kab || {})) { const lv = levelSel(kode, {[kode]: e.kol}, row); if (lv != null && !(out[id] >= lv)) out[id] = lv; }
+    }
+    return out;
+  }
+  const tglWIB = ms => new Date(ms + 7 * 36e5).toISOString().slice(0, 10);   // epoch ms -> tanggal WIB
+  const MATANG_HARI = 3;   // Q2 (bawaan diterima 25 Nov 2026): "Belum ada laporan" matang 3 hari sesudah tanggal prakiraan
+  /* empat kotak per kab untuk tanggal T (ALGORITMA). level: {idKab: level|null}; kejadian: [{kab: [idKab], mulai, terakhir, surut}];
+     laporan: [{kab: idKab, tanggal, status, periksa}] (laporan warga hanya bukti terjadi, D7). Tidak ada kotak "salah alarm". */
+  function pasangkan({T, hariIni, level = {}, kejadian = [], laporan = []}) {
+    const dekat = t => !!t && Math.abs(selisih(t, T)) <= 1;
+    const per = new Map(), ambil = id => per.get(id) || per.set(id, {kejadian: [], laporan: [], berlangsung: []}).get(id);
+    for (const k of kejadian) for (const id of k.kab || []) {
+      if (dekat(k.mulai)) ambil(id).kejadian.push(k);
+      else if (k.mulai && selisih(k.mulai, T) < -1 && (!k.surut || (k.terakhir || "") >= T)) ambil(id).berlangsung.push(k);   // lama dan belum surut: tanda, bukan bukti
+    }
+    for (const l of laporan) if (l.status !== "tidak_valid" && l.periksa !== "tidak_valid" && dekat(l.tanggal)) ambil(l.kab).laporan.push(l);
+    const matang = selisih(hariIni, T) >= MATANG_HARI, baris = [];
+    for (const [id, lv] of Object.entries(level)) {
+      if (lv == null) continue;
+      const a = per.get(id) || {kejadian: [], laporan: [], berlangsung: []}, terjadi = a.kejadian.length + a.laporan.length > 0, pra = lv >= 2;
+      const kotak = pra ? (terjadi ? "kena" : "belum") : (terjadi ? "luput" : "tenang");
+      baris.push({id, level: lv, kotak, menunggu: kotak === "belum" && !matang, ...a});
+    }
+    return baris;
+  }
+  const ubin = baris => { const n = {kena: 0, luput: 0, belum: 0, tenang: 0}; for (const b of baris) n[b.kotak]++; return {...n, menunggu: baris.some(b => b.menunggu)}; };
+
+  const X = {
+pesanKurang, xlsx, crc32, gabungLuar, ringkasLuar, WASPADA_LUAR, kunciKejadian, normLokasi, ringkasLaporan, tanggalPantau, tglLogbook, cocokLogbook, labelKejadian, kataJenis, pesanTagih, NAMA_JENIS, mitigasi, KATA, SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, adaAngka, gabungRiwayat, perluDitanya, statusKab, statusDariPrediksi, levelTanggal, pasangkan, ubin, tglWIB, PRAK, PRAK_KUNCI, MATANG_HARI, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
   g.DalopsHitung = X;
 })(globalThis);
