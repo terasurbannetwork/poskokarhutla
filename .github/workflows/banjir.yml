@@ -158,6 +158,21 @@ jobs:
             python3 $p uji && { python3 $p $a || echo "::warning title=panen $p::$p gagal; berkas lamanya dibiarkan"; } || echo "::warning title=panen $p::uji $p gagal"
           done
 
+      # Pasut dari Mac pemilik (scripts/banjir/pasut_lokal.sh, 26 Nov 2026): BMKG Maritim memblokir runner GitHub, jadi versi repo bisa lebih baru dari cache.
+      - name: Pasut dari repo bila lebih baru dari cache
+        run: |
+          python3 - <<'PY'
+          import json, subprocess, datetime as d
+          awal = d.datetime(1970, 1, 1, tzinfo=d.timezone.utc)
+          t = lambda s: d.datetime.fromisoformat(json.loads(s).get("dibuat", "1970-01-01T00:00:00+00:00").replace("Z", "+00:00"))
+          for f in ["public/banjir/data/pasut.json", "public/banjir/data/pasut_30h.json"]:
+              try: r = t(subprocess.run(["git", "show", "HEAD:" + f], capture_output=True, text=True, check=True).stdout)
+              except Exception: continue
+              try: c = t(open(f).read())
+              except Exception: c = awal
+              if r > c: subprocess.run(["git", "checkout", "HEAD", "--", f], check=True); print(f, "dari repo", r, ">", c)
+          PY
+
       # prediksi pasang surut BMKG Maritim per stasiun (tanpa kuota); rob.py menyusul. public/banjir/data ikut di-add di langkah terbit
       - name: Prediksi pasang surut BMKG (boleh gagal)
         continue-on-error: true

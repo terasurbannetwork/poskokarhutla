@@ -100,6 +100,21 @@ jobs:
           key: banjir-${{ github.run_id }}
           restore-keys: banjir-
 
+      # Pasut dari Mac pemilik (scripts/banjir/pasut_lokal.sh, 26 Nov 2026): BMKG Maritim memblokir runner GitHub, jadi versi repo bisa lebih baru dari cache.
+      - name: Pasut dari repo bila lebih baru dari cache
+        run: |
+          python3 - <<'PY'
+          import json, subprocess, datetime as d
+          awal = d.datetime(1970, 1, 1, tzinfo=d.timezone.utc)
+          t = lambda s: d.datetime.fromisoformat(json.loads(s).get("dibuat", "1970-01-01T00:00:00+00:00").replace("Z", "+00:00"))
+          for f in ["public/banjir/data/pasut.json", "public/banjir/data/pasut_30h.json"]:
+              try: r = t(subprocess.run(["git", "show", "HEAD:" + f], capture_output=True, text=True, check=True).stdout)
+              except Exception: continue
+              try: c = t(open(f).read())
+              except Exception: c = awal
+              if r > c: subprocess.run(["git", "checkout", "HEAD", "--", f], check=True); print(f, "dari repo", r, ">", c)
+          PY
+
       # Status gunung api terkini (cache kecil, 2 berkas): titik.yml memperbaruinya tiap ~3 jam lewat `magma.py cepat`, lintas.yml harian. Tanpa ini deploy
       # mana pun (push tampilan, udara, data) mengirim status harian dari cache banjir- dan status mundur sampai titik berikutnya. Wajib SESUDAH pemulihan banjir-.
       - name: Pulihkan status gunung api terbaru (boleh gagal)
