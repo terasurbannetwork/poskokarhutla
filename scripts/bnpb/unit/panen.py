@@ -20,6 +20,10 @@ Keluaran panen hanya masuk berkas R2 unit/ lewat jalan.py (/tmp/unit), tidak per
   ckan_paket(rows=1000)                          -> {"paket": [...], "jumlah": n, "sumber": [...]}  kolom daftar putih, tanpa email dan nama orang
   ckan_organisasi()                              -> {"organisasi": [{id, name, title, package_count}], "sumber": [...]}
   (_ckan mentah privat: satu-satunya pintu keluar CKAN adalah dua fungsi daftar putih di atas)
+  arcgis_daftar(folder=None)                     -> {"folder": [...], "layanan": [{nama, tipe}], "sumber": [...]}  daftar layanan gis.bnpb.go.id, tanpa isi layer
+  arcgis_agregat(layanan, lapis, kolom, statistik=None) -> {"baris": [atribut], "sumber": [...]}  returnGeometry=false, outFields daftar putih (tanpa *), geometri tak pernah dibawa
+  inalogpal(api)                                 -> (data, atribusi)  hanya endpoint di INALOGPAL_API; get_instansi_survey ditolak (nama dan nomor PIC)
+  sirup(tahun, jalur)                            -> {"paket": [...], "jumlah": n, "sumber": [...]}  membaca cache docs/pendanaan/sirup_tarik.py; kolom daftar putih SIRUP_KOLOM, tanpa nama penyedia, paket, kegiatan
   diizinkan(url)                                 -> galat bila URL dilarang atau di luar host izin
 
   python3 -I scripts/bnpb/unit/panen.py --cek
@@ -418,6 +422,91 @@ def ckan_organisasi():
     return {"organisasi": [{k: o.get(k) for k in ORG_KOLOM} for o in r["result"]], "sumber": r["sumber"]}
 
 
+# ---------- ArcGIS BNPB, INALOGPAL, SIRUP (RU-036; DT sec 4.8 dan 8) ----------
+
+ARCGIS = "https://gis.bnpb.go.id/server/rest/services"
+ARCGIS_NAMA = "Layanan GIS BNPB, gis.bnpb.go.id"
+ARCGIS_LISENSI = "lisensi tidak tertulis; layar staf saja (U4)"
+_POLA_LAYANAN = re.compile(r"^[\w-]+(/[\w-]+)*/(FeatureServer|MapServer)$")
+_POLA_KOLOM = re.compile(r"^\w+$")
+_PRIBADI = re.compile(r"nama|telp|hp|nik|email|alamat|foto|lahir|pic", re.I)  # kolom data pribadi (KP sec 4), ditolak di arcgis_agregat
+_STATISTIK = {"sum", "count", "min", "max", "avg"}
+INALOGPAL = "https://inalogpal.bnpb.go.id/Api/"
+INALOGPAL_API = ("get_progress", "get_count_cluster_all", "get_count_cluster_sk_all", "gudang_sumbar")
+SIRUP_NAMA = "SIRUP LKPP, sirup.inaproc.id"
+# Daftar putih kolom RUP, tanpa nama paket dan kegiatan (teks bebas; belum ada pemanggil yang butuh: sdu1.py dan ren2.py membaca sirup.paket langsung); yang lain (termasuk bila suatu hari ada nama penyedia/pemenang) dibuang di sini, tidak keluar modul.
+SIRUP_KOLOM = ("id", "tahun", "jalur", "pagu", "metode", "jenisPengadaan", "lokasi", "idBulan", "pemilihan",
+               "isPDN", "isUMK", "sumberDana", "satuanKerja", "tipe")
+
+
+def arcgis_daftar(folder=None):
+    """Daftar folder dan layanan (nama, tipe) di gis.bnpb.go.id; isi layer tidak diminta."""
+    if folder is not None and not _POLA_KOLOM.fullmatch(folder.replace("-", "_")):
+        raise Dilarang(f"nama folder ArcGIS {folder!r} tidak sah")
+    url = ARCGIS + (f"/{folder}" if folder else "") + "?f=json"
+    d, atr = ambil_json(url, "arcgis_daftar", nama=ARCGIS_NAMA, lisensi=ARCGIS_LISENSI)
+    if not isinstance(d, dict) or "error" in d or not isinstance(d.get("services"), list) or not isinstance(d.get("folders", []), list):
+        raise BentukBerubah(f"{url}: bukan daftar layanan ArcGIS")
+    return {"folder": [str(x) for x in d.get("folders", [])],
+            "layanan": [{"nama": str(x.get("name")), "tipe": str(x.get("type"))} for x in d["services"] if isinstance(x, dict)], "sumber": [atr]}
+
+
+def arcgis_agregat(layanan, lapis, kolom, statistik=None):
+    """Kueri atribut satu layer. layanan 'folder/nama/FeatureServer'; kolom = daftar putih nama kolom (tanpa *, wajib tidak kosong).
+    statistik = [(jenis, kolom, alias)] -> outStatistics, kolom jadi groupBy. returnGeometry selalu false; hanya atribut yang dikembalikan."""
+    if not _POLA_LAYANAN.fullmatch(layanan or ""):
+        raise Dilarang(f"layanan ArcGIS {layanan!r} tidak sah")
+    if not isinstance(lapis, int) or isinstance(lapis, bool) or lapis < 0:
+        raise Dilarang(f"lapis ArcGIS {lapis!r} tidak sah")
+    if not kolom or any(not isinstance(k, str) or not _POLA_KOLOM.fullmatch(k) for k in kolom):
+        raise Dilarang(f"outFields {kolom!r}: wajib daftar putih nama kolom, tanpa * atau kosong")
+    if any(_PRIBADI.search(k) for k in kolom):
+        raise Dilarang(f"outFields {kolom!r}: kolom data pribadi ditolak")
+    q = {"where": "1=1", "outFields": ",".join(kolom), "returnGeometry": "false", "f": "json"}
+    if statistik:
+        if any(j not in _STATISTIK or not _POLA_KOLOM.fullmatch(c) or not _POLA_KOLOM.fullmatch(a) for j, c, a in statistik):
+            raise Dilarang(f"statistik {statistik!r} tidak sah")
+        q["outStatistics"] = json.dumps([{"statisticType": j, "onStatisticField": c, "outStatisticFieldName": a} for j, c, a in statistik], separators=(",", ":"))
+        q["groupByFieldsForStatistics"] = ",".join(kolom)
+    url = f"{ARCGIS}/{layanan}/{lapis}/query?" + urllib.parse.urlencode(sorted(q.items()), safe=",")
+    d, atr = ambil_json(url, "arcgis_" + layanan.split("/")[0], nama=ARCGIS_NAMA + "/" + layanan, lisensi=ARCGIS_LISENSI)
+    if not isinstance(d, dict) or "error" in d or not isinstance(d.get("features"), list):
+        raise BentukBerubah(f"{url}: bukan jawaban query ArcGIS")
+    if d.get("exceededTransferLimit"):
+        raise BentukBerubah(f"{url}: jawaban terpotong batas ArcGIS (exceededTransferLimit)")
+    baris = []
+    for f in d["features"]:
+        if not isinstance(f, dict) or not isinstance(f.get("attributes"), dict):
+            raise BentukBerubah(f"{url}: fitur tanpa attributes")
+        baris.append(f["attributes"])  # geometry, bila ada, tidak pernah dibawa
+    return {"baris": baris, "sumber": [atr]}
+
+
+def inalogpal(api):
+    """-> (data, atribusi) untuk satu endpoint INALOGPAL di INALOGPAL_API; selain itu Dilarang (get_instansi_survey memuat nama dan nomor PIC)."""
+    if api not in INALOGPAL_API:
+        raise Dilarang(f"endpoint INALOGPAL {api!r} di luar {list(INALOGPAL_API)}")
+    return ambil_json(INALOGPAL + api, "inalogpal_" + api, umur_jam=20, nama="INALOGPAL BNPB, Api/" + api, lisensi="syarat pakai tidak tertulis; layar staf saja (U4)")
+
+
+def sirup(tahun, jalur, cache=None):
+    """RUP BNPB dari cache docs/pendanaan/cache (hasil docs/pendanaan/sirup_tarik.py, tidak diubah; dijalankan manual karena di luar pagar ambil_json).
+    Hanya kolom SIRUP_KOLOM yang keluar; nama paket dan kegiatan tidak dibawa."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import sirup as _s
+    if not isinstance(tahun, int) or isinstance(tahun, bool):
+        raise ValueError(f"tahun {tahun!r} bukan bilangan bulat")
+    cache = cache or _s.CACHE
+    try:
+        baris = _s.paket(tahun, jalur, cache)
+    except FileNotFoundError:
+        raise GagalAmbil(f"cache SIRUP {jalur}-BNPB-{tahun}.json tidak ada; tarik manual: python3 docs/pendanaan/sirup_tarik.py") from None
+    f = os.path.join(cache, f"{jalur}-BNPB-{tahun}.json")
+    diambil = datetime.fromtimestamp(os.path.getmtime(f), timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return {"paket": [{k: b[k] for k in SIRUP_KOLOM if k in b} for b in baris], "jumlah": len(baris),
+            "sumber": [{"nama": SIRUP_NAMA, "url": "https://sirup.inaproc.id/sirup/caripaketctr/index", "diambil": diambil, "lisensi": "tidak tertulis; layar staf saja (U4)"}]}
+
+
 # ---------- cek tanpa jaringan ----------
 
 class _Jawab:
@@ -725,6 +814,74 @@ def cek():
                     _host_jdih(f)
                     raise AssertionError(f"host liar diterima: {liar}")
                 except ValueError:
+                    pass
+            # 14. RU-036: arcgis_daftar, arcgis_agregat, inalogpal, sirup
+            for h in ("gis", "inalogpal"):
+                skenario.pop(f"https://{h}.bnpb.go.id/robots.txt", None)  # robots palsu uji lain
+            _robots.clear()
+            fx = os.path.join(AKAR, "tests", "bnpb", "fixtures", "unit")
+            with open(os.path.join(fx, "arcgis", "daftar.json"), "rb") as f:
+                ag_daftar = f.read()
+            with open(os.path.join(fx, "arcgis", "query.json"), "rb") as f:
+                ag_q = f.read()
+            with open(os.path.join(fx, "inalogpal", "get_progress.json"), "rb") as f:
+                il_p = f.read()
+            skenario[ARCGIS + "?f=json"] = lambda u: _Jawab(ag_daftar, u)
+            r = arcgis_daftar()
+            assert r["folder"] == ["2026_gempabumi_ntt"] and r["layanan"] == [{"nama": "Contoh/Layanan", "tipe": "FeatureServer"}], r
+            assert set(r["sumber"][0]) == {"nama", "url", "diambil", "lisensi"}
+            lay = "2026_gempabumi_ntt/mv_x/FeatureServer"
+            uq = f"{ARCGIS}/{lay}/40/query?" + urllib.parse.urlencode(sorted({"where": "1=1", "outFields": "id_kab,verif_rb", "returnGeometry": "false", "f": "json"}.items()), safe=",")
+            skenario[uq] = lambda u: _Jawab(ag_q, u)
+            r = arcgis_agregat(lay, 40, ["id_kab", "verif_rb"])
+            assert r["baris"] == [{"id_kab": "5301", "verif_rb": 3}, {"id_kab": "5302", "verif_rb": 5}], r
+            assert "geometry" not in json.dumps(r) and "5399" not in json.dumps(r), "geometri atau koordinat bocor"
+            assert all("returnGeometry=false" in u for u in panggil if "/query" in u), "kueri tanpa returnGeometry=false"
+            for salah in (dict(kolom=["*"]), dict(kolom=["Nama_Korban"]), dict(kolom=["id_kab", "NO_HP"]), dict(kolom=["tgl_lahir"]), dict(kolom=[]), dict(kolom=["a", "*"]), dict(kolom=["a b"]), dict(kolom=None), dict(kolom=["a"], lapis=-1),
+                          dict(kolom=["a"], layanan="x/../y/FeatureServer"), dict(kolom=["a"], layanan="survey123/x/FeatureServer"),
+                          dict(kolom=["a"], statistik=[("drop", "a", "b")])):
+                n = len(panggil)
+                try:
+                    arcgis_agregat(**{"layanan": lay, "lapis": 40, **salah})
+                    raise AssertionError(f"arcgis_agregat menerima {salah}")
+                except Dilarang:
+                    pass
+                assert len(panggil) == n, "kueri ditolak tapi sempat diminta"
+            us = f"{ARCGIS}/{lay}/40/query?" + urllib.parse.urlencode(sorted({"where": "1=1", "outFields": "id_kab", "returnGeometry": "false", "f": "json",
+                 "outStatistics": '[{"statisticType":"sum","onStatisticField":"verif_rb","outStatisticFieldName":"rb"}]', "groupByFieldsForStatistics": "id_kab"}.items()), safe=",")
+            skenario[us] = lambda u: _Jawab(ag_q, u)
+            assert arcgis_agregat(lay, 40, ["id_kab"], statistik=[("sum", "verif_rb", "rb")])["baris"], "statistik"
+            for i, isi in enumerate((b'{"error": {"code": 400}}', b'{"features": [{"geometry": {}}]}', b'{"features": [], "exceededTransferLimit": true}'), 50):
+                uj = f"{ARCGIS}/{lay}/{i}/query?" + urllib.parse.urlencode(sorted({"where": "1=1", "outFields": "a", "returnGeometry": "false", "f": "json"}.items()), safe=",")
+                skenario[uj] = lambda u, x=isi: _Jawab(x, u)
+                try:
+                    arcgis_agregat(lay, i, ["a"])
+                    raise AssertionError(f"jawaban rusak lolos: {isi}")
+                except BentukBerubah:
+                    pass
+            skenario[INALOGPAL + "get_progress"] = lambda u: _Jawab(il_p, u)
+            dt, atr = inalogpal("get_progress")
+            assert dt["response"] == "success" and atr["nama"] == "INALOGPAL BNPB, Api/get_progress" and atr["url"] == INALOGPAL + "get_progress", atr
+            n = len(panggil)
+            for salah in ("get_instansi_survey", "GET_INSTANSI_SURVEY", "../Api/get_instansi_survey", "", "get_progress?x=1", "gudang_sumbar/"):
+                try:
+                    inalogpal(salah)
+                    raise AssertionError(f"inalogpal menerima {salah!r}")
+                except Dilarang:
+                    pass
+            assert len(panggil) == n, "endpoint terlarang sempat diminta"
+            sf = os.path.join(fx, "sirup")
+            rs = sirup(2099, "penyedia", cache=sf)
+            assert rs["jumlah"] == 2 and all(set(b) <= set(SIRUP_KOLOM) for b in rs["paket"]), rs
+            tk = json.dumps(rs)
+            for bocor in ("PT Rahasia", "namaPenyedia", "pemenang", "CV Contoh", "npwp", "Genset", "Tenda"):
+                assert bocor not in tk, f"{bocor} keluar dari sirup()"
+            assert rs["sumber"][0]["nama"] == SIRUP_NAMA
+            for salah, galat in ((dict(tahun=2098, jalur="penyedia"), GagalAmbil), (dict(tahun=2099, jalur="tender"), ValueError), (dict(tahun="2099", jalur="penyedia"), ValueError), (dict(tahun=True, jalur="penyedia"), ValueError)):
+                try:
+                    sirup(cache=sf, **salah)
+                    raise AssertionError(f"sirup menerima {salah}")
+                except galat:
                     pass
         # 12. cache hanya di data/raw (di-gitignore), bukan public/
         assert asli[0].startswith(os.path.join(AKAR, "data", "raw") + os.sep), asli[0]
