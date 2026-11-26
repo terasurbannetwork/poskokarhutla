@@ -6,7 +6,7 @@
    - Suara (id-ID) bila peramban mendukung; foto dikecilkan di peramban (foto_kecil.js), EXIF dibaca dulu (exif.js). */
 import {maskot} from "/lapor/maskot.js?v=24"; // bervesi: berkas .js disajikan immutable
 import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
-import {BAHAYA_ALUN, barisPrakiraan} from "/lapor/dampak_peringatan.js?v=2";   // Alun-alun tampilan Peringatan (DP-11)
+import {barisPrakiraan} from "/lapor/dampak_peringatan.js?v=2";   // Alun-alun tampilan Peringatan (DP-11)
 import {gabung, saring, teksKartu} from "/lapor/alun_kabar.js?v=1";
 import {ikonKebutuhan, ikonSub, bertingkat, ikonOpsi} from "/lapor/ikon_opsi.js?v=2";   // peta ikon pilihan, diuji gerbang ikon   // Kabar Alun-alun (KA-05): gabung resmi, warga, berita
 /* Pelapor mengetik nomor WhatsApp tanpa kode (KEPUTUSAN-LAPOR-AI K65, D99-D102); di situs, nomor ketikan diikat ke perangkat lewat kuki HttpOnly
@@ -2086,7 +2086,7 @@ async function gambarPetaAlun(daftar) {
   });
 }
 /* /lapor/?alun: tujuan /alun-alun lama (dialihkan Worker, KEPUTUSAN-LAPOR-AI K94); langsung ke peta Alun-alun tanpa animasi pembuka */
-const BUKA_ALUN = new URLSearchParams(location.search).has("alun");
+const BUKA_ALUN = new URLSearchParams(location.search).has("alun") || location.hash.startsWith("#peringatan");   // #peringatan/<tab>: tautan langsung ke mode Peringatan (K7)
 const layarAwal = () => ke(BUKA_ALUN ? "alun" : "beranda");
 /* Kabar Alun-alun (KA-06, KA-07): satu kartu per kejadian, empat pita tetap urutannya: Resmi BNPB, Laporan warga, Berita, Media sosial.
    Angka tiap sumber tampil di pitanya sendiri dan tidak pernah dijumlah (D3). Daftar digambar bertahap lewat requestAnimationFrame supaya klik tidak membeku. */
@@ -2379,50 +2379,30 @@ function gambarKabar(ikut) {
   });
 }
 /* ---- tampilan Peringatan (DP-11): modul bersama inti/dampak_peringatan.js dipasang per bahaya; kartu kejadian tidak pernah bercampur dengan kartu prakiraan (D23) ---- */
-let alunMode = "kejadian", dpBahaya = "bnj", dpDok;   // dpDok: undefined = belum dicoba, null = tak ada, {status, ringkas}
-const dpAlat = {}, dpJson = u => fetch(u, {signal: AbortSignal.timeout(10000)}).then(r => r.ok ? r.json() : null).catch(() => null);
+let alunMode = "kejadian", dpDok;   // dpDok: undefined = belum dicoba, null = tak ada, {status, ringkas}
+const dpJson = u => fetch(u, {signal: AbortSignal.timeout(10000)}).then(r => r.ok ? r.json() : null).catch(() => null);
 const dpModul = () => dpModul.j ||= new Promise(ok => { if (window.DampakPeringatan) return ok();
   document.head.append(Object.assign(document.createElement("link"), {rel: "stylesheet", href: "/inti/dampak_peringatan.css?v=1"}));
   document.head.append(Object.assign(document.createElement("script"), {src: "/inti/dampak_peringatan.js?v=2", onload: ok, onerror: ok})); });
 const muatDp = () => muatDp.j ||= Promise.all([dpModul(), dpJson("/api/dampak-peringatan/status"), dpJson("/api/dampak-peringatan/ringkas")]).then(([, status, ringkas]) => {
   dpDok = window.DampakPeringatan && status?.kab && !status.belum_terukur ? {status, ringkas} : null; });
-const LABEL_BAHAYA = {bnj: "Banjir", lsr: "Longsor", cex: "Cuaca", kht: "Karhutla"};
 const KAMUS_PETA = ["kelompok", "kelompok-n", "titik", "titik-n", "prov-terdampak", "prov-garis", "gunung-siaga"];
 const petaAlunSiap = async () => { for (let i = 0; i < 100 && !alunPeta; i++) await new Promise(r => setTimeout(r, 100));
   if (!alunPeta) return false; if (!alunPeta.getLayer("titik")) await new Promise(r => alunPeta.once("load", r)); return true; };
-function tabBahaya() {
-  const w = $("bahayaAlun");
-  w.replaceChildren(...BAHAYA_ALUN.map(([kode, , ik]) => { const b = el("button"); b.append(ikon(ik), el("span", null, LABEL_BAHAYA[kode])); b.type = "button"; b.setAttribute("role", "tab"); b.dataset.bahaya = kode;
-    b.setAttribute("aria-selected", String(kode === dpBahaya)); b.addEventListener("click", () => setModeAlun("peringatan", kode)); return b; }));
-}
-async function nyalakanPeringatan() {
-  const catat = $("catatPeringatan"), kartu = $("kartuPeringatan"), bahaya = dpBahaya;
-  catat.textContent = "Memuat status prakiraan...";
-  const [siap] = await Promise.all([petaAlunSiap(), muatDp()]);
-  if (alunMode !== "peringatan" || bahaya !== dpBahaya) return;   // pengguna sudah pindah lagi
-  if (!siap || !dpDok) { catat.textContent = "Status prakiraan belum terukur. Sebagian sumber belum masuk atau sudah basi."; return; }
-  for (const l of KAMUS_PETA) if (alunPeta.getLayer(l)) alunPeta.setLayoutProperty(l, "visibility", "none");
-  for (const [k, a] of Object.entries(dpAlat)) if (k !== bahaya) a.matikan();
-  kartu.hidden = true; kartu.replaceChildren();
-  dpAlat[bahaya] ||= window.DampakPeringatan.pasang(alunPeta, {bahaya, kartu});
-  const ok = await dpAlat[bahaya].nyalakan();
-  if (alunMode !== "peringatan" || bahaya !== dpBahaya) return;
-  catat.textContent = !ok ? "Status prakiraan belum terukur. Sebagian sumber belum masuk atau sudah basi."
-    : `Prakiraan 3 hari ke depan. Ketuk kabupaten atau kota untuk rincian.${bahaya === "kht" ? " Karhutla tidak punya peringatan BMKG." : ""} Prakiraan Centurisk97 berstatus hipotesis sampai lolos uji balik; peringatan resmi hanya dari BMKG.`;
-}
+const potensi = () => potensi.j ||= import("/lapor/peringatan_potensi.js?v=4");   // K7: isi /potensi pindah ke sini; dimuat malas saat mode Peringatan pertama kali
 function setModeAlun(mode, bahaya) {
-  const per = mode === "peringatan"; alunMode = mode; if (bahaya) dpBahaya = bahaya;
+  const per = mode === "peringatan"; alunMode = mode;
   for (const b of $("modeAlun").children) b.setAttribute("aria-selected", String(b.dataset.mode === mode));   // chrome langsung
   $("saringPanel").hidden = per; $("daftarAlun").hidden = per; if ($("legendaAlun")) $("legendaAlun").hidden = per; if ($("periodeAlun")) $("periodeAlun").hidden = per; if ($("menuJenisAlun")) $("menuJenisAlun").hidden = per; $("isiPeringatan").hidden = !per; $("sumberAlun").hidden = !alunKabar;
   requestAnimationFrame(() => {   // kerja berat ditunda
     if (alunMode !== mode) return;
     if (typeof gambarDonat === "function") gambarDonat();   // cincin dan gunung api penanda DOM: ikut sembunyi di mode Peringatan
-    if (per) { tabBahaya(); if (!$("isiPeringatan").querySelector(".lp-alun-gunung")) $("isiPeringatan").append(kartuGunung()); nyalakanPeringatan(); return; }
-    for (const a of Object.values(dpAlat)) a.matikan();
+    if (per) { potensi().then(m => alunMode === mode && m.buka({ambilPeta: () => alunPeta, siap: petaAlunSiap, kamus: KAMUS_PETA, kartuGunung, bahaya})); return; }
+    potensi.j?.then(m => m.tutup());
     if (alunPeta) for (const l of KAMUS_PETA) if (alunPeta.getLayer(l)) alunPeta.setLayoutProperty(l, "visibility", "visible");
   });
 }
-new MutationObserver(() => { const k = $("kartuPeringatan"); if (!k.hidden && k.firstChild) k.scrollIntoView({block: "nearest", behavior: "smooth"}); }).observe($("kartuPeringatan"), {childList: true});   // HP: kartu kab di bawah legenda, gulir ke situ
+if (location.hash.startsWith("#peringatan")) setModeAlun("peringatan");
 $("modeAlun").addEventListener("click", e => { const b = e.target.closest("button[data-mode]"); if (b && b.dataset.mode !== alunMode) setModeAlun(b.dataset.mode); });
 async function tampilAlun() {
   const w = $("daftarAlun");

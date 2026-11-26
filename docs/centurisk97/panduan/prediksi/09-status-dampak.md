@@ -24,7 +24,7 @@ Selama hitungan status belum diuji terhadap kejadian nyata dan belum terbukti me
 
 ## Di mana status ini muncul
 
-- Alun-alun (halaman Lapor).
+- Aplikasi Pantau Bencana di Alun-alun (halaman Lapor), mode Peringatan. Di sana tab Status, Dampak, Iklim, dan lainnya memakai hitungan yang sama (lihat halaman Potensi bencana hidrometeorologi).
 - Halaman Prediksi, tab Besok.
 - Pusdalops, bagian Dampak peringatan.
 - Layar Pimpinan.

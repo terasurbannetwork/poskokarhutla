@@ -1,0 +1,16 @@
+/* Mode Peringatan /lapor (K7): pil tab, slot bawah, tampilan penuh tab baca. Token tema saja. */
+.pp-pil{flex-wrap:wrap;overflow:visible}
+.pp-panel{display:grid;gap:12px;min-width:0}
+.pp-panel[hidden],#ppGunung[hidden],.pp-baca[hidden],.pp-bawah[hidden]{display:none}
+.pp-baca{position:absolute;inset:0;z-index:2;overflow:auto;overscroll-behavior:contain;background:var(--paper);padding:16px 16px 40px;display:grid;gap:12px;align-content:start}
+.pp-baca>.po-pb{width:100%}
+.pp-balik{justify-self:center;min-height:44px;padding:0 16px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:700 .8125rem var(--font);cursor:pointer}
+.pp-bawah{position:absolute;pointer-events:none;left:12px;top:12px;bottom:auto;z-index:3;max-width:calc(100% - 80px)}
+@media (min-width:900px){
+  .pp-bawah{top:auto;bottom:28px;left:calc(var(--tarik-lebar,520px) + 40px);max-width:calc(100% - var(--tarik-lebar,520px) - 80px);width:max-content}
+  .pp-baca{padding-left:calc(var(--tarik-lebar,520px) + 48px)}
+}
+#petaAlun:has(.pp-baca:not([hidden])) .maplibregl-ctrl-top-right{display:none}
+.lp-alun-tanggal[hidden]{display:none}   /* mode Peringatan: garis waktu hari menggantikan Tanggal data (K7) */
+.lp-alun:has(#isiPeringatan:not([hidden])) .lp-alun-tanggal,body:has(#isiPeringatan:not([hidden])) #periodeAlun{display:none}   /* Tanggal data dibuat sesudah mode dinyalakan; disembunyikan lewat CSS */
+.pp-bawah .st-hari{flex-wrap:wrap;overflow:visible}

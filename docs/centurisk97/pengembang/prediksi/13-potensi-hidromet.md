@@ -1,6 +1,8 @@
 # Potensi bencana: data dan rute
 
-Halaman ini memuat sumber, pipeline, rute Worker, dan jadwal di balik halaman Potensi bencana hidrometeorologi. Paket rancangannya ada di `data/kajian-bnpb/potensi-hidromet/`.
+Halaman ini memuat sumber, pipeline, rute Worker, dan jadwal di balik Potensi bencana hidrometeorologi. Paket rancangannya ada di `data/kajian-bnpb/potensi-hidromet/`.
+
+Letak layar: keputusan pemilik K7 (26 November 2026): halaman `/potensi` terpisah dihapus; semuanya ada di mode Peringatan aplikasi Alun-alun `/lapor` (sakelar Kejadian atau Peringatan, lalu pil tab). Layar dipasang oleh `public/lapor/peringatan_potensi.js`, yang memuat modul tab di `public/potensi/*.js` (`app.js`, `dampak.js`, `iklim.js`, `analisis.js`, `lapisan.js`, `ringkasan.js`, `rekomendasi.js`). Tab peta (Status, Dampak, Iklim) memakai peta Alun-alun; tab baca (Analisis, Lapisan, Ringkasan, Sumber, Rekomendasi) tampil penuh di dalam aplikasi. Tidak ada rute halaman `/potensi` dan tidak ada entri di peta situs; rute API `/api/potensi/*` di bawah tetap ada. Gerbang sakelar mode ada di `public/lapor/index.html:306`.
 
 ## Kelas desa BNPB dan kelas kab
 
@@ -60,7 +62,7 @@ Rute BMKG meringkas respons per hari: hujan dijumlah, suhu, angin maksimum, kode
 
 ## Katalog rekomendasi
 
-`src/rekomendasi_katalog.js:36` menyimpan butir empat pihak (pusat, provinsi, kab/kota, masyarakat) kali tiga fase (respons, siaga, mitigasi). Butir pusat, provinsi, dan kab hanya yang bisa dirujuk ke teks Perban BNPB di repo (`rekomendasi_katalog.js:13`). Kolom masyarakat memakai butir `public/ews_tindakan.js` yang sudah bersumber (`rekomendasi_katalog.js:59`). Semua butir generik dan bukan instruksi resmi. Tab Rekomendasi di layar masih kerangka (`public/potensi/rekomendasi.js:1`).
+`src/rekomendasi_katalog.js:36` menyimpan butir empat pihak (pusat, provinsi, kab/kota, masyarakat) kali tiga fase (respons, siaga, mitigasi). Butir pusat, provinsi, dan kab hanya yang bisa dirujuk ke teks Perban BNPB di repo (`rekomendasi_katalog.js:13`). Kolom masyarakat memakai butir `public/ews_tindakan.js` yang sudah bersumber (`rekomendasi_katalog.js:59`). Semua butir generik dan bukan instruksi resmi. Tab Rekomendasi di layar masih kerangka (`public/potensi/rekomendasi.js:1`) dan hanya tampil bagi staf.
 
 ### Kode bahaya
 
@@ -87,7 +89,7 @@ Q-nomor merujuk `data/kajian-bnpb/potensi-hidromet/KEPUTUSAN-POTENSI.md`.
 | Q4 | Peluang hujan bulanan BMKG per kab | belum diputuskan (bawaan sementara: tidak) |
 | Q5 | ONI dan IOD di tab Iklim | belum diputuskan (bawaan sementara: tampil di tab Iklim saja) |
 | Q6 | Debit menaikkan status banjir | belum diputuskan (bawaan sementara: tidak, sampai ada vonis uji) |
-| Q7 | Nama dan alamat halaman | belum diputuskan (bawaan sementara: `/potensi`) |
+| Q7 | Nama dan alamat halaman | tidak berlaku lagi: K7 memindahkan semua tab ke mode Peringatan Alun-alun `/lapor` |
 | Q8 | Kelas proyeksi ditampilkan | belum diputuskan (bawaan sementara: ya, kolom terpisah berlabel) |
 | Q9 | Kelas bahaya desa tampil publik | belum diputuskan (bawaan sementara: ya, hanya kelas) |
-| Q10 | Halaman terbuka tanpa masuk | belum diputuskan (bawaan sementara: tidak, terkunci) |
+| Q10 | Halaman terbuka tanpa masuk | tidak berlaku lagi: tidak ada halaman terpisah (K7); tab Rekomendasi tetap hanya untuk staf |

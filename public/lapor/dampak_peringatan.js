@@ -26,6 +26,3 @@ export function barisPrakiraan(kabKode, {status, ringkas, DP, nama} = {}) {
   const bahaya = terbaik.kode === "kht" ? "karhutla" : terbaik.label.toLowerCase();
   return {kode: terbaik.kode, teks: `Status prakiraan: ${DP.namaTingkat(terbaik.s, nama)} ${bahaya}`, hipotesis: terbaik.hipotesis};
 }
-
-/* Tautan ke halaman Potensi bencana untuk panel Peringatan; dipasang pemanggil (lapor.js) sebagai innerHTML. */
-export const tautanPotensi = () => '<a class="lp-potensi" href="/potensi">Buka Potensi bencana</a>';

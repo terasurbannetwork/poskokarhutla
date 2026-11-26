@@ -1,6 +1,6 @@
 /* Gerbang PH-15 (data/kajian-bnpb/potensi-hidromet/RENCANA-UJI.md U9; KEPUTUSAN K1, D11, D21; KEAMANAN-PRIVASI).
    Aturan: tanpa kata terlarang, titik tengah, status huruf kapital, atau literal warna di public/potensi; katalog rekomendasi per pihak
-   tidak pernah di public/ (hanya lewat rute staf); tab Rekomendasi tidak statis; /potensi terdaftar dan terkunci sampai pemilik menjawab Q10. */
+   tidak pernah di public/ (hanya lewat rute staf); tab Rekomendasi tidak statis; sejak K7 (26 Nov 2026) /potensi bukan halaman, isinya di mode Peringatan /lapor. */
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { berkas, baca } from '../agen/fixtures/ratchet.mjs'
@@ -45,15 +45,15 @@ test('PH-15: katalog rekomendasi per pihak tidak ada di public/ (D11)', () => {
   assert.deepEqual(bocor, [], 'butir katalog pusat/prov/kab hanya boleh keluar lewat rute staf /api/potensi/rekomendasi; hapus dari public/ (D11, K1)\n' + bocor.join('\n'))
 })
 
-test('PH-15: index.html tanpa tab Rekomendasi statis (dibuat app.js sesudah rute staf 200)', () => {
-  assert.doesNotMatch(baca('public/potensi/index.html'), /rekomendasi/i, 'tab Rekomendasi tidak boleh ada di HTML statis; tab hanya dibuat app.js bila /api/potensi/rekomendasi menjawab 200 (D21)')
-  assert.match(baca('public/potensi/app.js'), /\/api\/potensi\/rekomendasi/, 'app.js harus menguji rute staf sebelum membuat tab')
+test('K7: tab Rekomendasi tidak statis di HTML /lapor; modul Peringatan menguji rute staf dulu', () => {
+  assert.doesNotMatch(baca('public/lapor/index.html'), /data-tab="rekomendasi"|>Rekomendasi</i, 'tab Rekomendasi tidak boleh ada di HTML statis /lapor (K1, D11)')
+  assert.match(baca('public/lapor/peringatan_potensi.js'), /\/api\/potensi\/rekomendasi/, 'modul mode Peringatan harus menguji rute staf sebelum membuat tab Rekomendasi')
 })
 
-test('PH-15: /potensi terdaftar di peta situs dan terkunci (bukan PUBLIK_TANPA_SESI) sampai Q10', () => {
-  assert.match(baca('src/peta_situs.js'), /\["\/potensi"/, 'tiap halaman baru wajib punya entri registri src/peta_situs.js (PS-*)')
-  assert.ok(HTML_RUTE.some(([re]) => re.test('/potensi')), 'rute /potensi hilang dari HTML_RUTE di src/gerbang_halaman.js')
-  assert.ok(!PUBLIK_TANPA_SESI.has('/potensi'), '/potensi masuk PUBLIK_TANPA_SESI: pemilik belum menjawab Q10; bila sengaja dibuka, ubah gerbang ini bersama keputusannya')
+test('K7: halaman /potensi terpisah sudah dihapus dan tidak terdaftar', () => {
+  assert.equal(BERKAS.filter((f) => /public\/potensi\/(index\.html|app\.js)$/.test(f)).length, 0, 'K7: /potensi bukan halaman lagi; isinya di mode Peringatan /lapor')
+  assert.doesNotMatch(baca('src/peta_situs.js'), /\["\/potensi"/, 'K7: /potensi tidak lagi halaman, entri registri dicabut')
+  assert.ok(!HTML_RUTE.some(([re]) => re.test('/potensi')) && !PUBLIK_TANPA_SESI.has('/potensi'), 'K7: rute halaman /potensi dicabut')
 })
 
 test('pemeriksa: fixture jahat tertangkap', () => {

@@ -1,10 +1,12 @@
 # Potensi bencana hidrometeorologi
 
-Halaman ini menjelaskan cara membaca halaman Potensi bencana hidrometeorologi: apa isi tiap tab, apa arti status dan "belum terukur", dan apa yang sengaja tidak diambil dari dashboard InaRISK.
+Halaman ini menjelaskan cara membaca Potensi bencana hidrometeorologi: apa isi tiap tab, apa arti status dan "belum terukur", dan apa yang sengaja tidak diambil dari dashboard InaRISK.
 
-## Untuk apa halaman ini
+Cara membukanya: buka Alun-alun (halaman Lapor), lalu pilih Peringatan pada sakelar Kejadian atau Peringatan di atas. Deretan tab Status, Dampak, Iklim, Analisis, Lapisan, Ringkasan, dan Sumber muncul di sana (tab Rekomendasi hanya untuk staf yang sudah masuk). Tab Status, Dampak, dan Iklim memakai peta Alun-alun yang sama. Tab Analisis, Lapisan, Ringkasan, dan Sumber membuka tampilan penuh di dalam aplikasi. Tidak ada halaman terpisah untuk ini.
 
-Halaman ini mengumpulkan di satu tempat bahan untuk menilai potensi banjir, banjir bandang, longsor, gelombang, karhutla, dan kekeringan per kabupaten/kota. Status Normal sampai Awas memakai hitungan yang sama dengan status prakiraan di Alun-alun dan Pusdalops (lihat halaman Status prakiraan dan dampak peringatan). Halaman ini hanya tempat membacanya lebih dalam. Semua status di sini berlabel hipotesis sampai lolos uji balik. Halaman ini belum terbuka tanpa masuk; kebijakan akses publiknya belum diputuskan (bawaan sementara: terkunci seperti halaman Prediksi).
+## Untuk apa tab-tab ini
+
+Tab-tab ini mengumpulkan di satu tempat bahan untuk menilai potensi banjir, banjir bandang, longsor, gelombang, karhutla, dan kekeringan per kabupaten/kota. Status Normal sampai Awas memakai hitungan yang sama dengan status prakiraan di Alun-alun dan Pusdalops (lihat halaman Status prakiraan dan dampak peringatan). Tab-tab ini hanya tempat membacanya lebih dalam. Semua status di sini berlabel hipotesis sampai lolos uji balik. Mode Peringatan Alun-alun terbuka seperti Alun-alun lainnya; hanya tab Rekomendasi dan rincian per desa yang khusus staf.
 
 ## Tab-tab
 
