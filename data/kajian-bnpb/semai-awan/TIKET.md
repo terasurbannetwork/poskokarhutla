@@ -45,7 +45,7 @@ Migrasi produksi diterapkan pemilik.
 
 | Tiket | Isi | Cakupan | Pengerja → pemeriksa | Menunggu |
 | ----- | --- | ------- | -------------------- | -------- |
-| SA-24 | Peringatan sebelum subuh | `semai.yml` putaran 22.00 UTC menulis ringkasan; bot WA Mac mini (`scripts/wa/**`) mengirimnya pukul 05.15 WIB; peringatan asap merah masuk Perlu tindakan | `wa-bot` + `layar-peta` → `security-reviewer` | Q17 (bawaan) |
+| SA-24 | Peringatan sebelum subuh | `semai.yml` putaran 22.00 UTC menulis ringkasan; bot WA Mac mini (`scripts/wa/**`) mengirimnya pukul 05.15 WIB; peringatan asap merah masuk Perlu tindakan | `wa-bot` + `layar-peta` → `security-reviewer` | Q17 (bawaan). Sisi bot selesai 26 Nov 2026: `scripts/wa/semai_subuh.mjs` (proses sendiri, plist 05.15 WIB, mati bawaan sampai `PENERIMA_SEMAI` diisi); membaca `semai.json` dari R2 lewat rute staf, tanpa perubahan `semai.yml`. Sisa: baris "Perlu tindakan" di Ringkasan Operasi Udara layar (`layar-peta`) dan pemasangan plist oleh pemilik |
 | SA-25 | Log keputusan harian | migrasi `op_semai_putusan` (base, tanggal, terbang/tidak, zona_id, alasan, putaran, oleh, dibuat; hapus lunak); rute tulis peran S7, baca pembaca `/operasi`; kartu "Keputusan hari ini" per base di seksi; ekspor CSV | `warga-api` + `layar-peta` → `guard-api`, `migrasi-idempoten` | – |
 
 ## Fase 4: kejujuran
