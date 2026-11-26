@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {siapkan, berantai, ADMIN, sha256} from "../warga/_bnpb.mjs";
 import {profilAktif} from "../warga/_profil.mjs";
+import {JPEG_SAH} from "../warga/_bantu.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
 import {bersihkanLapor} from "../../src/lapor_ai.js";
 
@@ -160,7 +161,12 @@ uji("bersih-bersih: orang dicari ditutup lebih dari 2 tahun dianonimkan, yang la
   await ins("q67satu000000001", "tutup", kini - 400 * 864e5, kini - 365 * 864e5);
   await ins("q67buka000000001", "buka", kini - 1100 * 864e5, null);
   await DB.prepare("INSERT INTO lapor_cari_riwayat (cari_id, status, catatan, oleh, waktu) VALUES ('q67lama000000001', 'tutup', 'rahasia', 'uji', ?)").bind(kini).run();
-  await bersihkanLapor({DB}, kini);
+  const MEDIA = await U.mf.getR2Bucket("MEDIA"), kf = id => `lapor/foto/${id}.jpg`;
+  for (const [c, fo] of [["q67lama000000001", "c".repeat(16)], ["q67satu000000001", "d".repeat(16)]]) {
+    await DB.prepare("INSERT INTO lapor_cari_temu (cari_id, nomor_kontak, tempat_tunggu, foto_id) VALUES (?, ?, 'Posko uji', ?)").bind(c, WA, fo).run(); await MEDIA.put(kf(fo), "x"); }
+  await bersihkanLapor({DB, MEDIA}, kini);
+  assert.equal(await MEDIA.head(kf("c".repeat(16))), null, "foto orang dicari yang dianonimkan ikut dihapus"); assert.ok(await MEDIA.head(kf("d".repeat(16))), "foto laporan lain tetap");
+  assert.equal(await n("lapor_cari_temu", "cari_id = 'q67lama000000001'"), 0);
   const g = id => DB.prepare("SELECT * FROM lapor_cari WHERE id = ?").bind(id).first();
   const a = await g("q67lama000000001");
   assert.equal(a.nama_dicari, "dihapus"); assert.equal(a.nomor_pencari, "62000000000");
@@ -208,12 +214,18 @@ uji("orang dicari lewat obrolan (pemilik 25 Nov 2026): tanpa kode, baris lapor_c
   for (const t of ["orang hilang", "1", "1", "Rina Wati"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
   r = await kirimP({lokasi: {lat: -6.6, lon: 106.8, akurasi: 12}}); assert.equal(r.s, 200, r.t.slice(0, 300));
   if (/Benar/.test(r.t)) r = await kirimP({teks: "1"});   // konfirmasi desa bila pembaca wilayah tersedia
-  for (const t of ["Joko", "Lewati", "4", "Lewati", "1", "Tidak tahu", "Pakai nomor saya", "Posko SDN 1 Paledang, Jl. Paledang"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
+  for (const t of ["Joko", "Lewati", "4", "Lewati"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
+  assert.match(r.t, /Foto Joko/, "sesudah ciri: foto orang dicari");
+  const f = await api("POST", "/api/lapor/foto", {wa: WA_CHAT, data: Buffer.from(JPEG_SAH).toString("base64")}, MESIN_H);   // dari galeri: tanpa lokasi, tetap diterima
+  assert.equal(f.s, 200, f.t.slice(0, 300)); assert.match(f.t, /Foto diterima/); const fid = f.j.fotoBaru.id;
+  assert.ok(await U.mf.getR2Bucket("MEDIA").then(b => b.head(`lapor/foto/${fid}.jpg`)), "berkas foto di R2");
+  for (const t of ["1", "Tidak tahu", "Pakai nomor saya", "Posko SDN 1 Paledang, Jl. Paledang"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
+  assert.match(r.t, /Foto: ada/);
   assert.match(r.t, /Ringkasan laporan orang dicari/);
   r = await kirimP({teks: "1"}); assert.equal(r.s, 200, r.t.slice(0, 300)); assert.match(r.t, /Laporan orang dicari diterima/);
   assert.equal(await n("lapor_cari"), cari0 + 1); assert.equal(await n("lapor_tiket"), tiket0, "tidak membuat tiket");
   const b = await DB.prepare("SELECT nomor_pencari, nama_dicari, hubungan, waktu_terakhir, nomor_dicari, status FROM lapor_cari ORDER BY dibuat DESC LIMIT 1").first();
   assert.deepEqual(b, {nomor_pencari: WA_CHAT, nama_dicari: "Joko", hubungan: "Saudara", waktu_terakhir: "Hari ini", nomor_dicari: null, status: "buka"});
-  const t = await DB.prepare("SELECT panggilan, nomor_kontak, tempat_tunggu FROM lapor_cari_temu ORDER BY rowid DESC LIMIT 1").first();
-  assert.deepEqual(t, {panggilan: null, nomor_kontak: WA_CHAT, tempat_tunggu: "Posko SDN 1 Paledang, Jl. Paledang"}, "nomor kontak dan tempat tunggu tersimpan (0177)");
+  const t = await DB.prepare("SELECT panggilan, nomor_kontak, tempat_tunggu, foto_id FROM lapor_cari_temu ORDER BY rowid DESC LIMIT 1").first();
+  assert.deepEqual(t, {panggilan: null, nomor_kontak: WA_CHAT, tempat_tunggu: "Posko SDN 1 Paledang, Jl. Paledang", foto_id: fid}, "nomor kontak, tempat tunggu, dan foto tersimpan (0177)");
 });

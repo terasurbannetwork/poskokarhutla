@@ -514,10 +514,12 @@ async function fotoPost(env, req, url, kini, ctx) {
   const bersih = bersihMedia("image/jpeg", mentah);   // buang metadata (EXIF) sebelum disimpan
   if (!bersih) return galat(400, "Struktur foto tidak sah atau rusak.");
   const baris = await sesiAktif(env, id), lama = baris ? dariBaris(baris) : null;
-  if (!lama || lama.status !== "foto") return galat(409, "Foto belum diperlukan sekarang. Lanjutkan pertanyaan laporan dulu.", {teksWa: "*Foto belum diperlukan*\nLanjutkan jawaban pertanyaan laporan dulu; foto diminta di akhir."});
+  const cari = lama?.status === "cari_foto";   // foto orang dicari: boleh dari galeri dan foto lama, tanpa lokasi (pemilik 26 Nov 2026)
+  if (!lama || lama.status !== "foto" && !cari) return galat(409, "Foto belum diperlukan sekarang. Lanjutkan pertanyaan laporan dulu.", {teksWa: "*Foto belum diperlukan*\nLanjutkan jawaban pertanyaan laporan dulu; foto diminta di akhir."});
   if ((lama.foto || []).filter(f => f.jenis !== "video").length >= MAKS_FOTO || (lama.foto || []).length >= MAKS_BERKAS) return galat(400, `Paling banyak ${MAKS_FOTO} foto per laporan.`);
   let meta, waktuAmbil, sumberWaktu;
-  if (mesin) {   // gateway WA: jam pesan dan lokasi yang dibagikan (bila ada); nilai tidak sah dibuang, bukan disimpan
+  if (cari) { meta = {lencana: "tanpa", lencanaTeks: "Foto orang dicari"}; waktuAmbil = kini; sumberWaktu = "waktu unggah"; }
+  else if (mesin) {   // gateway WA: jam pesan dan lokasi yang dibagikan (bila ada); nilai tidak sah dibuang, bukan disimpan
     const w = o.waktu, L = o.lokasi && typeof o.lokasi === "object" && titikSah(o.lokasi.lat, o.lokasi.lon) ? {lat: o.lokasi.lat, lon: o.lokasi.lon} : null;
     waktuAmbil = angka(w) && w > kini - 48 * JAM && w <= kini + 5 * MENIT ? w : kini; sumberWaktu = waktuAmbil === kini ? "waktu unggah" : "waktu pesan WhatsApp";
     meta = L ? {lencana: "wa", lencanaTeks: "Lokasi dibagikan lewat WhatsApp", lat: L.lat, lon: L.lon} : {lencana: "tanpa", lencanaTeks: "Tanpa lokasi"};
@@ -609,7 +611,8 @@ async function unggahMulai(env, req, url, kini) {
   const {wa, saluran} = id, ukuran = o.ukuran;
   if (!Number.isInteger(ukuran) || ukuran < 1000 || ukuran > VIDEO_MAKS) return galat(400, `Video paling besar ${VIDEO_MAKS / 1048576} MB.`);
   const baris = await sesiAktif(env, id), lama = baris ? dariBaris(baris) : null;
-  if (!lama || lama.status !== "foto") return galat(409, "Kirim video saat diminta foto atau video kejadian.");
+  const cari = lama?.status === "cari_foto";   // foto orang dicari: boleh dari galeri dan foto lama, tanpa lokasi (pemilik 26 Nov 2026)
+  if (!lama || lama.status !== "foto" && !cari) return galat(409, "Kirim video saat diminta foto atau video kejadian.");
   if ((lama.foto || []).filter(f => f.jenis === "video").length >= VIDEO_PER_LAPORAN) return galat(400, `Paling banyak ${VIDEO_PER_LAPORAN} video per laporan.`);
   if ((lama.foto || []).length >= MAKS_BERKAS) return galat(400, `Paling banyak ${MAKS_BERKAS} foto dan video per laporan.`);
   if (await H.lpUnggahHitung(env, P, wa) >= UNGGAH_BERJALAN) return galat(429, "Terlalu banyak unggahan video yang belum selesai. Selesaikan dulu atau tunggu beberapa jam.");
@@ -709,6 +712,8 @@ async function unggahSelesai(env, req, url, kini, uid) {
 export async function bersihkanLapor(env, kini = Date.now()) {
   await H.slBersih(env, H.pelakuLpCron, kini - 30 * HARI).catch(e => tabelBelum(e) || console.error("lapor_selamat", e?.message));   // tanda selamat 30 hari (Q67)
   await H.crAnonimkan(env, H.pelakuLpCron, kini - H.CARI_SIMPAN_HARI * HARI).catch(e => tabelBelum(e) || console.error("lapor_cari", e?.message));
+  try { const f = await H.ctFotoAnonim(env, H.pelakuLpCron); if (f.length && env.MEDIA) await env.MEDIA.delete(f.map(id => `lapor/foto/${id}.jpg`)); }   // foto orang dicari ikut dihapus sebelum barisnya
+  catch (e) { if (!tabelBelum(e)) console.error("lapor_cari_foto", e?.message); }
   await H.ctAnonim(env, H.pelakuLpCron).catch(e => tabelBelum(e) || console.error("lapor_cari_temu", e?.message));   // orang dicari ditutup >2 tahun dianonimkan (Q67 bawaan sementara)
   await H.ljKabarBersih(env, H.pelakuLpCron, kini - 864e5, kini - 30 * 864e5, kini - 7 * 864e5).catch(e => tabelBelum(e) || console.error("lj_kabar", e?.message));   // LJ-11: pembuka dan tim belum terkirim >1 hari (token mentah), lain belum terkirim >7 hari, terkirim >30 hari
   await bersihSesiLanjut(env, kini).catch(e => console.error("lj_sesi", e?.message));   // draf WA tahap 2 lebih dari 24 jam (LJ-05)

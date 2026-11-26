@@ -641,6 +641,18 @@ function kartuFoto(j) {
   isi.append(hitung, kisi, aksi, masukan, rekam);
 }
 
+/* foto orang dicari (pemilik 26 Nov 2026): satu foto wajah, boleh dari galeri atau foto lama; tanpa syarat kamera, waktu, atau lokasi, dan tanpa GPS dikirim */
+function kartuFotoCari(j) {
+  const isi = kartu("foto", "Foto orang yang dicari"), kisi = el("div", "lp-foto-kisi");
+  const masukan = el("input"); masukan.type = "file"; masukan.accept = "image/jpeg,image/*"; masukan.hidden = true;
+  const z = el("button", "lp-foto-ajak"); z.type = "button";
+  z.append(ikon("i-kamera"), el("b", null, "Pilih foto"), el("small", null, "Dari galeri atau kamera. Pilih yang wajahnya terlihat jelas."));
+  z.addEventListener("click", () => masukan.click()); kisi.append(z);
+  masukan.addEventListener("change", () => { if (masukan.files[0]) unggahFoto(masukan.files[0], {cari: true}); });
+  const lanjut = el("div", "lp-opsi"); j.pilihan.forEach((o, i) => lanjut.append(tombolOpsi(o, j.ket?.[i], () => kirim({teks: String(i + 1), tampil: o}))));
+  isi.append(kisi, lanjut, masukan);
+}
+
 /* layar terima kasih sesudah laporan terkirim (pemilik 19 Nov 2026: "harusnya ada animasi terima kasih, kaya waktu pertama kali buka"):
    gaya sama dengan pembuka (.lp-pembuka), maskot senang; sekali per nomor tiket supaya tidak muncul lagi saat riwayat chat dimuat ulang */
 const TEKS_TERIMA = ["Laporan terkirim", "Terima kasih", "Nomor tiket", "Laporan Anda kami teruskan ke petugas BNPB dan BPBD setempat.", "Ketuk di mana saja untuk lanjut", "Bagaimana pengalaman melapor Anda?", "Terima kasih atas penilaian Anda.", "Pilih satu penilaian untuk melanjutkan"];
@@ -747,6 +759,7 @@ function terapkan(j, {dariCache = false} = {}) {
   else if (j.minta === "identitas") kartuIdentitas();
   else if (j.minta === "lokasi") kartuLokasi();
   else if (j.minta === "foto") kartuFoto(j);
+  else if (j.minta === "foto_cari") kartuFotoCari(j);
   else if (j.minta?.startsWith("tempat")) kartuTempat(j);
   else if (j.form?.isian?.[0]?.tipe === "tanggal") kartuWaktu(j);
   else if (j.form?.isian?.[0]?.nama === "rt") kartuRtRw(j);
@@ -835,6 +848,7 @@ function sigapKonteks(j) {
   if (j.minta === "jenis") return ["sapa", "Pilih yang paling mirip", "Bila ragu, pilih yang paling mendekati. Petugas bisa membetulkannya nanti."];
   if (j.minta === "sub") return ["sapa", "Seperti apa kejadiannya?", "Baca penjelasan di bawah tiap pilihan. Tidak yakin? Pilih Tidak tahu."];
   if (j.minta === "lokasi") return ["semangat", "Di mana kejadiannya?", "Bila Anda di tempat kejadian, pakai lokasi HP. Bila tidak, cari nama desanya."];
+  if (j.minta === "foto_cari") return ["sapa", "Foto memudahkan pencarian", "Pilih foto yang wajahnya jelas. Foto lama dari galeri boleh."];
   if (j.minta === "foto") return ["semangat", "Foto dari kamera", "Potret langsung supaya waktu dan lokasinya terekam. Jaga jarak aman saat memotret."];
   if (j.minta?.startsWith("tempat")) return ["sapa", "Tempat terdekat", "Pilih tempat yang paling dekat dengan lokasi kejadian."];
   if (f?.tipe === "tanggal") return ["sapa", "Kapan terjadinya?", "Perkiraan jam sudah cukup bila Anda tidak ingat persis."];
@@ -950,21 +964,21 @@ async function bukanKamera(f) {
   if (f.lastModified && kini - f.lastModified > SEGAR_MS) return `${video ? "Video" : "Foto"} ini bukan rekaman baru. Ambil langsung dengan kamera.`;
   return null;
 }
-async function unggahFoto(file) {
+async function unggahFoto(file, {cari = false} = {}) {
   if (!file || sibuk) return;
   statusEl.textContent = "Menyiapkan foto...";
   try {
-    const exif = window.bacaExif ? window.bacaExif(await file.slice(0, 262144).arrayBuffer()) : null;
+    const exif = !cari && window.bacaExif ? window.bacaExif(await file.slice(0, 262144).arrayBuffer()) : null;
     const kecil = window.fotoKecil ? await window.fotoKecil(file) : file;
     if (!kecil) throw new Error("Foto tidak terbaca atau terlalu besar. Coba ambil ulang");
     const data = await new Promise((ok, gagal) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = gagal; r.readAsDataURL(kecil); });
     tambah("saya", "", {foto: data, simpanKe: false});
     sibuk = true; wadah.replaceChildren(); $("mengetik").hidden = false; statusEl.textContent = "";
-    const r = await fetch("/api/lapor/foto", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, data, gps: posisi, exif, bahasa: bahasaKini()}), signal: AbortSignal.timeout(60000)});
+    const r = await fetch("/api/lapor/foto", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, data, gps: cari ? null : posisi, exif, bahasa: bahasaKini()}), signal: AbortSignal.timeout(60000)});
     const j = await r.json(); sibuk = false;
     if (!r.ok) throw new Error(j.galat || "Foto belum terkirim");
     const fb = j.fotoBaru || {};
-    cache.fotoSesi = [...(cache.fotoSesi || []), {src: data, lencana: fb.lencana, lencanaTeks: fb.lencanaTeks, lat: fb.lat, lon: fb.lon, waktuTeks: fb.waktuTeks, sumberWaktu: fb.sumberWaktu}]; simpanCache();
+    if (!cari) cache.fotoSesi = [...(cache.fotoSesi || []), {src: data, lencana: fb.lencana, lencanaTeks: fb.lencanaTeks, lat: fb.lat, lon: fb.lon, waktuTeks: fb.waktuTeks, sumberWaktu: fb.sumberWaktu}]; simpanCache();
     selesaiBalas(j);
   } catch (e) { sibuk = false; $("mengetik").hidden = true; tambah("bot", `${e.message}.`, {galat: true, simpanKe: false}); if (cache.keadaan) terapkan(cache.keadaan, {dariCache: true}); }
 }

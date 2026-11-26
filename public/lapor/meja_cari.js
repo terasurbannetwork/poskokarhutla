@@ -41,6 +41,8 @@ function dialogStatus(r, sesudah) {
 
 function baris(r, muatUlang) {
   const tr = el("tr"), nama = el("td"), lok = el("td"), pen = el("td"), st = el("td"), kabar = el("td"), ak = el("td");
+  if (r.foto) { const a = Object.assign(el("a"), {href: r.foto, target: "_blank", rel: "noopener"}), im = Object.assign(el("img"), {src: r.foto, alt: `Foto ${r.nama_dicari}`, loading: "lazy", width: 64, height: 64});
+    im.style.cssText = "display:block;width:64px;height:64px;object-fit:cover;border-radius:8px;margin-bottom:6px"; a.title = "Buka foto ukuran penuh"; a.append(im); nama.append(a); }   // foto orang dicari (pemilik 26 Nov 2026)
   nama.append(el("b", null, r.nama_dicari)); if (r.panggilan) nama.append(el("small", "mj-cari-ciri", `Panggilan ${r.panggilan}`)); if (r.ciri) nama.append(el("small", "mj-cari-ciri", r.ciri));
   lok.append(r.lokasi_terakhir || "belum diisi"); if (r.waktu_terakhir) lok.append(el("small", "mj-cari-ciri", `Terakhir terlihat ${waktuWib(r.waktu_terakhir) || r.waktu_terakhir}`));
   pen.append(sebut(r.nomor_pencari)); if (r.hubungan) pen.append(el("small", "mj-cari-ciri", r.hubungan)); if (r.nomor_dicari) pen.append(el("small", "mj-cari-ciri", `Nomor yang dicari ${sebut(r.nomor_dicari)}`));

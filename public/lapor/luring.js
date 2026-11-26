@@ -27,7 +27,7 @@ export async function putarUlang(d) {
     if (j.nomor) { catatTerkirim(j); return {s: 200, j: {nomor: j.nomor}}; }
     if (j.minta === "identitas") return {s: 401, j: {galat: "Identitas pelapor perlu diisi dulu saat ada sinyal."}};
     if (j.minta === "lokasi") { r = await pesan({lokasi: {lat: d.lat, lon: d.lon, akurasi: d.akurasi, sumber: "gps"}}); continue; }
-    if (j.minta === "foto") { r = await pesan({teks: "1"}); continue; }   // lewati foto; dilengkapi lewat Tambah kabar
+    if (j.minta === "foto" || j.minta === "foto_cari") { r = await pesan({teks: "1"}); continue; }   // lewati foto; dilengkapi lewat Tambah kabar
     if (j.status === "darurat_jenis") { const i = pil.findIndex(x => x === d.jenis); if (i < 0) return {s: 422, j: {galat: `Jenis "${d.jenis}" tidak ada di pilihan.`}}; r = await pesan({teks: String(i + 1)}); continue; }
     if (j.status === "darurat_korban") { r = await pesan({teks: String(KORBAN.findIndex(x => x[0] === d.korban) + 1 || 3)}); continue; }
     // K98: korban "ya" membuka pertanyaan orang terjebak dan butuh medis; formulir luring tidak menanyakannya, jadi dijawab "Tidak tahu" (bukan "Tidak ada"), petugas menanyakan lewat tindak lanjut

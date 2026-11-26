@@ -470,7 +470,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     sesi.darurat = {}; delete sesi.tunda;
   }
   /* Lapor orang hilang lewat obrolan (pemilik 25 Nov 2026: "kaya Lapor kejadian nanyanya", tanpa kode WA): identitas, lokasi terakhir terlihat, nama, hubungan,
-     ciri, waktu, nomor orang itu bila tahu, ringkasan, kirim. Hasilnya baris lapor_cari (pemanggil menulis lewat h.kirimCari), bukan laporan atau tiket. */
+     ciri, foto (boleh dari galeri), waktu, nomor orang itu bila tahu, ringkasan, kirim. Hasilnya baris lapor_cari (pemanggil menulis lewat h.kirimCari), bukan laporan atau tiket. */
   // "lapor orang hilang" (tombol layar, atau diketik utuh) selalu membuka obrolan baru; "orang hilang" saja hanya di awal, supaya jawaban di tengah laporan lain tidak menimpa drafnya
   if (KATA_CARI.test(teks) && !sesi.cari && (/^lapor /i.test(teks) || !sesi.transkrip?.length || sesi.status === "identitas")) {
     sesi = {status: "identitas", langkah: pelapor ? "kenal" : "setuju", isian: {}, ditanya: [], dibuat: kini, transkrip: [], cari: {}};
@@ -509,12 +509,13 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     if (langkah === "panggilan") return jawab(`${k}*Nama panggilan ${sesi.cari.nama}*\nNama yang biasa dipakai keluarga atau tetangga.`, ["Lewati"], false, null, ["Tidak ada nama panggilan"]);   // pemilik 25 Nov 2026: "Nama lengkap dulu... baru nama panggilan"
     if (langkah === "hubungan") return jawab(`${k}*Apa hubungan Anda dengan ${sesi.cari.nama}?*`, CARI_HUB);
     if (langkah === "ciri") return jawab(`${k}*Ciri-ciri ${sesi.cari.nama}*\nTulis umur, pakaian terakhir, tinggi badan, atau tanda lain yang mudah dikenali.`, ["Lewati"]);
+    if (langkah === "foto") return jawab(`${k}*Foto ${sesi.cari.nama}*\nKirim satu foto yang wajahnya terlihat jelas. Boleh dari galeri, foto lama pun tidak apa-apa. Foto hanya dilihat petugas.\nDi WhatsApp: kirim fotonya di obrolan ini.`, ["Lewati"], false, "foto_cari", ["Lanjut tanpa foto"]);   // pemilik 26 Nov 2026: "Foto orang dicari"
     if (langkah === "waktu") return jawab(`${k}*Kapan terakhir terlihat?*`, CARI_WAKTU);
     if (langkah === "nomor") return jawab(`${k}*Nomor WhatsApp ${sesi.cari.nama}*\nBila tahu, tulis nomornya. Petugas memakainya untuk mencocokkan dengan kabar selamat.`, ["Tidak tahu"]);
     if (langkah === "kontak") return jawab(`${k}*Nomor yang dihubungi bila ${sesi.cari.nama} ditemukan*\nPetugas menelepon atau mengirim WhatsApp ke nomor ini.`, ["Pakai nomor saya"], false, null, ["Nomor WhatsApp yang Anda pakai sekarang"]);
     if (langkah === "tempat") return jawab(`${k}*Ke mana ${sesi.cari.nama} diantar bila ditemukan?*\nTulis tempat Anda menunggu: nama posko pengungsian, atau alamat lengkap dengan nama jalan, RT/RW, dan patokan.`);
     const w = sesi.isian.lokasi?.nilai?.wilayah, c = sesi.cari;
-    return jawab(`${k}*Ringkasan laporan orang dicari*\nNama: ${c.nama}${c.panggilan ? ` (panggilan ${c.panggilan})` : ""}\nHubungan: ${c.hubungan}\nCiri: ${c.ciri || "tidak diisi"}\nTerakhir terlihat: ${w ? `Desa/Kel. ${w.desa}, Kec. ${w.kec}, ${w.kab}` : "lokasi belum terbaca"}, ${c.waktu.toLowerCase()}\nNomor WhatsApp: ${c.nomor ? "diisi" : "tidak tahu"}\nDihubungi bila ditemukan: ${c.kontak === pesan?.wa ? "nomor Anda" : "nomor lain yang Anda tulis"}\nDiantar ke: ${c.tempat}\n\nLaporan ini hanya dilihat petugas BNPB dan BPBD, tidak tampil di publik.`,
+    return jawab(`${k}*Ringkasan laporan orang dicari*\nNama: ${c.nama}${c.panggilan ? ` (panggilan ${c.panggilan})` : ""}\nHubungan: ${c.hubungan}\nCiri: ${c.ciri || "tidak diisi"}\nFoto: ${c.foto ? "ada" : "tidak ada"}\nTerakhir terlihat: ${w ? `Desa/Kel. ${w.desa}, Kec. ${w.kec}, ${w.kab}` : "lokasi belum terbaca"}, ${c.waktu.toLowerCase()}\nNomor WhatsApp: ${c.nomor ? "diisi" : "tidak tahu"}\nDihubungi bila ditemukan: ${c.kontak === pesan?.wa ? "nomor Anda" : "nomor lain yang Anda tulis"}\nDiantar ke: ${c.tempat}\n\nLaporan ini hanya dilihat petugas BNPB dan BPBD, tidak tampil di publik.`,
       ["Kirim", "Batal"], false, null, ["Kirim ke petugas BNPB dan BPBD", "Tidak jadi melapor"]);
   };
   const tanyaKorban = (kepala = "") => jawab(`${kepala}*Ada korban?*\nAda orang terluka, hilang, atau terjebak?`, ["Ya, ada", "Tidak ada", "Belum tahu"]);
@@ -611,7 +612,12 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       const h = p >= 0 ? CARI_HUB[p] : teks.trim().slice(0, 60); if (h.length < 2) return tanyaCari("hubungan", "Pilih salah satu.");
       c.hubungan = h; return tanyaCari("ciri");
     }
-    if (sesi.status === "cari_ciri") { c.ciri = p === 0 || KATA_BELUM.test(teks) ? null : samarkan(teks).trim().slice(0, 300) || null; return tanyaCari("waktu"); }
+    if (sesi.status === "cari_ciri") { c.ciri = p === 0 || KATA_BELUM.test(teks) ? null : samarkan(teks).trim().slice(0, 300) || null; return tanyaCari("foto"); }
+    if (sesi.status === "cari_foto") {
+      if (pesan?.foto) { sesi.foto = [pesan.foto]; c.foto = pesan.foto.id; return tanyaCari("waktu", "*Foto diterima*"); }   // satu foto; berkas dan baris lapor_foto ditulis pemanggil (fotoPost)
+      if (p === 0 || KATA_BELUM.test(teks) || /^lewati/i.test(teks.trim())) { c.foto = null; return tanyaCari("waktu"); }
+      return tanyaCari("foto", "Kirim fotonya, atau pilih *Lewati*.");
+    }
     if (sesi.status === "cari_waktu") {
       const w = p >= 0 ? CARI_WAKTU[p] : teks.trim().slice(0, 100); if (w.length < 2) return tanyaCari("waktu", "Pilih salah satu.");
       c.waktu = w; return tanyaCari("nomor");
@@ -643,7 +649,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       const kirimCari = {nama_dicari: c.nama, ciri: c.ciri, lokasi_terakhir: `Desa/Kel. ${w.desa}, Kec. ${w.kec}`.slice(0, 200), waktu_terakhir: c.waktu, nomor_dicari: c.nomor, hubungan: c.hubungan, kab: w.kabKode};
       sesi.cari = {nama: c.nama};   // rincian hanya di lapor_cari (ikut aturan simpan dan anonim Q67), tidak tertinggal di salinan sesi
       const h = jawab(`*Laporan orang dicari diterima*\nPetugas BNPB dan BPBD wilayah ${w.kab} menerima laporan tentang ${c.nama}. Bila ditemukan, petugas menghubungi nomor yang Anda berikan dan mengantar ke ${c.tempat}. Bila orang itu dalam bahaya sekarang, hubungi 112.`);
-      h.kirimCari = kirimCari; h.kirimTemu = {panggilan: c.panggilan || null, nomor_kontak: c.kontak, tempat_tunggu: c.tempat};
+      h.kirimCari = kirimCari; h.kirimTemu = {panggilan: c.panggilan || null, nomor_kontak: c.kontak, tempat_tunggu: c.tempat, foto_id: c.foto || null};
       return h;
     }
   }
