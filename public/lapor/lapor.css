@@ -3168,9 +3168,9 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-alun-pop-baris:hover svg{color:var(--brand2)}
 .lp-alun-pop-baris:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
 /* kejadian dalam satu provinsi: tabel, kartu lengkap terbuka di bawah baris (pemilik 26 Nov 2026) */
-.lp-alun-kj td{text-align:left}
-.lp-alun-kj td:last-child,.lp-alun-kj th:last-child{text-align:center}
-.lp-alun-kj td:first-child{width:auto;font-size:.8125rem}
+.lp-alun-prov.lp-alun-kj td{text-align:left}
+.lp-alun-prov.lp-alun-kj td:last-child{text-align:center}
+.lp-alun-prov.lp-alun-kj td:first-child{width:38%;font-size:.8125rem}
 .lp-alun-kj-kab{font-weight:700;color:var(--ink)}
 .lp-alun-kj-jenis{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .lp-alun-kj-jenis svg{width:15px;height:15px;flex:none;color:var(--brand2);fill:none;stroke:currentColor;stroke-width:1.8}
