@@ -77,6 +77,21 @@ jobs:
           rm -f data/raw/semai/keluar/semai_banjir.json
           python3 scripts/operasi/semai.py jalan --tujuan banjir --putaran "${{ steps.hitung.outputs.putaran }}" --sekarang "$S" --keluar data/raw/semai/keluar
 
+      # rapor penguji OMC banjir (semai-banjir SB-15): hanya putaran malam (jam 22-23 UTC; cron 10,22 satu string, jadi dibedakan lewat jam).
+      # SEMAI_TOKEN kosong -> skrip menulis data_kurang n=0 dan keluar 0. gdal-bin hanya dipasang di sini (CHIRPS lewat gdal_translate).
+      # Hanya R2 staf (operasi/semai/), tidak pernah public/.
+      - name: Rapor banjir
+        continue-on-error: true
+        env:
+          SEMAI_TOKEN: ${{ secrets.SEMAI_TOKEN }}
+          SEMAI_URL: https://centurisk97.id
+        run: |
+          H=$(date -u +%H)
+          if [ "$H" != "22" ] && [ "$H" != "23" ]; then echo "bukan putaran malam, dilewati"; exit 0; fi
+          sudo apt-get install -y --no-install-recommends gdal-bin
+          python3 scripts/omc/efek_banjir.py lapis-b --keluar data/raw/semai/keluar/rapor_banjir.json
+          npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/operasi/semai/rapor_banjir.json --file data/raw/semai/keluar/rapor_banjir.json --content-type application/json --remote
+
       # batas DESAIN-TEKNIS §3: semai.json 300 KB, PNG per langkah 120 KB
       - name: Batas ukuran
         run: |

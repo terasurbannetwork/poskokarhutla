@@ -7,6 +7,8 @@ Regresi, resid, t_kuantil dipakai dari efek.py (karhutla), tidak disalin.
   python3 scripts/omc/efek_banjir.py uji                 # uji luring pada panel sintetis
   python3 scripts/omc/efek_banjir.py lapis-a tarik       # CHIRPS (gdal /vsicurl, jendela Indonesia) + IFS Open-Meteo -> data/raw/omc_banjir (ignored)
   python3 scripts/omc/efek_banjir.py lapis-a analisis    # -> riset/HASIL-A.md dan hasil_a.json (SB-13)
+  python3 scripts/omc/efek_banjir.py lapis-b [--target-json f] [--keluar f] [--sejak YYYY-MM-DD]   # SB-15 -> rapor_banjir.json
+      env: SEMAI_TOKEN (wajib tanpa --target-json), SEMAI_URL (bawaan https://centurisk97.id)
 
 Tafsir yang diambil (PRAREG diam): permutasi blok menolak periode yang beririsan dengan periode OMC apa pun
 DI PROVINSI YANG SAMA (bukan seluruh provinsi: dengan 86 periode di 13 provinsi lain terlalu sering memblokir).
@@ -254,14 +256,14 @@ def vonis(h, amb):
     kurang = [f"{k} {amb[k]} < {AMBANG[k]}" for k in AMBANG if amb[k] < AMBANG[k]]
     if kurang:
         return "data_kurang", "data_kurang (n = %d prov-hari; %s)" % (amb["prov_hari"], "; ".join(kurang))
-    bersih = (h["p_plasebo_waktu"] is None or h["p_plasebo_waktu"] >= .10) and \
-             (h["tipe1_ruang"] is None or h["tipe1_ruang"] <= .10)
+    tak_hitung = h["p_plasebo_waktu"] is None or h["tipe1_ruang"] is None   # plasebo yang tak bisa dihitung bukan bukti bersih
+    bersih = not tak_hitung and h["p_plasebo_waktu"] >= .10 and h["tipe1_ruang"] <= .10
     bermakna = h["p_perm"] < .05
     if bermakna and bersih:
         return ("sejalan" if h["persen"] < 0 else "berlawanan"), ""
     if h["mde"] > MDE_TARGET:
         return "data_kurang", "tidak informatif (MDE %.0f%%)" % h["mde"]
-    return "tak_terbedakan", "plasebo tidak bersih" if bermakna else "tidak terdeteksi"
+    return "tak_terbedakan", ("plasebo tidak dapat dihitung" if tak_hitung else "plasebo tidak bersih") if bermakna else "tidak terdeteksi"
 
 
 def analisis_a(rows, perl, ada, pulau, nperm=2000, nruang=300, seed=SEED, placebo=True):
@@ -806,10 +808,326 @@ def tulis_hasil(o, sumber):
     open(RISET + "/HASIL-A.md", "w").write("\n".join(L) + "\n")
 
 
+# ---------------------------------------------------------------- Lapis B (SB-15, prospektif: sasaran-hari dari target renlap -B)
+# ALGORITMA §9.2, RENCANA-UJI §6. Kesesuaian pola data, bukan sebab-akibat. Tanpa data cukup: data_kurang, tidak pernah angka karangan.
+AMBANG_B = dict(n=250, hari=30)
+MENTAH_B = os.path.join(AKAR, "data/raw/omc_banjir_b")   # terpisah dari MENTAH Lapis A (ignored git)
+KELUAR_B = MENTAH_B + "/rapor_banjir.json"
+SEJAK_B = "2026-11-25"
+BATAS_B = ("n", "n_hari", "n_perlu", "efek", "ci95", "p", "mde", "vonis")
+
+
+def pasangan_target(rows, hari_ini):
+    """baris GET /api/operasi/semai/target -> {(kode_kab, hari)}: zona -B, hari_sasaran dan sasaran dari alasan_json (bukan kolom tanggal)."""
+    import re
+    out = set()
+    for r in rows:
+        if not re.fullmatch(r"\d{10}-B[A-E]", str(r.get("zona_id", ""))):
+            continue
+        try:
+            a = r["alasan_json"]
+            a = json.loads(a) if isinstance(a, str) else a
+            d = dt.date.fromisoformat(a["hari_sasaran"])
+            ks = [str(k) for k in a["sasaran"] if re.fullmatch(r"\d{4}", str(k))]
+        except (KeyError, TypeError, ValueError):
+            continue
+        if d < hari_ini:   # hujannya baru ada sesudah harinya lewat
+            out.update((k, d) for k in ks)
+    return out
+
+
+def hitung_b(pas, bmkg):
+    return dict(n=len(pas), n_hari=len({d for _, d in pas}),
+                bmkg=dict(n=sum((k[:2], d) in bmkg for k, d in pas), n_hari=len({d for k, d in pas if (k[:2], d) in bmkg})))
+
+
+def b_kurang(c, catatan=""):
+    t = "data_kurang (n = %d sasaran-hari dari sekitar %d yang dibutuhkan; %d hari dari minimal %d)" % (c["n"], AMBANG_B["n"], c["n_hari"], AMBANG_B["hari"])
+    return dict(n=c["n"], n_hari=c["n_hari"], n_perlu=AMBANG_B["n"], n_hari_perlu=AMBANG_B["hari"], efek=None, ci95=None, p=None, mde=None,
+                vonis="data_kurang", plasebo=dict(waktu_p=None, ruang_tipe1=None), terkonfirmasi_bmkg=c["bmkg"], n_kontrol=0,
+                catatan=(t + (". " + catatan if catatan else "")))
+
+
+def bangun_b(grid, perl, ada, nb, info, larang=frozenset(), maks=5):
+    """perl {(kab_i, hari)} -> baris panel d=1; tiap sasaran-hari dapat sampai `maks` pembanding di hari yang sama: bukan sasaran
+    target hari itu, provinsi tanpa OMC apa pun, bukan tetangga kab perlakuan, pulau sama, IFS terdekat, tanpa pengembalian.
+    "Bulan sama" (§9.2) dikerjakan sebagai hari sama (efek tetap hari menyerap hari itu), tanpa batas desil IFS. Sasaran tanpa satu pun
+    pembanding dibuang. kl = hari."""
+    per = {}
+    for g in grid:
+        per.setdefault(g["tgl"], {})[g["kab"]] = g
+    tar = {}
+    for i, t in set(perl) | set(larang):
+        tar.setdefault(t, set()).add(i)
+    out = []
+    for t in sorted({t for _, t in perl}):
+        rows = per.get(t, {})
+        tr = sorted(i for i, t2 in perl if t2 == t and i in rows)
+        if not tr:
+            continue
+        sedia = {j for j, g in rows.items() if j not in tar[t] and (g["prov"], t) not in ada} - set().union(*(nb[i] for i in tr))
+        for i in tr:
+            c = sorted((j for j in sedia if info[j]["pulau"] == info[i]["pulau"]), key=lambda j: (abs(rows[j]["f"] - rows[i]["f"]), j))[:maks]
+            if not c:
+                continue
+            sedia -= set(c)
+            out += [dict(rows[i], d=1, kl=("H", t))] + [dict(rows[j], d=0, kl=("H", t)) for j in c]
+    return out
+
+
+def perm_hari(rows, nperm, rng):
+    """permutasi dalam hari: tiap hari, label D diacak di antara baris hari itu dengan jumlah perlakuan per hari tetap."""
+    ki, ti, _ = _idx(rows)
+    Z = efek.resid(np.column_stack([[r["y"] for r in rows], [r["f"] for r in rows]]).astype("f8"), ki, ti)
+    grup = {}
+    for n, r in enumerate(rows):
+        grup.setdefault(r["tgl"], []).append(n)
+    grup = [(np.array(v), sum(rows[n]["d"] for n in v)) for v in grup.values()]
+    out = np.zeros(nperm)
+    for n in range(nperm):
+        d = np.zeros(len(rows))
+        for idx, k in grup:
+            d[rng.choice(idx, k, replace=False)] = 1.0
+        dt_ = efek.resid(d[:, None], ki, ti, it=60)[:, 0]
+        out[n] = np.linalg.lstsq(np.column_stack([dt_, Z[:, 1]]), Z[:, 0], rcond=None)[0][0]
+    return out
+
+
+def plasebo_waktu_b(grid, perl, ada, nb, info):
+    """D digeser 7 hari ke belakang. -> p t-klaster atau None."""
+    ger = {(i, t - dt.timedelta(7)) for i, t in perl}
+    ger = {(i, t) for i, t in ger if (i, t) not in perl and (info[i]["prov"], t) not in ada}
+    rows = bangun_b(grid, ger, ada, nb, info, larang=perl)
+    if sum(r["d"] for r in rows) < 3:
+        return None
+    b, se, df = taksir(rows)
+    return _p_t(abs(b / se), df)
+
+
+def plasebo_ruang_b(grid, perl, ada, nb, info, rng, nulang=100):
+    """pola hari perlakuan pada kab acak sepulau tanpa target hari itu. -> galat tipe I (|t| > kritis 5% dua sisi)."""
+    tar, cand = {}, {}
+    for i, t in perl:
+        tar.setdefault(t, set()).add(i)
+    for g in grid:
+        j, t = g["kab"], g["tgl"]
+        if t in tar and j not in tar[t] and (g["prov"], t) not in ada:
+            cand.setdefault((t, info[j]["pulau"]), []).append(j)
+    rej = n = 0
+    for _ in range(nulang):
+        pick = set()
+        for i, t in sorted(perl):
+            c = cand.get((t, info[i]["pulau"]))
+            if c:
+                pick.add((c[rng.integers(len(c))], t))
+        rows = bangun_b(grid, pick, ada, nb, info, larang=perl)
+        if sum(r["d"] for r in rows) < 3:
+            continue
+        b, se, df = taksir(rows)
+        n += 1
+        rej += abs(b / se) > efek.t_kuantil(df, .95)   # t_kuantil dua sisi: .95 = alfa 5%
+    return rej / n if n else None
+
+
+def vonis_b(h):
+    """ambang n sudah diperiksa pemanggil; sisanya aturan §6.3 yang sama dengan Lapis A (vonis). Sekunder zona (IMERG) belum dipasang -> dicatat."""
+    k, c = vonis(h, dict(prov_hari=10 ** 9, klaster=10 ** 9, prov=10 ** 9))
+    return k, (c + "; " if c else "") + "sekunder zona: data_kurang (IMERG belum dipasang)"
+
+
+def analisis_b(grid, perl, ada, nb, info, c, nperm=2000, nruang=100, seed=SEED):
+    """grid [{prov,kab(i),tgl,y,f}], perl {(kab_i, hari)}, c = hitung_b(...). -> dict lapis_b."""
+    rows = bangun_b(grid, perl, ada, nb, info)
+    n = sum(r["d"] for r in rows)
+    nh = len({r["tgl"] for r in rows if r["d"]})
+    c = dict(c, n=n, n_hari=nh)   # n = yang punya hujan terukur dan pembanding
+    ada_data = {(g["kab"], g["tgl"]) for g in grid}
+    tanpa = sum(p in ada_data for p in perl) - n
+    if n < AMBANG_B["n"] or nh < AMBANG_B["hari"]:
+        return b_kurang(c, "terdaftar %d sasaran-hari, %d dinilai, %d sasaran tanpa pembanding" % (len(perl), n, tanpa))
+    rng = np.random.default_rng(seed)
+    b, se, df = taksir(rows)
+    pm = persen(rows, b)
+    perm = perm_hari(rows, nperm, rng)
+    sd = float(perm.std())
+    z = {q: efek.t_kuantil(df, q) for q in (.90, .95)}   # t_kuantil sudah dua sisi
+    h = dict(persen=float(pm(b)), p_perm=float(((np.abs(perm) >= abs(b) - 1e-12).sum() + 1) / (nperm + 1)), mde=abs(float(pm(2.8 * sd))),
+             p_plasebo_waktu=plasebo_waktu_b(grid, perl, ada, nb, info), tipe1_ruang=plasebo_ruang_b(grid, perl, ada, nb, info, rng, nruang))
+    k, cat = vonis_b(h)
+    if h["mde"] > MDE_TARGET and k == "data_kurang":
+        cat = "tidak informatif (MDE %.0f%%); " % h["mde"] + cat
+    return dict(n=n, n_hari=nh, n_perlu=AMBANG_B["n"], n_hari_perlu=AMBANG_B["hari"], efek=h["persen"],
+                ci95=[float(pm(b - z[.95] * se)), float(pm(b + z[.95] * se))], ci90=[float(pm(b - z[.90] * se)), float(pm(b + z[.90] * se))],
+                p=h["p_perm"], mde=h["mde"], vonis=k,
+                plasebo=dict(waktu_p=h["p_plasebo_waktu"], ruang_tipe1=h["tipe1_ruang"]), terkonfirmasi_bmkg=c["bmkg"],
+                n_kontrol=len(rows) - n, catatan="%s. %d sasaran tanpa pembanding dibuang. Tafsir §9.2: bulan sama = hari sama, tanpa batas desil IFS" % (cat, tanpa))
+
+
+def lapis_a_ringkas():
+    """riset/hasil_a.json -> bentuk yang sama dengan lapis_b (n, n_hari, n_perlu, efek, ci95, p, mde, vonis), atau None."""
+    f = RISET + "/hasil_a.json"
+    if not os.path.exists(f):
+        return None
+    try:
+        P = json.load(open(f))["primer"]
+        return dict(n=P["n_perlakuan"], n_hari=P["n_hari"], n_perlu=AMBANG["prov_hari"], efek=P["persen"], ci95=P["ci95"], p=P["p_perm"],
+                    mde=P["mde"], vonis=P["vonis"], catatan=P.get("catatan", ""))
+    except (KeyError, ValueError):
+        return None
+
+
+def rapor_sah(r):
+    """skema DESAIN-TEKNIS §2: dibuat, lapis_a (None atau bentuk sama), lapis_b lengkap."""
+    ok = set(r) >= {"dibuat", "lapis_a", "lapis_b"} and all(k in r["lapis_b"] for k in BATAS_B + ("plasebo", "terkonfirmasi_bmkg"))
+    ok = ok and r["lapis_b"]["vonis"] in ("sejalan", "tak_terbedakan", "berlawanan", "data_kurang")
+    return ok and (r["lapis_a"] is None or all(k in r["lapis_a"] for k in BATAS_B))
+
+
+def ambil_target(sejak, hingga):
+    """GET /api/operasi/semai/target?sejak=&tanggal= (jendela <= 120 hari) dengan Bearer SEMAI_TOKEN. Token hanya ke SEMAI_URL."""
+    import urllib.request
+    tok = os.environ.get("SEMAI_TOKEN", "")
+    if not tok:
+        raise RuntimeError("SEMAI_TOKEN kosong")
+    base = os.environ.get("SEMAI_URL", "https://centurisk97.id").rstrip("/")
+    out, lo = [], sejak
+    while lo <= hingga:
+        hi = min(hingga, lo + dt.timedelta(119))
+        u = f"{base}/api/operasi/semai/target?sejak={lo}&tanggal={hi}"
+        r = json.loads(urllib.request.urlopen(urllib.request.Request(u, headers={"Authorization": "Bearer " + tok, "User-Agent": "riset-omc-banjir"}), timeout=60).read())
+        if not isinstance(r, list):
+            raise RuntimeError("balasan target bukan daftar")
+        out += r
+        lo = hi + dt.timedelta(1)
+    return out
+
+
+def analisis_nyata(pas, c, ada):
+    """tarik CHIRPS dan IFS untuk hari sasaran (dan 7 hari sebelumnya, plasebo), bangun grid kab, analisis_b."""
+    global MENTAH
+    MENTAH = MENTAH_B
+    os.makedirs(MENTAH, exist_ok=True)
+    kode = {r[0]: (r[2], r[6]) for r in json.load(open(os.path.join(AKAR, "scripts/udara/kota.json")))["baris"]}
+    kabs = baca_kab_semua()
+    idx = {(k["prov"], k["nama"]): i for i, k in enumerate(kabs)}
+    perl = {(idx[kode[k]], d) for k, d in pas if k in kode and kode[k] in idx}
+    hari = sorted({d for _, d in perl} | {d - dt.timedelta(7) for _, d in perl})
+    jenis = unduh_chirps(hari)
+    sels = [sel_kab(k) for k in kabs]
+    ifs = ambil_ifs(kabs, hari[0].isoformat(), hari[-1].isoformat())
+    grid = []
+    for h in hari:
+        if not jenis.get(h.isoformat()):
+            continue
+        a = np.fromfile(f"{MENTAH}/chirps/{h.isoformat()}.bin", "<f4")
+        for i, s in enumerate(sels):
+            v = a[s]
+            v = v[v > -9000]
+            f = ifs[i].get(h.isoformat())
+            if len(v) and f is not None:
+                grid.append(dict(prov=kabs[i]["prov"], kab=i, tgl=h, y=float(v.mean()), f=float(f)))
+    info = [dict(prov=k["prov"], pulau=PULAU_KODE.get(k["prov"][0])) for k in kabs]
+    return analisis_b(grid, perl, ada, efek.tetangga(kabs), info, c)
+
+
+def jalan_b(argv):
+    """lapis-b: selalu menulis rapor dan keluar 0 (workflow tidak boleh patah); gagal jaringan/token/analisis = data_kurang n=0 beralasan."""
+    import argparse
+    ap = argparse.ArgumentParser(prog="efek_banjir.py lapis-b")
+    ap.add_argument("--target-json")
+    ap.add_argument("--keluar", default=KELUAR_B)
+    ap.add_argument("--sejak", default=SEJAK_B)
+    a = ap.parse_args(argv)
+    ini = dt.datetime.now(dt.timezone.utc).date()
+    c0 = dict(n=0, n_hari=0, bmkg=dict(n=0, n_hari=0))
+    try:
+        if a.target_json:
+            rows = json.load(open(a.target_json))
+        else:
+            rows = ambil_target(dt.date.fromisoformat(a.sejak), ini + dt.timedelta(1))
+        pas = pasangan_target(rows, ini)
+        baris, _, _ = baca_baris()
+        perl, ada, _, _ = baca_periode(baris)
+        bmkg = {(q["prov"], q["a"] + dt.timedelta(n)) for q in perl for n in range((q["b"] - q["a"]).days + 1)}
+        c = hitung_b(pas, bmkg)
+        lb = b_kurang(c) if c["n"] < AMBANG_B["n"] or c["n_hari"] < AMBANG_B["hari"] else analisis_nyata(pas, c, ada)
+    except Exception as e:   # jaringan, token, berkas, matriks singular: tidak ada angka, hanya alasan
+        lb = b_kurang(c0, "alasan: %s %s" % (type(e).__name__, str(e)[:120].replace(os.environ.get("SEMAI_TOKEN", "\0"), "***")))
+    r = dict(dibuat=dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), lapis_a=lapis_a_ringkas(), lapis_b=lb)
+    os.makedirs(os.path.dirname(os.path.abspath(a.keluar)), exist_ok=True)
+    json.dump(r, open(a.keluar, "w"), indent=1, default=float)
+    print("rapor_banjir.json:", a.keluar, "| lapis_b", lb["vonis"], "n =", lb["n"], "|", lb["catatan"][:160])
+
+
+def uji_b():
+    import tempfile
+    rng = np.random.default_rng(11)
+    hari = [dt.date(2026, 1, 1) + dt.timedelta(n) for n in range(60)]
+    nk = 514
+    info = [dict(prov=PROV[i % 12], pulau=PULAU[PROV[i % 12]]) for i in range(nk)]
+    nb = [{j for j in (i - 1, i + 1) if 0 <= j < nk} for i in range(nk)]
+    for efek_pct in (-40, 0):
+        grid, perl = [], set()
+        for h in hari:
+            tr = {int(x) for x in rng.choice([i for i in range(nk) if i % 12 < 6], 6, replace=False)}
+            perl |= {(i, h) for i in tr}
+            for i in range(nk):
+                f = float(rng.gamma(2, 5))
+                y = 0.2 * f + float(rng.gamma(2, 3))
+                grid.append(dict(prov=info[i]["prov"], kab=i, tgl=h, f=f, y=y * (1 + efek_pct / 100) if i in tr else y))
+        c = hitung_b({(f"{3100 + i}", h) for i, h in perl}, set())
+        lb = analisis_b(grid, perl, set(), nb, info, c, nperm=99, nruang=8)
+        r = dict(dibuat="x", lapis_a=None, lapis_b=lb)
+        assert rapor_sah(r) and json.loads(json.dumps(r, default=float)), r
+        assert lb["n"] >= 250 and lb["n_hari"] == 60 and lb["mde"] > 0, lb
+        print("lapis-b sintetis", efek_pct, lb["vonis"], f"efek {lb['efek']:.1f}% p {lb['p']:.3f} mde {lb['mde']:.0f}")
+        rows = bangun_b(grid, perl, set(), nb, info)
+        b, se, df = taksir(rows)
+        pm = persen(rows, b)
+        t95 = efek.t_kuantil(df, .95)
+        assert abs(lb["ci95"][0] - pm(b - t95 * se)) < 1e-9 and abs(lb["ci95"][1] - pm(b + t95 * se)) < 1e-9, "ci95 harus b +- t(.95)*se (dua sisi)"
+        rasio = float(perm_hari(rows, 299, np.random.default_rng(3)).std()) / se
+        # dua dataset tunggal (G = 60 klaster): rasio berfluktuasi; Monte Carlo 25 ulangan efek nol memberi sd(b)/SE ~ 1,1 dan sd perm sejalan dengan sd(b)
+        assert rasio < (1.5 if efek_pct == 0 else 2.0), f"sd permutasi {rasio:.2f} x SE analitik (sebelum perbaikan ~2,3 dan baris perlakuan gugur 79%)"
+        print("sd perm / SE =", round(rasio, 2), "n", lb["n"])
+        if efek_pct == -40:
+            assert -60 < lb["efek"] < -20, lb["efek"]
+    # plasebo yang tak bisa dihitung bukan bukti bersih (Lapis A dan B)
+    bs = dict(persen=-40, p_perm=.01, mde=20, p_plasebo_waktu=.5, tipe1_ruang=.05)
+    am = dict(prov_hari=400, klaster=40, prov=8)
+    for kunci in ("p_plasebo_waktu", "tipe1_ruang"):
+        assert vonis(dict(bs, **{kunci: None}), am)[0] not in ("sejalan", "berlawanan"), kunci
+    assert vonis_b(dict(bs, p_plasebo_waktu=None))[0] == "tak_terbedakan"
+    # panel di bawah ambang: data_kurang beralasan n, tanpa efek
+    lb = analisis_b(grid[:600], {p for p in perl if p[1] <= hari[2]}, set(), nb, info, c, nperm=9, nruang=2)
+    assert lb["vonis"] == "data_kurang" and lb["efek"] is None and lb["n_perlu"] == 250, lb
+    # nol target / tanpa token -> data_kurang n=0, keluar normal, skema sah
+    with tempfile.TemporaryDirectory() as d:
+        kos, out = d + "/kosong.json", d + "/r.json"
+        json.dump([], open(kos, "w"))
+        jalan_b(["--target-json", kos, "--keluar", out])
+        r = json.load(open(out))
+        assert rapor_sah(r) and r["lapis_b"]["vonis"] == "data_kurang" and r["lapis_b"]["n"] == 0, r
+        tok = os.environ.pop("SEMAI_TOKEN", None)
+        jalan_b(["--keluar", out])
+        r = json.load(open(out))
+        assert rapor_sah(r) and r["lapis_b"]["n"] == 0 and "SEMAI_TOKEN" in r["lapis_b"]["catatan"], r
+        if tok:
+            os.environ["SEMAI_TOKEN"] = tok
+        # zona karhutla, bentuk rusak, dan hari yang belum lewat tidak dinilai
+        sah = dict(zona_id="2026112512-BA", alasan_json=json.dumps(dict(hari_sasaran="2026-11-26", sasaran=["3172", "x"])))
+        assert pasangan_target([sah, dict(sah, zona_id="2026112512-A"), dict(sah, alasan_json="rusak")], dt.date(2026, 12, 1)) == {("3172", dt.date(2026, 11, 26))}
+        assert pasangan_target([sah], dt.date(2026, 11, 26)) == set()
+    print("uji lapis-b ok")
+
+
 if __name__ == "__main__":
     c = sys.argv[1:] or ["uji"]
     if c[0] == "uji":
         uji()
+        uji_b()
+    elif c[0] == "lapis-b":
+        jalan_b(c[1:])
     elif c[0] == "lapis-a" and len(c) > 1 and c[1] in ("tarik", "analisis"):
         cek_sidik()
         tarik(len(c) > 2 and c[2] == "ifs") if c[1] == "tarik" else analisis()

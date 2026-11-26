@@ -216,3 +216,8 @@
 #opsLaporan .sm-sl code{font:600 .75rem ui-monospace,SFMono-Regular,Menlo,monospace;text-align:right}
 #opsLaporan .sm-sl input[type=range]{width:100%;accent-color:var(--sm-sasaran)}
 @media (max-width:900px){#opsLaporan .sm-sl{grid-template-columns:minmax(0,1fr) 110px 40px}}
+#opsLaporan .sm-rp{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+#opsLaporan .sm-pv{padding:1px 8px;border-radius:999px;font-size:.6875rem;font-weight:700;border:1px solid var(--ink2);color:var(--ink2)}
+#opsLaporan .sm-pv-sejalan{border-color:var(--ok-tx);color:var(--ok-tx);background:color-mix(in oklab,var(--ok-tx) 14%,var(--card))}
+#opsLaporan .sm-pv-berlawanan{border-color:var(--bad-tx);color:var(--bad-tx);background:color-mix(in oklab,var(--bad-tx) 12%,var(--card))}
+#opsLaporan .sm-pv-tak_terbedakan{background:color-mix(in oklab,var(--ink2) 14%,var(--card))}

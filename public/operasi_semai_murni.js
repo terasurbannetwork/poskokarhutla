@@ -147,8 +147,16 @@
     else out.push(data.kalimat_kosong || kalimatKosongB(data.alasan_kosong, data.hari_sasaran));
     out.push("Usulan mesin, bukan prakiraan resmi. Konfirmasi tiap operasi dengan BMKG.");
     return out.join("\n"); }
+  /* SB-15: kartu Rapor uji. Berkas rapor_banjir.json dibaca apa adanya; kosong tidak pernah jadi 0 persen. */
+  const VONIS = {sejalan: "sejalan", tak_terbedakan: "tak terbedakan", berlawanan: "berlawanan", data_kurang: "data kurang"};
+  function baris(nama, l) { const v = VONIS[l?.vonis] ? l.vonis : "data_kurang", ada = v !== "data_kurang" && l && l.n > 0 && l.efek != null && Number.isFinite(+l.efek);
+    if (!ada) return `<div class="sm-rp"><b>${nama}</b><span class="sm-pv sm-pv-data_kurang">data kurang</span><span class="sm-kecil">data kurang (n = ${fmt(l?.n || 0)} dari sekitar ${fmt(l?.n_perlu || 250)})</span></div>`;
+    const ci = Array.isArray(l.ci95) && l.ci95.length === 2 ? `, selang 95% ${fmt(l.ci95[0], 1)} sampai ${fmt(l.ci95[1], 1)}%` : "", md = l.mde != null && Number.isFinite(+l.mde) ? `, MDE ${fmt(l.mde, 0)}%` : "";
+    return `<div class="sm-rp"><b>${nama}</b><span class="sm-pv sm-pv-${v}">${VONIS[v]}</span><span>n = ${fmt(l.n)}, efek ${fmt(l.efek, 1)}%${ci}${md}</span></div>`; }
+  const raporHtml = r => { const o = r && !r.galat ? r : null;
+    return baris("Lapis A", o?.lapis_a) + baris("Lapis B", o?.lapis_b) + `<p class="sm-kecil">kesesuaian, bukan sebab-akibat</p>`; };
   /* tabel faktor Tinjau sebagai CSV: tanda kutip dikutip ganda, pemisah koma */
   const csv = baris => baris.map(r => r.map(x => { const t = String(x ?? ""); return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; }).join(",")).join("\n");
-  const api = {faktorH, skorBanjir, zonaNms, hitungUlangBanjir, normBobot, BOBOT_B, asalTeks, pantau, kalimatKosongB, judulKosongB, alasanB, ringkasanBanjir, csv, tujuanDariHash, hashTujuan, tampakLapis, malas, teramati, fmt, dms, desimal, salinKoordinat, jam, hariJam, jendela, putaranTeks, waktuLangkah, plusJam, umurJam, umurTeks, kalimatKosong, judulKosong, urutKota, sudahBerasap, barisAsal, alasan, ketinggianTeks, bahanTeks, jumlahTeks, asapKalimat, ringkasan, namaNegara, arahKata};
+  const api = {raporHtml, faktorH, skorBanjir, zonaNms, hitungUlangBanjir, normBobot, BOBOT_B, asalTeks, pantau, kalimatKosongB, judulKosongB, alasanB, ringkasanBanjir, csv, tujuanDariHash, hashTujuan, tampakLapis, malas, teramati, fmt, dms, desimal, salinKoordinat, jam, hariJam, jendela, putaranTeks, waktuLangkah, plusJam, umurJam, umurTeks, kalimatKosong, judulKosong, urutKota, sudahBerasap, barisAsal, alasan, ketinggianTeks, bahanTeks, jumlahTeks, asapKalimat, ringkasan, namaNegara, arahKata};
   if (typeof module !== "undefined" && module.exports) module.exports = api; else akar.OpsSemaiMurni = api;
 })(typeof window !== "undefined" ? window : globalThis);

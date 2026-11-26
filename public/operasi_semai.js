@@ -25,6 +25,7 @@
 
   const st = {data: null, i: 0, zona: 0, kota: -1, peta: null, play: 0, rf: 0, ada: {awan: true, asap: true}, terap: {}, tampak: {api: true, awan: true, asap: true, pengarah: true, anginAsap: true, zona: true, kota: true}, target: {}, ctx: null, mk: {zona: [], base: [], kota: []}, semuaCluster: false, semuaKota: false, luar: false, tujuan: M.tujuanDariHash(location.hash), banjir: null, mkB: [], zB: 0, bobotB: M.BOBOT_B.slice(), manualB: [], namaKab: null};
   const muatBanjir = M.malas(() => ambil(BAWAH + "semai_banjir.json"));   // SB-08: sekali per muatan halaman
+  const muatRapor = M.malas(() => ambil(BAWAH + "rapor_banjir.json"));   // SB-15: staf saja, sekali per muatan halaman
   const namaKabMuat = M.malas(async () => { const j = await ambil("/banjir/data/cuaca_peluang.json"); return Object.fromEntries(Object.entries(j?.wilayah || {}).map(([k, v]) => [k, v.nama])); });
   let akar = null;
   const zonaTerpilih = () => st.data?.zona?.[st.zona] || null;
@@ -297,7 +298,8 @@
     cancelAnimationFrame(geserBobot.r); geserBobot.r = requestAnimationFrame(isiTinjau); }
   function isiBanjir() { const b = st.banjir, el = $("#smB", akar); if (!el || !b) return;
     if (el.dataset.siap !== (b.galat ? "g" : b.dibuat)) { el.dataset.siap = b.galat ? "g" : b.dibuat; st.zB = 0;
-      el.innerHTML = `<div class="sm-kol">${kartu("smSas", "target", "Sasaran hari ini", sasaranHtml())}${kartu("smRekB", "banjir", "Rekomendasi", rekB())}</div><div class="sm-kol">${kartu("smZonaB", "zona", "Zona usulan 24 jam", `<div class="sm-zdaf" id="smZdafB">${daftarZonaB()}</div>`)}${kartu("smTinjau", "tabel", "Tinjau", tinjauHtml(), {lipat: true})}</div>`;
+      el.innerHTML = `<div class="sm-kol">${kartu("smSas", "target", "Sasaran hari ini", sasaranHtml())}${kartu("smRekB", "banjir", "Rekomendasi", rekB())}</div><div class="sm-kol">${kartu("smZonaB", "zona", "Zona usulan 24 jam", `<div class="sm-zdaf" id="smZdafB">${daftarZonaB()}</div>`)}${kartu("smTinjau", "tabel", "Tinjau", tinjauHtml(), {lipat: true})}${kartu("smRapor", "tabel", "Rapor uji", `<p class="sm-kecil">memuat</p>`, {lipat: true})}</div>`;
+      const rp = $("#smRapor", akar); if (rp) { rp.open = false; muatRapor().then(r => { const bd = $("#smRapor .ex-bd", akar); if (bd) bd.innerHTML = M.raporHtml(r); }); }
       const tj = $("#smTinjau", akar); if (tj) tj.open = false; (window.requestIdleCallback || (f => setTimeout(f, 200)))(isiTinjau);
       muatManualB(); namaKabMuat().then(n => { st.namaKab = n; const bd = $("#smSas .ex-bd", akar); if (bd) bd.innerHTML = sasaranHtml(); }); }
     pilihMarkerB(); }
