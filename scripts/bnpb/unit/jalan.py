@@ -20,8 +20,13 @@ from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # -I tidak menaruh folder skrip
 
-# (nama, modul, frekuensi); didaftarkan tiket sistem. Mula-mula kosong.
-LANGKAH = []
+# (nama, modul, frekuensi); didaftarkan tiket sistem.
+LANGKAH = [
+    ("PLP-1", "plp1", "bulanan"),   # RU-042 unit/stok_penyangga.json
+    ("PERB-1", "perb1", "bulanan"),  # RU-043 unit/pendampingan_ikd.json
+    ("MT-2", "mt2", "bulanan"),     # RU-061 unit/mitigasi_prioritas.json
+    ("PUS-1", "pus1", "harian"),    # RU-044 unit/satu_data.json (jaringan: data.bnpb.go.id lewat panen.py)
+]
 
 BASI_JAM = {"harian": 48, "mingguan": 240, "bulanan": 1080}  # DT sec 9.4
 KELUAR = "/tmp/unit"

@@ -9,6 +9,7 @@ kepala kartu = NAMA SEKSI berikon, bukan kalimat temuan. `judul` tidak memuat {n
 angka temuan masuk `angka` = [{k, label, nilai}] dan tampil di baris ringkas isi kartu.
 
   kartu(id, pil, judul, angka, kolom, baris, rumus, sumber, label, sistem=None, ikon="data", aturan=())
+                          angka dan kolom angka boleh membawa desimal (0-6) untuk tampilan
   berkas(kartu, sumber)   -> {label, sumber, kartu}; sumber = [{nama, url, diambil, lisensi}] (MB-8)
   rata(nilai)             -> rata-rata tanpa None; None bila semua kosong (kosong tidak ikut rata-rata)
   periksa_berkas(d)       -> d; menolak berkas R2 yang skemanya salah
@@ -57,6 +58,16 @@ def _angka(x, nama):
     return x
 
 
+def _desimal(x):
+    """Desimal tampil (ALGORITMA sec 0.7: rasio dan skor 2-4 desimal); tanpa kunci = bawaan format.js (1 desimal)."""
+    if "desimal" not in x:
+        return {}
+    d = x["desimal"]
+    if isinstance(d, bool) or not isinstance(d, int) or not 0 <= d <= 6:
+        raise ValueError(f"desimal {d!r} harus bilangan bulat 0 sampai 6")
+    return {"desimal": d}
+
+
 def _label(label):
     daftar = [label] if isinstance(label, str) else label
     if not isinstance(daftar, (list, tuple)) or not daftar:
@@ -73,7 +84,11 @@ def _pasal(kunci):
             "kutipan": e.get("kutipan"), "asumsi": bool(e.get("asumsi"))}
 
 
-def kartu(id, pil, judul, angka, kolom, baris, rumus, sumber, label, sistem=None, ikon="data", aturan=()):
+def kartu(id, pil, judul, angka, kolom, baris, rumus, sumber, label, sistem=None, ikon="data", aturan=(), asumsi=()):
+    """asumsi: teks pil Asumsi tanpa kunci Jam Aturan (konstanta skrip berlabel, ALGORITMA 0.1 butir 3; belum lulus uji balik 0.9)."""
+    asumsi = [_teks(t, "asumsi", maks=60) for t in asumsi]
+    if any(not t.startswith("Asumsi: ") for t in asumsi):
+        raise ValueError("teks asumsi harus diawali 'Asumsi: '")
     if not isinstance(id, str) or not ID.match(id):
         raise ValueError(f"id kartu {id!r} harus huruf kecil, angka, tanda hubung")
     if ikon not in IKON:
@@ -88,20 +103,22 @@ def kartu(id, pil, judul, angka, kolom, baris, rumus, sumber, label, sistem=None
         raise ValueError("kartu tanpa sumber masukan")
     a = []
     for i, x in enumerate(angka or []):
-        if not isinstance(x, dict) or set(x) - {"k", "label", "nilai", "title"} or not KUNCI.match(str(x.get("k", ""))):
-            raise ValueError(f"angka[{i}] harus {{k, label, nilai, title?}}: {x!r}")
+        if not isinstance(x, dict) or set(x) - {"k", "label", "nilai", "title", "desimal"} or not KUNCI.match(str(x.get("k", ""))):
+            raise ValueError(f"angka[{i}] harus {{k, label, nilai, title?, desimal?}}: {x!r}")
         a.append({"k": x["k"], "label": _teks(x.get("label"), f"angka {x['k']} label", maks=80),
                   "nilai": _angka(x.get("nilai"), f"angka {x['k']}"),
-                  **({"title": _teks(x["title"], "title")} if x.get("title") else {})})
+                  **({"title": _teks(x["title"], "title")} if x.get("title") else {}), **_desimal(x)})
     if len({x["k"] for x in a}) != len(a):
         raise ValueError("kunci angka kembar")
     ko, kunci_angka = [], set()
     for i, c in enumerate(kolom or []):
-        if not isinstance(c, dict) or set(c) - {"k", "label", "title", "angka"} or not KUNCI.match(str(c.get("k", ""))):
-            raise ValueError(f"kolom[{i}] harus {{k, label, title?, angka?}}: {c!r}")
+        if not isinstance(c, dict) or set(c) - {"k", "label", "title", "angka", "desimal"} or not KUNCI.match(str(c.get("k", ""))):
+            raise ValueError(f"kolom[{i}] harus {{k, label, title?, angka?, desimal?}}: {c!r}")
+        if "desimal" in c and not c.get("angka"):
+            raise ValueError(f"kolom {c['k']}: desimal hanya untuk kolom angka")
         ko.append({"k": c["k"], "label": _teks(c.get("label"), f"kolom {c['k']}", maks=60),
                    **({"title": _teks(c["title"], "title")} if c.get("title") else {}),
-                   **({"angka": True} if c.get("angka") else {})})
+                   **({"angka": True} if c.get("angka") else {}), **_desimal(c)})
         if c.get("angka"):
             kunci_angka.add(c["k"])
     nama_kolom = [c["k"] for c in ko]
@@ -117,7 +134,7 @@ def kartu(id, pil, judul, angka, kolom, baris, rumus, sumber, label, sistem=None
                    for k, v in b.items()})
     return {"id": id, "sistem": _teks(sistem, "sistem", wajib=False, maks=20), "pil": _teks(pil, "pil", maks=40), "ikon": ikon,
             "judul": judul, "angka": a, "kolom": ko, "baris": ba, "rumus": rumus, "aturan": [_pasal(k) for k in aturan],
-            "label": label, "sumber": sumber}
+            "label": label, "sumber": sumber, **({"asumsi": asumsi} if asumsi else {})}
 
 
 def _atribusi(sumber):
@@ -147,8 +164,8 @@ def berkas(kartu_, sumber):
 
 def periksa_berkas(d):
     """Bangun ulang tiap kartu lewat kartu(): skema salah (label hilang, kunci liar, angka berupa teks) ditolak."""
-    if not isinstance(d, dict) or set(d) - {"dibuat", "basi_jam", "label", "sumber", "kartu"}:
-        raise ValueError("kunci berkas di luar {dibuat, basi_jam, label, sumber, kartu}")
+    if not isinstance(d, dict) or set(d) - {"dibuat", "basi_jam", "label", "sumber", "kartu", "data"}:
+        raise ValueError("kunci berkas di luar {dibuat, basi_jam, label, sumber, kartu, data}")  # data: DT sec 5
     if d.get("basi_jam") not in BASI:
         raise ValueError(f"basi_jam {d.get('basi_jam')!r} di luar {BASI}")
     if not re.match(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$", str(d.get("dibuat"))):
@@ -202,6 +219,16 @@ def cek():
         _tolak(kartu, **{**dasar, "angka": [{"k": "belum", "label": "x", "nilai": v}]})
         _tolak(kartu, **{**dasar, "baris": [{"kab": "A", "beras_kg": v}]})
     assert kartu(**{**dasar, "angka": [{"k": "n", "label": "x", "nilai": None}]})["angka"][0]["nilai"] is None
+    # asumsi tanpa kunci Jam Aturan: berawalan "Asumsi: ", kosong tidak muncul di kartu
+    assert kartu(**{**dasar, "asumsi": ["Asumsi: belum lulus uji balik"]})["asumsi"] == ["Asumsi: belum lulus uji balik"]
+    assert "asumsi" not in k
+    _tolak(kartu, **{**dasar, "asumsi": ["belum lulus uji balik"]})
+    _tolak(kartu, **{**dasar, "asumsi": ["Asumsi: " + "x" * 60]})
+    # desimal: bulat 0-6, hanya kolom angka
+    assert kartu(**{**dasar, "angka": [{"k": "n", "label": "x", "nilai": 0.0003, "desimal": 4}]})["angka"][0]["desimal"] == 4
+    for d in (-1, 7, 2.5, True, "2"):
+        _tolak(kartu, **{**dasar, "angka": [{"k": "n", "label": "x", "nilai": 1, "desimal": d}]})
+    _tolak(kartu, **{**dasar, "kolom": [{"k": "kab", "label": "Kab/kota", "desimal": 2}, dasar["kolom"][1]]})
     # kunci liar, kolom kembar, aturan tak dikenal, ikon tak dikenal, id jelek, tanpa sumber
     _tolak(kartu, **{**dasar, "baris": [{"kab": "A", "nama_pic": "x"}]})
     _tolak(kartu, **{**dasar, "kolom": dasar["kolom"] + [{"k": "kab", "label": "Lagi"}]})

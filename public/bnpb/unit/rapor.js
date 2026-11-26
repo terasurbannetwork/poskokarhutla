@@ -33,6 +33,9 @@
     const asumsi = (k.aturan || []).filter(p => p.asumsi);
     if (asumsi.length) { const t = asumsi.map(p => "Pasal: " + pasal(p)).join("\n");
       pil.push(`<button type="button" class="bn-pil un-lbl un-asumsi" data-tip="${esc(t)}" title="${esc(t)}">${svg("tanya")}Asumsi</button>`); }
+    /* asumsi tanpa kunci Jam Aturan (konstanta skrip, belum lulus uji balik): satu pil per teks, kata persis dari rapor.py */
+    for (const t of k.asumsi || [])
+      pil.push(`<button type="button" class="bn-pil un-lbl un-asumsi" data-tip="${esc(t)}" title="${esc(t)}">${svg("tanya")}${esc(t)}</button>`);
     return pil.join("");
   }
   function pilPer(b, sekarang) {
@@ -42,13 +45,15 @@
     const kata = basi ? `basi sejak ${tgl(batas)}` : `per ${tgl(dibuat)}`;
     return {basi, pil: `<span class="bn-pil un-per${basi ? " un-basi" : ""}">${svg("kalender")}${esc(kata)}</span>`};
   }
-  const angkaHtml = (k, v, judul) => v == null
+  /* desimal dari kartu (ALGORITMA 0.7: rasio dan skor 2-4 desimal); tanpa desimal = fmt bawaan */
+  const angkaTeks = (v, d) => d == null ? fmt(v) : Number(v).toLocaleString("id-ID", {maximumFractionDigits: d});
+  const angkaHtml = (k, v, judul, d) => v == null
     ? `<span class="un-kosong" data-sumber="${esc(asal(k))}" title="${esc(tipAngka(k, judul))}">${esc(KOSONG)}</span>`
-    : `<span class="hl" data-sumber="${esc(asal(k))}" title="${esc(tipAngka(k, judul))}">${esc(fmt(v))}</span>`;
+    : `<span class="hl" data-sumber="${esc(asal(k))}" title="${esc(tipAngka(k, judul))}">${esc(angkaTeks(v, d))}</span>`;
 
   function ringkas(k) {
     if (!(k.angka || []).length) return "";
-    return `<dl class="un-ringkas">${k.angka.map(a => `<div><dt>${esc(a.label)}</dt><dd>${angkaHtml(k, a.nilai, a.title || a.label)}</dd></div>`).join("")}</dl>`;
+    return `<dl class="un-ringkas">${k.angka.map(a => `<div><dt>${esc(a.label)}</dt><dd>${angkaHtml(k, a.nilai, a.title || a.label, a.desimal)}</dd></div>`).join("")}</dl>`;
   }
   function tabel(k) {
     const ko = k.kolom || [], ba = k.baris || [];
@@ -59,7 +64,7 @@
       const v = b[c.k], lbl = ` data-label="${esc(c.label)}"`;
       if (c.angka) return v == null
         ? `<td class="n un-kosong"${lbl} data-sumber="${esc(asal(k))}" title="${esc(tipAngka(k, c.title || c.label))}">${esc(KOSONG)}</td>`
-        : `<td class="n"${lbl} data-sumber="${esc(asal(k))}" title="${esc(tipAngka(k, c.title || c.label))}">${esc(fmt(v))}</td>`;
+        : `<td class="n"${lbl} data-sumber="${esc(asal(k))}" title="${esc(tipAngka(k, c.title || c.label))}">${esc(angkaTeks(v, c.desimal))}</td>`;
       const t = v == null || v === "" ? "–" : esc(v);
       return i === 0 ? `<th scope="row"${lbl}>${t}</th>` : `<td${lbl}>${t}</td>`;
     };

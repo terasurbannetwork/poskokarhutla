@@ -838,12 +838,12 @@ Pola keluaran: kecuali disebut lain, tiap sistem menulis satu berkas R2 `unit/<n
 | Jadwal | bulanan |
 
 Rumus (riset/1 §1.5; rumus RBI di catatan `1-rbi.md` hal. 53, Perka 2/2012 BERLAKU):
-- H_k = maks_j H_kj (asumsi: riset tidak menyebut agregasi lintas jenis; ditulis "asumsi" di kartu), V_k = `v`, C_k = `c`.
+- H_k = maks_j H_kj (asumsi: riset tidak menyebut agregasi lintas jenis; ditulis "asumsi" di kartu), V_k = Phi(`v`) karena `v` berskala z (sama dengan `risiko_hvc.py`), C_k = `c`.
 - R_k(C) = (H_k x V_k x (1 - C))^(1/3).
 - d_k = jarak C_k ke ambang kelas berikutnya: 0,40 bila C_k < 0,40; 0,80 bila 0,40 <= C_k < 0,80; 0 bila sudah di atas 0,80 (kab tidak masuk daftar). Ambang 0,40 dan 0,80 dari riset/1 §1.5, tidak berpasal di korpus: `asumsi: true` di MB-2 kunci `ikd_ambang_kelas`.
 - Manfaat_k = n_k x [R_k(C_k) - R_k(C_k + d_k)], n_k = 1/514 (bawaan riset/1 pertanyaan 3, rata-rata sederhana).
 - `naik_iku2` = benar bila C_k + d_k melewati 0,40 dan IKD provinsinya di Lampiran 2 di bawah 0,40 (ditampilkan sebagai kolom, bukan bonus angka, karena riset tidak menetapkan nilai B).
-- Biaya proksi = jarak garis lurus pusat kab ke Jakarta (km) dari `public/data/bnpb/wilayah.json` + koordinat pusat kab yang sudah dipakai pipeline; urut menurun Manfaat_k / Biaya_k.
+- Biaya proksi = maks(jarak garis lurus pusat kab ke Jakarta (km), 100 km), koordinat pusat kab dari `public/data/kemitraan/kode.json`; lantai 100 km adalah asumsi berpil (KEPUTUSAN-AWAL U13) supaya kab di sekitar Jakarta tidak meledakkan rasio; urut menurun Manfaat_k / Biaya_k.
 
 Skema `data`:
 

@@ -105,3 +105,14 @@ test("ikon yang diizinkan rapor.py semuanya ada di perender", () => {
   const py = baca("scripts/bnpb/unit/rapor.py").match(/^IKON = \(([^)]*)\)/m)[1].match(/"([a-z]+)"/g).map(s => s.slice(1, -1));
   for (const i of py) assert.ok(R.IKON[i], `ikon ${i} tidak ada di rapor.js`);
 });
+
+test("desimal kartu: angka kecil tidak tampil 0, tanpa desimal tetap fmt bawaan", () => {
+  const k = salin(B.kartu[0]);
+  k.angka = [{k: "kecil", label: "Kecil", nilai: 0.00026, desimal: 5}, {k: "biasa", label: "Biasa", nilai: 0.00026}];
+  k.kolom = [{k: "produsen", label: "Produsen"}, {k: "n_dataset", label: "Dataset", angka: true, desimal: 3}];
+  k.baris = [{produsen: "A", n_dataset: 0.533}];
+  const h = R.html(k, B, SEGAR);
+  assert.match(h, />0,00026</);
+  assert.match(h, />0</);
+  assert.match(h, /<td class="n"[^>]*>0,533<\/td>/);
+});
