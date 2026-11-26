@@ -1,5 +1,5 @@
 {
- "versi": 1,
+ "versi": 2,
  "status": "hipotesis: dikunci sebelum uji balik dibuka (KEPUTUSAN-DAMPAK D11, D12; ALGORITMA 5). Mengubah satu angka = sidik baru.",
  "bahaya": ["BNJ", "LSR", "CEX"],
  "kelas_kab": {"BNJ": "banjir", "LSR": "longsor", "CEX": null},
@@ -17,6 +17,13 @@
  "tak_terliput_maks": 0.5,
  "segar_jam": {"prakiraan": 36, "bmkg": 3},
  "severity": {"minor": 1, "moderate": 2, "severe": 3, "extreme": 3},
+ "tambahan": {
+  "status": "hipotesis, K15 (26 Nov 2026): kekeringan dan gelombang, dikunci SEBELUM uji balik dibuka. Mengubah satu angka = sidik baru (.v3).",
+  "bahaya": ["KEK", "GEL"],
+  "tanpa_K_dan_R": "S = E; tanpa kelas bahaya, tanpa peringatan BMKG (tak ada umpan gelombang atau kekeringan di dampak_peringatan)",
+  "KEK": {"sumber": "public/data/kekeringan_wilayah.json (kab[prov|nama].lv 0..3, tingkat bawaan sistem itu)", "meta": "public/data/kekeringan_meta.json hari_ini", "segar_hari": 15, "wajib": [0], "hari": [0]},
+  "GEL": {"sumber": "prediksi.json kode GEL kolom lv (0..3) hari 1..3 dan lalu.json hari 0; hanya kab dengan titik pesisir", "wajib": [0, 1, 2, 3], "hari": [0, 1, 2, 3]}
+ },
  "alarm": {"utama": 2, "terpisah": 1},
  "arsip_mulai_wib": "07:00"
 }

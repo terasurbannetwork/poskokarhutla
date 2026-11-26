@@ -20,6 +20,8 @@ KLUSTER = os.path.join(AKAR, "public/data/kluster.json")      # keluaran harian.
 META = os.path.join(AKAR, "public/data/meta.json")            # "dibuat" = jam pipeline karhutla terakhir jalan
 UJIBALIK = os.path.join(AKAR, "public/data/ujibalik_status.json")
 BENCANA = os.path.join(AKAR, "public/bencana.json")
+KERING = os.path.join(AKAR, "public/data/kekeringan_wilayah.json")   # K15: status wilayah kita, lv 0..3 per "prov|nama"
+KERING_META = os.path.join(AKAR, "public/data/kekeringan_meta.json")
 GERBANG = os.path.join(AKAR, "public/data/gerbang/status_prakiraan.json")
 KELUAR = os.path.join(AKAR, "data/raw/prediksi/status.json")  # layanan R2 diunggah workflow (DP-08); bukan public/
 WIB = dt.timezone(dt.timedelta(hours=7))
@@ -200,6 +202,44 @@ def status_kht(kr, kluster, meta, ujibalik, nama, kab, cari, kini):
     return out
 
 
+# ---------- kekeringan (KEK) dan gelombang (GEL), K15, DP-23: S = E, tanpa K dan R ----------
+def status_tambahan(kr, kode, P):
+    """P = [P0..P3] int|None. Kolom wajib (kriteria tambahan.<kode>.wajib) null dan E = 0: abu; E > 0: tingkat E bertanda sebagian."""
+    c = kr["tambahan"][kode]
+    S = [P[d] if d in c["hari"] else None for d in range(4)]
+    ada = [x for x in S if x is not None]
+    lengkap = all(P[d] is not None for d in c["wajib"])
+    s = max(ada) if ada else None
+    if not lengkap and not s:
+        return {"s": None, "pemicu": None, "sebagian": False, "hari": [None] * 4}
+    return {"s": s, "pemicu": ("wilayah" if kode == "KEK" else "prakiraan") if s else None, "sebagian": not lengkap, "hari": S}
+
+
+def status_tambahan_kab(kr, prediksi, lalu, kering, kmeta, kabs, cari, gerbang, kini):
+    """-> {kab_id: {KEK?, GEL?}}. KEK: kab tak ada di berkas wilayah atau meta basi (> segar_hari) = abu; GEL: hanya kab pesisir (entri GEL ada)."""
+    pb = (gerbang or {}).get("boleh_per_bahaya") or {}
+    hi = kini.astimezone(WIB).date()
+    try:
+        umur = (hi - dt.date.fromisoformat((kmeta or {})["hari_ini"])).days
+    except (KeyError, TypeError, ValueError):
+        umur = None
+    segar = bool(kering) and umur is not None and 0 <= umur <= kr["tambahan"]["KEK"]["segar_hari"]
+    lv = {}
+    for k, v in ((kering or {}).get("kab") or {}).items():
+        p, _, n = k.partition("|")
+        i = cari(p, n)
+        if i is not None and v.get("lv") in (0, 1, 2, 3):
+            lv[i] = max(lv.get(i, 0), v["lv"])
+    out = {}
+    for kab in kabs:
+        d = {"KEK": dict(hipotesis=pb.get("KEK") is not True,
+                         **status_tambahan(kr, "KEK", [lv.get(kab["id"]) if segar else None, None, None, None]))}
+        if kab.get("GEL"):
+            d["GEL"] = dict(hipotesis=pb.get("GEL") is not True, **status_tambahan(kr, "GEL", ambil_P(kr, prediksi, lalu, kab, "GEL", kini)))
+        out[kab["id"]] = d
+    return out
+
+
 def jalankan(umpan=None, kini=None, keluar=KELUAR):
     kr = _json(KRITERIA)
     kini = kini or dt.datetime.now(dt.timezone.utc)
@@ -212,6 +252,11 @@ def jalankan(umpan=None, kini=None, keluar=KELUAR):
     nm, kl = nama_tingkat_kht(_json(BENCANA)), _json(KLUSTER)
     for i, v in status_kht(kr, kl, _json(META), _json(UJIBALIK), nm, kabs, dasar.pencari(kabs), kini).items():
         out["kab"][i]["KHT"] = v
+    gb = _json(GERBANG)
+    for i, d in status_tambahan_kab(kr, _json(PREDIKSI), _json(LALU), _json(KERING), _json(KERING_META), kabs,
+                                    dasar.pencari(kabs), gb, kini).items():
+        out["kab"][i].update(d)
+    out["boleh_per_bahaya"].update({k: ((gb or {}).get("boleh_per_bahaya") or {}).get(k) is True for k in kr["tambahan"]["bahaya"]})
     os.makedirs(os.path.dirname(keluar), exist_ok=True)
     tmp = keluar + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
@@ -368,8 +413,28 @@ def _cek():
         r = status_kht(kr, kl, m, lw, nm, kk, lambda p, n: cari((p, n)), kini)
         assert all(v["s"] is None and v["nama"] is None and v["hipotesis"] for v in r.values())
     assert status_kht(kr, None, meta, lw, nm, kk, lambda p, n: None, kini)["1101"]["s"] is None
+    # P21: kekeringan dan gelombang (K15), S = E tanpa K dan R
+    assert kr["tambahan"]["bahaya"] == ["KEK", "GEL"]
+    for e in range(4):
+        assert status_tambahan(kr, "KEK", [e, None, None, None])["s"] == e and not status_tambahan(kr, "KEK", [e, None, None, None])["sebagian"]
+        assert status_tambahan(kr, "GEL", [e] * 4) == {"s": e, "pemicu": "prakiraan" if e else None, "sebagian": False, "hari": [e] * 4}
+    assert status_tambahan(kr, "KEK", [None] * 4)["s"] is None                       # tak terukur bukan 0
+    assert status_tambahan(kr, "GEL", [0, 0, 0, None])["s"] is None                  # satu hari hilang, E = 0: abu
+    x = status_tambahan(kr, "GEL", [None, 2, 1, 0])
+    assert x["s"] == 2 and x["sebagian"] is True and x["pemicu"] == "prakiraan"      # E > 0: tingkat dengan tanda sebagian
+    assert status_tambahan(kr, "KEK", [3, None, None, None])["pemicu"] == "wilayah"
+    cr = {("11", "A"): "1101", ("11", "B"): "1102", ("11", "C"): "1103"}.get
+    kw = {"kab": {"11|A": {"lv": 3}, "11|B": {"lv": 0}, "11|X": {"lv": 2}}}
+    pg = {"dibuat": "2026-11-26T04:46:15+07:00", "kode": {"GEL": {"kol": ["hs", "lv"], "hari": H3}}}
+    ka = [{"id": "1101", "GEL": [[3.9, 2]] * 3}, {"id": "1102"}, {"id": "1103"}]
+    lg = {"dibuat": "2026-11-26", "hari": {}, "hari0": {"GEL": {"kol": ["hs", "lv"], "kab": {"1101": [1.3, 1]}}}}
+    t = status_tambahan_kab(kr, pg, lg, kw, {"hari_ini": "2026-11-20"}, ka, lambda p, n: cr((p, n)), None, kini)
+    assert t["1101"]["KEK"]["s"] == 3 and t["1102"]["KEK"]["s"] == 0 and t["1103"]["KEK"]["s"] is None   # kab di luar berkas: abu
+    assert t["1101"]["GEL"]["hari"] == [1, 2, 2, 2] and t["1101"]["GEL"]["hipotesis"] and "GEL" not in t["1102"]   # non-pesisir: tak berlaku
+    assert all(v["KEK"]["s"] is None for v in status_tambahan_kab(kr, pg, lg, kw, {"hari_ini": "2026-11-01"}, ka, lambda p, n: cr((p, n)), None, kini).values())  # meta basi
+    assert all(v["KEK"]["s"] is None for v in status_tambahan_kab(kr, pg, lg, kw, None, ka, lambda p, n: cr((p, n)), None, kini).values())
     _muat("sp_uji_status", "scripts/prediksi/status_prakiraan_uji.py").cek()      # P19, P20
-    print("status_prakiraan: cek hijau (P10, P11, P12, P17, P19, P20 + fixture)")
+    print("status_prakiraan: cek hijau (P10, P11, P12, P17, P19, P20, P21 + fixture)")
 
 
 if __name__ == "__main__":

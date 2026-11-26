@@ -226,7 +226,12 @@ def jalankan(keluar=KELUAR, kini=None):
             rinci[k + "_" + lab] = r
     kini = kini or dt.datetime.now(dt.timezone.utc)
     per = {k: bool(ke[k + "_dibi"]["boleh_tampil"]) for k in kr["bahaya"]}
-    out = {"dibuat": kini.astimezone(WIB).isoformat(timespec="seconds"), "versi": 1, "boleh_tampil": all(per.values()), "boleh_per_bahaya": per,
+    # K15, DP-23: KEK dan GEL tak punya label DIBI harian yang dinilai di sini dan arsip status mulai 26 Nov 2026: n = 0, belum teruji
+    for k in kr["tambahan"]["bahaya"]:
+        ke[k + "_dibi"] = entri(None, "prospektif", True)
+        ke[k + "_dibi"]["alasan"] += " (K15: arsip status mulai 26 Nov 2026; label kekeringan dan gelombang belum dipetakan ke gerbang ini)"
+        per[k] = False
+    out = {"dibuat": kini.astimezone(WIB).isoformat(timespec="seconds"), "versi": 1, "boleh_tampil": all(per[k] for k in kr["bahaya"]), "boleh_per_bahaya": per,
            "catatan": "boleh_tampil per bahaya ditentukan label DIBI prospektif; logbook dinilai terpisah, tidak dirata-rata. Retrospektif (arsip prakiraan, tanpa R BMKG dan hari 0) hanya informasi.",
            "keluaran": ke}
     teks = json.dumps(out, ensure_ascii=False, indent=1)

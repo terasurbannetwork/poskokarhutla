@@ -1,9 +1,9 @@
 {
- "sidik": "31087452e15b5c3e",
+ "sidik": "6d4711b1714286f5",
  "berkas": {
-  "scripts/prediksi/status_prakiraan_kriteria.json": "e006e1920da01fa3eedd49f3f4903867200ca9d7647c25513eb2945ac822be50"
+  "scripts/prediksi/status_prakiraan_kriteria.json": "e1cdfbc0bc222000d3b92a89032643ff9b1d04e3234aa277b8afa80ee345079f"
  },
  "masukan": [],
- "dibuat": "2026-11-26T01:46:52Z",
- "catatan": "Amandemen 1, 26 Nov 2026 (sebelum ada uji balik; gerbang/status_prakiraan.json belum ada): K null untuk banjir/longsor dipagari plafon Siaga (K_null_plafon 2), sebab sebelumnya K null dengan E>0 bisa Awas sedangkan K rendah dipagari Siaga (bias ke atas). Tanda sebagian tetap. Sidik lama disimpan di status_prakiraan.sidik.v1."
+ "dibuat": "2026-11-26T02:08:46Z",
+ "catatan": "Amandemen 2, 26 Nov 2026 (DP-23, K15; sebelum ada uji balik KEK/GEL): blok 'tambahan' di berkas kriteria untuk kekeringan (KEK, dari kekeringan_wilayah.json) dan gelombang (GEL, dari prakiraan GEL). Tabel banjir/longsor/cuaca tidak berubah. Sidik sebelumnya di status_prakiraan.sidik.v2."
 }

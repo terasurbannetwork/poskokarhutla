@@ -120,11 +120,21 @@ Status dihitung ulang selalu tiap jalan (D3). Untuk tiap (kab, bahaya, tanggal s
 | `/banjir`, peta utama | BNJ | E = maksimum P dan R | hujan lebat | banjir (tabel nasional) | gerbang baru bagian 6 |
 | `/banjir`, tab Longsor (`public/banjir/longsor.js`; `/longsor` bukan halaman, registri `longsor.layar`) | LSR | E = maksimum P dan R | hujan lebat | longsor (tabel nasional) | gerbang baru bagian 6 |
 | `/cuaca` | CEX | E = maksimum P dan R | angin kencang, puting beliung | tidak dipakai (Q6) | gerbang baru bagian 6 |
-| pesisir, kekeringan, udara, gempa, gunung api | | tidak menyala | | | Q15 |
+| `/kekeringan` | KEK | bagian 5.2: status wilayah kita | tidak ada | tidak dipakai | bagian 5.2 (K15) |
+| pesisir (gelombang) | GEL | bagian 5.2: prakiraan gelombang kita | tidak ada | tidak dipakai | bagian 5.2 (K15) |
+| udara, gempa, gunung api | | tidak menyala (K15) | | | |
 
 Karhutla: status per kab = maksimum tingkat status taktis kluster di kab itu pada hari ini (0 sampai 3), dibaca dari `public/data/kluster.json` (keluaran `scripts/data/harian.py`, properti `level` 0 sampai 3 per kompleks, `prov` dan `kab`; hanya kompleks aktif 72 jam, gambut 168 jam; tidak ada berkas baru, ditetapkan DP-06). Kesegaran: `public/data/meta.json` `dibuat` paling lama 36 jam (angka `segar_jam.prakiraan` di berkas kriteria, tidak ada kunci baru sehingga sidik DP-05 tetap). Kab dicocokkan lewat `dasar.pencari`. Vonis per tingkat dibaca dari `public/data/ujibalik_status.json` (`tingkat.<Waspada|Siaga|Awas>.vonis`); tingkat 0 selalu hipotesis. Kode: `status_kht` di `scripts/prediksi/status_prakiraan.py`. Nama tingkat dari registri: Pencegahan rutin, Patroli terpadu, Siaga pemadaman awal, Prioritas pemadaman; warna hijau untuk tingkat 0 mengikuti D33. Kab tanpa kluster aktif = tingkat 0 hanya bila keluaran pipeline karhutla segar (36 jam); basi atau hilang: abu "belum terukur". Tidak ada kelas matriks dan tidak ada R. Pil hipotesis tetap sampai `ujibalik_status.json` memberi vonis "lulus" (bukan gerbang baru). Pembanding dan alarm uji karhutla tetap yang ada di `ujibalik_status.py`.
 
 Berkas kriteria `scripts/prediksi/status_prakiraan_kriteria.json` memuat tabel di atas, ambang 10 dan 50 persen, jendela kesegaran (36 jam, 3 jam), pemetaan severity, dan definisi alarm uji; sidiknya ditulis di DP-05 sebelum DP-06 membuka uji.
+
+### 5.2 Kekeringan dan gelombang (K15, DP-23; terkunci sebelum uji)
+
+Aturan dikunci di blok `tambahan` berkas kriteria (versi 2, sidik amandemen 2; sidik sebelumnya di `status_prakiraan.sidik.v2`). Tanpa K dan tanpa R (tidak ada umpan BMKG gelombang atau kekeringan di `dampak_peringatan`); S = E, tingkat 0 sampai 3 (Normal, Waspada, Siaga, Awas).
+
+- **KEK**: E = `lv` kab di `public/data/kekeringan_wilayah.json` (tingkat bawaan sistem itu, tidak dihitung ulang); kab dicocokkan dari kunci `prov|nama` lewat `dasar.pencari`. Ini status wilayah terkini, bukan prakiraan harian: hanya hari 0 terisi, `pemicu` = `wilayah`. Kab yang tidak ada di berkas (sekitar 139 dari 514) atau `kekeringan_meta.json` `hari_ini` lebih tua dari 15 hari (`segar_hari`, dasarian 10 hari ditambah selisih terbit) = abu belum terukur, tidak pernah 0. Tidak ikut sinyal Tangga dan tidak diberi peringkat prakiraan (`prediksi-besok` K10).
+- **GEL**: E = `lv` GEL di `prediksi.json` hari 1 sampai 3 (dipetakan lewat tanggal sasaran seperti bagian 5 butir 1) dan hari 0 dari `lalu.json`; ambang tinggi gelombang tetap yang ada di `catat.py` (`GEL_LV`, 1,25 / 2,5 / 4,0 m, belum bersumber naskah). Hanya kab yang punya titik pesisir (entri GEL ada, 139 kab); kab darat tidak punya status GEL (tidak berlaku, bukan abu). Satu hari null dan E = 0: abu; E lebih dari 0: tingkat E bertanda sebagian sumber.
+- Keduanya berpil hipotesis tetap (GEL "belum teruji" menurut `prediksi-besok`). Uji balik: arsip status mulai 26 Nov 2026 dan belum ada pasangan berlabel, jadi entri gerbang `KEK_dibi` dan `GEL_dibi` n = 0 "belum teruji", `boleh_per_bahaya` false; tidak menahan `boleh_tampil` banjir, longsor, cuaca. Kode: `status_tambahan` dan `status_tambahan_kab` di `scripts/prediksi/status_prakiraan.py`, cek P21.
 
 ## 6. Uji balik lewat gerbang bersama
 

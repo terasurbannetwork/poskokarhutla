@@ -5,6 +5,8 @@
   --brand:oklch(25.5% .075 256); --brand2:oklch(42% .11 255); --accent:oklch(68% .09 252);
   --ok:oklch(62% .16 150); --warn:oklch(76% .16 75); --bad:oklch(57% .21 27); --info:oklch(66% .13 235);
   --f0:oklch(72% .15 150); --f1:oklch(86% .16 98); --f2:oklch(73% .17 58); --f3:oklch(57% .21 27);
+  /* status prakiraan (inti/dampak_peringatan.js, D33): hijau Normal dan abu belum terukur khusus lapisan ini */
+  --dp-0:var(--f0); --dp-1:var(--f1); --dp-2:var(--f2); --dp-3:var(--f3); --dp-belum:oklch(72% .012 256);
   --shadow:0 2px 14px oklch(25% .07 256 / .08); --shadow-lg:0 8px 28px oklch(25% .07 256 / .16);
   --r:16px; --r-sm:10px; --top:58px;
   --fs-1:11px; --fs-2:12px; --fs-3:13px; --fs-4:14.5px; --fs-5:16px; --fs-6:18px; --fs-7:21px; --fs-8:28px;

@@ -247,7 +247,8 @@ export default {
           "sinyal": false,
           "peta_kab": false,
           "cari": [],
-          "ukuran_provinsi": []
+          "ukuran_provinsi": [],
+          "status_dampak": []
         }
       }
     },
@@ -484,7 +485,8 @@ export default {
           "sinyal": false,
           "peta_kab": false,
           "cari": [],
-          "ukuran_provinsi": []
+          "ukuran_provinsi": [],
+          "status_dampak": []
         }
       }
     },
@@ -685,7 +687,8 @@ export default {
             "posko",
             "bpbd"
           ],
-          "ukuran_provinsi": []
+          "ukuran_provinsi": [],
+          "status_dampak": []
         }
       }
     },
@@ -883,7 +886,8 @@ export default {
             "posko",
             "bpbd"
           ],
-          "ukuran_provinsi": []
+          "ukuran_provinsi": [],
+          "status_dampak": []
         }
       }
     },
@@ -1088,7 +1092,8 @@ export default {
             "gempa",
             "dirasakan",
             "terbesar"
-          ]
+          ],
+          "status_dampak": []
         }
       }
     },
@@ -1266,7 +1271,8 @@ export default {
           "ukuran_provinsi": [
             "pm25",
             "jiwa"
-          ]
+          ],
+          "status_dampak": []
         }
       }
     },
@@ -1474,7 +1480,8 @@ export default {
             "radius",
             "erupsi",
             "tinggi"
-          ]
+          ],
+          "status_dampak": []
         }
       }
     },
@@ -1661,7 +1668,8 @@ export default {
             "status",
             "spi",
             "jiwa"
-          ]
+          ],
+          "status_dampak": []
         }
       }
     },
@@ -1822,7 +1830,8 @@ export default {
           "sinyal": false,
           "peta_kab": false,
           "cari": [],
-          "ukuran_provinsi": []
+          "ukuran_provinsi": [],
+          "status_dampak": []
         }
       }
     }

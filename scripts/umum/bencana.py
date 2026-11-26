@@ -46,7 +46,7 @@ TINDAKAN = ("kaji_cepat", "evakuasi", "sar", "pembersihan", "alat_berat", "buka_
             "imbauan", "rambu", "status_darurat", "omc", "patroli")
 # W8 layar publik setara karhutla (paritas-bencana DESAIN-TEKNIS 12.2, D15): nyala per fitur, daftar = pilihan lapisan/ukuran
 LAYAR_BOOL = ("unduh_tabel", "brief", "pilih_tanggal", "profil_kab", "tab_operasi", "citra", "sinyal", "peta_kab")   # citra, sinyal, peta_kab: PB-81
-LAYAR_LIST = ("cari", "ukuran_provinsi")
+LAYAR_LIST = ("cari", "ukuran_provinsi", "status_dampak")   # status_dampak: kode bahaya modul inti/dampak_peringatan.js (DP-10)
 
 
 def galat_kemampuan(id_, k):
