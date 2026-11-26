@@ -604,6 +604,14 @@ def laads_cek():
     """Probe: granul Palu 2018 lewat CMR, DDS, dan subset 3 x 3 di Kota Palu dari tiga variabel."""
     url = granul("2018-09-28", 29, 9)
     print("granul:", url)
+    # Diagnosa auth (token tidak pernah dicetak): arsip LAADS menerima Bearer langsung, OPeNDAP lewat OAuth URS.
+    arsip = url.replace("/opendap/RemoteResources/laads/", "/archive/")
+    for nama, u in (("arsip", arsip), ("dds", url + ".dds")):
+        try:
+            st, akhir, ct, b = ambil_laads(u, maks=2000)
+            print(f"auth {nama}: {st} {ct} {akhir} awal={b[:8]!r}")
+        except urllib.error.HTTPError as e:
+            print(f"auth {nama}: HTTP {e.code} di {e.geturl()} isi={e.read(600).decode('utf-8', 'replace')!r}")
     st, akhir, ct, b = ambil_laads(url + ".dds")
     print(st, ct, akhir, "\n", b.decode("utf-8", "replace")[:4000])
     n = nama_var(url)
