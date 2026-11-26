@@ -28,7 +28,7 @@ Rasio penyempurnaan dan jumlah tingkat adalah rancangan; GeoClaw menentukan peny
 
 ## 4. Persamaan dan gesekan
 
-Persamaan air dangkal nonlinear dalam bentuk konservasi (kedalaman h dan fluks hu, hv) dengan basah-kering dan gesekan dasar Manning: percepatan gesekan = g n^2 |u| u / h^(4/3). Koefisien Manning n per kelas lahan dari tabel baku dengan sumbernya ditulis di bab Metode, dengan nilai laut bawaan yang seragam; tabel memakai WorldCover dan jejak bangunan (TS-07). Dispersi (Boussinesq) hanya dibahas sebagai batas: tsunami yang menempuh jarak jauh dari sumber sangat dipengaruhi dispersi, jadi hasil untuk sumber jauh diberi catatan. Ambang kering dan ambang waktu tiba pertama adalah bawaan sementara (ambang waktu tiba: muka air naik 0,2 m dari awal; ambang kering ditentukan mesin) dan dicatat di berkas keluaran.
+Persamaan air dangkal nonlinear dalam bentuk konservasi (kedalaman h dan fluks hu, hv) dengan basah-kering, tanpa gesekan dasar (K10, K12). Gesekan dasar tidak dipakai (K10, K12: `manning` 0 di uji lab dan di hitungan pantai); tidak ada tabel Manning per kelas lahan. Tanpa disipasi gesekan, genangan dan run-up cenderung terlalu jauh dan terlalu tinggi; batas ini ditulis di Metode dan di samping legenda. Dispersi (Boussinesq) hanya dibahas sebagai batas: tsunami yang menempuh jarak jauh dari sumber sangat dipengaruhi dispersi, jadi hasil untuk sumber jauh diberi catatan. Ambang kering dan ambang waktu tiba pertama adalah bawaan sementara (ambang waktu tiba: muka air naik 0,2 m dari awal; ambang kering ditentukan mesin) dan dicatat di berkas keluaran.
 
 Kondisi batas: tepi luar L0 memakai batas keluar-radiasi; tepi kotak halus mengikuti induknya. Pasang surut: tinggi muka laut awal seragam (muka laut rata-rata, bawaan); pengaruh pasang tidak dimodelkan dan ditulis di bab Metode (jangan dikarang 'aman' di pasang surut rendah).
 
@@ -65,7 +65,7 @@ Ketersediaan NCEI diperiksa di TS-03, dan kelas tiap kejadian dikunci di TS-14, 
 ### 8.3 Daftar beku (di-commit sebelum hitungan uji pertama; hash berkasnya dicatat di tiap berkas hasil)
 
 1. Kelas tiap kejadian dan pembagian pengembangan dan uji.
-2. Versi dan hash masukan mesin, versi mesin, DEM, batimetri, tabel Manning.
+2. Versi dan hash masukan mesin, versi mesin, DEM, batimetri, nilai `manning` (0, K12).
 3. Besaran berpasangan per jenis titik amatan (8.4).
 4. Jendela jarak W: titik hitungan yang dipakai untuk titik amatan i = nilai terbesar dalam jarak W di sepanjang garis pantai di sekitar titik itu, sama untuk model dan pembanding. Nilai W ditetapkan di TS-14 dan dilaporkan juga untuk dua W lain sebagai kepekaan. Memakai nilai terbesar condong ke atas (bias terhadap model yang menghitung terlalu tinggi); bias itu ditulis di bab Metode.
 5. Metrik: Ri = H_obs,i / H_hit,i; K = exp(rata-rata ln Ri); kappa = exp(simpangan baku ln Ri); galat log E = akar(rata-rata (ln Ri)^2).
