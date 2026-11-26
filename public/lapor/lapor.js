@@ -1968,7 +1968,7 @@ function tabelKejadianProv(w, daftar, ikut, giliran) {
   th.append(kep); t.append(th, tb); w.append(t);
   let i = 0; const lanjut = () => { if (giliran !== alunGiliran) return; const f = document.createDocumentFragment();
     for (const x of daftar.slice(i, i + 40)) {
-      const tr = el("tr"), jn = el("span", "lp-alun-kj-jenis"); tr.dataset.id = x.id; tr.tabIndex = 0; tr.setAttribute("aria-expanded", "false");
+      const tr = el("tr"), jn = el("span", `lp-alun-kj-jenis lp-jenis-${x.jenis || "lainnya"}`);   // pil berwarna per jenis dari token --kat-* (pemilik 26 Nov 2026: "harusnya ada labelnya dan kasih warna") tr.dataset.id = x.id; tr.tabIndex = 0; tr.setAttribute("aria-expanded", "false");
       jn.append(ikon(IKON_JENIS[x.jenis] || "i-kejadian"), x.jenisLabel);
       const tdJ = el("td"); tdJ.append(jn); const tdS = el("td"); tdS.append(el("span", `lp-pil ${x.status || ""}`, x.statusLabel || "–"));
       tr.append(el("td", "lp-alun-kj-kab", x.kab || "Lokasi belum diketahui"), tdJ, tdS, el("td", null, x.nBerita ? x.nBerita.toLocaleString("id-ID") : "–"));
@@ -1978,6 +1978,7 @@ function tabelKejadianProv(w, daftar, ikut, giliran) {
     tb.append(f); i += 40; if (i < daftar.length) requestAnimationFrame(lanjut); else if (alunPeta) alunPeta.resize(); }; lanjut();
 }
 function gambarKabar(ikut) {
+  muatWilayah();   // nama provinsi dimuat sejak awal supaya tabel tidak sempat menampilkan kode
   const sm = $("sumberAlun"); sm.hidden = alunMode === "peringatan";
   sm.replaceChildren(...SUMBER_ALUN.map(([id, tt, ik]) => { const b = el("button"); b.append(ikon(ik), el("span", null, tt)); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(id === alunSumber));
     b.addEventListener("click", () => { alunSumber = id; for (const c of sm.children) c.setAttribute("aria-selected", String(c === b)); gambarAlun(); }); return b; }));
