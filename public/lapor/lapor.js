@@ -442,9 +442,11 @@ function bacaPosisi(ok, gagal) {
     navigator.geolocation.getCurrentPosition(ok, e2 => gagal(pesan(e2)), {enableHighAccuracy: false, maximumAge: 300000, timeout: 15000});
   }, {enableHighAccuracy: true, maximumAge: 0, timeout: 12000});
 }
-function kartuLokasi() {
+/* lapor orang hilang: panel isian berkelompok "Terakhir terlihat", kartu lokasi bertanya tempat terakhir terlihat (pemilik 26 Nov 2026) */
+const modeCari = j => (j.isian || []).some(x => x.kelompok === "Terakhir terlihat");
+function kartuLokasi(cari = false) {
   const isi = kartu("lokasi"); isi.closest(".lp-langkah").classList.add("lp-langkah-lok");
-  isiLokasi(isi, {judul: "Di mana kejadiannya?", ket: "Paling tepat bila Anda sedang di lokasi kejadian.",
+  isiLokasi(isi, {judul: cari ? "Di mana terakhir terlihat?" : "Di mana kejadiannya?", ket: cari ? "Pakai lokasi HP bila Anda di tempat itu, atau cari nama desanya." : "Paling tepat bila Anda sedang di lokasi kejadian.",
     pakaiPosisi: p => kirim({lokasi: {lat: p.coords.latitude, lon: p.coords.longitude, akurasi: p.coords.accuracy, sumber: "gps"}, tampil: `Lokasi saat ini, akurasi ${Math.round(p.coords.accuracy).toLocaleString("id-ID")} m`}),
     pilihCari: d => kirim({lokasi: {kode: d.kode}, tampil: `${d.judul}, ${d.sub.split(",")[0]}`}), kabupatenCukup: false,
     terakhir: POSTER ? {judul: "Desa dari poster yang Anda pindai", ket: "Pakai bila kejadiannya di desa ini", aksi: () => kirim({lokasi: {kode: POSTER, poster: true}, tampil: "Lokasi dari poster desa"})} : null});
@@ -817,7 +819,7 @@ function terapkan(j, {dariCache = false} = {}) {
   if (j.nomor && j.unduhan) kartuTiket(j);
   else if (j.minta === "setuju") kartuSetuju(j);
   else if (j.minta === "identitas") kartuIdentitas();
-  else if (j.minta === "lokasi") kartuLokasi();
+  else if (j.minta === "lokasi") kartuLokasi(modeCari(j));
   else if (j.minta === "foto") kartuFoto(j);
   else if (j.minta === "foto_cari") kartuFotoCari(j);
   else if (j.minta?.startsWith("tempat")) kartuTempat(j);
@@ -910,6 +912,7 @@ function sigapKonteks(j) {
   const f = j.form?.isian?.[0];
   if (j.minta === "jenis") return ["sapa", "Pilih yang paling mirip", "Bila ragu, pilih yang paling mendekati. Petugas bisa membetulkannya nanti."];
   if (j.minta === "sub") return ["sapa", "Seperti apa kejadiannya?", "Baca penjelasan di bawah tiap pilihan. Tidak yakin? Pilih Tidak tahu."];
+  if (j.minta === "lokasi" && modeCari(j)) return ["sapa", "Di mana terakhir terlihat?", "Pilih tempat terakhir ia terlihat. Bila tidak tahu persis, cari nama desanya."];
   if (j.minta === "lokasi") return ["semangat", "Di mana kejadiannya?", "Bila Anda di tempat kejadian, pakai lokasi HP. Bila tidak, cari nama desanya."];
   if (j.minta === "foto_cari") return ["sapa", "Foto memudahkan pencarian", "Pilih foto yang wajahnya jelas. Foto lama dari galeri boleh."];
   if (j.minta === "foto") return ["semangat", "Foto dari kamera", "Potret langsung supaya waktu dan lokasinya terekam. Jaga jarak aman saat memotret."];
