@@ -2205,6 +2205,7 @@ function mulaiTur() {
   const tombol = e => { if (e.key === "Escape") { e.preventDefault(); selesai(); } else if (e.key === "ArrowRight") { e.preventDefault(); i < N - 1 ? tampil(i + 1) : selesai(); } else if (e.key === "ArrowLeft" && i > 0) { e.preventDefault(); tampil(i - 1); }
     else if (e.key === "Tab") { const f = [...k.querySelectorAll("button:not([hidden])")], a = f.indexOf(document.activeElement); if (e.shiftKey ? a <= 0 : a === f.length - 1) { e.preventDefault(); f[e.shiftKey ? f.length - 1 : 0].focus(); } } };
   lewat.addEventListener("click", selesai); mundur.addEventListener("click", () => tampil(i - 1)); maju.addEventListener("click", () => i < N - 1 ? tampil(i + 1) : selesai());
+  m.title = "Ketuk Sigap untuk lanjut"; m.addEventListener("click", () => maju.click());   // maskot ikut membawa ke langkah berikutnya (pemilik 26 Nov 2026); tombol Lanjut tetap jalur papan ketik
   addEventListener("resize", tata); addEventListener("scroll", tata, true); addEventListener("keydown", tombol, true);
   tampil(0);
 }

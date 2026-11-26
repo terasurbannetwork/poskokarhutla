@@ -3194,3 +3194,4 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
   :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:focus-within)))) .lp-titik-baru{position:absolute;margin:0;transform:translate(10px,-10px)}
 }
 @media (min-width:900px) and (prefers-reduced-motion:reduce){.lp-tab-ciut svg{transition:none}}
+.lp-tur-maskot{cursor:pointer}
