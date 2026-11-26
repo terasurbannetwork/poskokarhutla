@@ -23,14 +23,14 @@ Ada dua jalur yang berjalan berdampingan. Jalur lengkap adalah rancangan awal ya
 | No | Dokumen | Keluaran terbaru | Kondisi |
 | --- | --- | --- | --- |
 | 07 | Rancangan Juklak Praktis | 261126 | Tiga lapis isian, tanda mutu, urutan sumber, saluran luring, nomor induk otomatis, verifikasi berbasis risiko, masa peralihan, aturan desa untuk korban dua penyebab |
-| 07 | Perbandingan Juklak Lengkap dan Praktis | 261126, 7 halaman | 29 perubahan beserta alasannya, enam angka bawaan, risiko |
-| 08 | Kajian versi praktis | 261126, 61 halaman; lampiran 25 halaman | Metode menambah penelaahan kepraktisan; Hasil menambah subbab 3.4.5; Pembahasan menambah untung-rugi |
+| 07 | Perbandingan Juklak Lengkap dan Praktis | 261126, 11 halaman | 29 perubahan beserta alasannya, enam angka bawaan, risiko; Bab 2 uji meja lima kejadian nyata |
+| 08 | Kajian versi praktis | 261126, 63 halaman; lampiran 27 halaman | Metode menambah penelaahan kepraktisan; Hasil menambah subbab 3.4.5; Pembahasan menambah untung-rugi |
 | 09 | Buku Praktis versi Juklak Praktis | 261126, 31 halaman | Tabel dan 11 gambar varian praktis; daftar periksa 22 langkah |
 
 ### 1.3 Pemeriksaan yang sudah dijalankan
 
 - Pemeriksa bahasa: 0 galat pada semua naskah. Masih ada sekitar 80 saran, sebagian besar kalimat lebih dari 45 kata.
-- Pemeriksa bersih menelaah jalur praktis dua kali. Pada pemeriksaan kedua tidak ada sisa aturan versi lengkap, dan lebih dari 80 rujukan cocok dengan Juklak Praktis. Temuan kecilnya sudah ditambal, tetapi sesudah tambalan terakhir belum diperiksa ulang.
+- Pemeriksa bersih menelaah jalur praktis tiga kali. Pemeriksaan ketiga (26 November) menemukan sisa pada aturan lahar, rumusan verifikasi, kelas bila angka terukur tidak pernah datang, siapa mengentri laporan luring, keadaan isian, dan isian status dampak. Semuanya sudah ditambal dan dibangun ulang. Sesudah tambalan ini belum ada pemeriksaan keempat.
 - Uji batas intensif dengan dasbor DIBI 2008 sampai 2026: 0,65 persen catatan intensif dengan penyebut yang setara GAR (GAR 0,86 persen). Rinciannya di `research_notes/Batas bencana intensif per jenis/uji-batas-final/README.md`.
 
 ## 2. Keputusan yang menunggu pemilik
@@ -53,13 +53,10 @@ Ada dua jalur yang berjalan berdampingan. Jalur lengkap adalah rancangan awal ya
 
 Urutan kerja yang disarankan. Langkah 5 sampai 7 sebaiknya menunggu keputusan pada bagian 2.
 
-1. Periksa ulang jalur praktis dengan pemeriksa bersih sesudah tambalan terakhir 26 November.
-2. Uji kedua jalur dengan tiga sampai lima kejadian nyata, misalnya banjir bandang Sumatera November 2025, satu gempa, satu karhutla, dan satu kekeringan. Bandingkan:
-   - apakah kejadian tercatat sebagai bencana dan kelasnya sama di kedua jalur;
-   - berapa isian yang dapat terisi pada hari pertama;
-   - berapa kali petugas harus menebak.
-
-   Hasilnya ditambahkan sebagai bab baru dokumen perbandingan.
+1. Selesai 26 November: pemeriksaan ulang jalur praktis dan tambalannya.
+2. Selesai 26 November: uji meja kedua jalur dengan lima kejadian nyata 2026 (banjir Aceh Tamiang, longsor Bandung Barat, angin kencang Trenggalek, kekeringan Bogor, karhutla Lumajang), dimuat sebagai Bab 2 dokumen perbandingan. Hasil: kelas sama di kelima kejadian; jalur praktis menyatakan 5 dari 5 sebagai kejadian bencana pada laporan pertama (lengkap 4 dari 5, karhutla Lumajang tertahan karena luasnya belum terverifikasi); tempat petugas menebak 4 lawan 9. Uji meja dilakukan penyusun dengan laporan harian BNPB, bukan oleh petugas, dan belum mencakup gempa.
+2a. Susun tabel padanan istilah laporan harian ke isian baku, misalnya rumah dan fasilitas "terdampak", "RBH", dan "luasan wilayah terdampak" untuk karhutla, lalu muat di Lampiran I versi yang dipilih. Celah ini ditemukan uji meja dan berlaku untuk kedua jalur.
+2b. Ulangi uji meja dengan petugas BPBD atau Pusdalops sungguhan, dan tambahkan kejadian gempa.
 3. Uji angka bawaan yang datanya sudah tersedia:
    - selisih antarsumber dengan membandingkan DIBI, laporan harian, dan logbook Pusdalops;
    - proksi kekeringan terhadap batas 15 persen.
@@ -85,6 +82,8 @@ Urutan kerja yang disarankan. Langkah 5 sampai 7 sebaiknya menunggu keputusan pa
 ### 4.2 Keselarasan antardokumen
 
 - Jalur lengkap belum memuat aturan desa untuk korban dua penyebab (lihat keputusan 4).
+- Jalur lengkap belum memuat tiga perjelasan yang sudah masuk jalur praktis pada 26 November: lahar letusan lawan banjir lahar, kelas akhir bertanda sementara bila angka terukur tidak pernah datang, dan isian status dampak yang selaras dengan Bab II huruf C angka 5.
+- Kedua jalur belum punya padanan istilah laporan harian ("terdampak" untuk bangunan, "RBH", "luasan wilayah terdampak") ke isian baku.
 - Infografis, Excel, dan kajian telaah 02 hanya ada versi lengkap.
 - Sebagian gambar dipakai bersama oleh kedua jalur. Perbaikan 26 November pada gambar tahapan, batas kejadian, alur, ketentuan tambahan, identitas, dan sebaran waktu berlaku untuk keduanya. Infografis belum dicek ulang terhadap perbaikan itu.
 

@@ -23,11 +23,11 @@ Tabel C.1. Lembar data khusus karhutla
 | Subjenis | Kebakaran hutan, kebakaran lahan bukan gambut, atau kebakaran lahan gambut | Petugas lapangan |
 | *Hotspot* | Jumlah, satelit, *confidence*, tanggal | Sistem pemantauan (otomatis) |
 | Titik api terverifikasi | Koordinat dan waktu pengecekan lapangan | Petugas lapangan |
-| Luas terbakar | Hektare, dengan sumber pengukuran lapangan, citra satelit resolusi tinggi, citra satelit resolusi menengah, atau taksiran lapangan, menurut urutan sumber dalam Lampiran B Tabel B.6; kelas akhir tidak boleh berasal dari taksiran lapangan | Petugas lapangan, analis citra, walidata bencana, atau kementerian yang membidangi kehutanan |
+| Luas terbakar | Hektare, dengan sumber pengukuran lapangan, citra satelit resolusi tinggi, citra satelit resolusi menengah, atau taksiran lapangan, menurut urutan sumber dalam Lampiran B Tabel B.6; kelas akhir dari taksiran lapangan ditetapkan dengan tanda sementara | Petugas lapangan, analis citra, walidata bencana, atau kementerian yang membidangi kehutanan |
 | Luas terbakar perkiraan | Hektare, dari analisis *hotspot*; tidak dipakai untuk kriteria dan kelas kejadian | Analis citra |
 | Kedalaman gambut terbakar | Sentimeter, khusus kebakaran lahan gambut | Petugas lapangan, peta gambut |
 | Tutupan lahan | Hutan dan lahan selain savana, semak, dan padang rumput (hutan alam, hutan tanaman, kebun, lahan gambut, pertanian), atau savana, semak, dan padang rumput | Petugas lapangan, peta tutupan lahan |
-| Luas terbakar menurut tutupan | Hektare terbakar pada savana, semak, dan padang rumput, serta pada hutan dan lahan lainnya; dipakai untuk kelas kejadian dengan sumber menurut Rancangan Juklak Praktis Bab II huruf F angka 4; kedua kelompok dinilai terpisah; luas dari taksiran lapangan hanya menghasilkan kelas sementara | Petugas lapangan atau analis citra |
+| Luas terbakar menurut tutupan | Hektare terbakar pada savana, semak, dan padang rumput, serta pada hutan dan lahan lainnya; dipakai untuk kelas kejadian dengan sumber menurut Rancangan Juklak Praktis Bab II huruf F angka 4; kedua kelompok dinilai terpisah; apabila sampai penutupan hanya tersedia luas dari taksiran lapangan, kelas akhir tetap ditetapkan dengan tanda sementara yang ikut tersimpan dalam data statis | Petugas lapangan atau analis citra |
 | Tanggal api terakhir | Tanggal api terakhir terlihat di lapangan dan tanggal *hotspot* terakhir di area tersebut; dipakai untuk batas satu kejadian dan tanda selesai | Petugas lapangan, sistem pemantauan |
 | Status kawasan | Kawasan hutan, areal penggunaan lain, areal berizin (nama pemegang izin apabila ada) | Peta kawasan hutan Kementerian Kehutanan |
 | Kualitas udara | Indeks Standar Pencemar Udara (ISPU) dan partikel halus berukuran 2,5 mikrometer (PM2,5) tertinggi harian (µg/m³) | Stasiun pemantau Kementerian Lingkungan Hidup atau BMKG (otomatis) |
@@ -162,7 +162,7 @@ Tabel C.8. Lembar data khusus erupsi gunung api
 | Erupsi | Waktu, jenis (eksplosif, efusif), tinggi kolom abu di atas puncak (m) | PVMBG |
 | Hujan abu | Arah sebaran dan tebal abu per desa (mm) | Petugas lapangan |
 | Awan panas | Jarak luncur (km) dan arah | PVMBG |
-| Lahar | Sungai yang dialiri dan desa terdampak | Petugas lapangan, PVMBG |
+| Lahar letusan | Sungai yang dialiri dan desa terdampak; lahar letusan yang terjadi selama erupsi dicatat di sini, sedangkan banjir lahar hujan dicatat sebagai kejadian banjir yang ditautkan dengan erupsi ini | Petugas lapangan, PVMBG |
 | Penerbangan | Kode warna Volcano Observatory Notice for Aviation (VONA) dan bandar udara yang ditutup | PVMBG, otoritas bandara |
 | Kawasan rawan bencana | Desa dan jumlah penduduk per kawasan I, II, III | Peta PVMBG |
 | Ternak dan lahan | Ternak dievakuasi atau mati; lahan tertutup abu (ha) | Dinas pertanian |

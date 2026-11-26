@@ -2,7 +2,7 @@
 
 Lampiran ini merinci isian data umum yang berlaku untuk sembilan jenis bencana, sesuai dengan Rancangan Juklak Praktis Lampiran I. Kolom "Lapis" menunjukkan kepentingan isian. Isian inti wajib pada laporan awal dan dapat disampaikan melalui saluran luring. Isian penting wajib pada hasil awal *rapid assessment*. Isian pelengkap dilengkapi pada pemutakhiran atau penutupan. Isian otomatis diisi oleh sistem. Isian inti berjumlah 12, yaitu isian 1.1, 1.3, 2.1, 2.3, 3.1, 3.4, 4.1, 4.2, 5.1, 6.1, 10.1, dan 10.2. Hanya isian inti dan isian penting yang menentukan kriteria kejadian bencana dan kelas kejadian.
 
-Setiap isian angka memiliki salah satu dari tiga keadaan, yaitu ada nilai, nihil, atau belum didata. Isian yang sampai penutupan tetap belum didata dicatat tidak tersedia, bukan nol. Angka dampak yang sudah diketahui sebelum lapisnya wajib diisi sejak laporan awal sebagai angka sementara, sehingga kriteria dapat diperiksa sedini mungkin. Setiap angka diberi tanda mutu menurut Subbab B.5.
+Selama kejadian berlangsung, setiap isian angka memiliki salah satu dari tiga keadaan, yaitu ada nilai, nihil, atau belum didata. Pada penutupan, isian yang tetap belum didata berubah menjadi tidak tersedia, bukan nol. Angka dampak yang sudah diketahui sebelum lapisnya wajib diisi sejak laporan awal sebagai angka sementara, sehingga kriteria dapat diperiksa sedini mungkin. Setiap angka diberi tanda mutu menurut Subbab B.5.
 
 ## B.1 Identitas, waktu, dan lokasi
 
@@ -69,7 +69,7 @@ Tabel B.3. Isian kelompok kerusakan, layanan vital, dan ekonomi
 | 7.5 | Transportasi | Pelabuhan, bandar udara, terminal, atau stasiun: tutup, terbatas, normal; lama gangguan (hari) | Penting |
 | 7.6 | Rumah sakit rujukan | Pilihan: tidak berfungsi, sebagian, normal; lama gangguan (hari) | Penting |
 | 8.1 | Sawah | Hektare terendam atau terdampak, hektare puso | Penting |
-| 8.2 | Kebun, hutan, tambak, kolam | Hektare terdampak; untuk kebun juga hektare puso | Penting |
+| 8.2 | Kebun, hutan, tambak, kolam | Hektare terdampak; untuk kebun juga hektare terendam dan hektare puso; untuk tambak dan kolam hektare rusak | Penting |
 | 8.3 | Ternak | Ekor mati per jenis | Penting |
 | 8.4 | Usaha | Kios, pabrik, kantor swasta, dan usaha kecil: unit rusak atau terganggu; tidak dihitung dalam kriteria | Pelengkap |
 | 8.5 | Nilai kerusakan dan nilai kerugian | Juta rupiah, dua angka terpisah, yaitu kerusakan aset dan kerugian ekonomi, dengan tahun harga; wajib untuk kejadian bencana intensif dan kejadian yang dikaji melalui pengkajian kebutuhan pascabencana, selain itu boleh tidak tersedia | Pelengkap |
@@ -92,7 +92,7 @@ Tabel B.4. Isian kelompok kebutuhan, penanganan, dan mutu data
 | 10.1 | Sumber data | Pilihan: pendataan lapangan, laporan perangkat daerah, laporan masyarakat, pemberitaan, atau sistem pemantauan | Inti |
 | 10.2 | Pelapor | Jabatan dan instansi | Inti |
 | 10.3 | Status konfirmasi | Pilihan: belum dikonfirmasi, dikonfirmasi BPBD kabupaten/kota, atau terverifikasi walidata bencana; melekat pada laporan | Otomatis |
-| 10.4 | Status dampak | Diisi secara otomatis: ada dampak apabila paling sedikit satu isian 4.1 sampai 4.5, 5.1, 6.1 sampai 6.6, 8.1 sampai 8.3, atau 8.6 bernilai lebih dari nol, atau isian 7.1 sampai 7.6 berstatus selain normal (orang terancam, evakuasi pencegahan, kematian tidak langsung, irigasi, usaha, dan nilai rupiah tidak dihitung); menunggu data apabila belum ada isian yang lebih dari nol, tetapi masih ada isian yang belum didata; tanpa dampak apabila semua isian nihil | Otomatis |
+| 10.4 | Status dampak | Diisi secara otomatis: ada dampak apabila paling sedikit satu isian 4.1 sampai 4.5, 5.1, atau 6.1 bernilai lebih dari nol; isian 6.2 sampai 6.6 menunjukkan fasilitas publik, jalan, atau jembatan yang rusak, tidak hanya terendam; isian 8.1 menunjukkan sawah terendam atau puso; isian 8.2 menunjukkan kebun terendam atau puso atau tambak rusak; isian 8.3 atau 8.6 bernilai lebih dari nol; atau isian 7.1 sampai 7.6 berstatus selain normal. Hutan dan kolam pada isian 8.2, orang terancam, evakuasi pencegahan, kematian tidak langsung, irigasi, usaha, dan nilai rupiah tidak menentukan dampak; menunggu data apabila belum ada isian yang lebih dari nol, tetapi masih ada isian yang belum didata; tanpa dampak apabila semua isian nihil | Otomatis |
 | 10.5 | Kriteria kejadian bencana yang terpenuhi | Huruf a sampai d diisi otomatis dari angka dampak, termasuk luas puso (8.1 dan 8.2) dan luas terbakar (8.6) beserta tanda sumbernya; huruf e dan f diisi dari surat yang tercatat pada isian 9.3 dan 9.2; untuk bencana nonalam dan sosial juga dari isian 9.6 | Otomatis |
 | 10.6 | Kelas dan indikator penentu | Diisi secara otomatis: intensif atau ekstensif beserta indikator penentunya dan tanda sementara apabila indikator penentunya berupa angka perkiraan, dihitung dari korban meninggal dan hilang, rumah rusak berat terbobot, dan isian khusus longsor, kekeringan, dan karhutla | Otomatis |
 | 10.7 | Dokumentasi | Foto yang memuat koordinat dan waktu pengambilan | Penting |
@@ -137,7 +137,7 @@ Sumber: Rancangan Juklak Praktis Bab II huruf E angka 9 dan Lampiran I Tabel I.7
 
 ## B.7 Format laporan awal melalui saluran luring
 
-Laporan awal melalui telepon, pesan singkat, pesan instan, atau radio cukup memuat isian inti dengan urutan dalam Tabel B.7. Isian yang belum diketahui ditulis belum didata. Pengentri mencatat waktu laporan dibuat di lapangan, memberi KIB, dan memberi tanda metode perkiraan pada angka yang berupa taksiran.
+Laporan awal melalui telepon, pesan singkat, pesan instan, atau radio cukup memuat isian inti dengan urutan dalam Tabel B.7. Isian yang belum diketahui ditulis belum didata. Laporan diterima dan dientri oleh Pusdalops BPBD kabupaten/kota, yang memberi KIB. Apabila Pusdalops BPBD kabupaten/kota tidak dapat dihubungi, laporan dientri oleh Pusdalops BPBD provinsi atau Pusdalops BNPB atas nama kabupaten/kota tersebut, dan KIB diberikan oleh pengentri. Pengentri mencatat waktu laporan dibuat di lapangan dan memberi tanda metode perkiraan pada angka yang berupa taksiran.
 
 Tabel B.7. Urutan isian laporan awal melalui saluran luring
 
