@@ -18,3 +18,5 @@ Kerjakan urut; ambil satu tiket, kerjakan hanya cakupannya.
 Status 26 Nov 2026: KS-02 pipeline selesai dan kalibrasi berjalan dengan kunci v2 berjangkar, tetapi gerbang kelayakan MENUNGGU: n = 11 dari 20 pasangan (anggaran unduhan 2,5 GB habis, terpakai sekitar 2,28 GB); tidak ada ambang layak. KS-03 belum boleh jalan sampai n >= 20 dan satu ambang layak, atau pemilik menambah anggaran. Rincian di KEPUTUSAN-KERUSAKAN.md bagian Kalibrasi KS-02.
 
 Status 26 Nov 2026 (putaran 2): n = 17 dari 20, unduhan baru sekitar 2,18 GB; kelayakan tetap menunggu dan tidak ada ambang layak (proporsi tertinggi 0,5, rasio tertinggi 1,0). KS-03 tidak jalan sesuai kriteria; lanjut hanya bila pemilik menambah anggaran untuk indeks 36 dan seterusnya.
+
+Status 26 Nov 2026 (putaran 3): KS-02 selesai. n = 20 kalibrasi, gerbang kelayakan memvonis TIDAK ADA ambang layak (proporsi tertinggi 0,545, rasio tertinggi 1,27). KS-03 tidak jalan sesuai kriteria; tidak ada angka kerusakan banjir dari satelit di layar. KS-04, KS-07, KS-08 yang bergantung vonis lulus tidak dikerjakan. Jalan lain hanya kriteria v3 atas keputusan pemilik.
