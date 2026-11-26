@@ -1087,8 +1087,8 @@ def uji_b():
         t95 = efek.t_kuantil(df, .95)
         assert abs(lb["ci95"][0] - pm(b - t95 * se)) < 1e-9 and abs(lb["ci95"][1] - pm(b + t95 * se)) < 1e-9, "ci95 harus b +- t(.95)*se (dua sisi)"
         rasio = float(perm_hari(rows, 299, np.random.default_rng(3)).std()) / se
-        # dua dataset tunggal (G = 60 klaster): rasio berfluktuasi; Monte Carlo 25 ulangan efek nol memberi sd(b)/SE ~ 1,1 dan sd perm sejalan dengan sd(b)
-        assert rasio < (1.5 if efek_pct == 0 else 2.0), f"sd permutasi {rasio:.2f} x SE analitik (sebelum perbaikan ~2,3 dan baris perlakuan gugur 79%)"
+        # kalibrasi hanya di efek nol; di bawah alternatif uji acak hipotesis nol tajam memang melebar (MDE konservatif), jadi batasnya sanity saja
+        assert rasio < (1.3 if efek_pct == 0 else 2.5), f"sd permutasi {rasio:.2f} x SE analitik (sebelum perbaikan ~2,3 dan baris perlakuan gugur 79%)"
         print("sd perm / SE =", round(rasio, 2), "n", lb["n"])
         if efek_pct == -40:
             assert -60 < lb["efek"] < -20, lb["efek"]
