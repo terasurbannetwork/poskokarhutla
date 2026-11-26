@@ -181,6 +181,22 @@ test("npm run dorong: bentrok sungguhan dan index kotor, berhenti tanpa commit g
   assert.doesNotMatch(git(a, "show", "HEAD:f.txt"), /<<<<<<<|>>>>>>>/);
 });
 
+// 26 Nov 2026: rebase --autostash di folder kerja kotor gagal memasang kembali autostash; suntingan 68 berkas semua sesi hanya
+// tersisa di git stash list. Folder kerja kotor tidak boleh lewat rebase atau autostash sama sekali.
+test("npm run dorong: folder kerja kotor, menyusul tanpa autostash, suntingan belum di-commit tetap di tempat", () => {
+  const {d, a, log} = arenaPush(lawanSekali);
+  const git = (cwd, ...x) => execFileSync("git", x, {cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"]}).trim();
+  writeFileSync(join(a, "public/x.js"), "suntingan sesi lain");
+  writeFileSync(join(a, "baru.txt"), "staged sesi lain"); git(a, "add", "baru.txt");
+  const r = spawnSync("sh", [join(process.cwd(), "scripts/agents/dorong.sh")], {cwd: a, encoding: "utf8", env: envPush});
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.ok(log().includes("kerjaan") && log().includes("lawan"), log().join(","));
+  assert.equal(log()[0], "Merge remote-tracking branch 'origin/main'", "folder kerja kotor harus lewat gabung, bukan rebase berautostash");
+  assert.equal(readFileSync(join(a, "public/x.js"), "utf8"), "suntingan sesi lain", "suntingan folder kerja harus utuh");
+  assert.match(git(a, "diff", "--cached", "--name-only"), /baru\.txt/, "index sesi lain harus utuh");
+  assert.equal(git(a, "stash", "list"), "", "tidak boleh ada autostash yang tertinggal");
+});
+
 test("npm run dorong: uji merah berhenti di percobaan pertama, tidak ada yang masuk", () => {
   const {d, a, log} = arenaPush(d => `echo x >> ${d}/hitung\nexit 1\n`);
   const r = spawnSync("sh", [join(process.cwd(), "scripts/agents/dorong.sh")], {cwd: a, encoding: "utf8", env: envPush});
