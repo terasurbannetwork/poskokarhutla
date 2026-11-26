@@ -62,7 +62,7 @@ $("bKembali").addEventListener("click", () => { ke("beranda"); tampilBeranda(); 
 $("bLaporBaru").addEventListener("click", () => bukaChat()); $("bDarurat")?.addEventListener("click", () => bukaChat(true));
 $("bCekStatus").addEventListener("click", () => { ke("chat"); kirim({teks: "status", tampil: "Cek status laporan"}); });
 document.querySelectorAll("[data-aksi]").forEach(b => b.addEventListener("click", () => ({lapor: () => bukaChat(), darurat: () => bukaChat(true), hilang: () => bukaChat("cari"), sekali: () => sekaliKetuk(), info: () => bukaInfo("info"), prediksi: () => bukaInfo("prediksi"),
-  penting: () => bukaInfo("penting"), edukasi: () => { ke("bantuan"); pilihGrup("Edukasi"); }})[b.dataset.aksi]()));
+  penting: () => bukaInfo("penting"), alun: () => ke("alun"), edukasi: () => { ke("bantuan"); pilihGrup("Edukasi"); }})[b.dataset.aksi]()));
 $("bSemuaBantu").addEventListener("click", () => ke("bantuan"));
 /* Sigap memandu fitur beranda (pemilik 21 Nov 2026): gelembung bergilir 8 detik, berhenti saat disentuh atau difokus,
    tombol Jeda sesuai WCAG 2.2.2; tanpa gilir otomatis bila pengguna meminta gerak dikurangi. Delegasi: salinan di Cara melapor ikut jalan. */

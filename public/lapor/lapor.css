@@ -479,11 +479,10 @@ input.lp-isian{font-weight:700;font-size:1.125rem;font-variant-numeric:tabular-n
   .lp-hero-isi{padding-bottom:56px}
   .lp-isi-beranda{max-width:1040px;margin:0 auto;width:100%;padding:28px 40px 48px;gap:18px}
   .lp-judul-seksi{font-size:1.375rem}
-  .lp-layanan-kisi{grid-template-columns:1.3fr 1fr 1fr;grid-template-rows:repeat(2,minmax(210px,auto));gap:16px}
+  /* 3 + 3: tiga kartu lapor di atas, tiga kartu informasi di bawah (pemilik 26 Nov 2026) */
+  .lp-layanan-kisi{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(210px,auto));gap:16px}
   .lp-layanan-kartu{min-height:0;padding:22px}
-  .lp-layanan-kartu.utama{grid-column:1;grid-row:1 / span 2}
-  .lp-layanan-kartu.utama b{font-size:1.75rem}
-  .lp-layanan-kartu.utama small{font-size:.9375rem;max-width:32ch}
+  .lp-layanan-kartu.utama{grid-column:auto;grid-row:auto}
   .lp-layanan-kartu b{font-size:1.1875rem}
   .lp-layanan-kartu small{font-size:.8125rem}
   .lp-layanan-kartu.darurat{grid-column:auto;padding:22px;align-content:end}
