@@ -1,0 +1,105 @@
+{
+ "versi": 1,
+ "paket": "data/kajian-bnpb/longsor-satelit",
+ "ditulis": "2026-11-26",
+ "sumber_keputusan": "KEPUTUSAN-LONGSOR-SATELIT.md: K1-K3, jawaban pemilik 25 Nov 2026 (semua bawaan diterima; Q4 ambang lulus = angka ALGORITMA 4, dikunci sebelum uji)",
+ "label": "HIPOTESIS: semua angka ini bawaan ALGORITMA yang diterima pemilik 25 Nov 2026; tidak disetel pada citra apa pun",
+ "kejadian": {
+  "uji": [
+   {"nama": "Tapanuli Tengah dan kab tetangga, Siklon Senyar", "kab_inti": "1201", "kab_tetangga": "kab yang batasnya bersentuhan dengan kab_inti pada public/geo (dihitung mekanis di LS-05, tidak dipilih dari citra)", "tanggal": "2025-11-25", "catatan": "ditetapkan sesudah penulis paket melihat satu citra unggahan; ambang tidak disetel dari citra itu; kebenaran uji dari lembar buta, bukan dari unggahan"}
+  ],
+  "kalibrasi": {
+   "aturan": "dari public/longsor/data/kejadian.json (dibi, gab 0 dan 1): untuk tiap kab, jendela 7 hari dengan jumlah n terbesar yang mulainya pada 2019-01-01..2025-06-30 (seri: mulai paling awal); ambil 3 kab teratas menurut jumlah (seri: tanggal paling awal); kab uji dikecualikan; dipilih tanpa melihat citra",
+   "sumber_sha256": "9ce7be98c66ec6b8100f1aa7507e43eb418561e434d6ae7afd1cda59bfeb3d35",
+   "terpilih": [
+    {"kab": "32|Bogor", "mulai": "2021-02-04", "jumlah_7hari": 26},
+    {"kab": "32|Sukabumi", "mulai": "2021-11-23", "jumlah_7hari": 15},
+    {"kab": "32|Majalengka", "mulai": "2019-04-07", "jumlah_7hari": 13}
+   ],
+   "catatan_jujur": "pilihan mekanis condong ke Jawa Barat yang padat dan berkebun; mungkin kurang mewakili lereng hutan Tapanuli. Bila titik bekas kalibrasi terlalu sedikit (di bawah 300 titik sah, atau di bawah 30 bekas), Q3 dibuka kembali ke pemilik, bukan diisi sendiri. Bila citra bersih sesudah kejadian tidak ada, kejadian dilewati dan diganti urutan berikutnya menurut aturan yang sama, dicatat",
+   "min_titik_kalibrasi": 300,
+   "min_bekas_kalibrasi": 30,
+   "status_keputusan": "KEPUTUSAN PERANCANG, BELUM DIJAWAB PEMILIK (KEPUTUSAN-LONGSOR-SATELIT D10): jendela 2019-01-01..2025-06-30, 3 kab, seri ke tanggal paling awal, aturan pengganti bila citra bersih tidak ada, dan min_bekas_kalibrasi. Hanya min_titik_kalibrasi (300) dan 'kalibrasi dipilih mekanis dari DIBI, banyak kejadian satu kab dalam 7 hari' berasal dari dokumen paket",
+   "min_bekas_kalibrasi_catatan": "USUL agent: pemicu membuka kembali Q3 ke pemilik; bukan angka dari dokumen paket",
+   "risiko_transfer": "ambang dari kebun dan lereng Jawa Barat mungkin tidak mewakili hutan Tapanuli; risikonya gagal uji, bukan angka palsu"
+  },
+  "larangan": "kejadian uji tidak dibuka sebelum sidik ini dijangkar ke commit dan ambang terpilih tertulis; ambang tidak pernah disetel dari citra unggahan media sosial"
+ },
+ "komposit": {
+  "sensor": "Sentinel-2 L2A, piksel 10 m (B03, B04, B08; B11 20 m dicuplik ke 10 m untuk MNDWI)",
+  "masker_scl_dibuang": [3, 8, 9, 10],
+  "sebelum_bulan": 12,
+  "sesudah_hari_mulai": 3,
+  "sesudah_hari_akhir": 90,
+  "sensitivitas_deskriptif_sesudah_hari": [3, 45],
+  "min_pengamatan_bersih": 2,
+  "min_bagian_terliput_kec": 0.5,
+  "tidak_terliput": "bukan nol: null di keluaran; titik uji di kec tidak terliput tetap dihitung sebagai luput bila kebenarannya bekas"
+ },
+ "optik": {
+  "ndvi": "(B08 - B04) / (B08 + B04)",
+  "rdndvi": "(NDVI_sesudah - NDVI_sebelum) / NDVI_sebelum",
+  "ndvi_sebelum_min": 0.5,
+  "lereng_min_derajat": 10,
+  "dem": "Copernicus GLO-30, dicuplik bilinear ke 10 m, lereng dari DEM sebelum kejadian",
+  "kisi_ambang_rdndvi": {"dari": -0.20, "sampai": -0.50, "langkah": -0.05},
+  "fungsi_tujuan": "F1 kelas bekas, maksimum pada titik KALIBRASI saja; seri: ambang lebih ketat (lebih negatif)",
+  "saringan": {
+   "mndwi": "(B03 - B11) / (B03 + B11); MNDWI_sesudah > 0 dibuang; dengan dan tanpa saringan diukur di kalibrasi dan pilihannya dikunci di kalibrasi, bukan di uji",
+   "sungai_osm_buang_m": 30,
+   "hansen_tahun_sebelum_kejadian": "piksel hilang tutupan tahun SEBELUM tahun kejadian dipisah ke lapis tumpang tindih tebangan; tahun kejadian tidak dipakai",
+   "gfw_integrated_alerts_hari_sebelum": 180,
+   "batas_diketahui": "tebangan di antara peringatan terakhir dan tanggal kejadian tidak tersaring"
+  },
+  "poligon": {"tetangga": 8, "luas_min_m2": 300, "piksel_min": 3, "bentuk_memanjang": "hanya ditandai, tidak dipakai menyaring"}
+ },
+ "radar": {
+  "jalur": "terpisah dari optik, divonis sendiri, tidak digabung sebelum keduanya lulus",
+  "sensor": "Sentinel-1 RTC VV dan VH, orbit sama",
+  "rasio": "log median 3 adegan sesudah lawan 3 adegan sebelum",
+  "sel_km": 1,
+  "lereng_min_derajat": 10,
+  "ambang_kerapatan": "dipilih di kalibrasi dengan aturan yang sama; HIPOTESIS"
+ },
+ "uji": {
+  "kebenaran": "lembar buta dua penafsir (Q1), titik acak berlapis dari peta keluaran yang DIBEKUKAN (sidik peta ditulis di vonis)",
+  "strata": ["bekas", "tumpang_tindih_tebangan", "bukan_bekas_lereng_curam_>=25", "bukan_bekas_lereng_sedang_10_25"],
+  "titik_min_per_strata": 100,
+  "titik_uji_min": 600,
+  "titik_kalibrasi_min": 300,
+  "alokasi_sisa": "sebanding luas strata",
+  "bobot": "akurasi per luas dengan bobot strata (Olofsson dkk. 2014), CI 95 persen",
+  "kappa_min": 0.6,
+  "kappa_ketentuan": "titik tidak sepakat diputuskan penafsir ketiga buta; tak ada titik dibuang sepihak; titik tak terbaca dikeluarkan dan dihitung per strata; kappa di bawah ambang = kebenaran tidak sah, vonis menunggu",
+  "daya": "n strata bekas cukup agar lebar CI95 presisi <= 0,10 pada presisi 0,7 (dihitung di LS-01 saat rancangan sampel dibuat)",
+  "bootstrap": {"ulangan": 2000, "benih": 20251125, "benih_status": "keputusan perancang, belum dijawab pemilik (D10); angka bebas, dikunci agar bootstrap bisa diulang", "cara": "berpasangan per titik, berlapis strata", "ci_selisih": 90},
+  "pembanding": {
+   "a_plasebo_musim_sama": "pasangan komposit dengan jendela kalender identik, satu tahun lebih awal (keduanya sebelum kejadian)",
+   "b_ndvi_sesudah_saja": "ambang dipilih di kalibrasi dengan aturan sama",
+   "c_dndvi_absolut": "NDVI sesudah - NDVI sebelum, ambang dipilih sama",
+   "d_naif_pvmbg_tinggi": "zona PVMBG Tinggi",
+   "e_naif_lereng_25": "lereng >= 25 derajat",
+   "f_naif_tebangan": "hilang tutupan saja",
+   "catatan": "d sampai f bukan model perubahan; pembanding terkuat hampir pasti b atau c"
+  },
+  "lulus_optik": {
+   "f1_bekas_min": 0.6,
+   "presisi_bekas_min": 0.7,
+   "selisih_f1_min_vs_pembanding_terkuat_b_sampai_f": 0.10,
+   "selisih_berlaku": "global DAN di kedua strata lereng (curam dan sedang)",
+   "ci90_batas_bawah_selisih": "> 0",
+   "plasebo_rasio_luas_maks": 0.10,
+   "plasebo_rasio_arti": "luas bekas pada plasebo dibagi luas bekas pada pasangan uji di wilayah yang sama",
+   "selain_itu": "gagal"
+  },
+  "lulus_radar": "angka sendiri ditulis di berkas versi berikut sebelum LS-06; hingga itu radar berstatus menunggu (ALGORITMA 3 hanya menyebut terpisah)"
+ },
+ "keluaran_bila_bukan_lulus": "kec dan ha_* null, bukan 0",
+ "larangan": [
+  "tidak mengubah kriteria sesudah hasil dilihat; perubahan = berkas versi baru, sidik baru, uji ulang di kejadian lain",
+  "tidak menyebut korban, rumah rusak, atau penyebab",
+  "tidak membuat kejadian di Buku Besar, tidak masuk Jitupasna",
+  "tidak menyentuh nowcast longsor dan pra-registrasi LHASA2",
+  "tanpa vonis lulus tidak ada luas atau jumlah bekas longsor di layar mana pun"
+ ]
+}

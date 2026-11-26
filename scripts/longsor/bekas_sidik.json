@@ -1,0 +1,9 @@
+{
+ "berkas": "scripts/longsor/bekas_kriteria.json",
+ "sidik": "bb697cc3711edb766cb1e681873c65d3b59a13da031a3d20a22e717c85693476",
+ "cara": "sha256 atas isi berkas kriteria tanpa satu baris baru penutup (byte per byte)",
+ "ditulis": "2026-11-26",
+ "versi": 1,
+ "jangkar_commit": null,
+ "catatan": "Isi jangkar_commit dengan hash commit yang memuat kedua berkas, sesudah di-push, SEBELUM data apa pun ditarik atau kejadian uji dihitung. bekas.py prasyarat menolak selama kosong."
+}

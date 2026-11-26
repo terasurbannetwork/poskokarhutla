@@ -31,6 +31,7 @@ Sesudah hujan ekstrem (contoh: Siklon Senyar, 25 Nov 2025, Sumatera Utara dan Ac
 | D7 | Pipeline tinggal di `scripts/longsor/` (pengerja `longsor`). Tidak ada folder `public/` atau `scripts/` baru. | Folder sudah ada dan berpemilik. |
 | D8 | Keluaran tidak pernah menyebut korban, rumah rusak, atau penyebab ("akibat tebangan"). Atribusi penyebab di luar lingkup. | Satelit 10 m tidak melihat penyebab; klaim penyebab bersifat hukum dan politik. |
 | D9 | Bekas longsor hasil satelit tidak pernah membuat kejadian di Buku Besar Kejadian dan tidak masuk Jitupasna. | Aturan Siklus: kejadian resmi hanya dari laporan resmi; satu buku kejadian. |
+| D10 | Pemilihan kejadian kalibrasi secara mekanis (usulan agent, belum dijawab pemilik): jendela 7 hari dengan jumlah DIBI terbanyak per kab, mulai 2019-01-01 sampai 2025-06-30 (awal: Sentinel-2 L2A global sejak akhir 2018; akhir: menyisakan 90 hari komposit sebelum kejadian uji), 3 kab teratas, seri ke tanggal paling awal, kab uji dikecualikan; bila citra bersih sesudah kejadian tidak ada, diganti urutan berikutnya menurut aturan sama dan dicatat. Pemicu Q3 `min_bekas_kalibrasi` = 30 (bekas pada titik kalibrasi) dan benih bootstrap 20251125 juga usulan agent. | Q3 hanya memberi arah "dipilih mekanis dari DIBI"; angka dan jendela harus tertulis agar tidak dipilih sesudah melihat citra. Risiko terang-terangan: DIBI memberi kab Jawa Barat yang padat dan berkebun, jadi ambang rdNDVI dari sana mungkin tidak mewakili hutan Tapanuli; risikonya uji GAGAL, bukan angka palsu. |
 
 ## Pertanyaan terbuka untuk pemilik (Q)
 
