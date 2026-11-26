@@ -66,6 +66,7 @@ export const HTML_RUTE = [
   [/^\/lapor\/hari-ini\/?$/, "/lapor/hari-ini.html", "/lapor/hari-ini"],   // kejadian hari ini dari laporan terverifikasi BPBD (lapor-kejadian K86, LK-06); publik, data dari /api/lapor/hari-ini di balik saklar LAPOR_HARI_INI
   [/^\/lapor\/data\/?$/, "/lapor/data/index.html", "/lapor/data"],   // data lanjutan BPBD (LJ-16): token tim di URL ditukar kuki; halaman tidak memuat data, API menjaga kuki tim atau sesi staf
   [/^\/lapor\/meja\/?$/, "/lapor/meja.html", "/lapor/meja"],   // meja laporan staf; tertutup di centurisk97.id, /api/lapor/meja* menjaga sesi staf
+  [/^\/potensi\/?$/, "/potensi/index.html", "/potensi"],   // Potensi Bencana Hidromet (public/potensi/, data/kajian-bnpb/potensi-hidromet); terkunci seperti /prediksi sampai pemilik menjawab Q10
   [/^\/desa-waspada\/?$/, "/desa-waspada/index.html", "/desa-waspada"],   // Desa Waspada (public/desa-waspada/, data/kajian-bnpb/desa-waspada); publik (KEPUTUSAN-DESA K6)
   [/^\/verifikasi(?:\/[^/]{1,40})?\/?$/, "/verifikasi.html", "/verifikasi"],   // segel dokumen (segel-dokumen SG-08, K3 Q2): publik tanpa akun, kode di jalur; data hanya dari /api/verifikasi/<kode>
   ...ruteDocs(),   // /docs, /docs/<modul>[/<halaman>], /docs/pengembang/...: pola tertutup, dokumentasi publik Centurisk97 (public/docs/, src/docs_rute.js); terbuka di PUBLIK_TANPA_SESI, tanpa D1/API

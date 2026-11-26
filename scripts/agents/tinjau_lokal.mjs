@@ -57,7 +57,7 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
   if (!rute) { try { const w = await import(pathToFileURL(path.join(akar, "src/worker.js")).href);
     /* halaman Ruang Koordinasi dilayani lewat jalur bersih BNPB_BERSIH (/sitrep, /bnpb/logbook, ...), bukan HTML_RUTE */
     /* halaman modul yang dilayani Worker modulnya sendiri (layaniKm, layaniSk, LogPal, SIPPA) */
-    const MODUL = [["/kemitraan", "/kemitraan.html"], ["/kemitraan/masuk", "/kemitraan/masuk.html"], ["/kemitraan/daftar", "/kemitraan/daftar.html"], ["/kemitraan/buku", "/kemitraan/buku.html"], ["/kemitraan/panduan", "/kemitraan/panduan.html"], ["/siklus", "/siklus/index.html"], ["/instansi", "/instansi.html"], ["/instansi/logpal", "/logpal/index.html"], ["/instansi/data-bencana", "/bnpb/data-bencana.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"], ["/lapor", "/lapor/index.html"]];
+    const MODUL = [["/kemitraan", "/kemitraan.html"], ["/kemitraan/masuk", "/kemitraan/masuk.html"], ["/kemitraan/daftar", "/kemitraan/daftar.html"], ["/kemitraan/buku", "/kemitraan/buku.html"], ["/kemitraan/panduan", "/kemitraan/panduan.html"], ["/siklus", "/siklus/index.html"], ["/instansi", "/instansi.html"], ["/instansi/logpal", "/logpal/index.html"], ["/instansi/data-bencana", "/bnpb/data-bencana.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"], ["/lapor", "/lapor/index.html"], ["/potensi", "/potensi/index.html"], ["/potensi/", "/potensi/index.html"]];
     rute = [...w.HTML_RUTE, ...Object.entries(w.BNPB_BERSIH || {}).map(([k, j]) => [{test: p => p === j || p === j + "/"}, `/bnpb/${k}.html`]),
       ...MODUL.map(([j, f]) => [{test: p => p === j || p === j + "/"}, f]),
       [{test: p => /^\/siklus\/[a-z-]+\/?$/.test(p)}, "/siklus/index.html"],   // bagian Siklus satu ruas (/siklus/kejadian, /siklus/paparan, ...) = cangkang yang sama; /siklus/kejadian/KJ-... tetap hulu
@@ -104,6 +104,22 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
           const DB = {prepare: () => ({bind: () => ({first: async () => ({n: 0}), run: async () => ({}), all: async () => ({results: []})})})};
           globalThis.caches ??= {default: {match: async () => undefined, put: async () => {}}};
           const r = await fn({DB, MEDIA, IP_SALT: "lokal"}, new Request(new URL(req.url, "http://lokal")), url, {waitUntil() {}});
+          res.writeHead(r.status, {...Object.fromEntries(r.headers), "cache-control": "no-store"}); return res.end(Buffer.from(await r.arrayBuffer()));
+        }
+      }
+      /* Potensi Hidromet (data/kajian-bnpb/potensi-hidromet) sebelum rutenya terbit: /api/potensi/analisis dari
+         data/raw/prediksi/analisis.json, /api/bmkg/desa dengan ASSETS = folder public lokal (BMKG bisa menolak Mac, 403) */
+      if (req.method === "GET" && /^\/api\/(potensi\/analisis|bmkg\/desa)$/.test(jalur)) {
+        const {RUTE_POTENSI} = await import(pathToFileURL(path.join(akar, "src/potensi.js")).href);
+        const fn = RUTE_POTENSI[`GET ${jalur}`];
+        if (fn) {
+          const baca = async f => { try { const t = await fs.readFile(path.join(akar, f), "utf8"); return {text: async () => t, json: async () => JSON.parse(t), size: t.length}; } catch { return null; } };
+          const MEDIA = {get: async k => k === "dampak_peringatan/analisis.json" ? baca("data/raw/prediksi/analisis.json") : null};
+          const ASSETS = {fetch: async u => { const p = new URL(typeof u === "string" ? u : u.url, "http://lokal").pathname;
+            try { return new Response(await fs.readFile(path.join(akar, "public", p))); } catch { return new Response("", {status: 404}); } }};
+          const DB = {prepare: () => ({bind: () => ({first: async () => ({n: 0}), run: async () => ({}), all: async () => ({results: []})})})};
+          globalThis.caches ??= {default: {match: async () => undefined, put: async () => {}}};
+          const r = await fn({DB, MEDIA, ASSETS, IP_SALT: "lokal"}, new Request(new URL(req.url, "http://lokal")), url, {waitUntil() {}});
           res.writeHead(r.status, {...Object.fromEntries(r.headers), "cache-control": "no-store"}); return res.end(Buffer.from(await r.arrayBuffer()));
         }
       }

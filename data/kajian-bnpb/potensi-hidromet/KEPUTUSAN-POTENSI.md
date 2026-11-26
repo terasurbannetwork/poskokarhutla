@@ -74,4 +74,5 @@ Paket Dampak Peringatan baru mengambil tiga hal dari dashboard hidromet InaRISK 
 | Q6 | Debit GloFAS menaikkan status banjir | **[BAWAAN SEMENTARA]** tidak, sampai vonis PRAREG-DEBIT |
 | Q7 | Nama dan alamat halaman | **[BAWAAN SEMENTARA]** `/potensi`, "Potensi bencana hidrometeorologi" |
 | Q9 | Kelas bahaya per desa tampil publik (D7, D13, D14), padahal induk D18 membatasi keluaran publik sampai kab | **[BAWAAN SEMENTARA]** ya untuk kelas bahaya saja (data kelas BNPB yang juga terbuka di dashboard hidromet, bukan paparan); keterpaparan, penduduk, dan fasilitas per desa tetap staf |
+| Q10 | `/potensi` terbuka tanpa login di centurisk97.id (masuk `PUBLIK_TANPA_SESI`, KEPUTUSAN-MASUK) | **[BAWAAN SEMENTARA]** tidak; terkunci seperti `/prediksi` (gerbang halaman default tertutup). Data statusnya sendiri sudah publik lewat `/api/dampak-peringatan/status` |
 | Q8 | Kelas proyeksi ditampilkan | **[BAWAAN SEMENTARA]** ya, di kartu desa dan tab Analisis sebagai kolom terpisah berlabel; tidak dipakai untuk status |
