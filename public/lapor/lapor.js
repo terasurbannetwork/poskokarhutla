@@ -2498,22 +2498,31 @@ function mulaiTur() {
   atur(awal);
 })();
 
-/* Menu samping: Langganan peringatan dan Nomor darurat (pemilik 26 Nov 2026: "Langganan + nomor darurat"). Keduanya membuka lembar <dialog>;
-   isi langganan = kartu peringatan.js yang sudah ada (paket pwa-peringatan), nomor = daftar nasional + layar nomor terdekat yang sudah ada. */
+/* Peringatan dini dan Nomor darurat (pemilik 26 Nov 2026: "Langganan + nomor darurat", lalu "Ya, pindahkan"): dua ikon polos di kanan atas kepala beranda,
+   di sebelah tombol tema; masing-masing membuka lembar <dialog>. Isi langganan = kartu peringatan.js yang sudah ada (paket pwa-peringatan),
+   nomor = daftar nasional + layar nomor terdekat yang sudah ada. Titik oranye di lonceng: kab/kota kecamatan langganan berstatus Waspada atau lebih (status Dampak Peringatan). */
 (() => {
-  const nav = $("tab"), edu = nav?.querySelector('[data-aksi="edukasi"]'); if (!nav || !edu) return;
+  const tema = document.querySelector(".lp-hero > .lp-tema-hp"); if (!tema) return;
   function lembar(judul, ikonId, isi) {
     const d = el("dialog", "lp-lembar"), kep = el("header", "lp-lembar-kepala"), h = el("h2"), x = el("button", "lp-lembar-tutup"), b = el("div", "lp-lembar-isi");
     h.append(ikon(ikonId), judul); x.type = "button"; x.setAttribute("aria-label", "Tutup"); x.append(ikon("i-x")); x.addEventListener("click", () => d.close());
     kep.append(h, x); d.append(kep, b); d.addEventListener("close", () => d.remove()); d.addEventListener("click", e => { if (e.target === d) d.close(); });   // ketuk latar = tutup
     document.body.append(d); isi(b, d); d.showModal(); x.focus(); return d;
   }
-  const bLanggan = el("button", "lp-tab-lebar"), bNomor = el("button", "lp-tab-lebar");   // layar lebar saja; di HP bilah bawah sudah penuh
-  bLanggan.type = bNomor.type = "button";
-  bLanggan.append(ikon("i-lokasi"), "Peringatan dini"); bNomor.append(ikon("i-telepon"), "Nomor darurat");
-  for (const b of [bLanggan, bNomor]) { b.title = b.textContent; b.setAttribute("aria-label", b.textContent); }
-  edu.after(bLanggan, bNomor);
-  bLanggan.addEventListener("click", () => lembar("Langganan peringatan", "i-lokasi", w => {
+  const NS = "http://www.w3.org/2000/svg", lonceng = document.createElementNS(NS, "svg"); lonceng.setAttribute("viewBox", "0 0 24 24"); lonceng.setAttribute("aria-hidden", "true");
+  for (const d of ["M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9", "M10.3 21a1.94 1.94 0 0 0 3.4 0"]) { const p = document.createElementNS(NS, "path"); p.setAttribute("d", d); lonceng.append(p); }
+  const bLanggan = el("button", "lp-ikon-atas"), bNomor = el("button", "lp-ikon-atas"), titik = el("span", "lp-ikon-atas-titik"); titik.hidden = true;
+  bLanggan.type = bNomor.type = "button"; bLanggan.append(lonceng, titik); bNomor.append(ikon("i-telepon"));
+  for (const [b, t] of [[bLanggan, "Peringatan dini"], [bNomor, "Nomor darurat"]]) { b.title = t; b.setAttribute("aria-label", t); }
+  const grup = el("div", "lp-ikon-atas-grup"); tema.before(grup); grup.append(bLanggan, bNomor, tema);
+  // titik oranye: hanya dari data, tanpa tebakan; status belum terukur = tanpa titik
+  const cekAktif = () => { let a = null; try { a = JSON.parse(localStorage.getItem("pb-peringatan") || "null"); } catch { /* tanpa penyimpanan */ }
+    const kab = [...new Set((a?.kec || []).map(k => String(k.kode || "").slice(0, 4)).filter(k => k.length === 4))];
+    const st = typeof dpDok !== "undefined" && dpDok?.status?.kab;
+    titik.hidden = !st || !kab.some(k => Object.values(st[k] || {}).some(v => (v?.s ?? 0) >= 1));
+    bLanggan.setAttribute("aria-label", titik.hidden ? "Peringatan dini" : "Peringatan dini, ada peringatan aktif di wilayah Anda"); };
+  if (typeof muatDp === "function") muatDp().then(cekAktif).catch(() => {});
+  bLanggan.addEventListener("click", () => lembar("Peringatan dini", "i-sirene", w => {
     w.append(el("p", "lp-redup lp-lembar-sub", "Pilih sampai tiga kecamatan. Pemberitahuan masuk ke HP ini saat prakiraan di kecamatan itu naik."));
     const k = el("div"); w.append(k);
     if (window.pbKartuPeringatan) window.pbKartuPeringatan(k); else k.append(el("p", "lp-redup", "Layanan peringatan belum termuat. Coba lagi sebentar lagi."));
