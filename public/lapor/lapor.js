@@ -1343,15 +1343,9 @@ function sekaliKetuk() {
     if (!jalan) st.textContent = `Lokasi terbaca, ketelitian ${Math.round(terbaik.akurasi).toLocaleString("id-ID")} m.`;
     if (terbaik.akurasi <= 50) kirimSekarang(); }, () => kirimSekarang(), {enableHighAccuracy: true, maximumAge: 60000, timeout: 15000});
 }
-async function bukaChat(darurat = false) {
-  if (darurat === "cari") {   // lapor orang hilang lewat obrolan, tanpa kode WA (pemilik 25 Nov 2026)
 /* tiap laporan baru mulai dari layar kosong: obrolan laporan sebelumnya tidak ikut tampil (pemilik 26 Nov 2026: "histori yang sebelumnya dihilangkan aja").
    Laporan lama tetap ada di halaman Laporan; draf yang belum dikirim dilanjutkan lewat kartu "Lanjutkan melapor", bukan dihapus. */
 function kosongkanChat() { $("mengetik").hidden = true; log.replaceChildren(); wadah.replaceChildren(); cache.transkrip = []; if (wa) simpanCache(); }
-    ke("chat"); hangatkanTerima();
-    kosongkanChat();
-    const mulaiCari = () => kirim({teks: "lapor orang hilang", tampil: false});
-    return tanyaBahasa(() => wa ? mulaiCari() : tanyaNomor(mulaiCari));
 /* draf belum dikirim saat menekan Lapor: tanya lanjutkan atau mulai baru (pemilik 26 Nov 2026: "tambahin tanya lanjut draf atau mulai baru").
    Mulai baru = draf dibatalkan di mesin ("batal"), layar dikosongkan, lalu laporan baru dibuka. */
 function tanyaDraf() {
@@ -1365,6 +1359,10 @@ function tanyaDraf() {
 }
 async function bukaChat(darurat = false) {
   if (darurat === "cari") {   // lapor orang hilang lewat obrolan, tanpa kode WA (pemilik 25 Nov 2026)
+    ke("chat"); hangatkanTerima();
+    kosongkanChat();
+    const mulaiCari = () => kirim({teks: "lapor orang hilang", tampil: false});
+    return tanyaBahasa(() => wa ? mulaiCari() : tanyaNomor(mulaiCari));
   }
   if (darurat === true) {   // K68: laporan darurat selalu dimulai baru; draf laporan biasa yang belum terkirim diganti
     ke("chat"); hangatkanTerima();
@@ -1373,11 +1371,11 @@ async function bukaChat(darurat = false) {
     return tanyaBahasa(() => wa ? mulaiDarurat() : tanyaNomor(mulaiDarurat));
   }
   ke("chat"); hangatkanTerima();
+  if (log.children.length && cache.keadaan?.status && !["terkirim", "batal", "cari_terkirim", "identitas"].includes(cache.keadaan.status)) return tanyaDraf();
   if (!log.children.length || ["terkirim", "batal", "cari_terkirim"].includes(cache.keadaan?.status)) { kosongkanChat(); const mulaiLapor = () => kirim({teks: "lapor", tampil: false});
     tanyaBahasa(() => wa ? mulaiLapor() : tanyaNomor(mulaiLapor)); }   // bahasa dipilih di jendela awal; di chat ditanya hanya bila belum
 }
 
-  if (log.children.length && cache.keadaan?.status && !["terkirim", "batal", "cari_terkirim", "identitas"].includes(cache.keadaan.status)) return tanyaDraf();
 /* bantuan: definisi juklak dan pertanyaan umum */
 const BANTU = [
   ["Melapor", "Apa saja yang perlu disiapkan?", "Siapkan lokasi kejadian (sebaiknya Anda berada di lokasi), perkiraan waktu kejadian, dan foto keadaan di lokasi bila bisa. Data korban dan kerusakan boleh perkiraan. Bila belum tahu, biarkan kosong."],
