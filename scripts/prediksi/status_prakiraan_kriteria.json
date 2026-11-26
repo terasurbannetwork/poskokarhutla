@@ -1,0 +1,21 @@
+{
+ "versi": 1,
+ "status": "hipotesis: dikunci sebelum uji balik dibuka (KEPUTUSAN-DAMPAK D11, D12; ALGORITMA 5). Mengubah satu angka = sidik baru.",
+ "bahaya": ["BNJ", "LSR", "CEX"],
+ "kelas_kab": {"BNJ": "banjir", "LSR": "longsor", "CEX": null},
+ "hari": [0, 1, 2, 3],
+ "hari_bmkg": [0],
+ "tingkat": ["Normal", "Waspada", "Siaga", "Awas"],
+ "tabel": {
+  "K_rendah_plafon": 2,
+  "K_rendah_lepas_bila_R": 3,
+  "K_sedang_tinggi_atau_CEX": "S = E",
+  "K_null": "E = 0: belum terukur; E > 0: tingkat E dengan tanda sebagian"
+ },
+ "porsi_K_min": 0.10,
+ "tak_terliput_maks": 0.5,
+ "segar_jam": {"prakiraan": 36, "bmkg": 3},
+ "severity": {"minor": 1, "moderate": 2, "severe": 3, "extreme": 3},
+ "alarm": {"utama": 2, "terpisah": 1},
+ "arsip_mulai_wib": "07:00"
+}
