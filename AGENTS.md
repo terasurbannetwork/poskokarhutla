@@ -721,6 +721,17 @@ Sebelum menyentuh tujuan banjir di mesin semai (sasaran, koridor lintasan mundur
 
 Aturan berhentinya sama dengan §2.1. Satu mesin semai dengan sumbu `tujuan` (karhutla atau banjir), tanpa `semai_banjir.py` salinan; mesin lintasan tetap satu (`lintasan.py`); zona usulan, tidak pernah masuk renlap sendiri; zona cegat tidak boleh di daratan kab/kota sasaran atau kab yang sendiri terancam banjir; karhutla tidak mundur (uji golden); penguji hanya melaporkan kesesuaian, bukan sebab-akibat, dan hasilnya hanya untuk staf (Q4); tidak pernah menulis "aman", "akan hujan", atau "mencegah banjir".
 
+### 2.53 Dampak Peringatan Dini (status prakiraan Normal sampai Awas per kab/kota, penduduk dan fasilitas di area peringatan BMKG per desa; Alun-alun `/lapor`, `/prediksi` tab Besok, `/bnpb/dalops`, Layar Pimpinan, peta tiap bencana): baca dulu, baru bangun
+
+Sebelum menyentuh status prakiraan per kab per bahaya, keterpaparan per desa dari poligon peringatan BMKG, tabel kelas bahaya kab nasional, lapisan peta bersama `public/inti/dampak_peringatan.*`, atau notifikasi dari status, baca dokumen di
+`data/kajian-bnpb/dampak-peringatan/` dengan urutan otoritas ini (`scripts/siklus/dampak_peringatan.py`, `scripts/siklus/kelas_kab.py`, perluasan `scripts/siklus/paparan.py` milik `siklus`; `scripts/prediksi/status_prakiraan*` milik `prediksi`; `public/inti/dampak_peringatan.*` milik `inti-layar`; `src/dampak_peringatan.js` dan migrasinya milik `warga-api`; `tests/dampak-peringatan/**` milik `penulis-gerbang`; pemasangan per layar milik pemilik layarnya):
+
+1. `KEPUTUSAN-DAMPAK.md`: keputusan pemilik K1-K14, rancangan D1-D36, pertanyaan terbuka dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`DP-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Pakai cara kita, bukan angka InaRISK (K8); satu mesin paparan (`paparan.py`); status berpil hipotesis sampai uji balik lulus, hijau Normal hanya bila semua sumber masuk dan segar, selain itu abu "belum terukur"; tidak pernah menulis "aman" atau "terdampak" sebagai fakta; angka dibulatkan di keluaran; angka antarsumber tidak dijumlah; rincian per desa hanya untuk staf (R2); tinjau tiap layar di `http://localhost:8800`.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

@@ -22,9 +22,9 @@ Cara memakai katalog ini:
 | `banjir` | sonnet | membangun & membetulkan pipeline dan layar banjir/rob | karhutla; worker warga | `scripts/banjir/**`, `public/banjir/**`, `tests/banjir/**` +1 |
 | `model-banjir` | sonnet | membangun & membetulkan model statistik banjir kab-hari, label, koreksi bias, uji balik, dan dokumen pra-registrasinya | pipeline operasional & layar banjir; workflow; worker; membuka uji yang belum boleh dibuka | `scripts/banjir/model_kab*`, `scripts/banjir/model_dampak*`, `scripts/banjir/model_bahaya.py` +20 |
 | `gempa` | sonnet | membangun & membetulkan pipeline, model guncangan/susulan, dan layar modul gempa & tsunami | worker dan D1 (warga-api); karhutla; banjir; menyunting .github/workflows | `scripts/gempa/**`, `public/gempa/**`, `tests/gempa/**` |
-| `warga-api` | sonnet | membangun & membetulkan worker, route API, skema D1, alur laporan warga dan admin | pipeline data; model; deploy | `src/**`, `migrations/**`, `wrangler*.jsonc` +20 |
+| `warga-api` | sonnet | membangun & membetulkan worker, route API, skema D1, alur laporan warga dan admin | pipeline data; model; deploy | `src/**`, `migrations/**`, `wrangler*.jsonc` +21 |
 | `layar-peta` | sonnet | membangun & membetulkan layar peta, kartu, pop-up, bagikan, i18n | pipeline data; model; worker & D1 | `public/*.html`, `public/*.js`, `tests/layar/**` +21 |
-| `inti-layar` | sonnet | membangun dan memecah modul inti layar, registry bencana, halaman bencana berkerangka | pipeline data; worker & D1; workflow | `public/inti/**`, `tests/inti/**`, `public/bencana.json` +1 |
+| `inti-layar` | sonnet | membangun dan memecah modul inti layar, registry bencana, halaman bencana berkerangka | pipeline data; worker & D1; workflow | `public/inti/**`, `tests/inti/**`, `public/bencana.json` +2 |
 | `pipa-umum` | sonnet | membangun dan menguji pustaka pipeline bersama, subperintah bencana.py | layar; worker; workflow; logika domain satu bencana | `scripts/umum/**`, `scripts/berita/**`, `public/data/gerbang/**` +19 |
 | `sippa` | sonnet | membangun dan membetulkan layar /pipa, fungsi hitung murni JS, mesin Studio, adegan 3D, laporan PDF, dan uji tests/sippa | worker dan D1; pipeline Python; vendor pustaka (layar-peta); memeriksa kerjanya sendiri | `public/pipa/**`, `tests/sippa/**` |
 | `ai-internal` | sonnet | membangun dan membetulkan layar /ai, klien percakapan dan formulir agen, dokumen docs/ai-internal, dan uji tests/ai | worker dan D1 (warga-api); memeriksa kerjanya sendiri | `public/ai/**`, `tests/ai/**`, `docs/ai-internal/**` |
@@ -35,9 +35,9 @@ Cara memakai katalog ini:
 | `neraca-air` | sonnet | membangun & membetulkan pipeline neraca air Jawa dan paket datanya | layar web; pipeline karhutla/banjir/kekeringan; memvalidasi modelnya sendiri (itu validasi-model) | `scripts/air/neraca/**`, `public/data/neraca_air/**`, `data/kajian-bnpb/neraca-air/**` |
 | `wa-bot` | sonnet | membangun & membetulkan gateway Baileys, pengatur otomatis, plist launchd, dan uji tanpa jaringan untuknya | worker dan D1 (warga-api); isi generator laporan (pipa-data); layar publik | `scripts/wa/**`, `tests/wa/**` |
 | `longsor` | sonnet | membangun & membetulkan pipeline nowcast longsor, label kejadian, dan uji baliknya | worker dan D1; layar; modul banjir; menyunting .github/workflows | `scripts/longsor/**`, `public/longsor/**`, `tests/longsor/**` |
-| `siklus` | sonnet | membangun pipeline scripts/siklus, layar /siklus, dan uji tanpa DB sesuai tiket SK-NNN | worker, D1, migrasi, workflow; keputusan di KEPUTUSAN-AWAL.md | `public/siklus/**`, `scripts/siklus/**`, `tests/siklus/**` +1 |
+| `siklus` | sonnet | membangun pipeline scripts/siklus, layar /siklus, dan uji tanpa DB sesuai tiket SK-NNN | worker, D1, migrasi, workflow; keputusan di KEPUTUSAN-AWAL.md | `public/siklus/**`, `scripts/siklus/**`, `tests/siklus/**` +4 |
 | `kampus` | sonnet | membangun pipeline profil daerah, masalah, korpus+indeks+cocok pakar, generator pertanyaan, dan layar /kemitraan beserta ujinya | worker, D1, migrasi, workflow; modul akademisi; keputusan di KEPUTUSAN-KAMPUS.md | `public/kemitraan.html`, `public/kemitraan.css`, `public/kemitraan/**` +7 |
-| `prediksi` | sonnet | membangun & membetulkan pembekuan prakiraan, penilaian, kalibrasi, aturan dampak, dan layar /prediksi | worker dan D1; modul udara/banjir; menyunting .github/workflows | `scripts/prediksi/**`, `public/prediksi/**`, `tests/prediksi/**` |
+| `prediksi` | sonnet | membangun & membetulkan pembekuan prakiraan, penilaian, kalibrasi, aturan dampak, dan layar /prediksi | worker dan D1; modul udara/banjir; menyunting .github/workflows | `scripts/prediksi/**`, `public/prediksi/**`, `tests/prediksi/**` +2 |
 | `sensor` | sonnet | menulis firmware, gateway, simulator, dan panduan pasang sensor lapangan | rute worker, migrasi D1, tampilan layar | `sensor/**`, `tests/sensor/**` |
 | `lapangan` | sonnet | membangun layar /petugas dan panel pimpinan, pembungkus wajah Human, stempel, antrean luring IndexedDB, Service Worker, dan uji fungsi murni tests/lapangan | worker, D1, migrasi; gateway WA; keputusan di KEPUTUSAN-LAPANGAN.md; memeriksa kerjanya sendiri | `public/petugas/**`, `tests/lapangan/**`, `scripts/lapangan/**` +1 |
 | `docs-situs` | sonnet | menulis dan memeriksa docs, membangun generator dan layar /docs, indeks cari | worker & D1; pipeline data; model | `docs/centurisk97/**`, `scripts/docs/**`, `public/docs/**` +1 |
@@ -47,7 +47,7 @@ Cara memakai katalog ini:
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
 | `mekanik-mesin` | sonnet | merawat workflow, skrip npm, settings, mesin agent | logika domain di skrip yang dipanggil workflow | `.github/workflows/**`, `package.json`, `package-lock.json` +6 |
-| `penulis-gerbang` | sonnet | menulis gerbang dan uji integrasi lintas modul | memperbaiki kode domain yang digerbang | `tests/agen/**`, `tests/beban/**`, `tests/e2e/**` +2 |
+| `penulis-gerbang` | sonnet | menulis gerbang dan uji integrasi lintas modul | memperbaiki kode domain yang digerbang | `tests/agen/**`, `tests/beban/**`, `tests/e2e/**` +3 |
 
 ## Pemeriksa — read-only, verifier berkonteks bersih (AGENTS.md §3.2) (7)
 

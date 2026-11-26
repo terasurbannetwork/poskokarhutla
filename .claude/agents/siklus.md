@@ -47,6 +47,9 @@ Berkas milikmu (glob paling spesifik menang):
 - `scripts/siklus/**`
 - `tests/siklus/**`
 - `data/kajian-bnpb/siklus/**`
+- `scripts/siklus/dampak_peringatan.py`
+- `scripts/siklus/kelas_kab.py`
+- `public/data/kelas_bahaya_kab.json`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

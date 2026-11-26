@@ -46,6 +46,8 @@ Berkas milikmu (glob paling spesifik menang):
 - `scripts/prediksi/**`
 - `public/prediksi/**`
 - `tests/prediksi/**`
+- `scripts/prediksi/status_prakiraan*`
+- `public/prediksi/data/status_arsip/**`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

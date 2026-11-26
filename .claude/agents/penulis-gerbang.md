@@ -48,6 +48,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `tests/e2e/**`
 - `tests/desa-waspada/**`
 - `tests/alun-kabar/**`
+- `tests/dampak-peringatan/**`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

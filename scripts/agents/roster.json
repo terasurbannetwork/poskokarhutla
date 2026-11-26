@@ -199,7 +199,8 @@
         "WARGA.md",
         ".dev.vars.example",
         "scripts/lapor/**",
-        "tests/lapor/**"
+        "tests/lapor/**",
+        "src/dampak_peringatan.js"
       ]
     },
     {
@@ -265,7 +266,8 @@
         "public/inti/**",
         "tests/inti/**",
         "public/bencana.json",
-        "public/semua/**"
+        "public/semua/**",
+        "public/inti/dampak_peringatan.*"
       ]
     },
     {
@@ -397,7 +399,8 @@
         "tests/beban/**",
         "tests/e2e/**",
         "tests/desa-waspada/**",
-        "tests/alun-kabar/**"
+        "tests/alun-kabar/**",
+        "tests/dampak-peringatan/**"
       ]
     },
     {
@@ -682,7 +685,10 @@
         "public/siklus/**",
         "scripts/siklus/**",
         "tests/siklus/**",
-        "data/kajian-bnpb/siklus/**"
+        "data/kajian-bnpb/siklus/**",
+        "scripts/siklus/dampak_peringatan.py",
+        "scripts/siklus/kelas_kab.py",
+        "public/data/kelas_bahaya_kab.json"
       ]
     },
     {
@@ -729,7 +735,9 @@
       "milik": [
         "scripts/prediksi/**",
         "public/prediksi/**",
-        "tests/prediksi/**"
+        "tests/prediksi/**",
+        "scripts/prediksi/status_prakiraan*",
+        "public/prediksi/data/status_arsip/**"
       ]
     },
     {
