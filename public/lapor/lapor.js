@@ -1732,6 +1732,11 @@ async function gambarPetaAlun(daftar) {
   if (alunPeta) { alunPeta.getSource("alun")?.setData(fc); pas(); return; }
   alunPeta = new maplibregl.Map({container: wp.querySelector(".lp-peta-alun"), style: "https://tiles.openfreemap.org/styles/positron", center: [118, -2], zoom: 4, attributionControl: {compact: true}});
   alunPeta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
+  // legenda warna titik: label sama dengan status di kartu (alun_kabar.js STATUS_LABEL), warna sama dengan W di atas
+  const lg = el("ul", "lp-alun-legenda"); lg.id = "legendaAlun"; lg.setAttribute("aria-label", "Arti warna titik");
+  for (const [teks, warna] of [["Berjalan", warnaWarn], ["Belum", W.belum], ["Selesai", W.selesai], ["Belum ada laporan resmi", W.tanpa]]) {
+    const li = el("li", null, teks), t = el("i"); t.style.background = warna; li.prepend(t); lg.append(li); }
+  wp.append(lg);
   alunPeta.on("load", () => {
     alunPeta.addSource("alun", {type: "geojson", data: fc, cluster: true, clusterRadius: 40, clusterMaxZoom: 10});
     alunPeta.addLayer({id: "kelompok", type: "circle", source: "alun", filter: ["has", "point_count"], paint: {"circle-color": tok("--head-bg"), "circle-radius": ["step", ["get", "point_count"], 16, 10, 22, 50, 28], "circle-stroke-width": 3, "circle-stroke-color": tok("--card")}});
@@ -1760,18 +1765,18 @@ function kartuKejadian(x, ikut) {
   const hd = el("header", "ex-hd"), ey = el("span", "ex-ey"), jd = el("div", "ex-jd");
   ey.append(ikon(IKON_JENIS[x.jenis] || "i-kejadian"), x.jenisLabel); jd.append(el("h3", null, x.kab || "Lokasi belum diketahui")); hd.append(ey, jd);
   if (x.titikKet) hd.append(el("small", "lp-redup", x.titikKet.charAt(0).toUpperCase() + x.titikKet.slice(1)));
-  const bd = el("div", "ex-bd");
+  const bd = el("div", "ex-bd"), belum = [], pita = [];   // pita kosong tidak digambar; sumber yang kosong disebut sekali di baris "Belum ada ..." (pemilik 26 Nov 2026: "Bagusin")
   // Resmi BNPB
   const r = t.resmi, pr = pitaKabar("Resmi BNPB", "i-status");
-  if (!r.ada) pr.append(kosongKabar(r.kosong));
-  else { const st = el("p", "lp-kb-status"); st.append(el("b", null, r.status)); if (r.baru) st.append(el("span", "lp-pil", "Baru")); pr.append(st);
+  if (!r.ada) belum.push("laporan resmi");
+  else { pita.push(pr); const st = el("p", "lp-kb-status"); st.append(el("b", null, r.status)); if (r.baru) st.append(el("span", "lp-pil", "Baru")); pr.append(st);
     // hanya angka yang ada; bila semuanya kosong, satu kalimat, bukan tiga kotak "belum ada data"
     const ada = r.angka.filter(a => a.nilai != null), g = ada.length ? el("div", "lp-kb-angka") : el("p", "lp-redup lp-kecil", "Angka dampak belum dilaporkan.");
     for (const a of ada) { const c = el("div"); c.append(el("b", null, a.teks), el("small", null, a.label)); g.append(c); }
     pr.append(g, el("small", "lp-redup", r.kesegaran)); }
   // Laporan warga
   const pw = pitaKabar("Laporan warga", "i-orang");
-  if (!t.warga.baris.length) pw.append(kosongKabar(t.warga.kosong));
+  if (!t.warga.baris.length) belum.push("laporan warga"); else pita.push(pw);
   for (const b of t.warga.baris) {
     const baris = el("div", "lp-kb-warga"), kep = el("p", "lp-kb-warga-kep");
     kep.append(el("span", null, [b.tempat, b.waktu].filter(Boolean).join(", ")), el("span", `lp-pil ${b.status}`, b.statusLabel)); baris.append(kep);
@@ -1785,14 +1790,14 @@ function kartuKejadian(x, ikut) {
   }
   // Berita: tautan hanya http atau https, dibuka di tab baru
   const pb = pitaKabar("Berita", "i-pesan");
-  if (!t.berita.baris.length) pb.append(kosongKabar(t.berita.kosong));
-  else { const ul = el("ul", "lp-kb-berita");
+  if (!t.berita.baris.length) { if (/^Belum ada berita/.test(t.berita.kosong)) belum.push("berita"); else { pb.append(kosongKabar(t.berita.kosong)); pita.push(pb); } }   // "berita belum bisa diambil" tetap tampil: itu gangguan, bukan kosong
+  else { pita.push(pb); const ul = el("ul", "lp-kb-berita");
     for (const b of t.berita.baris) { const li = el("li"), judul = b.url ? Object.assign(el("a", null, b.judul), {href: b.url, target: "_blank", rel: "noopener noreferrer"}) : el("span", null, b.judul);
       li.append(judul, el("small", "lp-redup", [b.media, b.tgl].filter(Boolean).join(", "))); ul.append(li); }
     pb.append(ul); if (t.berita.lebih) pb.append(el("small", "lp-redup", `Dan ${t.berita.lebih.toLocaleString("id-ID")} berita lain yang cocok.`)); }
-  // Media sosial (KA-07): belum tersambung, tanpa angka dan tanpa unggahan
-  const pm = pitaKabar("Media sosial", "i-bantuan", el("p", "lp-kb-status", t.medsos.teks), el("small", "lp-redup", t.medsos.ket));
-  bd.append(pr, pw, pb, pm); k.append(hd, bd); return k;
+  // Media sosial (KA-07) belum tersambung: tidak diulang di tiap kartu; keterangannya tampil sekali lewat saringan Medsos
+  if (belum.length) bd.append(el("p", "lp-kb-belum", `Belum ada ${belum.length > 2 ? belum.slice(0, -1).join(", ") + ", dan " + belum.at(-1) : belum.join(" dan ")}.`));
+  bd.prepend(...pita); k.append(hd, bd); return k;
 }
 function gambarKabar(ikut) {
   const sm = $("sumberAlun"); sm.hidden = false;
