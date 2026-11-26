@@ -88,15 +88,20 @@ def tak_tersedia(bahaya, alasan):
     return {"bahaya": bahaya, "kunci": None, "tersedia": False, "alasan": alasan}
 
 
+def kluster_aktif(akar=AKAR):
+    """Fitur kompleks api aktif dari public/data/kluster.json (n24 > 0, <= 24 jam, level >= 2). Satu definisi untuk zona karhutla paparan dan DP-25."""
+    try:
+        return [f for f in json.load(open(os.path.join(akar, "public/data/kluster.json"), encoding="utf-8"))["features"] if f["properties"].get("n24", 0) > 0
+                and f["properties"].get("jam_sejak", 99) <= 24 and f["properties"].get("level", 0) >= 2]
+    except (OSError, ValueError, KeyError):
+        return []
+
+
 def zona_dari_berkas(akar=AKAR):
     """Zona dari keluaran bahaya yang sudah ada di repo (sama dengan paparan_bangunan.py). Kosong/tak ada = tersedia false + alasan."""
     baca = lambda r: json.load(open(os.path.join(akar, r), encoding="utf-8"))
     z = []
-    try:
-        fit = [f for f in baca("public/data/kluster.json")["features"] if f["properties"].get("n24", 0) > 0
-               and f["properties"].get("jam_sejak", 99) <= 24 and f["properties"].get("level", 0) >= 2]
-    except (OSError, ValueError, KeyError):
-        fit = []
+    fit = kluster_aktif(akar)
     if fit:   # kumulatif dari tepi kompleks aktif; jejak 72 jam belum dimasukkan
         z += [zona_dari_bagian([f["geometry"] for f in fit], "karhutla", f"km{r}", r) for r in PITA_KM]
     else:
