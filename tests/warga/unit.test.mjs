@@ -8,6 +8,8 @@ import path from "node:path";
 import {AKAR} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, GERBANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
+import {RUTE_MEJA} from "../../src/meja.js";
+import {kib} from "../../src/pusdalops_umum.js";
 import {RUTE_UNIT, MEDAN_KOREKSI, P_UNIT_BACA, P_UNIT_TULIS, KODE_UNIT, DATA_UNIT, DATA_UNIT_TERBATAS} from "../../src/unit.js";
 import {stafOK} from "../../src/staf.js";
 import {halamanTerkunci} from "../../src/gerbang_halaman.js";
@@ -56,7 +58,7 @@ uji("konstanta persis DT §1.4 dan §4.9; kelas T bagian dari DATA_UNIT; peta si
   assert.ok(DATA_UNIT_TERBATAS.every(n => DATA_UNIT.includes(n)) && DATA_UNIT_TERBATAS.includes("pengadaan"));
   assert.ok(DATA_UNIT.every(n => /^[a-z0-9_]{1,40}$/.test(n)), "nama cocok regex router");
   assert.deepEqual(HALAMAN.find(e => e.rute === "/bnpb/unit")?.peran, P_UNIT_BACA, "menu staf = hak rute (satu daftar)");
-  assert.deepEqual(Object.keys(RUTE_UNIT).filter(k => !k.startsWith("GET ")), ["POST /api/unit/ketuk"], "satu-satunya rute tulis sejauh ini: MB-7 (RU-033)");
+  assert.deepEqual(Object.keys(RUTE_UNIT).filter(k => !k.startsWith("GET ")), ["POST /api/unit/ketuk", "POST /api/unit/diklat/unggah", "POST /api/unit/akses"], "rute tulis: MB-7 (RU-033), DIK-1 (RU-068), RRI-1 (RU-083)");
   assert.equal(halamanTerkunci(new URL(PROD + "/bnpb/unit")), false, "gerbang host tidak memantulkan /bnpb/unit: rute menjaga dirinya sendiri");
   assert.equal(halamanTerkunci(new URL(PROD + "/bnpb/unit/plp")), false);
 });
@@ -244,3 +246,116 @@ uji("MB-7 batas laju 300 per jam per pemutus: ke-301 429 dan tidak tersimpan", a
   assert.equal(r2.s, 429, r2.t); assert.ok(r2.h.get("retry-after")); assert.equal(await nKetuk("1"), sebelum);
   assert.equal((await kirim(unit, {berkas: "usulan_rpbd", usulan_id: "3333333333333333", keputusan: "terima"})).s, 201, "pemutus lain tidak ikut terkunci");
 });
+
+/* ---------------------------------------------------------------- RU-068 DIK-1 diklat */
+const HDR = "program,jenis,tgl_mulai,tgl_selesai,prov,kab,n_peserta,n_lulus,penyelenggara\n";
+const diklat = (h, csv) => api("POST", "/api/unit/diklat/unggah", {csv}, {...h, ...PB, origin: LOKAL});
+const nDik = async () => (await DB.prepare("SELECT count(*) n FROM diklat_angkatan").first()).n;
+const tglIni = (h = 0) => new Date(Date.now() - h * 864e5).toISOString().slice(0, 10);
+uji("RU-068 diklat: tamu, akun gerbang, operator_cc, pemirsa ditolak; peran unit 201; ringkas dibaca stafOK", async () => {
+  const csv = HDR + `Diklat Dasar,teknis_dasar,${tglIni(60)},${tglIni(55)},32,3205,30,25,Pusdiklat PB\n`;
+  for (const [nama, h, s] of [["tamu", {}, 401], ["gerbang", GERBANG, 401], ["verifikator", ver, 401], ["operator_cc", occ, 403], ["pemirsa", pm, 403]]) { const r = await diklat(h, csv); assert.equal(r.s, s, `${nama}: ${r.s} ${r.t}`); }
+  assert.equal(await nDik(), 0);
+  const ok = await diklat(unit, csv); assert.equal(ok.s, 201, ok.t); assert.deepEqual(ok.j, {tersimpan: 1, ulang: 0});
+  assert.equal((await buka(PROD, "/api/unit/diklat/ringkas")).s, 401); assert.equal((await buka(PROD, "/api/unit/diklat/ringkas", ver)).s, 401);
+  const g = await buka(PROD, "/api/unit/diklat/ringkas", occ); assert.equal(g.s, 200, g.t);
+  assert.deepEqual(g.j, {kab: {"3205": {angkatan: 1, lulus: 25}}}, "bentuk = data/raw/unit/diklat_ringkas.json yang dibaca dik1.py");
+  assert.equal(g.h.get("cache-control"), "private, no-store");
+});
+uji("RU-068 diklat: ulang dilewati, lima tahun terakhir saja, kab kosong tidak masuk ringkas, jumlah dijumlah per kab", async () => {
+  const csv = HDR + `Diklat Dasar,teknis_dasar,${tglIni(60)},${tglIni(55)},32,3205,30,25,Pusdiklat PB\n` + `Diklat Lanjut,teknis_lanjutan,${tglIni(30)},${tglIni(28)},32,3205,20,18,Pusdiklat PB\n`
+    + `Diklat Lama,fungsional,2015-01-01,2015-01-05,32,3205,10,10,Pusdiklat PB\n` + `Diklat Provinsi,fungsional,${tglIni(20)},${tglIni(19)},32,,10,9,Pusdiklat PB\n`;
+  const r = await diklat(pim === unit ? unit : (await bikin(["unit"])), csv); assert.equal(r.s, 201, r.t); assert.deepEqual(r.j, {tersimpan: 3, ulang: 1});
+  const g = await buka(PROD, "/api/unit/diklat/ringkas", unit); assert.deepEqual(g.j, {kab: {"3205": {angkatan: 2, lulus: 43}}});
+});
+uji("RU-068 diklat: satu baris gagal = nol tersimpan dengan nomor baris; kolom liar, ukuran, jumlah baris ditolak", async () => {
+  const x = await bikin(["unit"]), sebelum = await nDik(), baik = `Diklat Baik,fungsional,${tglIni(9)},${tglIni(8)},32,3205,10,5,Pusdiklat PB\n`;
+  const r = await diklat(x, HDR + baik + `Diklat Buruk,fungsional,${tglIni(9)},${tglIni(8)},32,3205,10,11,Pusdiklat PB\n` + `X,fungsional,2026-02-30,2026-03-01,32,,10,5,Pusdiklat PB\n`);
+  assert.equal(r.s, 422, r.t); assert.deepEqual(r.j.baris_gagal.map(b => b.baris), [3, 4]); assert.equal(await nDik(), sebelum, "atomik");
+  for (const [nama, csv, s] of [["kolom liar", "program,nama_peserta\nA,Budi\n", 400], ["kolom kurang", "program,jenis\nA,fungsional\n", 400], ["tanpa baris", HDR, 400], ["kosong", "  ", 400],
+    ["kab beda prov", HDR + `Diklat Baik,fungsional,${tglIni(9)},${tglIni(8)},32,3305,10,5,P Diklat\n`, 422], ["jenis liar", HDR + `Diklat Baik,lain,${tglIni(9)},${tglIni(8)},32,,10,5,P Diklat\n`, 422]]) {
+    const q = await diklat(x, csv); assert.equal(q.s, s, `${nama}: ${q.t}`); }
+  for (const v of ["=1+1", "+cmd", "-2", "@SUM(A1)"]) assert.equal((await diklat(x, HDR + `${v} Diklat,fungsional,${tglIni(9)},${tglIni(8)},32,,10,5,Pusdiklat\n`)).s, 422, "program " + v);
+  assert.equal((await diklat(x, HDR + `Diklat Baik,fungsional,${tglIni(9)},${tglIni(8)},32,,10,5,=HYPERLINK\n`)).s, 422, "penyelenggara =");
+  assert.equal((await diklat(x, "a".repeat(256 * 1024 + 1))).s, 413);
+  const banyak = HDR + Array.from({length: 2001}, (_, i) => `D${i} Diklat,fungsional,${tglIni(9)},${tglIni(8)},32,,10,5,Pusdiklat`).join("\n");
+  assert.equal((await diklat(x, banyak)).s, 413); assert.equal((await api("POST", "/api/unit/diklat/unggah", {csv: baik, lain: 1}, {...x, ...PB, origin: LOKAL})).s, 400);
+  assert.equal(await nDik(), sebelum);
+  const dua000 = HDR + Array.from({length: 2000}, (_, i) => `D${i} Diklat,fungsional,${tglIni(9)},${tglIni(8)},32,,10,5,Pusdiklat`).join("\n");
+  const b = await diklat(x, dua000); assert.equal(b.s, 201, b.t); assert.equal(b.j.tersimpan, 2000);
+});
+uji("RU-068 diklat: 10 unggahan per hari per staf, ke-11 429", async () => {
+  const x = await bikin(["unit"]);
+  for (let i = 0; i < 10; i++) { const r = await diklat(x, HDR + `Diklat Ke${i},fungsional,${tglIni(9)},${tglIni(8)},32,,10,5,Pusdiklat\n`); assert.equal(r.s, 201, r.t); }
+  const r = await diklat(x, HDR + `Diklat Ke11,fungsional,${tglIni(9)},${tglIni(8)},32,,10,5,Pusdiklat\n`); assert.equal(r.s, 429, r.t); assert.ok(r.h.get("retry-after"));
+});
+
+/* ---------------------------------------------------------------- RU-083 RRI-1 akses */
+const T1 = "a1b2c3d4e5f60718", T2 = "0123456789abcdef";
+await R2.put("unit/akses_putus.json", JSON.stringify({titik: [{id: T1}, {id: T2}]}), {httpMetadata: {contentType: "application/json"}});
+const akses = (h, o) => api("POST", "/api/unit/akses", o, {...h, ...PB, origin: LOKAL});
+const nAks = async () => (await DB.prepare("SELECT count(*) n FROM akses_status").first()).n;
+uji("RU-083 akses: tamu, gerbang, verifikator 401; operator_cc dan pemirsa 403; unit 201 dengan sumber isian", async () => {
+  const o = {titik_id: T1, tgl: tglIni(0), status: "putus"};
+  for (const [nama, h, s] of [["tamu", {}, 401], ["gerbang", GERBANG, 401], ["verifikator", ver, 401], ["operator_cc", occ, 403], ["pemirsa", pm, 403]]) { const r = await akses(h, o); assert.equal(r.s, s, `${nama}: ${r.s} ${r.t}`); }
+  assert.equal(await nAks(), 0);
+  const a = await api("POST", "/api/unit/akses", o, {...unit, origin: LOKAL}); assert.ok(a.s === 401 || a.s === 403, "tanpa x-pb: " + a.s);
+  const r = await akses(unit, {...o, catatan: "jembatan putus total"}); assert.equal(r.s, 201, r.t);
+  const b = await DB.prepare("SELECT titik_id, status, sumber, catatan FROM akses_status").first(); assert.deepEqual({...b}, {titik_id: T1, status: "putus", sumber: "isian", catatan: "jembatan putus total"});
+  assert.equal((await akses(unit, o)).s, 409, "kembar (titik, tgl, status)"); assert.equal((await akses(unit, {...o, status: "pulih"})).s, 201, "status lain boleh, riwayat bertambah");
+  assert.equal(await nAks(), 2);
+});
+uji("RU-083 akses: titik tak dikenal, tanggal masa depan, status liar, kolom liar, id bukan heks semuanya 400", async () => {
+  const x = await bikin(["unit"]), sebelum = await nAks(), besok = new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10), dasar = {titik_id: T2, tgl: tglIni(1), status: "darurat"};
+  for (const o of [{...dasar, titik_id: "ffffffffffffffff"}, {...dasar, titik_id: "XYZ"}, {...dasar, titik_id: T2.toUpperCase()}, {...dasar, tgl: besok}, {...dasar, tgl: "2026-02-30"}, {...dasar, tgl: undefined},
+    {...dasar, status: "rusak"}, {...dasar, status: undefined}, {...dasar, sumber: "wa"}, {...dasar, oleh: "x"}, {...dasar, catatan: "a".repeat(201)}]) { const r = await akses(x, o); assert.equal(r.s, 400, JSON.stringify(o) + " -> " + r.s + " " + r.t); }
+  assert.equal(await nAks(), sebelum); assert.equal((await akses(x, dasar)).s, 201);
+  await R2.delete("unit/akses_putus.json"); assert.equal((await akses(x, {...dasar, status: "pulih"})).s, 404, "daftar titik belum diunggah"); await R2.put("unit/akses_putus.json", JSON.stringify([{id: T1}]));
+  assert.equal((await akses(x, {...dasar, titik_id: T1, tgl: tglIni(2)})).s, 201, "daftar berbentuk larik juga diterima");
+  assert.equal((await akses(x, {...dasar, status: "pulih"})).s, 400, "T2 tidak ada di daftar baru");
+});
+uji("RU-083 akses: 120 per jam per staf, ke-121 429; riwayat tidak bisa diubah atau dihapus", async () => {
+  const x = await bikin(["unit"]), r1 = await akses(x, {titik_id: T1, tgl: tglIni(5), status: "putus"}); assert.equal(r1.s, 201, r1.t);
+  const oleh = (await DB.prepare("SELECT oleh FROM akses_status WHERE tgl = ?").bind(tglIni(5)).first()).oleh, kini = Date.now();
+  await DB.batch(Array.from({length: 119}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'unit.akses', ?)").bind(oleh, kini)));
+  const sebelum = await nAks(), r2 = await akses(x, {titik_id: T1, tgl: tglIni(6), status: "putus"}); assert.equal(r2.s, 429, r2.t); assert.equal(await nAks(), sebelum);
+  await assert.rejects(DB.prepare("UPDATE akses_status SET status = 'pulih'").run(), /tidak boleh diubah/);
+});
+
+/* ---------------------------------------------------------------- RU-084 PUS-2 kib() */
+uji("RU-084 kib(): Bogor 19 Sep 2023 banjir = 3201101202309191; jenis tanpa kode, masukan tak sah = null", () => {
+  assert.equal(kib("32", "01", "banjir", "2023-09-19", 1), "3201101202309191");
+  assert.equal(kib("32", "3201", "banjir", "2023-09-19"), "3201101202309191", "kab 4 angka berawalan prov, indeks bawaan 1");
+  assert.equal(kib("32", "01", "karhutla", "2023-09-19", 9), "3201106202309199");
+  assert.equal(kib("32", "01", "kecelakaan", "2023-09-19", 1), null, "tanpa kode DIBI pasti");
+  for (const a of [["32", "3301", "banjir", "2023-09-19"], ["32", "01", "banjir", "2023-02-30"], ["32", "01", "banjir", "20230919"], ["32", "01", "banjir", "2023-09-19", 0], ["32", "01", "banjir", "2023-09-19", 10], ["32", "01", "liar", "2023-09-19"], ["3", "201", "banjir", "2023-09-19"], ["32", "01", "banjir", "2023-09-19", 1.5]]) assert.equal(kib(...a), null, JSON.stringify(a));
+  assert.equal(kib("32", "01", "banjir", "2023-09-19", 1).length, 16);
+});
+
+/* ---------------------------------------------------------------- RU-080 WIL-3 draf kaji cepat */
+const draf = (h, kab) => buka(PROD, "/api/meja/kaji_cepat/draf" + (kab === undefined ? "" : "?kab=" + kab), h);
+uji("RU-080 draf kaji cepat: tamu 403, verifikator 403; staf unit dan admin 200; petugas hanya kabupatennya dan mejanya", async () => {
+  assert.equal((await draf({}, "3205")).s, 403); assert.equal((await draf(ver, "3205")).s, 403);
+  const d = await draf(unit, "3205"); assert.equal(d.s, 200, d.t);
+  assert.equal(d.j.label, "saran"); assert.equal(d.j.kab, "3205"); assert.ok(d.j.penduduk.total > 0 && Object.hasOwn(d.j.penduduk.terpapar.banjir, "jiwa_tinggi"), "penduduk terpapar dari terpapar.json");
+  assert.equal(d.h.get("cache-control"), "private, no-store"); assert.deepEqual(d.j.sumber_ada, {terpapar: true, saran_status: true, status_darurat: true, laphar: true});
+  assert.equal((await draf(ADMIN, "3205")).s, 200); assert.equal((await draf(occ, "3205")).s, 200, "operator_cc membaca (P_UNIT_BACA)");
+  assert.equal((await draf(unit)).s, 400); assert.equal((await draf(unit, "32")).s, 400); assert.equal((await draf(unit, "../x")).s, 400);
+  const k = await api("POST", "/api/meja/petugas", {nama: "Petugas Garut", prov: "32", kab: "Garut", meja: ["kaji_cepat"]}, ADMIN); assert.equal(k.s, 201, k.t);
+  const pet = {"x-kode": k.j.kode}; assert.equal((await draf(pet, "3205")).s, 200); assert.equal((await draf(pet, "3207")).s, 403, "kabupaten lain");
+  const l = await api("POST", "/api/meja/petugas", {nama: "Petugas Logistik", prov: "32", kab: "Garut", meja: ["logistik"]}, ADMIN);
+  assert.equal((await draf({"x-kode": l.j.kode}, "3205")).s, 403, "meja lain");
+  assert.equal((await draf({"x-kode": "0".repeat(26)}, "3205")).s, 403, "kode tak dikenal");
+});
+uji("RU-080 draf kaji cepat: gempa dan tsunami tidak pernah Siaga; tanpa data = null bukan 0; hanya membaca aset (D1 hanya untuk hak)", async () => {
+  const aset = {"/data/bnpb/terpapar.json": {kolom_h: ["a"], kab: {"1111": {n: 5, h: {banjir: [3]}}}}, "/data/saran_status.json": {kab: {"1111": [{jenis: "gempa", saran: "Siaga Darurat", alasan: "x"}, {jenis: "banjir", saran: "Siaga Darurat", alasan: "y", basi: false, tanggal_sinyal: "2026-11-01"}]}},
+    "/data/status_darurat.json": {sk: [{skala: "kabupaten", kab_kode: "11.11", prov_kode: "11", jenis: "Banjir", status: "Tanggap Darurat", mulai: "2026-01-01", berakhir: "2026-01-10", hari: 10, nomor: "1"}, {skala: "kabupaten", kab_kode: "11.12", prov_kode: "11", jenis: "Banjir Bandang", hari: 20, mulai: "2026-02-01"}]}, "/data/laphar_riwayat.json": {episode: []}};
+  const d = hitungDB(DB), env = {...BIND, DB: d.DB, MEDIA: R2, ASSETS: {fetch: async req => { const j = aset[new URL(req.url).pathname]; return j ? new Response(JSON.stringify(j)) : new Response("x", {status: 404}); }}};
+  const req = new Request(PROD + "/api/meja/kaji_cepat/draf?kab=1111", {headers: unit}), r = await RUTE_MEJA_DRAF(env, req, new URL(req.url)), j = await r.json();
+  assert.equal(r.status, 200); assert.deepEqual(j.saran_status.map(x => x.jenis), ["banjir"]); assert.deepEqual(j.perkiraan_masa.banjir, {median_hari: 15, n: 2}); assert.equal(j.sk_terkini.length, 1);
+  assert.deepEqual(j.penduduk.terpapar.banjir, {a: 3}); assert.deepEqual(j.kejadian_terkini, []);
+  const kosong = await RUTE_MEJA_DRAF({...env, ASSETS: {fetch: async () => new Response("x", {status: 404})}}, new Request(PROD + "/api/meja/kaji_cepat/draf?kab=1111", {headers: unit}), new URL(PROD + "/api/meja/kaji_cepat/draf?kab=1111"));
+  const k = await kosong.json(); assert.equal(k.penduduk, null); assert.deepEqual(k.saran_status, []); assert.deepEqual(k.sumber_ada, {terpapar: false, saran_status: false, status_darurat: false, laphar: false});
+  const hak = hitungDB(DB); await stafOK({...BIND, DB: hak.DB}, new Request(PROD + "/", {headers: unit}), P_UNIT_BACA); assert.ok(d.c.baca <= 2 * hak.c.baca + 12, `rows_read ${d.c.baca}: hak + laju saja, tanpa kueri data`);
+});
+const RUTE_MEJA_DRAF = RUTE_MEJA["GET /api/meja/kaji_cepat/draf"];

@@ -5,7 +5,9 @@
 import {json, gagal, catatHTML, bacaBody} from "./worker.js";
 import {tx} from "./posko.js";
 import {laju} from "./bnpb.js";
-import {ketukTerbaru, ketukTambah} from "./hak.js";
+import {ketukTerbaru, ketukTambah, diklatTambah, diklatRingkas, aksesTambah} from "./hak.js";
+import {uraiCsv} from "../public/inti/impor.js";
+import {tglWIB, tglSah} from "./pusdalops_umum.js";
 import {stafOK, stafPeran, modAtauStaf, stafSesiSemua} from "./staf.js";
 import {pemirsaSesi} from "./pemirsa.js";
 import {arahPemirsa} from "./gerbang_halaman.js";
@@ -79,12 +81,18 @@ async function ketukBaca(env, req, url) {
   return json({berkas, keputusan: baris}, 200, {"cache-control": "private, no-store", vary: "cookie"});
 }
 
-async function ketukTulis(env, req, url, kini) {
-  const oleh = await modAtauStaf(env, req, P_UNIT_TULIS);   // akun gerbang AKUN_SITUS* tidak lolos; hak SEBELUM body dan D1
+/* hak tulis bersama: akun gerbang AKUN_SITUS* tidak lolos; hak SEBELUM body dan D1. Mengembalikan nama pelaku atau Response galat */
+async function hakTulis(env, req) {
+  const oleh = await modAtauStaf(env, req, P_UNIT_TULIS);
   if (!oleh || String(oleh).startsWith("pemirsa:")) {   // pemirsa pimpinan lolos modAtauStaf tetapi hanya membaca
     const masuk = await stafPeran(env, req, P_UNIT_BACA) || await pemirsaSesi(env, req);
-    return masuk ? gagal(403, "peranmu tidak boleh memutuskan usulan") : gagal(401, "perlu masuk sebagai staf BNPB");
+    return masuk ? gagal(403, "peranmu tidak boleh menulis di Ruang Unit") : gagal(401, "perlu masuk sebagai staf BNPB");
   }
+  return String(oleh).slice(0, 40);
+}
+
+async function ketukTulis(env, req, url, kini) {
+  const oleh = await hakTulis(env, req); if (oleh instanceof Response) return oleh;
   const b = await bacaBody(req, 4096); if (b.galat) return gagal(b.status || 400, b.galat);
   const o = b.o, x = Object.keys(o).find(k => !["berkas", "usulan_id", "keputusan", "koreksi", "catatan"].includes(k)); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
   const berkas = berkasKetuk(o.berkas); if (!berkas) return gagal(400, "berkas harus salah satu usulan_* yang dikenal");
@@ -101,9 +109,75 @@ async function ketukTulis(env, req, url, kini) {
     koreksi = JSON.stringify(bersih);
   } else if (o.koreksi != null) return gagal(400, "koreksi hanya untuk keputusan koreksi");
   const lj = await laju(env, oleh, "unit.ketuk", [[JAM, 300]], kini); if (lj) return lj;
-  const baris = {berkas, usulan_id: o.usulan_id, keputusan: o.keputusan, koreksi, catatan, oleh: String(oleh).slice(0, 40), waktu: kini};
+  const baris = {berkas, usulan_id: o.usulan_id, keputusan: o.keputusan, koreksi, catatan, oleh, waktu: kini};
   await ketukTambah(env, baris);
   return json({berkas, usulan_id: baris.usulan_id, keputusan: baris.keputusan, koreksi: koreksi && JSON.parse(koreksi), catatan, waktu: kini}, 201);
+}
+
+/* RU-068 DIK-1: unggah CSV angkatan diklat (tanpa nama peserta). Badan JSON {csv}; semua baris sah atau tidak ada yang tersimpan. */
+const MAKS_CSV = 256 * 1024, MAKS_BARIS = 2000, KOL_DIKLAT = ["program", "jenis", "tgl_mulai", "tgl_selesai", "prov", "kab", "n_peserta", "n_lulus", "penyelenggara"];
+const JENIS_DIKLAT = ["teknis_dasar", "teknis_lanjutan", "teknis_kepemimpinan", "fungsional"];
+const hex16 = async t => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t))).slice(0, 8)].map(x => x.toString(16).padStart(2, "0")).join("");
+const KONTROL = /[\u0000-\u001f\u007f]/, bulat = v => /^\d{1,5}$/.test(v) ? Number(v) : NaN;
+function cekDiklat(r) {
+  const t = k => (r[k] ?? "").trim();
+  if (r.program === undefined) return "kolom kurang";
+  for (const [k, a, b] of [["program", 3, 120], ["penyelenggara", 2, 80]]) if (t(k).length < a || t(k).length > b || KONTROL.test(t(k)) || /^[=+\-@]/.test(t(k))) return `${k} ${a}-${b} huruf, tanpa karakter kontrol, tidak diawali = + - @`;
+  if (!JENIS_DIKLAT.includes(t("jenis"))) return "jenis harus " + JENIS_DIKLAT.join(", ");
+  if (!tglSah(t("tgl_mulai")) || !tglSah(t("tgl_selesai"))) return "tanggal harus YYYY-MM-DD yang sah";
+  if (t("tgl_selesai") < t("tgl_mulai")) return "tgl_selesai sebelum tgl_mulai";
+  if (!/^\d{2}$/.test(t("prov"))) return "prov harus 2 angka";
+  if (t("kab") && !(/^\d{4}$/.test(t("kab")) && t("kab").startsWith(t("prov")))) return "kab harus kosong atau 4 angka berawalan prov";
+  const n = bulat(t("n_peserta")), l = bulat(t("n_lulus"));
+  if (!(n >= 1 && n <= 5000)) return "n_peserta 1-5000"; if (!(l >= 0 && l <= n)) return "n_lulus 0 sampai n_peserta";
+  return null;
+}
+async function diklatUnggah(env, req, url, kini) {
+  const oleh = await hakTulis(env, req); if (oleh instanceof Response) return oleh;
+  const b = await bacaBody(req, MAKS_CSV + 1024); if (b.galat) return gagal(b.status || 400, b.galat);
+  const x = Object.keys(b.o).find(k => k !== "csv"); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
+  if (typeof b.o.csv !== "string" || !b.o.csv.trim()) return gagal(400, "csv wajib (teks CSV dengan baris kepala)");
+  if (b.o.csv.length > MAKS_CSV) return gagal(413, `csv ${b.o.csv.length} karakter, maksimal ${MAKS_CSV}`);
+  const [kepala = [], ...isi] = uraiCsv(b.o.csv), kol = kepala.map(k => k.trim().toLowerCase());
+  const asing = kol.find(k => !KOL_DIKLAT.includes(k)); if (asing) return gagal(400, `kolom "${asing.slice(0, 40)}" tidak dikenal`);
+  const hilang = KOL_DIKLAT.find(k => !kol.includes(k)); if (hilang) return gagal(400, `kolom "${hilang}" wajib ada`);
+  if (!isi.length) return gagal(400, "csv tidak punya baris data");
+  if (isi.length > MAKS_BARIS) return gagal(413, `${isi.length} baris; maksimal ${MAKS_BARIS}`);
+  const galat = [], baris = [];
+  for (let i = 0; i < isi.length; i++) {
+    const r = Object.fromEntries(kol.map((k, j) => [k, isi[i][j] ?? ""])), g = cekDiklat(r);
+    if (g) { if (galat.length < 50) galat.push({baris: i + 2, alasan: g}); else if (galat.length === 50) galat.push({baris: i + 2, alasan: "dan seterusnya"}); continue; }
+    const v = Object.fromEntries(KOL_DIKLAT.map(k => [k, r[k].trim()])); v.kab ||= null; v.n_peserta = Number(v.n_peserta); v.n_lulus = Number(v.n_lulus);
+    v.id = await hex16([v.program, v.tgl_mulai, v.prov, v.kab ?? ""].join("|")); baris.push(v);
+  }
+  if (galat.length) return json({galat: "ada baris yang tidak sah; tidak ada yang tersimpan", baris_gagal: galat}, 422);
+  const lj = await laju(env, oleh, "unit.diklat", [[24 * JAM, 10]], kini); if (lj) return lj;
+  return json(await diklatTambah(env, baris, kini, oleh), 201);
+}
+async function diklatRingkasRute(env, req, url, kini) {
+  if (!await stafOK(env, req, P_UNIT_BACA)) return gagal(401, "perlu masuk sebagai staf BNPB");
+  return json({kab: await diklatRingkas(env, tglWIB(kini - 5 * 365.25 * 24 * JAM))}, 200, {"cache-control": "private, no-store", vary: "cookie"});
+}
+
+/* RU-083 RRI-1: status titik akses. titik_id harus ada di R2 unit/akses_putus.json ({titik: [{id}]} atau larik); tgl tidak lewat hari ini WIB. Hanya ditambah. */
+async function aksesTulis(env, req, url, kini) {
+  const oleh = await hakTulis(env, req); if (oleh instanceof Response) return oleh;
+  const b = await bacaBody(req, 2048); if (b.galat) return gagal(b.status || 400, b.galat);
+  const o = b.o, x = Object.keys(o).find(k => !["titik_id", "tgl", "status", "catatan"].includes(k)); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
+  if (typeof o.titik_id !== "string" || !RE_USULAN.test(o.titik_id)) return gagal(400, "titik_id harus 16 heks");
+  if (!tglSah(o.tgl)) return gagal(400, "tgl harus YYYY-MM-DD yang sah"); if (o.tgl > tglWIB(kini)) return gagal(400, "tgl tidak boleh di masa depan");
+  if (!["putus", "darurat", "pulih"].includes(o.status)) return gagal(400, "status harus putus, darurat, atau pulih");
+  const catatan = tx(o.catatan, 200); if (catatan === undefined) return gagal(400, "catatan maksimal 200 huruf");
+  const lj = await laju(env, oleh, "unit.akses", [[JAM, 120]], kini); if (lj) return lj;
+  if (!env.MEDIA) return json({galat: "penyimpanan belum tersedia", status: "tanpa_penyimpanan"}, 503);
+  const r = await env.MEDIA.get("unit/akses_putus.json");
+  if (!r?.size) { r?.body?.cancel().catch(() => {}); return json({galat: "daftar titik akses belum diunggah", status: "belum_ada"}, 404); }
+  if (r.size > MAKS_BYTE) { r.body?.cancel().catch(() => {}); return gagal(500, "daftar titik terlalu besar"); }
+  let d; try { d = await r.json(); } catch (e) { return gagal(500, "daftar titik rusak"); }
+  if (!(Array.isArray(d) ? d : d?.titik ?? []).some(t => t?.id === o.titik_id)) return gagal(400, "titik_id tidak ada di daftar akses putus");
+  try { await aksesTambah(env, {titik_id: o.titik_id, tgl: o.tgl, status: o.status, catatan, oleh, waktu: kini}); }
+  catch (e) { if (/tidak boleh ditimpa|UNIQUE/i.test(String(e?.message || e))) return gagal(409, "status itu untuk titik dan tanggal itu sudah tercatat"); throw e; }
+  return json({titik_id: o.titik_id, tgl: o.tgl, status: o.status, catatan, waktu: kini}, 201);
 }
 
 /* router src/worker.js: /bnpb/unit/:kode ([a-z]{2,4}) dan /api/unit/data/:nama ([a-z0-9_]{1,40}) diteruskan sebagai argumen ke-6 */
@@ -114,4 +188,7 @@ export const RUTE_UNIT = {
   "GET /api/unit/data/:nama": data,
   "GET /api/unit/ketuk": (env, req, url) => ketukBaca(env, req, url),
   "POST /api/unit/ketuk": (env, req, url, kini) => ketukTulis(env, req, url, kini),
+  "POST /api/unit/diklat/unggah": diklatUnggah,
+  "GET /api/unit/diklat/ringkas": diklatRingkasRute,
+  "POST /api/unit/akses": aksesTulis,
 };

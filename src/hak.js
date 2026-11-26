@@ -2841,3 +2841,22 @@ export const ketukTerbaru = async (env, berkas) => (await env.DB.prepare(
   "SELECT id, usulan_id, keputusan, koreksi, catatan, oleh, waktu FROM unit_ketuk WHERE id IN (SELECT max(id) FROM unit_ketuk WHERE berkas = ? AND dummy = 0 GROUP BY usulan_id) ORDER BY waktu DESC LIMIT 5000").bind(berkas).all()).results;
 export const ketukTambah = (env, b) => env.DB.prepare(
   "INSERT INTO unit_ketuk (berkas, usulan_id, keputusan, koreksi, catatan, oleh, waktu) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(b.berkas, b.usulan_id, b.keputusan, b.koreksi, b.catatan, b.oleh, b.waktu).run();
+
+/* DIK-1 (RU-068): angkatan diklat tanpa nama peserta. Satu DB.batch = semua atau tidak sama sekali; baris kembar (id sama atau indeks diklat_angkatan_unik) dilewati. 8 baris x 12 kolom <= 100 parameter D1. */
+const DIKLAT_KOL = ["id", "program", "jenis", "tgl_mulai", "tgl_selesai", "prov", "kab", "n_peserta", "n_lulus", "penyelenggara", "dibuat", "oleh"];
+export async function diklatTambah(env, baris, kini, oleh) {
+  const st = [];
+  for (let i = 0; i < baris.length; i += 8) { const g = baris.slice(i, i + 8);
+    st.push(env.DB.prepare(`INSERT INTO diklat_angkatan (${DIKLAT_KOL.join(", ")}) VALUES ${g.map(() => "(" + DIKLAT_KOL.map(() => "?").join(",") + ")").join(",")} ON CONFLICT DO NOTHING`)
+      .bind(...g.flatMap(r => [r.id, r.program, r.jenis, r.tgl_mulai, r.tgl_selesai, r.prov, r.kab, r.n_peserta, r.n_lulus, r.penyelenggara, kini, oleh]))); }
+  const tersimpan = (await env.DB.batch(st)).reduce((n, r) => n + (r.meta?.changes ?? 0), 0);
+  return {tersimpan, ulang: baris.length - tersimpan};
+}
+/* ponytail: prov >= '00' hanya agar rencana memakai indeks diklat_angkatan_kab (gerbang d1-pindai); tabel kecil (ratusan baris per 5 tahun), tetap dibaca utuh. */
+/* bentuk sama dengan data/raw/unit/diklat_ringkas.json yang dibaca scripts/bnpb/unit/dik1.py: {"kab": {kode4: {angkatan, lulus}}}; baris tingkat provinsi (kab NULL) tidak masuk */
+export const diklatRingkas = async (env, sejak) => Object.fromEntries((await env.DB.prepare(
+  "SELECT kab, count(*) angkatan, sum(n_lulus) lulus FROM diklat_angkatan WHERE prov >= '00' AND dummy = 0 AND kab IS NOT NULL AND tgl_selesai >= ? GROUP BY kab ORDER BY kab").bind(sejak).all()).results.map(r => [r.kab, {angkatan: r.angkatan, lulus: r.lulus}]));
+
+/* RRI-1 (RU-083): status titik akses putus, hanya ditambah (trigger akses_status_*); kembar (titik, tgl, status) ditolak trigger */
+export const aksesTambah = (env, b) => env.DB.prepare(
+  "INSERT INTO akses_status (titik_id, tgl, status, sumber, catatan, oleh, waktu) VALUES (?, ?, ?, 'isian', ?, ?, ?)").bind(b.titik_id, b.tgl, b.status, b.catatan, b.oleh, b.waktu).run();
