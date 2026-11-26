@@ -1055,7 +1055,7 @@ function tampilIsian(isian, lengkap) {
   for (const [kel, daftar] of per) {
     const n = daftar.filter(jawab).length, penuh = n === daftar.length;
     const d = el("details", `lp-kelompok${penuh ? " penuh" : ""}`), sm = el("summary");
-    d.open = !penuh && daftar.some(x => x.status !== "kosong");
+    d.open = !penuh;   // kelompok langsung terbuka, tidak menunggu diklik (pemilik 26 Nov 2026: "gausah nunggu diklik dulu"); yang sudah penuh dilipat
     // kartu per kelompok: ikon, nama, bilah kemajuan, jumlah; nilai ringkas tanpa koordinat (pemilik 19 Nov 2026: "bagusin")
     const nm = el("span", "lp-kel-nama"), bar = el("span", "lp-kel-bar"), bi = el("i"); bi.style.width = `${Math.round(n / daftar.length * 100)}%`; bar.append(bi); nm.append(el("b", null, kel), bar);
     sm.append(ikon(KELOMPOK_IKON[kel] || "i-kejadian"), nm, el("span", `lp-pil ${penuh ? "selesai" : n ? "ditelaah" : ""}`, `${n}/${daftar.length}`));
