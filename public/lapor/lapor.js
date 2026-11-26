@@ -1041,7 +1041,6 @@ function tampilIsian(isian, lengkap) {
   const jalur = !isian.length ? null : isian.some(x => x.nama.startsWith("cari_")) ? ["Laporan Orang Hilang", "hilang"] : isian.some(x => x.nama === "darurat_korban") ? ["Laporan Darurat", "darurat"] : ["Laporan Kejadian", "kejadian"];
   for (const id of ["jalurChat"])   /* label jalur di panel Isian dihapus (pemilik 26 Nov 2026) */
    { const e = $(id); e.hidden = !jalur; e.textContent = jalur?.[0] || ""; e.className = `lp-jalur ${jalur?.[1] || ""}`; }
-  $("catatDarurat").hidden = jalur?.[1] !== "darurat";   // catatan jalur darurat (26 Nov 2026)
   log.querySelector(".lp-jalur-tanda")?.remove();   // penanda jalur di awal obrolan dihapus (pemilik 26 Nov 2026 "hilangkan")
   if (!isian.length) { $("ringkasIsian").textContent = "Terisi otomatis dari percakapan"; $("isian").replaceChildren(el("p", "lp-redup lp-kecil", "Isian muncul begitu Anda mulai melapor.")); return; }
   const jawab = x => !["kosong", "belum"].includes(x.status);
@@ -1058,12 +1057,12 @@ function tampilIsian(isian, lengkap) {
   for (const [kel, daftar] of per) {
     const n = daftar.filter(jawab).length, penuh = n === daftar.length;
     const d = el("details", `lp-kelompok${penuh ? " penuh" : ""}`), sm = el("summary");
-    d.open = !penuh;   // kelompok langsung terbuka, tidak menunggu diklik (pemilik 26 Nov 2026: "gausah nunggu diklik dulu"); yang sudah penuh dilipat
+    d.open = true;   // semua kelompok terbuka di semua keadaan dan semua jenis laporan (pemilik 26 Nov 2026: "Iya ini agar terbuka semua")
     // kartu per kelompok: ikon, nama, bilah kemajuan, jumlah; nilai ringkas tanpa koordinat (pemilik 19 Nov 2026: "bagusin")
     const nm = el("span", "lp-kel-nama"), bar = el("span", "lp-kel-bar"), bi = el("i"); bi.style.width = `${Math.round(n / daftar.length * 100)}%`; bar.append(bi); nm.append(el("b", null, kel), bar);
     sm.append(ikon(KELOMPOK_IKON[kel] || "i-kejadian"), nm, el("span", `lp-pil ${penuh ? "selesai" : n ? "ditelaah" : ""}`, `${n}/${daftar.length}`));
     const dl = el("dl");
-    for (const x of daftar) { const b = el("div", x.status); b.append(el("span", "lp-titik"), el("dt", null, x.label), el("dd", null, String(x.tampil ?? "").replace(/\s*\(-?\d+\.\d+,\s*-?\d+\.\d+\)$/, ""))); dl.append(b); }
+    for (const x of daftar) { const b = el("div", x.status); b.append(el("span", "lp-titik"), el("dt", null, x.label), el("dd", null, String(x.tampil ?? "").replace(/\s*\(-?\d+\.\d+,\s*-?\d+\.\d+\)$/, "") || (x.status === "nihil" ? "Tidak ada" : x.status === "tidaktahu" ? "Tidak tahu" : ""))); dl.append(b); }
     d.append(sm, dl); frag.append(d);
   }
   if (isian.every(jawab)) { const b = el("div", "lp-isian-selesai"), ic = el("span"); ic.append(ikon("i-centang")); const tx = el("span"); tx.append(el("b", null, "Laporan lengkap"), el("small", null, "Periksa ringkasan lalu kirim.")); b.append(ic, tx); frag.prepend(b); }
@@ -1725,6 +1724,9 @@ function opsiLanjut(q) {
   return d;
 }
 const peta = (lat, lon) => `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
+/* nama berhuruf kapital semua dari OpenStreetMap jadi huruf judul; singkatan lembaga tetap (pemilik benci kapital semua, 26 Nov 2026) */
+const SINGKAT = new Set(["RS", "RSU", "RSUD", "RSIA", "RSAB", "RSJ", "RSKO", "TNI", "POLRI", "BPBD", "UPT", "UPTD", "PT", "DKI", "DI", "PMI", "TK", "SD", "SMP", "SMA", "SMK"]);
+const rapiNama = s => { s = String(s || ""); return /\p{Ll}/u.test(s) || !/\p{Lu}{3}/u.test(s) ? s : s.split(/(\s+)/).map(w => SINGKAT.has(w.replace(/\W/g, "")) ? w : w.charAt(0) + w.slice(1).toLowerCase()).join(""); };
 function kartuPenting(j) {
   const k = el("section", "lp-langkah"), kp = el("div", "lp-langkah-kepala"), isi = el("div", "lp-langkah-isi"); kp.append(ikon("i-telepon"), "Nomor penting");
   const kisi = el("div", "lp-kontak-kisi");
@@ -1735,7 +1737,7 @@ function kartuPenting(j) {
   const grup = (judul, ik, isiFn) => { const g = el("section", `lp-kontak-grup g-${ik.replace("i-", "")}`), h = el("h3"); h.append(ikon(ik), judul); const daftar = el("div", "lp-kontak"); isiFn(daftar); g.append(h, daftar); kolom.append(g); };
   // baris fasilitas: ikon jenis, nama dengan label jarak berikon sebaris, alamat di bawah, tombol berikon (pemilik 19 Nov 2026: "jarak dibuat ikon dan label, satu baris")
   const baris = (judul, {ik, km, alamat}, kanan, href, merah) => { const a = Object.assign(el(href ? "a" : "div", "lp-fas"), href ? {href, target: href.startsWith("http") ? "_blank" : "", rel: "noopener"} : {});
-    const u = el("span", "lp-fas-ikon"); u.append(ikon(ik)); const t = el("span", "lp-fas-teks"), atas = el("span", "lp-fas-atas"); atas.append(el("b", null, judul));
+    const u = el("span", "lp-fas-ikon"); u.append(ikon(ik)); const t = el("span", "lp-fas-teks"), atas = el("span", "lp-fas-atas"); atas.append(el("b", null, rapiNama(judul)));
     if (km != null) { const l = el("span", "lp-fas-jarak"); l.append(ikon("i-lokasi"), `${km.toLocaleString("id-ID")} km`); atas.append(l); }
     t.append(atas); if (alamat) t.append(el("small", null, alamat)); a.append(u, t);
     if (kanan) { const k = el("span", `no${merah ? " merah" : ""}`); k.append(ikon(merah ? "i-telepon" : "i-arah"), el("span", "lp-no-teks", kanan)); k.title = kanan; a.append(k); } return a; };
@@ -1746,9 +1748,10 @@ function kartuPenting(j) {
     if (list?.length) grup(judul, ik, daftar => { for (const x of list) {
       // nomor dari OpenStreetMap bila tercatat: tombol Telepon di samping Arah (pemilik 25 Nov 2026: "dilengkapi dengan nomor hapenya")
       if (!x.nomor) { daftar.append(baris(x.nama, {ik, km: x.jarakKm}, "Arah", peta(x.lat, x.lon))); continue; }
-      const r = baris(x.nama, {ik, km: x.jarakKm, alamat: x.nomor.replace(/^\+62(21|22|24|31|61)/, "0$1 ").replace(/^\+62/, "0")}, null, null); r.classList.add("dua-aksi");   // baris bukan tautan: dua tombol sendiri
+      const no = x.nomor.replace(/^\+62(21|22|24|31|61)/, "0$1 ").replace(/^\+62/, "0");   // nomor hanya di balik tombol telepon (pemilik 26 Nov 2026: "Nomor hapenya gausah")
+      const r = baris(x.nama, {ik, km: x.jarakKm}, null, null); r.classList.add("dua-aksi");   // baris bukan tautan: dua tombol sendiri
       const tombol = (kls, href, ikn, label) => { const t = Object.assign(el("a", kls), {href, title: label}); if (href.startsWith("http")) Object.assign(t, {target: "_blank", rel: "noopener"}); t.setAttribute("aria-label", `${label}, ${x.nama}`); t.append(ikon(ikn), el("span", "lp-no-teks", label)); return t; };
-      r.append(tombol("no merah", `tel:${x.nomor}`, "i-telepon", "Telepon"), tombol("no", peta(x.lat, x.lon), "i-arah", "Arah"));
+      r.append(tombol("no merah", `tel:${x.nomor}`, "i-telepon", `Telepon ${no}`), tombol("no", peta(x.lat, x.lon), "i-arah", "Arah"));
       daftar.append(r); } });
   k.classList.add("lp-langkah-penting");
   kolom.style.setProperty("--kol", kolom.childElementCount);

@@ -49,8 +49,7 @@ function tombolPasang(teks) {
 }
 function kartuPasang() {
   const k = el("section", "lp-pw-kartu lp-pw-pasang"), kep = el("div", "lp-pw-kep"), ik = el("span", "lp-pw-ik"); ik.append(ikon("i-unduh"));
-  const t = el("div"), man = el("div", "lp-pw-manfaat"); t.append(el("b", null, "Pasang aplikasi"), man);
-  for (const [ic, tx] of [["i-kirim", "Lebih cepat dari layar utama"], ["i-centang", "Tetap bisa dibuka tanpa sinyal"], ["i-sirene", "Menerima peringatan"]]) { const p = el("span", "lp-pw-pil"); p.append(ikon(ic), tx); man.append(p); }
+  const t = el("div"); t.append(el("b", null, "Pasang aplikasi"));   // tanpa deretan pil manfaat (pemilik 26 Nov 2026: "Hilangkan")
   kep.append(ik, t); k.append(kep);
   if (terpasang()) { const ok = el("p", "lp-pw-ok"); ok.append(ikon("i-centang"), "Aplikasi sudah terpasang di perangkat ini."); k.append(ok); return k; }
   const badan = el("div", "lp-pw-pbadan"), ul = el("ul", "lp-pw-daftar");

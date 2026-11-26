@@ -3784,7 +3784,6 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
   .lp-lanjut button:last-child:nth-child(odd){grid-column:1 / -1}
 }
 .lp-jalur-tanda{display:flex;justify-content:center}
-.lp-catat-nanti{margin:8px 0 0}
 /* sakelar mode pindah ke bilah atas peta (26 Nov 2026): saringan panel kini paling atas, tidak lagi diturunkan 58px (menimpa kepala tabel) */
 .lp-alun-panel .lp-alun-saring{top:0;padding-top:12px}
 @media (max-width:1299px){.lp-alun-tanggal{top:64px}}   /* layar sedang: Tanggal data turun di bawah bilah atas supaya tidak bertumpuk */
@@ -3833,3 +3832,11 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
 .lp-gabung-satuan input{min-height:46px}
 /* tempat menunggu: tampilkan lebih banyak, selebar daftar (pemilik 26 Nov 2026: "see more gitu deh") */
 .lp-lok-antar .lp-antar-lagi{width:100%;min-height:44px;justify-content:center}
+/* Nomor penting (pemilik 26 Nov 2026: "Kepotong"): kartu tidak lebih lebar dari kolomnya dan setinggi isinya; kelompok sebaris tetap rata bawah */
+.lp-kontak-grup .lp-kontak{grid-template-columns:minmax(0,1fr)!important;grid-auto-rows:auto!important;align-content:start}
+.lp-kontak-grup{min-width:0}
+.lp-kontak-grup .lp-fas{min-width:0}
+.lp-kontak-grup .lp-fas-atas b{overflow-wrap:anywhere}
+/* pelacak orang dicari: empat langkah dibagi rata ujung ke ujung (pemilik 26 Nov 2026: "harusnya dilebarin") */
+.lp-tk-cari .lp-tk-langkah{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+@media (max-width:599px){.lp-tk-cari .lp-tk-langkah{grid-template-columns:minmax(0,1fr)!important}.lp-tk-cari .lp-tk-langkah li::after{display:none}}
