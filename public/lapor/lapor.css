@@ -3255,20 +3255,20 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
   .lp-tab-ciut svg{width:16px;height:16px;transition:transform var(--dur-1,.15s) ease}
   .lp-tab-ciut:hover{color:var(--ink);background:var(--card)!important}
   .lp-tab-ciut:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
-  .lp-app:is(.menu-ciut,.di-alun){grid-template-columns:76px minmax(0,1fr)}
-  /* peta Alun-alun: menu melayang di atas peta saat disorot, peta tidak bergeser */
-  .lp-app.di-alun .lp-tab{position:relative;z-index:30;width:76px}
-  .lp-app.di-alun .lp-tab:is(:hover,:has(:focus-visible)){width:248px;box-shadow:var(--shadow-lg)}
-  .lp-app.di-alun .lp-tab > .lp-tab-ciut{display:none}
-  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab{padding:20px 10px;align-items:center}
-  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab-ciut svg{transform:rotate(180deg)}
-  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab-merek{padding:4px 0 20px}
-  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab-merek > span,:is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab-merek .lp-logo-pantau{display:none}
-  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab button:not(.lp-tab-ciut){width:52px;justify-content:center;padding:0!important;font-size:0;gap:0}
-  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab button:not(.lp-tab-ciut) > span:not(.lp-titik-baru){display:none}
-  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab hr,:is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab .lp-sigap,:is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab-profil{display:none!important}
-  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab-aksi{justify-items:center}
-  :is(.lp-app.menu-ciut,.lp-app.di-alun:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-titik-baru{position:absolute;margin:0;transform:translate(10px,-10px)}
+  .lp-app:is(.menu-ciut,.menu-layang){grid-template-columns:76px minmax(0,1fr)}
+  /* menu bawaan ciut jadi kolom ikon di semua layar lebar; melayang di atas isi saat disorot atau difokus papan ketik, isi tidak bergeser (pemilik 26 Nov 2026) */
+  .lp-app.menu-layang .lp-tab{position:relative;z-index:30;width:76px}
+  .lp-app.menu-layang .lp-tab:is(:hover,:has(:focus-visible)){width:248px;box-shadow:var(--shadow-lg)}
+  .lp-app.menu-layang .lp-tab > .lp-tab-ciut{display:none}
+  :is(.lp-app.menu-ciut,.lp-app.menu-layang:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab{padding:20px 10px;align-items:center}
+  :is(.lp-app.menu-ciut,.lp-app.menu-layang:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab-ciut svg{transform:rotate(180deg)}
+  :is(.lp-app.menu-ciut,.lp-app.menu-layang:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab-merek{padding:4px 0 20px}
+  :is(.lp-app.menu-ciut,.lp-app.menu-layang:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab-merek > span,:is(.lp-app.menu-ciut,.lp-app.menu-layang:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab-merek .lp-logo-pantau{display:none}
+  :is(.lp-app.menu-ciut,.lp-app.menu-layang:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab button:not(.lp-tab-ciut){width:52px;justify-content:center;padding:0!important;font-size:0;gap:0}
+  :is(.lp-app.menu-ciut,.lp-app.menu-layang:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab button:not(.lp-tab-ciut) > span:not(.lp-titik-baru){display:none}
+  :is(.lp-app.menu-ciut,.lp-app.menu-layang:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab hr,:is(.lp-app.menu-ciut,.lp-app.menu-layang:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab .lp-sigap,:is(.lp-app.menu-ciut,.lp-app.menu-layang:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab-profil{display:none!important}
+  :is(.lp-app.menu-ciut,.lp-app.menu-layang:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-tab-aksi{justify-items:center}
+  :is(.lp-app.menu-ciut,.lp-app.menu-layang:not(:has(> .lp-tab:is(:hover,:has(:focus-visible))))) .lp-titik-baru{position:absolute;margin:0;transform:translate(10px,-10px)}
 }
 @media (min-width:900px) and (prefers-reduced-motion:reduce){.lp-tab-ciut svg{transition:none}}
 .lp-tur-maskot{cursor:pointer}

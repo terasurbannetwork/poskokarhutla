@@ -2486,6 +2486,7 @@ function mulaiTur() {
    Keadaan diingat di perangkat ini; label tiap tombol tetap ada lewat title dan aria-label saat ciut. */
 (() => {
   const app = document.querySelector(".lp-app"), nav = $("tab"); if (!app || !nav) return;
+  app.classList.add("menu-layang");   // pemilik 26 Nov 2026: "secara otomatis aja ketutup ... ketika di hover baru dia ngebuka lagi"; tombol ciut manual tidak dipakai lagi
   for (const b of nav.querySelectorAll("button")) { const t = b.textContent.trim(); if (t && !b.title) b.title = t; if (t && !b.getAttribute("aria-label")) b.setAttribute("aria-label", t); }
   const tb = el("button", "lp-tab-ciut"); tb.type = "button"; tb.append(ikon("i-kembali"));
   const atur = ciut => { app.classList.toggle("menu-ciut", ciut); tb.setAttribute("aria-expanded", String(!ciut)); const t = ciut ? "Buka menu" : "Ciutkan menu"; tb.setAttribute("aria-label", t); tb.title = t;
