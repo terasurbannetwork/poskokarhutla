@@ -29,7 +29,8 @@ const KONSESI = {prov: "62", nama: "Kalimantan Tengah", perusahaan: [
   {id: "sawit-nama-pendek", nama: "A", geom: [{type: "Polygon", coordinates: [kotak(113.5, -2.3, 113.7, -2.0)]}]},          // nama 1 huruf: dilewati, tidak menggagalkan batch
   {id: "x", nama: "PT Id Terlalu Pendek", geom: [{type: "Polygon", coordinates: [kotak(113.5, -2.3, 113.7, -2.0)]}]},        // id tidak sah: dilewati
 ]};
-const KINI = Date.now(), t1 = KINI - 2 * JAM;
+// t1 dan t1 + 20 menit (putaran kedua antrean) harus di hari WIB yang sama: run terbit 27 Nov 01.50 WIB merah karena t1 = 23.50 kemarin dan titik baru jatuh ke hari berikutnya.
+const KINI = Date.now(), t1 = (() => { const t = KINI - 2 * JAM, m = ((t + 7 * JAM) % (24 * JAM)) / MENIT; return m > 24 * 60 - 30 ? t - 30 * MENIT : t; })();
 const KEP = "latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_ti5,frp,daynight";
 const KEP_M = "latitude,longitude,brightness,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_t31,frp,daynight";
 let CSV;
