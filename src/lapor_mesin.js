@@ -6,6 +6,7 @@
    - kirim = true saat laporan baru saja dikirim (penyimpan menerbitkan nomor, tiket, PDF). */
 import {JENIS, KELOMPOK, ISIAN, isianNama, berlaku, berlakuSesi, KRONOLOGI, rangkaiKronologi, opsiBerlaku, langkahKronologi} from "./lapor_spek.js";
 import {samarkan} from "./samarkan.js";
+import {waktuKlienSah, BATAS as BATAS_LURING} from "../public/inti/luring_spek.js";   // Lapor tanpa sinyal (LR-09)
 /* pilihan jenis tanpa "Lainnya" (pemilik 21 Nov 2026: "Hilangkan lainnya"); id lainnya tetap di JENIS untuk laporan lama */
 const JENIS_PILIH = JENIS.filter(j => j.id !== "lainnya"), JENIS_DARURAT = JENIS_PILIH;
 
@@ -433,6 +434,26 @@ export function sesiSekaliKetuk({pelapor = null, lokasi = null, wil = null, kini
 /* melengkapi laporan sekali ketuk lewat Tambah kabar: salinan yang jenisnya masih kosong mulai di pertanyaan jenis darurat, lalu korban dan foto (alur K68) */
 export const mulaiDiJenisDarurat = salinan => !salinan.isian?.jenis?.nilai && !!salinan.darurat;
 
+/* Lapor tanpa sinyal (lapor-luring LR-09, Q3 bawaan): butir dari HP membawa waktu simpan di HP (w). Itu hanya keterangan untuk meja (lencana dan jam simpan),
+   tidak pernah jadi waktu kejadian atau waktu dilaporkan. Pita darurat mati bila butir dikirim lebih dari 2 jam (HIPOTESIS) sesudah disimpan: darurat.terlambat.
+   Tunda = kirim - w, keduanya jam HP (kirim = jam HP saat mengirim), supaya jam HP yang mundur tidak membuat laporan baru tampak terlambat.
+   w atau kirim yang tidak lolos waktuKlienSah (jam HP melenceng) tidak mematikan pita: bila ragu, pita tetap menyala. */
+export function tandaLuring(darurat, w, kini, kirim = null) {
+  if (w == null) return darurat;
+  if (!waktuKlienSah(w, kini)) { darurat.luring = {simpan: null}; return darurat; }
+  darurat.luring = {simpan: w};
+  if (kirim != null && waktuKlienSah(kirim, kini) && kirim - w > BATAS_LURING.pitaDaruratMs) darurat.terlambat = true;
+  return darurat;
+}
+
+/* Foto Lapor tanpa sinyal (LR-06, Q1 bawaan): aturan 5 menit K75 dihitung dari waktu simpan di HP (w), bukan waktu kirim; GPS perangkat dinilai terhadap w juga.
+   null = bukan foto luring (w kosong atau tidak lolos waktuKlienSah): aturan biasa terhadap jam server berlaku. Jam HP tidak diukur, jadi lencananya bertanda. */
+export function nilaiFotoLuring(w, kini, exifWaktu = null) {
+  if (w == null || !waktuKlienSah(w, kini)) return null;
+  if (Number.isFinite(exifWaktu) && Math.abs(exifWaktu - w) > BATAS_LURING.fotoSegarMs + BATAS_LURING.fotoToleransiMs) return {acuan: w, galat: "Foto ini diambil lebih dari 5 menit sebelum laporan disimpan di HP."};
+  return {acuan: w, tanda: "dikirim dari luring, jam HP belum diverifikasi"};
+}
+
 /* ---------- satu putaran (A1 + A7) ---------- */
 /* Kembali ke pertanyaan sebelumnya bila salah pilih (pemilik 19 Nov 2026: "agar ada pilihan kalau salah pilih"): tiap putaran menyimpan potret sesi
    sebelum jawaban diterapkan; "kembali" memulihkan potret terakhir dan menampilkan lagi pertanyaan itu. Berlaku di web dan WA (ketik *kembali*).
@@ -467,7 +488,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
      lalu ringkasan dan kirim; dilengkapi kemudian lewat Tambah kabar. Kata "darurat" di tengah laporan biasa membuka laporan darurat baru. */
   if (KATA_DARURAT.test(teks) && !sesi.darurat) {
     if (sesi.status !== "identitas") sesi = {status: "identitas", langkah: pelapor ? "kenal" : "setuju", isian: {}, ditanya: [], dibuat: kini, transkrip: []};
-    sesi.darurat = {}; delete sesi.tunda;
+    sesi.darurat = tandaLuring({}, pesan?.luring ?? null, kini, pesan?.luringKirim ?? null); delete sesi.tunda;
   }
   /* Lapor orang hilang lewat obrolan (pemilik 25 Nov 2026: "kaya Lapor kejadian nanyanya", tanpa kode WA): identitas, lokasi terakhir terlihat, nama, hubungan,
      ciri, foto (boleh dari galeri), waktu, nomor orang itu bila tahu, ringkasan, kirim. Hasilnya baris lapor_cari (pemanggil menulis lewat h.kirimCari), bukan laporan atau tiket. */

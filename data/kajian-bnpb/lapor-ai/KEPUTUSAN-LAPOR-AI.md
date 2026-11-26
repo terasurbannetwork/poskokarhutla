@@ -180,7 +180,7 @@ Pemilik menambah enam fitur pada hari yang sama. Dua belas fitur lanjutan sekara
 
 | No | Tanggal | Keputusan |
 | --- | --- | --- |
-| K37 | 19 Nov 2026 | Mode luring di web: laporan disimpan di HP saat sinyal hilang dan terkirim otomatis saat tersambung. |
+| K37 | 19 Nov 2026 | Mode luring di web: laporan disimpan di HP saat sinyal hilang dan terkirim otomatis saat tersambung. Diperinci paket `data/kajian-bnpb/lapor-luring/` (KEPUTUSAN-LURING DL1 sampai DL11, Q1 sampai Q11); untuk fitur ini paket itu menang atas D41 sampai D45, dan LA-35, LA-36 digantikan LR-02 sampai LR-12. |
 | K38 | 19 Nov 2026 | Foto dinilai otomatis: buram, foto lama, foto sama dari internet (hash perseptual atau pencarian balik), dan relevan atau tidak dengan jenis bencana yang dilaporkan. Hanya ditandai untuk staf, tidak menolak otomatis. |
 | K39 | 19 Nov 2026 | Ringkasan harian otomatis: tiap pagi rangkuman laporan warga 24 jam per provinsi dan jenis, siap ditempel ke Laporan Harian BNPB, tanpa buku kejadian kedua. |
 | K40 | 19 Nov 2026 | Penugasan tiket ke orang atau BPBD dengan tenggat dan pengingat; lewat tenggat tanpa tindakan ditandai merah di meja. |

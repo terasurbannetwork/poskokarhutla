@@ -19,7 +19,7 @@ import {kontakBpbd, kalimatBpbd} from "./lapor_kontak.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk, bakuKab, labelAmbil, hitungRespons, RESPONS_HARI} from "./lapor_meja_hak.js";
 import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "./lapor_gugus.js";
 import {agregat, keCsv, BATAS_SEL, KOLOM as KOLOM_AGREGAT} from "./lapor_agregat.js";
-import {putaran, sesiSekaliKetuk, mulaiDiJenisDarurat, lengkap, T, waktuLapor, saringTopik} from "./lapor_mesin.js";
+import {putaran, sesiSekaliKetuk, mulaiDiJenisDarurat, nilaiFotoLuring, lengkap, T, waktuLapor, saringTopik} from "./lapor_mesin.js";
 import {JENIS} from "./lapor_spek.js";
 import {buatModel} from "./lapor_model.js";
 import {buatWilayah} from "./lapor_wilayah.js";
@@ -354,7 +354,8 @@ async function pesan(env, req, url, kini, ctx) {
     }
   }
   const sesiPesan = {teks, lokasi, form: o.form && typeof o.form === "object" && !Array.isArray(o.form) ? o.form : null,
-    pilih: Array.isArray(o.pilih) ? o.pilih.slice(0, 20).map(Number).filter(Number.isInteger) : null, lain: typeof o.lain === "string" ? o.lain.slice(0, 120) : null, kembali: o.kembali === true};
+    pilih: Array.isArray(o.pilih) ? o.pilih.slice(0, 20).map(Number).filter(Number.isInteger) : null, lain: typeof o.lain === "string" ? o.lain.slice(0, 120) : null, kembali: o.kembali === true,
+    luring: angka(o.luring) ? o.luring : null, luringKirim: angka(o.luring_kirim) ? o.luring_kirim : null};   // Lapor tanpa sinyal: waktu simpan di HP, hanya keterangan (tandaLuring), bukan waktu kejadian
   const r = await putar(env, ctx, url, {...id, saluran}, sesiPesan, kini);
   if (r.batas) return kirim(200, {balasan: BATAS_KIRIM_TEKS, teksWa: BATAS_KIRIM_TEKS, status: "ringkasan"});
   r.h.sesi.bahasa = bahasa;
@@ -525,13 +526,16 @@ async function fotoPost(env, req, url, kini, ctx) {
     meta = L ? {lencana: "wa", lencanaTeks: "Lokasi dibagikan lewat WhatsApp", lat: L.lat, lon: L.lon} : {lencana: "tanpa", lencanaTeks: "Tanpa lokasi"};
   } else {
     const g = o.gps && typeof o.gps === "object" ? o.gps : null, x = o.exif && typeof o.exif === "object" ? o.exif : null;
-    const gpsSah = !!g && titikSah(g.lat, g.lon) && angka(g.akurasi) && g.akurasi >= 0 && g.akurasi <= 1000 && angka(g.waktu) && Math.abs(kini - g.waktu) <= 10 * MENIT;
+    const L = nilaiFotoLuring(angka(o.luring) ? o.luring : null, kini, x && angka(x.waktu) ? x.waktu : null), acuan = L?.acuan ?? kini;   // foto Lapor tanpa sinyal (LR-06, Q1)
+    if (L?.galat) return galat(400, L.galat);
+    const gpsSah = !!g && titikSah(g.lat, g.lon) && angka(g.akurasi) && g.akurasi >= 0 && g.akurasi <= 1000 && angka(g.waktu) && Math.abs(acuan - g.waktu) <= 10 * MENIT;
     const xLok = x && titikSah(x.lat, x.lon) ? {lat: x.lat, lon: x.lon} : null, xWaktu = x && angka(x.waktu) && x.waktu <= kini + 5 * MENIT ? x.waktu : null;   // EXIF tidak sah dibuang
     if (xWaktu && kini - xWaktu > 48 * JAM) return galat(400, "Foto diambil lebih dari 48 jam lalu. Kirim foto terbaru dari lokasi.");
     if (x && x.kamera === false) return galat(400, "Foto harus diambil langsung dengan kamera ponsel. Tangkapan layar atau gambar hasil sunting tidak diterima.");   // web: tanpa Make/Model kamera (21 Nov 2026)
     if (gpsSah && xLok && kmDua(g.lat, g.lon, xLok.lat, xLok.lon) > 5) return galat(400, "Lokasi di foto lebih dari 5 km dari posisi Anda sekarang. Kirim foto yang diambil di lokasi ini.");
     meta = gpsSah ? {lencana: "gps", lencanaTeks: "Lokasi GPS perangkat", lat: g.lat, lon: g.lon, akurasi: g.akurasi}
       : xLok ? {lencana: "exif", lencanaTeks: "Lokasi dari data foto", lat: xLok.lat, lon: xLok.lon} : {lencana: "tanpa", lencanaTeks: "Tanpa lokasi"};
+    if (L) meta.lencanaTeks = `${meta.lencanaTeks}, ${L.tanda}`;   // kolom lencana D1 tetap gps/exif/tanpa (CHECK 0155); tanda luring hanya di teks
     waktuAmbil = xWaktu || kini; sumberWaktu = xWaktu ? "waktu EXIF foto" : gpsSah ? "waktu GPS perangkat" : "waktu unggah";
   }
   const fid = acak(8), kunci = `lapor/foto/${fid}.jpg`;

@@ -109,12 +109,15 @@ export const tempatRusak = s => { const o = {};
     if (d.length) o[k] = d; }
   return Object.keys(o).length ? o : null; };
 
+/* tanda darurat untuk meja (K68, K90). luring: Lapor tanpa sinyal, simpan = jam simpan di HP atau null bila jam HP tidak sah; terlambat = tiba > 2 jam sesudah disimpan, tanpa pita (LR-09, Q3) */
+export const daruratRingkas = d => d ? {korban: d.korban || null, ...(d.cara ? {cara: d.cara} : {}), ...(d.tertunda ? {tertunda: true} : {}),
+  ...(d.luring ? {luring: {simpan: Number.isFinite(d.luring.simpan) ? d.luring.simpan : null}} : {}), ...(d.terlambat ? {terlambat: true} : {})} : null;
 /* ---------- ringkasan beku saat terkirim (kolom lapor_sesi.ringkas): meja dan alun-alun tidak perlu mengurai sesi utuh ---------- */
 export function ringkasSesi(s) {
   const w = s.isian.lokasi?.nilai?.wilayah, angka = n => { const x = s.isian[n]; return x && !x.belum && !x.nihil ? x.nilai : 0; };
   return {waktuKejadian: s.isian.waktu?.nilai || null, waktuMs: s.isian.waktu?.ms || null, subjenis: s.isian.subjenis?.nilai || null,
     wilayah: w ? {kode: w.kode, desa: w.desa, kec: w.kec, kab: w.kab, kabKode: w.kabKode, prov: w.prov, provKode: w.provKode} : null,
-    lengkap: lengkap(s), foto: (s.foto || []).length, dampakMeja: dampakRingkas(s), tempat: tempatRusak(s), darurat: s.darurat ? {korban: s.darurat.korban || null, ...(s.darurat.cara ? {cara: s.darurat.cara} : {}), ...(s.darurat.tertunda ? {tertunda: true} : {})} : null, bahasa: s.bahasa && s.bahasa !== "id" ? s.bahasa : null,   // K68; bahasa pelapor untuk petugas meja
+    lengkap: lengkap(s), foto: (s.foto || []).length, dampakMeja: dampakRingkas(s), tempat: tempatRusak(s), darurat: daruratRingkas(s.darurat), bahasa: s.bahasa && s.bahasa !== "id" ? s.bahasa : null,   // K68; bahasa pelapor untuk petugas meja
     dampak: {meninggal: angka("meninggal"), hilang: angka("hilang"), luka: angka("luka"), mengungsi: angka("mengungsi_jiwa"),
       rumah: ["rumah_berat", "rumah_sedang", "rumah_ringan"].reduce((t, n) => t + angka(n), 0), terendam: angka("rumah_terendam")}};
 }
