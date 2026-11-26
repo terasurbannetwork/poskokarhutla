@@ -223,8 +223,8 @@ Bentuk tiap tiket: **Tujuan**; **Berkas** (path persis; hanya ini yang boleh dis
 - **Pengerja / pemeriksa:** sesi induk (opus) / pemilik membaca rakitan.
 - **Langkah:**
   - [x] P-1 sampai P-4, P-6 sampai P-8, P-10, P-11, P-13, P-14 diputus sesi induk 5 Nov 2026 (KA §8, §0.2); RU-006, RU-009, RU-018, RU-019 tidak lagi menunggu putusan.
-  - [ ] Sahkan atau balik P-5, P-9, P-12.
-  - [ ] Catat putusan sebagai `Ruling:` di `.superpowers/sdd/TIKET/progress-unit.md` dan sebagai Kasus orkestrator.
+  - [x] Sahkan atau balik P-5, P-9, P-12: **disahkan sesuai bawaan 26 Nov 2026** (pemilik menerima semua bawaan 25 Nov). P-5 rangkai `uji:layar` (RU-017); P-9 hak lewat `P_UNIT_BACA` (DT); P-12 kutipan G-1 dari `data/hukum/seed.sql`.
+  - [x] Dicatat sebagai Kasus orkestrator 26 Nov 2026 (`ilmu.mjs baca orkestrator`).
   - [ ] Bila putusan dibalik, betulkan tiket terdampak di berkas ini sebelum tiketnya dikirim.
   - [ ] Tanyakan ke pemilik: U2, U4, U5, U7, U10, U11 (bawaan KA §7 dipakai sampai dijawab).
 - **Bukti:** `node scripts/agents/ilmu.mjs baca orkestrator`.
