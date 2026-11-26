@@ -1654,8 +1654,8 @@ input.lp-isian{font-weight:700;font-size:1.125rem;font-variant-numeric:tabular-n
 .lp-kompartemen-kepala{justify-content:flex-start!important;background:var(--card)!important;color:var(--ink)!important;border-bottom:1px solid var(--line)}
 .lp-kompartemen-kepala svg{width:34px;height:34px;padding:8px;border-radius:10px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2)}
 .lp-kompartemen{border:1px solid var(--line)}
-/* Laporan saya: dua kartu per baris supaya langkah tidak bertumpuk */
-.lp-laporan-kisi{grid-template-columns:repeat(auto-fit,minmax(min(100%,560px),1fr))!important}
+/* Laporan saya: paling banyak dua kartu per baris (pemilik 26 Nov 2026 "2 kolom aja"), satu kolom bila lebar kurang dari dua kali 560px */
+.lp-laporan-kisi{grid-template-columns:repeat(auto-fit,minmax(min(100%,max(560px,calc((100% - 16px) / 2))),1fr))!important}
 /* Alun-alun kosong: rapat ke tengah */
 .lp-kosong-besar{grid-template-columns:200px auto!important;justify-content:center;gap:40px!important}
 
