@@ -31,7 +31,7 @@ jobs:
     if: github.event_name == 'schedule' && github.event.schedule == '20 * * * *' || github.event_name == 'workflow_dispatch' && !inputs.bulanan
     runs-on: ubuntu-latest
     # putaran dingin terukur 23 menit, hangat 12 menit (DP-03, 26 Nov 2026); cache di bawah membuat putaran berikutnya hangat
-    timeout-minutes: 40
+    timeout-minutes: 55
     concurrency: {group: dampak-peringatan, cancel-in-progress: false}
     steps:
       - uses: actions/checkout@v4
@@ -60,6 +60,10 @@ jobs:
           done
           echo "grid halus tersedia: $n/38"
       - name: Keterpaparan peringatan (umpan CAP, batas waktu per panggilan ada di skrip)
+        # 27 Nov 2026: putaran dingin pertama di runner melewati batas job 40 menit dan membatalkan status serta analisis;
+        # keterpaparan diberi batas sendiri dan boleh gagal, langkah status, analisis, dan unggah tetap jalan (cache membuat putaran berikutnya hangat)
+        timeout-minutes: 30
+        continue-on-error: true
         run: |
           mkdir -p data/raw/dampak_peringatan
           python3 -I scripts/siklus/dampak_peringatan.py --base "$BASIS" \
