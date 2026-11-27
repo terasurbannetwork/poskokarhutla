@@ -9,6 +9,7 @@ import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
 import {barisPrakiraan} from "/lapor/dampak_peringatan.js?v=2";   // Alun-alun tampilan Peringatan (DP-11)
 import {gabung, saring, teksKartu} from "/lapor/alun_kabar.js?v=1";
 import {pasangLacak} from "/lapor/lacak_isi.js?v=1";   // Lacak laporan sebagai layar di dalam aplikasi (pemilik 26 Nov 2026)
+import {OH_LANGKAH, kartuOh, tombol112, kartuTemuTerkirim, muatSaya, panelSaya} from "/lapor/hilang_chat.js?v=1";   // orang hilang publik: kartu kejadian, izin, wali, temu, Laporan saya
 import {ikonKebutuhan, ikonSub, bertingkat, ikonOpsi} from "/lapor/ikon_opsi.js?v=2";   // peta ikon pilihan, diuji gerbang ikon   // Kabar Alun-alun (KA-05): gabung resmi, warga, berita
 /* Pelapor mengetik nomor WhatsApp tanpa kode (KEPUTUSAN-LAPOR-AI K65, D99-D102); di situs, nomor ketikan diikat ke perangkat lewat kuki HttpOnly
    dari Worker. Sesi /masuk yang sudah ada tetap dipakai bila ada. Kiriman POST wajib x-pb: 1. */
@@ -73,7 +74,7 @@ document.querySelectorAll("#tab button[data-ke]").forEach(b => b.addEventListene
 $("bKembali").addEventListener("click", () => { ke("beranda"); tampilBeranda(); });
 $("bLaporBaru").addEventListener("click", () => bukaChat()); $("bDarurat")?.addEventListener("click", () => bukaChat(true));
 $("bCekStatus").addEventListener("click", () => { ke("chat"); kirim({teks: "status", tampil: "Cek status laporan"}); });
-document.querySelectorAll("[data-aksi]").forEach(b => b.addEventListener("click", () => ({lapor: () => bukaChat(), darurat: () => bukaChat(true), hilang: () => bukaChat("cari"), sekali: () => sekaliKetuk(), info: () => bukaInfo("info"), prediksi: () => bukaInfo("prediksi"),
+document.querySelectorAll("[data-aksi]").forEach(b => b.addEventListener("click", () => ({lapor: () => bukaChat(), darurat: () => bukaChat(true), hilang: () => bukaChat("cari"), temu: () => bukaChat("temu"), sekali: () => sekaliKetuk(), info: () => bukaInfo("info"), prediksi: () => bukaInfo("prediksi"),
   penting: () => bukaInfo("penting"), alun: () => ke("alun"), edukasi: () => { ke("bantuan"); pilihGrup("Edukasi"); }})[b.dataset.aksi]()));
 $("bSemuaBantu").addEventListener("click", () => ke("bantuan"));
 /* Sigap memandu fitur beranda (pemilik 21 Nov 2026): gelembung bergilir 8 detik, berhenti saat disentuh atau difokus,
@@ -762,17 +763,17 @@ function kartuFoto(j) {
 function kartuFotoCari(j) {
   // sampai 10 foto (pemilik 26 Nov 2026); susunan meniru kartu foto laporan kejadian: hitungan berketerangan, kisi, satu baris aksi (pemilik 26 Nov 2026: "tiru yang laporan kejadian")
   if (j.pilihan?.[0] === "Lewati") { cache.fotoCari = []; simpanCache(); }   // mesin belum menerima foto: pratinjau lama dari laporan lain dibuang
-  const MAKS = 10, ada = cache.fotoCari || [], isi = kartu("foto", "Foto orang yang dicari"), kisi = el("div", "lp-foto-kisi");
+  const MAKS = 10, temu = String(j.status || "").startsWith("temu_"), ada = cache.fotoCari || [], isi = kartu("foto", temu ? "Foto orang yang ditemukan" : "Foto orang yang dicari"), kisi = el("div", "lp-foto-kisi");
   isi.closest(".lp-langkah").classList.add("lp-langkah-foto");
   const masukan = el("input"); masukan.type = "file"; masukan.accept = "image/jpeg,image/*"; masukan.hidden = true;   // galeri boleh: foto lama orang yang dicari
   const kamera = el("input"); kamera.type = "file"; kamera.accept = "image/jpeg,image/*"; kamera.capture = "user"; kamera.hidden = true;
-  ada.forEach((src, i) => { const fig = el("figure", "lp-foto tanpa-titik"), g = el("div", "lp-foto-gambar"), im = el("img"); im.src = src; im.alt = `Foto ${i + 1} orang yang dicari`;
+  ada.forEach((src, i) => { const fig = el("figure", "lp-foto tanpa-titik"), g = el("div", "lp-foto-gambar"), im = el("img"); im.src = src; im.alt = temu ? `Foto ${i + 1} orang yang ditemukan` : `Foto ${i + 1} orang yang dicari`;
     g.append(im); const ket = el("div", "lp-foto-ket"); ket.append(el("span", "lp-pil selesai", `Foto ${i + 1}`), el("small", null, "Hanya dilihat petugas")); fig.append(g, ket); kisi.append(fig); });
   if (ada.length < MAKS) { const z = el("button", `lp-foto-ajak${ada.length ? " kecil" : ""}`); z.type = "button";
     z.append(ikon(ada.length ? "i-plus" : "i-kamera"), el("b", null, ada.length ? "Tambah foto" : "Foto wajah yang jelas"), el("small", null, ada.length ? `Sisa ${MAKS - ada.length} foto` : "Foto lama dari galeri boleh. Pilih yang wajahnya terlihat jelas."));
     z.addEventListener("click", () => masukan.click()); kisi.append(z); }
   for (const m of [masukan, kamera]) m.addEventListener("change", () => { if (m.files[0]) unggahFoto(m.files[0], {cari: true}); });
-  const hitung = el("p", "lp-foto-hitung"); hitung.append(ikon("i-kamera"), `${ada.length} dari ${MAKS} foto`, el("small", null, "Foto memudahkan petugas dan relawan mengenali orang yang Anda cari."));
+  const hitung = el("p", "lp-foto-hitung"); hitung.append(ikon("i-kamera"), `${ada.length} dari ${MAKS} foto`, el("small", null, temu ? "Foto membantu petugas mencocokkan dengan keluarga yang mencari. Foto hanya dilihat petugas." : "Foto memudahkan petugas dan relawan mengenali orang yang Anda cari."));
   const galeri = el("button", "lp-utama"); galeri.type = "button"; galeri.append(ikon("i-plus"), "Pilih dari galeri"); galeri.addEventListener("click", () => masukan.click());
   const potret = el("button", "lp-kedua"); potret.type = "button"; potret.append(ikon("i-kamera"), "Ambil foto"); potret.addEventListener("click", () => kamera.click());
   if (ada.length >= MAKS) galeri.disabled = potret.disabled = true;
@@ -889,14 +890,17 @@ function terapkan(j, {dariCache = false} = {}) {
   else if (j.minta === "foto_cari") kartuFotoCari(j);
   else if (j.minta?.startsWith("tempat")) kartuTempat(j);
   else if (j.minta === "antar") kartuAntar(j);
+  else if (OH_LANGKAH.has(j.status) && j.pilihan?.length) kartuOh(j, {kartu, el, ikon, kirim});   // kejadian, izin menampilkan, wali (OH-04)
   else if (j.form?.jenis === "isian") kartuIsian(j);
   else if (j.form?.isian?.[0]?.tipe === "tanggal") kartuWaktu(j);
   else if (j.form?.isian?.[0]?.nama === "rt") kartuRtRw(j);
   else if (j.form) kartuAngka(j);
   else if (j.pilihan?.length || KETIK.has(j.minta)) kartuPilihan(j);
   else if (j.status === "batal") kartuBatal();
+  else if (j.status === "temu_terkirim") kartuTemuTerkirim({kartu, el, ikon}, () => kirim({teks: "lapor", tampil: "Buat laporan baru"}));   // jalur Saya menemukan seseorang (OH-10)
   else if (j.status === "cari_terkirim") kartuCariTerkirim(j);   // sesudah dibatalkan tetap ada jalan keluar (pemilik 21 Nov 2026: "gw ga bisa klik")
   else tulis = j.status !== "terkirim" && j.status !== "batal";
+  { const t112 = tombol112(j, {el, ikon}); if (t112) wadah.prepend(t112); }   // orang ditemukan tidak sadar atau terluka: 112 lebih dulu
   fPesan.hidden = !tulis;
   if (tulis && j.isiAwal && !iTeks.value.trim()) { iTeks.value = j.isiAwal; const n1 = iTeks.value.indexOf("\n1. "), t = n1 >= 0 ? n1 + 4 : iTeks.value.indexOf(":") + 2; iTeks.setSelectionRange(t, t); } // daftar bernomor: kursor di belakang "1. "
   if (tulis) iTeks.focus();
@@ -1244,13 +1248,16 @@ async function mulaiSusulan(nomor) {
   } catch { alert("Jaringan bermasalah. Coba lagi."); }
 }
 const LABEL_CARI = {buka: "Masih dicari", ditemukan_selamat: "Ditemukan selamat", ditemukan_meninggal: "Ditemukan meninggal", ke_sar: "Diteruskan ke tim SAR", tutup: "Ditutup"};
+let hilangSaya = null;   // Map cari_id -> profil publik milik nomor ini; null = belum masuk atau layanan belum dibuka
+async function segarkanHilang() { const m = await muatSaya(), lama = JSON.stringify([...(hilangSaya || [])]); hilangSaya = m; if (JSON.stringify([...(m || [])]) !== lama) tampilDaftarLaporan(); }
 async function muatCari() {   // gagal atau belum masuk (401) = daftar kosong, tanpa galat di layar
+  segarkanHilang();
   try { const r = await fetch("/api/lapor/selamat/saya", {credentials: "same-origin", cache: "no-store", signal: AbortSignal.timeout(10000)}); if (!r.ok) return;
     const j = await r.json(); const lama = JSON.stringify(cache.cari || []); cache.cari = j.cari || []; if (JSON.stringify(cache.cari) !== lama) tampilDaftarLaporan(); } catch {}
 }
 function tampilDaftarLaporan() {
   const w = $("daftarLaporan"), daftar = cache.laporan || [];
-  const aktif = cache.keadaan && !["terkirim", "batal", "cari_terkirim"].includes(cache.keadaan.status) && cache.transkrip.length;
+  const aktif = cache.keadaan && !["terkirim", "batal", "cari_terkirim", "temu_terkirim"].includes(cache.keadaan.status) && cache.transkrip.length;
   const selesai = daftar.filter(l => l.status === "selesai").length;
   const ring = $("ringkasLaporan"); ring.replaceChildren();
   for (const [t, n, ik] of [["Laporan terkirim", daftar.length, "i-kirim"], ["Sedang ditangani", daftar.length - selesai, "i-status"], ["Selesai", selesai, "i-centang"]]) {
@@ -1294,6 +1301,7 @@ function tampilDaftarLaporan() {
     const tx = el("div", "lp-lap-isi"), meta = el("span", "lp-lap-meta"), m1 = el("span"), m2 = el("span"); m1.append(ikon("i-lokasi"), c.kab_nama || "");
     m2.append(ikon("i-kalender"), new Date(c.dibuat).toLocaleString("id-ID", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(":", ".")); meta.append(m1, m2);
     tx.append(el("b", null, `Orang dicari: ${c.nama_dicari}`), meta, el("small", "lp-lap-cari-ket", c.status === "buka" ? "Petugas BNPB dan BPBD wilayah ini menerima laporan Anda. Kabar dikirim lewat WhatsApp." : "Laporan ini sudah ditutup petugas."));
+    const ps = hilangSaya?.get(c.id); if (ps) tx.append(panelSaya({el}, ps, segarkanHilang));   // profil publik: cabut, perpanjang, foto publik (OH-08)
     b.append(g, tx); isi.push(b);
   }
   if (!isi.length) {
@@ -1364,10 +1372,10 @@ function tanyaDraf() {
   isi.append(d); gulir.scrollTop = gulir.scrollHeight;
 }
 async function bukaChat(darurat = false) {
-  if (darurat === "cari") {   // lapor orang hilang lewat obrolan, tanpa kode WA (pemilik 25 Nov 2026)
+  if (darurat === "cari" || darurat === "temu") {   // lapor orang hilang lewat obrolan, tanpa kode WA (pemilik 25 Nov 2026); temu = jalur Saya menemukan seseorang (OH-10)
     ke("chat"); hangatkanTerima();
     kosongkanChat();
-    const mulaiCari = () => kirim({teks: "lapor orang hilang", tampil: false});
+    const mulaiCari = () => kirim({teks: darurat === "temu" ? "Lapor menemukan orang" : "lapor orang hilang", tampil: false});
     return tanyaBahasa(() => wa ? mulaiCari() : tanyaNomor(mulaiCari));
   }
   if (darurat === true) {   // K68: laporan darurat selalu dimulai baru; draf laporan biasa yang belum terkirim diganti
@@ -1377,8 +1385,8 @@ async function bukaChat(darurat = false) {
     return tanyaBahasa(() => wa ? mulaiDarurat() : tanyaNomor(mulaiDarurat));
   }
   ke("chat"); hangatkanTerima();
-  if (log.children.length && cache.keadaan?.status && !["terkirim", "batal", "cari_terkirim", "identitas"].includes(cache.keadaan.status)) return tanyaDraf();
-  if (!log.children.length || ["terkirim", "batal", "cari_terkirim"].includes(cache.keadaan?.status)) { kosongkanChat(); const mulaiLapor = () => kirim({teks: "lapor", tampil: false});
+  if (log.children.length && cache.keadaan?.status && !["terkirim", "batal", "cari_terkirim", "temu_terkirim", "identitas"].includes(cache.keadaan.status)) return tanyaDraf();
+  if (!log.children.length || ["terkirim", "batal", "cari_terkirim", "temu_terkirim"].includes(cache.keadaan?.status)) { kosongkanChat(); const mulaiLapor = () => kirim({teks: "lapor", tampil: false});
     tanyaBahasa(() => wa ? mulaiLapor() : tanyaNomor(mulaiLapor)); }   // bahasa dipilih di jendela awal; di chat ditanya hanya bila belum
 }
 
@@ -2519,7 +2527,7 @@ async function terjemahKartu() {   // satu putaran sekaligus; perubahan selama b
 /* kamus statis per bahasa (public/lapor/tr/<kode>.json, dibuat scripts/lapor/tr_buat.mjs): semua teks tetap sudah diterjemahkan sebelumnya,
    jadi layar berganti seketika tanpa menunggu AI (pemilik 20 Nov 2026: "semua statis, lu terjemahin aja semua dulu"). API hanya untuk teks tersusun saat jalan. */
 const kunciTr = t => String(t).replace(/\s+/g, " ").trim();
-const TR_VERSI = "20261125a";   // naikkan tiap kamus public/lapor/tr dibuat ulang
+const TR_VERSI = "20261127a";   // naikkan tiap kamus public/lapor/tr dibuat ulang
 const STATIS = new Map();   // kode -> {kunci: terjemahan} | Promise
 function muatStatis(b) {
   if (!STATIS.has(b)) STATIS.set(b, fetch(`/lapor/tr/${b}.json?v=${TR_VERSI}`).then(r => r.ok ? r.json() : {}).catch(() => ({})).then(k => { STATIS.set(b, k); return k; }));
@@ -2656,7 +2664,7 @@ async function mulai(nomor, {diChat = false} = {}) {
   tampilBantu(); tampilBeranda(); if (!diChat) layarAwal();
   try {
     const j = await (await fetch(`/api/lapor/sesi?wa=${nomor}`, {signal: AbortSignal.timeout(15000)})).json();
-    if (!diChat && j.status && !["terkirim", "batal", "cari_terkirim"].includes(j.status)) {
+    if (!diChat && j.status && !["terkirim", "batal", "cari_terkirim", "temu_terkirim"].includes(j.status)) {
       if (!cache.transkrip.length) for (const t of j.transkrip || []) tambah(t.dari === "pelapor" ? "saya" : t.dari, t.teks || (t.lokasi ? "Lokasi dibagikan" : ""));
       terapkan(j);
     }

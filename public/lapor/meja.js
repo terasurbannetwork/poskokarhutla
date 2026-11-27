@@ -5,6 +5,7 @@
    Angka dampak antarlaporan tidak dijumlah (laporan warga bisa ganda untuk satu kejadian): ringkasan menghitung LAPORAN, bukan korban. */
 import {labelKode} from "./kode.js";
 import {bukaOrangDicari} from "./meja_cari.js?v=5";   // LA-82: orang dicari (K91)
+import {bukaHilangPublik} from "./meja_hilang.js?v=1";   // OH-07, OH-11: profil orang hilang untuk halaman publik
 import {pasangDataLanjutan, bukaDaftarData} from "./meja_data.js";   // LJ-16: data lanjutan BPBD (rincian tiket dan daftar lintas kab)
 const $ = id => document.getElementById(id);
 const el = (t, k, x) => { const e = document.createElement(t); if (k) e.className = k; if (x != null) e.textContent = x; return e; };
@@ -199,7 +200,7 @@ function gambarNav(daftar) {
     grup("Tampilan"), item("m-lokasi", "Peta laporan", ke("peta"), {aktif: tampil === "peta"}), item("m-daftar", "Daftar laporan", ke("daftar"), {aktif: tampil === "daftar", n: daftar.filter(cocokJenis).filter(cocokStatus).length}),
     grup("Antrean kerja"), ...ANTREAN.map(([t, st, ik]) => item(ik, t, () => { saringStatus = st; gambar(); },
       {n: st ? daftar.filter(b => st.includes(b.status)).length : daftar.length, aktif: String(saringStatus) === String(st), st: st ? WARNA[st[0]] : null})),
-    grup("Pintu lain"), item("m-orang", "Orang dicari", () => { bukaOrangDicari(); }), item("m-tiket", "Data lanjutan BPBD", () => { bukaDaftarData(new Map(semua.map(b => [b.nomor, b.wilayah?.kab]))); }), item("m-pesan", "Form lapor warga", null, {href: "/lapor/"}), item("m-daftar", "Poster QR desa", null, {href: "/lapor/poster.html"}),   // K92, LA-84
+    grup("Pintu lain"), item("m-orang", "Orang dicari", () => { bukaOrangDicari(); }), item("m-orang", "Orang hilang publik", () => { bukaHilangPublik(); }), item("m-tiket", "Data lanjutan BPBD", () => { bukaDaftarData(new Map(semua.map(b => [b.nomor, b.wilayah?.kab]))); }), item("m-pesan", "Form lapor warga", null, {href: "/lapor/"}), item("m-daftar", "Poster QR desa", null, {href: "/lapor/poster.html"}),   // K92, LA-84
     // Pantau Dalops halaman internal BNPB: tidak untuk akun BPBD (pemilik 20 Nov 2026 "ya sembunyikan")
     ...(akunBpbd() ? [] : [item("m-ringkas", "Pantau Dalops", null, {href: "/bnpb/dalops"})]));
 }
