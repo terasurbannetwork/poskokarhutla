@@ -26,7 +26,7 @@ export function pakaiGaya() {
   if (document.querySelector('link[href^="/potensi/baca.css"]')) return;
   const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/potensi/baca.css"; document.head.append(l);
 }
-const muatDP = () => globalThis.DampakPeringatan ? Promise.resolve() : new Promise((ok, gagal) => { const s = document.createElement("script"); s.src = "/inti/dampak_peringatan.js"; s.onload = ok; s.onerror = gagal; document.head.append(s); });
+const muatDP = () => globalThis.DampakPeringatan ? Promise.resolve() : new Promise((ok, gagal) => { const s = document.createElement("script"); s.src = "/inti/dampak_peringatan.js"; s.onload = ok; s.onerror = gagal; setTimeout(gagal, 20000); document.head.append(s); });
 /** Chip status fakta D16 (Bersumber, Dihitung, Hipotesis, Belum terukur), label dan kelas dari fungsi murni inti. */
 export function chip(jenis, tip) { const c = globalThis.DampakPeringatan?.chipFakta(jenis) || { label: BELUM, kelas: "chip-belum" }; return `<span class="bc-chip ${c.kelas}"${tip ? ` title="${esc(tip)}"` : ""}>${esc(c.label)}</span>`; }
 
@@ -35,6 +35,7 @@ let _bahan = null;
 export function bahan() {
   return (_bahan ??= (async () => {
     const [, an, st, ik, kelas, rg] = await Promise.all([muatDP().catch(() => {}), ambil("/api/potensi/analisis"), ambil("/api/dampak-peringatan/status"), ambil("/data/iklim.json"), ambil("/data/kelas_desa_bnpb.json"), ambil("/api/dampak-peringatan/ringkas")]);
+    if (!an && !st && !ik && !kelas && !rg) _bahan = null;   // semua gagal: tab berikutnya mencoba lagi, bukan memakai hasil kosong selamanya
     return { an, st, ik, kelas, rg };
   })());
 }

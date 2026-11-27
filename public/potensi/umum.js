@@ -6,7 +6,8 @@ export const nanti = (f) => {
   t = setTimeout(go, 120);
   requestAnimationFrame(() => setTimeout(go, 0));
 };
-export const ambil = (u) => fetch(u, { credentials: "same-origin" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+// batas 20 detik: satu API yang menggantung tidak boleh membuat semua tab Peringatan macet di "Memuat"
+export const ambil = (u) => fetch(u, { credentials: "same-origin", signal: AbortSignal.timeout(20000) }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
 const GEO = new Map();
 /** Geometri kab per provinsi (dua digit), sekali ambil untuk semua modul. */
 export const geoKab = (p) => (GEO.has(p) ? GEO.get(p) : GEO.set(p, ambil(`/geo/kabupaten/${p}.json`)).get(p));
