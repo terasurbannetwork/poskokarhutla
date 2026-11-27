@@ -48,6 +48,17 @@ Migrasi produksi diterapkan pemilik.
 | SB-13 | Lapis A | `lapis-a tarik` dan `lapis-a analisis` atas `omc_bmkg.json`; `riset/HASIL-A.md` dan `hasil_a.json` dengan semua spesifikasi, plasebo, MDE, penyimpangan; tidak tampil di layar sebelum pemilik membaca | Lapis B | `cuaca-udara` → `validasi-model` | `python3 scripts/omc/efek_banjir.py lapis-a analisis` menulis HASIL-A; pemeriksa bersih mencocokkan dengan PRAREG-A |
 | SB-15 | Lapis B dan Rapor | `lapis-b` harian di `semai.yml`, `rapor_banjir.json` di R2, kartu Rapor uji di seksi (`layar-peta`) | publikasi di luar staf (Q4) | `cuaca-udara` + `layar-peta` → `validasi-model`, `selera-angka` | `efek_banjir.py uji` hijau; kartu menampilkan "data kurang (n = 0 dari sekitar 250)" di produksi awal; tinjau pemilik |
 
+## Fase 5: wilayah OMC aktif (K5 sampai K8, pemilik 27 Nov 2026)
+
+| Tiket | Isi | Bergantung | Pengerja | Bukti |
+| ----- | --- | ---------- | -------- | ----- |
+| SB-30 | Kuota provinsi ber-OMC: `P_omc(d)` dari `omc_bmkg.json`, sampai 3 zona per provinsi di luar 5 nasional, `kuota` di zona (ALGORITMA §6) | SB-04 | `pipa-data` | uji fungsi murni kuota di `semai_murni.py`; `semai.py uji golden` karhutla tetap |
+| SB-31 | Sasaran asal `kejadian` dari `kabar.json`, cocok nama ke kode BPS, didahulukan pada skor sama, label asal di `sasaran[]` dan ringkasan | SB-04 | `pipa-data` | uji pencocokan nama (Kota/Kab, ejaan) dan kasus basi |
+| SB-32 | Bot WA mengurai laporan OMC posko (armada, sorti, engine on/off, wilayah semai, ketinggian, bahan, kg, posko), tanpa nama orang; contoh di `tests/wa/fixtures` | – | `wa-bot` | uji pengurai atas contoh 25 Nov 2026 |
+| SB-33 | Simpan laporan OMC posko: rute staf atau token pipeline dan tabel D1 baru (nomor migrasi diperiksa saat tiket; diterapkan pemilik) | SB-32 | `warga-api` → `guard-api`, `migrasi-idempoten` | `npm run uji:warga` |
+| SB-34 | Base dari posko OMC (K7): `semai.py` membaca posko provinsi ber-OMC lewat rute SB-33; tanpa posko, bandara terdekat | SB-30, SB-33 | `pipa-data` | uji base posko dan bawaan |
+| SB-35 | Catatan perlakuan dari laporan posko masuk penguji Lapis B (sorti per provinsi-hari) | SB-33, SB-15 | `cuaca-udara` | RENCANA-UJI §5 tidak berubah sebelum PRAREG diamandemen |
+
 ## Lanjutan (tidak dikerjakan sebelum pemilik memutuskan)
 
 | Tiket | Isi | Menunggu |
@@ -62,5 +73,6 @@ Migrasi produksi diterapkan pemilik.
 ## Urutan
 
 SB-00 → SB-01 → SB-02 → SB-03 → SB-04 → SB-05 → SB-06 → SB-07 → SB-08 → SB-09 → SB-10 → SB-14 → SB-11 → SB-12 → SB-13 → SB-15.
+Fase 5: SB-30 dan SB-31 dulu (boleh bersamaan bila berkas tidak beririsan, keduanya di `semai.py` jadi berurutan), SB-32 bersamaan, lalu SB-33, SB-34, SB-35.
 SB-11 boleh berjalan bersamaan dengan Fase 2 dan 3 (berkas tidak beririsan). SB-12 dan SB-13 baru boleh mulai sesudah commit PRAREG
 SB-11 ada di `main`, karena SB-12 sudah menyentuh data baseline. SB-02 dan SB-06 boleh bersamaan. SB-01 selalu pertama di antara tiket mesin.
