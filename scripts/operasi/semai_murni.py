@@ -12,6 +12,7 @@ import datetime as dt
 import difflib
 import math
 import re
+import re
 
 R_UDARA = 287.05      # J/(kg K)
 G = 9.80665           # m/s2
@@ -364,6 +365,34 @@ def prov_omc(omc, d, bobot):
     jenis = nilai(bobot, "banjir.omc_jenis")
     return sorted({r["kode_prov"] for r in ((omc or {}).get("aktif_hari_ini") or {}).get("baris", [])
                    if r.get("jenis_kegiatan") == jenis and r.get("periode_awal", "9") <= d <= r.get("periode_akhir", "0")})
+
+
+_BUANG_POSKO = {"bandar", "udara", "bandara", "lanud", "pangkalan", "lanal", "international", "internasional", "airport", "air", "base", "militer", "tni", "au"}
+
+
+def _kata_posko(t):
+    return frozenset(w for w in re.sub(r"[^a-z0-9 ]", " ", str(t).lower()).split() if w not in _BUANG_POSKO)
+
+
+def cocok_posko(nama_posko, bandara):
+    """K7: nama posko dari laporan OMC -> id bandara/base mesin. bandara = {id: {nama, ...}} (nama boleh 'A, kota' atau 'A / B').
+    Cocok bila himpunan kata inti sama, atau satu menjadi himpunan bagian yang lain dengan sedikitnya 2 kata (nama 1 kata ('Iskandar')
+    tidak boleh menelan 'Sultan Iskandar Muda'). Ambigu (>1 id) dianggap tak tercocok, koordinat tidak pernah dikarang.
+    -> (daftar id, daftar nama tak tercocok)."""
+    ids, tak = [], []
+    for nm in nama_posko or []:
+        p = _kata_posko(nm)
+        hit = set()
+        for bid, bd in bandara.items():
+            for alt in re.split(r"[,/]", bd.get("nama", "")):
+                a = _kata_posko(alt)
+                if p and a and (p == a or (min(len(p), len(a)) >= 2 and (p <= a or a <= p))):
+                    hit.add(bid)
+        if len(hit) == 1:
+            ids += [h for h in hit if h not in ids]
+        else:
+            tak.append(nm)
+    return ids, tak
 
 
 def _urut_zona(c):
