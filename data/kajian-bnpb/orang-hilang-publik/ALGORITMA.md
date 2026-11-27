@@ -116,3 +116,9 @@ Jaminan yang diuji: fungsi susun hasil tidak menerima foto; tidak ada jalur kode
 ## 9. Daftar periksa telepon sebelum Tayang dewasa (D34) [BAWAAN SEMENTARA, OH-07]
 
 Hanya hasil telepon `telepon_*` TERBARU di `oh_riwayat` yang dihitung (dibaca satu baris, tanpa LIMIT yang bisa memotong). Hasil `ingin` atau `tak_terjangkau` (atau `tanpa_nomor` bila memang tak ada `nomor_dicari`) hanya cukup bila dicatat sesudah profil terakhir masuk `menunggu` (kirim, kirim ulang sesudah perbaikan, perpanjang); telepon yang lebih lama tidak cukup. Hasil terbaru `tidak_ingin` memblokir Tayang, juga sesudah profil masuk `menunggu` lagi, sampai petugas mencatat telepon baru. Menunggu keputusan pemilik bila ingin aturan lain.
+
+## 10. Batas ambang Laporkan dan nomor belum terverifikasi (tinjauan keamanan 27 Nov 2026)
+
+- Ambang 3 pelapor berbeda dalam 24 jam (HIPOTESIS) menghitung nomor, bukan orang. Seseorang dengan tiga nomor murah dapat menurunkan sebuah profil. Dampaknya terbatas: profil turun dengan alasan `dilaporkan` dan menunggu peninjauan petugas; tidak ada data yang bocor. Meja menampilkan `dilaporkan_ambang` (berapa kali profil itu pernah turun karena ambang) di tiap baris antrean informasi supaya petugas menilai pola.
+- Nomor pelapor orang hilang dan nomor penemu yang hanya diketik (bukan sesi `/masuk` atau mesin WA) ditandai di tabel `oh_nomor_ketik` (migrasi 0191, hanya ditulis di belakang `OH_TULIS`). Meja menampilkan `nomor_terverifikasi: false` dan petugas memverifikasi lewat telepon sebelum memercayainya. Jatah harian laporan per nomor ketikan dihitung per perangkat.
+- Antrean informasi: wilayah disaring di SQL (non-BNPB tanpa wilayah tidak melihat apa pun), diurut laporkan, cabut, orang_ini, informasi, foto, lalu tertua, dengan kursor halaman 50.

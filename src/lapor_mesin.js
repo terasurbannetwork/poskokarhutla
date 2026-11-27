@@ -903,7 +903,10 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
         ciri: t.ciri ?? null, foto_boleh: !!t.fotoBoleh, foto_ids: t.fotoBoleh ? t.fotoIds || [] : [], kejadian_id: typeof t.kej?.id === "string" && t.kej.id.length === 16 ? t.kej.id : null};
       sesi.temu = {};   // rincian hanya di oh_temu (ikut aturan simpan dan anonim 730 hari), tidak tertinggal di salinan sesi
       const h = jawab("*Laporan diterima*\nTerima kasih. Petugas BNPB dan BPBD akan menghubungi bila ada keluarga yang cocok. Orang ini tidak akan tampil di halaman publik. Bila ia butuh pertolongan sekarang, hubungi 112.");
-      h.kirimTemuan = kirimTemuan; return h;
+      h.kirimTemuan = kirimTemuan;
+      const nl = sesi.isian.lokasi?.nilai; if (nl) { delete nl.lat; delete nl.lon; }   // titik penuh hanya di oh_temu (3 desimal); tidak tertinggal di salinan sesi
+      sesi.transkrip = []; sesi.foto = []; h.hapusRincian = {sejak: cariMulai};          // pesan arsip mode temu disamarkan pemanggil (pola batalHapus)
+      return h;
     }
   }
 

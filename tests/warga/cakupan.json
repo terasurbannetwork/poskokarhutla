@@ -16,6 +16,7 @@
     "table oh_temu_foto": "batas skema tiap tabel oh_",
     "table oh_cari_foto": "batas skema tiap tabel oh_",
     "table oh_info": "batas skema tiap tabel oh_",
+    "table oh_nomor_ketik": "saran 1 dan 2: nomor ketikan",
     "POST /api/lapor/darurat/cepat": "satu ketukan: laporan darurat terkirim",
     "POST /api/lapor/data/objek": "objek rumah: tersimpan urut 1",
     "POST /api/lapor/data/batal": "batal: anggota hanya objek isiannya",

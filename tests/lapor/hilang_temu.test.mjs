@@ -1,9 +1,10 @@
 /* Orang hilang publik OH-10: jalur B (menemukan orang), mesin murni (temu_*) dan penulisan oh_temu lewat /api/lapor/pesan di Miniflare + D1 sungguhan. Tidak ada yang tayang (Q9).
    RENCANA-UJI bagian 3 (jalur B), 2.19 (sisi tulis). Jalankan: node --test tests/lapor/hilang_temu.test.mjs */
 import {test} from "node:test";
+const uji = test;
 import assert from "node:assert/strict";
 import {putaran} from "../../src/lapor_mesin.js";
-import {siapkan} from "../warga/_bnpb.mjs";
+import {siapkan, ADMIN} from "../warga/_bnpb.mjs";
 import {JPEG_SAH} from "../warga/_bantu.mjs";
 import "../../src/worker.js";
 
@@ -39,7 +40,9 @@ test("OH-10 alur lengkap orang sadar tanpa foto: kondisi, ucapan, bersama, ciri,
   assert.deepEqual([t.kab, t.kondisi, t.bersama, t.ucapan, t.foto_boleh, t.kejadian_id, t.lokasi_teks], ["32.01", "sadar", "pelapor", null, false, KJ[0].id, "Desa/Kel. Sukamaju, Kec. Cibinong"]);
   assert.deepEqual([t.lat, t.lon], [-6.612, 106.812], "dibulatkan 3 desimal"); assert.deepEqual(t.foto_ids, []); assert.ok(t.waktu_temu > 0 && !t.ciri.includes("3456 7890"), "nomor dalam ciri disamarkan");
   assert.deepEqual(d.sesi().temu, {}, "rincian tidak tertinggal di sesi"); assert.match(d.h().balasan, /tidak akan tampil di halaman publik/);
-  const semua = JSON.stringify(d.sesi().transkrip.map(x => x.teks)); assert.ok(!/\b(aman|pasti)\b/i.test(semua) && !semua.includes("·"), "kata terlarang");
+  assert.deepEqual(d.sesi().transkrip, [], "saran 3: transkrip mode temu dikosongkan"); assert.ok(Number.isFinite(d.h().hapusRincian.sejak), "pesan arsip disamarkan pemanggil");
+  const nl = d.sesi().isian.lokasi.nilai; assert.ok(!("lat" in nl) && !("lon" in nl), "titik penuh tidak tertinggal di sesi"); assert.equal(nl.wilayah.desa, "Sukamaju");
+  assert.ok(!/\b(aman|pasti)\b/i.test(d.h().balasan) && !d.h().balasan.includes("·"), "kata terlarang");
 });
 
 test("OH-10 tidak sadar atau terluka: 112 lebih dulu sebelum isian; orang tidak sadar tidak pernah ditawari foto", async () => {
@@ -94,4 +97,30 @@ test("OH-10 lewat /api/lapor/pesan: oh_temu menunggu, riwayat, foto terkait, nom
   assert.equal(await B.n("oh_temu_foto", `temu_id = '${t.id}'`), 1); assert.equal(await B.n("oh_riwayat", `temu_id = '${t.id}' AND ke = 'menunggu' AND oleh = 'penemu'`), 1);
   assert.equal(await B.n("oh_publik"), 0, "tidak pernah tayang"); assert.ok(!r.t.includes(WA), "nomor tidak diulang ke pelapor");
   const g = await B.api("GET", "/api/lapor/hilang", undefined, {"cf-connecting-ip": "198.51.100.200"}); assert.equal(g.s, 404, "bendera publik mati");
+});
+
+uji("saran 1 dan 2: nomor ketikan: jatah harian per perangkat, penanda nomor belum terverifikasi sampai ke meja; mesin WA terverifikasi; sesi disamarkan", async () => {
+  const WK = "6281200000302", WM = "6281200000303", MESIN = {authorization: "Bearer mesin-rahasia"}, PB = {origin: "http://bnpb.lokal", "x-pb": "1"};
+  const U = await siapkan("uji-oh-temu-ketik", {r2: true, ikat: {WA_MESIN: "mesin-rahasia", OH_TULIS: "1"}});
+  const jalan = async (wa, kirimP) => {
+    for (const t of ["menemukan orang", "1", "1", "Rina Wati"]) { const r = await kirimP({wa, teks: t}); assert.equal(r.s, 200, r.t.slice(0, 200)); }
+    let r = await kirimP({wa, lokasi: {lat: -6.6, lon: 106.8, akurasi: 12}}); assert.equal(r.s, 200, r.t.slice(0, 200)); if (/Benar/.test(r.t)) r = await kirimP({wa, teks: "1"});
+    await U.DB.prepare("DELETE FROM laju_bnpb WHERE aksi IN ('lapor.pesan', 'lapor.ip', 'lapor.perangkat', 'lapor.ketik')").run();
+    for (const t of ["1", "Tidak bicara", "2", "Laki-laki sekitar 40 tahun", "2", "1"]) { r = await kirimP({wa, teks: t}); assert.equal(r.s, 200, r.t.slice(0, 200)); }
+    assert.match(r.t, /Ringkasan laporan menemukan orang/); return kirimP({wa, teks: "1"});
+  };
+  assert.equal((await U.api("POST", "/api/lapor/izin", {wa: WM}, MESIN)).s, 200);
+  let cookie = "";
+  const web = async b => { const r = await U.api("POST", "/api/lapor/pesan", b, {...PB, ...(cookie ? {cookie} : {})}); const c = r.h.get("set-cookie"); if (c) cookie = c.split(";")[0]; return r; };
+  const k = await jalan(WK, web); assert.equal(k.s, 200, k.t.slice(0, 300)); assert.match(k.t, /Laporan diterima/);
+  const m = await jalan(WM, b => U.api("POST", "/api/lapor/pesan", b, MESIN)); assert.match(m.t, /Laporan diterima/);
+  const baris = (await U.DB.prepare("SELECT id, nomor_penemu FROM oh_temu").all()).results, idK = baris.find(x => x.nomor_penemu === WK).id, idM = baris.find(x => x.nomor_penemu === WM).id;
+  assert.deepEqual((await U.DB.prepare("SELECT jenis, ref_id FROM oh_nomor_ketik").all()).results, [{jenis: "temu", ref_id: idK}], "hanya nomor ketikan bertanda");
+  const kunci = (await U.DB.prepare("SELECT kunci FROM laju_bnpb WHERE aksi = 'lapor.temu.baru'").all()).results.map(x => x.kunci);
+  const {sha256} = await import("../warga/_bnpb.mjs"); assert.equal(kunci.length, 2); assert.ok(!kunci.includes(sha256(WK)) && kunci.includes(sha256(WM)), "ketikan: kunci per perangkat; mesin: per nomor");
+  const g = await U.api("GET", "/api/lapor/meja/hilang", undefined, ADMIN); assert.equal(g.s, 200, g.t);
+  const tk = g.j.temu.find(x => x.id === idK), tm = g.j.temu.find(x => x.id === idM);
+  assert.deepEqual([tk.nomor_terverifikasi, tm.nomor_terverifikasi, tk.nomor_penemu], [false, true, WK]);
+  const pesanArsip = (await U.DB.prepare("SELECT teks FROM lapor_pesan").all()).results.map(x => x.teks).filter(Boolean); assert.ok(pesanArsip.length > 0 && pesanArsip.every(t => t.startsWith("[dihapus")), "arsip mode temu disamarkan: " + pesanArsip.slice(0, 2));
+  for (const kerja of (await U.DB.prepare("SELECT kerja FROM lapor_sesi").all()).results) { const nl = JSON.parse(kerja.kerja).isian?.lokasi?.nilai; assert.ok(!nl || !("lat" in nl), "lat/lon penuh tidak tersimpan di sesi"); }
 });

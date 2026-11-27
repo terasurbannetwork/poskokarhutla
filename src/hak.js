@@ -2881,6 +2881,7 @@ Object.assign(MATRIKS, {
   oh_cari_foto: {lp_pelapor: ["tambah"], lp_cron: ["hapus"]},
   oh_info:      {lp_pelapor: ["tambah"], lp_publik: ["tambah"], lp_staf: ["baca", "ubah"], lp_cron: ["baca", "ubah", "hapus"]},
   oh_riwayat:   {lp_pelapor: ["tambah"], lp_staf: ["baca", "tambah"], lp_cron: ["tambah", "ubah"]},
+  oh_nomor_ketik: {lp_pelapor: ["tambah"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},   // migrasi 0191: nomor pelapor hanya diketik (belum terverifikasi)
 });
 export const OH_KOLOM_PUBLIK = ["token", "kelas", "nama", "panggilan", "umur", "kelamin", "tinggi", "pakaian", "ciri", "kec", "kab_nama", "waktu_terakhir", "kejadian_jenis", "kejadian_kab", "kejadian_mulai", "foto_publik", "inisial"];
 /* data anak tidak keluar dari D1 (saran keamanan OH-03): nama lengkap, foto, kelamin, tinggi, ciri dibuang di SQL; publik anak hanya memakai inisial */
@@ -3009,10 +3010,14 @@ export const ohInfoTambah = (env, p, b, kini) => sedia(env, p, "oh_info", "tamba
 /* pelapor berbeda (nomor) untuk satu profil sejak batas: pelapor sama berulang dihitung satu (ambang turun otomatis, D19) */
 export const ohLaporkanBeda = async (env, p, token, sejak) => (await sedia(env, p, "oh_info", "baca",
   "SELECT count(DISTINCT nomor_pemberi) AS n FROM oh_info WHERE sasaran_token = ?1 AND jenis = 'laporkan' AND dibuat >= ?2 AND nomor_pemberi IS NOT NULL").bind(token, sejak).first()).n;
-/* antrean informasi untuk petugas (nomor_pemberi hanya di sini): belum selesai, dengan ringkasan profil sasaran; wilayah disaring pemanggil (kab) */
-export const ohInfoAntrean = async (env, p, prefiks = null) => (await sedia(env, p, "oh_info", "baca",
-  `SELECT i.id, i.jenis, i.sasaran_token, i.nomor_pemberi, i.pesan, i.tingkat, i.status, i.dibuat, o.cari_id, o.kelas, o.status AS profil_status, o.kab, o.kab_nama
-   FROM oh_info i JOIN oh_publik o ON o.token = i.sasaran_token WHERE i.status <> 'selesai' AND (?1 IS NULL OR substr(o.kab, 1, length(?1)) = ?1) ORDER BY i.dibuat LIMIT 100`).bind(prefiks).all()).results;
+/* antrean informasi untuk petugas (nomor_pemberi hanya di sini): belum selesai, dengan ringkasan profil sasaran. Wilayah disaring di SQL (prefiks kab, wajib untuk akun non-BNPB; null = semua, hanya BNPB).
+   Urutan: laporkan, cabut, orang_ini, informasi, foto; lalu tertua. Halaman keyset (urut, dibuat, id) lewat kursor {r, w, id}. dilaporkan_ambang = berapa kali profil pernah turun otomatis karena ambang laporkan (ambang bisa dipalsukan nomor murah; petugas menilai). */
+const OH_URUT = "CASE i.jenis WHEN 'laporkan' THEN 0 WHEN 'cabut' THEN 1 WHEN 'orang_ini' THEN 2 WHEN 'informasi' THEN 3 ELSE 4 END";
+export const ohInfoAntrean = async (env, p, prefiks = null, kursor = null, batas = 50) => (await sedia(env, p, "oh_info", "baca",
+  `SELECT * FROM (SELECT ${OH_URUT} AS urut, i.id, i.jenis, i.sasaran_token, i.nomor_pemberi, i.pesan, i.tingkat, i.status, i.dibuat, o.cari_id, o.kelas, o.status AS profil_status, o.kab, o.kab_nama,
+     (SELECT count(*) FROM oh_riwayat r WHERE r.cari_id = o.cari_id AND r.alasan = 'dilaporkan_ambang') AS dilaporkan_ambang
+   FROM oh_info i JOIN oh_publik o ON o.token = i.sasaran_token WHERE i.status <> 'selesai' AND (?1 IS NULL OR substr(o.kab, 1, length(?1)) = ?1)) t
+   WHERE (?2 IS NULL OR (t.urut, t.dibuat, t.id) > (?2, ?3, ?4)) ORDER BY t.urut, t.dibuat, t.id LIMIT ?5`).bind(prefiks, kursor?.r ?? null, kursor?.w ?? 0, kursor?.id ?? "", batas + 1).all()).results;
 export const ohInfoSelesai = async (env, p, infoId, token, oleh, kini) => (await sedia(env, p, "oh_info", "ubah",
   "UPDATE oh_info SET status = 'selesai', ditangani_oleh = ?3, selesai_waktu = ?4 WHERE id = ?1 AND sasaran_token = ?2 AND status <> 'selesai'").bind(infoId, token, oleh, kini).run()).meta.changes > 0;
 export const ohInfoTeruskan = async (env, p, infoId, token, oleh) => (await sedia(env, p, "oh_info", "ubah",
@@ -3024,3 +3029,11 @@ export const ohStmtTemuTambah = (env, p, b, kini, g = false) => sedia(env, p, "o
 export const ohStmtTemuFoto = (env, p, temuId, fotoId, g = false) => sedia(env, p, "oh_temu_foto", "tambah", lpIns(g, "OR IGNORE ", "oh_temu_foto", "temu_id, foto_id")).bind(temuId, fotoId);
 export const ohStmtTemuRiwayat = (env, p, temuId, kini, g = false) => sedia(env, p, "oh_riwayat", "tambah",
   `INSERT INTO oh_riwayat (temu_id, dari, ke, alasan, oleh, waktu) ${g ? "SELECT ?1, 'baru', 'menunggu', 'kirim', 'penemu', ?2 WHERE changes() > 0" : "VALUES (?1, 'baru', 'menunggu', 'kirim', 'penemu', ?2)"}`).bind(temuId, kini);
+export const ohStmtNomorKetik = (env, p, jenis, refId, g = false) => sedia(env, p, "oh_nomor_ketik", "tambah", lpIns(g, "OR IGNORE ", "oh_nomor_ketik", "jenis, ref_id")).bind(jenis, refId);
+/* himpunan ref yang nomornya hanya diketik; tabel belum ada (0191) = kosong, tanpa menggagalkan antrean */
+export const ohNomorKetik = async (env, p, jenis, ids) => { if (!ids.length) return new Set(); try { return new Set((await sedia(env, p, "oh_nomor_ketik", "baca",
+  "SELECT ref_id FROM oh_nomor_ketik WHERE jenis = ?1 AND ref_id IN (SELECT value FROM json_each(?2))").bind(jenis, JSON.stringify(ids)).all()).results.map(r => r.ref_id)); }
+  catch (e) { if (/no such table/i.test(String(e?.message))) return new Set(); throw e; } };
+/* laporan menemukan orang yang menunggu tinjauan (staf; lokasi dan nomor penemu hanya di sini) */
+export const ohTemuAntrean = async (env, p, prefiks = null) => (await sedia(env, p, "oh_temu", "baca",
+  `SELECT id, nomor_penemu, kab, lokasi_teks, waktu_temu, kondisi, ucapan, bersama, ciri, foto_boleh, status, dibuat FROM oh_temu WHERE status IN ('menunggu', 'ditinjau') AND (?1 IS NULL OR substr(kab, 1, length(?1)) = ?1) ORDER BY dibuat LIMIT 50`).bind(prefiks).all()).results;

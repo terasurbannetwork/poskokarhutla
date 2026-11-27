@@ -283,8 +283,9 @@ async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama
   if (h.kirim && h.sesi.susulanDari) return simpanSusulan(env, url, {wa, saluran, perangkat}, {h, baris, awal}, kini);
   const s = h.sesi, pesanBaru = s.transkrip.slice(lanjut ? awal : 0), g = [], kj = [], tutupanAkhir = [], tambahan = {};
   // orang dicari lewat obrolan (pemilik 25 Nov 2026): batas 5 per nomor per hari sama dengan POST /api/lapor/cari, dicek sebelum sesi disimpan
-  if (h.kirimCari && await laju(env, await sha(wa), "lapor.cari.baru", [[HARI, 5]], kini)) return {batas: true, teks: "Batas laporan orang dicari hari ini sudah tercapai (5 laporan per nomor). Coba lagi besok, atau hubungi 112 bila orang itu dalam bahaya sekarang."};
-  if (h.kirimTemuan && await laju(env, await sha(wa), "lapor.temu.baru", [[HARI, 5]], kini)) return {batas: true, teks: "Batas laporan menemukan orang hari ini sudah tercapai (5 laporan per nomor). Coba lagi besok, atau hubungi 112 bila orang itu butuh pertolongan sekarang."};
+  const kunciBatas = await sha(s.verifikasi === "ketik" && perangkat ? `${wa}:${String(perangkat).slice(0, 16)}` : wa);   // nomor ketikan: jatah per perangkat, supaya pemilik nomor tidak kehabisan karena orang lain (pola kuota)
+  if (h.kirimCari && await laju(env, kunciBatas, "lapor.cari.baru", [[HARI, 5]], kini)) return {batas: true, teks: "Batas laporan orang dicari hari ini sudah tercapai (5 laporan per nomor). Coba lagi besok, atau hubungi 112 bila orang itu dalam bahaya sekarang."};
+  if (h.kirimTemuan && await laju(env, kunciBatas, "lapor.temu.baru", [[HARI, 5]], kini)) return {batas: true, teks: "Batas laporan menemukan orang hari ini sudah tercapai (5 laporan per nomor). Coba lagi besok, atau hubungi 112 bila orang itu butuh pertolongan sekarang."};
   let nomor = null, tokenSha = null, ringkas = null, token = null;
   if (h.kirim) {   // nomor tiket, token lacak, PDF dan Word (ALGORITMA A6, A8)
     if (await H.lpHitungTerkirim(env, P, wa, kini - HARI) >= MAKS_TERKIRIM_HARI) return {batas: true, teks: BATAS_KIRIM_TEKS};
@@ -314,15 +315,19 @@ async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama
   const w = s.isian.lokasi?.nilai, baru = {id: s.id, wa, status: s.status, tingkat: s.tingkat, jenis: s.isian.jenis?.nilai ?? null, kab: w?.wilayah?.kabKode ?? null,
     lat: w?.lat ?? null, lon: w?.lon ?? null, kerja: JSON.stringify(s), nomor, token_sha: tokenSha, terkirim: nomor ? s.terkirim : null, ringkas};
   for (const t of pesanBaru) g.push(H.lpStmtPesan(env, P, s.id, t.dari, saluran === "wa" ? "wa" : "web", t.teks, t.waktu, true));
+  const ketikAkhir = [];   // penanda nomor belum terverifikasi (0191): INSERT OR IGNORE memutus rantai changes(), jadi di akhir batch
   if (h.kirimCari) { const id = acak(8); g.push(H.crStmtTambah(env, P, {id, nomor_pencari: wa, ...h.kirimCari}, kini, true)); tambahan.cari = {id, status: "buka"};   // satu batch dengan sesi (tinjauan keamanan 25 Nov 2026)
+    if (s.verifikasi === "ketik" && env.OH_TULIS === "1") ketikAkhir.push(H.ohStmtNomorKetik(env, P, "cari", id));
     if (h.kirimCari.setuju && env.OH_TULIS === "1") g.push(H.ohStmtTambah(env, P, barisOh(h.kirimCari, id, acak(16)), kini, true),   // OH-04: profil menunggu tinjauan, persetujuan tercatat; tidak tayang tanpa petugas dan bendera OH_PUBLIK
       H.ohStmtRiwayat(env, P, {cari_id: id, dari: "draf", ke: "menunggu", alasan: "kirim", oleh: "pelapor"}, kini, true)); }
   if (h.kirimTemuan && env.OH_TULIS === "1") { const id = acak(8), t = h.kirimTemuan;   // OH-10: oh_temu menunggu tinjauan, tidak pernah tayang (Q9); nomor penemu hanya petugas
     g.push(H.ohStmtTemuTambah(env, P, {id, nomor_penemu: /^\d{8,20}$/.test(String(wa)) ? String(wa) : null, ...t}, kini, true), H.ohStmtTemuRiwayat(env, P, id, kini, true),
-      ...(t.foto_ids || []).slice(0, 10).filter(f => /^[0-9a-f]{16}$/.test(f)).map(f => H.ohStmtTemuFoto(env, P, id, f, true))); tambahan.temu = {id}; }
+      ...(t.foto_ids || []).slice(0, 10).filter(f => /^[0-9a-f]{16}$/.test(f)).map(f => H.ohStmtTemuFoto(env, P, id, f, true)));
+    if (s.verifikasi === "ketik") ketikAkhir.push(H.ohStmtNomorKetik(env, P, "temu", id));   // 0191: nomor penemu hanya diketik
+    tambahan.temu = {id}; }
   const p = h.pelapor;
   if (s.verifikasi !== "ketik" && p?.nama && (!pel || pel.nama !== p.nama || pel.peran !== p.peran || pel.kab !== (p.kab ?? null) || pel.jabatan !== (p.jabatan ?? null))) g.push(H.lpStmtPelapor(env, P, wa, p, kini, true));
-  g.push(...tambahStmt, ...kj);
+  g.push(...tambahStmt, ...kj, ...ketikAkhir);
   if (h.hapusRincian) tutupanAkhir.push(H.lpStmtPesanKosong(env, P, s.id, h.hapusRincian.sejak));   // OH-04 saran 4: pesan arsip sesi yang ditutup tanpa simpan disamarkan (KEAMANAN-PRIVASI 9)
   // satu batch: pembaruan sesi (rev dijaga) lebih dulu, sisanya hanya menulis bila pembaruan itu mengubah baris (changes() > 0): tidak ada sesi bernomor tanpa tiket
   // sesi baru yang langsung terkirim (darurat sekali ketuk, K90): INSERT tidak menulis nomor dan token, jadi diikuti UPDATE rev 0 di batch yang sama

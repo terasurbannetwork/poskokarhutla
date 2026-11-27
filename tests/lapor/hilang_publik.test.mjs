@@ -171,3 +171,21 @@ uji("2.19 lokasi penemuan tidak sampai ke pelapor orang hilang: saya/*, info, da
   const badan = [(await api("GET", "/api/lapor/hilang/saya", undefined, {...H4, ...ip(95)})).t, (await info({jenis: "informasi", token: p.token, pesan: "Mungkin di gudang"}, {...H4, ...ip(96)})).t, (await api("GET", "/api/lapor/hilang", undefined, ip(97))).t, (await api("GET", `/api/lapor/hilang/${p.token}`, undefined, ip(98))).t];
   for (const t of badan) for (const k of [RAHASIA, "Kapuk", "6281277777777", "106.456", "-6.123", "ucapan rahasia"]) assert.ok(!t.includes(k), `bocor: ${k}`);
 });
+
+uji("saran 4: antrean info: wilayah disaring di SQL sebelum halaman, urutan laporkan, cabut, orang_ini, informasi, kursor sampai habis; dilaporkan_ambang tampil", async () => {
+  const mine = await buat({kab: "32.07"}), lain = await buat({kab: "32.08"}), meja = await bpbd(3, "32.07"), idn = i => (i.toString(16)).padStart(16, "0");
+  const ins = (id, jenis, tok, t) => DB.prepare("INSERT INTO oh_info (id, jenis, sasaran_token, nomor_pemberi, pesan, dibuat) VALUES (?, ?, ?, '6281200000299', 'uji', ?)").bind(id, jenis, tok, t);
+  const stm = [];
+  for (let i = 1; i <= 120; i++) stm.push(ins(idn(i), "informasi", lain.token, 1000 + i));   // wilayah lain, lebih tua: LIMIT sebelum filter akan menutupi baris wilayah ini
+  for (let i = 0; i < 55; i++) stm.push(ins(idn(1000 + i), "informasi", mine.token, 5000 + i));
+  stm.push(ins(idn(2000), "orang_ini", mine.token, 9000), ins(idn(2001), "cabut", mine.token, 9001), ins(idn(2002), "laporkan", mine.token, 9002));
+  await DB.batch(stm);
+  await H.ohMejaCatat(env, STAF, {sql: "UPDATE oh_publik SET dibuat = dibuat WHERE cari_id = ?1", arg: [mine.id], cari_id: mine.id, status: "tayang", alasan: "dilaporkan_ambang", oleh: "sistem"}, kini);
+  const h1 = await api("GET", "/api/lapor/meja/hilang/info", undefined, meja); assert.equal(h1.s, 200, h1.t);
+  assert.equal(h1.j.info.length, 50); assert.deepEqual(h1.j.info.slice(0, 4).map(x => x.jenis), ["laporkan", "cabut", "orang_ini", "informasi"], "urutan prioritas");
+  assert.ok(h1.j.info.every(x => x.profil.id === mine.id), "tidak ada baris wilayah lain"); assert.equal(h1.j.info[0].profil.dilaporkan_ambang, 1); assert.ok(typeof h1.j.kursor === "string");
+  const h2 = await api("GET", `/api/lapor/meja/hilang/info?kursor=${h1.j.kursor}`, undefined, meja); assert.equal(h2.j.info.length, 8); assert.equal(h2.j.kursor, null);
+  assert.equal(new Set([...h1.j.info, ...h2.j.info].map(x => x.id)).size, 58, "tanpa duplikat, tanpa yang hilang");
+  assert.equal((await api("GET", "/api/lapor/meja/hilang/info?kursor=!!", undefined, meja)).s, 400);
+  const adm = await api("GET", "/api/lapor/meja/hilang/info", undefined, ADMIN); assert.equal(adm.s, 200); assert.equal(adm.j.info[0].jenis, "laporkan", "BNPB melihat semua wilayah, urutan sama");
+});

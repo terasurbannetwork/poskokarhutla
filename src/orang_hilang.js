@@ -172,19 +172,23 @@ async function mejaHilangGet(env, h, url, kini) {
   const kab = h.c.jenis === "bnpb" ? null : h.c.kab ?? h.c.prov, masa = batasi(env.OH_MASA_HARI, MASA_TAYANG_HARI);
   const tabelBelum = e => { if (/no such table/i.test(String(e?.message))) return []; throw e; };
   const baris = [], perKab = new Map(), kabDari = r => perKab.get(r.kab) ?? perKab.set(r.kab, Promise.all([H.ohTemuDekat(env, H.pelakuLpStaf, r.kab), kejadianUntuk(env, r.kab, kini)])).get(r.kab);   // temu dan kandidat sekali per kab
-  for (const r of await H.ohAntrean(env, H.pelakuLpStaf, kab || null).catch(tabelBelum)) {
+  const antrean = await H.ohAntrean(env, H.pelakuLpStaf, kab || null).catch(tabelBelum), ketik = await H.ohNomorKetik(env, H.pelakuLpStaf, "cari", antrean.map(r => r.cari_id));
+  for (const r of antrean) {
     if (!dalamWilayah(h.c, wilayahOh(r))) continue;
     const [tel, info, [temu, kandidat]] = await Promise.all([H.ohTeleponTerbaru(env, H.pelakuLpStaf, r.cari_id), H.ohInfoTerbuka(env, H.pelakuLpStaf, r.token), kabDari(r)]);
     const foto = idFoto(r.foto_publik), kej = r.kejadian_id ? {jenis: r.kejadian_jenis, kab: NAMA_KAB4[r.kejadian_kab] ?? null, mulai: r.kejadian_mulai} : null;
     baris.push({id: r.cari_id, kelas: r.kelas, dibuat: r.dibuat, prioritas: !!(r.kejadian_id && kandidat.find(k => k.id === r.kejadian_id)?.aktif),
       pratinjau: profilPublik({...r, waktu: r.waktu_terakhir, kejadian: kej}, r.kelas, {foto: foto.map(f => `/api/lapor/hilang/foto/${f}`), ciri_ditinjau: !!r.ciri}),
-      privat: {tampil: false, nomor_pelapor: r.nomor_pencari, nomor_dicari: r.nomor_dicari, hubungan: r.hubungan, lokasi_terakhir: r.lokasi_terakhir, ciri_laporan: r.ciri_laporan},   // panel "Hanya petugas": tidak pernah tampil di publik
+      privat: {tampil: false, nomor_pelapor: r.nomor_pencari, nomor_terverifikasi: !ketik.has(r.cari_id), nomor_dicari: r.nomor_dicari, hubungan: r.hubungan, lokasi_terakhir: r.lokasi_terakhir, ciri_laporan: r.ciri_laporan},   // panel "Hanya petugas": tidak pernah tampil di publik
       kejadian: {terisi: !!r.kejadian_id, dikonfirmasi: !!r.kejadian_oleh, usulan: kandidat.map(k => ({id: k.id, jenis: k.jenis, mulai: k.mulai, aktif: k.aktif}))},
       anak: r.kelas === "anak" ? {pelapor_wali: r.setuju_wali === 1, wali_diverifikasi: waliSah(r)} : null,
       telepon: tel?.hasil ?? null, info_terbuka: info, syarat_belum: syaratTayang(r, tel, info, env.OH_PUBLIK === "1"),
       saran_cocok: saranCocok({kab: r.kab, waktu_terakhir: r.waktu_terakhir, kelamin: r.kelamin, umur: r.umur, pakaian: r.pakaian}, temu.map(t => ({id: t.id, kab: t.kab, waktu_temu: t.waktu_temu}))), berakhir_masa_hari: masa});
   }
-  return kirim(200, {akun: {jenis: h.c.jenis, label: h.c.label}, baris});
+  const tm = (await H.ohTemuAntrean(env, H.pelakuLpStaf, kab || null).catch(tabelBelum)).filter(t => dalamWilayah(h.c, {provKode: t.kab.slice(0, 2), kabKode: t.kab, kab: NAMA_KAB4[t.kab.replace(/\D/g, "")]})), tk = await H.ohNomorKetik(env, H.pelakuLpStaf, "temu", tm.map(t => t.id));
+  const temu = tm.map(t => ({id: t.id, kondisi: t.kondisi, ucapan: t.ucapan, bersama: t.bersama, ciri: t.ciri, lokasi_teks: t.lokasi_teks, waktu_temu: t.waktu_temu, foto_boleh: !!t.foto_boleh, status: t.status,
+    nomor_penemu: t.nomor_penemu, nomor_terverifikasi: !tk.has(t.id)}));   // hanya staf; tidak pernah ke pelapor orang hilang (D19)
+  return kirim(200, {akun: {jenis: h.c.jenis, label: h.c.label}, baris, temu});
 }
 async function mejaHilangPost(env, req, h, x, kini) {
   const mm = /^hilang\/([0-9a-f]{16})\/aksi$/.exec(x); if (!mm) return galat(404, "rute lapor tidak ada");
@@ -239,12 +243,19 @@ async function mejaHilangPost(env, req, h, x, kini) {
 }
 /* OH-11 antrean informasi, laporkan, cabut, "Saya orang ini" (nomor pemberi hanya di sini; tidak pernah ke publik atau ke pelapor orang hilang). Hanya akun dengan hak tayang. */
 const tabelBelumKosong = e => { if (/no such table/i.test(String(e?.message))) return []; throw e; };
+const kursorInfoKode = r => btoa(`${r.urut}.${r.dibuat}.${r.id}`).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const kursorInfoBaca = k => { try { const m = /^(\d)\.(\d{1,15})\.([0-9a-f]{16})$/.exec(atob(k.replace(/-/g, "+").replace(/_/g, "/"))); return m ? {r: Number(m[1]), w: Number(m[2]), id: m[3]} : null; } catch { return null; } };
+export const HALAMAN_INFO = 50;
 async function mejaHilangInfo(env, h, url, kini) {
   if (!bolehAksi(h.c, "tayang")) return galat(403, "akun ini tidak boleh meninjau orang hilang");
   const lj = await laju(env, h.kunci, "oh.mejainfo", [[JAM, 600]], kini); if (lj) return lj;
-  const kab = h.c.jenis === "bnpb" ? null : h.c.kab ?? h.c.prov, baris = (await H.ohInfoAntrean(env, H.pelakuLpStaf, kab || null).catch(tabelBelumKosong)).filter(r => dalamWilayah(h.c, wilayahOh(r)));
-  return kirim(200, {akun: {jenis: h.c.jenis, label: h.c.label}, info: baris.map(r => ({id: r.id, jenis: r.jenis, pesan: r.pesan, tingkat: r.tingkat, status: r.status, dibuat: r.dibuat, nomor_pemberi: r.nomor_pemberi,
-    profil: {id: r.cari_id, token: r.sasaran_token, kelas: r.kelas, status: r.profil_status, kab: r.kab_nama}}))});
+  const akun = {jenis: h.c.jenis, label: h.c.label}, kab = h.c.jenis === "bnpb" ? null : h.c.kab ?? h.c.prov;
+  if (h.c.jenis !== "bnpb" && !kab) return kirim(200, {akun, info: [], kursor: null});   // non-BNPB tanpa wilayah: tidak melihat apa pun (fail-closed), bukan semuanya
+  const k = url.searchParams.get("kursor"), kur = k ? (/^[A-Za-z0-9_-]{1,100}$/.test(k) ? kursorInfoBaca(k) : null) : null;
+  if (k && !kur) return galat(400, "Penanda halaman tidak sah.");
+  const semua = await H.ohInfoAntrean(env, H.pelakuLpStaf, kab || null, kur, HALAMAN_INFO).catch(tabelBelumKosong), hal = semua.slice(0, HALAMAN_INFO);
+  return kirim(200, {akun, kursor: semua.length > HALAMAN_INFO ? kursorInfoKode(hal.at(-1)) : null, info: hal.filter(r => dalamWilayah(h.c, wilayahOh(r))).map(r => ({id: r.id, jenis: r.jenis, pesan: r.pesan, tingkat: r.tingkat, status: r.status, dibuat: r.dibuat, nomor_pemberi: r.nomor_pemberi,
+    profil: {id: r.cari_id, token: r.sasaran_token, kelas: r.kelas, status: r.profil_status, kab: r.kab_nama, dilaporkan_ambang: r.dilaporkan_ambang}}))});
 }
 /* turunkan: profil menunggu atau tayang diturunkan petugas (alasan dicabut bila pelapor atau orang itu sendiri sudah diverifikasi lewat telepon, selain itu petugas); lokasi penemuan tidak pernah ikut. */
 async function mejaHilangInfoAksi(env, h, id, o, oleh, kini) {
