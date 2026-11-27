@@ -743,6 +743,17 @@ Sebelum menyentuh mode Peringatan `/lapor` atau modul `public/potensi/**`, kelas
 
 Aturan berhentinya sama dengan §2.1. Rekomendasi per pihak hanya staf, tidak pernah di `public/` atau respons publik; debit dan nowcast bandang tidak menaikkan status; status dan kelas baru berpil hipotesis sampai uji balik lulus; kelas desa kosong "belum terukur", tidak pernah rendah atau 0; yang ditiru dari Foundry dan METI pola tata letak, bukan rupa atau angka; tanpa kotak tanya; tidak pernah menulis "aman"; tinjau di `http://localhost:8800/lapor/` mode Peringatan.
 
+### 2.55 Orang Hilang Publik (`/lapor`, layanan Lapor orang hilang: profil publik terverifikasi, menemukan orang, mencari lewat foto): baca dulu, baru bangun
+
+Sebelum menyentuh profil publik orang hilang, persetujuan tayang, verifikasi petugas, laporan menemukan orang, mencari lewat foto, atau penyaring "hilang karena bencana", baca dokumen di
+`data/kajian-bnpb/orang-hilang-publik/` dengan urutan otoritas ini (kode Worker, migrasi, `src/lapor_selamat.js`, `src/kejadian_tautan.js` milik `warga-api`; layar `public/lapor/**` milik `layar-peta`; cek `ilmu.mjs pemilik`). Paket induk `data/kajian-bnpb/lapor-ai/` (K110-K116) tetap berlaku:
+
+1. `KEPUTUSAN-ORANG-HILANG.md`: keputusan pemilik K110-K116, rancangan D1-D35, pertanyaan terbuka Q1-Q26 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`OH-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Hanya orang yang hilang karena bencana (K116), lewat pencocok kejadian yang ada, tanpa buku kejadian kedua; semua profil diverifikasi petugas sebelum tayang (K113); nomor kontak tidak pernah publik (K112); profil turun saat dicabut, ditemukan, atau ditutup; tanpa vektor wajah dan tanpa vonis identitas dari foto; tayang publik dan cari lewat foto di belakang bendera `OH_PUBLIK` dan `OH_FOTO` yang mati sampai pemilik menjawab Q yang menahan; tidak pernah menulis "aman".
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
