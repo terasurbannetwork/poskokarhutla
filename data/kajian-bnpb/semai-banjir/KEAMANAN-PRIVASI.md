@@ -54,3 +54,9 @@ hasil hanya untuk staf, HASIL-A di-commit sesudah pemilik membaca, dan tiap hasi
 Kalimat terlarang di layar, ringkasan, renlap, dan rapor (KEPUTUSAN D10), diperiksa gerbang teks induk (`gerbang-semai-klaim`,
 RENCANA-UJI §7): "mencegah banjir", "aman", "akan hujan", "pasti", "hujan berkurang x%", "menurunkan curah hujan x mm", "memindah banjir",
 "berhasil", "gagal" (untuk OMC), ditambah daftar induk.
+
+## Laporan OMC posko (K8, SB-33, 27 Nov 2026)
+
+- Tulis hanya lewat Bearer `WA_MESIN` (minimal 32 huruf; lebih pendek = jalur mati). Badan disaring daftar putih; nama orang tidak punya kolom, dan teks bebas yang memuat urutan 9 angka atau lebih (pola nomor HP) ditolak.
+- Baca lewat `SEMAI_TOKEN` atau sesi staf pembaca. Token pipeline di GitHub Actions yang sama juga bisa membaca armada, sorti, dan kg per posko; ini disengaja untuk SB-34. Data ini tidak pernah ditulis ke `public/`.
+- Belum ada batas laju POST (pemeriksa keamanan, temuan kecil): token mesin berentropi tinggi dan hanya ada di mesin bot. Tambahkan pola `smLajuBuat` bila token pernah dibagi ke mesin lain.

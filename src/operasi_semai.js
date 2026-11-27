@@ -13,9 +13,9 @@ const NAMA_SAH = n => n === "semai.json" || n === "angin_asap.json" || n === "se
   || (/^(awan|asap)_(\d{1,2})\.png$/.test(n) && (m => m <= 36 && m % 3 === 0)(Number(n.match(/_(\d+)\./)[1])));
 const teks = (v, maks) => typeof v === "string" ? v.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, maks) : "";
 const bacaOK = async (env, req) => await adminOK(env, req) || await stafPeran(env, req, PERAN_BACA) || await pemirsaLihat(env, req);
-const tglSah = t => typeof t === "string" && /^\d{4}-\d\d-\d\d$/.test(t) && !Number.isNaN(Date.parse(t));
+const tglSah = t => typeof t === "string" && /^\d{4}-\d\d-\d\d$/.test(t) && !Number.isNaN(Date.parse(t)) && new Date(t).toISOString().slice(0, 10) === t;   // tolak tanggal bergulir (2026-02-31)
 const sha = async s => new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)));
-/* SEMAI_TOKEN (DESAIN-TEKNIS semai-banjir §4.1): hanya dipanggil dari dua rute GET di bawah; tanpa sesi, tanpa peran. Banding waktu tetap atas hash SHA-256.
+/* SEMAI_TOKEN (DESAIN-TEKNIS semai-banjir §4.1): hanya dipanggil dari rute GET di bawah (sasaran, arsip, omc-posko); tanpa sesi, tanpa peran. Banding waktu tetap atas hash SHA-256.
    Rahasia kosong = jalur mati. Dicek SEBELUM adminOK supaya token pipeline tidak masuk hitungan gagal-admin per IP. */
 async function tokenOK(env, req) {
   const t = (req.headers.get("authorization") || "").match(/^Bearer\s+(\S+)$/i)?.[1];
@@ -148,8 +148,15 @@ const bungkusSasaran = fn => async (...a) => {
 };
 /* SB-33: laporan OMC posko dari bot WA (hasil scripts/wa/urai_omc_posko.mjs + prov_kode). Tulis = Bearer WA_MESIN saja (banding hash).
    Badan disaring ke daftar putih dan dinormalkan; yang tersimpan hanya hasil saringan, tanpa teks asli dan tanpa nama orang. */
-const mesinOK = async (env, req) => { const t = /^Bearer (\S+)$/i.exec(req.headers.get("authorization") || "")?.[1]; return !!(env.WA_MESIN && t && await shaHex(t) === await shaHex(env.WA_MESIN)); };
-const tk = (v, maks) => typeof v === "string" && v.length <= maks && teks(v, maks) ? teks(v, maks) : null;
+const mesinOK = async (env, req) => {   // WA_MESIN < 32 huruf = jalur mati, banding waktu tetap atas hash (sama dengan tokenOK)
+  const t = /^Bearer (\S+)$/i.exec(req.headers.get("authorization") || "")?.[1];
+  if (!t || typeof env.WA_MESIN !== "string" || env.WA_MESIN.length < 32) return false;
+  const [a, b] = await Promise.all([sha(t), sha(env.WA_MESIN)]); let d = 0;
+  for (let i = 0; i < 32; i++) d |= a[i] ^ b[i];
+  return d === 0;
+};
+const HP = /\d[\d\s.-]{7,}\d/;   // urutan 9 angka atau lebih (nomor HP) tidak boleh masuk teks bebas
+const tk = (v, maks) => typeof v === "string" && v.length <= maks && teks(v, maks) && !HP.test(v) ? teks(v, maks) : null;
 const bil = (v, lo, hi) => v == null ? null : typeof v === "number" && Number.isFinite(v) && v >= lo && v <= hi ? v : undefined;   // null = kosong (bukan 0), undefined = tidak sah
 const jam = v => v == null ? null : typeof v === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(v) ? v : undefined;
 const larik = (v, maks) => Array.isArray(v) && v.length <= maks ? v : null;
@@ -157,6 +164,7 @@ const larik = (v, maks) => Array.isArray(v) && v.length <= maks ? v : null;
 function saring(o) {
   const tanggal = o.tanggal, kode = o.prov_kode, nama = tk(o.provinsi ?? o.prov_nama, 60);
   if (!tglSah(tanggal)) return "tanggal harus YYYY-MM-DD yang sah";
+  if (Date.now() - Date.parse(tanggal) > 400 * 864e5) return "tanggal lebih dari 400 hari ke belakang";
   if (typeof kode !== "string" || !/^\d{2}$/.test(kode)) return "prov_kode harus 2 angka kode BPS";
   if (!nama) return "provinsi wajib, maksimal 60 huruf";
   const po = larik(o.posko ?? [], 10), ar = larik(o.armada, 12), ku = larik(o.kumulatif ?? [], 10);

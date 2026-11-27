@@ -8,7 +8,7 @@ import {siapkan, berantai, ADMIN} from "./_bnpb.mjs";
 import {uraiOmcPosko} from "../../scripts/wa/urai_omc_posko.mjs";
 import "../../src/worker.js";
 
-const TOKEN = "t".repeat(40), MESIN = "mesin-uji-" + "m".repeat(20), uji = berantai();
+const TOKEN = "t".repeat(40), MESIN = "mesin-uji-" + "m".repeat(30), uji = berantai();
 const {DB, api, n} = await siapkan("uji-omc-posko", {ikat: {SEMAI_TOKEN: TOKEN, WA_MESIN: MESIN}});
 const bear = t => ({authorization: "Bearer " + t});
 const kirim = (b, h = bear(MESIN)) => api("POST", "/api/operasi/omc-posko", b, h);
@@ -47,7 +47,8 @@ uji("body jahat ditolak 400/413 dan tidak menyimpan", async () => {
   const jahat = [lap({tanggal: "2026-13-45"}), lap({tanggal: "2099-01-01"}), lap({prov_kode: "1"}), lap({prov_kode: "AB"}), lap({provinsi: ""}), lap({armada: "x"}), lap({armada: []}),
     lap({armada: [{pesawat: "A", sorti: [sorti({kg: -1})]}]}), lap({armada: [{pesawat: "A", sorti: [sorti({kg: 1e9})]}]}), lap({armada: [{pesawat: "A", sorti: [sorti({mesin_hidup: "25:99"})]}]}),
     lap({armada: [{pesawat: "A", sorti: [sorti({bahan: "<script>"})]}]}), lap({armada: [{pesawat: "A", sorti: Array(21).fill(sorti())}]}), lap({posko: Array(11).fill("p")}),
-    lap({armada: Array(6).fill({pesawat: "A", sorti: Array(20).fill(sorti())})}), lap({kumulatif: [{posko: "x", sorti: "banyak", kg: 1}]}), [], "bukan json{"];
+    lap({armada: Array(6).fill({pesawat: "A", sorti: Array(20).fill(sorti())})}), lap({kumulatif: [{posko: "x", sorti: "banyak", kg: 1}]}),
+    lap({tanggal: "2026-02-31"}), lap({tanggal: "2024-01-01"}), lap({armada: [{pesawat: "A", sorti: [sorti({wilayah_semai: "hubungi 0812 3456 7890"})]}]}), [], "bukan json{"];
   for (const j of jahat) { const r = await kirim(j); assert.ok(r.s === 400, `${JSON.stringify(j).slice(0, 80)} -> ${r.s}`); }
   assert.equal((await kirim("x".repeat(70000))).s, 413);
   assert.equal(await n("op_omc_lapor"), 1);
