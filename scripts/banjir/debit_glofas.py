@@ -223,7 +223,7 @@ def ringkas(cache=None):
     return {"titik": len(T), "layak": sorted(ok), "tanpa_sungai_besar": sorted(tanpa), "belum_diambil": len(sisa)}
 
 
-def snapshot(cache=None, per_panggil=10, semua=False):
+def snapshot(cache=None, per_panggil=10, semua=False, nama=None):
     """Ansambel prakiraan 3 hari (+1 hari lalu) untuk kab layak; simpan data/raw/banjir/glofas/ensemble/<hari>.json (hanya-tambah per hari).
     semua=True: seluruh titik kab (dipakai `terbit` bila cache reanalisis belum ada sehingga belum ada kab "layak")."""
     kode = sorted(titik_kab()) if semua else ringkas(cache)["layak"]
@@ -238,7 +238,7 @@ def snapshot(cache=None, per_panggil=10, semua=False):
             m = [v for n, v in sorted(x["daily"].items()) if n.startswith("river_discharge_member")]
             out[k] = {"t": x["daily"]["time"], "kontrol": x["daily"].get("river_discharge"), "anggota": m}
         time.sleep(5)
-    p = os.path.join(cache or CACHE, "ensemble", f"{dt.date.today()}.json")
+    p = os.path.join(cache or CACHE, "ensemble", nama or f"{dt.date.today()}.json")
     os.makedirs(os.path.dirname(p), exist_ok=True)
     if os.path.exists(p):
         sys.exit(f"{p} sudah ada: snapshot hari ini tidak ditimpa")
@@ -275,9 +275,11 @@ def ringkas_kab(kab, hari0, q2=None):
 
 def terbit(cache=None, keluar=KELUAR):
     hari = str(dt.date.today())
-    p = os.path.join(cache or CACHE, "ensemble", f"{hari}.json")
+    # berkas sendiri untuk seluruh titik kab: snapshot harian <hari>.json hanya memuat kab "layak" (arsip prospektif PRAREG-DEBIT,
+    # tidak disentuh), jadi terbit dari berkas itu memberi 1 kab di runner (27 Nov 2026)
+    p = os.path.join(cache or CACHE, "ensemble", f"{hari}_semua.json")
     if not os.path.exists(p):
-        snapshot(cache, semua=True)
+        snapshot(cache, semua=True, nama=f"{hari}_semua.json")
     snap = json.load(open(p))
     # Q2 per titik kab: belum ada di repo (ambang sungai.py ada di titik sungai lain, bukan titik kab) -> null, tidak dikarang
     kab = ringkas_kab(snap["kab"], hari)

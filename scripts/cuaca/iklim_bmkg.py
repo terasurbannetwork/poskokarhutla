@@ -293,6 +293,18 @@ def urai_narasi(t, wil=None):
     return {"periode": m.group(1) if m else None, "jenis": m.group(2) if m else None, "persen": pers, "wilayah": blok or None, "n_kab": n, "n_kab_terpetakan": n_ok, "tak_cocok": tak}
 
 
+def kat_kab(a):
+    """Ringkas narasi pch_bln bulan pertama: {kode kab: kategori} untuk layar (bukan peluang). Kab tanpa kode atau tak tersebut = tidak ada di peta."""
+    kab, rentang = {}, {}
+    for b in a.get("wilayah") or []:
+        rentang[b["kategori"]] = b["rentang"]
+        for k in b["kab"]:
+            if k.get("kode"):
+                kab[k["kode"]] = b["kategori"]
+    return {"periode": a.get("periode"), "bulan": a.get("bulan_atau_dasarian"), "diambil": a.get("diambil"), "rentang": rentang, "persen": a.get("persen"),
+            "n_kab": a.get("n_kab"), "n_kab_terpetakan": a.get("n_kab_terpetakan"), "kab": kab}
+
+
 # ---------- direktori UPT ----------
 def urai_upt(vals):
     lst = _pertama(vals, lambda v: isinstance(v, list) and v and isinstance(v[0], dict) and "SATKERID" in v[0]) or []
@@ -310,6 +322,7 @@ def main():
     arsip = baca(ARSIP, {}) or {}
     ar_a, ar_n = arsip.setdefault("artikel", {}), arsip.setdefault("narasi", {})
     log, gagal, hub_out, produk, gambar_hub, gempa, siaran, narasi_snap = [], [], {}, {}, {}, {}, [], {}
+    pch1 = None
     tak = []
 
     def kunjung(url, jenis, fn):
@@ -373,6 +386,8 @@ def main():
                         log.append({"url": f"{DW}/{hub}/{pre}_{kode}_narasi_step{i + 1}.txt", "jenis": "narasi", "status": f"gagal: {type(e).__name__} {e}"})
                         continue
                 a = ar_n[k]
+                if (pre, kode, i) == ("pch", "bln", 0):
+                    pch1 = kat_kab(a)
                 narasi_snap[k] = {"produk": a["produk"], "periode": a["periode"], "persen": a["persen"], "n_kab": a["n_kab"], "n_kab_terpetakan": a["n_kab_terpetakan"]}
                 tak += [f"{k} {x}" for x in a["tak_cocok"]]
     # 3. hub gambar, halaman tunggal
@@ -443,7 +458,7 @@ def main():
     # append-only: arsip lama sudah dimuat dan hanya ditambah
     simpan(ARSIP, arsip)
     simpan(BERKAS, {"dibuat": sekarang(), "sumber": "BMKG iklim (www.bmkg.go.id, dataweb.bmkg.go.id); teks saja", "halaman": log, "hub_artikel": hub_out, "produk_hujan": produk,
-                    "produk_gambar": gambar_hub, "narasi": narasi_snap, "gempa_hub": gempa, "siaran_pers": siaran, "n_artikel_arsip": len(ar_a), "n_narasi_arsip": len(ar_n),
+                    "produk_gambar": gambar_hub, "narasi": narasi_snap, "pch_kategori": pch1, "gempa_hub": gempa, "siaran_pers": siaran, "n_artikel_arsip": len(ar_a), "n_narasi_arsip": len(ar_n),
                     "n_kab_terpetakan": sum(v["n_kab_terpetakan"] for v in narasi_snap.values()), "n_kab_total": sum(v["n_kab"] for v in narasi_snap.values()),
                     "tak_cocok": tak, "gagal": gagal,
                     "pdf_lokal": {"spi": {k: {x: v[x] for x in ("update", "spi_bulan", "bulan_berkas", "per_tingkat", "n_baris", "n_terpetakan")} | {"n_tak_cocok": len(v["tak_cocok"])}
@@ -717,6 +732,8 @@ def uji():
     bb = urai_buletin_teks("TIM PENYUSUN BULETIN\nPengarah : Dr. Nama Uji, S.Si\n PENGANTAR\n Isi pengantar.\n Jakarta, Oktober 2026\n Direktur\n Dr. Nama Uji, M.Si\n DAFTAR ISI\n I. RINGKASAN 1\n  I.    RINGKASAN\n Teks satu.\n 1\nII. ANALISIS\nA. Sub satu\n Teks dua 18 titik observasi mencatat curah hujan ekstrem (>150 mm/hari).\n 2\n")
     assert [x["kode"] for x in bb] == ["PENGANTAR", "I", "II", "A"] and "Nama Uji" not in json.dumps(bb), bb
     assert angka_buletin(bb)["hujan_ekstrem_titik"] == 18
+    kk = kat_kab({"periode": "bulan X", "wilayah": [{"kategori": "Rendah", "rentang": "0-100 mm per bulan", "kab": [{"nama": "A", "kode": "3204"}, {"nama": "B", "kode": None}]}]})
+    assert kk["kab"] == {"3204": "Rendah"} and kk["rentang"] == {"Rendah": "0-100 mm per bulan"}, kk
     print("uji iklim_bmkg ok")
 
 

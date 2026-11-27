@@ -12,18 +12,21 @@ const BASI_HTH = 3; // hari
 const num = (n, d = 2) => (n == null || !Number.isFinite(+n) ? null : (+n).toLocaleString("id-ID", { minimumFractionDigits: d, maximumFractionDigits: d }));
 const bertanda = (n) => { const t = num(n); return t == null ? BELUM : (+n > 0 ? "+" : "") + t; };
 const tgl = (iso) => { const t = new Date(String(iso).slice(0, 10) + "T00:00:00+07:00"); return Number.isNaN(+t) ? BELUM : t.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta" }); };
-const ngNama = (n) => String(n || "").replace(/^Kab\.\s+/, "").trim().toLowerCase();
+const KAT = ["Rendah", "Menengah", "Tinggi", "Sangat Tinggi"]; // kategori narasi BMKG, urut naik
+const PRODUK_BMKG = { "curah-hujan-deterministik": "Curah hujan (deterministik)", "sifat-hujan-deterministik": "Sifat hujan (deterministik)", "curah-hujan-probabilistik-a100": "Peluang lebih dari 100 mm", "curah-hujan-probabilistik-a150": "Peluang lebih dari 150 mm", "curah-hujan-probabilistik-a300": "Peluang lebih dari 300 mm", "curah-hujan-probabilistik-a500": "Peluang lebih dari 500 mm", "curah-hujan-probabilistik-b100": "Peluang kurang dari 100 mm", "curah-hujan-probabilistik-b150": "Peluang kurang dari 150 mm" };
+const URL_BMKG = "https://www.bmkg.go.id/iklim/prediksi-hujan-bulanan";
 const umurHari = (iso) => Math.floor((Date.now() - new Date(String(iso).slice(0, 10) + "T00:00:00+07:00")) / 864e5);
 
 export function pasang(ctx) {
   const { panel, bawah } = ctx;
   muatCss();
-  let DP, I = null, Q = null, H = null, peta = null, kini = false, fc = null, geoMuat = false, gm = new Map(), lama = "";
+  let DP, I = null, Q = null, H = null, B = null, mode = "debit", peta = null, kini = false, fc = null, geoMuat = false, gm = new Map(), lama = "";
   panel.innerHTML = '<p class="p2-info" role="status">Memuat data iklim</p>';
-  bawah.innerHTML = `<ul class="p2-sw" aria-label="Legenda debit puncak"><li class="p2-jd">Debit puncak, m³/detik</li>${["kurang dari " + LANGKAH[0], LANGKAH[0] + " sampai " + LANGKAH[1], LANGKAH[1] + " sampai " + LANGKAH[2], LANGKAH[2] + " sampai " + LANGKAH[3], "lebih dari " + LANGKAH[3]].map((t, i) => `<li><i class="p2-k p2-q${i}"></i>${t}</li>`).join("")}<li><i class="p2-k p2-kn"></i>${BELUM}</li></ul>`;
+  const legKat = () => `<ul class="p2-sw" aria-label="Legenda kategori hujan bulanan"><li class="p2-jd">Kategori hujan bulanan menurut narasi BMKG</li>${KAT.map((t, i) => `<li><i class="p2-k p2-c p2-c${i}"></i>${t}${B?.pch_kategori?.rentang?.[t] ? ", " + esc(B.pch_kategori.rentang[t]) : ""}</li>`).join("")}<li><i class="p2-k p2-kn"></i>${BELUM}</li></ul>`;
+  const legDebit = () => `<ul class="p2-sw" aria-label="Legenda debit puncak"><li class="p2-jd">Debit puncak, m³/detik</li>${["kurang dari " + LANGKAH[0], LANGKAH[0] + " sampai " + LANGKAH[1], LANGKAH[1] + " sampai " + LANGKAH[2], LANGKAH[2] + " sampai " + LANGKAH[3], "lebih dari " + LANGKAH[3]].map((t, i) => `<li><i class="p2-k p2-q${i}"></i>${t}</li>`).join("")}<li><i class="p2-k p2-kn"></i>${BELUM}</li></ul>`;
+  bawah.innerHTML = legDebit();
 
   const kodeNama = new Map(); // kode kab -> nama, dari kunci "pp|Nama" di data hari tanpa hujan
-  const namaKode = new Map(); // "pp|nama" -> kode
   const nmKab = (k) => kodeNama.get(k) || "Kab/kota " + k;
 
   /* ---------- kartu ---------- */
@@ -54,6 +57,21 @@ export function pasang(ctx) {
 <ol class="p2-top" aria-label="Debit puncak tertinggi">${atas.map(([k, v]) => `<li><button type="button" data-kab="${k}"><span>${esc(nmKab(k))}</span><b>${num(v.puncak_m3s, 0)}</b></button></li>`).join("")}</ol>`);
   }
 
+  function kartuBmkg() {
+    const prod = (B?.produk_hujan?.bulanan || []).filter((p) => PRODUK_BMKG[p.id] && /^https:\/\/dataweb\.bmkg\.go\.id\//.test(p.gambar_step1 || ""));
+    const bln = prod[0]?.steps?.[0]?.nama;
+    if (!prod.length || !bln) return kartu("Prediksi", "Prediksi hujan bulanan BMKG", `<p class="p2-kosong">Prediksi hujan bulanan BMKG ${BELUM}: berkas belum terbit.</p>${chip(DP, "belum")}`);
+    const kk = B.pch_kategori, rilis = kk?.diambil || B.dibuat;
+    const opsi = prod.map((p) => `<option value="${esc(p.gambar_step1)}">${esc(PRODUK_BMKG[p.id])}</option>`).join("");
+    const kat = kk?.kab && Object.keys(kk.kab).length
+      ? `<p class="p2-cat">Kategori hujan bulanan menurut narasi BMKG, ${esc(kk.bulan || bln)}, bukan peluang. Kab/kota yang tidak disebut narasi ${BELUM}.</p>
+<div class="p2-bar" role="group" aria-label="Isi peta"><button type="button" class="p2-unduh" data-mode="debit" aria-pressed="true">Peta debit sungai</button><button type="button" class="p2-unduh" data-mode="pch" aria-pressed="false">Peta kategori hujan bulanan</button></div>`
+      : `<p class="p2-kosong">Kategori per kab/kota ${BELUM}: narasi BMKG belum terbaca.</p>`;
+    return kartu("Prediksi", "Prediksi hujan bulanan BMKG", `<p class="p2-cat">Bulan prediksi ${esc(bln)}, gambar resmi BMKG apa adanya. ${chip(DP, "sumber", "BMKG (dataweb.bmkg.go.id)")} <a href="${URL_BMKG}" target="_blank" rel="noopener">Halaman BMKG</a></p>
+<div class="p2-bar"><label for="ik-bmkg-p">Gambar</label><select id="ik-bmkg-p">${opsi}</select></div>
+<figure class="p2-gb"><img id="ik-bmkg-g" src="${esc(prod[0].gambar_step1)}" alt="Peta prediksi hujan bulanan BMKG, ${esc(bln)}" loading="lazy" decoding="async"></figure>${kat}`).replace("<h3>", `<h3 title="Sumber BMKG${rilis ? ", diambil " + esc(tgl(rilis)) : ""}">`);
+  }
+
   function kartuHth() {
     if (!H?.kab) return kartu("Kekeringan", "Hari tanpa hujan per kab/kota", `<p class="p2-kosong">Hari tanpa hujan ${BELUM}: berkas belum terbit.</p>${chip(DP, "belum")}`);
     if (!H.hari || umurHari(H.hari) > BASI_HTH) {
@@ -68,8 +86,8 @@ export function pasang(ctx) {
 
   const kartuKabDebit = (k) => {
     const v = kabQ(k);
-    if (!v || v.puncak_m3s == null) return `<p class="p2-info"><b>${esc(nmKab(k))}</b>: debit ${BELUM}.</p>`;
-    return `<dl class="p2-kv"><dt>Kab/kota</dt><dd>${esc(nmKab(k))}</dd><dt>Puncak debit</dt><dd>${num(v.puncak_m3s, 0)} m³/detik</dd><dt>Hari puncak</dt><dd>${v.hari_puncak != null ? HARI[v.hari_puncak] || "Hari ke-" + v.hari_puncak : BELUM}</dd><dt>Rasio terhadap Q2</dt><dd>${v.rasio_q2 != null ? num(v.rasio_q2, 1) + "×" : BELUM}</dd></dl><p class="p2-cat">${chip(DP, "hipotesis", "Debit GloFAS; belum lolos uji balik")}</p>`;
+    if (!v || v.puncak_m3s == null) return `<p class="p2-info"><b>${esc(nmKab(k))}</b>: debit ${BELUM}. Kategori hujan bulanan BMKG: ${esc(B?.pch_kategori?.kab?.[k] || BELUM)}.</p>`;
+    return `<dl class="p2-kv"><dt>Kab/kota</dt><dd>${esc(nmKab(k))}</dd><dt>Puncak debit</dt><dd>${num(v.puncak_m3s, 0)} m³/detik</dd><dt>Hari puncak</dt><dd>${v.hari_puncak != null ? HARI[v.hari_puncak] || "Hari ke-" + v.hari_puncak : BELUM}</dd><dt>Rasio terhadap Q2</dt><dd>${v.rasio_q2 != null ? num(v.rasio_q2, 1) + "×" : BELUM}</dd><dt>Kategori hujan bulanan BMKG</dt><dd>${esc(B?.pch_kategori?.kab?.[k] || BELUM)}</dd></dl><p class="p2-cat">${chip(DP, "hipotesis", "Debit GloFAS; belum lolos uji balik")}</p>`;
   };
   function pilihKab(k, terbang) {
     const w = panel.querySelector("#ik-kab");
@@ -93,6 +111,9 @@ export function pasang(ctx) {
     m.addLayer({ id: "ik-isi", type: "fill", source: "ik-kab", layout: { visibility: vis }, paint: {
       "fill-color": ["case", ["<", q, 0], w("--dp-belum"), w("--brand2")],
       "fill-opacity": ["case", ["<", q, 0], 0.35, ["step", q, 0.12, LANGKAH[0], 0.26, LANGKAH[1], 0.42, LANGKAH[2], 0.6, LANGKAH[3], 0.8]] } });
+    m.addLayer({ id: "ik-pch", type: "fill", source: "ik-kab", layout: { visibility: "none" }, paint: {
+      "fill-color": ["case", ["<", ["get", "c"], 0], w("--dp-belum"), w("--info")],
+      "fill-opacity": ["case", ["<", ["get", "c"], 0], 0.35, ["match", ["get", "c"], 0, 0.15, 1, 0.35, 2, 0.6, 0.85]] } });
     m.addLayer({ id: "ik-garis", type: "line", source: "ik-kab", layout: { visibility: vis }, paint: { "line-color": w("--ink2"), "line-width": ["case", ["boolean", ["feature-state", "pilih"], false], 3, 0.4] } });
     if (!m._ikKlik) {
       m._ikKlik = true;
@@ -105,40 +126,57 @@ export function pasang(ctx) {
   ctx.pasangPeta(pasangLapis);
 
   async function muatGeo() {
-    if (geoMuat || !Q?.kab) return;
+    if (geoMuat) return;
     geoMuat = true;
-    const prov = [...new Set(Object.keys(Q.kab).map((k) => k.slice(0, 2)))];
+    const kodeAda = [...Object.keys(Q?.kab || {}), ...Object.keys(B?.pch_kategori?.kab || {}), ...Object.values(H?.kab || {}).map((v) => v.kode)];
+    const prov = [...new Set(kodeAda.map((k) => String(k).slice(0, 2)))].sort();
+    if (!prov.length) { geoMuat = false; return; }
     const gs = await Promise.all(prov.map((p) => geoKab(p)));
     const fitur = [];
     prov.forEach((p, i) => {
-      for (const f of gs[i]?.features || []) {
-        const k = namaKode.get(p + "|" + ngNama(f.properties?.kab));
-        if (!k) continue;
-        const v = Q.kab[k];
-        fitur.push({ type: "Feature", geometry: f.geometry, properties: { kab: k, q: v?.puncak_m3s ?? -1 } });
+      (gs[i]?.features || []).forEach((f, n) => {
+        const k = p + String(n + 1).padStart(2, "0"); // kode repo: prov + urutan kab di berkas geo
+        const v = Q?.kab?.[k];
+        fitur.push({ type: "Feature", geometry: f.geometry, properties: { kab: k, q: v?.puncak_m3s ?? -1, c: KAT.indexOf(B?.pch_kategori?.kab?.[k]) } });
         gm.set(k, f.geometry);
-      }
+      });
     });
     fc = { type: "FeatureCollection", features: fitur };
     if (peta) pasangLapis(peta);
   }
 
+  function terapkanMode() {
+    const pch = mode === "pch";
+    bawah.innerHTML = pch ? legKat() : legDebit();
+    if (!peta?.getLayer("ik-isi")) return;
+    peta.setLayoutProperty("ik-isi", "visibility", kini && !pch ? "visible" : "none");
+    peta.setLayoutProperty("ik-pch", "visibility", kini && pch ? "visible" : "none");
+  }
+
   async function muat() {
     try { await muatDP(); } catch { panel.innerHTML = '<p class="po-galat" role="alert">Bagian ini belum bisa dimuat. Muat ulang halaman untuk mencoba lagi.</p>'; return; }
     DP = globalThis.DampakPeringatan;
-    [I, Q, H] = await Promise.all([ambil("/data/iklim.json"), ambil("/banjir/data/debit_kab.json"), ambil("/data/kekeringan_hth.json")]);
+    [I, Q, H, B] = await Promise.all([ambil("/data/iklim.json"), ambil("/banjir/data/debit_kab.json"), ambil("/data/kekeringan_hth.json"), ambil("/banjir/data/iklim_bmkg.json")]);
     for (const [key, v] of Object.entries(H?.kab || {})) {
-      const [p, n] = key.split("|"); kodeNama.set(v.kode, n); namaKode.set(p + "|" + ngNama(n), v.kode);
+      const n = key.split("|")[1]; kodeNama.set(v.kode, n);
     }
-    panel.innerHTML = kartuSamudra() + kartuDebit() + kartuHth();
+    panel.innerHTML = kartuSamudra() + kartuDebit() + kartuBmkg() + kartuHth();
     panel.querySelector(".p2-top")?.addEventListener("click", (e) => { const b = e.target.closest("[data-kab]"); if (b) pilihKab(b.dataset.kab, true); });
+    panel.querySelector("#ik-bmkg-p")?.addEventListener("change", (e) => { const g = panel.querySelector("#ik-bmkg-g"); if (g) g.src = e.target.value; });
+    panel.querySelector("#ik-bmkg-g")?.addEventListener("error", (e) => e.target.replaceWith(Object.assign(document.createElement("p"), { className: "p2-kosong", textContent: "Gambar BMKG " + BELUM + ": belum bisa dimuat." })));
+    panel.querySelector('[aria-label="Isi peta"]')?.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-mode]"); if (!b) return;
+      mode = b.dataset.mode;
+      for (const x of b.parentNode.children) x.setAttribute("aria-pressed", String(x === b));
+      terapkanMode();
+    });
     if (kini) nanti(muatGeo);
   }
   muat();
 
   return { aktif(on) {
     kini = on;
-    if (on && Q) nanti(muatGeo);
-    if (peta?.getLayer("ik-isi")) for (const i of ["ik-isi", "ik-garis"]) peta.setLayoutProperty(i, "visibility", on ? "visible" : "none");
+    if (on) nanti(muatGeo);
+    if (peta?.getLayer("ik-garis")) { peta.setLayoutProperty("ik-garis", "visibility", on ? "visible" : "none"); terapkanMode(); }
   } };
 }

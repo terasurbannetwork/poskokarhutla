@@ -88,3 +88,8 @@
 @media (max-width:420px){.p2-dua{grid-template-columns:minmax(0,1fr)}}
 /* tanpa panah di depan nama provinsi dan kab (pemilik 26 Nov 2026: "gausah ada panah ini"); baris tetap bisa diklik untuk membuka */
 .p2-pv>summary .p2-pn::before,.p2-kd>summary .p2-kn::before{content:none;display:none}
+.p2-c{background:var(--info)}.p2-c0{opacity:.15}.p2-c1{opacity:.35}.p2-c2{opacity:.6}.p2-c3{opacity:.85}
+.p2-gb{margin:0 0 8px}.p2-gb img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface)}
+.p2-gb figcaption{margin-top:4px}
+.p2-unduh[aria-pressed="true"]{background:var(--brand2);color:var(--on-head);border-color:var(--brand2)}
+.p2-cat a{color:var(--brand2);font-weight:600}
