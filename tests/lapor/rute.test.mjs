@@ -200,11 +200,11 @@ uji("info daerah: prakiraan, nomor penting, cari desa, tempat sekitar (data publ
   assert.ok(fas.some(x => x.nomor), "RS Fatmawati dan sekitarnya bernomor di OSM");
   for (const x of fas) assert.ok(x.nomor === null || /^(\+62\d{7,13}|1[345]00\d{2,4})$/.test(x.nomor), x.nomor);
   const c = await api("GET", `/api/lapor/cari?q=paledang&wa=${WA}`, undefined, MESIN); assert.equal(c.s, 200); assert.ok(c.j.hasil.length >= 1);
-  assert.equal((await api("GET", "/api/lapor/daerah?lat=-6.6&lon=106.8")).s, 401, "tanpa identitas");
+  assert.equal((await api("GET", "/api/lapor/daerah?lat=-6.6&lon=106.8")).s, 200, "info daerah terbuka tanpa masuk");
   const r = await api("GET", `/api/lapor/rapor?kode=33.08&wa=${WA}`, undefined, MESIN); assert.equal(r.s, 200, r.t.slice(0, 200));   // K89: rapor daerah dari berkas publik
   assert.equal(r.j.kab, "Magelang"); assert.ok(r.j.risiko?.kelas && r.j.kejadian?.total >= 0); assert.ok(r.j.risiko.bahayaUtama?.length >= 1, "bahaya utama per kecamatan"); assert.equal((r.j.risiko.daftarTinggi || []).length, Math.min(30, r.j.risiko.kecTinggi), "semua kecamatan tinggi, bukan hanya tiga"); assert.match(r.j.teks, /Rapor daerah: Magelang/);
   assert.ok(r.j.titik === null || Number.isInteger(r.j.titik.n), "titik panas basi = null, bukan 0");
-  assert.equal((await api("GET", "/api/lapor/rapor?kode=33.08")).s, 401, "rapor tanpa identitas");
+  assert.equal((await api("GET", "/api/lapor/rapor?kode=33.08")).s, 200, "rapor terbuka tanpa masuk");
   const s = await api("GET", `/api/lapor/sekitar?jenis=sekolah&wa=${WA}`, undefined, MESIN); assert.equal(s.s, 200, s.t.slice(0, 200)); assert.ok(Array.isArray(s.j.tempat));   // lokasi dari sesi terakhir; Overpass diblok di uji, data OSM lokal tetap jalan
   const k = await api("GET", `/api/lapor/kotak?wa=${WA}&sejak=0`, undefined, MESIN); assert.equal(k.s, 200); assert.ok(k.j.pesan.some(x => x.status && x.nomor === nomor) && !k.j.pesan.some(x => /unduh/.test(x.teks)));
   assert.equal((await api("POST", "/api/lapor/nilai", {wa: WA, nomor, nilai: 9}, MESIN)).s, 400);

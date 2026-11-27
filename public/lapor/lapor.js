@@ -1628,7 +1628,7 @@ async function ambilDaerah(q, tampil) {
       if (infoMode === "info" && window.pbKartuPeringatan) { const li = el("li", "bot baru lp-pred-li"), w = el("div", "lp-pw-info"); li.append(w); $("logInfo").append(li); window.pbKartuPeringatan(w); }
       $("kartuInfo").replaceChildren(opsiLanjut(q));
     }
-  } catch (e) { tambahInfo("bot", `${e.message || "Data belum bisa dimuat"}. Coba lagi.`); kartuLokasiInfo(); }
+  } catch (e) { tambahInfo("bot", `${String(e.message || "Data belum bisa dimuat").replace(/[.\s]+$/, "")}. Coba lagi.`); kartuLokasiInfo(); }
 }
 /* analisis daerah (pemilik 22 Nov 2026, KEPUTUSAN-LAPOR-AI K89; nama "Analisis daerah" 24 Nov 2026): angka sama dengan tab Wilayah /akademisi; data kosong tidak ditulis 0.
    24 Nov 2026 (pemilik: "jelek banget"): status darurat jadi spanduk dengan daftar ancaman, risiko dan kejadian jadi ubin selebar kartu */
