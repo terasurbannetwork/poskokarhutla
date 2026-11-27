@@ -15,13 +15,13 @@ const TAB = [
 const BAHAYA = ["bnj", "bdg", "lsr", "gel", "kht", "kek", "cex"];
 const HARI = ["ringkas", "0", "1", "2", "3"];
 const KOTAK = [[94, -11.5], [141.5, 6.5]];
-const CSS = ["/potensi/potensi.css?v=2", "/potensi/status.css?v=3", "/lapor/peringatan_potensi.css?v=5", "/potensi/lapis_peta.css?v=4"];
+const CSS = ["/potensi/potensi.css?v=2", "/potensi/status.css?v=3", "/lapor/peringatan_potensi.css?v=5", "/potensi/lapis_peta.css?v=5"];
 const $ = (id) => document.getElementById(id);
 const hp = matchMedia("(max-width:899px)");
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
 const state = { tab: "status", b: "", h: "ringkas", kab: "", lp: "" };
-const lapis = () => lapis.j ||= Promise.all([import("/potensi/lapis_peta.js?v=5"), import("/potensi/kabar_baru.js?v=2")]);   // K8b menu lapisan, K8c pemberitahuan melayang
+const lapis = () => lapis.j ||= Promise.all([import("/potensi/lapis_peta.js?v=6"), import("/potensi/kabar_baru.js?v=2")]);   // K8b menu lapisan, K8c pemberitahuan melayang
 const fns = [], mods = new Map(); // mods: k -> { aktif } | null
 let peta = null, aside = null, kini = "", dibangun = false, kamusLayer = [];
 

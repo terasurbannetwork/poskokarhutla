@@ -148,7 +148,7 @@ async function kab() {   // garis kab/kota hanya untuk provinsi yang terlihat, d
 
 function jadwalNc() {   // tiap 10 menit saat menyala, berhenti saat tab tersembunyi
   clearInterval(tmNc); tmNc = 0;
-  if (nyala.has("nc") && !document.hidden) tmNc = setInterval(() => ncMuat?.(), 600000);
+  if (nyala.has("nc") && !document.hidden) tmNc = setInterval(() => { if (!document.hidden) ncMuat?.(); }, 600000);
 }
 const lihat = () => { if (document.hidden) jadwalNc(); else if (nyala.has("nc")) { ncMuat?.(); jadwalNc(); } };
 function dasar(v) {   // peta dasar raster di bawah semua lapis; isi vektor peta dasar (bukan label) disembunyikan selama menyala
