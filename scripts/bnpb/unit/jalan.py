@@ -57,6 +57,8 @@ LANGKAH = [
     ("KS-3", "ks3", "bulanan"),    # RU-091 unit/evakuasi.json (kandidat OSM; desa kurang menunggu data/raw/unit/desa_terpapar.json)
     ("MT-1", "mt1", "bulanan"),    # RU-092 RU-093 unit/dana_bersama_katalog.json (Juklak 4/2025 gz + standar_biaya_2026.json hasil `mt1.py ekstrak`)
     ("MT-3", "mt3", "bulanan"),    # RU-095 unit/kampanye.json (siaga x terpapar x ews_tindakan.js lewat node)
+    ("DIK-4", "dik4", "bulanan"),    # RU-106 unit/pengajar.json (pencocok BM25 kemitraan; tanpa daftar mata pelatihan Pusdiklat atau data/raw/unit/pakar = 'belum ada data')
+    ("JF-2", "jf2", "bulanan"),    # RU-107 unit/formasi_jf.json (DIBI, terpapar, status_darurat x norma_waktu.json bawaan; volume penyuluhan belum ada data)
 ]
 
 BASI_JAM = {"harian": 48, "mingguan": 240, "bulanan": 1080}  # DT sec 9.4

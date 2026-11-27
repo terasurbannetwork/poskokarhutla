@@ -35,6 +35,7 @@ const LAYAR = [
   {skrip: 'public/bnpb/unit/unit.js', html: 'public/bnpb/unit/unit.html', lama: []},   // RU-020 cangkang; pintu index.html memakai skrip yang sama
   {skrip: 'public/bnpb/unit/unit.js', html: 'public/bnpb/unit/index.html', lama: []},
   {skrip: 'public/bnpb/unit/jf1.js', html: 'public/bnpb/unit/unit.html', lama: []},   // RU-050 JF-1 kamus kompetensi (bentuk G)
+  {skrip: 'public/bnpb/unit/jf2.js', html: 'public/bnpb/unit/unit.html', lama: []},   // RU-107 JF-2 kebutuhan formasi (bentuk A, hitung di klien)
   {skrip: 'public/bnpb/unit/rrp3.js', html: 'public/bnpb/unit/unit.html', lama: []},   // RU-054 RRP-3 kalkulator Jitupasna (bentuk G)
 ]
 

@@ -105,15 +105,15 @@
     ["HUK-1", "huk", "F1", "Pemeriksa status peraturan", "Status peraturan", "status_peraturan", "F", "MB-1", S + "huk1.py"],
     ["HUK-2", "huk", "F2", "Pelacak amanat pengaturan turunan dan bahan Indeks Reformasi Hukum", "Amanat turunan", "amanat", "F", "MB-1", S + "huk2.py"],
     ["HUK-3", "huk", "T", "Register kerja sama", "Kerja sama", null, null, null, null],
-    ["IRT-1", "irt", "F2", "Papan umur rekomendasi TLHP per unit", "Umur TLHP", null, "D", "MB-6", null, true],
+    ["IRT-1", "irt", "F2", "Papan umur rekomendasi TLHP per unit", "Umur TLHP", null, "D", "MB-6", S + "irt1.py", true],
     ["IRT-2", "irt", "F3", "Sinyal risiko pengadaan untuk pengawasan tujuan tertentu", "Sinyal pengadaan", null, null, "MB-8", null],
     ["IRT-3", "irt", "F3", "Register risiko yang terisi sendiri dari capaian", "Register risiko", null, null, null, null],
     ["DIK-1", "dik", "F2", "Peta sasaran diklat berbasis risiko", "Sasaran diklat", "diklat_sasaran", "A", "MB-4", S + "dik1.py"],
     ["DIK-2", "dik", "F3", "STTP elektronik terverifikasi dan registri alumni", "STTP elektronik", null, null, null, null],
     ["DIK-3", "dik", "F3", "Survei retensi dan kemanfaatan lewat WA", "Survei retensi", null, null, null, null],
-    ["DIK-4", "dik", "F2", "Bank tenaga pengajar dari direktori pakar", "Bank pengajar", "pengajar", "G", null, null],
+    ["DIK-4", "dik", "F2", "Bank tenaga pengajar dari direktori pakar", "Bank pengajar", "pengajar", "G", null, S + "dik4.py"],
     ["JF-1", "jf", "F1", "Kamus kompetensi PB.01-PB.58 terstruktur dan jalur pengembangan", "Kamus kompetensi", "kompetensi", "G", null, S + "jf1.py"],
-    ["JF-2", "jf", "F2", "Hitung kebutuhan formasi JF per instansi", "Formasi JF", "formasi_jf", "A", null, null],
+    ["JF-2", "jf", "F2", "Hitung kebutuhan formasi JF per instansi", "Formasi JF", "formasi_jf", "A", null, S + "jf2.py"],
     ["JF-3", "jf", "F3", "Registri pejabat JF dan pemantau kepatuhan", "Registri pejabat JF", null, null, null, null],
   ].map(([id, unit, fase, nama, pendek, berkas, bentuk, mesin, skrip, lokal, publik]) => ({id, unit, fase, nama, pendek, berkas, bentuk, mesin, skrip, lokal: !!lokal, publik: publik || null}));
   const unit = Object.fromEntries(Object.entries(UNIT).map(([kode, [nama, singkat, tautan]]) =>

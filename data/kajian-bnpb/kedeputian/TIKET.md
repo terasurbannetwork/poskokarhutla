@@ -1728,7 +1728,8 @@ Pola tiap tiket sistem pipeline: skrip `scripts/bnpb/unit/<nama>.py` dengan `--c
 - **Langkah:**
   - [ ] `--cek` contoh RU §5.2 (1.720 jam, 1,376 orang); norma tanpa label "bawaan" ditolak; label "usulan metode".
   - [ ] Jalankan bukti.
-- **Bukti:** `python3 -I scripts/bnpb/unit/jf2.py --cek && node --test tests/bnpb/unit_layar.test.mjs && npm run uji:agen`.
+- **Bukti:** `python3 -I scripts/bnpb/unit/jf2.py --cek && node --test tests/bnpb/unit_jf2.test.mjs tests/bnpb/unit_jf2_peramban.test.mjs && npm run uji:agen`.
+- **Catatan tampilan:** kebutuhan orang tampil 1 desimal (3 desimal presisi palsu); nilai hitung tetap penuh, contoh 1,376 hanya diuji di `--cek`. Kolom "Usulan formasi" = pembulatan ke atas.
 - **Pemilik:** tidak ada.
 - **Rujukan:** DT §6.31; RU §5.2 baris JF-2. **Ukuran:** M
 
