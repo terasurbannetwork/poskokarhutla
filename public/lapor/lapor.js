@@ -2154,26 +2154,33 @@ const layarAwal = () => { if (BUKA_LACAK) bukaLacak(BUKA_LACAK); else ke(BUKA_AL
 /* Kabar Alun-alun (KA-06, KA-07): satu kartu per kejadian, empat pita tetap urutannya: Resmi BNPB, Laporan warga, Berita, Media sosial.
    Angka tiap sumber tampil di pitanya sendiri dan tidak pernah dijumlah (D3). Daftar digambar bertahap lewat requestAnimationFrame supaya klik tidak membeku. */
 const SUMBER_ALUN = [["", "Semua", "i-daftar"], ["resmi", "Resmi", "i-status"], ["warga", "Warga", "i-orang"], ["berita", "Berita", "i-pesan"], ["medsos", "Medsos", "i-tagar"]];
+/* tiap bagian kartu (Resmi BNPB, Laporan warga, Berita) berkepala sendiri dan bisa dilipat (pemilik 27 Nov 2026: "collapsible per bagian") */
 function pitaKabar(nama, ikonId, ...isi) {
-  const p = el("div", "lp-kb-pita"), h = el("span", "lp-kb-pil"); h.append(ikon(ikonId), nama); p.append(h, ...isi); return p;
+  const p = el("details", "lp-kb-pita"), s = el("summary", "lp-kb-pita-kep"), h = el("span", "lp-kb-pil"); p.open = true;
+  h.append(ikon(ikonId), nama); s.append(h, el("span", "lp-kb-pita-n"), ikon("i-panah", "lp-kb-pita-panah")); p.append(s, ...isi); return p;
 }
+const hitungPita = (p, t) => { p.querySelector(".lp-kb-pita-n").textContent = t; };
 const kosongKabar = t => el("p", "lp-redup lp-kb-kosong", t);
 function kartuKejadian(x, ikut) {
   const t = teksKartu(x, Date.now()), k = el("section", "ex ex-std lp-kabar"); k.id = `alun-${x.id}`;
   const hd = el("header", "ex-hd"), ey = el("span", "ex-ey"), jd = el("div", "ex-jd");
   // kartu terlipat: kepala jadi tombol buka-tutup, isi baru tampil saat diketuk (pemilik 26 Nov 2026: "jangan langsung muncul")
   const h3 = el("h3"), buka = el("button", "lp-kb-buka"); buka.type = "button"; buka.setAttribute("aria-expanded", "false"); buka.setAttribute("aria-controls", `alun-isi-${x.id}`);
-  buka.append(el("span", null, x.kab || "Lokasi belum diketahui"), ikon("i-panah", "lp-kb-panah")); h3.append(buka);
-  ey.append(ikon(IKON_JENIS[x.jenis] || "i-kejadian"), x.jenisLabel); jd.append(h3); hd.append(ey, jd);
+  ey.append(ikon(IKON_JENIS[x.jenis] || "i-kejadian"), x.jenisLabel);
+  // kepala sebaris (pemilik 27 Nov 2026: "Ini agar dibuat sebaris"): pil jenis, nama kab, ringkasan, panah dalam satu tombol
+  const ring = el("span", "lp-kb-ringkas");
+  buka.append(ey, el("span", "lp-kb-nama", x.kab || "Lokasi belum diketahui"), ring, ikon("i-panah", "lp-kb-panah")); h3.append(buka);
+  jd.append(h3); hd.append(jd);
   if (x.titikKet) hd.append(el("small", "lp-redup", x.titikKet.charAt(0).toUpperCase() + x.titikKet.slice(1)));
   const pk = dpDok && barisPrakiraan(x.kabKode, {...dpDok, DP: window.DampakPeringatan});   // D23: satu baris kecil, hanya tautan; tidak mengubah status atau angka kejadian
   if (pk) { const bp = el("div", "lp-kb-prakiraan"), tb = el("button", "lp-teks-tombol", pk.teks); tb.type = "button"; tb.title = "Lihat di peta Peringatan"; tb.addEventListener("click", () => setModeAlun("peringatan", pk.kode));
     bp.append(tb); if (pk.hipotesis) bp.append(el("span", "lp-pil", "Hipotesis")); hd.append(bp); }
-  const bd = el("div", "ex-bd"), belum = [], pita = [];   // pita kosong tidak digambar; sumber yang kosong disebut sekali di baris "Belum ada ..." (pemilik 26 Nov 2026: "Bagusin")
+  const bd = el("div", "ex-bd"), pita = [];   // pita kosong tidak digambar; sumber yang kosong disebut sekali di baris "Belum ada ..." (pemilik 26 Nov 2026: "Bagusin")
   // Resmi BNPB
   const r = t.resmi, pr = pitaKabar("Resmi BNPB", "i-status");
-  if (!r.ada) belum.push("laporan resmi");
-  else { pita.push(pr); const st = el("p", "lp-kb-status"); st.append(el("b", null, r.status)); if (r.baru) st.append(el("span", "lp-pil", "Baru")); pr.append(st);
+  pita.push(pr);
+  if (!r.ada) pr.append(kosongKabar("Belum ada laporan resmi."));
+  else { const st = el("p", "lp-kb-status"); st.append(el("b", null, r.status)); if (r.baru) st.append(el("span", "lp-pil", "Baru")); pr.append(st);
     // hanya angka yang ada; bila semuanya kosong, satu kalimat, bukan tiga kotak "belum ada data"
     const ada = r.angka.filter(a => a.nilai != null), g = ada.length ? el("div", "lp-kb-angka") : el("p", "lp-redup lp-kecil", "Angka dampak belum dilaporkan.");
     // ikon polos per kotak angka (pemilik 26 Nov 2026: "Kasih icon")
@@ -2182,7 +2189,9 @@ function kartuKejadian(x, ikut) {
     pr.append(g, el("small", "lp-redup", r.kesegaran)); }
   // Laporan warga
   const pw = pitaKabar("Laporan warga", "i-orang");
-  if (!t.warga.baris.length) belum.push("laporan warga"); else pita.push(pw);
+  pita.push(pw);   // pita warga selalu berlabel (pemilik 27 Nov 2026), kosong ditulis di dalamnya
+  if (!t.warga.baris.length) pw.append(kosongKabar("Belum ada laporan warga."));
+  else hitungPita(pw, t.warga.baris.length.toLocaleString("id-ID"));
   for (const b of t.warga.baris) {
     const baris = el("div", "lp-kb-warga"), kep = el("p", "lp-kb-warga-kep");
     kep.append(el("span", null, [b.tempat, b.waktu].filter(Boolean).join(", ")), el("span", `lp-pil ${b.status}`, b.statusLabel)); baris.append(kep);
@@ -2196,10 +2205,12 @@ function kartuKejadian(x, ikut) {
   }
   // Berita: tautan hanya http atau https, dibuka di tab baru
   const pb = pitaKabar("Berita", "i-pesan");
-  if (!t.berita.baris.length) { if (/^Belum ada berita/.test(t.berita.kosong)) belum.push("berita"); else { pb.append(kosongKabar(t.berita.kosong)); pita.push(pb); } }   // "berita belum bisa diambil" tetap tampil: itu gangguan, bukan kosong
-  else { pita.push(pb); const ul = el("ul", "lp-kb-berita");
+  pita.push(pb);
+  if (!t.berita.baris.length) pb.append(kosongKabar(/^Belum ada berita/.test(t.berita.kosong) ? "Belum ada berita yang cocok." : t.berita.kosong));
+  else { const ul = el("ul", "lp-kb-berita");
     for (const b of t.berita.baris) { const li = el("li"), judul = b.url ? Object.assign(el("a", null, b.judul), {href: b.url, target: "_blank", rel: "noopener noreferrer"}) : el("span", null, b.judul), tx = el("div");
-      tx.append(judul, el("small", "lp-redup", [b.media, b.tgl].filter(Boolean).join(", ")));
+      // media dan tanggal sebagai label (pemilik 27 Nov 2026)
+      const meta = el("span", "lp-kb-berita-meta"); for (const v of [b.media, b.tgl]) if (v) meta.append(el("span", "lp-pil", v)); tx.append(judul, meta);
       // tiap berita punya kotak gambar (pemilik 26 Nov 2026: "Kasih thumbnail berita"): thumbnail kita bila ada, selain itu ikon berita di kotak yang sama, jadi daftar rata
       li.className = "ada-gambar"; const kosongG = () => { const k = el("span", "lp-kb-thumb kosong"); k.append(ikon("i-pesan")); return k; };
       // tanpa gambar berita: logo media di kotak yang sama (pemilik 26 Nov 2026 "Mana logonya"), baru ikon berita bila logo juga tidak ada
@@ -2208,14 +2219,13 @@ function kartuKejadian(x, ikut) {
       li.append(tx); ul.append(li); }
     pb.append(ul); if (t.berita.lebih) pb.append(el("small", "lp-redup", `Dan ${t.berita.lebih.toLocaleString("id-ID")} berita lain yang cocok.`)); }
   // Media sosial (KA-07) belum tersambung: tidak diulang di tiap kartu; keterangannya tampil sekali lewat saringan Medsos
-  if (belum.length) bd.append(el("p", "lp-kb-belum", `Belum ada ${belum.length > 2 ? belum.slice(0, -1).join(", ") + ", dan " + belum.at(-1) : belum.join(" dan ")}.`));
   bd.prepend(...pita);
   // ringkasan di kepala kartu terlipat: status resmi dan jumlah tiap sumber, tanpa menjumlah angka antarsumber (D3)
-  const nBerita = t.berita.baris.length + (t.berita.lebih || 0), ring = el("p", "lp-kb-ringkas");
+  const nBerita = t.berita.baris.length + (t.berita.lebih || 0);
+  if (nBerita) hitungPita(pb, nBerita.toLocaleString("id-ID"));
   ring.append(el("b", null, r.ada ? r.status : "Belum ada laporan resmi"));
   if (t.warga.baris.length) ring.append(el("span", "lp-pil", `${t.warga.baris.length.toLocaleString("id-ID")} laporan warga`));
   if (nBerita) ring.append(el("span", "lp-pil", `${nBerita.toLocaleString("id-ID")} berita`));
-  hd.append(ring);
   bd.id = `alun-isi-${x.id}`; bd.hidden = true;
   buka.addEventListener("click", () => { const b = bd.hidden; bd.hidden = !b; buka.setAttribute("aria-expanded", String(b)); k.classList.toggle("buka", b); });
   k.append(hd, bd); return k;
@@ -2246,8 +2256,10 @@ const lambangAlun = () => lambangAlun.j ||= fetch("/lambang/kabkota.json").then(
 const namaProv = k => !k ? "Provinsi belum diketahui" : window.Wilayah?.PROV?.[k] || `Provinsi ${k}`;
 function pilihProv(k) { alunProv = k; gambarAlun(); $("daftarAlun").scrollTop = 0; $("daftarAlun").closest(".lp-alun-panel")?.scrollTo?.({top: 0}); }
 function kepalaProvinsi(k, n) {
-  const b = el("div", "lp-alun-provkep"), kembali = el("button", "lp-teks-tombol"); kembali.type = "button"; kembali.append(ikon("i-kembali"), "Semua provinsi");
-  kembali.addEventListener("click", () => pilihProv("")); b.append(kembali, el("b", null, namaProv(k)), el("span", "lp-pil", `${n.toLocaleString("id-ID")} kejadian`)); return b;
+  // remah seperti peta utama (pemilik 27 Nov 2026: "niru yang di peta centurisk"): pil Indonesia untuk kembali, pil provinsi terpilih, jumlah kejadian
+  const b = el("nav", "lp-alun-provkep"), kembali = el("button", null, "Indonesia"); kembali.type = "button"; b.setAttribute("aria-label", "Wilayah");
+  kembali.addEventListener("click", () => pilihProv("")); const kini = el("span", "kini", namaProv(k)); kini.setAttribute("aria-current", "page");
+  b.append(kembali, kini, el("span", "n", `${n.toLocaleString("id-ID")} kejadian`)); return b;
 }
 /* status gunung api di Alun-alun (pemilik 26 Nov 2026: "Yang siaganya juga dimasukin kesini dong"), isi seperti peta dan halaman gunung api deck harian:
    hitungan Awas, Siaga, Waspada, Normal dan daftar gunung Siaga/Awas dengan radius dan sektor bahaya. Sumber MAGMA/PVMBG apa adanya (gunungapi_status.json); kosong = "belum ada data". */

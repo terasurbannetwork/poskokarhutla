@@ -3885,3 +3885,40 @@ input.lp-isian[type="tel"]{max-width:none;letter-spacing:.02em}
   .lp-pita-kartu .lp-pita-ucap{width:260px}
   .lp-pita.lp-pita-dua:has(.lp-pita-kartu){grid-template-columns:minmax(0,1fr) minmax(660px,800px)!important}
 }
+/* Alun-alun 27 Nov 2026 (pemilik): remah provinsi tiru peta utama; kepala kartu kejadian sebaris; tiap bagian berkepala dan bisa dilipat; berita rata kiri, media dan tanggal berlabel */
+.lp-alun-provkep{gap:6px;padding:4px 0 10px}
+.lp-alun-provkep > *{display:inline-flex;align-items:center;min-height:32px;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:700 .78rem var(--font);box-shadow:var(--shadow)}
+.lp-alun-provkep > button{cursor:pointer}
+.lp-alun-provkep > button:hover{border-color:var(--brand2)}
+.lp-alun-provkep > button:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.lp-alun-provkep > .kini{background:var(--brand);border-color:var(--brand);color:var(--on-head)}
+.lp-alun-provkep > .n{box-shadow:none;background:color-mix(in oklab,var(--brand2) 12%,var(--card));border-color:transparent;color:var(--brand2);font-weight:800}
+.lp-kabar{text-align:left}
+.lp-kabar > .ex-hd{padding:12px 16px!important}
+.lp-kabar .lp-kb-buka{flex-wrap:wrap;justify-content:flex-start;gap:6px 10px;line-height:1.2}
+.lp-kabar .lp-kb-buka .ex-ey{margin:0}
+.lp-kb-nama{font:800 1.0625rem/1.2 var(--display);color:var(--brand)}
+.lp-kabar .lp-kb-ringkas{margin:0;flex:1 1 auto;font:500 .75rem var(--font);color:var(--ink)}
+.lp-kabar .lp-kb-panah{margin-left:auto}
+.lp-kabar .ex-hd small{margin-top:4px}
+.lp-kabar .ex-bd{gap:10px;padding:12px 14px 14px}
+.lp-kb-pita{display:block;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.lp-kb-pita-kep{display:flex;align-items:center;gap:8px;padding:8px 12px;list-style:none;cursor:pointer;background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
+.lp-kb-pita-kep::-webkit-details-marker{display:none}
+.lp-kb-pita-kep:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
+.lp-kb-pita-kep .lp-kb-pil{background:color-mix(in oklab,var(--brand2) 14%,var(--card))}
+.lp-kb-pita-n{font:800 .75rem var(--font);color:var(--brand2)}
+.lp-kb-pita-n:empty{display:none}
+.lp-kb-pita-panah{width:16px;height:16px;margin-left:auto;flex:none;color:var(--ink2);transition:transform var(--dur-1,.15s) ease}
+.lp-kb-pita[open] > summary .lp-kb-pita-panah{transform:rotate(90deg)}
+.lp-kb-pita > :not(summary){margin:10px 12px}
+.lp-kb-pita > :not(summary) ~ :not(summary){margin-top:0}
+.lp-kb-pita > :last-child{margin-bottom:12px}
+.lp-kb-status{font-size:.875rem}
+.lp-kb-berita li > div{gap:4px;text-align:left}
+.lp-kb-berita a{line-height:1.3}
+.lp-kb-berita-meta{display:flex;flex-wrap:wrap;gap:4px}
+.lp-kb-berita-meta .lp-pil{font-size:.6875rem;padding:1px 8px}
+.lp-kb-berita li.ada-gambar{grid-template-columns:72px minmax(0,1fr)}
+.lp-kb-berita .lp-kb-thumb{width:72px;height:52px}
+@media (prefers-reduced-motion:reduce){.lp-kb-pita-panah{transition:none}}
