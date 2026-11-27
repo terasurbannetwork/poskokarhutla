@@ -2998,3 +2998,29 @@ export const ohRetensi = async (env, p, kini) => { izin(p, "oh_cari_foto", "hapu
   const [a, b] = await lpBatch(env, p, [env.DB.prepare("DELETE FROM oh_cari_foto WHERE waktu < ?1").bind(kini - 90 * 864e5),
     env.DB.prepare("DELETE FROM oh_info WHERE status = 'selesai' AND selesai_waktu IS NOT NULL AND selesai_waktu < ?1").bind(kini - 180 * 864e5)]);
   return {cari_foto: a.meta.changes, info: b.meta.changes}; };
+/* OH-11. Status profil menurut token publik, hanya untuk memeriksa sasaran antrean oh_info: menunggu (hanya pencabutan) atau tayang dalam masa tayang (sejak). Tidak mengembalikan kolom lain. */
+export const ohTokenStatus = async (env, p, token, sejak) => { if (!Number.isFinite(sejak)) throw new Galat(500, "ohTokenStatus wajib membawa sejak");
+  return (await sedia(env, p, "oh_publik", "baca", "SELECT status FROM oh_publik WHERE token = ?1 AND (status = 'menunggu' OR (status = 'tayang' AND tayang_waktu > ?2))").bind(token, sejak).first())?.status ?? null; };
+/* baris penuh menurut token untuk turun otomatis (pelaku sistem/cron, bukan lp_publik) */
+export const ohByTokenSistem = (env, p, token) => p?.peran === "lp_publik" ? (() => { throw new Galat(403, "lp_publik tidak membaca baris penuh oh_publik"); })()
+  : sedia(env, p, "oh_publik", "baca", "SELECT cari_id, status, foto_publik FROM oh_publik WHERE token = ?1").bind(token).first();
+export const ohInfoTambah = (env, p, b, kini) => sedia(env, p, "oh_info", "tambah",
+  "INSERT INTO oh_info (id, jenis, sasaran_token, nomor_pemberi, pesan, tingkat, dibuat) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)").bind(b.id, b.jenis, b.sasaran_token, b.nomor_pemberi ?? null, b.pesan ?? null, b.tingkat ?? null, kini).run();
+/* pelapor berbeda (nomor) untuk satu profil sejak batas: pelapor sama berulang dihitung satu (ambang turun otomatis, D19) */
+export const ohLaporkanBeda = async (env, p, token, sejak) => (await sedia(env, p, "oh_info", "baca",
+  "SELECT count(DISTINCT nomor_pemberi) AS n FROM oh_info WHERE sasaran_token = ?1 AND jenis = 'laporkan' AND dibuat >= ?2 AND nomor_pemberi IS NOT NULL").bind(token, sejak).first()).n;
+/* antrean informasi untuk petugas (nomor_pemberi hanya di sini): belum selesai, dengan ringkasan profil sasaran; wilayah disaring pemanggil (kab) */
+export const ohInfoAntrean = async (env, p, prefiks = null) => (await sedia(env, p, "oh_info", "baca",
+  `SELECT i.id, i.jenis, i.sasaran_token, i.nomor_pemberi, i.pesan, i.tingkat, i.status, i.dibuat, o.cari_id, o.kelas, o.status AS profil_status, o.kab, o.kab_nama
+   FROM oh_info i JOIN oh_publik o ON o.token = i.sasaran_token WHERE i.status <> 'selesai' AND (?1 IS NULL OR substr(o.kab, 1, length(?1)) = ?1) ORDER BY i.dibuat LIMIT 100`).bind(prefiks).all()).results;
+export const ohInfoSelesai = async (env, p, infoId, token, oleh, kini) => (await sedia(env, p, "oh_info", "ubah",
+  "UPDATE oh_info SET status = 'selesai', ditangani_oleh = ?3, selesai_waktu = ?4 WHERE id = ?1 AND sasaran_token = ?2 AND status <> 'selesai'").bind(infoId, token, oleh, kini).run()).meta.changes > 0;
+export const ohInfoTeruskan = async (env, p, infoId, token, oleh) => (await sedia(env, p, "oh_info", "ubah",
+  "UPDATE oh_info SET status = 'diteruskan', ditangani_oleh = ?3 WHERE id = ?1 AND sasaran_token = ?2 AND status = 'baru'").bind(infoId, token, oleh).run()).meta.changes > 0;
+/* OH-10. Orang yang ditemukan warga (jalur B): satu baris menunggu; foto (boleh kosong) ikut dalam batch yang sama. lat/lon sudah dibulatkan 3 desimal pemanggil. Tidak pernah tampil publik (Q9). */
+export const ohStmtTemuTambah = (env, p, b, kini, g = false) => sedia(env, p, "oh_temu", "tambah",
+  lpIns(g, "", "oh_temu", "id, nomor_penemu, kab, lokasi_teks, lat, lon, waktu_temu, kondisi, ucapan, bersama, ciri, foto_boleh, kejadian_id, dibuat"))
+  .bind(b.id, b.nomor_penemu ?? null, b.kab, b.lokasi_teks ?? null, b.lat ?? null, b.lon ?? null, b.waktu_temu, b.kondisi, b.ucapan ?? null, b.bersama ?? null, b.ciri ?? null, b.foto_boleh ? 1 : 0, b.kejadian_id ?? null, kini);
+export const ohStmtTemuFoto = (env, p, temuId, fotoId, g = false) => sedia(env, p, "oh_temu_foto", "tambah", lpIns(g, "OR IGNORE ", "oh_temu_foto", "temu_id, foto_id")).bind(temuId, fotoId);
+export const ohStmtTemuRiwayat = (env, p, temuId, kini, g = false) => sedia(env, p, "oh_riwayat", "tambah",
+  `INSERT INTO oh_riwayat (temu_id, dari, ke, alasan, oleh, waktu) ${g ? "SELECT ?1, 'baru', 'menunggu', 'kirim', 'penemu', ?2 WHERE changes() > 0" : "VALUES (?1, 'baru', 'menunggu', 'kirim', 'penemu', ?2)"}`).bind(temuId, kini);

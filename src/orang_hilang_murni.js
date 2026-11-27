@@ -5,8 +5,8 @@
 const HARI = 864e5, WIB = 7 * 36e5;
 
 /* HIPOTESIS: belum diukur; Q4 (masa tayang), Q22 (jendela kejadian), JENDELA_TEMU_HARI, KANDIDAT_MAKS, kategori umur anak */
-export const KONSTANTA = {MASA_TAYANG_HARI: 30, JENDELA_HARI: 30, JENDELA_TEMU_HARI: 21, KANDIDAT_MAKS: 5, KEJADIAN_MAKS: 8, SETUJU_VERSI: 1, TOLERANSI_UMUR: 5};
-export const {MASA_TAYANG_HARI, JENDELA_HARI, JENDELA_TEMU_HARI, KANDIDAT_MAKS, KEJADIAN_MAKS, SETUJU_VERSI, TOLERANSI_UMUR} = KONSTANTA;
+export const KONSTANTA = {MASA_TAYANG_HARI: 30, JENDELA_HARI: 30, JENDELA_TEMU_HARI: 21, KANDIDAT_MAKS: 5, KEJADIAN_MAKS: 8, SETUJU_VERSI: 1, TOLERANSI_UMUR: 5, AMBANG_LAPORKAN: 3};   // AMBANG_LAPORKAN: pelapor berbeda dalam 24 jam yang menurunkan profil sementara (D19, HIPOTESIS)
+export const {MASA_TAYANG_HARI, JENDELA_HARI, JENDELA_TEMU_HARI, KANDIDAT_MAKS, KEJADIAN_MAKS, SETUJU_VERSI, TOLERANSI_UMUR, AMBANG_LAPORKAN} = KONSTANTA;
 export const BATAS_HARI = [1, 365];
 /* nilai opsi dari vars Worker: bilangan bulat dalam batas, selain itu bawaan (jendela tidak pernah 0 atau lebih dari 365) */
 export const batasi = (nilai, bawaan, [lo, hi] = BATAS_HARI) => { const n = typeof nilai === "string" && /^\d{1,4}$/.test(nilai.trim()) ? Number(nilai) : nilai; return Number.isInteger(n) && n >= lo && n <= hi ? n : bawaan; };

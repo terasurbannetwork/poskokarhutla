@@ -40,7 +40,7 @@ import {hakSk} from "./siklus.js";
 const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10, MAKS_BERKAS = 20;   // D79: foto dan video dihitung bersama, paling banyak 20, video paling banyak 3
 const BATAS_PESAN = [[MENIT, 30], [JAM, 100], [HARI, 300]],   // pemilik 27 Nov 2026: 30 per menit dan 100 per jam per nomor (menggantikan 20 dan 120 dari K104); harian tetap 300
   BATAS_IP_JAM = [[JAM, 300]], BATAS_PERANGKAT_JAM = [[JAM, 120]];   // per nomor; per alamat IP /64 hanya pintu web
-const SELESAI = new Set(["terkirim", "batal", "kedaluwarsa", "cari_terkirim"]);
+const SELESAI = new Set(["terkirim", "batal", "kedaluwarsa", "cari_terkirim", "temu_terkirim"]);
 const HDR = {"cache-control": "private, no-store", "x-robots-tag": "noindex", "referrer-policy": "no-referrer"};
 const kirim = (kode, isi) => json(isi, kode, HDR);
 const galat = (kode, pesan, tambah = {}) => kirim(kode, {galat: pesan, ...tambah});
@@ -229,7 +229,7 @@ async function putar(env, ctx, url, id, pesan, kini) {
   const kirimIsh = /^(1|kirim)$/i.test(String(pesan.teks || "").trim()) || pesan.pilih?.[0] === 1;
   if (lama?.status === "ringkasan" && !lama.susulanDari && kirimIsh && await terkirimHari(env, id, kini) >= MAKS_TERKIRIM_HARI) return {batas: true};   // sebelum model dipanggil
   const awal = lama?.transkrip?.length ?? 0, lanjut = !!lama && !SELESAI.has(lama.status);   // putaran menambah ke objek yang sama: panjang awal dicatat sebelumnya
-  const h = await putaran({sesi: lama, pelapor: pel, model: modelDari(env), wilayah: wilayahDari(env), kandidat: a => kandidatDari(env, a.kecKode, a.kini), kejadianCari: a => kejadianUntuk(env, a.kab, a.kini), pesan: {...pesan, wa, saluran}, kini});
+  const h = await putaran({sesi: lama, pelapor: pel, model: modelDari(env), wilayah: wilayahDari(env), kandidat: a => kandidatDari(env, a.kecKode, a.kini), kejadianCari: a => kejadianUntuk(env, a.kab, a.kini), temuBuka: env.OH_TULIS === "1", pesan: {...pesan, wa, saluran}, kini});
   if (naikBpbd(h.pelapor, izin)) h.sesi.tingkat = "bpbd";
   // lanjut dihitung sebelum putaran: putaran mengubah objek lama di tempat. Sesi selesai diganti sesi baru, selebihnya baris yang sama
   h.sesi.id = lanjut ? lama.id : `${kini.toString(36)}${acak(3)}`;
@@ -284,6 +284,7 @@ async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama
   const s = h.sesi, pesanBaru = s.transkrip.slice(lanjut ? awal : 0), g = [], kj = [], tutupanAkhir = [], tambahan = {};
   // orang dicari lewat obrolan (pemilik 25 Nov 2026): batas 5 per nomor per hari sama dengan POST /api/lapor/cari, dicek sebelum sesi disimpan
   if (h.kirimCari && await laju(env, await sha(wa), "lapor.cari.baru", [[HARI, 5]], kini)) return {batas: true, teks: "Batas laporan orang dicari hari ini sudah tercapai (5 laporan per nomor). Coba lagi besok, atau hubungi 112 bila orang itu dalam bahaya sekarang."};
+  if (h.kirimTemuan && await laju(env, await sha(wa), "lapor.temu.baru", [[HARI, 5]], kini)) return {batas: true, teks: "Batas laporan menemukan orang hari ini sudah tercapai (5 laporan per nomor). Coba lagi besok, atau hubungi 112 bila orang itu butuh pertolongan sekarang."};
   let nomor = null, tokenSha = null, ringkas = null, token = null;
   if (h.kirim) {   // nomor tiket, token lacak, PDF dan Word (ALGORITMA A6, A8)
     if (await H.lpHitungTerkirim(env, P, wa, kini - HARI) >= MAKS_TERKIRIM_HARI) return {batas: true, teks: BATAS_KIRIM_TEKS};
@@ -316,6 +317,9 @@ async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama
   if (h.kirimCari) { const id = acak(8); g.push(H.crStmtTambah(env, P, {id, nomor_pencari: wa, ...h.kirimCari}, kini, true)); tambahan.cari = {id, status: "buka"};   // satu batch dengan sesi (tinjauan keamanan 25 Nov 2026)
     if (h.kirimCari.setuju && env.OH_TULIS === "1") g.push(H.ohStmtTambah(env, P, barisOh(h.kirimCari, id, acak(16)), kini, true),   // OH-04: profil menunggu tinjauan, persetujuan tercatat; tidak tayang tanpa petugas dan bendera OH_PUBLIK
       H.ohStmtRiwayat(env, P, {cari_id: id, dari: "draf", ke: "menunggu", alasan: "kirim", oleh: "pelapor"}, kini, true)); }
+  if (h.kirimTemuan && env.OH_TULIS === "1") { const id = acak(8), t = h.kirimTemuan;   // OH-10: oh_temu menunggu tinjauan, tidak pernah tayang (Q9); nomor penemu hanya petugas
+    g.push(H.ohStmtTemuTambah(env, P, {id, nomor_penemu: /^\d{8,20}$/.test(String(wa)) ? String(wa) : null, ...t}, kini, true), H.ohStmtTemuRiwayat(env, P, id, kini, true),
+      ...(t.foto_ids || []).slice(0, 10).filter(f => /^[0-9a-f]{16}$/.test(f)).map(f => H.ohStmtTemuFoto(env, P, id, f, true))); tambahan.temu = {id}; }
   const p = h.pelapor;
   if (s.verifikasi !== "ketik" && p?.nama && (!pel || pel.nama !== p.nama || pel.peran !== p.peran || pel.kab !== (p.kab ?? null) || pel.jabatan !== (p.jabatan ?? null))) g.push(H.lpStmtPelapor(env, P, wa, p, kini, true));
   g.push(...tambahStmt, ...kj);
@@ -414,7 +418,7 @@ async function susulanPost(env, req, url, kini) {
   const pel = await profil(env, id, copy);
   const lengkapiDarurat = mulaiDiJenisDarurat(copy);   // laporan sekali ketuk (K90): mulai di jenis, korban, foto
   if (lengkapiDarurat) copy.status = "darurat_jenis";
-  const h = await putaran({sesi: copy, pelapor: pel, model: null, wilayah: wilayahDari(env), kejadianCari: a => kejadianUntuk(env, a.kab, a.kini), kini, pesan: {wa, teks: lengkapiDarurat ? "" : "2", saluran}});   // masuk mode Ubah
+  const h = await putaran({sesi: copy, pelapor: pel, model: null, wilayah: wilayahDari(env), kejadianCari: a => kejadianUntuk(env, a.kab, a.kini), temuBuka: env.OH_TULIS === "1", kini, pesan: {wa, teks: lengkapiDarurat ? "" : "2", saluran}});   // masuk mode Ubah
   h.sesi.transkrip = h.sesi.transkrip.filter(t => t.dari === "bot");
   h.inti = lengkapiDarurat ? `*Lengkapi laporan darurat ${nomor}*\nLokasi Anda sudah diterima petugas. Jawab beberapa pertanyaan ini bila sempat.\n\n${h.inti}` : `*Tambah kabar untuk ${nomor}*\nTulis apa yang berubah dengan kalimat biasa, misalnya *air naik lagi sepinggang*, *meninggal jadi 2*, atau *pengungsi 30 orang*.\nJenis bencana, lokasi, dan waktu kejadian tidak berubah. Kabar ini masuk ke tiket yang sama sebagai versi baru.`;
   h.sesi.transkrip.at(-1).teks = h.inti; h.sesi.akhir = {...(h.sesi.akhir || {}), inti: h.inti, balasan: h.inti};
@@ -457,7 +461,7 @@ async function statusLaporan(env, id) {
   const {wa} = id, baris = await (id.perangkat ? H.lpSesiMilikPerangkat(env, P, wa, id.perangkat) : H.lpSesiMilik(env, P, wa)), milik = [];
   for (const b of baris) { const s = JSON.parse(b.kerja); milik.push({nomor: b.nomor, token: await tokenLacak(env, b.nomor), jenisLabel: labelJenis(s.isian.jenis?.nilai), terkirim: b.terkirim, provKode: provDari(s), status: b.tiket}); }
   const j = jawabStatus(milik), a = await sesiAktif(env, id), aktif = a ? dariBaris(a) : null;
-  const lanjut = aktif && !["terkirim", "batal", "cari_terkirim"].includes(aktif.status) ? aktif : null;
+  const lanjut = aktif && !["terkirim", "batal", "cari_terkirim", "temu_terkirim"].includes(aktif.status) ? aktif : null;
   return kirim(200, {...j, teksWa: j.balasan, ...(lanjut ? lanjutan(lanjut) : {})});
 }
 
@@ -525,7 +529,7 @@ async function fotoPost(env, req, url, kini, ctx) {
   const bersih = bersihMedia("image/jpeg", mentah);   // buang metadata (EXIF) sebelum disimpan
   if (!bersih) return galat(400, "Struktur foto tidak sah atau rusak.");
   const baris = await sesiAktif(env, id), lama = baris ? dariBaris(baris) : null;
-  const cari = lama?.status === "cari_foto";   // foto orang dicari: boleh dari galeri dan foto lama, tanpa lokasi (pemilik 26 Nov 2026)
+  const cari = lama?.status === "cari_foto" || lama?.status === "temu_foto";   // foto orang dicari: boleh dari galeri dan foto lama, tanpa lokasi (pemilik 26 Nov 2026)
   if (!lama || lama.status !== "foto" && !cari) return galat(409, "Foto belum diperlukan sekarang. Lanjutkan pertanyaan laporan dulu.", {teksWa: "*Foto belum diperlukan*\nLanjutkan jawaban pertanyaan laporan dulu; foto diminta di akhir."});
   if ((lama.foto || []).filter(f => f.jenis !== "video").length >= MAKS_FOTO || (lama.foto || []).length >= MAKS_BERKAS) return galat(400, `Paling banyak ${MAKS_FOTO} foto per laporan.`);
   let meta, waktuAmbil, sumberWaktu;
@@ -562,7 +566,7 @@ async function masukkanMedia(env, url, id, kini, baris, lama, info, kunci, tulis
   const {wa, saluran, perangkat} = id, izin = id.ketik ? null : id.izin;
   const pel = await profil(env, id, lama); naikBpbd(pel, izin);
   const awal = lama.transkrip.length;
-  const h = await putaran({sesi: lama, pelapor: pel, model: null, wilayah: wilayahDari(env), kejadianCari: a => kejadianUntuk(env, a.kab, a.kini), pesan: {wa, saluran, foto: info}, kini});
+  const h = await putaran({sesi: lama, pelapor: pel, model: null, wilayah: wilayahDari(env), kejadianCari: a => kejadianUntuk(env, a.kab, a.kini), temuBuka: env.OH_TULIS === "1", pesan: {wa, saluran, foto: info}, kini});
   h.sesi.id = lama.id; h.sesi.wa = wa;
   if (id.ketik) { h.sesi.verifikasi = "ketik"; if (h.pelapor) h.sesi.pelaporKetik = h.pelapor; }
   if (!h.sesi.foto?.some(f => f.id === info.id)) return {tolak: "Foto belum diperlukan sekarang."};
@@ -625,7 +629,7 @@ async function unggahMulai(env, req, url, kini) {
   const {wa, saluran} = id, ukuran = o.ukuran;
   if (!Number.isInteger(ukuran) || ukuran < 1000 || ukuran > VIDEO_MAKS) return galat(400, `Video paling besar ${VIDEO_MAKS / 1048576} MB.`);
   const baris = await sesiAktif(env, id), lama = baris ? dariBaris(baris) : null;
-  const cari = lama?.status === "cari_foto";   // foto orang dicari: boleh dari galeri dan foto lama, tanpa lokasi (pemilik 26 Nov 2026)
+  const cari = lama?.status === "cari_foto" || lama?.status === "temu_foto";   // foto orang dicari: boleh dari galeri dan foto lama, tanpa lokasi (pemilik 26 Nov 2026)
   if (!lama || lama.status !== "foto" && !cari) return galat(409, "Kirim video saat diminta foto atau video kejadian.");
   if ((lama.foto || []).filter(f => f.jenis === "video").length >= VIDEO_PER_LAPORAN) return galat(400, `Paling banyak ${VIDEO_PER_LAPORAN} video per laporan.`);
   if ((lama.foto || []).length >= MAKS_BERKAS) return galat(400, `Paling banyak ${MAKS_BERKAS} foto dan video per laporan.`);
@@ -1154,6 +1158,7 @@ async function mejaGet(env, req, url, kini, ctx, x) {
   if (x === "rekon") return rekonGet(env, h.c, url);
   if (x === "cari") return SEL.cariMeja(env, h, url, kini);   // orang dicari (LA-80)
   if (x === "hilang") return mejaHilang.daftar(env, h, url, kini);   // antrean tinjau orang hilang (OH-07)
+  if (x === "hilang/info") return mejaHilang.info(env, h, url, kini);   // antrean informasi, laporkan, cabut, "Saya orang ini" (OH-11)
   const pc = /^(LA-\d{6}-\d{2,3})\/pic$/.exec(x); if (pc) return picGet(env, req, url, kini, pc[1]);
   const km = /^(LA-\d{6}-\d{2,3})\/komen$/.exec(x); if (km) return KOMEN_MEJA.lihat(env, h, km[1], kini);
   const mj = /^(LA-\d{6}-\d{2,3})\/jalan$/.exec(x);   // ruas jalan rusak untuk peta meja (K83); nama diambil dari laporan, bukan dari peminta

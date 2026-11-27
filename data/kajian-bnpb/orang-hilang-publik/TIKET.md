@@ -17,9 +17,9 @@ Status: **Siap** = bisa dikerjakan tanpa jawaban pemilik (bawaan sudah cukup dan
 | OH-06 | Profil anak dan wali | **Selesai (bagian Worker, 27 Nov 2026, belum di-commit; layar menunggu layar-peta)** | |
 | OH-07 | Meja tinjau | **Selesai (bagian Worker, 27 Nov 2026, belum di-commit; layar menunggu layar-peta)** | |
 | OH-08 | Cabut, perpanjang, turun otomatis, cron | **Selesai** (27 Nov 2026, belum di-commit; jalur `cabut` tanpa sesi lewat `oh_info` menunggu OH-11) | |
-| OH-09 | Rute publik dan tab publik (bendera mati) | Siap | |
-| OH-10 | Jalur menemukan orang (tanpa tayang) | Siap | |
-| OH-11 | Informasi, laporkan, tombol "Saya orang ini", protokol penyalahgunaan | Siap (nomor layanan perlu pemilik untuk dipasang) | tidak menahan kode; Q15 menahan tayang |
+| OH-09 | Rute publik dan tab publik (bendera mati) | **Selesai (bagian Worker, 27 Nov 2026, belum di-commit; halaman `/lapor/hilang` dan `/lapor/h/<token>` menunggu layar-peta; entri `PUBLIK_TANPA_SESI` menunggu keputusan pemilik di daftar beku `pintu_masuk.json`)** | |
+| OH-10 | Jalur menemukan orang (tanpa tayang) | **Selesai (bagian Worker dan mesin, 27 Nov 2026, belum di-commit; tombol jalur dan `public/lapor/meja_cari.js` menunggu layar-peta; saran cocok sudah di meja OH-07)** | |
+| OH-11 | Informasi, laporkan, tombol "Saya orang ini", protokol penyalahgunaan | **Selesai (bagian Worker, 27 Nov 2026, belum di-commit; layar dan panduan `docs` menunggu; nomor layanan belum dipasang, teks rujukan hanya 112 dan kepolisian)** | tidak menahan kode; Q15 menahan tayang |
 | OH-12 | Menyalakan `OH_PUBLIK` dan tinjau pemilik | **Tertahan** | Semua Q tayang: Q1 sampai Q8, Q13 (K105), Q15 sampai Q18, Q20 sampai Q25; plus tinjauan pengacara |
 | OH-13 | Daftar publik "Ditemukan, mencari keluarga" | **Tertahan** | Q9 |
 | OH-14 | Lab pembanding foto | Siap untuk bagian tiruan, **tertahan** untuk model sungguhan | Q11, Q12 |

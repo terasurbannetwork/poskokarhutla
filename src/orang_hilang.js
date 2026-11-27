@@ -13,7 +13,7 @@ import {dalamWilayah, bolehAksi} from "./lapor_meja_hak.js";
 import {periksaFotoPublik, MAKS_BYTE} from "./orang_hilang_foto_publik.js";
 import {samarkan} from "./samarkan.js";
 import * as H from "./hak.js";
-import {kandidatKejadian, batasi, JENDELA_HARI, MASA_TAYANG_HARI, turunOtomatis, persetujuanSah, layak, waliSah, profilPublik, saranCocok, SETUJU_VERSI, LABEL} from "./orang_hilang_murni.js";
+import {kandidatKejadian, batasi, JENDELA_HARI, MASA_TAYANG_HARI, turunOtomatis, persetujuanSah, layak, waliSah, profilPublik, saranCocok, SETUJU_VERSI, AMBANG_LAPORKAN, LABEL} from "./orang_hilang_murni.js";
 
 const JAM = 3600e3, HARI = 24 * JAM;
 const HDR = {"cache-control": "private, no-store", "x-robots-tag": "noindex", "referrer-policy": "no-referrer"};
@@ -191,6 +191,7 @@ async function mejaHilangPost(env, req, h, x, kini) {
   if (!bolehAksi(h.c, "tayang")) return galat(403, "akun ini tidak boleh meninjau orang hilang");
   const lj = await laju(env, h.kunci, "oh.mejapost", [[JAM, 300]], kini); if (lj) return lj;
   const b = await bacaBody(req, 1024); if (b.galat) return galat(b.status || 400, b.galat); const o = b.o, id = mm[1], oleh = String(h.oleh || "staf").slice(0, 64), S = H.pelakuLpStaf;
+  if (["turunkan", "selesai_info", "teruskan_info"].includes(o.aksi)) return mejaHilangInfoAksi(env, h, id, o, oleh, kini);   // OH-11: profil tayang tidak ada di antrean menunggu
   const r = (await H.ohAntrean(env, S, null, id).catch(e => { if (/no such table/i.test(String(e?.message))) return []; throw e; }))[0];   // satu baris menurut id, bukan 100 teratas
   if (!r || !dalamWilayah(h.c, wilayahOh(r))) return galat(404, "Laporan tidak ditemukan.");   // hanya yang menunggu; wilayah lain menjawab sama
   const catatan = catatanPendek(o.catatan), catat = (sql, arg, alasan, c = catatan) => H.ohMejaCatat(env, S, {sql, arg, cari_id: id, status: "menunggu", alasan, catatan: c, oleh}, kini);
@@ -236,7 +237,91 @@ async function mejaHilangPost(env, req, h, x, kini) {
     default: return galat(400, "Aksi tidak dikenal.");
   }
 }
-export const mejaHilang = {daftar: mejaHilangGet, aksi: mejaHilangPost};
+/* OH-11 antrean informasi, laporkan, cabut, "Saya orang ini" (nomor pemberi hanya di sini; tidak pernah ke publik atau ke pelapor orang hilang). Hanya akun dengan hak tayang. */
+const tabelBelumKosong = e => { if (/no such table/i.test(String(e?.message))) return []; throw e; };
+async function mejaHilangInfo(env, h, url, kini) {
+  if (!bolehAksi(h.c, "tayang")) return galat(403, "akun ini tidak boleh meninjau orang hilang");
+  const lj = await laju(env, h.kunci, "oh.mejainfo", [[JAM, 600]], kini); if (lj) return lj;
+  const kab = h.c.jenis === "bnpb" ? null : h.c.kab ?? h.c.prov, baris = (await H.ohInfoAntrean(env, H.pelakuLpStaf, kab || null).catch(tabelBelumKosong)).filter(r => dalamWilayah(h.c, wilayahOh(r)));
+  return kirim(200, {akun: {jenis: h.c.jenis, label: h.c.label}, info: baris.map(r => ({id: r.id, jenis: r.jenis, pesan: r.pesan, tingkat: r.tingkat, status: r.status, dibuat: r.dibuat, nomor_pemberi: r.nomor_pemberi,
+    profil: {id: r.cari_id, token: r.sasaran_token, kelas: r.kelas, status: r.profil_status, kab: r.kab_nama}}))});
+}
+/* turunkan: profil menunggu atau tayang diturunkan petugas (alasan dicabut bila pelapor atau orang itu sendiri sudah diverifikasi lewat telepon, selain itu petugas); lokasi penemuan tidak pernah ikut. */
+async function mejaHilangInfoAksi(env, h, id, o, oleh, kini) {
+  const S = H.pelakuLpStaf, r = await H.ohById(env, S, id).catch(e => tabelBelumKosong(e) && null);
+  if (!r || !dalamWilayah(h.c, wilayahOh(r))) return galat(404, "Laporan tidak ditemukan.");
+  const catatan = catatanPendek(o.catatan);
+  if (o.aksi === "turunkan") {
+    if (!["dicabut", "petugas"].includes(o.alasan)) return galat(400, "Alasan harus dicabut atau petugas.");
+    if (!["menunggu", "tayang"].includes(r.status)) return galat(409, "Profil ini tidak sedang tampil atau menunggu.");
+    return await turunkan(env, S, r, o.alasan, oleh, kini, `turun_${o.alasan}`, catatan) ? kirim(200, {id, status: "turun"}) : galat(409, "Status laporan baru berubah.");
+  }
+  const info = String(o.info ?? ""); if (!/^[0-9a-f]{16}$/.test(info)) return galat(400, "Informasi tidak dikenal.");
+  const ok = o.aksi === "selesai_info" ? await H.ohInfoSelesai(env, S, info, r.token, oleh, kini) : await H.ohInfoTeruskan(env, S, info, r.token, oleh);
+  return ok ? kirim(200, {id, info}) : galat(409, "Informasi sudah ditangani atau tidak ditemukan untuk profil ini.");
+}
+export const mejaHilang = {daftar: mejaHilangGet, aksi: mejaHilangPost, info: mejaHilangInfo};
+
+/* ---- rute publik (OH-09): daftar dan satu profil; hanya profil tayang dalam masa tayang; semua 404 saat OH_PUBLIK mati ---- */
+const KAB_ASAL = k => { const m = /^(\d{2})\.?(\d{2})$/.exec(k ?? ""); return m && Object.hasOwn(NAMA_KAB4, m[1] + m[2]) ? `${m[1]}.${m[2]}` : null; };
+const sejakMasa = (env, kini) => kini - batasi(env.OH_MASA_HARI, MASA_TAYANG_HARI) * HARI;
+const publikDari = r => profilPublik({...r, nama: r.kelas === "anak" ? r.inisial : r.nama, waktu: r.waktu_terakhir,
+  kejadian: r.kejadian_jenis ? {jenis: r.kejadian_jenis, kab: NAMA_KAB4[r.kejadian_kab] ?? null, mulai: r.kejadian_mulai} : null}, r.kelas,
+  {foto: idFoto(r.foto_publik).map(f => `/api/lapor/hilang/foto/${f}`), ciri_ditinjau: !!r.ciri});
+const kursorKode = r => btoa(`${r.tayang_waktu}.${r.token}`).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const kursorBaca = k => { try { const m = /^(\d{1,15})\.([0-9a-f]{32})$/.exec(atob(k.replace(/-/g, "+").replace(/_/g, "/"))); return m ? {w: Number(m[1]), token: m[2]} : null; } catch { return null; } };
+export const HALAMAN_DAFTAR = 20;   // D30: tidak ada rute semua
+async function daftarGet(env, req, url, kini) {
+  if (env.OH_PUBLIK !== "1") return galat(404, "Halaman ini belum dibuka.");
+  if (!env.IP_SALT) return galat(503, "server belum dikonfigurasi (IP_SALT)");
+  const q = url.searchParams;
+  for (const k of new Set(q.keys())) if (!["kab", "umur", "kursor"].includes(k) || q.getAll(k).length !== 1) return galat(400, "Saringan tidak dikenal.");
+  const kab = q.has("kab") ? KAB_ASAL(q.get("kab")) : null, u = q.get("umur"), kur = q.has("kursor") ? (/^[A-Za-z0-9_-]{1,80}$/.test(q.get("kursor")) ? kursorBaca(q.get("kursor")) : null) : null;
+  if (q.has("kab") && !kab) return galat(400, "Pilih kabupaten atau kota yang dikenal.");
+  if (u !== null && !(/^\d{1,3}$/.test(u) && Number(u) <= 120)) return galat(400, "Umur harus angka 0 sampai 120.");
+  if (q.has("kursor") && !kur) return galat(400, "Penanda halaman tidak sah.");
+  const lj = await lajuIP(env, req, "oh.daftar", [[JAM, 60]], kini); if (lj) return lj;   // lebih ketat daripada detail (D30)
+  const baris = await H.ohDaftarPublik(env, H.pelakuLpPublik, {kab, umur5: u === null ? null : Math.floor(Number(u) / 5) * 5, sesudah: kur, batas: HALAMAN_DAFTAR, sejak: sejakMasa(env, kini)}).catch(tabelBelumKosong), ada = baris.length > HALAMAN_DAFTAR;
+  const hal = baris.slice(0, HALAMAN_DAFTAR);
+  return kirim(200, {profil: hal.map(publikDari), kursor: ada ? kursorKode(hal.at(-1)) : null});
+}
+async function detailGet(env, req, url, kini, ctx, x) {
+  if (env.OH_PUBLIK !== "1") return galat(404, "Halaman ini belum dibuka.");
+  if (!env.IP_SALT) return galat(503, "server belum dikonfigurasi (IP_SALT)");
+  const lj = await lajuIP(env, req, "oh.detail", [[JAM, 120]], kini); if (lj) return lj;
+  const r = /^[0-9a-f]{32}$/.test(x ?? "") ? await H.ohByToken(env, H.pelakuLpPublik, x, sejakMasa(env, kini)).catch(e => tabelBelumKosong(e) && null) : null;
+  return r ? kirim(200, {profil: publikDari(r)}) : galat(404, "tidak ada");   // tidak ada, belum tayang, turun, dan lewat masa menjawab sama
+}
+
+/* ---- informasi, laporkan, cabut tanpa sesi, "Saya orang ini" (OH-11, D19, D28, D35) ---- */
+const JENIS_INFO = ["informasi", "foto", "laporkan", "cabut", "orang_ini"], PERLU_SESI = ["informasi", "foto", "laporkan"], ALASAN_LAPOR = ["tidak_ingin_ditemukan", "data_salah", "penipuan", "lainnya"];
+export const RUJUKAN = "Bila ada orang yang dalam bahaya sekarang, hubungi 112 dan kepolisian terdekat.";   // Q15: tanpa nomor layanan lain sebelum pemilik memeriksanya
+async function infoPost(env, req, url, kini) {
+  if (env.OH_PUBLIK !== "1") return galat(404, "Halaman ini belum dibuka.");
+  if (!env.IP_SALT) return galat(503, "server belum dikonfigurasi (IP_SALT)");
+  if (req.headers.get("x-pb") !== "1") return galat(403, "kiriman wajib membawa header x-pb: 1");
+  const b = await bacaBody(req, 1024); if (b.galat) return galat(b.status || 400, b.galat);
+  const o = b.o && typeof b.o === "object" ? b.o : {}, jenis = o.jenis, token = o.token;
+  if (!JENIS_INFO.includes(jenis)) return galat(400, "Jenis kiriman tidak dikenal.");
+  if (typeof token !== "string" || !/^[0-9a-f]{32}$/.test(token)) return galat(400, "Profil tidak dikenal.");
+  if (jenis === "foto" && env.OH_FOTO !== "1") return galat(404, "Halaman ini belum dibuka.");
+  const pesan = o.pesan == null ? null : samarkan(String(o.pesan)).replace(/\s+/g, " ").trim().slice(0, 480) || null;
+  if (jenis === "informasi" && (pesan?.length ?? 0) < 5) return galat(400, "Tulis informasi yang Anda punya, paling sedikit beberapa kata.");
+  if (jenis === "laporkan" && !ALASAN_LAPOR.includes(o.alasan)) return galat(400, `Alasan harus salah satu dari: ${ALASAN_LAPOR.join(", ")}.`);
+  if (o.tingkat != null && !["mirip", "sedikit"].includes(o.tingkat)) return galat(400, "Tingkat tidak sah.");
+  let wa = null;
+  if (PERLU_SESI.includes(jenis)) { const m = await pemilik(env, req, url, kini, true, o); if (m.tolak) return m.tolak; wa = m.wa; }   // tanpa sesi terbukti 401 (Q20); cabut dan orang_ini tanpa sesi (D28, D35)
+  const lj = (wa ? await laju(env, await sha(wa), `oh.info.${jenis}`, jenis === "laporkan" ? [[HARI, 10]] : [[JAM, 10], [HARI, 30]], kini) : null) ?? await lajuIP(env, req, `oh.info.${jenis}`, wa ? [[JAM, 60]] : [[JAM, 5], [HARI, 15]], kini);
+  if (lj) return lj;
+  const status = await H.ohTokenStatus(env, H.pelakuLpPublik, token, sejakMasa(env, kini)).catch(e => tabelBelumKosong(e) && null);
+  if (!(jenis === "cabut" ? status : status === "tayang")) return galat(404, "Profil tidak ditemukan.");
+  try { await H.ohInfoTambah(env, wa ? H.pelakuLpPelapor : H.pelakuLpPublik, {id: acak(8), jenis, sasaran_token: token, nomor_pemberi: wa, pesan: (jenis === "laporkan" ? `[${o.alasan}] ${pesan ?? ""}` : pesan)?.trim().slice(0, 500) || null, tingkat: o.tingkat ?? null}, kini); }
+  catch (e) { if (/no such table/i.test(String(e?.message))) return galat(503, "Layanan belum siap."); throw e; }
+  if (jenis === "laporkan" && await H.ohLaporkanBeda(env, H.pelakuLpCron, token, kini - HARI) >= AMBANG_LAPORKAN) {   // D19: pelapor berbeda dalam 24 jam menurunkan sementara, menunggu peninjauan petugas
+    const oh = await H.ohByTokenSistem(env, H.pelakuLpCron, token); await turunkan(env, H.pelakuLpCron, oh, "dilaporkan", "sistem", kini, "dilaporkan_ambang");
+  }
+  return kirim(200, {diterima: true, rujukan: RUJUKAN});   // sama untuk semua jenis; tidak menyebut apakah profil turun
+}
 
 export const RUTE_ORANG_HILANG = {
   "GET /api/lapor/hilang/kejadian": kejadianGet,
@@ -245,4 +330,7 @@ export const RUTE_ORANG_HILANG = {
   "POST /api/lapor/hilang/saya/perpanjang": (env, req, url, kini) => sayaAksi(env, req, url, kini, "perpanjang"),
   "POST /api/lapor/hilang/saya/foto": sayaFoto,
   "GET /api/lapor/hilang/foto/:x": fotoGet,
+  "GET /api/lapor/hilang": daftarGet,
+  "GET /api/lapor/hilang/:x": detailGet,
+  "POST /api/lapor/hilang/info": infoPost,
 };

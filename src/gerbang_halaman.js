@@ -63,6 +63,8 @@ export const HTML_RUTE = [
   [/^\/lapor\/?$/, "/lapor/index.html", "/lapor"],   // Lapor Bencana BNPB, pintu warga (public/lapor/, src/lapor_ai.js); publik (KEPUTUSAN-MASUK K14)
   [/^\/lapor\/lacak\/?$/, "/lapor/lacak.html", "/lapor/lacak"],   // halaman lacak bertoken ?t=, publik (K14)
   [/^\/lapor\/s\/[^/]+\/?$/, "/lapor/s/index.html", "/lapor/s"],   // tautan kabar selamat bertoken (LA-80/81, K91 D128): tamu, noindex; token tidak masuk statistik hit (kunci jalur "/lapor/s")
+  [/^\/lapor\/hilang\/?$/, "/lapor/hilang.html", "/lapor/hilang"],   // tab Orang hilang (orang-hilang-publik OH-09, K112): di balik login sampai pemilik memutuskan di KEPUTUSAN-MASUK, noindex; data hanya dari /api/lapor/hilang di balik OH_PUBLIK
+  [/^\/lapor\/h\/[0-9a-f]{32}\/?$/, "/lapor/h/index.html", "/lapor/h"],   // tautan bagikan satu profil bertoken (OH-09): di balik login sampai keputusan pemilik, noindex; token tidak masuk statistik hit (kunci jalur "/lapor/h"), tidak di Peta Situs
   [/^\/lapor\/hari-ini\/?$/, "/lapor/hari-ini.html", "/lapor/hari-ini"],   // kejadian hari ini dari laporan terverifikasi BPBD (lapor-kejadian K86, LK-06); publik, data dari /api/lapor/hari-ini di balik saklar LAPOR_HARI_INI
   [/^\/lapor\/data\/?$/, "/lapor/data/index.html", "/lapor/data"],   // data lanjutan BPBD (LJ-16): token tim di URL ditukar kuki; halaman tidak memuat data, API menjaga kuki tim atau sesi staf
   [/^\/lapor\/meja\/?$/, "/lapor/meja.html", "/lapor/meja"],   // meja laporan staf; tertutup di centurisk97.id, /api/lapor/meja* menjaga sesi staf
