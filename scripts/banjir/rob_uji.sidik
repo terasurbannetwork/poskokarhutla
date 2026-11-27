@@ -1,0 +1,16 @@
+{
+ "sidik": "b663d09e2fce31a4",
+ "berkas": {
+  "scripts/banjir/rob.py": "99ffa5f930eda37ed86395316bf14fd94304c36d7d56d60357c3eaefd155503d",
+  "scripts/banjir/rob_uji.kriteria.json": "ff7881f58d510edd0403b5903b18a25f9e57c8235afb11361e16235ca8f2d297",
+  "scripts/banjir/rob_uji.py": "b2cf92b985bf101d24c99098b5176c264785a8d0d8a3e29996b49c60b897c0cb",
+  "scripts/umum/pembanding.py": "cf97cf5d63016caefec1ddeacba7f93ca84a02ab1413f0426db00551cb6741bb",
+  "scripts/umum/sidik.py": "c613720315aac18541c2436d774901b056f4f840fd94ff8850df895860537013"
+ },
+ "masukan": [
+  "46d6ca35662a55ae7f7d3f495645c5931cb5caa81de7da1b015f2c452beab0aa",
+  "73eb5a3a58f6170e31a94c415ac6435070ecb00126834575121b96a4822e3cb6",
+  "40c8220cfd1cb84b6349b35215c6bd05ca7613f842875090df914c7dcb38aa19"
+ ],
+ "dibuat": "2026-11-27T09:11:34Z"
+}
