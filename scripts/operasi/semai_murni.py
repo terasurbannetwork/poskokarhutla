@@ -335,7 +335,10 @@ def kab_dari_kejadian(kabar, kota, putaran_iso, bobot):
     if not kabar:
         return [], ["kejadian: kabar.json tidak ada"]
     t_put = dt.datetime.fromisoformat(putaran_iso.replace("Z", "+00:00"))
-    t_kab = dt.datetime.fromisoformat(kabar["dibuat"])
+    try:
+        t_kab = dt.datetime.fromisoformat(str(kabar.get("dibuat") or ""))
+    except ValueError:
+        return [], ["kejadian: kabar.json tidak valid (tanpa waktu dibuat)"]
     if t_kab.tzinfo is None:
         t_kab = t_kab.replace(tzinfo=dt.timezone(dt.timedelta(hours=7)))
     umur = (t_put - t_kab).total_seconds() / 3600
@@ -376,17 +379,19 @@ def zona_kuota(cells, prov, min_km, maks, ambang, maks_prov):
     def jauh(c):
         return all(haversine(c["lat"], c["lon"], z["lat"], z["lon"]) > min_km for z in pilih)
     urut = sorted(cells, key=_urut_zona)
+    # kode zona satu huruf A sampai Z (zona_id_banjir): kuota provinsi berhenti bila jatah huruf tinggal untuk 5 nasional
+    huruf = 26
     for p in sorted(prov):
         n = 0
         for c in urut:
-            if n >= maks_prov:
+            if n >= maks_prov or len(pilih) >= huruf - maks:
                 break
             if c["skor"] >= ambang and p in c.get("provs", ()) and jauh(c):
                 pilih.append(dict(c, kuota=p))
                 n += 1
     n = 0
     for c in urut:
-        if n >= maks:
+        if n >= maks or len(pilih) >= huruf:
             break
         if c["skor"] >= ambang and jauh(c):
             pilih.append(c)
