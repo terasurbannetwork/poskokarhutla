@@ -56,11 +56,11 @@ export function buatWilayah(muat) {
       if (dalam && !kd.startsWith(dalam)) continue;
       if (!kata.length ? dalam : cocok(`${n} ${k} ${N.kab[kd.slice(0, 5)] || ""}`)) {
         hasil.push({tingkat: "desa", kode: kd, judul: `Desa/Kel. ${n}`, sub: `Kec. ${k}, ${N.kab[kd.slice(0, 5)]}, ${PROV[kd.slice(0, 2)]}`, skor: n.toLowerCase().startsWith(kata[0] || "") ? 4 : 5});
-        if (hasil.length > 200) break;
+        if (!dalam && hasil.length > 200) break;   // di dalam satu kab semua desa dikirim (Kota Medan 151 kel.; pemilik 27 Nov 2026: "ketik medan malah ga ada yang keluar")
       }
     }
     hasil.sort((a, b) => a.skor - b.skor || a.judul.localeCompare(b.judul));
-    return Promise.all(hasil.slice(0, dalam ? 40 : 10).map(async h => h.tingkat === "desa" ? {...h, ...(await isiKd(h.kode))} : h));
+    return Promise.all(hasil.slice(0, dalam ? 2000 : 10).map(async h => h.tingkat === "desa" ? {...h, ...(await isiKd(h.kode))} : h));
   }
   /* titik pusat kotak batas desa (perkiraan tingkat desa) */
   async function pusat(kd) {

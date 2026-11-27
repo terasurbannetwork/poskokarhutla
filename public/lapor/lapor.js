@@ -505,11 +505,12 @@ async function cariTempat(q, dalam, wadahHasil, pilihDesa, kabupatenCukup) {
       const w = el("div", "lp-hasil-chip"); for (const d of ds) { const b = el("button", null, d.judul.replace(/^(Desa\/Kel\.|Desa|Kelurahan)\s+/i, "")); b.type = "button"; b.addEventListener("click", () => pilihDesa(d)); w.append(b); }
       li.append(h, w); return li; });
     // saring desa di dalam daftar: ketik sebagian nama, tombol yang tidak cocok disembunyikan
-    const sar = el("li", "lp-hasil-saring"), lab = el("label", "lp-cari"), q = el("input"); q.type = "search"; q.placeholder = `Cari desa atau kelurahan (${j.hasil.length})`; q.setAttribute("aria-label", "Cari desa");
-    lab.append(ikon("i-cari"), q); sar.append(lab);
+    const sar = el("li", "lp-hasil-saring"), lab = el("label", "lp-cari"), q = el("input"); q.type = "search"; q.placeholder = `Cari desa, kelurahan, atau kecamatan (${j.hasil.length})`; q.setAttribute("aria-label", "Cari desa");
+    lab.append(ikon("i-cari"), q); sar.append(lab); const kosong = el("li", "lp-redup", "Tidak ada desa, kelurahan, atau kecamatan yang cocok."); kosong.hidden = true;
     q.addEventListener("input", () => { const t = q.value.trim().toLowerCase();
-      for (const g of grup) { let ada = 0; for (const b of g.querySelectorAll("button")) { const c = !t || b.textContent.toLowerCase().includes(t); b.hidden = !c; ada += c; } g.hidden = !ada; } });
-    wadahHasil.replaceChildren(sar, ...grup); wadahHasil.classList.add("berkelompok"); q.focus(); return;
+      for (const g of grup) { const kecCocok = !t || g.firstChild.textContent.toLowerCase().includes(t); let ada = 0; for (const b of g.querySelectorAll("button")) { const c = kecCocok || b.textContent.toLowerCase().includes(t); b.hidden = !c; ada += c; } g.hidden = !ada; }   // nama kecamatan ikut dicocokkan (pemilik 27 Nov 2026: "ketik medan malah ga ada yang keluar")
+      kosong.hidden = grup.some(g => !g.hidden); });
+    wadahHasil.replaceChildren(sar, ...grup, kosong); wadahHasil.classList.add("berkelompok"); q.focus(); return;
   }
   wadahHasil.classList.remove("berkelompok");
   wadahHasil.replaceChildren(...isi);
