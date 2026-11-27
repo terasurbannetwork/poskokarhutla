@@ -24,9 +24,9 @@ Status: **Siap** = bisa dikerjakan tanpa jawaban pemilik (bawaan sudah cukup dan
 | OH-13 | Daftar publik "Ditemukan, mencari keluarga" | **Tertahan** | Q9 |
 | OH-14 | Lab pembanding foto | Siap untuk bagian tiruan, **tertahan** untuk model sungguhan | Q11, Q12 |
 | OH-15 | DPIA, tinjauan hukum, menyalakan `OH_FOTO` | **Tertahan** | Q13, Q14 |
-| OH-16 | Gerbang `gerbang-orang-hilang` | Siap | |
-| OH-17 | Dokumentasi `/docs` | Siap | |
-| OH-18 | Metrik petugas | Siap | |
+| OH-16 | Gerbang `gerbang-orang-hilang` | Selesai (27 Nov 2026) | |
+| OH-17 | Dokumentasi `/docs` | Selesai (27 Nov 2026) | |
+| OH-18 | Metrik petugas | Selesai (27 Nov 2026) | |
 | OH-19 | Uji perangkat nyata dan penutupan | **Tertahan** (pemilik) | OH-12 |
 
 Format tiap tiket: Tujuan, Berkas, Di luar, Dependensi, Pengerja, Pemeriksa, Langkah, Bukti, Pemilik.
@@ -218,7 +218,7 @@ Format tiap tiket: Tujuan, Berkas, Di luar, Dependensi, Pengerja, Pemeriksa, Lan
 ## OH-17 Dokumentasi
 
 - **Tujuan**: Panduan pengguna dan petugas, halaman Pengembang di `/docs`.
-- **Berkas**: `docs/centurisk97/panduan/lapor/09-orang-hilang.md`, `docs/centurisk97/pengembang/lapor/12-orang-hilang.md`, `docs/centurisk97/peta.json` (daftarkan dua halaman baru).
+- **Berkas**: `docs/centurisk97/panduan/lapor/08-orang-hilang.md`, `docs/centurisk97/pengembang/lapor/11-orang-hilang.md dan 12-orang-hilang-alur.md`, `docs/centurisk97/peta.json` (daftarkan dua halaman baru).
 - **Di luar**: nama berkas atau kode di Panduan; angka tanpa rujukan kode.
 - **Dependensi**: OH-09.
 - **Pengerja**: `docs-situs`. **Pemeriksa**: `selera-angka`.

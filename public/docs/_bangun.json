@@ -1,5 +1,5 @@
 {
- "halaman": 354,
+ "halaman": 357,
  "sumber": {
   "README.md": "210dab417f2e1ea984296ab0b85b0731475ef56b2b74d776262d0c2c42b3f6ec",
   "gambar/akses-instansi-alur-masuk.svg": "99a7f1c67319b3825c2eca8a1bbe5e165d8d5ec8ae696485ad77ae7a1473c412",
@@ -127,7 +127,8 @@
   "panduan/lapor/05-cerita-gugus.md": "1cc33b9d396975107eb596a62999f61d2530c4af9f7bb60040bcda657e6f427b",
   "panduan/lapor/06-verifikasi-rekap.md": "060fb3727e3808d2b7362f9b6be5304b41628ecec8f839bab3b01592317cdd0e",
   "panduan/lapor/07-peringatan.md": "08d95936ce258d1c0046650d51613ecaaadd16afc76e1dc5b750d74240eb4671",
-  "panduan/lapor/08-batasan.md": "28ec5c40e737e33637b70001e714b02f9c59560552bd94ec7df1440f184b95bf",
+  "panduan/lapor/08-orang-hilang.md": "7e53b7ba6addd81540b09f22479acf840537b3987453504c6547fe6ffac1bcb1",
+  "panduan/lapor/09-batasan.md": "87afb67a3922c9ce59485e2988595ddc0f8abb20099526d2c64f1e66835d2d7a",
   "panduan/model-sebaran/01-sekilas.md": "b701957c77849fe10a41d6811484c7f185ebe951352c7857b3c6b758120d14f7",
   "panduan/model-sebaran/02-simulasi.md": "0646bc5fd8dd55a31fcc6860d13257662b907ed9500fcc3831454a2530be82d8",
   "panduan/model-sebaran/03-peluang-layar.md": "97ba212795a969ae841190763bd783c45b10c0c28292450045a5962abfc9b894",
@@ -293,7 +294,9 @@
   "pengembang/lapor/08-ref-kode.md": "ca75dc6cf3b1a2b30f1814732d2bccacd7b17d9551cae4df3ae5cf767ea541ff",
   "pengembang/lapor/09-ref-alur.md": "ccde08a2c62ea5f98622d563ddd4acd38f5d0dc0f5dc3119e2c48cf576126217",
   "pengembang/lapor/10-pertanyaan-terbuka.md": "6c9dac2ef2c085c86339c1671718cf8e90cd9badc4164411c9011d8e4dfa2886",
-  "pengembang/lapor/11-batasan.md": "d917d5d7c36460659c83d0d97bfc645ef836cb7196ba53a6be1fc9f98bef9bce",
+  "pengembang/lapor/11-orang-hilang.md": "d0184d65a28f9a50394bb7133844bfc32424cd4fa7574087aca1bdbd82eae362",
+  "pengembang/lapor/12-orang-hilang-alur.md": "0beb6a1a0240cfa21eb8d6de736b4ddd804226b7ba018cdad90cff280183002c",
+  "pengembang/lapor/13-batasan.md": "a32f7e1b3bcede5a1392fc5ecab8a5f190aeb75dbbe14dfb27cd8d728ebce067",
   "pengembang/metode/01-ikhtisar.md": "59fa9fc990b016c65085b5ced905fe3ace4dfb0337f64bd5f4edfb4be4527e58",
   "pengembang/metode/02-karhutla.md": "0e55efd426af5b231e5709b1c3eb3cfc108c161e7d7a7a0b7e7446a546429d20",
   "pengembang/metode/03-banjir-gempa.md": "9a25dd7a7ef4981b186988c0bec7ec2b8dfb761a3a81df8530cc5464bbc2b147",
@@ -381,7 +384,7 @@
   "pengembang/siklus/11-ref-kode.md": "024357afc4bb8bf700b343344a8ad8b776183092bf4489eebed758c8c4d8c6a5",
   "pengembang/siklus/12-ref-data.md": "6363c7887106db834725d8a6fe84862556bf25a08113b16c80ffe2c786451951",
   "pengembang/siklus/13-batasan.md": "12db860f0102a10037a61b737644db4b9860b200ebac1ff7c62575b7cbeaa931",
-  "peta.json": "e2ba139981ca7fbb74dc5375bd1391e9d3396ac439d447ad0c3cbc5112f480dc"
+  "peta.json": "bbf44a30d4b9065e9d0376a654f1e5579eb27824b7e001da766ce8c2c384e948"
  },
  "tanggal": "2026-11-27"
 }

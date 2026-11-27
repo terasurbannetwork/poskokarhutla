@@ -1614,9 +1614,15 @@
       "isi": "panduan/08-lapor.md: Peringatan dini kecamatan"
      },
      {
+      "id": "orang-hilang",
+      "judul": "Orang hilang karena bencana",
+      "berkas": "panduan/lapor/08-orang-hilang.md",
+      "isi": "data/kajian-bnpb/orang-hilang-publik: Status saat ini; Tiga jalur; Penyaring bencana; Izin menampilkan profil; Pemeriksaan petugas; Setelah tampil; Masa tayang dan mencabut; Menemukan seseorang; Penyimpanan data"
+     },
+     {
       "id": "batasan",
       "judul": "Batasan dan tanya jawab",
-      "berkas": "panduan/lapor/08-batasan.md",
+      "berkas": "panduan/lapor/09-batasan.md",
       "isi": "panduan/08-lapor.md: Batasan; Pertanyaan umum; Apakah laporan saya langsung menjadi data resmi BNPB?; Perlu akun untuk melapor?; Mengapa foto saya ditolak?; Mengapa isian saya tertulis \"belum didata\" dan bukan 0?; Bagaimana bila tidak ada sinyal?; Apakah notifikasi peringatan dini sama dengan peringatan resmi?; Mengapa peringatan untuk kecamatan saya tingkatnya mengikuti kabupaten?; Siapa yang bisa melihat nomor WhatsApp dan identitas saya?"
      }
     ],
@@ -1682,9 +1688,21 @@
       "isi": "08-lapor.md: Pertanyaan pemilik yang belum diputuskan (bawaan sementara)"
      },
      {
+      "id": "orang-hilang",
+      "judul": "Orang hilang publik: rute, tabel, alur",
+      "berkas": "pengembang/lapor/11-orang-hilang.md",
+      "isi": "data/kajian-bnpb/orang-hilang-publik: Bendera; Berkas; Tabel D1; Rute; Alur status; Konstanta hipotesis; Penyaring bencana; Jalur menemukan; Pembersihan cron; Uji"
+     },
+     {
+      "id": "orang-hilang-alur",
+      "judul": "Orang hilang: alur dan pembersihan",
+      "berkas": "pengembang/lapor/12-orang-hilang-alur.md",
+      "isi": "data/kajian-bnpb/orang-hilang-publik: Bendera; Berkas; Tabel D1; Rute"
+     },
+     {
       "id": "batasan",
       "judul": "Batasan dan perbedaan dokumen",
-      "berkas": "pengembang/lapor/11-batasan.md",
+      "berkas": "pengembang/lapor/13-batasan.md",
       "isi": "08-lapor.md: Perbedaan kode dan dokumen paket (kode menang); Batasan"
      }
     ]

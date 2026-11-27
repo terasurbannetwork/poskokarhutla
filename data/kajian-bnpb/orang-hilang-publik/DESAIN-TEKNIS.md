@@ -25,7 +25,7 @@ Pemilik diperiksa lewat `node scripts/agents/ilmu.mjs pemilik <berkas>` pada 27 
 | `scripts/lapor/lokal.mjs` (diubah) | Rute lokal untuk tinjau di localhost:8800 (sinkron dengan Worker; model foto di lokal dijawab tiruan uji, bukan API sungguhan) | `warga-api` |
 | `tests/lapor/hilang_*.test.mjs` | Uji (RENCANA-UJI) | `warga-api` |
 | `tests/agen/gerbang-orang-hilang.test.mjs` | Gerbang | `penulis-gerbang` |
-| `docs/centurisk97/panduan/lapor/09-orang-hilang.md`, `pengembang/lapor/12-orang-hilang.md`, `docs/centurisk97/peta.json` | Dokumentasi (nomor halaman mengikuti urutan terakhir folder masing-masing) | `docs-situs` |
+| `docs/centurisk97/panduan/lapor/08-orang-hilang.md`, `pengembang/lapor/11-orang-hilang.md dan 12-orang-hilang-alur.md`, `docs/centurisk97/peta.json` | Dokumentasi (nomor halaman mengikuti urutan terakhir folder masing-masing) | `docs-situs` |
 
 Tanpa berkas di `public/data/`: tidak ada keluaran statis berisi data orang.
 

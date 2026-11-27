@@ -7,7 +7,7 @@ Halaman ini mencatat perbedaan antara dokumen paket dan kode (kode menang) serta
 | Hal | Dokumen paket | Kode saat ini |
 | --- | --- | --- |
 | Mode Tanya (BM25 atas `edukasi.json`), kabar balik BMKG dan gugus, ringkasan harian, penugasan dan tenggat merah, penilaian foto (dHash, buram), sinyal awal di peta utama, pembanding lawan prediksi, draf LogPal, tindakan massal, ekspor Excel, CSV, PDF, linimasa, mode layar besar, urutan Perhatian | Tertulis di ALGORITMA A10 sampai A28 dan tiket LA-30 sampai LA-52 | Tidak ditemukan di `src/`, `public/lapor/`, atau migrasi; berstatus rencana |
-| Kabar selamat, tautan keluarga, laporan orang dicari | A30, F-51 sampai F-53 | Tidak ditemukan di kode |
+| Kabar selamat, tautan keluarga, laporan orang dicari | A30, F-51 sampai F-53 | Ada: `src/lapor_selamat.js`, rute digabung di `src/lapor_ai.js:1357`. Profil publik orang hilang: halaman Orang hilang publik, di belakang bendera mati |
 | Rute `POST /api/lapor/luring`, tabel `lapor_luring`, `lapor_foto_luring` | A13, DL6 | Tidak ada; luring memutar ulang alur Lapor darurat ke `/api/lapor/pesan` dan hanya membawa jenis, lokasi, dan korban |
 | Foto luring dan ringkasan teks luring | DL3 | Belum ikut di versi kode (komentar `public/lapor/luring.js:1`) |
 | Jadwal cron peringatan | Tiap menit | Sekali per jam pada menit 29 (`src/worker.js:1032`) |

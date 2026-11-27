@@ -12,6 +12,7 @@ Halaman ini merangkum batas pemakaian Lapor Bencana dan menjawab pertanyaan yang
 - Mutu terjemahan bahasa daerah belum diukur. Jangan mengandalkannya untuk pesan darurat.
 - Foto belum bisa dikirim lewat mode tanpa sinyal.
 - Nomor yang belum didaftarkan dan menulis ke bot WhatsApp selama masa uji tidak dibalas. Gunakan web atau hubungi admin BNPB untuk mendaftar.
+- Laporan orang hilang yang tampil sebagai profil publik belum tayang: saklarnya mati dan halamannya masih di balik masuk akun. Lihat halaman Orang hilang karena bencana.
 - Belum tersedia (masih rencana): Mode Tanya, kabar balik, ringkasan harian, penilaian mutu foto, kabar selamat, halaman publik kejadian hari ini, formulir web data lanjutan, dan tombol Terima di layar staf.
 - Tidak adanya notifikasi bukan tanda tidak ada bahaya.
 
