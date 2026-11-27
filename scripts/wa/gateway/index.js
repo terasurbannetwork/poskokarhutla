@@ -347,6 +347,7 @@ async function simpanKeOutbox(m, { lama = false } = {}) {
   const blSha = !!dari && !IZIN.has(dari) && !String(k.remoteJid).endsWith('@g.us') ? DF.shaTerdaftar(dari) : null // nomor bl_daftar setuju (BL-03)
   if (!dari || (!IZIN.has(dari) && !grupOps && !blSha)) return
   if (!teks.trim() && !media && !video) return // foto grup tanpa caption tetap diteruskan
+  if (BL && teks) import('../omc_posko_kirim.mjs').then((M) => M.kirimOmcPosko(teks, { log })).catch(() => {}) // SB-32: laporan OMC posko disimpan juga ke Worker; gagal tak menghentikan alur
   const pribadi = !String(k.remoteJid).endsWith('@g.us')
   let P = null, cmd = null
   if (!media && !grupOps && !lama) { // perintah tetap (perintah.mjs): hanya dari PEMILIK, tidak jadi bahan, balasan hanya ke pengirim
