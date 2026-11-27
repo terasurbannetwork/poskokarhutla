@@ -29,8 +29,6 @@ import {jalanOsm} from "./lapor_jalan.js";
 import {buatRutePeringatan, jalankanPeringatan, bersihPeringatan} from "./pw_peringatan.js";
 import * as H from "./hak.js";
 import {buatSelamat} from "./lapor_selamat.js";
-import {kejadianUntuk, bersihOrangHilang} from "./orang_hilang.js";
-import {barisOh} from "./orang_hilang_murni.js";
 import {buatKomen, buatKomenMeja} from "./lapor_komen.js";
 import {bukaBerkas, pesanTim, fotoTim, bersihSesiLanjut, sapuDrafYatim, hapusPribadiLama} from "./lapor_lanjut.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
@@ -67,7 +65,7 @@ const lajuPublik = (env, req, aksi, maks, kini) => req.headers.get("authorizatio
 const P = H.pelakuLpPelapor, PUBLIK = H.pelakuLpPublik, HARI_INI = H.pelakuLpHari, STAF = H.pelakuLpStaf, MESIN = H.pelakuLpMesin;
 
 /* ---------------- penjaga ---------------- */
-export async function mesinSah(env, req) {
+async function mesinSah(env, req) {
   const t = /^Bearer (.+)$/.exec(req.headers.get("authorization") || "")?.[1];
   return !!(env.WA_MESIN && t && await sha(t) === await sha(env.WA_MESIN));
 }
@@ -229,7 +227,7 @@ async function putar(env, ctx, url, id, pesan, kini) {
   const kirimIsh = /^(1|kirim)$/i.test(String(pesan.teks || "").trim()) || pesan.pilih?.[0] === 1;
   if (lama?.status === "ringkasan" && !lama.susulanDari && kirimIsh && await terkirimHari(env, id, kini) >= MAKS_TERKIRIM_HARI) return {batas: true};   // sebelum model dipanggil
   const awal = lama?.transkrip?.length ?? 0, lanjut = !!lama && !SELESAI.has(lama.status);   // putaran menambah ke objek yang sama: panjang awal dicatat sebelumnya
-  const h = await putaran({sesi: lama, pelapor: pel, model: modelDari(env), wilayah: wilayahDari(env), kandidat: a => kandidatDari(env, a.kecKode, a.kini), kejadianCari: a => kejadianUntuk(env, a.kab, a.kini), pesan: {...pesan, wa, saluran}, kini});
+  const h = await putaran({sesi: lama, pelapor: pel, model: modelDari(env), wilayah: wilayahDari(env), kandidat: a => kandidatDari(env, a.kecKode, a.kini), pesan: {...pesan, wa, saluran}, kini});
   if (naikBpbd(h.pelapor, izin)) h.sesi.tingkat = "bpbd";
   // lanjut dihitung sebelum putaran: putaran mengubah objek lama di tempat. Sesi selesai diganti sesi baru, selebihnya baris yang sama
   h.sesi.id = lanjut ? lama.id : `${kini.toString(36)}${acak(3)}`;
@@ -313,9 +311,7 @@ async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama
   const w = s.isian.lokasi?.nilai, baru = {id: s.id, wa, status: s.status, tingkat: s.tingkat, jenis: s.isian.jenis?.nilai ?? null, kab: w?.wilayah?.kabKode ?? null,
     lat: w?.lat ?? null, lon: w?.lon ?? null, kerja: JSON.stringify(s), nomor, token_sha: tokenSha, terkirim: nomor ? s.terkirim : null, ringkas};
   for (const t of pesanBaru) g.push(H.lpStmtPesan(env, P, s.id, t.dari, saluran === "wa" ? "wa" : "web", t.teks, t.waktu, true));
-  if (h.kirimCari) { const id = acak(8); g.push(H.crStmtTambah(env, P, {id, nomor_pencari: wa, ...h.kirimCari}, kini, true)); tambahan.cari = {id, status: "buka"};   // satu batch dengan sesi (tinjauan keamanan 25 Nov 2026)
-    if (h.kirimCari.setuju) g.push(H.ohStmtTambah(env, P, barisOh(h.kirimCari, id, acak(16)), kini, true),   // OH-04: profil menunggu tinjauan, persetujuan tercatat; tidak tayang tanpa petugas dan bendera OH_PUBLIK
-      H.ohStmtRiwayat(env, P, {cari_id: id, dari: "draf", ke: "menunggu", alasan: "kirim", oleh: "pelapor"}, kini, true)); }
+  if (h.kirimCari) { const id = acak(8); g.push(H.crStmtTambah(env, P, {id, nomor_pencari: wa, ...h.kirimCari}, kini, true)); tambahan.cari = {id, status: "buka"}; }   // satu batch dengan sesi (tinjauan keamanan 25 Nov 2026)
   const p = h.pelapor;
   if (s.verifikasi !== "ketik" && p?.nama && (!pel || pel.nama !== p.nama || pel.peran !== p.peran || pel.kab !== (p.kab ?? null) || pel.jabatan !== (p.jabatan ?? null))) g.push(H.lpStmtPelapor(env, P, wa, p, kini, true));
   g.push(...tambahStmt, ...kj);
@@ -730,7 +726,6 @@ export async function bersihkanLapor(env, kini = Date.now()) {
   try { const f = await H.cfAnonimFotoLain(env, H.pelakuLpCron); if (f.length && env.MEDIA) await env.MEDIA.delete(f.map(id => `lapor/foto/${id}.jpg`)); await H.cfAnonimLain(env, H.pelakuLpCron); }   // foto ke-2 sampai ke-10 (0186), aturan sama
   catch (e) { if (!tabelBelum(e)) console.error("lapor_cari_foto_lain", e?.message); }
   await H.ctAnonim(env, H.pelakuLpCron).catch(e => tabelBelum(e) || console.error("lapor_cari_temu", e?.message));   // orang dicari ditutup >2 tahun dianonimkan (Q67 bawaan sementara)
-  await bersihOrangHilang(env, kini).catch(e => console.error("oh_bersih", e?.message));   // OH-08: turun otomatis, kedaluwarsa, anonim, retensi profil orang hilang (sesudah crAnonimkan)
   await H.ljKabarBersih(env, H.pelakuLpCron, kini - 864e5, kini - 30 * 864e5, kini - 7 * 864e5).catch(e => tabelBelum(e) || console.error("lj_kabar", e?.message));   // LJ-11: pembuka dan tim belum terkirim >1 hari (token mentah), lain belum terkirim >7 hari, terkirim >30 hari
   await bersihSesiLanjut(env, kini).catch(e => console.error("lj_sesi", e?.message));   // draf WA tahap 2 lebih dari 24 jam (LJ-05)
   await sapuDrafYatim(env, kini).catch(e => console.error("lj_draf", e?.message));   // foto draf R2 yatim lebih dari 2 hari (LJ-19)
