@@ -1,6 +1,13 @@
 {
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
+    "GET /api/lapor/hilang/kejadian": "2.17 rute kejadian",
+    "table oh_publik": "status: draf ke menunggu",
+    "table oh_riwayat": "2.15 hak tabel",
+    "table oh_temu": "batas skema tiap tabel oh_",
+    "table oh_temu_foto": "batas skema tiap tabel oh_",
+    "table oh_cari_foto": "batas skema tiap tabel oh_",
+    "table oh_info": "batas skema tiap tabel oh_",
     "POST /api/lapor/darurat/cepat": "satu ketukan: laporan darurat terkirim",
     "POST /api/lapor/data/objek": "objek rumah: tersimpan urut 1",
     "POST /api/lapor/data/batal": "batal: anggota hanya objek isiannya",

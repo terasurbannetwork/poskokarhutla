@@ -9,9 +9,9 @@ Status: **Siap** = bisa dikerjakan tanpa jawaban pemilik (bawaan sudah cukup dan
 | Tiket | Isi singkat | Status | Q yang menahan |
 | --- | --- | --- | --- |
 | OH-00 | Pasang paket: bagian di AGENTS, catatan di lapor-ai | Siap | |
-| OH-01 | Ukur celah data dan daftar kejadian untuk warga | Siap | |
-| OH-02 | Fungsi murni dan uji murni | Siap | |
-| OH-03 | Migrasi `oh_*`, hak tabel, pembaca kejadian | Siap | |
+| OH-01 | Ukur celah data dan daftar kejadian untuk warga | **Selesai** (27 Nov 2026, belum di-commit) | |
+| OH-02 | Fungsi murni dan uji murni | **Selesai** (27 Nov 2026, belum di-commit) | |
+| OH-03 | Migrasi `oh_*`, hak tabel, pembaca kejadian | **Selesai** (27 Nov 2026, belum di-commit) | |
 | OH-04 | Mesin obrolan: penyaring bencana dan persetujuan | Siap (teks draf Q18) | |
 | OH-05 | Foto publik turunan | Siap | |
 | OH-06 | Profil anak dan wali | Siap | |
@@ -117,6 +117,7 @@ Format tiap tiket: Tujuan, Berkas, Di luar, Dependensi, Pengerja, Pemeriksa, Lan
 - **Pengerja**: `warga-api` (rute), `layar-peta` (layar). **Pemeriksa**: `guard-api`, `security-reviewer`, `selera-angka`, `inp-reviewer`.
 - **Langkah**: kartu tinjau dengan panel privat bertanda "Hanya petugas"; setiap aksi tulis menulis `oh_riwayat` (alasan baku plus teks pendek tersaring, D31; pembacaan tidak dicatat, Q26); **daftar periksa wajib sebelum Tayang untuk dewasa**: petugas menelepon `nomor_dicari` bila ada dan menandai hasilnya (D34).
 - **Bukti**: uji 2.4, 2.5, 2.13; tinjau di `http://localhost:8800/lapor/meja.html`.
+- **Wajib dari tinjauan keamanan OH-03**: rute tayang memeriksa `layak(oh) && persetujuanSah(oh)` (dan bendera `OH_PUBLIK`) SEBELUM `ohPindah(..., "tayang")`; `ohPindah` sendiri hanya menjaga pasangan status. Rute publik OH-05 wajib mengembalikan keluaran `profilPublik` (untuk anak: `{...baris, nama: baris.inisial}`), bukan baris D1 mentah, dan memanggil `ohDaftarPublik`/`ohByToken` dengan `sejak = kini - masa tayang`.
 - **Pemilik**: meninjau tampilan.
 
 ## OH-08 Cabut, perpanjang, turun otomatis, cron

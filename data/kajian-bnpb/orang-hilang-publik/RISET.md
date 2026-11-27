@@ -37,6 +37,37 @@ Yang **tidak ada**: persetujuan tayang, profil publik, status tayang, laporan me
 
 Celah: daftar kejadian untuk **warga** (publik, hanya jenis, kab, tanggal) belum ada. Dibangun sebagai rute baca sempit milik paket ini (OH-03), tanpa data orang dan tanpa titik.
 
+### 1.3 Hasil ukur OH-01 (27 Nov 2026, dibaca dari kode, tanpa data produksi)
+
+Diukur di kode dan D1 lokal uji (Miniflare, migrasi apa adanya). Tidak ada angka dari produksi; jumlah kejadian per kab di bawah adalah bentuk kueri dan rencana indeks, bukan hitungan nyata.
+
+**A. Umur, kelamin, tinggi, lokasi di sesi dan di `lapor_cari`**
+
+| Bidang | Di sesi (`sesi.cari`, `src/lapor_mesin.js`) | Di `lapor_cari` (0173) | Temuan |
+| --- | --- | --- | --- |
+| nama | `c.nama` (667), `sesi.cari = {nama}` sesudah kirim (770) | `nama_dicari` | ada |
+| panggilan | `c.panggilan` (667, null bila sama dengan nama) | tidak ada; di `lapor_cari_temu.panggilan` (0177, `ctTambah`) | tabel pribadi terpisah, bukan `lapor_cari` |
+| umur, kelamin | `c.cr.umur` (integer 0 sampai 120 atau null, 667 dan 697 sampai 703), `c.cr.kelamin` ("Laki-laki", "Perempuan", atau null) | **tidak ada**; hanya terlipat dalam teks `ciri` (719 sampai 720, "23 tahun", kelamin) | terstruktur hanya selama sesi |
+| tinggi, berat | `c.cr.tinggi`, `c.cr.berat` (704 sampai 710) | **tidak ada**; hanya dalam teks `ciri` | sama |
+| pakaian | `c.cr.pakaian` (713) | **tidak ada**; hanya dalam teks `ciri` | sama |
+| lokasi | `sesi.isian.lokasi.nilai.wilayah` (desa, kec, kab, `kabKode` "32.71"); sumber `"cari"` (416) | `lokasi_terakhir` = teks `Desa/Kel. X, Kec. Y` (769), `kab` = `kabKode` | kecamatan hanya sebagai teks bebas; tidak ada kolom kec |
+| waktu | `c.waktu` | `waktu_terakhir` teks bebas (100 huruf) | bukan tanggal terstruktur |
+
+**Celah yang ditemukan, wajib ditutup di OH-04:** pada kirim, `sesi.cari` diganti `{nama}` (lapor_mesin.js 770) sehingga `c.cr` (umur, kelamin, tinggi, pakaian) **hilang dari sesi** dan hanya selamat sebagai teks `ciri`. Penutup (bukan mengurai teks): `kirimCari` (769) menyertakan `cr`, kec, kab_nama, panggilan, dan `crStmtTambah` di `src/lapor_ai.js` 314 menulis satu baris `oh_publik` dalam batch yang sama (pola `kirimTemu`). Laporan lama tanpa baris `oh_publik` diisi petugas, tidak ditebak mesin. Tabel `oh_publik` (0188) sengaja menyalin bidang publik (nama, panggilan, umur, kelamin, tinggi, pakaian, kec, kab, kab_nama, waktu terakhir, jenis dan kab dan tanggal kejadian) supaya jalur publik tidak membaca `lapor_cari`.
+
+**B. Daftar kejadian untuk warga**
+
+| Hal | Hasil |
+| --- | --- |
+| Sumber | `sk_kejadian_kab` (`sk_kejkab_kab (kab4, mulai DESC, kejadian_id)`) digabung `sk_kejadian`. Tiap jalur pembuatan kejadian (manual, promosi, ingest, dummy; `src/siklus_kejadian.js` 197, 214, 277, 417) menulis baris `sk_kejadian_kab`, jadi kab utama dan kab tambahan sama-sama terbaca dari satu tabel |
+| Fase | CHECK 0120: `terdeteksi`, `terverifikasi`, `tanggap`, `transisi`, `pemulihan`, `selesai`, `dibatalkan`, `digabung`. **Tidak ada fase `pasca`** (ALGORITMA 3 menyebut "belum pasca"). Dipakai: aktif = `terverifikasi`, `tanggap`, `transisi`, `pemulihan`; `selesai` hanya dalam jendela; `terdeteksi`, `dibatalkan`, `digabung` tidak pernah ditawarkan (`terdeteksi` belum diverifikasi) |
+| Jenis | `JENIS_SAH` di `src/siklus_kejadian.js` 16 (banjir, cuaca, gelombang, gempa, gunungapi, karhutla, kebakaran_permukiman, kekeringan, longsor, tsunami) sudah semuanya bencana; kecelakaan dan kasus non-bencana tidak ada di daftar dan disaring lagi di fungsi murni |
+| Kolom yang keluar | `id`, `jenis`, `kab4` + nama kab (`NAMA_KAB4`), `mulai`. Tanpa nama kejadian, titik pusat, ringkasan, sumber, `dampak` |
+| Kueri | satu `SELECT ... JOIN` per kab lewat `sk_kejkab_kab`, `LIMIT 100`, diperiksa `EXPLAIN QUERY PLAN` di `tests/lapor/hilang_rute.test.mjs`; penyaringan jendela, fase, dan maksimum 8 di fungsi murni `kandidatKejadian` |
+| Jumlah per kab | Bentuk: `SELECT kab4, count(*) FROM sk_kejadian_kab WHERE dummy = 0 GROUP BY kab4`; hasilnya bergantung data produksi dan **belum diukur** (pemilik menjalankan di D1 produksi bila ingin angka; batas 100 baris per kab di kueri menjaga biaya baca) |
+
+**C. Keputusan kecil yang diambil penyusun (bawaan sementara, bukan K pemilik):** batas kategori anak (balita 0 sampai 4, anak 5 sampai 12, remaja 13 sampai 17) HIPOTESIS di `src/orang_hilang_murni.js`; `id` kejadian (`KJ-...`) ikut keluar dari rute kejadian karena pelapor memilihnya, id acak berbasis hash dan sudah dipakai di tautan publik Siklus; saringan umur di daftar publik hanya per rentang 5 tahun dan hanya dewasa supaya rentang sempit tidak membongkar umur tepat.
+
 ## 2. Fakta platform
 
 | Hal | Fakta | Dampak |
