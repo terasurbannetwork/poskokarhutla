@@ -2218,7 +2218,8 @@ function kartuKejadian(x, ikut) {
       if (b.gambar) { const img = Object.assign(el("img", "lp-kb-thumb"), {src: b.gambar, alt: "", loading: "lazy", decoding: "async", width: 96, height: 64}); img.addEventListener("error", () => img.replaceWith(logoG())); li.append(img); } else li.append(logoG());
       li.append(tx); ul.append(li); }
     pb.append(ul); if (t.berita.lebih) pb.append(el("small", "lp-redup", `Dan ${t.berita.lebih.toLocaleString("id-ID")} berita lain yang cocok.`)); }
-  // Media sosial (KA-07) belum tersambung: tidak diulang di tiap kartu; keterangannya tampil sekali lewat saringan Medsos
+  // Media sosial (KA-07): bagian sendiri seperti yang lain (pemilik 27 Nov 2026); sampai Q1 dijawab hanya keterangan belum tersambung, tanpa angka
+  const pm = pitaKabar("Media sosial", "i-tagar"); pita.push(pm); hitungPita(pm, t.medsos.teks); pm.append(kosongKabar(t.medsos.ket));
   bd.prepend(...pita);
   // ringkasan di kepala kartu terlipat: status resmi dan jumlah tiap sumber, tanpa menjumlah angka antarsumber (D3)
   const nBerita = t.berita.baris.length + (t.berita.lebih || 0);
