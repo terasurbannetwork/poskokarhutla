@@ -414,7 +414,10 @@ test("lapor orang hilang lewat obrolan (pemilik 25 Nov 2026): identitas, lokasi 
   await kirim("1");
   assert.equal(sesi.status, "cari_terkirim"); assert.ok(!h.kirim, "bukan laporan bertiket");
   assert.deepEqual(sesi.cari, {nama: "Siti Aminah"}, "ciri, nomor, hubungan tidak tertinggal di salinan sesi");
-  assert.deepEqual(h.kirimCari, {nama_dicari: "Siti Aminah", ciri: "Perempuan, 9 tahun, tinggi 150 cm, pakaian terakhir kaos merah, tahi lalat di pipi", lokasi_terakhir: "Desa/Kel. Sukamaju, Kec. Cibinong", waktu_terakhir: "1 Januari 1970", nomor_dicari: "6281311224455", hubungan: "Anak", kab: "32.01"});
+  const {panggilan, cr, kec, kab_nama, waktu_ms, kejadian, setuju, ...inti} = h.kirimCari;   // OH-04: sisanya untuk profil oh_publik
+  assert.deepEqual({panggilan, kec, kab_nama, kejadian, setuju}, {panggilan: "Ami", kec: "Cibinong", kab_nama: "Kab. Bogor", kejadian: null, setuju: null}, "tanpa penyaring bencana (kejadianCari tidak disuntik) tidak ada persetujuan");
+  assert.equal(cr.umur, 9); assert.ok(Number.isFinite(waktu_ms));
+  assert.deepEqual(inti, {nama_dicari: "Siti Aminah", ciri: "Perempuan, 9 tahun, tinggi 150 cm, pakaian terakhir kaos merah, tahi lalat di pipi", lokasi_terakhir: "Desa/Kel. Sukamaju, Kec. Cibinong", waktu_terakhir: "1 Januari 1970", nomor_dicari: "6281311224455", hubungan: "Anak", kab: "32.01"});
   assert.deepEqual(h.kirimTemu, {panggilan: "Ami", nomor_kontak: "6280000000000", tempat_tunggu: "Posko Masjid Al Ikhlas, Jl. Raya Cibinong No 12", foto_id: "f".repeat(16),
     foto_ids: ["f".repeat(16), "e".repeat(16), ...Array.from({length: 8}, (_, i) => String(i + 3).padStart(16, "0"))]});
   assert.match(h.balasan, /mengantar ke Posko Masjid Al Ikhlas/);

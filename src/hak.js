@@ -2900,11 +2900,14 @@ export const ohByToken = (env, p, token, sejak) => { if (!Number.isFinite(sejak)
 /* baris penuh (kontak kejadian, wali, setuju): bukan untuk lp_publik, yang boleh baca tabel ini hanya lewat ohDaftarPublik dan ohByToken (kolom daftar putih) */
 export const ohById = (env, p, cariId) => p?.peran === "lp_publik" ? (() => { throw new Galat(403, "lp_publik tidak membaca baris penuh oh_publik"); })() : sedia(env, p, "oh_publik", "baca", "SELECT * FROM oh_publik WHERE cari_id = ?1").bind(cariId).first();
 /* baris draf sesudah persetujuan versi sah tercatat; kejadian dipilih pelapor tetapi belum dikonfirmasi petugas (kejadian_oleh kosong sampai petugas) */
-export const ohTambah = (env, p, b, kini) => sedia(env, p, "oh_publik", "tambah",
-  `INSERT INTO oh_publik (cari_id, token, kelas, nama, inisial, panggilan, umur, kelamin, tinggi, pakaian, kec, kab, kab_nama, waktu_terakhir, kejadian_id, kejadian_jenis, kejadian_kab, kejadian_mulai,
-   setuju_versi, setuju_waktu, setuju_wali, bidang_pilihan, dibuat) VALUES (?1, ?2, ?3, ?4, ?23, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20, ?21, ?22)`)
+export const ohStmtTambah = (env, p, b, kini, g = false) => sedia(env, p, "oh_publik", "tambah",
+  lpIns(g, "", "oh_publik", "cari_id, token, kelas, nama, panggilan, umur, kelamin, tinggi, pakaian, kec, kab, kab_nama, waktu_terakhir, kejadian_id, kejadian_jenis, kejadian_kab, kejadian_mulai, setuju_versi, setuju_waktu, setuju_wali, bidang_pilihan, dibuat, inisial, status"))
   .bind(b.cari_id, b.token, b.kelas, b.nama ?? null, b.panggilan ?? null, b.umur ?? null, b.kelamin ?? null, b.tinggi ?? null, b.pakaian ?? null, b.kec ?? null, b.kab ?? null, b.kab_nama ?? null, b.waktu_terakhir ?? null,
-    b.kejadian_id ?? null, b.kejadian_jenis ?? null, b.kejadian_kab ?? null, b.kejadian_mulai ?? null, b.setuju_versi ?? null, b.setuju_waktu ?? null, b.setuju_wali ?? null, JSON.stringify(b.bidang_pilihan ?? {}), kini, b.nama ? ohInisial(b.nama) : null).run();
+    b.kejadian_id ?? null, b.kejadian_jenis ?? null, b.kejadian_kab ?? null, b.kejadian_mulai ?? null, b.setuju_versi ?? null, b.setuju_waktu ?? null, b.setuju_wali ?? null, JSON.stringify(b.bidang_pilihan ?? {}), kini, b.nama ? ohInisial(b.nama) : null, b.status ?? "draf");
+/* status awal draf; b.status = "menunggu" untuk laporan yang baru dikirim (lapor_ai.js, satu batch dengan lapor_cari, g = rantai changes()) */
+export const ohTambah = (env, p, b, kini) => ohStmtTambah(env, p, b, kini).run();
+export const ohStmtRiwayat = (env, p, b, kini, g = false) => sedia(env, p, "oh_riwayat", "tambah",
+  lpIns(g, "", "oh_riwayat", "cari_id, dari, ke, alasan, catatan, oleh, waktu")).bind(b.cari_id, b.dari, b.ke, b.alasan, b.catatan ?? null, b.oleh, kini);
 /* pindah status: pembanding dari-ke dari tabel PINDAH (orang_hilang_murni.js), kalah balapan = false. UPDATE bersyarat status lama; baris riwayat ikut hanya bila UPDATE mengubah baris (satu batch).
    Syarat tayang (layak, persetujuan, bendera) dijaga rute, bukan di sini. turun ke menunggu hanya bila alasan_turun = kedaluwarsa. */
 export const ohPindah = async (env, p, b, kini) => {
@@ -2914,7 +2917,8 @@ export const ohPindah = async (env, p, b, kini) => {
   if (b.ke === "turun" && !OH_ALASAN_TURUN.includes(alasanTurun)) throw new Galat(400, "alasan turun tidak dikenal");   // jangan jadi 500 dari CHECK D1
   const [u] = await lpBatch(env, p, [env.DB.prepare(`UPDATE oh_publik SET status = ?2, alasan_turun = ?3,
       tayang_waktu = CASE WHEN ?2 = 'tayang' THEN ?4 ELSE tayang_waktu END, turun_waktu = CASE WHEN ?2 = 'turun' THEN ?4 ELSE turun_waktu END,
-      dicabut_waktu = CASE WHEN ?2 = 'turun' AND ?3 = 'dicabut' THEN ?4 ELSE dicabut_waktu END
+      dicabut_waktu = CASE WHEN ?2 = 'turun' AND ?3 = 'dicabut' THEN ?4 ELSE dicabut_waktu END,
+      foto_publik = CASE WHEN ?2 = 'turun' THEN '[]' ELSE foto_publik END
       WHERE cari_id = ?1 AND status = ?5 AND (?5 <> 'turun' OR alasan_turun = 'kedaluwarsa')`).bind(b.cari_id, b.ke, alasanTurun, kini, b.dari),
     env.DB.prepare("INSERT INTO oh_riwayat (cari_id, dari, ke, alasan, catatan, oleh, waktu) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7 WHERE changes() > 0")
       .bind(b.cari_id, b.dari, b.ke, b.alasan ?? alasanTurun ?? b.ke, b.catatan ?? null, b.oleh, kini)]);
@@ -2925,3 +2929,37 @@ export const ohRiwayat = async (env, p, cariId) => (await sedia(env, p, "oh_riwa
 export const ohKejadianKab = async (env, p, kab4) => (await sedia(env, p, "sk_kejadian_kab", "baca",
   `SELECT k.id, k.jenis, k.mulai, k.fase, c.kab4 FROM sk_kejadian_kab c JOIN sk_kejadian k ON k.id = c.kejadian_id
    WHERE c.kab4 = ?1 AND c.dummy = 0 AND k.dummy = 0 AND k.fase NOT IN ('terdeteksi', 'dibatalkan', 'digabung') ORDER BY c.mulai DESC LIMIT 100`).bind(kab4).all()).results;
+/* OH-08. Profil satu pelapor (nomor sesi terbukti atau gateway): tanpa nomor, ciri, foto, atau titik; dipakai rute saya/*. */
+export const ohMilik = async (env, p, nomor) => (await sedia(env, p, "oh_publik", "baca",
+  `SELECT o.cari_id, o.status, o.alasan_turun, o.tayang_waktu, o.foto_publik, o.setuju_versi, o.dicabut_waktu, o.kelas, c.status AS cari_status, c.dibuat
+   FROM oh_publik o JOIN lapor_cari c ON c.id = o.cari_id WHERE c.nomor_pencari = ?1 ORDER BY c.dibuat DESC LIMIT 20`).bind(nomor).all()).results;
+/* turun otomatis K115: profil menunggu atau tayang yang laporan indungnya ditemukan atau ditutup, atau tayang yang masa tayangnya habis (cron menit 17, jaring pengaman jalur cariStatus) */
+export const ohSapuan = async (env, p, batasTayang) => (await sedia(env, p, "oh_publik", "baca",
+  `SELECT o.cari_id, o.status, o.foto_publik, o.tayang_waktu, c.status AS cari_status FROM oh_publik o JOIN lapor_cari c ON c.id = o.cari_id
+   WHERE o.status IN ('menunggu', 'tayang') AND (c.status IN ('ditemukan_selamat', 'ditemukan_meninggal', 'tutup') OR (o.status = 'tayang' AND o.tayang_waktu <= ?1)) ORDER BY o.cari_id LIMIT 200`).bind(batasTayang).all()).results;
+/* retensi (KEAMANAN 1): yang pribadi dikosongkan bersama lapor_cari yang teranonimkan (crAnonimkan lebih dulu di cron), oh_temu 730 hari sesudah ditutup_waktu, oh_cari_foto 90 hari, oh_info selesai 180 hari */
+export const ohAnonimCari = async (env, p) => {
+  const ids = (await sedia(env, p, "oh_publik", "baca",
+    `SELECT o.cari_id FROM oh_publik o WHERE o.status IN ('draf', 'turun') AND (o.nama IS NOT NULL OR o.panggilan IS NOT NULL OR o.ciri IS NOT NULL)
+     AND EXISTS (SELECT 1 FROM lapor_cari c WHERE c.id = o.cari_id AND c.nomor_pencari = ?1) LIMIT 200`).bind(CARI_NOMOR_ANONIM).all()).results.map(r => r.cari_id);   // lewat indeks status dan kunci lapor_cari, tanpa pindai
+  if (!ids.length) return 0; izin(p, "oh_publik", "ubah"); izin(p, "oh_riwayat", "ubah");
+  const j = JSON.stringify(ids), [a] = await lpBatch(env, p, [
+    env.DB.prepare(`UPDATE oh_publik SET nama = NULL, inisial = NULL, panggilan = NULL, umur = NULL, kelamin = NULL, tinggi = NULL, pakaian = NULL, ciri = NULL, kec = NULL, kab_nama = NULL, waktu_terakhir = NULL,
+      bidang_pilihan = '{}', foto_publik = '[]' WHERE cari_id IN (SELECT value FROM json_each(?1))`).bind(j),
+    env.DB.prepare("UPDATE oh_riwayat SET catatan = NULL WHERE catatan IS NOT NULL AND cari_id IN (SELECT value FROM json_each(?1))").bind(j)]);
+  return a.meta.changes;
+};
+export const ohTemuLama = async (env, p, batas) => (await sedia(env, p, "oh_temu", "baca",
+  "SELECT id FROM oh_temu WHERE ditutup_waktu IS NOT NULL AND ditutup_waktu < ?1 AND (nomor_penemu IS NOT NULL OR lokasi_teks IS NOT NULL OR lat IS NOT NULL OR ucapan IS NOT NULL OR ciri IS NOT NULL) LIMIT 200").bind(batas).all()).results.map(r => r.id);
+export const ohTemuFoto = async (env, p, ids) => ids.length ? (await sedia(env, p, "oh_temu_foto", "baca",
+  "SELECT foto_id FROM oh_temu_foto WHERE temu_id IN (SELECT value FROM json_each(?1))").bind(JSON.stringify(ids)).all()).results.map(r => r.foto_id) : [];
+export const ohAnonimTemu = async (env, p, ids) => { if (!ids.length) return 0; izin(p, "oh_temu_foto", "hapus"); izin(p, "oh_temu", "ubah"); izin(p, "oh_riwayat", "ubah");
+  const j = JSON.stringify(ids), [, a] = await lpBatch(env, p, [
+    env.DB.prepare("DELETE FROM oh_temu_foto WHERE temu_id IN (SELECT value FROM json_each(?1))").bind(j),
+    env.DB.prepare("UPDATE oh_temu SET nomor_penemu = NULL, lokasi_teks = NULL, lat = NULL, lon = NULL, ucapan = NULL, ciri = NULL WHERE id IN (SELECT value FROM json_each(?1))").bind(j),
+    env.DB.prepare("UPDATE oh_riwayat SET catatan = NULL WHERE catatan IS NOT NULL AND temu_id IN (SELECT value FROM json_each(?1))").bind(j)]);
+  return a.meta.changes; };
+export const ohRetensi = async (env, p, kini) => { izin(p, "oh_cari_foto", "hapus"); izin(p, "oh_info", "hapus");
+  const [a, b] = await lpBatch(env, p, [env.DB.prepare("DELETE FROM oh_cari_foto WHERE waktu < ?1").bind(kini - 90 * 864e5),
+    env.DB.prepare("DELETE FROM oh_info WHERE status = 'selesai' AND selesai_waktu IS NOT NULL AND selesai_waktu < ?1").bind(kini - 180 * 864e5)]);
+  return {cari_foto: a.meta.changes, info: b.meta.changes}; };

@@ -93,3 +93,18 @@ export function saranCocok(hilang, temu, tetangga = () => []) {
     return alasan.kab && alasan.waktu && alasan.kelamin && alasan.umur ? [{id: T.id, alasan, hari: Math.floor(hari)}] : [];
   }).sort((a, z) => Object.values(z.alasan).filter(v => v === true).length - Object.values(a.alasan).filter(v => v === true).length);
 }
+
+/* ---- 7. baris oh_publik dari isian obrolan (OH-04) ----
+   k = isian kirimCari mesin (nama_dicari, panggilan, cr {umur, kelamin, tinggi, pakaian}, kec, kab, kab_nama, waktu_ms, kejadian {id, jenis, kab4, mulai} atau {id: null}, setuju {versi, waktu}).
+   Tiap nilai dijepit ke batas CHECK migrasi 0188: satu isian aneh tidak boleh menggagalkan batch laporan; di luar batas jadi null (kosong tidak pernah jadi 0). */
+const jepit = (v, m) => { const t = String(v ?? "").trim(); return t ? t.slice(0, m) : null; };
+const bulat = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi ? v : null;
+export function barisOh(k, cariId, token) {
+  const cr = k?.cr ?? {}, kej = k?.kejadian ?? {}, umur = bulat(cr.umur, 0, 120), mulai = typeof kej.mulai === "string" && /^\d{4}-\d{2}-\d{2}$/.test(kej.mulai) ? kej.mulai : null;
+  const adaKej = typeof kej.id === "string" && kej.id.length === 16 && typeof kej.jenis === "string" && kej.jenis.length >= 3 && kej.jenis.length <= 24 && /^\d{4}$/.test(String(kej.kab4 ?? "")) && !!mulai;
+  return {cari_id: cariId, token, kelas: kelasUmur(umur, null), nama: jepit(k?.nama_dicari, 80), panggilan: jepit(k?.panggilan, 40), umur,
+    kelamin: cr.kelamin === "Laki-laki" || cr.kelamin === "Perempuan" ? cr.kelamin : null, tinggi: bulat(cr.tinggi, 30, 260), pakaian: jepit(cr.pakaian, 200),
+    kec: jepit(k?.kec, 80), kab: /^\d{2}\.\d{2}$/.test(k?.kab ?? "") ? k.kab : null, kab_nama: jepit(k?.kab_nama, 80), waktu_terakhir: Number.isFinite(k?.waktu_ms) ? k.waktu_ms : null,
+    kejadian_id: adaKej ? kej.id : null, kejadian_jenis: adaKej ? kej.jenis : null, kejadian_kab: adaKej ? String(kej.kab4) : null, kejadian_mulai: adaKej ? mulai : null,
+    setuju_versi: Number.isInteger(k?.setuju?.versi) && k.setuju.versi >= 1 ? k.setuju.versi : null, setuju_waktu: Number.isFinite(k?.setuju?.waktu) ? k.setuju.waktu : null, status: "menunggu"};
+}

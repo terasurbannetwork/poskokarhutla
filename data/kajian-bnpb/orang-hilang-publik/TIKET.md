@@ -12,11 +12,11 @@ Status: **Siap** = bisa dikerjakan tanpa jawaban pemilik (bawaan sudah cukup dan
 | OH-01 | Ukur celah data dan daftar kejadian untuk warga | **Selesai** (27 Nov 2026, belum di-commit) | |
 | OH-02 | Fungsi murni dan uji murni | **Selesai** (27 Nov 2026, belum di-commit) | |
 | OH-03 | Migrasi `oh_*`, hak tabel, pembaca kejadian | **Selesai** (27 Nov 2026, belum di-commit) | |
-| OH-04 | Mesin obrolan: penyaring bencana dan persetujuan | Siap (teks draf Q18) | |
+| OH-04 | Mesin obrolan: penyaring bencana dan persetujuan | **Selesai** (27 Nov 2026, belum di-commit; teks persetujuan masih draf Q18) | |
 | OH-05 | Foto publik turunan | Siap | |
 | OH-06 | Profil anak dan wali | Siap | |
 | OH-07 | Meja tinjau | Siap | |
-| OH-08 | Cabut, perpanjang, turun otomatis, cron | Siap | |
+| OH-08 | Cabut, perpanjang, turun otomatis, cron | **Selesai** (27 Nov 2026, belum di-commit; jalur `cabut` tanpa sesi lewat `oh_info` menunggu OH-11) | |
 | OH-09 | Rute publik dan tab publik (bendera mati) | Siap | |
 | OH-10 | Jalur menemukan orang (tanpa tayang) | Siap | |
 | OH-11 | Informasi, laporkan, tombol "Saya orang ini", protokol penyalahgunaan | Siap (nomor layanan perlu pemilik untuk dipasang) | tidak menahan kode; Q15 menahan tayang |
@@ -172,6 +172,7 @@ Format tiap tiket: Tujuan, Berkas, Di luar, Dependensi, Pengerja, Pemeriksa, Lan
 - **Dependensi**: OH-09, OH-11, OH-16; jawaban semua Q tayang (Q1 sampai Q8, Q13 untuk K105, Q15 sampai Q18, Q20 sampai Q25); **tinjauan pengacara wajib**: (a) teks persetujuan dan dasar hukum (Q18), (b) transfer foto ke Claude API yang **sudah berjalan lewat K105** (D33, Q13); migrasi di produksi.
 - **Pengerja**: `mekanik-mesin` (hanya konfigurasi, tanpa deploy dari agent), sesi induk. **Pemeriksa**: `security-reviewer`.
 - **Langkah**: pemilik menjawab Q; pemilik meninjau di lokal; pemilik menerapkan migrasi dan menyalakan bendera; uji manual bagian 7.
+- **Urutan migrasi dan bendera (wajib)**: pemilik menerapkan 0188 dan 0190 ke D1 produksi LEBIH DULU, baru menyalakan `OH_TULIS = "1"` (bawaan "0" di kedua wrangler; tanpa itu kiriman cari orang tidak menulis `oh_publik`), baru `OH_PUBLIK`.
 - **Bukti**: lembar manual bertanda pemilik; respons publik diperiksa dengan data uji sintetis.
 - **Pemilik**: ya, penuh.
 

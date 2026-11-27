@@ -12,5 +12,5 @@
   // Workers AI: hitung orang di foto/video lapangan instansi (src/instansi.js, @cf/facebook/detr-resnet-50). Tanpa binding, hitungan kosong dan isian tetap tersimpan.
   "ai": { "binding": "AI" },
   "triggers": { "crons": ["* * * * *"] },
-  "vars": { "TURNSTILE_SITEKEY": "", "OH_PUBLIK": "0", "OH_FOTO": "0" }
+  "vars": { "TURNSTILE_SITEKEY": "", "OH_PUBLIK": "0", "OH_TULIS": "0", "OH_FOTO": "0" }
 }

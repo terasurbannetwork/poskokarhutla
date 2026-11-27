@@ -7,6 +7,7 @@ import {sesiMasuk} from "./masuk_sesi.js";
 import {terbitkan, periksa, cabut} from "./token.js";
 import {nomorWa} from "./lapor_tampil.js";
 import {dalamWilayah, bolehAksi} from "./lapor_meja_hak.js";
+import {turunDariCari} from "./orang_hilang.js";
 import * as H from "./hak.js";
 
 const HARI = 864e5, JAM = 3600e3, TAUTAN_HARI = 7;
@@ -109,6 +110,7 @@ export function buatSelamat(wilayahDari) {
     const r = RE_ID.test(id) ? await H.crById(env, STAF, id) : null;
     if (!r || !dalamWilayah(h.c, {provKode: r.kab.slice(0, 2), kabKode: r.kab, kab: await kabNama(env, r.kab)})) return galat(404, "Laporan tidak ditemukan.");
     await H.crStatus(env, STAF, id, o.status, teks(o.catatan, 300) || null, h.oleh, kini);
+    await turunDariCari(env, STAF, id, o.status, h.oleh, kini);   // OH-08, K115: profil publiknya turun dalam permintaan yang sama; ke_sar dan buka tidak menurunkan
     return kirim(200, {id, status: o.status});
   }
   return {
