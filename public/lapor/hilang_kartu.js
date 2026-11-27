@@ -35,13 +35,15 @@ const JENIS = {banjir: "Banjir", cuaca: "Cuaca ekstrem", gelombang: "Gelombang t
 export const namaJenis = j => JENIS[j] ?? String(j ?? "").replace(/_/g, " ");
 
 /* Perilaku satu pil status: teks selalu ada (tidak mengandalkan warna), lihat DESIGN-SYSTEM aturan 9 */
+/* kerja berat sesudah chrome tergambar: dua rAF (pola lapor.js) */
+export const nanti = f => requestAnimationFrame(() => requestAnimationFrame(f));
 export const pilStatus = (teks, nada = "") => el("span", `oh-pil ${nada}`.trim(), teks);
 
 /* ---- kartu profil publik ----
    p: keluaran profilPublik. opsi: {pratinjau, tautan (bool, nama jadi tautan ke /lapor/h/<id>), aksi (bool, tombol kaki), status ("tayang" | "turun" | "menunggu")} */
 export function kartuProfil(p, opsi = {}) {
   const anak = !Array.isArray(p.foto) && p.umur !== undefined && p.kelamin === undefined, k = el("article", `oh-profil${anak ? " anak" : ""}${opsi.status === "turun" ? " turun" : ""}`);
-  const foto = el("div", "oh-foto"), url = !anak && Array.isArray(p.foto) ? p.foto[0] : null;
+  const foto = el("div", "oh-foto"), url = !anak && Array.isArray(p.foto) && /^\/api\/lapor\/hilang\/foto\/[0-9a-f]{32}$/.test(p.foto[0]) ? p.foto[0] : null;   // hanya rute foto Worker
   if (url) {
     const im = Object.assign(el("img"), {src: url, alt: `Foto ${p.panggilan || p.nama || "orang yang dicari"}, umur ${p.umur}`, loading: "lazy", decoding: "async", draggable: false, width: 160, height: 200});
     im.addEventListener("contextmenu", e => e.preventDefault());
@@ -141,7 +143,7 @@ function bersihkanJpeg(u8) {
 export async function kecilkanFoto(file, sisi = 800, maks = 300 * 1024) {
   if (!file) return null;
   try {
-    const bmp = await createImageBitmap(file), s = Math.min(1, sisi / Math.max(bmp.width, bmp.height)), c = document.createElement("canvas");
+    const bmp = await createImageBitmap(file, {resizeWidth: sisi, resizeQuality: "medium"}), s = Math.min(1, sisi / Math.max(bmp.width, bmp.height)), c = document.createElement("canvas");
     c.width = Math.max(1, Math.round(bmp.width * s)); c.height = Math.max(1, Math.round(bmp.height * s));
     c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height); bmp.close?.();
     for (const q of [0.8, 0.7, 0.6, 0.5]) {

@@ -2,7 +2,7 @@
    Dua antrean: Tinjau profil (pratinjau persis publik, panel "Hanya petugas", daftar periksa telepon, aksi tayang) dan Informasi masuk (kiriman publik, laporkan,
    cabut, "Saya orang ini"). Hak dan wilayah ditentukan server (GET /api/lapor/meja/hilang*); layar tidak menyaring sendiri.
    INP: tombol berubah seketika, daftar dimuat ulang sesudah server menjawab. Teks data lewat textContent. */
-import {el, kartuProfil, ikon, tanggalPendek, pilStatus} from "./hilang_kartu.js?v=1";
+import {el, kartuProfil, ikon, tanggalPendek, pilStatus, nanti} from "./hilang_kartu.js?v=1";
 
 const NS = "http://www.w3.org/2000/svg";
 const ikonM = id => { const s = document.createElementNS(NS, "svg"), u = document.createElementNS(NS, "use"); u.setAttribute("href", `#${id}`); s.setAttribute("aria-hidden", "true"); s.append(u); return s; };
@@ -163,7 +163,7 @@ export async function bukaHilangPublik() {
   const segar = () => {
     chips.replaceChildren(...[["tinjau", "Tinjau profil", data?.baris?.length], ["info", "Informasi masuk", tab === "info" ? info.length : null]].map(([k, t, n]) => {
       const c = el("button", "mj-chip-j"); c.type = "button"; c.setAttribute("aria-pressed", String(tab === k)); c.append(ikonM("m-orang"), `${t} `, ...(n != null ? [el("b", null, F(n))] : []));
-      c.addEventListener("click", () => { tab = k; segar(); gambar(); if (k === "info" && !info.length && kursor === null) muatInfo(); });
+      c.addEventListener("click", () => { tab = k; segar(); nanti(gambar); if (k === "info" && !info.length && kursor === null) muatInfo(); });
       return c;
     }));
   };

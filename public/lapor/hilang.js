@@ -1,10 +1,9 @@
 /* /lapor/hilang: daftar profil orang hilang yang sudah diperiksa petugas (orang-hilang-publik OH-09, D30).
    Dua saringan (kab/kota, umur) dikirim ke GET /api/lapor/hilang; 20 profil per muat, kursor dari server. Tanpa rute "semua".
    API 404 (bendera OH_PUBLIK mati) = "Belum ada profil yang ditampilkan", bukan galat. Teks data lewat textContent. */
-import {el, kartuProfil} from "/lapor/hilang_kartu.js?v=1";
+import {el, kartuProfil, nanti} from "/lapor/hilang_kartu.js?v=1";
 
 const $ = id => document.getElementById(id);
-const nanti = f => (window.requestIdleCallback ? requestIdleCallback(f, {timeout: 500}) : setTimeout(f, 0));
 let kursor = null, urutan = 0, kabKode = "", kabPeta = null;
 
 function kosong(judul, teks) { const k = el("div", "oh-kosong"); k.append(el("b", null, judul), el("span", null, teks)); $("daftar").replaceChildren(k); $("lagi").hidden = true; }
@@ -33,8 +32,9 @@ async function muat(tambah) {
 let kabJanji = null;
 function muatKab() {
   return kabJanji ??= fetch("/data/desa_cari.json", {signal: AbortSignal.timeout(30000)}).then(r => r.json()).then(d => {
-    const dl = $("dKab"); kabPeta = new Map();
-    for (const [k, n] of Object.entries(d.kab || {})) { kabPeta.set(n.toLowerCase(), k); dl.append(Object.assign(el("option"), {value: n})); }
+    const dl = $("dKab"), fr = document.createDocumentFragment(); kabPeta = new Map();
+    for (const [k, n] of Object.entries(d.kab || {})) { kabPeta.set(n.toLowerCase(), k); fr.append(Object.assign(el("option"), {value: n})); }
+    dl.append(fr);
   }).catch(() => { kabJanji = null; });
 }
 async function pilihKab() {
@@ -42,7 +42,7 @@ async function pilihKab() {
   const nama = $("qKab").value.trim().toLowerCase(), k = kabPeta?.get(nama) || "";
   if (k !== kabKode && (k || !nama)) { kabKode = k; muat(false); }
 }
-for (const e of ["focus", "pointerdown"]) $("qKab").addEventListener(e, () => nanti(muatKab), {once: true});
+(window.requestIdleCallback || setTimeout)(muatKab);   // prefetch saat idle, bukan saat fokus
 $("qKab").addEventListener("input", () => nanti(pilihKab));
 let tunda = 0;
 $("qUmur").addEventListener("input", () => { clearTimeout(tunda); tunda = setTimeout(() => muat(false), 500); });
