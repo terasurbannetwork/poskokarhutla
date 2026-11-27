@@ -112,3 +112,7 @@ Jaminan yang diuji: fungsi susun hasil tidak menerima foto; tidak ada jalur kode
 | `oh_cari_foto` | 90 hari (HIPOTESIS), hanya statistik laju |
 | `oh_info` | 180 hari sesudah selesai ditangani (HIPOTESIS), nomor pemberi dikosongkan |
 | `oh_riwayat` | append-only; `catatan` = alasan baku plus teks pendek 140 huruf yang disaring `samarkan` (D31); catatan dianonimkan bersama `oh_publik` dan `oh_temu`; barisnya tidak dihapus |
+
+## 9. Daftar periksa telepon sebelum Tayang dewasa (D34) [BAWAAN SEMENTARA, OH-07]
+
+Hanya hasil telepon `telepon_*` TERBARU di `oh_riwayat` yang dihitung (dibaca satu baris, tanpa LIMIT yang bisa memotong). Hasil `ingin` atau `tak_terjangkau` (atau `tanpa_nomor` bila memang tak ada `nomor_dicari`) hanya cukup bila dicatat sesudah profil terakhir masuk `menunggu` (kirim, kirim ulang sesudah perbaikan, perpanjang); telepon yang lebih lama tidak cukup. Hasil terbaru `tidak_ingin` memblokir Tayang, juga sesudah profil masuk `menunggu` lagi, sampai petugas mencatat telepon baru. Menunggu keputusan pemilik bila ingin aturan lain.

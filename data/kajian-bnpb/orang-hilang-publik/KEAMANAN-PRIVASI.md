@@ -78,3 +78,16 @@ Dicatat: versi, waktu, bidang yang dipilih, id foto yang dipilih, status wali. P
 ## 8. Larangan
 
 Tidak menyimpan foto penanya. Tidak menyimpan atau menghitung vektor wajah. Tidak mencocokkan dari nama atau nomor di publik. Tidak menampilkan nomor, titik, hubungan, berat, foto anak, atau foto yang tidak dipilih. Tidak menayangkan tanpa tinjauan manusia dan tanpa kejadian bencana terkonfirmasi. Tidak menayangkan jenazah atau orang tak sadar. Tidak menulis "aman" atau "pasti". Tidak ada data orang di repo atau di `public/`. Tidak ada data dummy; uji membangun data uji sintetis di dalam uji. Foto uji pembanding hanya foto sintetis atau foto relawan yang setuju tertulis, tidak pernah foto laporan nyata.
+
+## 9. Laporan yang ditutup tanpa simpan (OH-04, tinjauan keamanan 27 Nov 2026)
+
+Jalur "Bukan karena bencana" (K116) dan "Saya tidak setuju" (K111) tidak membuat `lapor_cari` maupun `oh_publik`. Supaya data orang itu juga tidak tertinggal di arsip obrolan, saat sesi ditutup dengan cara ini: (1) isi sesi (`kerja`) dikosongkan: isian, transkrip, `cari`, foto; (2) teks tiap baris `lapor_pesan` sesi itu diganti penanda `[dihapus: laporan tidak disimpan]`, barisnya tetap. Ini satu-satunya `UPDATE` pada `lapor_pesan` (`lpStmtPesanKosong`, hak `ubah` untuk `lp_pelapor` hanya dipakai di sini); arsip percakapan lain tetap hanya ditambah. Penyamaran dipilih, bukan penghapusan baris, supaya hitungan pesan dan urutan arsip tidak berubah.
+
+Batas yang diketahui: foto yang sudah diunggah di langkah foto sebelum penyaring ini (R2 `lapor/foto/` dan baris `lapor_foto`) tidak ikut dihapus oleh jalur ini; hak `lapor_foto` untuk pelapor hanya baca dan tambah. Disapu terpisah (tindak lanjut untuk pemilik berkas hak foto), bukan diklaim terhapus.
+
+Fail-closed: `cari_konfirm` tidak pernah mengirim tanpa persetujuan tercatat (`c.setuju`). Pemanggil mesin tanpa penyaring kejadian (`kejadianCari` tidak disuntik) hanya mendapat pesan "belum bisa dikirim". Penulisan `oh_publik` dipagari `OH_TULIS` (bawaan "0") sampai migrasi 0188 dan 0190 diterapkan.
+
+## 10. Foto publik, meja tinjau, wali (OH-05 sampai OH-07)
+
+Foto publik: berkas R2 `orang-hilang/publik/<32 heks acak>`, tanpa hubungan dengan `cari_id`; sebelum tayang hanya dari pelapor bersesi terbukti, paling 3, 300 KB, 800 px, dan ditolak bila ada EXIF, XMP, atau IPTC; hanya profil dewasa; dilayani hanya saat profil dewasa `tayang` dengan `private, no-store`; dihapus saat turun, dan sapuan cron menghapus berkas yatim yang lebih tua dari 1 jam. Anak tidak punya foto publik.
+Meja: Tayang menuntut `layak` dan `persetujuanSah`, bendera `OH_PUBLIK`, tanpa laporan pihak ketiga yang terbuka, dan (dewasa) hasil telepon `nomor_dicari` tercatat bukan "tidak ingin dicari"; anak menuntut wali diverifikasi petugas. Tiap aksi tulis menulis `oh_riwayat`.

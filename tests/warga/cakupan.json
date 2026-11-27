@@ -5,6 +5,8 @@
     "GET /api/lapor/hilang/saya": "2.22 auth saya/*",
     "POST /api/lapor/hilang/saya/cabut": "2.7 cabut persetujuan",
     "POST /api/lapor/hilang/saya/perpanjang": "2.8 masa tayang habis",
+    "POST /api/lapor/hilang/saya/foto": "OH-05 saya/foto",
+    "GET /api/lapor/hilang/foto/:x": "OH-05 foto dilayani",
     "table oh_publik": "status: draf ke menunggu",
     "table oh_riwayat": "2.15 hak tabel",
     "table oh_temu": "batas skema tiap tabel oh_",

@@ -231,6 +231,7 @@ uji("orang dicari lewat obrolan (pemilik 25 Nov 2026): tanpa kode, baris lapor_c
   for (const t of ["Lanjut", "1", "Tidak tahu", "Pakai nomor saya", "Posko SDN 1 Paledang, Jl. Paledang"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
   assert.match(r.t, /Hilang karena kejadian apa/, "OH-04: penyaring bencana sebelum ringkasan");
   r = await kirimP({teks: "1"}); assert.match(r.t, /Izin menampilkan di halaman Orang hilang/, "belum terdaftar, lalu persetujuan tayang");   // tanpa kejadian di Buku Besar hanya ada dua pilihan, "1" = belum terdaftar
+  r = await kirimP({teks: "1"}); assert.match(r.t, /Anda wali anak ini/, "umur tidak diketahui = anak: wali ditanya");
   r = await kirimP({teks: "1"}); assert.equal(r.s, 200, r.t.slice(0, 300));
   assert.match(r.t, /Foto: ada/);
   assert.match(r.t, /Ringkasan laporan orang dicari/);
@@ -248,7 +249,7 @@ uji("orang dicari lewat obrolan (pemilik 25 Nov 2026): tanpa kode, baris lapor_c
   // OH-04: profil menunggu ditulis dalam batch yang sama; tidak tayang, tanpa kejadian terkonfirmasi, cr dari sesi (bukan teks)
   const oh = await DB.prepare("SELECT * FROM oh_publik WHERE cari_id = ?").bind(t.cari_id).first();
   assert.equal(oh.status, "menunggu"); assert.equal(oh.kejadian_id, null); assert.equal(oh.kejadian_oleh, null); assert.equal(oh.setuju_versi, 1); assert.ok(oh.setuju_waktu > 0);
-  assert.deepEqual({nama: oh.nama, panggilan: oh.panggilan, kec: oh.kec, kab: oh.kab, kab_nama: oh.kab_nama, umur: oh.umur, kelamin: oh.kelamin, kelas: oh.kelas, tinggi: oh.tinggi}, {nama: "Joko", panggilan: "Jojo", kec: "Bogor Tengah", kab: oh.kab, kab_nama: "Kota Bogor", umur: null, kelamin: null, kelas: "anak", tinggi: null});
+  assert.deepEqual({nama: oh.nama, panggilan: oh.panggilan, kec: oh.kec, kab: oh.kab, kab_nama: oh.kab_nama, umur: oh.umur, kelamin: oh.kelamin, kelas: oh.kelas, tinggi: oh.tinggi}, {nama: "Joko", panggilan: "Jojo", kec: "Bogor Tengah", kab: oh.kab, kab_nama: "Kota Bogor", umur: null, kelamin: null, kelas: "anak", tinggi: null}); assert.equal(oh.setuju_wali, 1); assert.equal(oh.wali_oleh, null, "wali belum diverifikasi petugas");
   assert.equal(oh.pakaian, "Kaus merah"); assert.match(oh.token, /^[0-9a-f]{32}$/);
   assert.equal(await DB.prepare("SELECT count(*) n FROM oh_riwayat WHERE cari_id = ? AND ke = 'menunggu'").bind(t.cari_id).first("n"), 1);
 });

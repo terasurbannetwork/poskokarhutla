@@ -6,7 +6,7 @@
    - kirim = true saat laporan baru saja dikirim (penyimpan menerbitkan nomor, tiket, PDF). */
 import {JENIS, KELOMPOK, ISIAN, isianNama, berlaku, berlakuSesi, KRONOLOGI, rangkaiKronologi, opsiBerlaku, langkahKronologi, nomorSeluler} from "./lapor_spek.js";
 import {samarkan} from "./samarkan.js";
-import {SETUJU_VERSI} from "./orang_hilang_murni.js";
+import {SETUJU_VERSI, kelasUmur} from "./orang_hilang_murni.js";
 import {waktuKlienSah, BATAS as BATAS_LURING} from "../public/inti/luring_spek.js";   // Lapor tanpa sinyal (LR-09)
 /* pilihan jenis tanpa "Lainnya" (pemilik 21 Nov 2026: "Hilangkan lainnya"); id lainnya tetap di JENIS untuk laporan lama */
 const JENIS_PILIH = JENIS.filter(j => j.id !== "lainnya"), JENIS_DARURAT = JENIS_PILIH;
@@ -496,7 +496,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
   // "lapor orang hilang" (tombol layar, atau diketik utuh) selalu membuka obrolan baru; "orang hilang" saja hanya di awal, supaya jawaban di tengah laporan lain tidak menimpa drafnya
   // tombol "Lapor orang hilang" ditekan lagi di tengah alur cari juga memulai baru; dulu teksnya tertelan jadi nama orang dicari (pemilik 26 Nov 2026: "Kenapa langsung nama panggilan?")
   if (KATA_CARI.test(teks) && (/^lapor /i.test(teks) || !sesi.cari && (!sesi.transkrip?.length || sesi.status === "identitas"))) {
-    sesi = {status: "identitas", langkah: pelapor ? "kenal" : "setuju", isian: {}, ditanya: [], dibuat: kini, transkrip: [], cari: {}};
+    sesi = {status: "identitas", langkah: pelapor ? "kenal" : "setuju", isian: {}, ditanya: [], dibuat: kini, transkrip: [], cari: {}, cariMulai: kini};   // cariMulai: batas penyamaran pesan arsip bila ditutup tanpa simpan
   }
   sesi.diubah = kini;
   sesi.transkrip.push({dari: "pelapor", teks: teks ? samarkan(teks) : null, lokasi: !!lokasi, waktu: kini});
@@ -595,6 +595,13 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     "Saya paham foto yang saya unggah dikirim ke penyedia model kecerdasan buatan di luar negeri untuk dibaca cirinya.",
     "Saya paham nomor telepon saya tidak ditampilkan, bahwa profil bisa dilihat dan dibagikan siapa saja selama tampil, dan bahwa saya bisa mencabut persetujuan kapan saja sehingga profil langsung turun.",
     "Saya paham bahwa layanan ini tidak menggantikan laporan ke kepolisian."];
+  /* data orang itu tidak boleh tersimpan (K116, K111): rincian sesi dikosongkan dan pemanggil menyamarkan pesan arsipnya (hapusRincian) */
+  const cariMulai = Number.isFinite(sesi.cariMulai) ? sesi.cariMulai : sesi.dibuat ?? kini;   // sesi lama tanpa penanda: sejak sesi dibuat
+  const batalHapus = teksBalasan => { sesi.status = "batal"; sesi.cari = {}; sesi.isian = {}; sesi.foto = []; const h = jawab(teksBalasan); sesi.transkrip = []; h.hapusRincian = {sejak: cariMulai}; return h; };
+  const perluWali = () => kelasUmur(sesi.cari?.cr?.umur, null) === "anak" && sesi.cari?.setuju && sesi.cari.setuju.wali === undefined;
+  const tanyaWali = (kepala = "") => { sesi.status = "cari_wali";
+    return jawab(`${kepala ? `${kepala}\n\n` : ""}*Anda wali anak ini?*\nUmur orang ini di bawah 18 tahun atau belum diketahui, jadi petugas memeriksa dulu siapa wali yang sah. Foto anak tidak pernah ditampilkan di halaman publik.`,
+      ["Ya, saya orang tua atau wali sah", "Bukan, saya bukan wali"], false, null, ["Petugas memastikan lewat telepon", "Laporan tetap masuk dan menunggu keputusan petugas"]); };
   const tanyaSetuju = (kepala = "") => { sesi.status = "cari_setuju";
     return jawab(`${kepala ? `${kepala}\n\n` : ""}*Izin menampilkan di halaman Orang hilang*\n${SETUJU_TEKS.join("\n")}`, ["Saya setuju", "Saya tidak setuju"], false, null, ["Lanjut ke ringkasan", "Laporan tidak dibuat; hubungi kepolisian"]); };
   const tanyaKorban = (kepala = "") => jawab(`${kepala}*Ada korban?*\nAda orang terluka, hilang, atau terjebak?`, ["Ya, ada", "Tidak ada", "Belum tahu"]);
@@ -784,13 +791,17 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     if (sesi.status === "cari_kejadian") {
       const d = c.kejDaftar || [];
       if (p < 0) return tanyaKejadianCari("Pilih salah satu.");
-      if (p === d.length + 1) { sesi.status = "batal"; sesi.cari = {}; return jawab("*Laporan tidak dibuat*\nLayanan ini hanya untuk orang yang hilang karena bencana. Untuk kasus lain, laporkan ke kepolisian terdekat atau hubungi 112."); }
+      if (p === d.length + 1) return batalHapus("*Laporan tidak dibuat*\nLayanan ini hanya untuk orang yang hilang karena bencana. Untuk kasus lain, laporkan ke kepolisian terdekat atau hubungi 112.");
       c.kej = p < d.length ? d[p] : {id: null}; delete c.kejDaftar; return tanyaSetuju();   // "belum terdaftar": id kosong, petugas yang menautkan atau menolak (Q23)
     }
     if (sesi.status === "cari_setuju") {
-      if (p === 1 || /^tidak/i.test(teks.trim())) { sesi.status = "batal"; sesi.cari = {}; return jawab("*Laporan tidak dibuat*\nTanpa persetujuan, laporan ini tidak bisa dikirim lewat layanan ini. Laporkan ke kepolisian terdekat, atau hubungi 112 bila orang itu dalam bahaya sekarang."); }
+      if (p === 1 || /^tidak/i.test(teks.trim())) return batalHapus("*Laporan tidak dibuat*\nTanpa persetujuan, laporan ini tidak bisa dikirim lewat layanan ini. Laporkan ke kepolisian terdekat, atau hubungi 112 bila orang itu dalam bahaya sekarang.");
       if (p !== 0 && !/^(saya )?setuju$/i.test(teks.trim())) return tanyaSetuju("Pilih salah satu.");
-      c.setuju = {versi: SETUJU_VERSI, waktu: kini}; return tanyaCari("konfirm");
+      c.setuju = {versi: SETUJU_VERSI, waktu: kini}; return perluWali() ? tanyaWali() : tanyaCari("konfirm");
+    }
+    if (sesi.status === "cari_wali") {   // anak (umur di bawah 18 atau tidak diketahui): bukan wali dicatat dan menunggu keputusan petugas (Q5); foto anak tidak pernah tampil
+      if (p !== 0 && p !== 1) return tanyaWali("Pilih salah satu.");
+      c.setuju.wali = p === 0 ? 1 : 0; return tanyaCari("konfirm");
     }
     if (sesi.status === "cari_konfirm") {
       if (p === 1) { sesi.status = "batal"; return jawab("*Laporan tidak dibuat*\nBila orang itu dalam bahaya sekarang, hubungi 112 atau BPBD setempat."); }
@@ -798,7 +809,11 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       const w = sesi.isian.lokasi?.nilai?.wilayah;
       if (!w?.kabKode) { sesi.status = "lokasi"; delete sesi.isian.lokasi; return jawab("Lokasi terakhir terlihat belum terbaca. Bagikan lokasi atau cari nama desa/kelurahannya.", null, false, "lokasi"); }
       if (!c.kontak || !c.tempat) return tanyaCari(!c.kontak ? "kontak" : "tempat");   // sesi lama dari sebelum langkah ini ada
-      if (kejadianCari && !c.setuju) return c.kej ? tanyaSetuju() : await tanyaKejadianCari();   // sesi lama sebelum penyaring bencana
+      if (c.setuju && perluWali()) return tanyaWali();   // sesi lama sebelum pertanyaan wali
+      if (!c.setuju) {   // fail-closed: tanpa persetujuan tidak pernah kirim, apa pun pemanggilnya
+        if (kejadianCari) return c.kej ? tanyaSetuju() : await tanyaKejadianCari();   // sesi lama sebelum penyaring bencana
+        return jawab("*Laporan belum bisa dikirim*\nLayanan ini belum bisa memeriksa kejadiannya sekarang. Coba lagi nanti, atau laporkan ke kepolisian terdekat. Bila orang itu dalam bahaya sekarang, hubungi 112.");
+      }
       sesi.status = "cari_terkirim";
       const kirimCari = {nama_dicari: c.nama, ciri: c.ciri, lokasi_terakhir: `Desa/Kel. ${w.desa}, Kec. ${w.kec}`.slice(0, 200), waktu_terakhir: c.waktu, nomor_dicari: c.nomor, hubungan: c.hubungan, kab: w.kabKode,
         panggilan: c.panggilan || null, cr: c.cr || {}, kec: w.kec, kab_nama: w.kab, waktu_ms: c.waktuMs ?? null, kejadian: c.kej ?? null, setuju: c.setuju ?? null};   // sisanya untuk profil oh_publik (OH-04), bukan lapor_cari
@@ -953,7 +968,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     tambahKr = tambah;
     krLama = {kr: {...sesi.kr, tulis: false}, status: sesi.status, tanya: sesi.tanya};   // dipulihkan bila keterangan tambahan ternyata luar topik
     sesi.status = "melengkapi"; sesi.tanya = null; delete sesi.kr; sesi.krSelesai = true;   // panduan sekali per sesi, juga bila semua dijawab Tidak tahu
-    if (!tambah) return putaranInti({sesi, pelapor, pesan: {saluran: pesan?.saluran}, model, wilayah, kini}); // langsung ke pertanyaan berikutnya
+    if (!tambah) return putaranInti({sesi, pelapor, pesan: {saluran: pesan?.saluran}, model, wilayah, kandidat, kejadianCari, kini}); // langsung ke pertanyaan berikutnya
     // keterangan tambahan ikut diurai di bawah (angka korban dan lain-lain yang disebut tertangkap berkutipan)
   }
 

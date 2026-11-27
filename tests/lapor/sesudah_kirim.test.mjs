@@ -14,7 +14,7 @@ let jam = 0;
 async function keTempat(saluran) {
   const W = async () => ({desa: "Sukamaju", kec: "Cibinong", kab: "Kab. Bogor", kabKode: "32.01", provKode: "32", kode: "32.01.01.2001", sekitar: []});
   let sesi = null, pelapor = null, h;
-  const kirim = async p => { h = await putaran({sesi, pelapor, pesan: {...(typeof p === "string" ? {teks: p} : p), wa: "6280000000000", ...(saluran ? {saluran} : {})}, wilayah: W, kini: ++jam}); sesi = h.sesi; pelapor = h.pelapor; return h; };
+  const kirim = async p => { h = await putaran({sesi, pelapor, pesan: {...(typeof p === "string" ? {teks: p} : p), wa: "6280000000000", ...(saluran ? {saluran} : {})}, wilayah: W, kejadianCari: async () => [], kini: ++jam}); sesi = h.sesi; pelapor = h.pelapor; return h; };
   for (const t of ["orang hilang", "1", "1", "Budi Santoso"]) await kirim(t);
   await kirim({lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}});
   if (saluran === "web") {   // web: nama, panggilan, kelamin, umur satu kartu; tinggi dan berat satu kartu (pemilik 26 Nov 2026)
@@ -31,7 +31,8 @@ test("web: langkah tempat meminta kartu cari tempat, pilihan tersimpan sebagai t
   assert.equal(sesi().status, "cari_tempat"); assert.equal(h.minta, "antar"); assert.equal(h.form, null, "tanpa kotak isian mesin");
   assert.match(h.balasan, /Ke mana Siti Aminah diantar/); assert.match(h.balasan, /Cari tempat Anda menunggu/);
   const pendek = await kirim("ok"); assert.equal(pendek.sesi.status, "cari_tempat"); assert.equal(pendek.minta, "antar", "tanya ulang tetap kartu cari");
-  await kirim("SD Negeri 1 Sukamaju (sekolah), 0,4 km dari lokasi terakhir terlihat"); assert.equal(sesi().status, "cari_konfirm");
+  await kirim("SD Negeri 1 Sukamaju (sekolah), 0,4 km dari lokasi terakhir terlihat"); assert.equal(sesi().status, "cari_kejadian");
+  await kirim("1"); await kirim("1"); await kirim("1"); assert.equal(sesi().status, "cari_konfirm");   // belum terdaftar, setuju
   const akhir = await kirim("1");
   assert.equal(akhir.kirimTemu.tempat_tunggu, "SD Negeri 1 Sukamaju (sekolah), 0,4 km dari lokasi terakhir terlihat");
 });

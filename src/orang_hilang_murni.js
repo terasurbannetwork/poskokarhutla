@@ -106,5 +106,5 @@ export function barisOh(k, cariId, token) {
     kelamin: cr.kelamin === "Laki-laki" || cr.kelamin === "Perempuan" ? cr.kelamin : null, tinggi: bulat(cr.tinggi, 30, 260), pakaian: jepit(cr.pakaian, 200),
     kec: jepit(k?.kec, 80), kab: /^\d{2}\.\d{2}$/.test(k?.kab ?? "") ? k.kab : null, kab_nama: jepit(k?.kab_nama, 80), waktu_terakhir: Number.isFinite(k?.waktu_ms) ? k.waktu_ms : null,
     kejadian_id: adaKej ? kej.id : null, kejadian_jenis: adaKej ? kej.jenis : null, kejadian_kab: adaKej ? String(kej.kab4) : null, kejadian_mulai: adaKej ? mulai : null,
-    setuju_versi: Number.isInteger(k?.setuju?.versi) && k.setuju.versi >= 1 ? k.setuju.versi : null, setuju_waktu: Number.isFinite(k?.setuju?.waktu) ? k.setuju.waktu : null, status: "menunggu"};
+    setuju_versi: Number.isInteger(k?.setuju?.versi) && k.setuju.versi >= 1 ? k.setuju.versi : null, setuju_waktu: Number.isFinite(k?.setuju?.waktu) ? k.setuju.waktu : null, setuju_wali: kelasUmur(umur, null) === "anak" ? (k?.setuju?.wali === 1 ? 1 : 0) : null, status: "menunggu"};
 }

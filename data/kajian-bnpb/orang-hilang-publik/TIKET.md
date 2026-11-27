@@ -13,9 +13,9 @@ Status: **Siap** = bisa dikerjakan tanpa jawaban pemilik (bawaan sudah cukup dan
 | OH-02 | Fungsi murni dan uji murni | **Selesai** (27 Nov 2026, belum di-commit) | |
 | OH-03 | Migrasi `oh_*`, hak tabel, pembaca kejadian | **Selesai** (27 Nov 2026, belum di-commit) | |
 | OH-04 | Mesin obrolan: penyaring bencana dan persetujuan | **Selesai** (27 Nov 2026, belum di-commit; teks persetujuan masih draf Q18) | |
-| OH-05 | Foto publik turunan | Siap | |
-| OH-06 | Profil anak dan wali | Siap | |
-| OH-07 | Meja tinjau | Siap | |
+| OH-05 | Foto publik turunan | **Selesai (bagian Worker, 27 Nov 2026, belum di-commit; layar menunggu layar-peta)** | |
+| OH-06 | Profil anak dan wali | **Selesai (bagian Worker, 27 Nov 2026, belum di-commit; layar menunggu layar-peta)** | |
+| OH-07 | Meja tinjau | **Selesai (bagian Worker, 27 Nov 2026, belum di-commit; layar menunggu layar-peta)** | |
 | OH-08 | Cabut, perpanjang, turun otomatis, cron | **Selesai** (27 Nov 2026, belum di-commit; jalur `cabut` tanpa sesi lewat `oh_info` menunggu OH-11) | |
 | OH-09 | Rute publik dan tab publik (bendera mati) | Siap | |
 | OH-10 | Jalur menemukan orang (tanpa tayang) | Siap | |
