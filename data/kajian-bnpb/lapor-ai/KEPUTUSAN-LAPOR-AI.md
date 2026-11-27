@@ -708,5 +708,10 @@ Pemilik: "lapor orang hilang agar dia tidak hanya melaporkan orang yang hilang a
 | --- | --- | --- |
 | K110 | 27 Nov 2026 | Layanan Lapor orang hilang punya tiga jalur: melaporkan orang hilang (yang sudah ada), **melaporkan menemukan orang** (orang yang ditemukan dan belum diketahui keluarganya), dan **mencari lewat foto** (mencocokkan foto dengan profil orang hilang). |
 | K111 | 27 Nov 2026 | Pelapor orang hilang **wajib menyetujui** bahwa profil yang ia isi tentang orang itu **boleh ditampilkan ke publik**. Ini mengubah K91 dan D129 untuk orang dicari: laporan orang dicari tidak lagi "hanya untuk meja". Rinciannya (isian mana yang publik, anak, pencabutan, penutupan saat ditemukan) diatur paket `data/kajian-bnpb/orang-hilang-publik/`. |
+| K112 | 27 Nov 2026 | Isian profil publik: **nama, foto, umur, dan lokasi** tampil; **nomor kontak tidak pernah publik** (pemilik: "Nama foto umur lokasi nomor kontak ga usah publik"; dibaca sesi induk sebagai: empat yang pertama publik, nomor kontak tidak. Bila maksudnya lain, pemilik meralat). Kontak lewat petugas. |
+| K113 | 27 Nov 2026 | **Semua** profil orang hilang dan laporan menemukan orang diverifikasi petugas sebelum tampil publik ("Semua harus diverifikasi petugas lah"). |
+| K114 | 27 Nov 2026 | Pelapor boleh **mencabut** persetujuan; profil turun dari publik. |
+| K115 | 27 Nov 2026 | Profil turun dari publik **otomatis** saat orangnya ditemukan atau laporan ditutup petugas ("boleh"). |
+| K116 | 27 Nov 2026 | Hanya orang yang **hilang karena bencana** ("Intinya harus karena bencana hilangnya. Di luar itu ga bisa"). Laporan tanpa kaitan bencana tidak diterima di jalur ini. Cara menyaring dirancang paket (bawaan rancangan: lokasi terakhir terlihat jatuh di kab/kota yang punya kejadian bencana tercatat, yaitu Buku Besar, Dalops, laporan darurat terverifikasi, atau peringatan aktif, dalam jendela waktu; pelapor memilih kejadiannya; petugas memastikan saat verifikasi; di luar itu pelapor diarahkan ke kepolisian). |
 
 Sampai paket itu selesai dan tiketnya dikerjakan, perilaku lama tetap berlaku (tidak ada yang tampil publik).
