@@ -61,3 +61,16 @@ test("ringkasan banjir: susunan dan kalimat batas, tanpa klaim terlarang", () =>
 });
 
 test("CSV mengutip koma dan tanda kutip", () => { assert.equal(M.csv([["a", 'b,"c"'], [1, null]]), 'a,"b,""c"""\n1,'); });
+
+test("kuota provinsi ber-OMC (K5) dan kejadian (K6): zona_kuota Python dan JS sama", () => {
+  const cells = Array.from({length: 24}, (_, i) => ({lat: -3 + (i % 6) * 0.8, lon: 98 + Math.floor(i / 6) * 0.9, skor: Math.round((0.36 + ((i * 29) % 60) / 100) * 100) / 100,
+    provs: i % 3 === 0 ? ["11"] : i % 3 === 1 ? ["12", "11"] : ["35"], kej: i % 5 === 0}));
+  const p = py(PRA + `C = json.loads(${JSON.stringify(JSON.stringify(cells))})
+print(json.dumps([[z["lat"], z["lon"], z["skor"], z.get("kuota")] for z in M.zona_kuota(C, ["11", "12"], 40, 5, 0.35, 3)]))`);
+  const j = M.zonaKuota(cells, ["11", "12"]).map(z => [z.lat, z.lon, z.skor, z.kuota ?? null]);
+  assert.deepEqual(j, p, "zona kuota");
+  assert.ok(j.some(z => z[3] === "11"), "ada zona berkuota");
+  const tanpaKej = cells.map(c => ({...c, kej: false}));
+  assert.deepEqual(M.zonaKuota(tanpaKej, []).map(z => [z.lat, z.lon]), M.zonaNms(tanpaKej).map(z => [z.lat, z.lon]), "tanpa OMC dan kejadian = zonaNms lama");
+  assert.ok(M.zonaKuota(cells, []).length <= 5);
+});

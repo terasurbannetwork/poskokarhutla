@@ -122,11 +122,22 @@
   function zonaNms(cells, minKm = ZONA_B.jarak, maks = ZONA_B.maks, ambang = ZONA_B.ambang) { const pilih = [];
     for (const c of cells.slice().sort((a, b) => b.skor - a.skor)) { if (pilih.length >= maks || c.skor < ambang) break; if (pilih.every(z => haversine(c.lat, c.lon, z.lat, z.lon) > minKm)) pilih.push(c); }
     return pilih; }
-  /* zona dari kandidat_sasaran: skor tertinggi per sel (lat, lon), NMS 40 km, paling banyak 5, skor >= 0,35 (ALGORITMA §6) */
-  function hitungUlangBanjir(d, w = BOBOT_B) { const k = Object.fromEntries((d?.kandidat_kolom || []).map((n, i) => [n, i])), ww = normBobot(w), sel = new Map();
-    for (const r of d?.kandidat_sasaran || []) { const sk = skorBanjir(r[k.Q], r[k.H], r[k.P], ww), key = r[k.lat] + "," + r[k.lon], b = sel.get(key);
-      if (!b || sk > b.skor) sel.set(key, {lat: r[k.lat], lon: r[k.lon], skor: sk, langkah: r[k.langkah], sasaran_idx: r[k.sasaran_idx], laut: !!r[k.laut], Q: r[k.Q], H: r[k.H], P: r[k.P]}); }
-    return zonaNms([...sel.values()]); }
+  /* K5/K6 (ALGORITMA §6), port zona_kuota di semai_murni.py: sel membawa provs (prov sasaran yang dilayani) dan kej (melayani asal kejadian). Provinsi ber-OMC dapat
+     sampai kuotaMaks zona (kuota = kode prov), lalu maks zona nasional dari sisa; pada skor tampil sama (2 desimal) sel kejadian dulu. */
+  const urutZona = (a, b) => (Math.round(b.skor * 100) - Math.round(a.skor * 100)) || ((b.kej ? 1 : 0) - (a.kej ? 1 : 0)) || (b.skor - a.skor);
+  function zonaKuota(cells, prov = [], minKm = ZONA_B.jarak, maks = ZONA_B.maks, ambang = ZONA_B.ambang, kuotaMaks = 3) { const pilih = [], urut = cells.slice().sort(urutZona),
+      jauh = c => pilih.every(z => haversine(c.lat, c.lon, z.lat, z.lon) > minKm);
+    for (const p of [...prov].sort()) { let n = 0; for (const c of urut) { if (n >= kuotaMaks) break; if (c.skor >= ambang && (c.provs || []).includes(p) && jauh(c)) { pilih.push({...c, kuota: p}); n++; } } }
+    let n = 0; for (const c of urut) { if (n >= maks) break; if (c.skor >= ambang && jauh(c)) { pilih.push(c); n++; } }
+    return pilih.sort(urutZona); }
+  /* zona dari kandidat_sasaran: skor tertinggi per sel (lat, lon), NMS 40 km, paling banyak 5, skor >= 0,35 (ALGORITMA §6); kuota provinsi ber-OMC dari d.sumber.omc_prov.
+     Prov dan asal sel dari d.sasaran[sasaran_idx] atas baris kandidat yang terbawa (<= 40 per sasaran): tepi kasus bisa beda dari mesin. */
+  function hitungUlangBanjir(d, w = BOBOT_B) { const k = Object.fromEntries((d?.kandidat_kolom || []).map((n, i) => [n, i])), ww = normBobot(w), sel = new Map(), ss = d?.sasaran || [];
+    for (const r of d?.kandidat_sasaran || []) { const sk = skorBanjir(r[k.Q], r[k.H], r[k.P], ww), key = r[k.lat] + "," + r[k.lon], s = ss[r[k.sasaran_idx]];
+      let b = sel.get(key); if (!b) sel.set(key, b = {lat: r[k.lat], lon: r[k.lon], skor: -1, provs: [], kej: false});
+      if (s?.prov && !b.provs.includes(String(s.prov))) b.provs.push(String(s.prov)); if ((s?.asal || []).includes("kejadian")) b.kej = true;
+      if (sk > b.skor) Object.assign(b, {skor: sk, langkah: r[k.langkah], sasaran_idx: r[k.sasaran_idx], laut: !!r[k.laut], Q: r[k.Q], H: r[k.H], P: r[k.P]}); }
+    return zonaKuota([...sel.values()], d?.sumber?.omc_prov || []); }
   /* SA-23 Mulai dari target (ALGORITMA §7b): zona dari kandidat_target.target[kunci].baris, tanpa memanggil server. Port skor bawaan semai_murni.py
      (rerata geometris Q D T; gerbang g=1; baris tanda hati-hati bhy=1 dibuang) lalu NMS. Bobot dan ambang HANYA dari kandidat_target.param_skor, tanpa cadangan. */
   const targetDaftar = d => Object.entries(d?.kandidat_target?.target || {}).map(([kunci, t]) => ({kunci, nama: t.nama, prov: t.prov, nCluster: t.n_cluster, frp24: t.frp24, nBaris: (t.baris || []).length}))
@@ -143,7 +154,7 @@
     return {zona, alasan: zona.length ? null : "tanpa_zona"}; }
   const KOSONG_T = {tanpa_param: "Parameter skor belum tersedia di data putaran ini.", target_tak_ada: "Target ini tidak ada di putaran ini.", tanpa_baris: "Belum ada sel awan yang bisa dinilai di sekitar target ini pada putaran ini.", tanpa_zona: "Tidak ada sel awan yang mencapai skor 0,35 untuk target ini pada putaran ini."};
   const kosongTarget = a => KOSONG_T[a] || KOSONG_T.tanpa_zona;
-  const ASAL = {prakiraan: "prakiraan kita", bmkg: "BMKG", tetap: "daftar tetap", manual: "Pusdalops"};
+  const ASAL = {prakiraan: "prakiraan kita", bmkg: "BMKG", tetap: "daftar tetap", manual: "Pusdalops", kejadian: "kejadian berjalan"};
   const asalTeks = a => ASAL[a] || a;
   const pantau = s => !!s.pantau || s.tenggang > 1;
   const KOSONG_B = {tidak_ada_sasaran: "Tidak ada sasaran banjir untuk {d} dari prakiraan kita, BMKG, daftar tetap, atau Pusdalops.", angin_lemah: "Angin pengarah di sasaran terlalu lemah untuk mencegat awan dari hulu.",
@@ -173,6 +184,6 @@
     return baris("Lapis A", o?.lapis_a) + baris("Lapis B", o?.lapis_b) + `<p class="sm-kecil">kesesuaian, bukan sebab-akibat</p>`; };
   /* tabel faktor Tinjau sebagai CSV: tanda kutip dikutip ganda, pemisah koma */
   const csv = baris => baris.map(r => r.map(x => { const t = String(x ?? ""); return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; }).join(",")).join("\n");
-  const api = {targetDaftar, zonaTarget, kosongTarget, raporHtml, faktorH, skorBanjir, zonaNms, hitungUlangBanjir, normBobot, BOBOT_B, asalTeks, pantau, kalimatKosongB, judulKosongB, alasanB, ringkasanBanjir, csv, tujuanDariHash, hashTujuan, tampakLapis, malas, teramati, fmt, dms, desimal, salinKoordinat, jam, hariJam, jendela, putaranTeks, waktuLangkah, plusJam, umurJam, umurTeks, kalimatKosong, judulKosong, urutKota, sudahBerasap, barisAsal, alasan, ketinggianTeks, bahanTeks, jumlahTeks, asapKalimat, ringkasan, namaNegara, arahKata};
+  const api = {targetDaftar, zonaTarget, kosongTarget, raporHtml, faktorH, skorBanjir, zonaNms, zonaKuota, hitungUlangBanjir, normBobot, BOBOT_B, asalTeks, pantau, kalimatKosongB, judulKosongB, alasanB, ringkasanBanjir, csv, tujuanDariHash, hashTujuan, tampakLapis, malas, teramati, fmt, dms, desimal, salinKoordinat, jam, hariJam, jendela, putaranTeks, waktuLangkah, plusJam, umurJam, umurTeks, kalimatKosong, judulKosong, urutKota, sudahBerasap, barisAsal, alasan, ketinggianTeks, bahanTeks, jumlahTeks, asapKalimat, ringkasan, namaNegara, arahKata};
   if (typeof module !== "undefined" && module.exports) module.exports = api; else akar.OpsSemaiMurni = api;
 })(typeof window !== "undefined" ? window : globalThis);

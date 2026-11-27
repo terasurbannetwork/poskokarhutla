@@ -404,6 +404,25 @@
    "nilai": 36,
    "dasar": "H"
   },
+  "omc_jenis": {
+   "nilai": "Pengurangan CH - Bencana",
+   "dasar": "H"
+  },
+  "kuota_maks_prov": {
+   "nilai": 3,
+   "dasar": "H"
+  },
+  "kejadian_basi_jam": {
+   "nilai": 72,
+   "dasar": "H"
+  },
+  "kejadian_jenis": {
+   "nilai": [
+    "banjir",
+    "banjir bandang"
+   ],
+   "dasar": "H"
+  },
   "koridor_lintasan_km": {
    "nilai": 25,
    "dasar": "H"
