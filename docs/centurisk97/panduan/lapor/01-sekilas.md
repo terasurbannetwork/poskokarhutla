@@ -53,9 +53,9 @@ Arti tulisan di layar:
 
 Batas pemakaian untuk satu nomor:
 
-- 20 pesan per menit.
-- 60 pesan per jam.
-- 120 pesan per hari.
+- 30 pesan per menit.
+- 100 pesan per jam.
+- 300 pesan per hari.
 - Paling banyak 5 laporan terkirim per hari.
 
 Bila terlewati, sistem membalas dengan sopan dan laporan yang sedang Anda isi tetap tersimpan.

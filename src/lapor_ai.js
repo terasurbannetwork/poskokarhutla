@@ -36,7 +36,7 @@ import {penandaPemeriksa, waktuVerifikasi, kejadianTerverifikasi, kartuPublik, t
 import {hakSk} from "./siklus.js";
 
 const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10, MAKS_BERKAS = 20;   // D79: foto dan video dihitung bersama, paling banyak 20, video paling banyak 3
-const BATAS_PESAN = [[MENIT, 20], [JAM, 120], [HARI, 300]],   // K104 (pemilik 25 Nov 2026): 120 per jam per orang karena pertanyaannya banyak; harian ikut naik supaya tidak lebih ketat dari jam
+const BATAS_PESAN = [[MENIT, 30], [JAM, 100], [HARI, 300]],   // pemilik 27 Nov 2026: 30 per menit dan 100 per jam per nomor (menggantikan 20 dan 120 dari K104); harian tetap 300
   BATAS_IP_JAM = [[JAM, 300]], BATAS_PERANGKAT_JAM = [[JAM, 120]];   // per nomor; per alamat IP /64 hanya pintu web
 const SELESAI = new Set(["terkirim", "batal", "kedaluwarsa", "cari_terkirim"]);
 const HDR = {"cache-control": "private, no-store", "x-robots-tag": "noindex", "referrer-policy": "no-referrer"};

@@ -1,6 +1,9 @@
 /* alat_gambar.css: tombol dan kartu alat gambar wilayah di peta utama. Token dari inti/tema.css saja. */
 .ag-tombol{background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid}
 .ag-tombol[aria-pressed="true"]{background:var(--brand);color:var(--on-brand)}
+/* di baris indikator panel Real Time, sejajar tombol unduh: polos tanpa kotak */
+.tr-sw .ag-tombol{flex:none;width:36px;height:36px;place-items:center;border:0;border-radius:9px;background:none;box-shadow:none;color:var(--ink);cursor:pointer}
+.tr-sw .ag-tombol[aria-pressed="true"]{background:var(--brand);color:var(--on-brand)}
 .ag-kartu{width:100%;flex:none}
 .ag-kartu[hidden]{display:none}
 .ag-kartu .ex-jd{align-items:center}

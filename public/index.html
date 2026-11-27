@@ -2763,6 +2763,9 @@ function renderDaftar() {
         : `<span class="n" style="font-weight:700">${fmt(i.v)}</span><span class="n">${f(fs)}</span><span class="n" title="${akt ? `${fmt(nk || 0)} cluster bertitik hari itu, ${fmt(akt)} masih aktif` : ""}">${f(nk)}</span>`}
       <span style="text-align:right" data-sort="${i.kw[2]}">${pilStatus(i.kw[2])}</span><span style="text-align:right" data-sort="${i.as?.lv || 0}">${pilAsap(i.as)}</span></button>`;
   }).join("") : `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`);
+  { /* tombol Gambar wilayah duduk di samping tombol unduh (pemilik, 27 Nov 2026); simpul yang sama dipindah tiap render agar pendengar klik alat_gambar.js tetap hidup */
+    const b = window._agBtn ||= document.getElementById("alatGambarBtn"), w = $("#rows .tr-sw"), ud = w?.querySelector("[data-unduh]");
+    if (b && w) ud ? ud.before(b) : w.append(b); }
   terapkanUrut();
 }
 /* ---- asap per wilayah: prakiraan PM2,5 CAMS 72 jam per kab/kota + asal asap lintasan angin mundur (modul udara, pola emisi.app).

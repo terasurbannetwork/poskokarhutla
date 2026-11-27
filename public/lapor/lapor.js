@@ -1037,7 +1037,7 @@ function tampilIsian(isian, lengkap) {
   $("lengkapKecil").textContent = `${lengkap}%`;
   // kepala chat: bilah kemajuan kecil + persen, bukan kalimat polos (pemilik 19 Nov 2026: "bagusin")
   // kemajuan cukup satu tempat: kartu Isian laporan di kiri (pemilik 19 Nov 2026: "ini kan sama ya, digabung di yang kiri aja, dilengkapi")
-  $("langkahTeks").textContent = "Asisten AI, dipandu sampai lengkap"; $("barIsian").style.width = `${lengkap}%`;
+  $("barIsian").style.width = `${lengkap}%`;
   // label jalur laporan di kepala chat dan panel (pemilik 26 Nov 2026), dari nama isian yang dikirim server; kosong bila belum memilih jalur
   const jalur = !isian.length ? null : isian.some(x => x.nama.startsWith("cari_")) ? ["Laporan Orang Hilang", "hilang"] : isian.some(x => x.nama === "darurat_korban") ? ["Laporan Darurat", "darurat"] : ["Laporan Kejadian", "kejadian"];
   for (const id of ["jalurChat"])   /* label jalur di panel Isian dihapus (pemilik 26 Nov 2026) */
@@ -2465,7 +2465,7 @@ const muatDp = () => muatDp.j ||= Promise.all([dpModul(), dpJson("/api/dampak-pe
 const KAMUS_PETA = ["kelompok", "kelompok-n", "titik", "titik-n", "prov-terdampak", "prov-garis", "gunung-siaga"];
 const petaAlunSiap = async () => { for (let i = 0; i < 100 && !alunPeta; i++) await new Promise(r => setTimeout(r, 100));
   if (!alunPeta) return false; if (!alunPeta.getLayer("titik")) await new Promise(r => alunPeta.once("load", r)); return true; };
-const potensi = () => potensi.j ||= import("/lapor/peringatan_potensi.js?v=8");   // K7: isi /potensi pindah ke sini; dimuat malas saat mode Peringatan pertama kali
+const potensi = () => potensi.j ||= import("/lapor/peringatan_potensi.js?v=11");   // K7: isi /potensi pindah ke sini; dimuat malas saat mode Peringatan pertama kali
 function setModeAlun(mode, bahaya, tab) {
   const per = mode === "peringatan"; alunMode = mode;
   for (const b of $("modeAlun").children) b.setAttribute("aria-selected", String(b.dataset.mode === mode));   // chrome langsung

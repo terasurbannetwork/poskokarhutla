@@ -36,7 +36,7 @@ uji("izin: mesin dan admin mendaftarkan, mencabut; GET hanya mesin", async () =>
   assert.deepEqual(g.j.wa, [WA, WA2, WA3]);
 });
 
-async function _ketik(wa, b) { await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(wa).run();   // alur panjang melampaui 20 per menit; batasnya diuji tersendiri di bawah
+async function _ketik(wa, b) { await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(wa).run();   // alur panjang melampaui 30 per menit; batasnya diuji tersendiri di bawah
   const r = await pesan(wa, b); assert.equal(r.s, 200, r.t.slice(0, 300));
   if (r.j.status === "kejadian" && !tawarKejadian) return _ketik(wa, {teks: String(r.j.pilihan.length)});   // laporan sekecamatan sebelumnya: skrip lama menjawab "Bukan, kejadian lain" supaya alurnya tetap sama
   return r.j; }
@@ -178,9 +178,9 @@ uji("kuota: 120 per jam per nomor (K104) berbalasan sopan 429 (pesan dan foto), 
   const f = await api("POST", "/api/lapor/foto", {wa: WA2, data: B64}, MESIN); assert.equal(f.s, 429); assert.ok(f.j.sisaDetik > 0);
 });
 
-uji("kuota: 300 per hari dan 20 per menit tetap berlaku; web 300 per jam per IP", async () => {
+uji("kuota: 300 per hari dan 30 per menit tetap berlaku; web 300 per jam per IP", async () => {
   const kini = Date.now();
-  await DB.batch(Array.from({length: 20}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'lapor.pesan', ?)").bind(WA3, kini - 1000)));
+  await DB.batch(Array.from({length: 30}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'lapor.pesan', ?)").bind(WA3, kini - 1000)));
   const m = await pesan(WA3, {teks: "x"}); assert.equal(m.s, 429); assert.ok(m.j.sisaDetik <= 60, "jendela menit");
   const tok = "cd".repeat(32), ip = "203.0.113.55", H = {cookie: `sesi_masuk=${tok}`, origin: "http://bnpb.lokal", "x-pb": "1", "cf-connecting-ip": ip};
   await DB.batch([DB.prepare("INSERT INTO mk_akun (id, wa, status, dibuat) VALUES ('akunlaporuji0002', '6281200000004', 'aktif', ?)").bind(kini),

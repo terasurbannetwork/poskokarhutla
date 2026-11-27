@@ -120,7 +120,7 @@
   "panduan/kampus-sippa/07-sippa-zona-vonis.md": "b68658331b97d22b477ffbd942a059eabf8c1247e1648becd4d9433706cab7c4",
   "panduan/kampus-sippa/08-neraca-air.md": "11397a8e7cc53ee9adcd8bc52e766d8d72533caa5a9a7cbfb9c0192ecb9882c1",
   "panduan/kampus-sippa/09-batasan.md": "7b1344893d92d3378b25457f18976057735a0d91396df9611fbc6f14fe510a4e",
-  "panduan/lapor/01-sekilas.md": "37956249c3b6b4634f95f9747608f861519f190935331c8090a4e7623798ea3c",
+  "panduan/lapor/01-sekilas.md": "2f83fc70a10e82db8d4f7f798146eb44b89730793cd31beb00dfc4755426dafc",
   "panduan/lapor/02-darurat-foto.md": "a2789c67a1b3546be7533334e5edb3add8309ac2e2a4e645dab5860a117a5a10",
   "panduan/lapor/03-luring-aplikasi.md": "7070009bc7cf89f05e525720820560f045a9507c80030f30d6cb4352dfc51126",
   "panduan/lapor/04-meja-lanjutan.md": "9585ceba4e8b2907eccdc4f84a4c63a11ed2043ba55acded5881571e7dc2d4af",
@@ -283,7 +283,7 @@
   "pengembang/kampus-sippa/11-ref-sippa-air.md": "371587067fbe9e2d88c1ebf2694ea90dcf997bd989ec76542d1c5caac3223f6b",
   "pengembang/kampus-sippa/12-batasan-kemitraan.md": "4e1895ab2b37160df1d782050b2b16e26a0c09fded9280283acd023d4ef77d23",
   "pengembang/kampus-sippa/13-batasan.md": "21905c415dcf3e5386a80d1570dd79e6724622fddfff6dc6edc0a9b3fad0b0d0",
-  "pengembang/lapor/01-ikhtisar.md": "f9dafecdcb7727ad293c2224b0d081e143aa7db91457c695b4ddf8b61e5f464e",
+  "pengembang/lapor/01-ikhtisar.md": "dd5fc1278ea706388496dc2e45c7ab5aab17dbad9e84282fa9cd67338d3aa436",
   "pengembang/lapor/02-layar-laporan.md": "511d1315c566741d28b0c2f9fe6173e70cee4d7a00cfe03f61dde83a206348b1",
   "pengembang/lapor/03-layar-meja.md": "a374aee0459a64b77bf27bb2ada190388fc943ed08cf565a220c1e033b69b833",
   "pengembang/lapor/04-mesin.md": "553f7c073faa6b3f1f7b49a93256a1882bb7640916eaffedbbd4711274cef95f",
@@ -383,5 +383,5 @@
   "pengembang/siklus/13-batasan.md": "12db860f0102a10037a61b737644db4b9860b200ebac1ff7c62575b7cbeaa931",
   "peta.json": "e2ba139981ca7fbb74dc5375bd1391e9d3396ac439d447ad0c3cbc5112f480dc"
  },
- "tanggal": "2026-11-26"
+ "tanggal": "2026-11-27"
 }
