@@ -699,3 +699,14 @@ Catatan pelaksanaan: semua isian baru tipe pilihan, tidak pernah wajib, selalu p
 | K107 | 26 Nov 2026 | Alur cari orang: sesudah umur ditanya **tinggi badan (cm)** dan **berat badan (kg)**. Batas wajar di mesin: tinggi 30-250 cm, berat 2-300 kg, di luar itu ditanya ulang. Bawaan sementara (belum diputuskan wajib): ada pilihan "Tidak tahu", tersimpan sebagai tidak diketahui, bukan 0. Satuan isian angka dikirim mesin (`satuan`) dan tampil di kanan kotak (umur "tahun"). Nilainya masuk ciri-ciri, data pribadi orang yang dicari, hanya untuk petugas. | "Oke tambahin kali ya berat dan tinggi badan gitu" |
 | K108 | 26 Nov 2026 | Alur cari orang: foto orang yang dicari **sampai 10** (dari galeri atau kamera, pengecualian K75 tetap). Batas ditegakkan di mesin (langkah foto berhenti di 10) dan di rute unggah (MAKS_FOTO). Lewati sebelum ada foto, Lanjut sesudahnya; tidak wajib. Foto pertama di `lapor_cari_foto` (0185), foto ke-2 sampai ke-10 di `lapor_cari_foto_lain` (0186), R2 privat, dihapus bersama aturan anonim Q67. Hapus per foto belum ada (bawaan sementara: tidak ada tombol hapus; foto keliru dibatalkan dengan membatalkan laporan). | "Oke ini bisa sampai 10 foto ya" |
 | K109 | 26 Nov 2026 | Alur cari orang: **pakaian terakhir wajib** (tanpa Lewati, ditolak di mesin). Panel Isian laporan saat lapor orang hilang memuat isian orang dicari (orang yang dicari, ciri-ciri, terakhir terlihat, kontak), bukan isian kejadian. | "Ini gausah ada lewati deh soalnya datanya penting" |
+
+## Keputusan pemilik 27 Nov 2026: orang hilang publik, menemukan, dan mencari lewat foto
+
+Pemilik: "lapor orang hilang agar dia tidak hanya melaporkan orang yang hilang atau mencari tapi juga jika menemukan orang hilang. Atau ada yang mencari orang hilang dari foto gitu. Jadi ketika ada orang yang melaporkan hilang dia harus setuju bahwa dia sepakat bahwa bisa ditunjukkan ke publik profil yang dia isi terkait orang hilang tersebut".
+
+| ID | Tanggal | Keputusan |
+| --- | --- | --- |
+| K110 | 27 Nov 2026 | Layanan Lapor orang hilang punya tiga jalur: melaporkan orang hilang (yang sudah ada), **melaporkan menemukan orang** (orang yang ditemukan dan belum diketahui keluarganya), dan **mencari lewat foto** (mencocokkan foto dengan profil orang hilang). |
+| K111 | 27 Nov 2026 | Pelapor orang hilang **wajib menyetujui** bahwa profil yang ia isi tentang orang itu **boleh ditampilkan ke publik**. Ini mengubah K91 dan D129 untuk orang dicari: laporan orang dicari tidak lagi "hanya untuk meja". Rinciannya (isian mana yang publik, anak, pencabutan, penutupan saat ditemukan) diatur paket `data/kajian-bnpb/orang-hilang-publik/`. |
+
+Sampai paket itu selesai dan tiketnya dikerjakan, perilaku lama tetap berlaku (tidak ada yang tampil publik).
