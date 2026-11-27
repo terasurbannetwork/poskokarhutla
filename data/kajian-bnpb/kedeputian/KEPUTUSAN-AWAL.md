@@ -213,3 +213,10 @@ Pemilik, ditanya apakah WIL-2 dibangun di atas register titik pengungsian yang s
 - RU-096 (migrasi) dan RU-097 (rute tulis) gugur: penulisan sudah lewat meja kerja dan rute titik pengungsian. RU-098 gugur: BPBD mengisi lewat meja `pengungsi` yang sudah ada.
 - RU-099 tetap: rekap harian per kab dan panel selisih pusat lawan daerah di `/bnpb/unit/wil`, membaca agregat meja `pengungsi`; tempat basi (lebih dari 2 hari) tidak dijumlah; tempat di bawah 10 jiwa tidak tampil per tempat; selisih di atas 25% merah; sistem tidak memilih angka yang benar.
 
+
+## Jawaban pemilik 27 Nov 2026: rekap WIL-2 dihitung di peramban
+
+Pemilik, ditanya apakah RU-099 dihitung di peramban dari meja pengungsi sesuai sesi staf: "Ya, di peramban".
+
+- Tab pengungsian `/bnpb/unit/wil` menghitung rekap per kab dan panel selisih pusat lawan daerah di peramban dari isian meja `pengungsi` yang boleh dibaca sesi staf itu (rute meja yang sudah ada), ditambah angka pusat `mengungsi_jiwa` dari `laphar_riwayat.json`.
+- Tanpa rute Worker baru, tanpa tabel D1 baru, tanpa rahasia di Actions, tanpa berkas R2 `unit/pengungsian.json`; `scripts/bnpb/unit/wil2.py` tidak dibuat. Aturan hitung (tempat basi > 2 hari tidak dijumlah, tempat < 10 jiwa tidak tampil per tempat, selisih > 25% merah, sistem tidak memilih angka yang benar, kosong bukan 0) tetap, diuji di `tests/bnpb/unit_wil1.test.mjs`.
