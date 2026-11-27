@@ -1615,17 +1615,17 @@ Pola tiap tiket sistem pipeline: skrip `scripts/bnpb/unit/<nama>.py` dengan `--c
 - **Rujukan:** DT §6.15 baris Layar. **Ukuran:** S
 
 #### RU-099 WIL-2 rekap, panel selisih, tab layar
-- **Tujuan:** rekap harian per kab dan panel selisih pusat lawan daerah di tab pengungsian `/bnpb/unit/wil`.
-- **Berkas:** `scripts/bnpb/unit/wil2.py` (baru; keluaran `unit/pengungsian.json`), `public/bnpb/unit/wil1.js` (tab pengungsian), `tests/bnpb/unit_wil1.test.mjs`, `scripts/bnpb/unit/jalan.py`, `tests/bnpb/unit_cakupan.json`.
+- **Tujuan:** rekap per kab dan panel selisih pusat lawan daerah di tab pengungsian `/bnpb/unit/wil`, dihitung di peramban (jawaban pemilik 27 Nov 2026, KEPUTUSAN-AWAL).
+- **Berkas:** `public/bnpb/unit/wil1.js` (UnitWil2 dan tampil WIL-2, memakai `public/inti/jam_aturan.js`), `public/bnpb/unit/katalog.js`, `tests/bnpb/unit_wil1.test.mjs`, `tests/bnpb/unit_wil2_peramban.test.mjs`, `tests/bnpb/unit_cakupan.json`. Tanpa `wil2.py`, tanpa berkas R2, tanpa rute atau tabel baru.
 - **Di luar:** memilih angka yang benar (sistem tidak memilih).
-- **Dependensi:** RU-097, RU-079, RU-029.
+- **Dependensi:** RU-079, RU-029.
 - **Pengerja / pemeriksa:** `ruang-bnpb` / `selera-angka`, `inp-reviewer`.
 - **Langkah:**
-  - [ ] `--cek` kasus RU §2.3 K1 sampai K5; tempat di bawah 10 jiwa tidak tampil per tempat; selisih di atas 25% merah.
-  - [ ] Jalankan bukti.
-- **Bukti:** `python3 -I scripts/bnpb/unit/wil2.py --cek && node --test tests/bnpb/unit_wil1.test.mjs tests/bnpb/unit_kembar.test.mjs`.
+  - [x] `GET /api/meja/catatan?meja=pengungsi` (rute meja yang sudah ada) dan `laphar_riwayat.json` dibaca di peramban; kasus RU §2.3 K1 sampai K5 sebagai fungsi murni; tempat di bawah 10 jiwa tidak tampil per tempat; selisih di atas 25% merah; sesi tanpa hak melihat "belum ada data".
+  - [x] Jalankan bukti.
+- **Bukti:** `node --test tests/bnpb/unit_wil1.test.mjs tests/bnpb/unit_wil2_peramban.test.mjs tests/bnpb/unit_kembar.test.mjs`.
 - **Pemilik:** tidak ada.
-- **Rujukan:** DT §6.15; RU §2.3, §7.1 butir e. **Ukuran:** M
+- **Rujukan:** DT §6.15 (digantikan KEPUTUSAN-AWAL 26 dan 27 Nov 2026); RU §2.3, §7.1 butir e. **Ukuran:** M
 
 #### RU-100 PLP-3 impor BAST dan rekap
 - **Tujuan:** daftar BAST hibah logpal dari lampiran Keputusan Deputi menjadi SQL yang diterapkan pemilik; rekap harian kewajiban dan kedaluwarsa.

@@ -63,6 +63,110 @@
     return [...ringkas, h("div", {class: "un-wil-pemilih"}, tabD, tabT), wadah];
   }
 
+
+  /* ---------- WIL-2 Pengungsian (tiket RU-099; keputusan pemilik 27 Nov 2026: dihitung di peramban) ----------
+     Masukan: isian meja pengungsi dari GET /api/meja/catatan?meja=pengungsi (sesi yang boleh membaca meja itu) dan angka pusat mengungsi_jiwa dari
+     laphar_riwayat.json. Aturan K1 sampai K5 hidup di public/inti/jam_aturan.js (kembar scripts/bnpb/unit/neraca.py): fungsi murni di bawah menerimanya
+     sebagai argumen J supaya bisa diuji tanpa DOM. Tempat basi (umur data > 2 x pengungsi_mutakhir) tidak dijumlah; tempat < 10 jiwa tidak tampil per tempat;
+     selisih > 25% merah; sistem tidak memilih angka yang benar; kosong bukan 0. Tanpa rute, tabel, atau berkas baru. */
+  const MIN_TAMPIL = 10;   // tempat di bawah ini tidak tampil per tempat (DT 9.2, riset/3 W2); tetap ikut rekap kab bila segar
+  const normKab = s => String(s || "").toLowerCase().replace(/^(kabupaten|kab\.?)\s+/, "").replace(/\s+/g, " ").trim();
+  const iso = s => /^\d{4}-\d{2}-\d{2}/.test(s || "") ? s.slice(0, 10) : null;
+  const hariKe = (a, b) => Math.round((Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10)) - Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10))) / 864e5);
+
+  /* catatan meja -> {kunci "prov|kab": {prov, kab, tempat[], tidak_sah}}; satu catatan terbaru per tempat; tempat ditutup dan baris dummy tidak ikut */
+  function tempatDariCatatan(catatan, tanggal) {
+    const per = new Map(), akhir = new Map();
+    for (const c of Array.isArray(catatan) ? catatan : []) {
+      const d = c?.data || {};
+      if (c?.meja !== "pengungsi" || c.dummy) continue;
+      const kunci = `${c.prov}|${normKab(c.kab)}`, g = per.get(kunci) || per.set(kunci, {prov: c.prov, kab: c.kab, tempat: [], tidak_sah: 0}).get(kunci);
+      const tgl = iso(d.tgl_data), buka = iso(d.tgl_buka), tutup = iso(d.tgl_tutup);
+      if (!tgl || !buka || !Number.isInteger(d.jiwa_total) || d.jiwa_total < 0 || !Number.isInteger(d.kk) || d.kk < 0 || (d.kk === 0 && d.jiwa_total > 0) || tgl > tanggal) { g.tidak_sah++; continue; }
+      if (tutup && tutup < tanggal) continue;
+      const tk = kunci + "|" + String(d.nama_tempat || "").toLowerCase(), lama = akhir.get(tk);
+      const t = {id: String(d.nama_tempat || "tanpa nama"), jiwa: d.jiwa_total, kk: d.kk, buka, data_tgl: tgl};
+      if (!lama || tgl > lama.t.data_tgl) { if (lama) lama.g.tempat.splice(lama.g.tempat.indexOf(lama.t), 1); g.tempat.push(t); akhir.set(tk, {g, t}); }
+    }
+    return per;
+  }
+
+  /* angka pusat per kab: mengungsi_jiwa terbesar di episode tingkat kab yang mencakup tanggal; tak ada episode atau angka = null (bukan 0) */
+  function pusatKab(laphar, prov, kab, tanggal) {
+    const n = normKab(kab);
+    const v = (laphar?.episode || []).filter(e => e.tingkat === "kab" && String(e.kab || "").startsWith(prov + "|") && normKab(e.kab.split("|")[1]) === n && e.mulai <= tanggal && tanggal <= (e.terakhir || e.mulai))
+      .map(e => e.puncak?.mengungsi_jiwa).filter(x => Number.isFinite(x));
+    return v.length ? Math.max(...v) : null;
+  }
+
+  /* K1 sampai K5 untuk satu kab: rekap tempat segar lewat J.rekap, jiwa daerah = jumlah jiwa tempat yang dijumlah, selisih lewat J.selisih */
+  function ringkasKab(J, g, laphar, tanggal) {
+    const r = J.rekap(g.tempat, tanggal), idx = new Map(g.tempat.map(t => [t.id, t])), jiwa = r.dijumlah.length ? r.dijumlah.reduce((a, i) => a + idx.get(i).jiwa, 0) : null;
+    const pusat = pusatKab(laphar, g.prov, g.kab, tanggal), sel = J.selisih(pusat, jiwa);
+    return {prov: g.prov, kab: g.kab, segar: r.dijumlah.length, basi: r.basi.length, tidak_sah: g.tidak_sah, jiwa_daerah: jiwa, jiwa_pusat: pusat, selisih: sel.selisih, merah: sel.merah, kebutuhan: r.jumlah};
+  }
+
+  /* baris per tempat (hanya >= 10 jiwa); basi ditandai dan kebutuhannya tidak diisi */
+  function barisTempat(J, g, tanggal) {
+    const basi = 2 * J.nilai("pengungsi_mutakhir");
+    return g.tempat.filter(t => t.jiwa >= MIN_TAMPIL).sort((a, b) => b.jiwa - a.jiwa || (a.id < b.id ? -1 : 1)).map(t => {
+      const umur = hariKe(tanggal, t.data_tgl), lewat = umur > basi, k = lewat ? null : J.kebutuhanDasar(t.jiwa, hariKe(tanggal, t.buka), t.kk);
+      return {tempat: t.id, jiwa: t.jiwa, kk: t.kk, hari_ke: hariKe(tanggal, t.buka) + 1, umur, status: lewat ? "basi, tidak dijumlah" : "segar",
+        beras: k && k.beras_kg, air: k && k.air_bersih_l, jamban: k && k.jamban, hunian: k && k.hunian_m2, sampah: k && k.kantong_sampah, sabun: k && k.sabun_kg};
+    });
+  }
+
+  const STATUS_SEL = r => r.merah === null ? "belum bisa dibandingkan" : r.merah ? "merah: selisih di atas 25%" : "dalam batas 25%";
+  function skemaRekap(baris) {
+    return {id: "wil2-selisih", sistem: "WIL-2", pil: "Pengungsian", ikon: "orang", judul: "Pengungsi pusat lawan daerah", label: ["hitungan_kita"], sumber: ["laphar_riwayat", "meja_pengungsi"],
+      rumus: "selisih = |pusat - daerah| / maks(pusat, daerah); pusat = puncak mengungsi_jiwa dalam episode laporan harian kab yang mencakup hari ini (bukan angka satu hari), daerah = jumlah isian meja pengungsi tempat yang datanya tidak lebih tua dari 2 hari",
+      aturan: [], asumsi: ["Asumsi: ambang selisih 25%"],
+      angka: [{k: "kab", label: "Kab/kota berisian", nilai: baris.length, title: "kab/kota yang punya isian meja pengungsi berjalan"},
+        {k: "merah", label: "Selisih di atas 25%", nilai: baris.filter(r => r.merah).length, title: "kedua angka tampil dengan sumbernya; sistem tidak memilih mana yang benar"}],
+      kolom: [{k: "kab", label: "Kab/kota"}, {k: "segar", label: "Tempat segar", angka: true, title: "tempat dengan data tidak lebih tua dari 2 hari, ikut dijumlah"}, {k: "basi", label: "Tempat basi", angka: true, title: "data lebih tua dari 2 hari, tidak dijumlah"},
+        {k: "daerah", label: "Jiwa menurut daerah", angka: true, title: "jumlah isian meja pengungsi; kosong bila tak ada tempat segar"}, {k: "pusat", label: "Jiwa menurut pusat (puncak episode)", angka: true, title: "puncak mengungsi_jiwa dalam episode laporan harian kab yang mencakup hari ini; bukan angka satu hari; kosong bila tak ada episode"},
+        {k: "selisih", label: "Selisih (%)", angka: true, desimal: 1}, {k: "status", label: "Status"}],
+      baris: baris.map(r => ({kab: r.kab, segar: r.segar, basi: r.basi, daerah: r.jiwa_daerah, pusat: r.jiwa_pusat, selisih: r.selisih == null ? null : r.selisih * 100, status: STATUS_SEL(r)}))};
+  }
+  function skemaTempat(nama, baris, jumlah) {
+    const angka = (k, label, d) => ({k, label, angka: true, ...(d ? {desimal: d} : {}), title: "takaran dari Jam Aturan (Perka 7/2008, Juklak 3/2022); kosong bila data tempat basi"});
+    const sum = jumlah ? {tempat: "Jumlah tempat segar, semua ukuran", jiwa: null, kk: null, hari_ke: null, umur: null, status: "", beras: jumlah.beras_kg, air: jumlah.air_bersih_l, jamban: jumlah.jamban, hunian: jumlah.hunian_m2, sampah: jumlah.kantong_sampah, sabun: jumlah.sabun_kg} : null;
+    return {id: "wil2-tempat", sistem: "WIL-2", pil: "Pengungsian", ikon: "rumah", judul: "Kebutuhan dasar per tempat", label: ["hitungan_kita"], sumber: ["meja_pengungsi", "jam_aturan"],
+      rumus: "kebutuhan = takaran Jam Aturan x jiwa (jamban = jiwa / 20 dibulatkan ke atas; kantong sampah = KK / 3); tempat di bawah 10 jiwa tidak tampil per tempat tetapi ikut jumlah", aturan: [], asumsi: [],
+      angka: [{k: "tempat", label: "Tempat tampil", nilai: baris.length, title: "tempat dengan 10 jiwa atau lebih di " + nama}],
+      kolom: [{k: "tempat", label: "Tempat"}, {k: "jiwa", label: "Jiwa", angka: true}, {k: "kk", label: "KK", angka: true}, {k: "hari_ke", label: "Hari ke", angka: true}, {k: "umur", label: "Umur data, hari", angka: true}, {k: "status", label: "Status data"},
+        angka("beras", "Beras, kg/hari", 1), angka("air", "Air bersih, liter/hari", 1), angka("jamban", "Jamban, unit"), angka("hunian", "Hunian, m2"), angka("sampah", "Kantong sampah, per 3 hari"), angka("sabun", "Sabun mandi, kg/bulan", 1)],
+      baris: [...baris, ...(sum ? [sum] : [])]};
+  }
+
+  const WIL2 = {normKab, tempatDariCatatan, pusatKab, ringkasKab, barisTempat, skemaRekap, skemaTempat, MIN_TAMPIL};
+  (typeof window !== "undefined" ? window : globalThis).UnitWil2 = WIL2;
+
+  async function tampil2(laphar) {
+    const R = window.UnitRapor, mu = (tag, a, ...anak) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(a || {})) { if (v == null || v === false) continue; if (k === "teks") e.textContent = v; else e.setAttribute(k, v === true ? "" : v); }
+      e.append(...anak.flat().filter(x => x != null && x !== false)); return e; };
+    const tunda = fn => (typeof window.nanti === "function" ? window.nanti(fn) : setTimeout(fn, 0));
+    const kosong = t => [R.render({id: "wil2-selisih", sistem: "WIL-2", pil: "Pengungsian", ikon: "orang", judul: "Pengungsi pusat lawan daerah", label: ["hitungan_kita"], sumber: ["meja_pengungsi"], rumus: "selisih = |pusat - daerah| / maks(pusat, daerah)", aturan: [], asumsi: [], angka: [], kolom: [], baris: []}, null)]
+      .map(k => { k.querySelector(".ex-bd")?.append(mu("p", {class: "ad-kosong", role: "status", teks: t})); return k; });
+    let r; try { r = await fetch("/api/meja/catatan?meja=pengungsi", {credentials: "same-origin", signal: AbortSignal.timeout(9000)}); } catch (e) { r = null; }
+    if (r && (r.status === 401 || r.status === 403)) return kosong("Belum ada data: sesimu belum punya hak membaca isian meja pengungsi. Masuk dengan peran yang boleh membacanya.");
+    let m = null; if (r?.ok) try { m = await r.json(); } catch (e) { m = null; }
+    if (!m) return kosong("Belum ada data: isian meja pengungsi gagal dimuat. Coba lagi beberapa menit lagi.");
+    const J = await import("/inti/jam_aturan.js"), tanggal = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
+    const per = tempatDariCatatan(m.catatan, tanggal), grup = [...per.values()].filter(g => g.tempat.length || g.tidak_sah);
+    if (!grup.length) return kosong("Belum ada data: belum ada isian meja pengungsi yang berjalan.");
+    const rk = grup.map(g => ringkasKab(J, g, laphar, tanggal)).sort((a, b) => (b.merah === true) - (a.merah === true) || (b.jiwa_daerah || 0) - (a.jiwa_daerah || 0) || (a.kab < b.kab ? -1 : 1));
+    const bagian = mu("div", {class: "un-wil-pengungsian"}), pilih = mu("select", {id: "wil2-kab", class: "un-g-in", "aria-label": "Kab/kota"}, ...rk.map((x, i) => mu("option", {value: String(i), teks: x.kab})));
+    const wadah = mu("div"), cat = mu("p", {class: "un-g-cat", role: "status", teks: m.dipotong ? "Daftar meja dipotong di 2.000 catatan terbaru; rekap bisa kurang." : ""});
+    const gambar = () => { const x = rk[Number(pilih.value)], g = grup.find(z => z.prov === x.prov && normKab(z.kab) === normKab(x.kab));
+      wadah.replaceChildren(R.render(skemaTempat(x.kab, barisTempat(J, g, tanggal), x.kebutuhan), null)); };
+    pilih.addEventListener("change", () => { tunda(gambar); });
+    bagian.append(mu("p", null, mu("label", {for: "wil2-kab", teks: "Kab/kota "}), pilih), wadah);
+    gambar();
+    return [R.render(skemaRekap(rk), null), cat, bagian];
+  }
+  if (typeof window !== "undefined" && window.UnitRapor) (window.UnitTampil ||= {})["WIL-2"] = tampil2;
+
   const api = {urut, pilih, skema, TIPE};
   (typeof window !== "undefined" ? window : globalThis).UnitWil1 = api;
   if (typeof window !== "undefined" && window.UnitRapor) (window.UnitTampil ||= {})["WIL-1"] = tampil;

@@ -6,14 +6,15 @@
    Peran tanpa hak menulis (pemirsa) tetap melihat antrean; server menjawab 403 dan baris kembali. Teks data lewat textContent saja.
    Pakai: UnitKetuk.antre(usulan, keputusan) -> {menunggu, diputuskan}; UnitKetuk.punya(sistem); UnitKetuk.tampil(sistem) -> Promise<elemen|null>. */
 (() => {
-  const BERKAS = {rpbd: "usulan_rpbd", dokumen_siaga: "usulan_dokumen_siaga"};   // berkas induk -> usulan; sama dengan DATA_UNIT src/unit.js
+  const BERKAS = {rpbd: "usulan_rpbd", dokumen_siaga: "usulan_dokumen_siaga", usulan_pemulihan: "usulan_pemulihan"};   // berkas induk -> usulan; sama dengan DATA_UNIT src/unit.js
   const MEDAN_KOREKSI = {usulan_rpbd: ["status", "periode", "url"], usulan_dokumen_siaga: []};   // sama dengan src/unit.js MEDAN_KOREKSI (dijaga uji)
-  const MEDAN = {kode: "Kode wilayah", status: "Status", periode: "Periode", url: "Alamat dokumen", jenis: "Jenis dokumen", bahaya: "Bahaya", tgl_tetap: "Tanggal ditetapkan"};
+  const MEDAN = {kab: "Kab/kota", medan: "Jenis angka", nilai: "Angka disebut berita", basis: "Dasar angka", kutipan: "Kutipan berita", tgl_tampil: "Tanggal berita", status_angka: "Status ekstraksi", kode: "Kode wilayah", status: "Status", periode: "Periode", url: "Alamat dokumen", jenis: "Jenis dokumen", bahaya: "Bahaya", tgl_tetap: "Tanggal ditetapkan"};
   const NILAI = {sesuai_3_2026: "berlaku, sesuai Perban 3/2026", berlaku: "berlaku", habis: "habis", belum_mulai: "belum mulai", multi: "lebih dari satu bahaya"};
   const KEYAKINAN = {pola_tetap: "diurai dengan pola tetap", pola_longgar: "diurai dengan pola longgar, perlu dicek"};
   const LABEL = {resmi: "Resmi", sekunder: "Sekunder", hitungan_kita: "Hitungan kita", proksi: "Proksi"};
   const STATUS = {terima: "diterima", tolak: "ditolak", koreksi: "dikoreksi"};
   const nilai = v => v == null || v === "" ? "belum ada data" : NILAI[v] || String(v).replace(/_/g, " ");
+  const angkaSatuan = (v, satuan) => { const t = v.toLocaleString("id-ID"); return satuan === "rupiah" ? "Rp" + t : satuan === "unit" ? t + " unit" : t; };
   const aman = u => { try { const x = new URL(u); return /^https?:$/.test(x.protocol) ? x.href : null; } catch (e) { return null; } };
 
   function antre(usulan, keputusan) {
@@ -37,7 +38,7 @@
   const json = async u => { try { const r = await ambil(u); return r.ok ? await r.json() : null; } catch (e) { return null; } };
 
   function barisUsulan(b, berkas) {
-    const isi = Object.entries(b.isi || {}).filter(([m]) => m !== "url");
+    const isi = Object.entries(b.isi || {}).filter(([m]) => !["url", "terima", "tgl", "satuan"].includes(m));
     const tautan = aman(b.isi?.url || b.sumber?.url);
     const li = h("li", {class: "un-antre", "data-usulan": b.id});
     const pesan = h("p", {class: "un-antre-cat", role: "status"});
@@ -45,6 +46,10 @@
       li.hidden = true;   // tanpa menunggu jawaban: chrome bereaksi seketika
       const badan = {berkas, usulan_id: b.id, keputusan, ...(koreksi ? {koreksi} : {})};
       let r; try { r = await fetch("/api/unit/ketuk", {method: "POST", credentials: "same-origin", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify(badan), signal: AbortSignal.timeout(9000)}); } catch (e) { r = null; }
+      if (r && r.ok && keputusan === "terima" && b.isi?.terima) {   // RRP-2: baris diterima diteruskan ke pelacak pemulihan (src/pemulihan.js); 409 = sudah pernah diteruskan
+        let f; try { f = await fetch("/api/pusdalops/pemulihan/terima", {method: "POST", credentials: "same-origin", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify({usulan_id: b.id, url: b.isi.url || b.sumber?.url, ...b.isi.terima}), signal: AbortSignal.timeout(9000)}); } catch (e) { f = null; }
+        if (!f || !(f.ok || f.status === 409)) { li.hidden = false; pesan.textContent = f?.status === 403 ? "Keputusan tersimpan, tetapi perananmu belum boleh menambah ke pelacak pemulihan." : "Keputusan tersimpan, tetapi belum diteruskan ke pelacak pemulihan; coba Benar lagi."; return; }
+      }
       if (r && r.ok) { li.remove(); return; }
       li.hidden = false;
       pesan.textContent = r?.status === 403 ? "Perananmu belum boleh memutuskan usulan; baris dikembalikan." : r?.status === 401 ? "Sesimu habis; masuk lagi lalu coba lagi." : "Keputusan belum tersimpan; baris dikembalikan, coba lagi.";
@@ -64,7 +69,7 @@
     }
     li.append(h("p", {class: "un-antre-judul", teks: b.sumber?.nama || "Dokumen tanpa judul"}),
       h("p", {class: "un-antre-meta", teks: `${LABEL[b.label] || "Sekunder"}, ${KEYAKINAN[b.keyakinan] || "diurai mesin"}`}),
-      h("dl", {class: "un-antre-isi"}, ...isi.map(([m, v]) => h("div", null, h("dt", {teks: MEDAN[m] || m.replace(/_/g, " ")}), h("dd", {teks: nilai(v)})))),
+      h("dl", {class: "un-antre-isi"}, ...isi.map(([m, v]) => h("div", null, h("dt", {teks: MEDAN[m] || m.replace(/_/g, " ")}), h("dd", {teks: m === "nilai" && typeof v === "number" ? angkaSatuan(v, b.isi?.satuan) : nilai(v)})))),
       tautan ? h("a", {href: tautan, target: "_blank", rel: "noopener noreferrer", teks: "Buka dokumen"}) : null, aksi, pesan);
     return li;
   }

@@ -38,19 +38,19 @@
   "KS-3": "ks3.py --cek",
   "MT-1": "mt1.py --cek; tests/bnpb/unit_mt1.test.mjs",
   "MT-3": "mt3.py --cek",
+  "WIL-2": "tests/bnpb/unit_wil1.test.mjs; tests/bnpb/unit_wil2_peramban.test.mjs",
   "WIL-3": "tests/bnpb/meja_draf.test.mjs",
   "DIK-4": "dik4.py --cek",
-  "JF-2": "jf2.py --cek; tests/bnpb/unit_jf2.test.mjs"
+  "JF-2": "jf2.py --cek; tests/bnpb/unit_jf2.test.mjs",
+  "RRP-2": "rrp2.py --cek; tests/bnpb/unit_ketuk.test.mjs"
  },
  "dikecualikan": {
   "KEU-1": "berjalan di mesin pemilik atas data internal (U9); keu1.py --cek menguji aturannya atas selisih 5-lakip.md",
   "IRT-1": "skrip lokal pemilik atas ekspor TLHP internal (U9), keluaran HTML di luar repo; irt1.py --cek menguji aturannya atas CSV buatan"
  },
  "antre": [
-  "WIL-2",
   "PLP-3",
-  "RRX-1",
-  "RRP-2"
+  "RRX-1"
  ],
- "antre_maks": 4
+ "antre_maks": 2
 }

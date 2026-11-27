@@ -187,10 +187,14 @@ def berkas(kartu_, sumber):
 
 def periksa_berkas(d):
     """Bangun ulang tiap kartu lewat kartu(): skema salah (label hilang, kunci liar, angka berupa teks) ditolak."""
-    if not isinstance(d, dict) or set(d) - {"dibuat", "basi_jam", "label", "sumber", "kartu", "data", "titik"}:
-        raise ValueError("kunci berkas di luar {dibuat, basi_jam, label, sumber, kartu, data, titik}")  # data: DT sec 5; titik: RRI-1, kontrak Worker RU-083 (titik[].id 16 heks)
+    if not isinstance(d, dict) or set(d) - {"dibuat", "basi_jam", "label", "sumber", "kartu", "data", "titik", "berkas", "baris"}:
+        raise ValueError("kunci berkas di luar {dibuat, basi_jam, label, sumber, kartu, data, titik, berkas, baris}")  # data: DT sec 5; titik: RRI-1, kontrak Worker RU-083 (titik[].id 16 heks)
     if "titik" in d and (not isinstance(d["titik"], list) or any(not isinstance(t, dict) or not re.fullmatch(r"[0-9a-f]{16}", str(t.get("id", ""))) for t in d["titik"])):
         raise ValueError("titik harus daftar objek ber-id 16 heks")
+    if "berkas" in d and not re.fullmatch(r"usulan_[a-z0-9_]{1,32}", str(d["berkas"])):
+        raise ValueError("berkas harus usulan_<nama>")
+    if "baris" in d and (not isinstance(d["baris"], list) or any(not isinstance(t, dict) or not re.fullmatch(r"[0-9a-f]{16}", str(t.get("id", ""))) for t in d["baris"])):
+        raise ValueError("baris usulan MB-7 harus daftar objek ber-id 16 heks")  # RRP-2: kartu dan antrean setuju dalam satu berkas
     if d.get("basi_jam") not in BASI:
         raise ValueError(f"basi_jam {d.get('basi_jam')!r} di luar {BASI}")
     if not re.match(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$", str(d.get("dibuat"))):
