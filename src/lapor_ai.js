@@ -1164,6 +1164,7 @@ async function mejaGet(env, req, url, kini, ctx, x) {
   if (x === "cari") return SEL.cariMeja(env, h, url, kini);   // orang dicari (LA-80)
   if (x === "hilang") return mejaHilang.daftar(env, h, url, kini);   // antrean tinjau orang hilang (OH-07)
   if (x === "hilang/info") return mejaHilang.info(env, h, url, kini);   // antrean informasi, laporkan, cabut, "Saya orang ini" (OH-11)
+  if (x === "hilang/metrik") return mejaHilang.metrik(env, h, url, kini);   // metrik petugas orang hilang (OH-18)
   const pc = /^(LA-\d{6}-\d{2,3})\/pic$/.exec(x); if (pc) return picGet(env, req, url, kini, pc[1]);
   const km = /^(LA-\d{6}-\d{2,3})\/komen$/.exec(x); if (km) return KOMEN_MEJA.lihat(env, h, km[1], kini);
   const mj = /^(LA-\d{6}-\d{2,3})\/jalan$/.exec(x);   // ruas jalan rusak untuk peta meja (K83); nama diambil dari laporan, bukan dari peminta

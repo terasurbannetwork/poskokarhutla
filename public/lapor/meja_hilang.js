@@ -116,6 +116,19 @@ function kartuTemu(t) {
   p.append(d); w.append(p); return w;
 }
 
+const ALASAN_TURUN = {ditolak: "Ditolak", dicabut: "Dicabut", kedaluwarsa: "Masa tayang habis", dilaporkan: "Dilaporkan", petugas: "Keputusan petugas", ditemukan: "Ditemukan", tutup: "Laporan ditutup"};
+const umurJam = j => j == null ? null : j < 48 ? `${F(j)} jam` : `${F(Math.round(j / 24))} hari`;
+/* kartu angka kerja: null dari server = "belum terukur", tidak pernah 0; tanpa kalimat kesimpulan dan tanpa tingkat keberhasilan */
+function kartuMetrik(m) {
+  const w = el("section", "ex ex-std oh-metrik"), pil = el("header", "ex-hd"), d = el("dl", "oh-data"), jd = el("div", "ex-jd");
+  jd.append(el("h3", null, "Metrik petugas")); jd.prepend(ikonM("m-orang")); pil.append(el("span", "ex-ey", "Angka kerja"), jd); w.setAttribute("aria-label", "Metrik petugas");
+  const t = (k, v) => d.append(el("dt", null, k), el("dd", null, v ?? "belum terukur"));
+  const peta = (o, nama) => o ? (Object.keys(o).length ? Object.entries(o).map(([a, n]) => `${nama[a] || a}: ${F(n)}`).join(", ") : "tidak ada") : null;
+  t("Antrean tinjau", m.antrean ? F(m.antrean.jumlah) : null); const kosongAntre = m.antrean?.jumlah === 0 ? "tidak ada antrean" : null; t("Umur antrean tertua", umurJam(m.antrean?.tertua_jam) ?? kosongAntre); t("Umur antrean median", umurJam(m.antrean?.median_jam) ?? kosongAntre);
+  t("Tayang aktif", m.tayang_aktif == null ? null : F(m.tayang_aktif)); t("Turun menurut alasan", peta(m.turun, ALASAN_TURUN)); t("Informasi terbuka menurut jenis", peta(m.info_terbuka, JENIS_INFO));
+  const isi = el("div", "ex-bd"); isi.append(d); w.append(pil, isi); return w;
+}
+
 function kartuInfo(i, muatUlang) {
   const w = el("article", "oh-meja-kartu"), kepala = el("div", "oh-kepala"), st = el("p", "oh-pesan"), d = el("dl", "oh-data"); st.setAttribute("role", "status");
   kepala.append(pilStatus(JENIS_INFO[i.jenis] || i.jenis, "tunggu"));
@@ -145,7 +158,7 @@ export async function bukaHilangPublik() {
   const x = el("button", "mj-tutup"); x.type = "button"; x.setAttribute("aria-label", "Tutup"); x.append(ikonM("m-tutup")); x.addEventListener("click", () => d.close()); atas.append(judul, x); kep.append(atas);
   const badan = el("div", "mj-rinci-gulung"), isi = el("div", "mj-ld-isi oh-meja"); badan.append(isi); d.append(kep, badan); d.addEventListener("close", () => d.remove());
   document.body.append(d); d.showModal();
-  let tab = "tinjau", data = null, info = [], kursor = null, urutan = 0;
+  let tab = "tinjau", data = null, metrik = null, info = [], kursor = null, urutan = 0;
   const chips = el("div", "mj-deret mj-ld-jenis"), wadah = el("div", "oh-meja");
   const kosong = (j, t) => { const k = el("div", "oh-kosong"); k.append(el("b", null, j), el("span", null, t)); return k; };
   const gambar = () => {
@@ -168,10 +181,11 @@ export async function bukaHilangPublik() {
     }));
   };
   async function muat() {
-    const saya = ++urutan, r = await api("");
+    const saya = ++urutan, [r, mt] = await Promise.all([api(""), api("/metrik")]);
     if (saya !== urutan) return;
+    metrik = mt.s === 200 ? mt.j : {};
     if (r.s !== 200) { isi.replaceChildren(el("p", "mj-kosong", teksGalat(r.s, r.j.galat))); return; }
-    data = r.j; segar(); gambar(); isi.replaceChildren(chips, wadah);
+    data = r.j; segar(); gambar(); isi.replaceChildren(kartuMetrik(metrik), chips, wadah);
   }
   async function muatInfo(tambah = false) {
     const r = await api(`/info${tambah && kursor ? `?kursor=${encodeURIComponent(kursor)}` : ""}`);

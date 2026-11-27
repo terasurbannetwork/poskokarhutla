@@ -3018,6 +3018,18 @@ export const ohInfoAntrean = async (env, p, prefiks = null, kursor = null, batas
      (SELECT count(*) FROM oh_riwayat r WHERE r.cari_id = o.cari_id AND r.alasan = 'dilaporkan_ambang') AS dilaporkan_ambang
    FROM oh_info i JOIN oh_publik o ON o.token = i.sasaran_token WHERE i.status <> 'selesai' AND (?1 IS NULL OR substr(o.kab, 1, length(?1)) = ?1)) t
    WHERE (?2 IS NULL OR (t.urut, t.dibuat, t.id) > (?2, ?3, ?4)) ORDER BY t.urut, t.dibuat, t.id LIMIT ?5`).bind(prefiks, kursor?.r ?? null, kursor?.w ?? 0, kursor?.id ?? "", batas + 1).all()).results;
+/* OH-18 metrik petugas: hitung dari tabel, tanpa tingkat keberhasilan. prefiks = wilayah akun (null = BNPB). Tabel belum ada atau tanpa baris = null, bukan 0. */
+export const ohMetrik = async (env, p, prefiks, sejakTayang) => {
+  const w = "(?1 IS NULL OR substr(o.kab, 1, length(?1)) = ?1)", q = (t, sql, ...a) => sedia(env, p, t, "baca", sql).bind(prefiks, ...a).all().then(r => r.results);
+  const antreSql = o => `SELECT o.dibuat FROM oh_publik o WHERE o.status = 'menunggu' AND ${w} ORDER BY o.dibuat LIMIT 1 OFFSET ${o}`;   // tanpa sampel terpotong: jumlah dari count, umur dari baris tertentu
+  const [[{n}], tayang, turun, info] = await Promise.all([
+    q("oh_publik", `SELECT count(*) n FROM oh_publik o WHERE o.status = 'menunggu' AND ${w}`),
+    q("oh_publik", `SELECT count(*) n FROM oh_publik o WHERE o.status = 'tayang' AND o.tayang_waktu > ?2 AND ${w}`, sejakTayang),
+    q("oh_publik", `SELECT o.alasan_turun a, count(*) n FROM oh_publik o WHERE o.status = 'turun' AND ${w} GROUP BY o.alasan_turun`),
+    q("oh_info", `SELECT i.jenis a, count(*) n FROM oh_info i JOIN oh_publik o ON o.token = i.sasaran_token WHERE i.status <> 'selesai' AND ${w} GROUP BY i.jenis`)]);
+  const [tertua, median] = n ? await Promise.all([q("oh_publik", antreSql(0)), q("oh_publik", antreSql(Math.floor(n / 2)))]) : [[], []];
+  return {antre: {n, tertua: tertua[0]?.dibuat ?? null, median: median[0]?.dibuat ?? null}, tayang: tayang[0]?.n || 0, turun: Object.fromEntries(turun.map(r => [r.a, r.n])), info: Object.fromEntries(info.map(r => [r.a, r.n]))};
+};
 export const ohInfoSelesai = async (env, p, infoId, token, oleh, kini) => (await sedia(env, p, "oh_info", "ubah",
   "UPDATE oh_info SET status = 'selesai', ditangani_oleh = ?3, selesai_waktu = ?4 WHERE id = ?1 AND sasaran_token = ?2 AND status <> 'selesai'").bind(infoId, token, oleh, kini).run()).meta.changes > 0;
 export const ohInfoTeruskan = async (env, p, infoId, token, oleh) => (await sedia(env, p, "oh_info", "ubah",

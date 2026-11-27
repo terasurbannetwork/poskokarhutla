@@ -271,7 +271,18 @@ async function mejaHilangInfoAksi(env, h, id, o, oleh, kini) {
   const ok = o.aksi === "selesai_info" ? await H.ohInfoSelesai(env, S, info, r.token, oleh, kini) : await H.ohInfoTeruskan(env, S, info, r.token, oleh);
   return ok ? kirim(200, {id, info}) : galat(409, "Informasi sudah ditangani atau tidak ditemukan untuk profil ini.");
 }
-export const mejaHilang = {daftar: mejaHilangGet, aksi: mejaHilangPost, info: mejaHilangInfo};
+/* OH-18: angka kerja petugas dari tabel oh_*, per wilayah akun. Nol hanya bila dihitung nol; tabel belum ada atau akun tanpa wilayah = null ("belum terukur"). Tanpa angka tingkat keberhasilan. */
+async function mejaHilangMetrik(env, h, url, kini) {
+  if (!bolehAksi(h.c, "tayang")) return galat(403, "akun ini tidak boleh meninjau orang hilang");
+  const lj = await laju(env, h.kunci, "oh.mejametrik", [[JAM, 600]], kini); if (lj) return lj;
+  const akun = {jenis: h.c.jenis, label: h.c.label}, kab = h.c.jenis === "bnpb" ? null : h.c.kab ?? h.c.prov, kosong = {akun, antrean: null, tayang_aktif: null, turun: null, info_terbuka: null};
+  if (h.c.jenis !== "bnpb" && !kab) return kirim(200, kosong);   // fail-closed: tanpa wilayah tidak melihat apa pun
+  const m = await H.ohMetrik(env, H.pelakuLpStaf, kab || null, sejakMasa(env, kini)).catch(e => { if (/no such table/i.test(String(e?.message))) return null; throw e; });
+  if (!m) return kirim(200, kosong);
+  const jam = d => d == null ? null : Math.max(0, Math.round((kini - d) / JAM));
+  return kirim(200, {akun, antrean: {jumlah: m.antre.n, tertua_jam: jam(m.antre.tertua), median_jam: jam(m.antre.median)}, tayang_aktif: m.tayang, turun: m.turun, info_terbuka: m.info});
+}
+export const mejaHilang = {daftar: mejaHilangGet, aksi: mejaHilangPost, info: mejaHilangInfo, metrik: mejaHilangMetrik};
 
 /* ---- rute publik (OH-09): daftar dan satu profil; hanya profil tayang dalam masa tayang; semua 404 saat OH_PUBLIK mati ---- */
 const KAB_ASAL = k => { const m = /^(\d{2})\.?(\d{2})$/.exec(k ?? ""); return m && Object.hasOwn(NAMA_KAB4, m[1] + m[2]) ? `${m[1]}.${m[2]}` : null; };

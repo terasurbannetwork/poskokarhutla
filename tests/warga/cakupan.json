@@ -10,6 +10,7 @@
     "GET /api/lapor/hilang": "2.2 daftar",
     "GET /api/lapor/hilang/:x": "2.3 profil",
     "POST /api/lapor/hilang/info": "2.10 info",
+    "GET /api/lapor/meja/hilang/metrik": "OH-18 metrik: antrean, umur tertua",
     "table oh_publik": "status: draf ke menunggu",
     "table oh_riwayat": "2.15 hak tabel",
     "table oh_temu": "batas skema tiap tabel oh_",
