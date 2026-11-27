@@ -57,8 +57,8 @@ const _HALAMAN = [
     ["/lapor", "Lapor bencana", "pin", L, "tamu"],
     ["/lapor/lacak", "Lacak laporan", "meja", L, "tamu", null, "/lapor", true],
     ["/lapor/hari-ini", "Kejadian hari ini", "kalender", L, "tamu", null, "/lapor"],
-    ["/lapor/hilang", "Orang hilang", "personel", L, "masuk", null, "/lapor"],   // tab publik (orang-hilang-publik OH-09); akses "masuk" sampai pemilik mencatat keputusan publik di KEPUTUSAN-MASUK (G-4)
-    ["/lapor/h", "Profil orang hilang bertautan", "personel", L, "masuk", null, "/lapor", true],   // tautan bagikan bertoken (OH-09): butir token, tidak tampil di menu atau peta publik (pola /lapor/s)
+    ["/lapor/hilang", "Orang hilang", "personel", L, "sesi", null, "/lapor"],   // tab publik (orang-hilang-publik OH-09); akses "sesi" sampai pemilik mencatat keputusan publik di KEPUTUSAN-MASUK (G-4)
+    ["/lapor/h", "Profil orang hilang bertautan", "personel", L, "sesi", null, "/lapor", true],   // tautan bagikan bertoken (OH-09): butir token, tidak tampil di menu atau peta publik (pola /lapor/s)
     ["/lapor/s", "Kabar selamat bertautan", "sinyal", L, "tamu", null, "/lapor", true],
     ["/kabar", "Kabar api per kabupaten", "sinyal", L],
     ["/alun-alun", "Situasi bencana", "personel", L, "tamu"],
