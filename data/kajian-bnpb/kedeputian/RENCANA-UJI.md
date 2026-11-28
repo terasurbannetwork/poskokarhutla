@@ -173,7 +173,7 @@ Rumus dicek di teks `perka-nomor-23-tahun-2014.json`: Pasal 11 huruf a "Jumlah P
 | S9 stok tidak dilaporkan | stok tidak ada | status `belum_dilaporkan`, kesenjangan `null`, sel tampil "stok belum dilaporkan", bukan 0 (riset 4 P1) |
 | S10 Q3 | bacaan "satu paket per keluarga tanpa hari" | sandang dan papan 1.250; tampil berdampingan dengan bacaan harfiah sampai pemilik menjawab Q3 |
 
-Uji balik (diperiksa `validasi-model`, bukan potret): rasio pengungsi DIBI per penduduk dipangkas di persentil 99 sebelum dihitung; kab-tahun dengan rasio di atas 1% dilaporkan sebagai jumlah dan persen dari kab-tahun berdata, dengan penyebutnya. Angka riset 4 (209 dari 5.654 kab-tahun, 3,7%) dipakai hanya sebagai reproduksi masukan beku dengan sha256 `dibi_kab_tahun.json` dicatat di uji, sehingga perubahan data memberi pesan "masukan berubah", bukan merah diam-diam.
+Uji balik (diperiksa `validasi-model`, bukan potret): rasio pengungsi DIBI per penduduk dipangkas di persentil 99 sebelum dihitung; kab-tahun dengan rasio di atas 1% dilaporkan sebagai jumlah dan persen dari kab-tahun berdata, dengan penyebutnya. Dua penyebut tampil berdampingan (kab-tahun bernilai 0 bila tidak tercatat DIBI, dan kab-tahun berdata), tanpa kab yang kodenya tidak ada di DIBI. Angka riset 4 (209 dari 5.654 kab-tahun, 3,7%) dipakai hanya sebagai reproduksi masukan beku dengan sha256 `dibi_kab_tahun.json` dicatat di uji, sehingga perubahan data memberi pesan "masukan berubah", bukan merah diam-diam.
 
 Invarian: tepat 514 baris kab/kota, tiap kode sekali; kebutuhan PR 4% = 4 x kebutuhan PR 1% untuk kab yang sama; JP negatif atau bukan angka ditolak.
 

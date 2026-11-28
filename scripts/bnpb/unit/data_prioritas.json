@@ -1,0 +1,6 @@
+{
+ "_tentang": "PUS-1: 37 data prioritas LAKIP BNPB 2025 Lampiran 9 (hal. 129-131). Tiap entri {judul, kata_kunci: [kata yang semuanya harus muncul di judul paket CKAN ternormal huruf kecil]}. Daftar BELUM diketik: data/kajian-bnpb/pustaka/5-lakip.md sec 6 hanya menyebut jumlah 37 dan satu contoh (Peta Risiko Kebakaran Hutan dan Lahan skala 1:250.000), tidak memuat 37 judulnya, dan PDF LAKIP tidak ada di repo. Selama daftar kosong, pus1.py menulis terbit dan persen None, bukan 0. Isi dari LAKIP hal. 129-131 tanpa mengarang judul.",
+ "sumber": "LAKIP BNPB 2025 Lampiran 9 hal. 129-131",
+ "n": 37,
+ "daftar": []
+}

@@ -1,0 +1,101 @@
+{
+ "_tentang": "Fixture bentuk balasan layer ArcGIS Data_Jalan_Jembatan_Putus_Akses_PU/MapServer/13 (kolom sama dengan skema layer 26 Nov 2026). Isinya BUATAN untuk uji, bukan data layer asli.",
+ "features": [
+  {
+   "attributes": {
+    "uid": "fx-001",
+    "desa": "Desa Contoh Satu",
+    "kecamatan": "Kecamatan Contoh",
+    "kabupaten": "Aceh Tamiang",
+    "provinsi": "Aceh",
+    "dt": 1764039600000,
+    "name": "Jembatan Contoh 1",
+    "lat": 4.25,
+    "lon": 97.9,
+    "cause": "Banjir",
+    "damage": "Putus total",
+    "sumber": "Kompilasi Direktorat"
+   }
+  },
+  {
+   "attributes": {
+    "uid": "fx-002",
+    "desa": "Desa Contoh Satu",
+    "kecamatan": "Kecamatan Contoh",
+    "kabupaten": "Aceh Tamiang",
+    "provinsi": "Aceh",
+    "dt": 1764126000000,
+    "name": "Jembatan Contoh 1 (ganda)",
+    "lat": 4.2511,
+    "lon": 97.9,
+    "cause": "Banjir",
+    "damage": "Putus total",
+    "sumber": "SITABA PU"
+   }
+  },
+  {
+   "attributes": {
+    "uid": "fx-003",
+    "desa": "Desa Contoh Dua",
+    "kecamatan": "Kecamatan Contoh",
+    "kabupaten": "Aceh Tamiang",
+    "provinsi": "Aceh",
+    "dt": 1764212400000,
+    "name": "Jalan Contoh 2",
+    "lat": 4.3,
+    "lon": 97.95,
+    "cause": "Banjir",
+    "damage": "Putus total",
+    "sumber": "Pusdalops"
+   }
+  },
+  {
+   "attributes": {
+    "uid": "fx-004",
+    "desa": "Desa Contoh Tiga",
+    "kecamatan": "Kecamatan Contoh",
+    "kabupaten": "Tapanuli Tengah",
+    "provinsi": "Sumatera Utara",
+    "dt": 1764298800000,
+    "name": "Jembatan Contoh 3",
+    "lat": 1.9,
+    "lon": 98.7,
+    "cause": "Banjir",
+    "damage": "Putus total",
+    "sumber": "Kompilasi Direktorat"
+   }
+  },
+  {
+   "attributes": {
+    "uid": "fx-005",
+    "desa": "Desa Contoh Empat",
+    "kecamatan": "Kecamatan Contoh",
+    "kabupaten": "Tapanuli Tengah",
+    "provinsi": "Sumatera Utara",
+    "dt": 1764558000000,
+    "name": "Jalan Contoh 4",
+    "lat": 1.91,
+    "lon": 98.71,
+    "cause": "Banjir",
+    "damage": "Putus total",
+    "sumber": "SITABA PU"
+   }
+  },
+  {
+   "attributes": {
+    "uid": "fx-006",
+    "desa": "Desa Contoh Lima",
+    "kecamatan": "Kecamatan Contoh",
+    "kabupaten": "Padang Pariaman",
+    "provinsi": "Sumatera Barat",
+    "dt": 1764644400000,
+    "name": "Jembatan Contoh 5",
+    "lat": -0.95,
+    "lon": 100.35,
+    "cause": "Banjir",
+    "damage": "Putus total",
+    "sumber": "Kompilasi Direktorat"
+   }
+  }
+ ]
+}

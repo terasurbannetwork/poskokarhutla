@@ -27,7 +27,7 @@ uji("UJ-F4-10: rekap tanpa koordinat, foto, catatan, pelapor, atau waktu; kunci 
 uji("ekspor hanya menambah: rute rumah rusak dan pemulihan yang ada tetap sama, TINGKAT tidak berubah", () => {
   assert.deepEqual(TINGKAT, ["berat", "sedang", "ringan"]);
   assert.deepEqual(Object.keys(RUTE_RUMAH_RUSAK).sort(), ["GET /api/rumah-rusak", "GET /api/rumah-rusak/rekap", "GET /rumah-rusak", "POST /api/rumah-rusak", "POST /api/rumah-rusak/:id", "POST /api/rumah-rusak/foto/:id", "GET /api/rumah-rusak/foto/:id"].sort());
-  assert.equal(Object.keys(RUTE_PEMULIHAN).length, 6);
+  assert.equal(Object.keys(RUTE_PEMULIHAN).length, 7);   // + terima (RU-103)
 });
 uji("kemajuanPemulihan membaca target, realisasi, status per id tanpa koordinat, pelaksana, sumber dana; id kosong atau asing tidak menulis dan tidak galat", async () => {
   const a = id16(), b = id16();

@@ -164,8 +164,7 @@ test('G-1 berkas nyata: tiap entri jam_aturan.json berpasal BERLAKU dengan kutip
 })
 
 // Selama RU-008 (meja/pengingat) dan RU-039 (status_pedoman) belum jadi, berkas lama memang merah di sini (tiket RU-007).
-// RU-039 mencabut baris pengecualian bertanggal di bawah.
-const PENGECUALIAN = { 'public/inti/status_pedoman.js': 'sampai RU-039 (5 Nov 2026): masa status 14 hari/1 bulan/3 bulan masih tertulis di teks' }
+const PENGECUALIAN = {}
 test('G-1 berkas nyata: tidak ada angka tenggat tertanam di luar Jam Aturan', () => {
   const pyDir = join(ROOT, 'scripts/bnpb/unit')
   const py = existsSync(pyDir) ? readdirSync(pyDir).filter((f) => f.endsWith('.py')).map((f) => `scripts/bnpb/unit/${f}`) : []

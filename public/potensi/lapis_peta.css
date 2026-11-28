@@ -1,0 +1,53 @@
+/* Overlay lapisan peta dan pemberitahuan melayang mode Peringatan /lapor (K8b, K8c). Token inti/tema.css saja.
+   Kotak Overlay selalu terbuka dan meniru Overlay peta utama (index.html .lapis, ubin ala Windy); gaya ubin ditulis di sini supaya tidak bergantung berkas lain. */
+.lp-lp-pn{width:min(272px,calc(100vw - 24px));max-height:min(calc(100vh - 180px),620px);overflow:auto;padding:0 10px 8px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);box-shadow:var(--shadow,0 8px 24px color-mix(in oklab,var(--ink) 18%,transparent));overscroll-behavior:contain}
+.lp-lp-pn .lapis-hd{position:sticky;top:0;z-index:1;margin:0 -10px 4px;padding:8px 12px;background:var(--head-bg);color:var(--on-head);font-size:var(--fs-1);font-weight:800;letter-spacing:.04em;text-align:center}
+.lp-lp-pn .lapis-hd button{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:24px;height:24px;border:0;border-radius:7px;background:color-mix(in oklab,var(--on-head) 14%,transparent);color:var(--on-head);display:grid;place-items:center;cursor:pointer}
+.lp-lp-pn .lapis-hd button:hover{background:color-mix(in oklab,var(--on-head) 26%,transparent)}
+.lp-lp-pn .lapis-hd button svg{width:13px;height:13px;transition:transform .2s}
+.lp-lp-pn .lapis-hd button.tutup svg{transform:rotate(180deg)}
+.lp-lp-pn details{border-top:1px solid var(--line);padding:3px 0 1px}
+.lp-lp-pn .lapis-hd+details{border-top:0}
+.lp-lp-pn summary{font-size:var(--fs-2);font-weight:800;padding:4px 0;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.lp-lp-pn summary::-webkit-details-marker{display:none}
+.lp-lp-pn summary::after{content:"";width:6px;height:6px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .15s;margin-right:4px}
+.lp-lp-pn details:not([open])>summary::after{transform:rotate(-45deg)}
+/* ubin: kisi lima kolom, ikon putih di atas gradasi --a ke --b; pudar saat mati, centang saat menyala */
+.lp-lp-pn .ub-gr{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 4px;padding:4px 0 6px}
+.lp-lp-pn label.ubin{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;padding:0;cursor:pointer;position:relative;text-align:center;line-height:1.2}
+.lp-lp-pn label.ubin input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.lp-lp-pn .ub-th{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--a),var(--b));color:var(--on-head);position:relative;box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--ink) 8%,transparent);filter:saturate(.35) brightness(1.08);opacity:.7;transition:box-shadow .15s,transform .15s}
+.lp-lp-pn .ub-th svg{width:15px;height:15px;filter:drop-shadow(0 1px 1px color-mix(in oklab,var(--ink) 35%,transparent))}
+.lp-lp-pn label.ubin span{font-size:.5625rem;font-weight:600;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:100%}
+.lp-lp-pn label.ubin:hover .ub-th{transform:translateY(-1px);opacity:.95;filter:none}
+.lp-lp-pn label.ubin:has(input:checked) .ub-th{filter:none;opacity:1;box-shadow:0 4px 10px color-mix(in oklch,var(--a) 40%,transparent)}
+.lp-lp-pn label.ubin:has(input:checked) .ub-th::after{content:"✓";position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:var(--ok);color:var(--on-pekat);font-size:.5625rem;font-weight:900;display:grid;place-items:center;box-shadow:0 0 0 2px var(--card)}
+.lp-lp-pn label.ubin:has(input:checked) span{color:var(--ink);font-weight:800}
+.lp-lp-pn label.ubin:has(input:focus-visible) .ub-th{outline:2px solid var(--brand2);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.lp-lp-pn .ub-th,.lp-lp-pn summary::after{transition:none}}
+/* pengaturan lapis yang menyala (jenis InaRISK, transparansi, keterangan) di bawah kisi ubin grupnya */
+.lp-lp-set{display:grid;gap:4px;margin:0 0 6px;padding:6px 8px;border-radius:var(--r-sm);background:color-mix(in oklab,var(--ink) 4%,transparent)}
+.lp-lp-set[hidden]{display:none}
+.lp-lp-set b{font-size:var(--fs-2)}
+.lp-lp-set select,.lp-lp-set input[type=search]{min-height:30px;padding:0 8px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);color:var(--ink);font:var(--fs-2) var(--font)}
+.lp-lp-o{display:flex;align-items:center;gap:8px;font-size:var(--fs-2);color:var(--ink2)}
+.lp-lp-o input{flex:1;min-width:0;accent-color:var(--brand2)}
+.lp-lp-set small{color:var(--ink2);font-size:var(--fs-2)}
+.lp-lp-set small:empty{display:none}
+
+/* pemberitahuan melayang: kanan atas, di kiri tumpukan kontrol peta, di bawah bilah tab */
+.lp-kb{position:absolute;z-index:5;top:64px;right:172px;width:min(320px,calc(100% - 24px));display:grid;gap:8px;pointer-events:none}
+.lp-kb[hidden]{display:none}
+.lp-kb>*{pointer-events:auto}
+.lp-kb-k{display:grid;gap:4px;padding:10px 12px;border-radius:var(--r-md,10px);border-left:4px solid var(--kb-w,var(--warn));background:color-mix(in oklab,var(--head-bg) 94%,transparent);color:var(--on-head);box-shadow:0 6px 18px color-mix(in oklab,var(--ink) 25%,transparent)}
+.lp-kb-k p{margin:0;font-size:var(--fs-3);overflow-wrap:anywhere}
+.lp-kb-k small{font-size:var(--fs-2);opacity:.8}
+.lp-kb-a{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:var(--fs-3)}
+.lp-kb button{min-height:32px;padding:0 10px;border:1px solid color-mix(in oklab,var(--on-head) 35%,transparent);border-radius:var(--r-pill);background:none;color:inherit;font:600 var(--fs-2) var(--font);cursor:pointer}
+.lp-kb button:disabled{opacity:.5;cursor:default}
+.lp-kb button:focus-visible{outline:2px solid var(--on-head);outline-offset:2px}
+.lp-kb .lp-kb-x{width:32px;padding:0;border:0;font-size:1.25rem;line-height:1}
+.lp-kb-t{display:flex;gap:6px}
+.lp-kb-f{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:var(--r-pill);background:color-mix(in oklab,var(--head-bg) 94%,transparent);color:var(--on-head);font-size:var(--fs-2)}
+@media (max-width:899px){.lp-kb{top:132px;right:12px}}
+#petaAlun:has(.pp-baca:not([hidden])) .lp-kb{display:none}

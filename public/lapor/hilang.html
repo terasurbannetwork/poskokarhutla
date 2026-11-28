@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>Orang hilang, Centurisk97</title>
+<meta name="description" content="Profil orang yang hilang karena bencana dan sudah diperiksa petugas.">
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="/halaman_awal.js" data-tema></script>
+<link rel="stylesheet" href="/inti/tema.css">
+<link rel="stylesheet" href="/inti/kepala.css">
+<link rel="stylesheet" href="/inti/halaman-polos.css">
+<link rel="stylesheet" href="/lapor/hilang.css?v=1">
+</head>
+<body>
+<header class="top">
+  <div class="mark">
+    <a class="logo" href="/" title="Centurisk97"><img src="/img/logo.svg?v=2" alt="Centurisk97" width="30" height="30"></a><details class="bencana" data-bencana="semua" data-tanpa-segera><summary><span>Semua bencana</span></summary><div class="menu"></div></details>
+  </div>
+</header>
+<main class="oh-halaman">
+  <div class="oh-judul">
+    <h1>Orang hilang</h1>
+    <p>Profil orang yang hilang karena bencana, setelah diperiksa petugas BNPB dan BPBD. Bila Anda punya kabar, tekan Saya punya informasi di profilnya. Bila ada orang yang dalam bahaya sekarang, hubungi 112 dan kepolisian terdekat.</p>
+  </div>
+  <form class="oh-saring" id="saring" aria-label="Saring daftar">
+    <label>Kabupaten atau kota<input id="qKab" list="dKab" autocomplete="off" placeholder="Ketik nama, misalnya Cianjur"></label>
+    <label>Umur<input id="qUmur" type="number" inputmode="numeric" min="0" max="120" placeholder="Angka saja"></label>
+    <datalist id="dKab"></datalist>
+  </form>
+  <p class="oh-sr" id="status" role="status" aria-live="polite"></p>
+  <section class="oh-daftar" id="daftar" aria-label="Daftar profil" aria-busy="true"></section>
+  <div class="oh-lagi"><button type="button" class="oh-tombol" id="lagi" hidden>Muat lagi</button></div>
+</main>
+<script type="module" src="/inti/kepala.js"></script>
+<script type="module" src="/lapor/hilang.js?v=1"></script>
+</body>
+</html>

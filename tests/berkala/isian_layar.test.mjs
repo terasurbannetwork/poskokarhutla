@@ -32,10 +32,14 @@ test("jenis ketiga Laporan Berkala ada di deretan jenis /laporan-bnpb, berikon",
 
 if (!CHROME) test("uji layar isian laporan berkala DILEWATI: Chrome tidak ditemukan", {skip: "tidak ada Chrome/Chromium (set CHROME_BIN)"}, () => {});
 else {
-  let srv, base, br, tab, mode = {angka: ANGKA, baris: null}, kiriman = [];
+  let srv, base, br, tab, mode = {angka: ANGKA, baris: null}, kiriman = [], foto = [];
   before(async () => {
     srv = http.createServer((q, s) => {
       const u = new URL(q.url, "http://x"), json = (o, st = 200) => { s.statusCode = st; s.setHeader("content-type", "application/json"); s.end(JSON.stringify(o)); };
+      if (q.method === "POST" && u.pathname === "/api/laporan-berkala/foto") {   // LB-08: simpan byte unggahan apa adanya untuk diperiksa
+        const b = []; q.on("data", d => b.push(d)); q.on("end", () => { const x = Buffer.concat(b); foto.push([u.searchParams, x]); json({ok: true, id: "a".repeat(63) + foto.length}, 201); }); return;
+      }
+      if (q.method === "POST" && u.pathname === "/api/laporan-berkala" && mode.simpanOk) { let b = ""; q.on("data", d => { b += d; }); q.on("end", () => { kiriman.push([u.pathname, b]); json({ok: true, diubah: "2026-11-26T00:00:00Z"}); }); return; }
       if (q.method === "POST") { let b = ""; q.on("data", d => { b += d; }); q.on("end", () => { kiriman.push([u.pathname, b]); json({galat: "tidak ada"}, 404); }); return; }
       if (u.pathname === "/laporan-bnpb") { s.setHeader("content-type", MIME[".html"]); return s.end(readFileSync(path.join(PUB, "laporan_bnpb.html"))); }
       if (u.pathname === "/api/laporan-berkala/angka") return mode.angka ? json(mode.angka) : json({galat: "belum ada"}, 404);
@@ -90,20 +94,37 @@ else {
     assert.deepEqual(galatHalaman(), []);
   });
 
-  test("tanpa kode: halaman membuka bulan lengkap terakhir; periode selain bulanan menulis menyusul tanpa isian", async () => {
+  test("tanpa kode: halaman membuka bulan lengkap terakhir; mingguan dan tahunan tanpa berkas angka menulis belum tersedia", async () => {
     mode = {angka: null, baris: null}; await tab.ukuran(1440, 900); await tab.buka(base + "/laporan-bnpb?jenis=berkala");
     await tab.tungguFungsi("/belum tersedia/.test(document.querySelector('#lbkSt')?.textContent || '')");
     assert.equal(await tab.eval("new URLSearchParams(location.search).get('kode')"), H.kodeTerakhir("bulanan", kiniWib()));
     await tab.buka(base + "/laporan-bnpb?jenis=berkala&periode=mingguan&kode=2026-W45");
-    await tab.tungguFungsi("/menyusul/.test(document.querySelector('#lbkSt')?.textContent || '')");
+    await tab.tungguFungsi("/belum tersedia/.test(document.querySelector('#lbkSt')?.textContent || '')");
     assert.equal(await tab.eval("document.querySelector('.lbk-isian').hidden"), true);
     assert.equal(await tab.eval("document.querySelector('#lbkJudul').textContent"), "Laporan Mingguan 2026-W45 (2 November 2026 sampai 8 November 2026)");
+    await tab.buka(base + "/laporan-bnpb?jenis=berkala&periode=tahunan&kode=2025");
+    await tab.tungguFungsi("/belum tersedia/.test(document.querySelector('#lbkSt')?.textContent || '')");
+    assert.equal(await tab.eval("document.querySelector('.lbk-isian').hidden"), true);
+  });
+
+  test("LB-11 kartu isian harian dan mingguan: tanpa dukungan dan arahan (Q27), harian satu action plan", async () => {
+    const fx = p => JSON.parse(readFileSync(path.join(AKAR, `tests/berkala/fixtures/angka_${p}.json`), "utf8"));
+    const kepala = () => tab.eval("[...document.querySelectorAll('.lbk-isian details.ex-std')].map(d => d.querySelector('h3').textContent)");
+    mode = {angka: fx("harian"), baris: null}; await buka("/laporan-bnpb?jenis=berkala&periode=harian&kode=2026-10-31");
+    assert.deepEqual(await kepala(), ["Ringkasan", "Action plan"]);
+    assert.equal(await tab.eval("document.querySelectorAll('[data-p^=\"action.\"]').length"), 3, "satu kotak action plan: sudah, sedang, akan");
+    assert.equal(await tab.eval("document.querySelectorAll('[data-p=arahan],[data-daftar=dukungan],[data-daftar=temuan_ringkas]').length"), 0);
+    mode = {angka: fx("mingguan"), baris: null}; await buka("/laporan-bnpb?jenis=berkala&periode=mingguan&kode=2026-W43");
+    assert.deepEqual(await kepala(), ["Ringkasan", "Gambaran umum", "Karhutla", "Banjir dan tanah longsor", "Cuaca ekstrem dan kekeringan", "Geologi dan vulkanologi", "Kegiatan minggu ini"]);
+    assert.equal(await tab.eval("document.querySelectorAll('[data-p=arahan],[data-daftar=dukungan]').length"), 0);
+    assert.ok(await tab.eval("!!document.querySelector('[data-daftar=temuan_ringkas]')"));
+    assert.deepEqual(galatHalaman(), []);
   });
 
   test("kartu per bab: angka mesin baca saja, kolom staf kosong berpil belum diisi, tanpa kalimat kesimpulan di kepala", async () => {
     mode = {angka: ANGKA, baris: null}; await buka();
     const kepala = await tab.eval("[...document.querySelectorAll('.lbk-isian details.ex-std')].map(d => [d.querySelector('.ex-ey').textContent.trim(), d.querySelector('h3').textContent, !!d.querySelector('.ex-ey svg'), !!d.querySelector('h3 .hl')])");
-    assert.deepEqual(kepala.map(k => k[1]), ["Ringkasan Eksekutif", "Gambaran umum", "Karhutla", "Banjir dan tanah longsor", "Cuaca ekstrem dan kekeringan", "Geologi dan vulkanologi", "Program kerja", "Prediksi dan dukungan", "Sampul dan tanda tangan"]);
+    assert.deepEqual(kepala.map(k => k[1]), ["Ringkasan Eksekutif", "Gambaran umum", "Karhutla", "Banjir dan tanah longsor", "Cuaca ekstrem dan kekeringan", "Geologi dan vulkanologi", "Program kerja", "Prediksi dan dukungan", "Foto sampul dan dokumentasi", "Sampul dan tanda tangan"]);
     assert.ok(kepala.every(k => k[2] && !k[3]), "kepala = nama bab berikon, tanpa angka sorot");
     const mesin = await tab.eval("[...document.querySelectorAll('.lbk-isian details')[0].querySelectorAll('.lbk-mesin dd')].map(d => d.textContent)");
     assert.deepEqual(mesin.slice(0, 2), ["58", "57"], "dua angka Q28 dari berkas angka, tanpa dihitung ulang");
@@ -170,6 +191,14 @@ else {
     await ketik("#lbkf-dukungan-0-langkah", "<b>Dukungan</b> anggaran");
     await tab.eval("document.querySelector('[data-tambah=kegiatan]').click(); true");
     await ketik("#lbkf-kegiatan-0-tautan", "javascript:alert(1)");
+    await tab.eval("document.querySelector('[data-calon=\"3\"]').click(); true");   // LB-09: centang calon siaran pers = baris kegiatan bertautan
+    assert.deepEqual(await tab.eval("window.__lbk.I.kegiatan.map(k => [k.pelaksana || '', k.tautan])"), [["", "javascript:alert(1)"], ["Satgas operasi", "https://bnpb.go.id/berita/contoh-satgas-22"]]);
+    assert.equal(await tab.eval("document.querySelector('[data-calon=\"3\"]').checked"), true, "calon tetap tercentang sesudah daftar digambar ulang");
+    // judul siaran pers bermarkup jahat tampil sebagai teks di pemilih dan di pratinjau; tautan di luar bnpb.go.id/berita tetap teks
+    assert.match(await tab.eval("document.querySelector('[data-calon=\"5\"]').closest('label').textContent"), /<img src=x onerror=alert\(1\)>Judul Jahat <script>/);
+    assert.equal(await tab.eval("document.querySelectorAll('#lbkIsianFs img, #lbkIsianFs script').length"), 0, "markup judul tidak menjadi elemen");
+    await tab.eval("document.querySelector('[data-calon=\"5\"]').click(); document.querySelector('[data-tambah=kegiatan]').click(); true");
+    await ketik("#lbkf-kegiatan-3-tautan", "https://contoh.example/berita/lain");
     await ketik("#lbkf-kota", "Jakarta"); await ketik("#lbkf-tanggal", "2026-11-12");
     await tab.eval("document.querySelector('#lbkBekukan').click(); true");
     await tab.tungguFungsi("/Bekukan di server belum tersedia|Penyimpanan draf di server belum tersedia/.test(document.querySelector('#lbkSt').textContent)", 5000);
@@ -186,6 +215,11 @@ else {
     await tab.tungguFungsi("document.querySelector('#lbkKertas').innerText.includes('<b>Dukungan</b> anggaran')", 5000);
     assert.equal(await tab.eval("document.querySelectorAll('#lbkKertas b').length > 0 && ![...document.querySelectorAll('#lbkKertas b')].some(b => b.textContent === 'Dukungan')"), true, "L5 teks isian tampil sebagai teks");
     assert.equal(await tab.eval("document.querySelectorAll('#lbkKertas a[href^=javascript]').length"), 0, "L6");
+    assert.equal(await tab.eval("document.querySelectorAll('#lbkKertas a[href=\"https://bnpb.go.id/berita/contoh-satgas-22\"]').length"), 1, "Lampiran: tautan siaran pers jadi tautan");
+    assert.deepEqual(await tab.eval("[...document.querySelectorAll('#lbkKertas a[href]')].map(a => a.getAttribute('href')).filter(h => !/^https:\\/\\/bnpb\\.go\\.id\\/berita\\/[a-z0-9-]+$/.test(h))"), [], "tautan selain bnpb.go.id/berita tidak aktif");
+    assert.match(await tab.eval("document.querySelector('#lbkKertas').innerText"), /https:\/\/contoh\.example\/berita\/lain/, "tautan lain tampil sebagai teks");
+    assert.match(await tab.eval("document.querySelector('#lbkKertas').innerText"), /<img src=x onerror=alert\(1\)>Judul Jahat/, "judul jahat tampil sebagai teks di pratinjau");
+    assert.equal(await tab.eval("document.querySelectorAll('#lbkKertas script, #lbkKertas img[onerror]').length"), 0);
     assert.equal(await tab.eval("document.querySelector('#lbkKurangW').hidden"), true, "kekurangan habis");
     assert.equal(await tab.eval("localStorage.length"), 0);
   });
@@ -204,5 +238,45 @@ else {
     assert.equal(await tab.eval("document.querySelector('#lbkServer').hidden"), false);
     await tab.tungguFungsi("document.querySelectorAll('.lbk-air').length > 0", 5000);
     assert.deepEqual(galatHalaman(), []);
+  });
+
+  test("LB-08 foto: kredit wajib dan izin media sebelum unggah; JPEG ber-EXIF dikode ulang di peramban, byte kiriman tanpa EXIF", async () => {
+    mode = {angka: ANGKA, baris: null}; foto = []; await buka();
+    /* JPEG kanvas yang disisipi segmen APP1 Exif berisi penanda, dijadikan File lalu dipilih lewat input berkas */
+    const pilih = () => tab.eval(`(async () => { const c = document.createElement("canvas"); c.width = 40; c.height = 30; c.getContext("2d").fillRect(0, 0, 20, 30);
+      const j = new Uint8Array(await (await new Promise(r => c.toBlob(r, "image/jpeg", 0.9))).arrayBuffer()), isi = new TextEncoder().encode("Exif\\0\\0GPS-RAHASIA-UJI");
+      const app1 = new Uint8Array([0xff, 0xe1, (isi.length + 2) >> 8, (isi.length + 2) & 255, ...isi]), b = new Uint8Array([...j.subarray(0, 2), ...app1, ...j.subarray(2)]);
+      const dt = new DataTransfer(); dt.items.add(new File([b], "kamera.jpg", {type: "image/jpeg"}));
+      const i = document.querySelector("#lbkFotoBerkas"); i.files = dt.files; i.dispatchEvent(new Event("change", {bubbles: true})); return true; })()`);
+    const stFoto = () => tab.eval("document.querySelector('#lbkFotoSt').textContent");
+    await pilih(); await tab.tungguFungsi("/kredit/i.test(document.querySelector('#lbkFotoSt').textContent)", 5000);
+    assert.equal(foto.length, 0, "tanpa kredit tidak ada unggahan");
+    await ketik("#lbkFotoKredit", "Kompas");
+    await tab.eval("document.querySelector('#lbkFotoMedia').click(); true");
+    await pilih(); await tab.tungguFungsi("/izin/i.test(document.querySelector('#lbkFotoSt').textContent)", 5000);
+    assert.equal(foto.length, 0, "foto media tanpa centang izin tidak diunggah");
+    await tab.eval("document.querySelector('#lbkFotoIzin').click(); true");
+    await pilih(); await tab.tungguFungsi("(window.__lbk.I.foto || []).length === 1", 5000);
+    assert.equal(foto.length, 1, await stFoto());
+    const [q, b] = foto[0];
+    assert.deepEqual([q.get("kredit"), q.get("media"), q.get("izin")], ["Kompas", "1", "1"]);
+    assert.deepEqual([b[0], b[1]], [0xff, 0xd8], "JPEG");
+    assert.ok(!b.includes(Buffer.from("Exif")) && !b.includes(Buffer.from("RAHASIA")), "EXIF ikut terkirim");
+    const f = await tab.eval("window.__lbk.I.foto[0]");
+    assert.deepEqual([f.id, f.kredit, f.media, f.izin, f.bab], ["a".repeat(63) + "1", "Kompas", true, true, "bab2"]);
+    const fig = "document.querySelector('#lbkKertas img[src*=\\'/api/laporan-berkala/foto?\\']')";
+    await tab.tungguFungsi(`!!${fig}`, 5000);
+    assert.match(await tab.eval(`${fig}.closest('figure').querySelector('.lbk-sumber').textContent`), /foto: Kompas/, "kredit di bawah foto");
+    await tab.eval("document.querySelector('[data-foto-hapus=\\'0\\']').click(); true");
+    assert.equal(await tab.eval("(window.__lbk.I.foto || []).length"), 0);
+    assert.ok(!kiriman.some(([j]) => j === "/api/laporan-berkala/foto/hapus"), "hapus di server menunggu simpan berhasil");
+    mode.simpanOk = true; kiriman = [];
+    await tab.eval("document.querySelector('#lbkSimpan').click(); true");
+    await tab.tungguFungsi("/tersimpan/i.test(document.querySelector('#lbkSt').textContent)", 5000);
+    await tab.tungguFungsi("true", 500).catch(() => {}); await new Promise(r => setTimeout(r, 300));
+    const urut = kiriman.map(([j]) => j);
+    assert.ok(urut.indexOf("/api/laporan-berkala") >= 0 && urut.indexOf("/api/laporan-berkala/foto/hapus") > urut.indexOf("/api/laporan-berkala"), "hapus sesudah simpan: " + urut);
+    assert.ok(kiriman.some(([j, x]) => j === "/api/laporan-berkala/foto/hapus" && JSON.parse(x).id === f.id));
+    mode.simpanOk = false;
   });
 }

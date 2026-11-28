@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | `scripts/berkala/hitung.py` | fungsi murni ALGORITMA 1 sampai 9 dan varian periode ALGORITMA 12, stdlib, validasi kode periode, pembulatan setengah ke atas; `python3 -I scripts/berkala/hitung.py uji` | `pipa-data` |
 | `scripts/berkala/rakit.py` | potongan harian dan berkas angka per periode (bagian 2), argumen `--potong` atau `--periode <p> --kode <k>`, baca berkas produksi, unggah R2 lewat `put/get` yang diimpor dari `scripts/siklus/gudang.py`. Log Actions hanya mencetak jumlah baris dan status sumber, tidak pernah isi dalops atau angka laporan | `pipa-data` |
-| `scripts/berkala/kegiatan.py` | panen daftar siaran pers bnpb.go.id untuk rentang periode (judul, tanggal, tautan), Q16 | `pipa-data` |
+| `scripts/berkala/kegiatan.py` | panen daftar siaran pers bnpb.go.id (judul, tanggal, tautan, usulan pelaksana, jenis, lokasi dari judul), Q16, ALGORITMA 13; `python3 -I scripts/berkala/kegiatan.py uji`. `rakit.py` membaca arsipnya ke berkas angka (`kegiatan`) | `pipa-data` |
 | `.github/workflows/berkala.yml` | jadwal `10 3 * * *` (satu job; periode yang dirakit hari itu menurut ALUR 1) dan `workflow_dispatch` (input `periode`, `kode`), concurrency `berkala`, rahasia `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` yang sudah ada | `mekanik-mesin` |
 | `package.json` | skrip `uji:berkala` (Python uji + `node --test tests/berkala/*.test.mjs`), masuk `npm run uji` | `mekanik-mesin` |
 | `migrations/<nomor berikut>_laporan_berkala.sql` | tabel versi dan jejak (bagian 3); nomor diambil saat LB-07 dikerjakan | `warga-api` |
@@ -28,7 +28,7 @@ Bucket dipakai bersama media warga; semua kunci modul ini berawalan `berkala/` d
 | `berkala/<periode>/<kode>/angka/<YYYY-MM-DD>.json`, `.../angka/terbaru.json` | `rakit.py` dalam jendela rakit periodenya (ALUR 1) | berkas angka (bawah) |
 | `berkala/<periode>/<kode>/beku/v<N>.json` | rute Bekukan | salinan berkas angka yang dibekukan |
 | `berkala/<periode>/<kode>/foto/<sha256>.jpg` | rute foto | foto dokumentasi |
-| `berkala/<periode>/<kode>/kegiatan_calon.json` | `kegiatan.py` | `[{"tanggal", "judul", "tautan", "asal": "bnpb.go.id"}]` |
+| `berkala/kegiatan/<YYYY-MM>.json` | `kegiatan.py` | `{"bulan", "tarik", "cakup": [[dari, sampai]], "butir": [{"tanggal", "jam", "judul", "tautan", "pelaksana", "jenis", "lokasi", "situasi", "asal": "bnpb.go.id"}]}`; satu arsip per bulan supaya panen harian hanya membaca halaman indeks terbaru. Calon tiap periode masuk berkas angka (`kegiatan.calon`), jadi tidak perlu rute baca sendiri |
 
 Berkas angka:
 
@@ -98,11 +98,12 @@ Semua rute memvalidasi `periode` (empat nilai) dan `kode` (bagian 3) sebelum men
 | `/api/laporan-berkala?daftar=1&periode=bulanan` | GET | semua yang masuk | `?periode=` wajib: daftar kode, versi, diubah untuk periode itu (paling baru 400 baris) |
 | `/api/laporan-berkala?periode=bulanan&kode=2026-10[&versi=N]` | GET | semua yang masuk | baris isian; tanpa `versi` = draf bila ada, bila tidak versi beku terakhir; mencatat jejak `buka` |
 | `/api/laporan-berkala/angka?periode=bulanan&kode=2026-10[&versi=N\|&tarik=terbaru]` | GET | semua yang masuk | berkas angka; kunci R2 dibentuk server dari parameter (tidak menerima kunci dari klien); versi beku diperiksa sha256 |
-| `/api/laporan-berkala/foto?periode=bulanan&kode=2026-10&id=<sha256>` | GET | semua yang masuk | foto; `id` harus 64 heksa |
-| `/api/laporan-berkala/kegiatan?periode=&kode=` | GET | admin | `kegiatan_calon.json` |
+| `/api/laporan-berkala/foto?periode=bulanan&kode=2026-10&id=<sha256>[&versi=N]` | GET | semua yang masuk | foto; `id` harus 64 heksa; tanpa `versi` atau 0 = draf; versi beku = salinan beku `berkala/<periode>/<kode>/v<N>/foto/`, sidik dicek saat dibaca |
+| `/api/laporan-berkala/kegiatan?periode=&kode=` | GET | admin | tidak dibangun (LB-09): calon ikut berkas angka lewat rute `angka` |
 | `/api/laporan-berkala` | POST | admin | simpan draf `{periode, kode, isian, tarik, diubah}`; server memetakan `tarik` ke kunci `berkala/<periode>/<kode>/angka/<tarik>.json`, memastikan objeknya ada, dan menghitung sha256-nya |
 | `/api/laporan-berkala/bekukan` | POST | admin | `{periode, kode, diubah}`; kelengkapan (ALGORITMA 10) diperiksa ulang di server dari isian tersimpan; 422 dengan daftar kekurangan |
 | `/api/laporan-berkala/foto` | POST | admin | JPEG saja, sudah dikode ulang di peramban (bagian 5); server menolak bila byte awal bukan JPEG atau ada segmen APP1 `Exif`; batas ukuran sama dengan unggah foto yang ada; nama objek = sha256 isi |
+| `/api/laporan-berkala/foto/hapus` | POST | admin | `{periode, kode, id}`: menghapus foto draf; salinan beku tidak tersentuh (`src/laporan_berkala.js:253,274`). Layar memanggilnya hanya sesudah simpan draf berhasil |
 | `/api/laporan-berkala/cetak` | POST | semua yang masuk | `{periode, kode, versi}`: hanya mencatat jejak `cetak` |
 
 ## 5. Layar

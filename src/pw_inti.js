@@ -49,6 +49,28 @@ export function hitungPeristiwa(P, tercatat, kini) {
   return kosong;
 }
 
+/* DP-13 (dampak-peringatan D16): peristiwa dari status prakiraan (R2 dampak_peringatan/status.json), bentuk keluaran sama dengan hitungPeristiwa
+   dan berbagi `tercatat` (kunci pw_status) sehingga naik saja berlaku lintas kedua pemicu. Tanpa angka; s null (tak terukur) tidak pernah dianggap 0. */
+export function hitungDariStatus(S, tercatat, kini, namaKab) {   // namaKab: Map id -> nama (status.json tidak memuat nama; tanpa nama kab dilewati, kode tidak pernah dikirim)
+  const kosong = {perKab: new Map(), status: [], nama: new Map()};
+  const t0 = Date.parse(S?.dibuat);
+  if (!S?.kab || !(kini - t0 <= SEGAR_JAM * 3600e3)) return kosong;
+  const dasar = Date.parse(String(S.dibuat).slice(0, 10) + "T00:00:00Z"), hariIni = tglWib(kini);
+  for (const [id, per] of Object.entries(S.kab)) for (const [c] of JENIS_PW) {
+    if (!namaKab?.get(id)) continue;
+    const st = per?.[c]; if (!st || !Array.isArray(st.hari)) continue;
+    st.hari.forEach((lv, d) => {
+      const tanggal = new Date(dasar + d * 864e5).toISOString().slice(0, 10);
+      if (!Number.isInteger(lv) || lv < 1 || lv > 3 || tanggal < hariIni) return;
+      const kunci = `${id}|${c}|${tanggal}`; if (lv <= (tercatat.get(kunci) || 0)) return;
+      tercatat.set(kunci, lv); kosong.status.push([id, c, tanggal, lv]);
+      if (!kosong.perKab.has(id)) kosong.perKab.set(id, []);
+      kosong.perKab.get(id).push({jenis: c, tanggal, n: d, lv, teruji: st.hipotesis === false, hip: st.hipotesis !== false}); kosong.nama.set(id, namaKab.get(id));
+    });
+  }
+  return kosong;
+}
+
 export const NAMA_HARI = t => new Date(`${t}T00:00:00Z`).toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long", timeZone: "UTC"});
 const HIPOTESIS_PW = new Set(["LSR", "CEX", "ASP"]);   // KI-01: model belum lolos uji balik tetap dikirim, berlabel jujur (KEPUTUSAN-KEMAMPUAN Q1)
 export const label = c => JENIS_PW.find(j => j[0] === c)?.[2] || c;
@@ -56,8 +78,8 @@ export const label = c => JENIS_PW.find(j => j[0] === c)?.[2] || c;
 export function teksNotif(namaKab, daftar, kecNama) {
   const urut = [...daftar].sort((a, b) => b.lv - a.lv || JENIS_PW.findIndex(j => j[0] === a.jenis) - JENIS_PW.findIndex(j => j[0] === b.jenis));
   const top = urut[0], kab = String(namaKab || "").replace(/^Kota Administrasi /, "Kota ");
-  const hip = urut.some(x => HIPOTESIS_PW.has(x.jenis));
-  const judul = ((HIPOTESIS_PW.has(top.jenis) ? "Hipotesis: " : "") + (urut.length === 1 ? `${label(top.jenis)} ${TINGKAT[top.lv]} di ${kab}` : `${TINGKAT[top.lv]} di ${kab}`)).slice(0, 80);
+  const hipX = x => HIPOTESIS_PW.has(x.jenis) || x.hip, hip = urut.some(hipX);
+  const judul = ((hipX(top) ? "Hipotesis: " : "") + (urut.length === 1 ? `${label(top.jenis)} ${TINGKAT[top.lv]} di ${kab}` : `${TINGKAT[top.lv]} di ${kab}`)).slice(0, 80);
   const perHari = new Map(); for (const x of urut) perHari.set(x.tanggal, [...(perHari.get(x.tanggal) || []), x]);
   const bagian = [...perHari].map(([t, xs]) => `${NAMA_HARI(t)}: ${xs.map(x => `${label(x.jenis)} ${TINGKAT[x.lv]}${x.teruji ? "" : " (belum teruji)"}`).join(", ")}`);
   const isi = `Prakiraan ${bagian.join(". ")}. ${hip ? "Hipotesis: model belum lolos uji balik. " : ""}${kecNama ? `Kecamatan ${kecNama}. ` : ""}Buka Pantau Bencana untuk arahan dan titik berkumpul terdekat. Prakiraan Pantau Bencana, bukan peringatan resmi.`;

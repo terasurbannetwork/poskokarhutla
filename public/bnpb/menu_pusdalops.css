@@ -15,7 +15,7 @@
 }
 
 /* deretan sub-halaman grup (11 Nov 2026): di bawah kepala, rata ujung ke ujung, gaya pemilih tab .dl-seg */
-.mp-sub{display:grid;grid-auto-columns:minmax(0,1fr);grid-auto-flow:column;gap:4px;margin:16px auto 0;padding:4px;background:var(--card,#fff);border:1px solid var(--line,#e2e8f0);border-radius:22px;box-shadow:var(--bayang,0 1px 2px rgb(15 23 42 / .06));box-sizing:border-box;width:calc(100% - 32px)}
+.mp-sub{display:grid;grid-auto-columns:minmax(max-content,1fr);overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;grid-auto-flow:column;gap:4px;margin:16px auto 0;padding:4px;background:var(--card,#fff);border:1px solid var(--line,#e2e8f0);border-radius:22px;box-shadow:var(--bayang,0 1px 2px rgb(15 23 42 / .06));box-sizing:border-box;width:calc(100% - 32px)}
 .mp-sub a{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;border-radius:999px;color:var(--ink2,#334155);text-decoration:none;font-size:.875rem;font-weight:700;white-space:nowrap}
 .mp-sub a:hover{background:rgb(15 23 42 / .05)}
 .mp-sub a:focus-visible{outline:2px solid var(--c5,#2563eb);outline-offset:2px}
@@ -33,7 +33,13 @@
   body.mp-model-a .mp-a>main.db-a>aside.db-nav,body.mp-model-a .mp-a>main.sr-a>aside.sr-nav{position:static;width:auto;height:auto;max-height:none;overflow:visible}
   body.mp-model-a .mp-a>main.db-a>aside.db-nav :is(.db-nav-id,.db-nav-g,.db-tarik),body.mp-model-a .mp-a>main.sr-a>aside.sr-nav :is(.sr-nav-id,.sr-nav-g,.sr-nav-kk){display:none}
   body.mp-model-a .mp-a>main.db-a>aside.db-nav :is(.db-nav-isi,.db-nav-kaki),body.mp-model-a .mp-a>main.sr-a>aside.sr-nav :is(.sr-nav-isi,.sr-nav-kaki){flex:none;flex-direction:row;flex-wrap:wrap;min-height:0;overflow:visible}
-  body.mp-model-a .mp-a>main.db-a>aside.db-nav :is(.db-nav-b,.db-nav-pb),body.mp-model-a .mp-a>main.sr-a>aside.sr-nav :is(.sr-nav-b,.sr-nav-pb){width:auto;flex:0 0 auto}
+  body.mp-model-a .mp-a>main.db-a>aside.db-nav :is(.db-nav-b,.db-nav-pb),body.mp-model-a .mp-a>main.sr-a>aside.sr-nav :is(.sr-nav-b,.sr-nav-pb){width:auto;flex:1 1 auto;justify-content:center}
+  /* kepala navy halaman tetap paling atas, deretan seksi di bawahnya (pemilik 26 Nov 2026: tidak ada isi di atas kepala): kolom kanan dilebur ke grid main lalu diurutkan */
+  body.mp-model-a .mp-a>main.db-a>aside.db-nav>.db-nav-kaki,body.mp-model-a .mp-a>main.sr-a>aside.sr-nav>.sr-nav-kaki{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:2px 16px}
+  body.mp-model-a .mp-a>main.db-a>.db-kanan,body.mp-model-a .mp-a>main.sr-a>.sr-kanan{display:contents}
+  body.mp-model-a .mp-a>main.db-a>.db-kanan>*,body.mp-model-a .mp-a>main.sr-a>.sr-kanan>*{order:2;min-width:0}
+  body.mp-model-a .mp-a>main.db-a>aside.db-nav,body.mp-model-a .mp-a>main.sr-a>aside.sr-nav{order:1}
+  body.mp-model-a .mp-a>main.db-a>.db-kanan>.bn-judul,body.mp-model-a .mp-a>main.sr-a>.sr-kanan>.bn-judul{order:0}
 }
 
 /* Akun pemirsa bertab 'pusdalops' = baca saja. Worker menulis <html data-baca-saja> (src/worker.js bacaSaja); satu blok ini menyembunyikan kontrol tulis
@@ -83,7 +89,7 @@ aside.db-nav .db-nav-b.mp-induk{font-weight:800}
    Layar sempit (< 901px) tetap memakai bilah atas karena panel kiri tersembunyi di sana. */
 .mp-merek{display:none}
 @media (min-width:901px){
-  body.mp-model-a>header.ad-top{display:none}
+  body.mp-model-a>header.ad-top,html.mp-pra body>header.ad-top,html.mp-pra .mp-sub{display:none}
   body.mp-model-a .mp-a>.mp-side{top:12px;height:calc(100dvh - 24px)}
   .mp-merek{display:flex;align-items:center;gap:6px;flex:none;padding:4px 2px 12px;border-bottom:1px solid var(--line)}
   .mp-merek-a{display:flex;align-items:center;gap:10px;flex:1;min-width:0;color:var(--brand);text-decoration:none}
@@ -127,3 +133,5 @@ aside.db-nav .db-nav-b.mp-luar .db-nav-t{flex:0 1 auto}
 
 /* panel kiri bisa ditarik (menu_pusdalops.js tarik(), D7 paket peta-situs): kolom panel mengikuti --db-w di .mp-a; pegangan .db-tarik bergaya dasbor.css */
 @media (min-width:901px){body.mp-model-a .mp-a{grid-template-columns:var(--db-w,284px) minmax(0,1fr)}}
+/* panel kiri berhuruf sendiri: halaman yang tidak memuat tema.css (mis. /rumah-rusak) tidak boleh mengubah ukuran dan keluarga huruf panel (pemilik 26 Nov 2026, satu sistem tampilan) */
+aside.mp-side{font-family:var(--font,"Inter",system-ui,-apple-system,"Segoe UI",sans-serif);font-size:.875rem;line-height:1.4}

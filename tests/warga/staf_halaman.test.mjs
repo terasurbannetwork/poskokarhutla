@@ -39,8 +39,8 @@ uji("T1: /admin/instansi untuk staf berperan memakai kerangka staf; peran lain k
   const t = await man("/admin/instansi", tmc); assert.equal(t.s, 303); assert.equal(t.h.get("location"), "/admin/pantau", "staf tanpa peran cocok tidak dilempar ke login admin");
   const an = await man("/admin/instansi"); assert.equal(an.s, 303); assert.match(an.h.get("location"), /\/masuk/);
   const ad = await api("GET", "/admin/instansi", undefined, ADMIN); assert.equal(ad.s, 200); assert.match(ad.t, /<span class="ad-sep">Admin<\/span>/);
-  /* PS-04: sub-nav admin = grup registri halaman ini (Akun instansi di grup Jejaring), dihitung dari src/peta_situs.js */
-  assert.deepEqual(hrefs(ad.t.match(/<nav class="ad-sub"[\s\S]*?<\/nav>/)[0]), grupNav().find(g => g.id === "jejaring").butir.map(e => e.rute), "sub-nav Akun Instansi = grup Jejaring");
+  /* satu menu (pemilik 26 Nov 2026): kerangka admin tanpa sub-nav grup, panel kiri = menu Pusdalops (menu_pusdalops.js) */
+  assert.doesNotMatch(ad.t, /class="ad-sub"/); assert.match(ad.t, /\/bnpb\/menu_pusdalops\.js/); assert.match(a.t, /\/bnpb\/menu_pusdalops\.js/);
   const pa = await api("GET", "/admin/pantau", undefined, ver); assert.match(pa.t, /ad-sep staf/); assert.match(pa.t, /\/inti\/format\.js/);
   const omc = await api("GET", "/admin/omc", undefined, tmc); assert.equal(omc.s, 200); assert.match(omc.t, /data-masuk="1"/);
   /* halaman Ruang Koordinasi lain: staf tanpa peran yang cocok ke Meja Pantau, anonim ke login admin (bukan kerangka kosong) */

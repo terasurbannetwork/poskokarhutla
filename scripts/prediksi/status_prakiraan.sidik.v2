@@ -1,0 +1,9 @@
+{
+ "sidik": "31087452e15b5c3e",
+ "berkas": {
+  "scripts/prediksi/status_prakiraan_kriteria.json": "e006e1920da01fa3eedd49f3f4903867200ca9d7647c25513eb2945ac822be50"
+ },
+ "masukan": [],
+ "dibuat": "2026-11-26T01:46:52Z",
+ "catatan": "Amandemen 1, 26 Nov 2026 (sebelum ada uji balik; gerbang/status_prakiraan.json belum ada): K null untuk banjir/longsor dipagari plafon Siaga (K_null_plafon 2), sebab sebelumnya K null dengan E>0 bisa Awas sedangkan K rendah dipagari Siaga (bias ke atas). Tanda sebagian tetap. Sidik lama disimpan di status_prakiraan.sidik.v1."
+}

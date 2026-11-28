@@ -1,0 +1,249 @@
+{
+ "dibuat": "2026-11-26T14:54:21Z",
+ "skema": 1,
+ "status": "hipotesis",
+ "catatan": "kepekaan tingkat B: skenario terdekat lawan hitungan langsung gempa buatan; bukan uji balik; ambang hanya berlaku pada kasus yang diuji",
+ "toleransi": {
+  "ln_d_maks": 0.4055,
+  "ln_luas": 0.4055,
+  "tiba_menit": 10.0
+ },
+ "kasus": [
+  {
+   "kotak": "ujung_kulon",
+   "kasus": "ks_uk_k1",
+   "pustaka": "mt_uk_m80",
+   "m_buatan": 8.1,
+   "m_pustaka": 8.0,
+   "selisih_m": 0.1,
+   "jarak_km": 25,
+   "langsung": {
+    "luas_tergenang_km2": 3.1,
+    "d_maks_m": 4.8,
+    "tiba_pertama_menit": 23
+   },
+   "skenario_terdekat": {
+    "luas_tergenang_km2": 2.5,
+    "d_maks_m": 4.0,
+    "tiba_pertama_menit": 23
+   },
+   "selisih": {
+    "ln_luas": 0.194,
+    "ln_d_maks": 0.171,
+    "tiba_menit": null,
+    "jaccard_tergenang": 0.824
+   },
+   "tampil": {
+    "rasio_luas_langsung_per_pustaka": 1.2,
+    "rasio_d_maks_langsung_per_pustaka": 1.2,
+    "kecocokan_area_tergenang_persen": 82
+   },
+   "lolos": false,
+   "lolos_tanpa_tiba": true,
+   "tak_dinilai": [
+    "tiba_menit"
+   ]
+  },
+  {
+   "kotak": "ujung_kulon",
+   "kasus": "ks_uk_k2",
+   "pustaka": "mt_uk_m85",
+   "m_buatan": 8.3,
+   "m_pustaka": 8.5,
+   "selisih_m": 0.2,
+   "jarak_km": 75,
+   "langsung": {
+    "luas_tergenang_km2": 3.0,
+    "d_maks_m": 5.1,
+    "tiba_pertama_menit": 23
+   },
+   "skenario_terdekat": {
+    "luas_tergenang_km2": 5.7,
+    "d_maks_m": 9.6,
+    "tiba_pertama_menit": 23
+   },
+   "selisih": {
+    "ln_luas": -0.644,
+    "ln_d_maks": -0.639,
+    "tiba_menit": null,
+    "jaccard_tergenang": 0.525
+   },
+   "tampil": {
+    "rasio_luas_langsung_per_pustaka": 0.5,
+    "rasio_d_maks_langsung_per_pustaka": 0.5,
+    "kecocokan_area_tergenang_persen": 52
+   },
+   "lolos": false,
+   "lolos_tanpa_tiba": false,
+   "tak_dinilai": [
+    "tiba_menit"
+   ]
+  },
+  {
+   "kotak": "pangandaran_cilacap",
+   "kasus": "ks_pc_k1",
+   "pustaka": "mt_pc_m80",
+   "m_buatan": 8.1,
+   "m_pustaka": 8.0,
+   "selisih_m": 0.1,
+   "jarak_km": 25,
+   "langsung": {
+    "luas_tergenang_km2": 4.1,
+    "d_maks_m": 6.6,
+    "tiba_pertama_menit": 19
+   },
+   "skenario_terdekat": {
+    "luas_tergenang_km2": 3.2,
+    "d_maks_m": 5.4,
+    "tiba_pertama_menit": 19
+   },
+   "selisih": {
+    "ln_luas": 0.24,
+    "ln_d_maks": 0.196,
+    "tiba_menit": -0.4,
+    "jaccard_tergenang": 0.787
+   },
+   "tampil": {
+    "rasio_luas_langsung_per_pustaka": 1.3,
+    "rasio_d_maks_langsung_per_pustaka": 1.2,
+    "kecocokan_area_tergenang_persen": 79
+   },
+   "lolos": true,
+   "lolos_tanpa_tiba": true,
+   "tak_dinilai": []
+  },
+  {
+   "kotak": "pangandaran_cilacap",
+   "kasus": "ks_pc_k2",
+   "pustaka": "mt_pc_m85",
+   "m_buatan": 8.3,
+   "m_pustaka": 8.5,
+   "selisih_m": 0.2,
+   "jarak_km": 75,
+   "langsung": {
+    "luas_tergenang_km2": 3.5,
+    "d_maks_m": 6.7,
+    "tiba_pertama_menit": 19
+   },
+   "skenario_terdekat": {
+    "luas_tergenang_km2": 8.1,
+    "d_maks_m": 9.4,
+    "tiba_pertama_menit": 18
+   },
+   "selisih": {
+    "ln_luas": -0.846,
+    "ln_d_maks": -0.345,
+    "tiba_menit": null,
+    "jaccard_tergenang": 0.42
+   },
+   "tampil": {
+    "rasio_luas_langsung_per_pustaka": 0.4,
+    "rasio_d_maks_langsung_per_pustaka": 0.7,
+    "kecocokan_area_tergenang_persen": 42
+   },
+   "lolos": false,
+   "lolos_tanpa_tiba": false,
+   "tak_dinilai": [
+    "tiba_menit"
+   ]
+  },
+  {
+   "kotak": "banyuwangi_rajegwesi",
+   "kasus": "ks_bw_k1",
+   "pustaka": "mt_bw_m80",
+   "m_buatan": 8.1,
+   "m_pustaka": 8.0,
+   "selisih_m": 0.1,
+   "jarak_km": 25,
+   "langsung": {
+    "luas_tergenang_km2": 4.2,
+    "d_maks_m": 4.2,
+    "tiba_pertama_menit": 12
+   },
+   "skenario_terdekat": {
+    "luas_tergenang_km2": 4.2,
+    "d_maks_m": 4.0,
+    "tiba_pertama_menit": 12
+   },
+   "selisih": {
+    "ln_luas": 0.004,
+    "ln_d_maks": 0.056,
+    "tiba_menit": null,
+    "jaccard_tergenang": 0.885
+   },
+   "tampil": {
+    "rasio_luas_langsung_per_pustaka": 1.0,
+    "rasio_d_maks_langsung_per_pustaka": 1.1,
+    "kecocokan_area_tergenang_persen": 88
+   },
+   "lolos": false,
+   "lolos_tanpa_tiba": true,
+   "tak_dinilai": [
+    "tiba_menit"
+   ]
+  },
+  {
+   "kotak": "banyuwangi_rajegwesi",
+   "kasus": "ks_bw_k2",
+   "pustaka": "mt_bw_m85",
+   "m_buatan": 8.3,
+   "m_pustaka": 8.5,
+   "selisih_m": 0.2,
+   "jarak_km": 75,
+   "langsung": {
+    "luas_tergenang_km2": 6.9,
+    "d_maks_m": 9.3,
+    "tiba_pertama_menit": 11
+   },
+   "skenario_terdekat": {
+    "luas_tergenang_km2": 10.1,
+    "d_maks_m": 8.7,
+    "tiba_pertama_menit": 13
+   },
+   "selisih": {
+    "ln_luas": -0.379,
+    "ln_d_maks": 0.06,
+    "tiba_menit": null,
+    "jaccard_tergenang": 0.65
+   },
+   "tampil": {
+    "rasio_luas_langsung_per_pustaka": 0.7,
+    "rasio_d_maks_langsung_per_pustaka": 1.1,
+    "kecocokan_area_tergenang_persen": 65
+   },
+   "lolos": false,
+   "lolos_tanpa_tiba": true,
+   "tak_dinilai": [
+    "tiba_menit"
+   ]
+  }
+ ],
+ "ambang": {
+  "ujung_kulon": null,
+  "pangandaran_cilacap": {
+   "selisih_m": 0.1,
+   "jarak_km": 25,
+   "dasar": "ks_pc_k1"
+  },
+  "banyuwangi_rajegwesi": null
+ },
+ "ambang_tanpa_tiba_keterangan": {
+  "ujung_kulon": {
+   "selisih_m": 0.1,
+   "jarak_km": 25,
+   "dasar": "ks_uk_k1"
+  },
+  "pangandaran_cilacap": {
+   "selisih_m": 0.1,
+   "jarak_km": 25,
+   "dasar": "ks_pc_k1"
+  },
+  "banyuwangi_rajegwesi": {
+   "selisih_m": 0.2,
+   "jarak_km": 75,
+   "dasar": "ks_bw_k2"
+  }
+ },
+ "catatan_tiba": "waktu tiba hanya dapat dinilai bila lebih dari 60 s sesudah awal pencatatan fgmax; kebanyakan kasus tidak memenuhi, jadi menurut aturan terdaftar mereka tak dapat dinilai dan tidak lolos. ambang_tanpa_tiba_keterangan hanya keterangan (kriteria luas dan d_maks saja), TIDAK dibaca pemilih.",
+ "aturan_ambang": "per kotak, urut kasus dari yang terkecil; ambang = kasus terbesar yang lolos bersama semua kasus lebih kecil; kasus terkecil gagal atau tak dapat dinilai = tanpa ambang (hanya skenario sama persis); tidak diekstrapolasi di luar yang diuji"
+}

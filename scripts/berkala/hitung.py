@@ -4,9 +4,9 @@ Stdlib saja. Tidak membaca jaringan; rakit.py (LB-03) yang membaca berkas produk
 Pembulatan hanya di sini, setengah ke atas (decimal.ROUND_HALF_UP). Kosong tidak pernah jadi 0: sumber atau periode
 yang tidak tercakup bernilai None dan berstatus `belum_ada` / `sebagian`.
 
-  python3 -I scripts/berkala/hitung.py uji                 # uji murni H1-H16 (tanpa jaringan)
-  python3 -I scripts/berkala/hitung.py cetak <masukan.json> # berkas angka ke stdout (dipakai uji kontrak)
-  python3 -I scripts/berkala/hitung.py fixture             # tulis ulang tests/berkala/fixtures/angka_bulanan.json
+  python3 -I scripts/berkala/hitung.py uji                 # uji murni H1-H21 (tanpa jaringan)
+  python3 -I scripts/berkala/hitung.py cetak <masukan.json | harian | mingguan | bulanan | tahunan>  # berkas angka ke stdout (uji kontrak)
+  python3 -I scripts/berkala/hitung.py fixture             # tulis ulang tests/berkala/fixtures/angka_{harian,mingguan,bulanan,tahunan}.json
 
 Bentuk masukan `berkas_angka(periode, kode, m, hari_ini)`, m = dict:
   dibi:       {"tarik", "dari", "sampai", "kejadian": [baris dibi_kejadian.json]}            (wajib)
@@ -19,6 +19,17 @@ Bentuk masukan `berkas_angka(periode, kode, m, hari_ini)`, m = dict:
   riwayat:    isi public/data/logbook_riwayat.json (opsional; Bab 7.1 peluang, ALGORITMA 8)
   iklim:      isi public/data/iklim_outlook.json (opsional; Bab 4.4 hujan dan indeks ENSO Bab 7.1, ALGORITMA 6 dan 8)
   peluang:    {"kab_tinggi": n}, enso: {"nilai", "golongan", "musim"}  (opsional; menimpa turunan riwayat/iklim untuk T6, T7)
+  perubahan_level: [{"gunung", "tanggal", "dari", "ke"}]  (opsional; harian dan mingguan, ALGORITMA 12 geologi)
+  prediksi:   isi public/prediksi/data/prediksi.json (opsional; harian, prakiraan besok tenggang +1, dibaca apa adanya)
+  tangga:     isi public/prediksi/data/tangga.json (opsional; mingguan, prakiraan sepekan; tanpa berkas = belum_tersedia)
+  Tahunan (LB-12, D13, ALGORITMA 12), semua opsional:
+  tren:       isi public/data/dibi_tren.json (riwayat 10 tahun resmi; tahun lapor resmi dari tarikan tahunan, H20, H20b)
+  luas_resmi, luas_satelit: isi public/data/luas_resmi.json dan luas_satelit.json (berdampingan dengan luas perkiraan, tidak dijumlah)
+  beku_bulanan: {"YYYY-MM": {"versi", "tarik", "alam", "jenis": {jenis: n}}} versi beku bulanan terakhir per bulan (H19)
+  dibi.sambung: tanggal awal baris dibi_kejadian.json bila awal tahun disambung dari lapis Siklus (rakit.py)
+  Bulanan dan tahunan (LF-09, KU-10), opsional; tanpa masukan = belum_tersedia, tidak pernah 0:
+  lifeline:   {"tarik", "kejadian": [{"id", "nama", "kab": [{"kab4", "nama", "layanan": {layanan: {"warna", "diubah"}}}]}]}  status staf
+  kaji_ulang: jawaban GET /api/siklus/kaji-ulang/rekomendasi apa adanya: {"hari", "ringkas": {total, terbuka, lewat_tenggat, tertutup}, "terpotong"}
 """
 import datetime as dt
 import importlib.util
@@ -95,7 +106,7 @@ def geser(periode, kode, n):
     a, _ = rentang(periode, kode)
     if periode == "harian":
         return (a + dt.timedelta(days=n)).isoformat()
-    if periode == "mingguan":
+    if periode == "mingguan":   # Senin + n minggu, lalu kode ISO (lintas tahun aman: 2026-W01 - 1 = 2025-W52)
         y, w, _ = (a + dt.timedelta(weeks=n)).isocalendar()
         return f"{y}-W{w:02d}"
     if periode == "bulanan":
@@ -145,7 +156,7 @@ def banding(kini, lalu):
         return {"kini": kini, "lalu": lalu, "arah": None, "persen": None}
     if lalu == 0:
         return {"kini": kini, "lalu": 0, "arah": "tetap 0" if kini == 0 else "baru", "persen": None}
-    p = bulat(Decimal(abs(kini - lalu)) * 100 / Decimal(lalu))
+    p = bulat(abs(Decimal(str(kini)) - Decimal(str(lalu))) * 100 / Decimal(str(lalu)))   # str: rerata 7 hari (H21) bisa pecahan
     return {"kini": kini, "lalu": lalu, "arah": "naik" if kini > lalu else "turun" if kini < lalu else "tetap", "persen": p}
 
 
@@ -329,6 +340,23 @@ def agregat_kode(sumber, periode, kode):
     return agregat(bersih_dampak(pilih(sumber["kejadian"], a, b))[0])
 
 
+def agregat_lalu(m, periode, kode):
+    """agregat periode pembanding (sebelumnya, tahun lalu): tarikan sekarang bila tercakup, kalau tidak lapis Siklus (dibi_lalu, Q3).
+    (agregat atau None, asal atau None)."""
+    g = agregat_kode(m["dibi"], periode, kode)
+    if g is not None:
+        return g, "dibi_kejadian"
+    if m.get("dibi_lalu"):
+        g = agregat_kode(m["dibi_lalu"], periode, kode)
+        if g is not None:
+            return g, m["dibi_lalu"].get("asal", "siklus_bersih")
+    return None, None
+
+
+class BelumTercakup(ValueError):
+    """DIBI tidak mencakup seluruh periode: rakit.py --jadwal menundanya (bukan gagal), rakit manual tetap gagal."""
+
+
 def kejadian_jenis(g):
     return None if g is None else {"alam": g["alam"]["kejadian"], "alam_resmi": g["resmi"]["alam"]["kejadian"] if g["resmi"] else None,
                                    **{j: g["jenis"][j]["kejadian"] for j in JENIS}, **{j: g["bukan_alam"][j]["kejadian"] for j in BUKAN_ALAM}}
@@ -350,7 +378,7 @@ def bab1(periode, kode, m):
     dibi = m["dibi"]
     a, b = rentang(periode, kode)
     if not tercakup(dibi, a, b):
-        raise ValueError(f"DIBI ({dibi.get('dari')} sampai {dibi.get('sampai')}) tidak mencakup {kode}")
+        raise BelumTercakup(f"DIBI ({dibi.get('dari')} sampai {dibi.get('sampai')}) tidak mencakup {kode}")
     periksa_jenis(dibi["kejadian"])
     resmi_b = pilih(dibi["kejadian"], a, b)
     baris, kena = bersih_dampak(resmi_b)
@@ -364,22 +392,29 @@ def bab1(periode, kode, m):
         per_r = periode
     riw = [{"kode": k, "kejadian": kejadian_jenis(agregat_kode(dibi, per_r, k))} for k in kode_r]
     seb_k = geser(periode, kode, -1)
-    seb = agregat_kode(dibi, periode, seb_k)
+    seb, _ = agregat_lalu(m, periode, seb_k)
     # tahun lalu (bagian 3, Q3): tarikan sekarang bila masih tercakup, kalau tidak lapis Siklus (dibi_lalu) dari rakit.py
     tl_k = tahun_lalu(periode, kode)
-    tl, asal = agregat_kode(dibi, periode, tl_k), "dibi_kejadian"
-    if tl is None and m.get("dibi_lalu"):
-        tl, asal = agregat_kode(m["dibi_lalu"], periode, tl_k), m["dibi_lalu"].get("asal", "siklus_bersih")
+    tl, asal = agregat_lalu(m, periode, tl_k)
     bandingan = None
     if tl is not None:
         bandingan = {"kejadian": banding(g["alam"]["kejadian"], tl["alam"]["kejadian"]),
                      "kejadian_resmi": banding(g["resmi"]["alam"]["kejadian"] if g["resmi"] else None, tl["resmi"]["alam"]["kejadian"] if tl["resmi"] else None),
                      **{t: banding(g["alam"]["dampak"][t], tl["alam"]["dampak"][t]) for t in ("meninggal_hilang", "luka", "terdampak_mengungsi", "rumah_rusak")},
                      "jenis": {j: banding(g["jenis"][j]["kejadian"], tl["jenis"][j]["kejadian"]) for j in JENIS}}
+    tambahan = {}
+    if periode == "tahunan":
+        tambahan["riwayat_10_tahun"] = riwayat_10(kode, m.get("tren"), g)
+    if periode == "harian":
+        tambahan["rerata_7"] = rerata_7(dibi, a, g)
+        tambahan["menonjol"] = menonjol(g)
+        tambahan["kab"] = g["kab"]   # PRD 2: tabel kejadian hari itu per kab dengan dampak; non-alam dan sosial ikut sebagai baris
+        tambahan["rerata_7"]["banding"]["status"] = "sementara"   # Q26: DIBI hari itu masih bertambah saat dirakit pagi berikutnya
     kab_na = sorted([k for k in g["kab"] if k["jenis"] in BUKAN_ALAM], key=lambda k: (-k["kejadian"], -_n0(k["dampak"]["meninggal_hilang"]), str(k["kode"])))[:10]
     out = {
         "alam": g["alam"], "resmi": g["resmi"], "di_bawah_ambang": g["di_bawah_ambang"], "label_angka": LABEL_ANGKA, "kelompok": g["kelompok"], "jenis": g["jenis"], "prov": g["prov"], "prov_teratas": [p["kode"] for p in g["prov"][:10]],
-        "riwayat": riw, "sebelumnya": {"kode": seb_k, "kejadian": kejadian_jenis(seb)},
+        "riwayat": riw, "sebelumnya": {"kode": seb_k, "kejadian": kejadian_jenis(seb),
+                                       "banding": banding(g["alam"]["kejadian"], seb["alam"]["kejadian"] if seb else None) | ({"status": "sementara"} if periode == "harian" else {})}, **tambahan,
         "tahun_lalu": {"kode": tl_k, "asal": asal if tl else None, "kejadian": kejadian_jenis(tl),
                        "dampak": tl["alam"]["dampak"] if tl else None, "banding": bandingan},
         "bukan_alam": {"jenis": g["bukan_alam"], "kab_teratas": kab_na,
@@ -391,6 +426,213 @@ def bab1(periode, kode, m):
               "kejadian_resmi": g["resmi"]["alam"]["kejadian"] if g["resmi"] else None,
               "duplikat_dampak": kena, "di_bawah_ambang": g["di_bawah_ambang"], "status": "ok"}
     return out, g, sumber
+
+
+N_MENONJOL = 5   # ALGORITMA 12: harian tanpa usulan temuan; kejadian menonjol = 5 terbesar
+
+
+def rerata_7(dibi, a, g):
+    """H21: rerata 7 hari SEBELUM tanggal laporan (a-7 .. a-1, hari itu tidak ikut); None bila DIBI tidak mencakup ketujuhnya."""
+    d0, d1 = a - dt.timedelta(days=7), a - dt.timedelta(days=1)
+    w = agregat(bersih_dampak(pilih(dibi["kejadian"], d0, d1))[0]) if tercakup(dibi, d0, d1) else None
+    bagi = lambda x: None if x is None else bulat(Decimal(x) / 7)
+    alam = bagi(w["alam"]["kejadian"]) if w else None
+    resmi = bagi(w["resmi"]["alam"]["kejadian"]) if w and w["resmi"] else None
+    return {"dari": d0.isoformat(), "sampai": d1.isoformat(), "hari": 7, "alam": alam, "alam_resmi": resmi,
+            "jenis": {j: bagi(w["jenis"][j]["kejadian"]) if w else None for j in JENIS},
+            "banding": banding(g["alam"]["kejadian"], alam)}
+
+
+def menonjol(g):
+    """kejadian bencana alam terbesar hari itu: meninggal dan hilang, lalu terdampak dan mengungsi, lalu banyak kejadian."""
+    ks = [k for k in g["kab"] if k["jenis"] in JENIS]
+    ks.sort(key=lambda k: (-_n0(k["dampak"]["meninggal_hilang"]), -_n0(k["dampak"]["terdampak_mengungsi"]), -k["kejadian"], str(k["kode"])))
+    return ks[:N_MENONJOL]
+
+
+# ------------------------------------------------------------------ tahunan (LB-12, D13, ALGORITMA 12)
+# Riwayat 10 tahun RESMI (is_bencana) dari public/data/dibi_tren.json: kategori berkas -> jenis laporan. Tujuh jenis sama di semua
+# titik; erupsi, tsunami, dan non-alam tidak ikut. Tahun lapor juga resmi (tanpa laporan di bawah ambang) dari tarikan tahunan, supaya
+# riwayat dan tahun lapor satu definisi (H20, H20b). Angka semua laporan tahun lapor tampil berdampingan, tidak dibandingkan.
+TREN_JENIS = {"Banjir": "banjir", "Longsor": "longsor", "Kekeringan": "kekeringan", "Gelombang pasang / Abrasi": "gelombang", "Gempabumi": "gempa",
+              "Kebakaran hutan dan lahan": "karhutla", "Cuaca ekstrem": "cuaca_ekstrem"}
+JENIS7 = sorted(set(TREN_JENIS.values()))
+N_TAHUN = 10
+CATATAN_R10 = ("Riwayat dan tahun laporan memakai angka resmi DIBI (memenuhi ambang bencana Juklak BNPB 7/2023) untuk tujuh jenis yang sama: "
+               "banjir, tanah longsor, kekeringan, gelombang pasang, gempa bumi, karhutla, cuaca ekstrem. Angka semua laporan tidak dibandingkan dengan riwayat ini.")
+
+
+def riwayat_10(kode, tren, g):
+    """H20: 10 tahun sebelum tahun lapor dari dibi_tren.json (resmi) plus tahun lapor resmi dari tarikan tahunan (BUKAN baris tahun itu
+    di berkas tren): 11 titik. Tahun tanpa baris = None; rerata hanya bila kesepuluhnya ada. H20b: resmi tahun lapor tidak diketahui
+    (lapis Siklus tanpa tanda ambang) = banding None, jadi T8 tidak terbit."""
+    th = int(kode)
+    rs = g.get("resmi")
+    kini = {"tahun": th, "asal": "tarikan_tahunan", "kejadian": sum(rs["jenis"][j] for j in JENIS7) if rs else None,
+            "jenis": {j: rs["jenis"][j] for j in JENIS7} if rs else None, "semua_laporan": sum(g["jenis"][j]["kejadian"] for j in JENIS7)}
+    if not tren or not tren.get("tahun_kab"):
+        return {"status": "belum_ada", "titik": [kini], "rerata": None, "banding": banding(kini["kejadian"], None), "catatan": CATATAN_R10}
+    ix = {k: i for i, k in enumerate(tren["kolom_tahun"])}
+    kat = {i: TREN_JENIS.get(n) for i, n in enumerate(tren.get("kategori") or [])}
+    per = {}
+    for r in tren["tahun_kab"]:
+        t, j = int(r[ix["tahun"]]), kat.get(r[ix["kategori"]])
+        if j and th - N_TAHUN <= t < th:
+            e = per.setdefault(t, dict.fromkeys(JENIS7, Decimal(0)))
+            e[j] += Decimal(str(r[ix["kejadian"]] or 0))
+    titik = [{"tahun": t, "asal": "dibi_tren", "kejadian": bulat(sum(per[t].values()), 0) if t in per else None,
+              "jenis": {j: bulat(v, 0) for j, v in per[t].items()} if t in per else None,
+              **({"sementara": True} if tren.get("sementara") is not None and t >= int(tren["sementara"]) else {})} for t in range(th - N_TAHUN, th)]
+    ada = [x["kejadian"] for x in titik if x["kejadian"] is not None]
+    rerata = bulat(Decimal(sum(ada)) / N_TAHUN) if len(ada) == N_TAHUN else None
+    return {"status": "ok" if len(ada) == N_TAHUN else "sebagian" if ada else "belum_ada", "tarik": _tarik(tren), "jenis": JENIS7,
+            "titik": titik + [kini], "tahun_ada": len(ada), "rerata": rerata, "banding": banding(kini["kejadian"], rerata), "catatan": CATATAN_R10}
+
+
+def luas_banding(tahun, berkas, asal):
+    """luas resmi (KLHK SiPongi) atau satelit (GWIS) setahun per provinsi, apa adanya, berdampingan dengan luas perkiraan sistem
+    (D5: tidak dijumlah). Tahun yang belum lengkap di sumber (kunci 'sampai' sebelum Desember) = sebagian."""
+    if not berkas:
+        return {"status": "belum_ada", "asal": asal}
+    ts = [str(x) for x in berkas.get("tahun") or []]
+    if str(tahun) not in ts:
+        return {"status": "belum_ada", "asal": asal, "tahun_ada": ts}
+    i = ts.index(str(tahun))
+    prov = {k: bulat(Decimal(str(v[i]))) for k, v in sorted((berkas.get("ha") or {}).items()) if i < len(v) and v[i] is not None}
+    sampai = (berkas.get("sampai") or {}).get(str(tahun))
+    return {"status": "sebagian" if sampai and sampai < f"{tahun}-12" else "ok", "asal": asal, "sampai": sampai,
+            "ha": bulat(sum(Decimal(str(v)) for v in prov.values())) if prov else None, "prov": prov, "sumber": berkas.get("sumber")}
+
+
+def bulan_puncak(per_bulan, kunci):
+    """bulan dengan nilai terbanyak; None bila ada bulan yang tidak diketahui (puncak dari data bolong bukan puncak)."""
+    if not per_bulan or any(p[kunci] is None for p in per_bulan):
+        return None
+    p = min(per_bulan, key=lambda p: (-p[kunci], p["kode"]))
+    return {"kode": p["kode"], kunci: p[kunci]}
+
+
+def prov_bulan(baris, tahun):
+    """lampiran tahunan: kejadian bencana alam per provinsi x jenis x bulan (12 angka per jenis yang ada)."""
+    out = {}
+    for r in baris:
+        if r["_j"] in JENIS:
+            e = out.setdefault(r["prov_kode"], {"kode": r["prov_kode"], "nama": r["prov"], "jenis": {}})
+            v = e["jenis"].setdefault(r["_j"], [Decimal(0)] * 12)
+            v[int(r["tanggal"][5:7]) - 1] += _kej(r)
+    return [{**e, "jenis": {j: [bulat(x, 0) for x in v] for j, v in sorted(e["jenis"].items())}} for _, e in sorted(out.items())]
+
+
+def asal_bulan(dibi, k):
+    """bulan dari lapis Siklus (riwayat penuh), dari dibi_kejadian.json, atau campuran, menurut tanggal sambung rakit.py."""
+    s = dibi.get("sambung")
+    if not s:
+        return "dibi_kejadian"
+    a, b = rentang("bulanan", k)
+    return "siklus_bersih" if b.isoformat() < s else "dibi_kejadian" if a.isoformat() >= s else "campuran"
+
+
+CATATAN_BEDA = "selisih memuat beda sumber, bukan hanya susulan"
+
+
+def selisih_bulanan(riw, beku, dibi):
+    """D13, H19: tiap bulan, kejadian bencana alam di versi beku bulanan terakhir lawan tarikan tahunan. Bulan tanpa versi beku =
+    belum_ada_beku dan selisih None (bukan 0). Selisih per jenis hanya jenis yang berubah."""
+    rows = []
+    for r in riw:
+        k, t = r["kode"], (r["kejadian"] or {}).get("alam")
+        b = (beku or {}).get(k)
+        x = {"kode": k, "tahunan": t, "asal": asal_bulan(dibi, k)}
+        if not b:
+            rows.append(x | {"beku": None, "selisih": None, "jenis": None, "status": "belum_ada_beku"})
+            continue
+        bj, tj = b.get("jenis") or {}, r["kejadian"] or {}
+        beda = x["asal"] != "dibi_kejadian"   # versi beku dari dibi_kejadian.json, angka tahunan bulan itu dari riwayat penuh: beda sumber
+        rows.append(x | {"beku": {"versi": b.get("versi"), "tarik": b.get("tarik"), "alam": b.get("alam")},
+                         "selisih": None if t is None or b.get("alam") is None else t - b["alam"],
+                         "jenis": {j: tj[j] - bj[j] for j in JENIS if tj.get(j) is not None and bj.get(j) is not None and tj[j] != bj[j]},
+                         "status": "beda_sumber" if beda else "ok", **({"catatan": CATATAN_BEDA} if beda else {})})
+    ada, bs = sum(x["status"] == "ok" for x in rows), sum(x["status"] == "beda_sumber" for x in rows)
+    return {"status": "ok" if ada == len(rows) else "sebagian" if ada or bs else "belum_ada_beku", "bulan_beku": ada, "bulan_beda_sumber": bs, "bulan": rows,
+            "catatan": None if ada or bs else "belum ada versi beku bulanan"}
+
+
+# ------------------------------------------------------------------ lifeline dan kaji ulang (LF-09, KU-10)
+# Data staf di D1 (src/lifeline.js, src/kaji_ulang.js); laporan dirakit di CI tanpa D1 dan tanpa sesi, jadi masukan opsional.
+LAYANAN = ["listrik", "sinyal", "air", "jalan", "bbm", "faskes", "pangan", "pengungsian"]   # = LAYANAN src/lifeline_usulan.js (uji kontrak)
+WARNA_LF = ["hijau", "kuning", "merah", "abu"]
+CATATAN_LF = "Warna adalah status yang ditetapkan staf; sel tanpa status tetap abu. Usulan mesin tidak ditampilkan dan tidak pernah menjadi status resmi."
+
+
+def lifeline(lf):
+    """satu tabel per kejadian aktif: kab x layanan, warna status staf apa adanya; tanpa status atau warna asing = abu (tanpa bukti)."""
+    if not lf or lf.get("kejadian") is None:
+        return {"status": "belum_tersedia"}, {"tarik": None, "status": "belum_ada"}
+    kej = []
+    for e in lf["kejadian"]:
+        kab = []
+        for k in e.get("kab") or []:
+            ly = k.get("layanan") or {}
+            w = {l: (ly.get(l) or {}).get("warna") if (ly.get(l) or {}).get("warna") in WARNA_LF else "abu" for l in LAYANAN}
+            kab.append({"kab4": k.get("kab4"), "nama": k.get("nama"), "warna": w, "diubah": {l: (ly.get(l) or {}).get("diubah") for l in LAYANAN if w[l] != "abu"}})
+        kab.sort(key=lambda x: str(x["kab4"]))
+        kej.append({"id": e.get("id"), "nama": e.get("nama"), "jenis": e.get("jenis"), "kab": kab,
+                    "per_warna": {l: {c: sum(x["warna"][l] == c for x in kab) for c in WARNA_LF} for l in LAYANAN}})
+    return {"status": "ok", "tarik": lf.get("tarik"), "layanan": LAYANAN, "kejadian": kej, "catatan": CATATAN_LF}, {"tarik": lf.get("tarik"), "status": "ok"}
+
+
+def kaji_ulang(ku):
+    """KU Q9: hanya ringkasan hitungan rekomendasi (terbuka, lewat tenggat) dari rute daftar rekomendasi, dibaca apa adanya."""
+    r = (ku or {}).get("ringkas")
+    if not r:
+        return {"status": "belum_tersedia"}, {"tarik": None, "status": "belum_ada"}
+    st = "sebagian" if ku.get("terpotong") else "ok"
+    return {"status": st, "hari": ku.get("hari"), **{k: r.get(k) for k in ("total", "terbuka", "lewat_tenggat", "tertutup")}}, {"tarik": ku.get("hari"), "status": st}
+
+
+# ------------------------------------------------------------------ kegiatan dari siaran pers (ALGORITMA 13, Q8, LB-09)
+PELAKSANA_KG = ("Kepala BNPB", "Pusdatinkom", "Satgas operasi")
+CATATAN_KG = ("Calon kegiatan dari daftar siaran pers bnpb.go.id (judul, tanggal, tautan; isi berita tidak disalin). Pelaksana, jenis, dan lokasi "
+              "adalah usulan mesin dari judul; baris masuk laporan hanya bila dipilih staf (Q8). Hitungan di sini adalah siaran pers yang terbit, "
+              "bukan kegiatan yang dipilih.")
+
+
+def _rekap_kg(ys):
+    return {"siaran": len(ys), "situasi": sum(bool(y.get("situasi")) for y in ys),
+            "pelaksana": {**{p: sum(y.get("pelaksana") == p for y in ys) for p in PELAKSANA_KG},
+                          "belum_digolongkan": sum(y.get("pelaksana") not in PELAKSANA_KG for y in ys)},
+            "jenis": {j: sum(j in (y.get("jenis") or []) for y in ys) for j in JENIS}}
+
+
+def kegiatan(periode, kode, kg):
+    """kg = kegiatan.arsip(): {tarik, cakup (rentang terurut tanpa tumpang), butir}. Mingguan dan bulanan: daftar calon dan rekap;
+    tahunan: rekap per bulan tanpa daftar (D13 tidak berlaku: ini hitungan siaran pers, bukan kegiatan terpilih). Rentang yang tidak
+    tercakup panen = None, bukan 0."""
+    if not kg:
+        return {"status": "belum_tersedia"}, {"tarik": None, "status": "belum_ada"}
+    a, b = rentang(periode, kode)
+    cak = kg.get("cakup") or []
+    dalam = lambda x, y: any(p <= x.isoformat() and y.isoformat() <= q for p, q in cak)
+    pilih_ = lambda x, y: sorted((z for z in kg.get("butir") or [] if x.isoformat() <= z["tanggal"] <= y.isoformat()),
+                                 key=lambda z: (z["tanggal"], z.get("jam") or "", z["tautan"]))
+    xs = pilih_(a, b)
+    if periode == "tahunan":
+        bulan = []
+        for i in range(1, 13):
+            ma = dt.date(a.year, i, 1)
+            mb = _geser_bulan(ma, 1) - dt.timedelta(days=1)
+            bulan.append({"bulan": ma.isoformat()[:7], **(_rekap_kg(pilih_(ma, mb)) if dalam(ma, mb) else {"siaran": None})})
+        n = sum(x["siaran"] is not None for x in bulan)
+        st = "ok" if n == 12 else "sebagian" if n else "belum_tersedia"
+        out = {"status": st, "bulan": bulan, "rekap": _rekap_kg(xs) if st == "ok" else None}
+    else:
+        ada = any(p <= b.isoformat() and a.isoformat() <= q for p, q in cak)
+        st = "ok" if dalam(a, b) else "sebagian" if ada else "belum_tersedia"
+        keep = ("tanggal", "jam", "judul", "tautan", "pelaksana", "jenis", "lokasi", "situasi")
+        out = {"status": st, "calon": [{k: z.get(k) for k in keep} for z in xs], "rekap": _rekap_kg(xs) if st == "ok" else None}
+    if st == "belum_tersedia":
+        return {"status": st}, {"tarik": kg.get("tarik"), "status": "belum_ada"}
+    return {**out, "tarik": kg.get("tarik"), "cakup": cak, "catatan": CATATAN_KG}, {"tarik": kg.get("tarik"), "status": st}
 
 
 def lampiran(g, sumber_dibi):
@@ -416,8 +658,15 @@ def _hari(a, b):
 def jumlah_hot(harian, a, b):
     """jumlah hotspot nasional dalam rentang dengan cakupannya; hot None bila ada hari tanpa data (sebagian bukan angka penuh)."""
     hs = _hari(a, b)
-    v = [sum(int(x.get("hot") or 0) for x in harian[d].values()) for d in hs if d in harian]
-    return {"hot": sum(v) if len(v) == len(hs) else None, "hari": len(v), "hari_rentang": len(hs)}
+    v = [None if any("hot" in x and x["hot"] is None for x in harian[d].values()) else sum(int(x.get("hot") or 0) for x in harian[d].values())
+         for d in hs if d in harian]   # hot None di satu provinsi = hari itu tidak diketahui, bukan 0
+    return {"hot": sum(v) if len(v) == len(hs) and None not in v else None, "hari": len(v), "hari_rentang": len(hs)}
+
+
+def luas_tiga(tahun, m, perkiraan, status):
+    return {"perkiraan": {"ha": perkiraan, "status": status, "asal": "sistem karhutla Centurisk97"},
+            "resmi": luas_banding(tahun, m.get("luas_resmi"), "KLHK SiPongi"), "satelit": luas_banding(tahun, m.get("luas_satelit"), "GWIS, MODIS MCD64A1"),
+            "catatan": "Tiga angka luas berbeda cara ukur dan tidak dijumlah."}
 
 
 def bab2(periode, kode, m, g):
@@ -430,7 +679,7 @@ def bab2(periode, kode, m, g):
     sumber = {"tarik": k.get("tarik"), "asal": k.get("asal"), "hari": len(ada), "hari_rentang": len(hari),
               "hari_kosong": [d for d in hari if d not in harian], "status": status}
     if not ada:
-        return {"status": "belum_ada"}, sumber
+        return {"status": "belum_ada", **({"luas_pembanding": luas_tiga(a.year, m, None, "belum_ada")} if periode == "tahunan" else {})}, sumber
     nama = {p["kode"]: p["nama"] for p in g["prov"]}
     prov = {}
     for d in ada:
@@ -455,7 +704,7 @@ def bab2(periode, kode, m, g):
     out = {
         "hot": total, "luas": bulat(sum(Decimal(str(e["luas"])) for e in urut)),
         "belum": bulat(sum(Decimal(str(e["belum"])) for e in urut)) if akhir is not None else None,
-        "puncak": {"tanggal": pd_, "hot": nas[pd_]}, "akhir": {"tanggal": b.isoformat(), "hot": akhir_n},
+        "puncak": {"tanggal": pd_, "hot": nas[pd_]} if periode != "harian" else None, "akhir": {"tanggal": b.isoformat(), "hot": akhir_n},
         "turun_dari_puncak": persen(nas[pd_] - akhir_n, nas[pd_]) if akhir_n is not None and periode != "harian" else None,
         "harian": [{"tanggal": d, "hot": nas.get(d)} for d in hari],
         "prov": urut, "label": [e["kode"] for e in urut[:N_LABEL]], "kelas_batas": KELAS_HOT,
@@ -464,9 +713,17 @@ def bab2(periode, kode, m, g):
         "sebelumnya": {"kode": (sk := geser(periode, kode, -1)), **jumlah_hot(harian, *rentang(periode, sk))},
         "cakupan": {"hari": len(ada), "hari_rentang": len(hari)}, "status": status,
     }
-    if periode == "bulanan":   # hotspot per bulan sejak Januari
-        out["per_bulan"] = [{"kode": f"{a.year}-{i:02d}", **jumlah_hot(harian, *rentang("bulanan", f"{a.year}-{i:02d}"))} for i in range(1, a.month + 1)]
+    if periode in ("bulanan", "tahunan"):   # hotspot per bulan sejak Januari (tahunan: 12 bulan)
+        out["per_bulan"] = [{"kode": f"{a.year}-{i:02d}", **jumlah_hot(harian, *rentang("bulanan", f"{a.year}-{i:02d}"))} for i in range(1, b.month + 1)]
+    if periode == "tahunan":   # ALGORITMA 12: bulan puncak; luas resmi dan satelit berdampingan dengan luas perkiraan, tidak dijumlah (D5)
+        out["bulan_puncak"] = bulan_puncak(out["per_bulan"], "hot")
+        out["luas_pembanding"] = luas_tiga(a.year, m, out["luas"] if status == "ok" else None, status)
     out["sebelumnya"]["banding"] = banding(total if status == "ok" else None, out["sebelumnya"]["hot"])   # banding hanya cakupan penuh
+    if periode == "harian":   # H21: rerata 7 hari sebelum tanggal laporan, tidak termasuk hari itu; hanya bila ketujuh hari ada
+        r = jumlah_hot(harian, a - dt.timedelta(days=7), a - dt.timedelta(days=1))
+        rr = bulat(Decimal(r["hot"]) / 7) if r["hot"] is not None else None
+        out["rerata_7"] = {"dari": (a - dt.timedelta(days=7)).isoformat(), "sampai": (a - dt.timedelta(days=1)).isoformat(), "hot": rr,
+                           "hari": r["hari"], "hari_rentang": r["hari_rentang"], "banding": banding(total if status == "ok" else None, rr)}
     return out, sumber
 
 
@@ -516,7 +773,7 @@ def bab3(periode, kode, m, g):
     for k in banjir:
         nprov[k["prov_kode"]] = nprov.get(k["prov_kode"], 0) + 1
     seb = geser(periode, kode, -1)
-    sg = agregat_kode(m["dibi"], periode, seb)
+    sg, _ = agregat_lalu(m, periode, seb)
     out = {
         "banjir": {"kab": banjir, "tabel": [k["kode"] for k in banjir[:N_TABEL_BANJIR]], "kab_n": len(banjir),
                    "status": hit if ada else None, "prov_terbanyak": max(nprov, key=lambda p: (nprov[p], p)) if nprov else None,
@@ -525,6 +782,14 @@ def bab3(periode, kode, m, g):
         "sebelumnya": {"kode": seb, "banjir": banding(g["jenis"]["banjir"]["kejadian"], sg["jenis"]["banjir"]["kejadian"] if sg else None),
                        "longsor": banding(g["jenis"]["longsor"]["kejadian"], sg["jenis"]["longsor"]["kejadian"] if sg else None)},
     }
+    if periode == "tahunan":   # ALGORITMA 12: kab banjir per bulan, kab paling sering banjir, bulan puncak banjir
+        pb = []
+        for i in range(1, 13):
+            gb = agregat_kode(m["dibi"], "bulanan", f"{kode}-{i:02d}")
+            pb.append({"kode": f"{kode}-{i:02d}", "kejadian": gb["jenis"]["banjir"]["kejadian"] if gb else None, "kab_n": gb["jenis"]["banjir"]["kab"] if gb else None})
+        out["banjir"]["per_bulan"] = pb
+        out["banjir"]["bulan_puncak"] = bulan_puncak(pb, "kejadian")
+        out["banjir"]["kab_sering_kode"] = [k["kode"] for k in sorted(banjir, key=lambda k: (-k["kejadian"], str(k["kode"])))[:N_TABEL_BANJIR]]
     return out, sumber
 
 
@@ -536,7 +801,7 @@ def bab4(periode, kode, m, g):
     kab = [k for k in g["kab"] if k["jenis"] in ("cuaca_ekstrem", "kekeringan")]
     besar = sorted(kab, key=lambda k: (-_n0(k["dampak"]["meninggal_hilang"]), -_n0(k["dampak"]["terdampak_mengungsi"]), -_n0(k["dampak"]["rumah_rusak"]), -k["kejadian"], k["kode"]))
     seb = geser(periode, kode, -1)
-    sg = agregat_kode(m["dibi"], periode, seb)
+    sg, _ = agregat_lalu(m, periode, seb)
     return {"cuaca_ekstrem": {"kab": [k for k in kab if k["jenis"] == "cuaca_ekstrem"], "ringkas": g["jenis"]["cuaca_ekstrem"]},
             "kekeringan": {"kab": [k for k in kab if k["jenis"] == "kekeringan"], "ringkas": g["jenis"]["kekeringan"]},
             "tabel": [{"kode": k["kode"], "jenis": k["jenis"]} for k in besar[:N_TABEL_CUACA]],
@@ -616,6 +881,76 @@ def bab7(periode, kode, m):
     return {"peluang": pel, "enso": enso(m.get("iklim")), "catatan": BUKAN_BMKG}, s
 
 
+# ------------------------------------------------------------------ prakiraan harian dan mingguan (ALGORITMA 12)
+# Hanya membaca keluaran modul prediksi apa adanya (AGENTS.md 2.7): tanpa hitung ulang, BMKG dan prediksi kita terpisah, tanpa "aman".
+LABEL_KITA = "Prediksi model Centurisk97 (/prediksi), bukan pernyataan BMKG"
+
+
+def _wib(s):
+    return str(s or "")[:10] or None
+
+
+def prakiraan_besok(kode, pr):
+    """harian: prediksi.json waspada tenggang +1, ditegakkan pada TANGGAL TARGET hari[0]: ok hanya bila hari[0] = a+1 atau a+2
+    (rakit 10.10 WIB hari a+1 memakai prediksi terbit pagi itu, jadi targetnya a+2; rakit ulang hari a memakai a+1). Tiap rakit
+    harian membaca prediksi.json terbaru, jadi laporan a+1 dirakit dengan berkas lebih baru dan targetnya bergeser. Di luar itu = basi.
+    Kosong = belum_tersedia, tidak pernah 0."""
+    a, _ = rentang("harian", kode)
+    if not pr:
+        return {"status": "belum_tersedia"}, {"tarik": None, "status": "belum_ada"}
+    terbit = _wib(pr.get("dibuat"))
+    hari = next((x.get("hari") for x in (pr.get("kode") or {}).values() if x.get("hari")), None) or []
+    untuk = hari[0] if hari else None
+    s = {"tarik": terbit, "terbit": terbit, "status": "ok"}
+    if untuk not in ((a + dt.timedelta(days=1)).isoformat(), (a + dt.timedelta(days=2)).isoformat()):
+        s["status"] = "basi"
+        return {"status": "basi", "terbit": terbit, "untuk": untuk, "catatan": f"prediksi.json untuk {untuk}, bukan sehari atau dua hari sesudah {a.isoformat()}"}, s
+    kab = {k.get("id"): k for k in pr.get("kab") or []}
+    per = {}
+    for w in pr.get("waspada") or []:
+        if w.get("tenggang") != 1:
+            continue
+        k = kab.get(w.get("kab")) or {}
+        e = per.setdefault(w.get("aturan"), {"aturan": w.get("aturan"), "maka": w.get("maka"), "kab": []})
+        e["kab"].append({"kode": w.get("kab"), "nama": k.get("nama"), "prov_kode": k.get("prov"), "prov": k.get("pn"),
+                         "jiwa": (w.get("dampak") or {}).get("jiwa")})
+    for e in per.values():
+        e["kab"].sort(key=lambda x: str(x["kode"]))
+        e["kab_n"] = len(e["kab"])
+    return {"status": "ok", "terbit": terbit, "untuk": untuk, "tenggang": 1, "asal": "prediksi.json",
+            "aturan": sorted(per.values(), key=lambda e: (-e["kab_n"], str(e["aturan"]))), "batasan": list(pr.get("batasan") or []),
+            "label": LABEL_KITA}, s
+
+
+def prakiraan_sepekan(kode, tg):
+    """mingguan: tangga.json anak tangga sepekan. Tanpa berkas = belum_tersedia (H18); berkas yang tidak terbit Senin sampai Rabu
+    sesudah minggu itu = basi. Pernyataan BMKG (resmi) dan prediksi kita dipisah per sumber, dibaca apa adanya."""
+    _, b = rentang("mingguan", kode)
+    if not tg:
+        return {"status": "belum_tersedia"}, {"tarik": None, "status": "belum_ada"}
+    hari = _wib(tg.get("hari") or tg.get("dibuat"))
+    s = {"tarik": hari, "terbit": hari, "status": "ok"}
+    if not hari or not (b + dt.timedelta(days=1)).isoformat() <= hari <= (b + dt.timedelta(days=3)).isoformat():
+        s["status"] = "basi"
+        return {"status": "basi", "terbit": hari, "catatan": f"tangga.json untuk {hari}, bukan Senin sampai Rabu sesudah {b.isoformat()}"}, s
+    sumber = tg.get("sumber") or {}
+    meta = lambda k: {x: (sumber.get(k) or {}).get(x) for x in ("lembaga", "nama", "terbit", "cakupan")}
+    resmi, kita = {}, {}   # resmi: dikelompokkan per sumber (sepekan, karhutla, ...) dengan meta masing-masing; kita: hanya jenis "kita"
+    for lvl, isi in (("prov", tg.get("prov") or {}), ("kab", tg.get("kab") or {})):
+        for kd, x in sorted(isi.items()):
+            for p in (x or {}).get("sepekan") or []:
+                sk, jn = p.get("s"), (sumber.get(p.get("s")) or {}).get("jenis")
+                if jn == "resmi":
+                    resmi.setdefault(sk, {"sumber": sk, **meta(sk), "pernyataan": []})["pernyataan"].append(
+                        {"wilayah": lvl, "kode": kd, "nama": PROVINSI.get(kd) if lvl == "prov" else None, "tingkat": p.get("tk"), "label": p.get("t"), "kalimat": p.get("x"), "masa": p.get("p")})
+                elif jn == "kita":
+                    e = kita.setdefault((sk, p.get("t")), {"sumber": sk, "nama_sumber": (sumber.get(sk) or {}).get("nama"), "label": p.get("t"), "mutu": p.get("u"), "kab_n": 0})
+                    e["kab_n"] += lvl == "kab"
+    return {"status": "ok", "terbit": hari, "asal": "tangga.json", "bmkg": sorted(resmi.values(), key=lambda e: str(e["sumber"])),
+            "kita": {"label": LABEL_KITA, "ringkas": sorted(kita.values(), key=lambda e: (-e["kab_n"], str(e["label"])))},
+            "catatan": list(tg.get("catatan") or [])}, s
+
+
 # ------------------------------------------------------------------ geologi (bagian 7)
 def peristiwa(baris, daftar, jenis_):
     """7.2: satu peristiwa = satu kejadian data gempa/gunung api yang punya baris DIBI pada tanggal sama atau sehari sesudahnya
@@ -658,6 +993,12 @@ def bab5(periode, kode, m, baris, g):
     out = {"laporan": lap, "gempa": gp, "erupsi": ep, "peristiwa": {"gempa": len(gp), "erupsi": len(ep)},
            "selisih": {"gempa": lap["gempa"] - len(gp), "erupsi": lap["erupsi"] - len(ep)},
            "dampak": {"gempa": g["jenis"]["gempa"]["dampak"], "erupsi": g["jenis"]["erupsi"]["dampak"]}, "gunungapi": st}
+    if periode in ("harian", "mingguan", "tahunan"):   # ALGORITMA 12: perubahan level hari itu, selama minggu itu, atau setahun
+        a, b = rentang(periode, kode)
+        pl = m.get("perubahan_level")
+        out["perubahan_level"] = None if pl is None else sorted(
+            ({k: x.get(k) for k in ("gunung", "tanggal", "dari", "ke")} for x in pl if a.isoformat() <= str(x.get("tanggal")) <= b.isoformat()),
+            key=lambda x: (x["tanggal"], str(x["gunung"])))
     sumber = {"gempa": {"tarik": (m.get("gempa") or {}).get("tarik"), "status": "ok" if m.get("gempa") else "belum_ada"},
               "gunungapi": {"tanggal": (m.get("gunungapi") or {}).get("tanggal"), "tarik": (m.get("gunungapi") or {}).get("tanggal"),
                             "status": "ok" if st else "belum_ada"}}
@@ -720,14 +1061,31 @@ def usulan(periode, kode, b1, b2, b3, b5, m):
     if en and en.get("nilai") is not None:
         out.append({"kode": "T7", "pil": "iklim", "sumber": "NOAA CPC (RONI)", "angka": dict(en),
                     "kalimat": " ".join(f"Indeks Pasifik (RONI) {en.get('musim') or ''} {en.get('tahun') or ''} bernilai {fmt(bulat(float(en['nilai']), 2))}, {en.get('golongan')}.".split())})
+    r10 = b1.get("riwayat_10_tahun") or {}
+    bd = r10.get("banding") or {}
+    if periode == "tahunan" and bd.get("arah"):   # ALGORITMA 12: tren 10 tahun, dibanding rerata (hanya bila kesepuluh tahun ada)
+        t0, t1 = r10["titik"][0]["tahun"], r10["titik"][-2]["tahun"]
+        arah = f"{bd['arah']} {fmt(bd['persen'])}%" if bd.get("persen") is not None else bd["arah"]
+        out.append({"kode": "T8", "pil": "data", "sumber": "DIBI BNPB resmi (dibi_tren dan tarikan tahunan)", "angka": {"kini": bd["kini"], "rerata": bd["lalu"], "persen": bd.get("persen")},
+                    "kalimat": f"Selama {nm} tercatat {fmt(bd['kini'])} kejadian resmi tujuh jenis bencana alam, {arah} dibanding rerata resmi {t0} sampai {t1} sebesar {fmt(bd['lalu'])} kejadian per tahun."})
     return out
 
 
 # ------------------------------------------------------------------ berkas angka
-WAJIB = {"bulanan": {"bab1": ["alam", "kelompok", "jenis", "prov", "prov_teratas", "riwayat", "sebelumnya", "tahun_lalu", "bukan_alam"],
+WAJIB_RINGKAS = {"bab1": ["alam", "kelompok", "jenis", "prov", "riwayat", "sebelumnya", "tahun_lalu", "bukan_alam"],
+                 "bab2": ["status"], "bab3": ["banjir", "longsor", "sebelumnya"], "bab4": ["cuaca_ekstrem", "kekeringan", "tabel", "sebelumnya"],
+                 "bab5": ["laporan", "gempa", "erupsi", "peristiwa", "gunungapi", "perubahan_level"], "prakiraan": ["status"], "lampiran": ["prov_jenis", "metode"]}
+WAJIB = {"harian": {**WAJIB_RINGKAS, "bab1": WAJIB_RINGKAS["bab1"] + ["rerata_7", "menonjol", "kab"]}, "mingguan": WAJIB_RINGKAS,
+         "bulanan": {"bab1": ["alam", "kelompok", "jenis", "prov", "prov_teratas", "riwayat", "sebelumnya", "tahun_lalu", "bukan_alam"],
                      "bab2": ["status"], "bab3": ["banjir", "longsor", "sebelumnya"], "bab4": ["cuaca_ekstrem", "kekeringan", "tabel", "sebelumnya", "hujan"],
                      "bab5": ["laporan", "gempa", "erupsi", "peristiwa", "selisih", "gunungapi"], "bab7": ["peluang", "enso", "catatan"],
                      "lampiran": ["prov_jenis", "metode"]}}
+WAJIB["tahunan"] = {**WAJIB["bulanan"], "bab1": WAJIB["bulanan"]["bab1"] + ["riwayat_10_tahun"], "bab2": ["status", "luas_pembanding"],
+                    "bab5": WAJIB["bulanan"]["bab5"] + ["perubahan_level"], "lampiran": ["prov_jenis", "metode", "prov_bulan", "selisih_bulanan"],
+                    "siklus": ["lifeline", "kaji_ulang"], "kegiatan": ["status"]}
+WAJIB["bulanan"]["siklus"] = ["lifeline", "kaji_ulang"]
+WAJIB["mingguan"] = {**WAJIB["mingguan"], "kegiatan": ["status"]}
+WAJIB["bulanan"]["kegiatan"] = ["status"]
 
 
 def berkas_angka(periode, kode, m, hari_ini=None, dirakit=None):
@@ -744,14 +1102,19 @@ def berkas_angka(periode, kode, m, hari_ini=None, dirakit=None):
     b5, s_geo = bab5(periode, kode, m, baris, g)
     tl = b1["tahun_lalu"]
     turunan, s_pr = {}, {}
-    if periode == "bulanan":
-        b4["hujan"], s_pr["prakiraan_hujan"] = hujan_depan(kode, m.get("iklim"))
-        b7, s_pr["peluang"] = bab7(periode, kode, m)
+    if periode in ("bulanan", "tahunan"):   # tahunan: musim depan dihitung dari Desember tahun itu (B+1 = Januari, ALGORITMA 12)
+        kb = kode if periode == "bulanan" else f"{kode}-12"
+        b4["hujan"], s_pr["prakiraan_hujan"] = hujan_depan(kb, m.get("iklim"))
+        b7, s_pr["peluang"] = bab7("bulanan", kb, m)
         if b7["peluang"]["status"] == "ok":
             p1 = b7["peluang"]["bulan"][0]
             turunan["peluang"] = {"kab_tinggi": p1["gabung_n"], "bulan": p1["bulan"]}
         if b7["enso"]["status"] == "ok":
             turunan["enso"] = {k: b7["enso"][k] for k in ("nilai", "golongan", "musim", "tahun")}
+    elif periode == "harian":
+        pk, s_pr["prakiraan_besok"] = prakiraan_besok(kode, m.get("prediksi"))
+    elif periode == "mingguan":
+        pk, s_pr["prakiraan_sepekan"] = prakiraan_sepekan(kode, m.get("tangga"))
     out = {
         "v": 1, "periode": periode, "kode": kode, "nama": nama_periode(periode, kode), "rentang": [a.isoformat(), b.isoformat()],
         "dirakit": dirakit or dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -762,8 +1125,24 @@ def berkas_angka(periode, kode, m, hari_ini=None, dirakit=None):
                    "karhutla": s_kh, "dalops_banjir": s_su, **s_geo, **s_pr},
         "bab1": b1, "bab2": b2, "bab3": b3, "bab4": b4, "bab5": b5, "lampiran": lampiran(g, s_dibi),
     }
-    if periode == "bulanan":
+    if periode in ("bulanan", "tahunan"):
         out["bab7"] = b7
+        out["siklus"] = {}
+        (out["siklus"]["lifeline"], out["sumber"]["lifeline"]), (out["siklus"]["kaji_ulang"], out["sumber"]["kaji_ulang"]) = lifeline(m.get("lifeline")), kaji_ulang(m.get("kaji_ulang"))
+    else:
+        out["prakiraan"] = pk
+    if periode == "tahunan":
+        out["lampiran"]["prov_bulan"] = prov_bulan(baris, a.year)
+        out["lampiran"]["selisih_bulanan"] = selisih_bulanan(b1["riwayat"], m.get("beku_bulanan"), m["dibi"])
+        out["sumber"]["beku_bulanan"] = {"tarik": max((x.get("tarik") or "" for x in (m.get("beku_bulanan") or {}).values()), default=None) or None,
+                                         "status": {"ok": "ok", "sebagian": "sebagian"}.get(out["lampiran"]["selisih_bulanan"]["status"], "belum_ada")}
+        r10 = b1["riwayat_10_tahun"]
+        out["sumber"]["dibi_tren"] = {"tarik": r10.get("tarik"), "status": r10["status"]}
+        for k in ("resmi", "satelit"):
+            x = b2["luas_pembanding"][k]
+            out["sumber"]["luas_" + k] = {"tarik": None, "status": x["status"], "sampai": x.get("sampai")}
+    if periode != "harian":   # PRD 2: harian tanpa kegiatan
+        out["kegiatan"], out["sumber"]["kegiatan"] = kegiatan(periode, kode, m.get("kegiatan"))
     out["usulan_temuan"] = usulan(periode, kode, b1, b2, b3, b5, {**turunan, **m})
     return out
 
@@ -974,23 +1353,170 @@ def uji():
         ok(False, "H13 berkas_angka")
     except KodeSalah:
         ok(True, "H13")
+
+    # LB-11 harian dan mingguan dari fixture yang sama (D11: satu mesin, hanya varian periode)
+    for per in ("harian", "mingguan"):
+        mx = masukan(per)
+        ba = berkas_angka(per, mx["kode"], mx, hari_ini=hi, dirakit=mx["dirakit"])
+        for bab, ks in WAJIB[per].items():
+            ok(all(k in ba[bab] for k in ks), f"kunci wajib {per} {bab}: {[k for k in ks if k not in ba[bab]]}")
+        ok("bab7" not in ba and "hujan" not in ba["bab4"], f"{per}: tanpa Bab 7 dan hujan tiga bulan (bulanan saja)")
+        ok(ba["prakiraan"]["status"] == "ok", f"{per} prakiraan {ba['prakiraan']}")
+        ok(len(ba["bab1"]["riwayat"]) == RIWAYAT[per] and ba["bab1"]["riwayat"][-1]["kode"] == mx["kode"], f"{per} riwayat")
+        teks = json.dumps(ba, ensure_ascii=False).lower()
+        ok(not re.search(r"\baman\b", teks), f"{per}: tanpa kata aman")
+    # harian: puncak tidak dihitung, tanpa usulan, kejadian menonjol, perubahan level hari itu saja
+    mx = masukan("harian")
+    ba = berkas_angka("harian", "2026-10-31", mx, hari_ini=hi, dirakit=mx["dirakit"])
+    ok(ba["bab2"]["puncak"] is None and ba["bab2"]["turun_dari_puncak"] is None and ba["usulan_temuan"] == [], "harian tanpa puncak dan usulan")
+    ok([x["gunung"] for x in ba["bab5"]["perubahan_level"]] == ["Dieng"], f"perubahan level hari itu {ba['bab5']['perubahan_level']}")
+    ok(len(ba["bab1"]["menonjol"]) <= N_MENONJOL and all(k["jenis"] in JENIS for k in ba["bab1"]["menonjol"]), "menonjol bencana alam")
+    # H17 prediksi.json +1 apa adanya: label dan jiwa sama dengan masukan, tenggang 2 tidak ikut, tanpa kata aman
+    pk = ba["prakiraan"]
+    asap = next(e for e in pk["aturan"] if e["aturan"] == "asap")
+    ok(pk["untuk"] == "2026-11-02" and pk["terbit"] == "2026-11-01" and asap["maka"] == "Imbauan masker; sekolah kurangi kegiatan luar ruang"
+       and asap["kab_n"] == 2 and [k["jiwa"] for k in asap["kab"]] == [1123348, 692793] and pk["aturan"][0]["aturan"] == "asap", f"H17 {pk}")
+    ok(not any(e["aturan"] == "longsor" for e in pk["aturan"]) and ba["sumber"]["prakiraan_besok"]["status"] == "ok" and pk["label"] == LABEL_KITA, "H17 tenggang +1 saja")
+    ok(prakiraan_besok("2026-10-20", mx["prediksi"])[0]["status"] == "basi" and prakiraan_besok("2026-10-31", None)[0] == {"status": "belum_tersedia"}, "H17 basi, tanpa berkas")
+    # H17 tanggal target: hari[0] = a+1 atau a+2 ok; a+3 dan a basi (berkas yang sama untuk 2026-11-02)
+    ok([prakiraan_besok(k, mx["prediksi"])[0]["status"] for k in ("2026-10-30", "2026-10-31", "2026-11-01", "2026-11-02")] == ["basi", "ok", "ok", "basi"], "H17 tanggal target")
+    ok(prakiraan_besok("2026-11-01", mx["prediksi"])[0]["untuk"] == "2026-11-02", "H17 untuk = hari[0]")
+    # H18 tangga.json tidak ada: belum_tersedia, rakit tidak gagal; ada: BMKG dan kita terpisah
+    mw = masukan("mingguan")
+    ba = berkas_angka("mingguan", "2026-W43", {k: v for k, v in mw.items() if k != "tangga"}, hari_ini=hi, dirakit=mw["dirakit"])
+    ok(ba["prakiraan"] == {"status": "belum_tersedia"} and ba["sumber"]["prakiraan_sepekan"]["status"] == "belum_ada", "H18")
+    ba = berkas_angka("mingguan", "2026-W43", mw, hari_ini=hi, dirakit=mw["dirakit"])
+    sp = ba["prakiraan"]
+    bm = {e["sumber"]: e for e in sp["bmkg"]}
+    ok(set(bm) == {"karhutla", "sepekan"} and bm["sepekan"]["pernyataan"][0]["label"] == "Siaga (hujan lebat)" and bm["sepekan"]["lembaga"] == "BMKG"
+       and bm["karhutla"]["nama"] == "Factsheet monitoring dan potensi karhutla" and bm["karhutla"]["terbit"] == "2026-10-26"
+       and bm["sepekan"]["pernyataan"][0]["masa"] == "26 Okt sampai 1 Nov" and bm["karhutla"]["pernyataan"][0]["kode"] == "14", f"BMKG per sumber {sp['bmkg']}")
+    ok({e["label"]: e["kab_n"] for e in sp["kita"]["ringkas"]} == {"Ada hari hujan": 2, "2 hari tanpa hujan": 1}, f"kita hanya jenis kita {sp['kita']}")
+    ok(prakiraan_sepekan("2026-W42", mw["tangga"])[0]["status"] == "basi", "sepekan basi")
+    ok([x["gunung"] for x in ba["bab5"]["perubahan_level"]] == ["Lewotobi Laki-laki"], "perubahan level selama minggu")
+    ok(ba["bab2"]["puncak"] is not None and ba["bab1"]["sebelumnya"]["kode"] == "2026-W42", "mingguan: puncak harian, minggu sebelumnya")
+    # H21 rerata 7 hari sebelum kode, tidak termasuk hari itu
+    rs = [_r(f"2026-10-{d:02d}", "Banjir", "12.01", d) for d in range(1, 11)]
+    a1 = rentang("harian", "2026-10-10")[0]
+    g10 = agregat(bersih_dampak(pilih(rs, a1, a1))[0])
+    r7 = rerata_7(_dibi(rs), a1, g10)
+    ok(r7["dari"] == "2026-10-03" and r7["sampai"] == "2026-10-09" and r7["alam"] == bulat(Decimal(sum(range(3, 10))) / 7) == 6.0
+       and r7["banding"]["arah"] == "naik" and r7["banding"]["persen"] == 66.7, f"H21 {r7}")
+    ok(rerata_7(_dibi(rs, dari="2026-10-05"), a1, g10)["alam"] is None, "H21 tanpa 7 hari penuh = None")
+    bh = berkas_angka("harian", "2026-10-31", masukan("harian"), hari_ini=hi, dirakit="x")["bab1"]
+    ok(bh["sebelumnya"]["banding"]["status"] == bh["rerata_7"]["banding"]["status"] == "sementara", "Q26 banding harian sementara")
+    hk = {f"2026-10-{d:02d}": {"14": {"hot": d}} for d in range(1, 11)}
+    b2, _ = bab2("harian", "2026-10-10", {"karhutla": {"hari": hk}}, {"prov": []})
+    ok(b2["rerata_7"]["hot"] == 6.0 and b2["sebelumnya"]["hot"] == 9 and b2["hot"] == 10, f"H21 hotspot {b2['rerata_7']}")
+    hk["2026-10-05"]["15"] = {"hot": None}
+    b2, _ = bab2("harian", "2026-10-10", {"karhutla": {"hari": hk}}, {"prov": []})
+    ok(b2["rerata_7"]["hot"] is None and b2["rerata_7"]["banding"]["arah"] is None, "hot None di satu hari: rerata None, bukan 0")
+
+    # LB-12 tahunan (D13): H19 selisih lawan versi beku bulanan, H20 riwayat 10 tahun
+    mt = masukan("tahunan")
+    ba = berkas_angka("tahunan", "2025", mt, hari_ini=dt.date(2026, 1, 20), dirakit=mt["dirakit"])
+    for bab, ks in WAJIB["tahunan"].items():
+        ok(all(k in ba[bab] for k in ks), f"kunci wajib tahunan {bab}: {[k for k in ks if k not in ba[bab]]}")
+    sb = {x["kode"]: x for x in ba["lampiran"]["selisih_bulanan"]["bulan"]}
+    ok(sb["2025-10"]["beku"]["alam"] == 324 and sb["2025-10"]["tahunan"] == 331 and sb["2025-10"]["selisih"] == 7 and sb["2025-10"]["jenis"] == {"banjir": 7}, f"H19 {sb['2025-10']}")
+    ok(sb["2025-10"]["status"] == "beda_sumber" and sb["2025-10"]["catatan"] == CATATAN_BEDA and sb["2025-12"]["status"] == "ok" and "catatan" not in sb["2025-12"],
+       "H19 bulan dari riwayat penuh lawan versi beku = beda sumber, bukan hanya susulan")
+    ok(ba["bab1"]["riwayat"][9]["kejadian"]["alam"] == 331, "H19 angka tahunan memakai tarikan tahunan, bukan versi beku")
+    ok(sb["2025-01"]["status"] == "belum_ada_beku" and sb["2025-01"]["selisih"] is None and sb["2025-01"]["asal"] == "siklus_bersih"
+       and sb["2025-12"]["asal"] == "dibi_kejadian" and sb["2025-12"]["selisih"] == 0, "H19 bulan tanpa beku = None, bukan 0")
+    ok(ba["lampiran"]["selisih_bulanan"]["status"] == "sebagian" and ba["lampiran"]["selisih_bulanan"]["bulan_beku"] == 1
+       and ba["lampiran"]["selisih_bulanan"]["bulan_beda_sumber"] == 1, "H19 bulan_beku hanya bulan dari dibi_kejadian")
+    kosong_b = selisih_bulanan(ba["bab1"]["riwayat"], None, mt["dibi"])
+    ok(kosong_b["status"] == "belum_ada_beku" and kosong_b["catatan"] == "belum ada versi beku bulanan" and all(x["selisih"] is None for x in kosong_b["bulan"]), "tanpa versi beku: catatan, bukan selisih 0")
+    r10 = ba["bab1"]["riwayat_10_tahun"]
+    ok(len(r10["titik"]) == 11 and r10["titik"][-1]["tahun"] == 2025 and r10["titik"][-1]["asal"] == "tarikan_tahunan" and r10["titik"][0]["tahun"] == 2015, f"H20 {len(r10['titik'])}")
+    ok(r10["titik"][-1]["kejadian"] is None and r10["titik"][-1]["semua_laporan"] == ba["bab1"]["alam"]["kejadian"] - ba["bab1"]["jenis"]["erupsi"]["kejadian"] != 1449,
+       "H20 tahun lapor dari tarikan (resmi tidak diketahui), bukan baris tren tahun itu")
+    ok(r10["rerata"] == 395.0 and r10["banding"]["arah"] is None and not any(u["kode"] == "T8" for u in ba["usulan_temuan"]), f"H20 resmi tahun lapor None: banding None, tanpa T8 {r10['banding']}")
+    ok(r10["titik"][5]["kejadian"] == 400, "erupsi dan tsunami tidak ikut riwayat tujuh jenis")
+    # H20b: tahun lapor 39% di bawah ambang; riwayat resmi rata 100. Semua laporan 164 (naik 64%) tidak boleh jadi T8 "naik"; resmi 100 = tetap
+    tr = {"kategori": ["Banjir"], "kolom_tahun": ["tahun", "kategori", "kab", "kejadian"], "tahun_kab": [[t, 0, 0, 100] for t in range(2015, 2025)]}
+    rs = [_r("2025-03-01", "Banjir", "12.01", 100), _r("2025-03-02", "Banjir", "12.02", 64, bencana=0)]
+    gb = agregat(bersih_dampak(rs)[0])
+    r = riwayat_10("2025", tr, gb)
+    ok(r["titik"][-1]["kejadian"] == 100 and r["titik"][-1]["semua_laporan"] == 164 and r["banding"]["arah"] == "tetap", f"H20b {r['banding']}")
+    u8 = usulan("tahunan", "2025", {"jenis": {"gempa": {"dampak": {"rumah_rusak": 0}}}, "riwayat_10_tahun": r}, {"status": "ok"}, {"banjir": {"status": None}}, {}, {})
+    ok(all(not (x["kode"] == "T8" and "naik" in x["kalimat"]) for x in u8) and any(x["kode"] == "T8" and "resmi" in x["kalimat"] for x in u8), f"H20b T8 {u8}")
+    kt = dict(mt["tren"], tahun_kab=[r for r in mt["tren"]["tahun_kab"] if r[0] != 2016])
+    r = riwayat_10("2025", kt, agregat(bersih_dampak(pilih(mt["dibi"]["kejadian"], *rentang("tahunan", "2025")))[0]))
+    ok(r["titik"][1]["kejadian"] is None and r["rerata"] is None and r["status"] == "sebagian" and r["banding"]["arah"] is None, "H20 tahun hilang = None, rerata None")
+    ok(ba["bab1"]["resmi"] is None and ba["bab1"]["tahun_lalu"]["asal"] == "siklus_bersih" and ba["bab1"]["sebelumnya"]["kejadian"]["alam"] == 330, "tahunan: resmi tidak diketahui, pembanding dari lapis Siklus")
+    lp = ba["bab2"]["luas_pembanding"]
+    ok(lp["perkiraan"]["ha"] == ba["bab2"]["luas"] and lp["resmi"]["ha"] == 800.3 and lp["satelit"]["status"] == "sebagian" and lp["satelit"]["sampai"] == "2025-11"
+       and "61" not in lp["resmi"]["prov"], f"luas berdampingan {lp}")
+    ok(ba["bab2"]["bulan_puncak"] == {"kode": "2025-09", "hot": 2060} and len(ba["bab2"]["per_bulan"]) == 12 and ba["bab3"]["banjir"]["bulan_puncak"]["kode"] == "2025-10", "bulan puncak")
+    ok(ba["bab5"]["perubahan_level"] == [{"gunung": "Ibu", "tanggal": "2025-05-16", "dari": 2, "ke": 3}], "perubahan level setahun")
+    kt = ba["kegiatan"]
+    ok(kt["status"] == "sebagian" and [x["siaran"] for x in kt["bulan"]] == [None] * 9 + [1, 2, 0] and kt["rekap"] is None and "calon" not in kt
+       and kt["bulan"][10]["pelaksana"]["Satgas operasi"] == 1 and kt["bulan"][10]["situasi"] == 1 and ba["sumber"]["kegiatan"]["status"] == "sebagian",
+       f"LB-09 tahunan: bulan tak tercakup None, bukan 0 {kt.get('bulan')}")
+    ok(ba["bab7"]["peluang"]["bulan"][0]["bulan"] == "2026-01", "musim depan dari Desember")
+    # LB-09 bulanan dan mingguan: calon urut tanggal, rekap hanya bila rentang tercakup penuh, harian tanpa kegiatan
+    kb = berkas_angka("bulanan", "2026-10", masukan("bulanan"), hari_ini=hi, dirakit="x")["kegiatan"]
+    ok(kb["status"] == "ok" and len(kb["calon"]) == 6 and kb["rekap"]["siaran"] == 6 and kb["rekap"]["situasi"] == 2
+       and kb["rekap"]["pelaksana"] == {"Kepala BNPB": 1, "Pusdatinkom": 2, "Satgas operasi": 1, "belum_digolongkan": 2} and kb["rekap"]["jenis"]["karhutla"] == 1
+       and "asal" not in kb["calon"][0], f"LB-09 bulanan {kb.get('rekap')}")
+    km = berkas_angka("mingguan", "2026-W43", masukan("mingguan"), hari_ini=hi, dirakit="x")["kegiatan"]
+    ok(km["status"] == "ok" and [x["tanggal"] for x in km["calon"]] == ["2026-10-20", "2026-10-21", "2026-10-22"], f"LB-09 mingguan {km}")
+    ok("kegiatan" not in berkas_angka("harian", "2026-10-31", masukan("harian"), hari_ini=hi, dirakit="x"), "harian tanpa kegiatan")
+    sb = kegiatan("bulanan", "2026-10", {"tarik": "2026-10-21", "cakup": [["2026-10-01", "2026-10-20"]], "butir": masukan("bulanan")["kegiatan"]["butir"]})[0]
+    ok(sb["status"] == "sebagian" and sb["rekap"] is None and len(sb["calon"]) == 6, "bulan tercakup sebagian: calon ada, rekap tidak dihitung")
+    ok(kegiatan("bulanan", "2026-10", None) == ({"status": "belum_tersedia"}, {"tarik": None, "status": "belum_ada"})
+       and kegiatan("bulanan", "2026-10", {"tarik": "x", "cakup": [["2026-12-01", "2026-12-02"]], "butir": []})[0] == {"status": "belum_tersedia"}, "tanpa arsip")
+    pv = {p["kode"]: p for p in ba["lampiran"]["prov_bulan"]}
+    ok(pv["14"]["jenis"]["banjir"][9] == 330 and pv["14"]["jenis"]["karhutla"][7] == 20 and len(pv["14"]["jenis"]["banjir"]) == 12, "lampiran provinsi x jenis x bulan")
+    b2, _ = bab2("tahunan", "2025", {"luas_resmi": mt["luas_resmi"]}, {"prov": []})
+    ok(b2["status"] == "belum_ada" and b2["luas_pembanding"]["resmi"]["ha"] == 800.3 and b2["luas_pembanding"]["perkiraan"]["ha"] is None, "tanpa hotspot: luas resmi tetap tampil, perkiraan None")
+    try:
+        berkas_angka("tahunan", "2025", dict(mt, dibi=dict(mt["dibi"], dari="2025-02-01")), hari_ini=dt.date(2026, 1, 20))
+        ok(False, "tahunan tanpa DIBI setahun")
+    except BelumTercakup:
+        ok(True, "BelumTercakup")
+    # LF-09 dan KU-10: masukan staf opsional; tanpa masukan belum_tersedia, warna asing = abu, mesin tidak menetapkan status
+    lf = ba["siklus"]["lifeline"]
+    nr = next(k for k in lf["kejadian"][0]["kab"] if k["nama"] == "Nagan Raya")
+    ok(lf["status"] == "ok" and nr["warna"]["listrik"] == "merah" and nr["warna"]["jalan"] == "abu" and nr["warna"]["sinyal"] == "abu"
+       and lf["kejadian"][0]["per_warna"]["listrik"] == {"hijau": 1, "kuning": 0, "merah": 1, "abu": 0} and "jalan" not in nr["diubah"], f"LF-09 {nr}")
+    ok(lifeline(None)[0] == {"status": "belum_tersedia"} and lifeline({"kejadian": []})[0]["kejadian"] == [], "LF-09 tanpa masukan, kejadian aktif kosong")
+    ok(ba["siklus"]["kaji_ulang"] == {"status": "ok", "hari": "2026-01-15", "total": 7, "terbuka": 4, "lewat_tenggat": 1, "tertutup": 3}
+       and kaji_ulang(None)[0] == {"status": "belum_tersedia"} and kaji_ulang({"ringkas": {"terbuka": 1}, "terpotong": True})[0]["status"] == "sebagian", "KU-10")
+    bb = berkas_angka("bulanan", "2026-10", masukan("bulanan"), hari_ini=hi, dirakit="x")
+    ok(bb["siklus"] == {"lifeline": {"status": "belum_tersedia"}, "kaji_ulang": {"status": "belum_tersedia"}} and bb["sumber"]["lifeline"]["status"] == "belum_ada", "bulanan: belum tersedia")
+    ok(not re.search(r"\baman\b", json.dumps(ba, ensure_ascii=False).lower()), "tahunan tanpa kata aman")
     print(f"hitung.py uji: {n} pemeriksaan lulus")
+
+
+def masukan(periode):
+    """masukan fixture: bulanan apa adanya, harian dan mingguan = bulanan + masukan_ringkas.json (satu sumber fixture, D11)."""
+    m = json.load(open(os.path.join(FIX, "masukan_bulanan.json")))
+    if periode == "tahunan":   # masukan sendiri (setahun sintetis), prakiraan musim depan dari berkas bulanan yang sama
+        return json.load(open(os.path.join(FIX, "masukan_tahunan.json"))) | {k: m[k] for k in ("riwayat", "iklim")}
+    if periode != "bulanan":
+        r = json.load(open(os.path.join(FIX, "masukan_ringkas.json")))
+        m |= {"periode": periode, **r[periode], **{k: r[k] for k in ("perubahan_level", "prediksi", "tangga")}}
+    return m
 
 
 def main(a):
     if a[:1] == ["uji"]:
         return uji()
     if a[:1] == ["cetak"] and len(a) == 2:
-        m = json.load(open(a[1]))
+        m = masukan(a[1]) if a[1] in PERIODE else json.load(open(a[1]))
         json.dump(berkas_angka(m.get("periode", "bulanan"), m["kode"], m, hari_ini=dt.date.fromisoformat(m["hari_ini"]), dirakit=m.get("dirakit")),
                   sys.stdout, ensure_ascii=False, sort_keys=True)
         return
     if a[:1] == ["fixture"]:
-        m = json.load(open(os.path.join(FIX, "masukan_bulanan.json")))
-        ba = berkas_angka(m["periode"], m["kode"], m, hari_ini=dt.date.fromisoformat(m["hari_ini"]), dirakit=m["dirakit"])
-        with open(os.path.join(FIX, "angka_bulanan.json"), "w") as f:
-            json.dump(ba, f, ensure_ascii=False, sort_keys=True, indent=1)
-            f.write("\n")
+        for per in PERIODE:
+            m = masukan(per)
+            ba = berkas_angka(per, m["kode"], m, hari_ini=dt.date.fromisoformat(m["hari_ini"]), dirakit=m["dirakit"])
+            with open(os.path.join(FIX, f"angka_{per}.json"), "w") as f:
+                json.dump(ba, f, ensure_ascii=False, sort_keys=True, indent=1)
+                f.write("\n")
         return
     sys.exit(__doc__)
 

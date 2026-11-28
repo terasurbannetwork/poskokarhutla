@@ -1,4 +1,4 @@
-/* Menu pilihan bencana di kepala, digambar dari /bencana.json (registry) plus butir anak dari /inti/peta_situs_publik.json.
+/* Menu pilihan bencana di kepala, digambar dari /bencana.json (registry) plus nama "Semua bencana" dari /inti/peta_situs_publik.json.
    Pasang: <details class="bencana" data-bencana="<id halaman>" [data-tanpa-segera]> dengan markup cadangan statis di dalamnya.
    Bila registry gagal dimuat, markup cadangan dibiarkan apa adanya. Bencana tanpa ikon di IKON tidak ditampilkan. */
 export const IKON = {
@@ -16,16 +16,6 @@ const SEMUA = svg('<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x=
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const rata = p => p.replace(/\.html$/, "").replace(/(.)\/$/, "$1");
 
-/* ikon garis butir anak (Desa waspada, laporan, simulasi), kunci = medan ikon di peta_situs_publik.json; tanpa kotak atau latar */
-const GARIS = {
-  pin: '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>',
-  peringatan: '<path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17v.01"/>',
-  daftar: '<path d="M8 6h12M8 12h12M8 18h12M4 6v.01M4 12v.01M4 18v.01"/>',
-  grafik: '<path d="M3 17l5-6 4 3 8-9M15 5h5v5"/>',
-  simpan: '<path d="M6 3h9l4 4v14H6z"/><path d="M9 13h7M9 17h7"/>',
-  kalender: '<path d="M4 6h16v14H4zM4 10h16M8 3v5M16 3v5"/>',
-};
-const garis = k => svg(GARIS[k] || GARIS.daftar, ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"');
 const kini = (rute, lokasi) => rata(rute) === lokasi ? ' aria-current="page"' : "";
 
 /* Tombol kepala sesudah menu bencana: Prediksi, Lapor, Masuk (D6 peta-situs). Tautan polos, tanpa JS klik; dipasang tanpa menunggu fetch. */
@@ -42,7 +32,7 @@ function tombol(d) {
 }
 
 async function gambar(d) {
-  /* registri bencana wajib (urutan, ikon, status); peta situs publik boleh gagal: menu tetap jalan tanpa butir anak */
+  /* registri bencana wajib (urutan, ikon, status); peta situs publik boleh gagal: menu tetap jalan dengan nama bawaan */
   const peta = fetch("/inti/peta_situs_publik.json").then(r => r.ok ? r.json() : null).catch(() => null);
   const r = await fetch("/bencana.json");
   if (!r.ok) throw new Error(r.status);
@@ -62,21 +52,19 @@ async function gambar(d) {
   if (!ini) return;
   const lokasi = rata(location.pathname);
   const tanpaSegera = "tanpaSegera" in d.dataset;
-  /* "Semua bencana" dan butir anak (induk = rute bencana) dari peta situs publik. Gambar pertama segera dari registri saja;
-     butir anak menyusul saat peta situs datang (tanpa saling tunggu, temuan inp-reviewer PS-05) */
+  /* "Semua bencana" (nama dari peta situs publik) lalu daftar bencana. Halaman turunan (Desa waspada, laporan, simulasi) tidak
+     ikut di menu ini (pemilik, 26 Nov 2026: "jangan disini"). Gambar pertama segera dari registri saja, nama menyusul tanpa saling tunggu */
   const menu = hal => {
     const atas = hal.find(h => h.rute === "/semua");
     const butirSemua = `<a href="/semua"${kini("/semua", lokasi)}>${SEMUA}${esc(atas?.nama || "Semua bencana")}</a>`;
-    const anak = b => hal.filter(h => h.induk && rata(h.induk) === rata(b.rute))
-      .map(h => `<a class="bc-anak" href="${esc(h.rute)}"${kini(h.rute, lokasi)}>${garis(h.ikon)}${esc(h.nama)}</a>`).join("");
     const butir = butirSemua + daftar.map(b => {
-      if (buka(b) || b.id === ini.id) return `<a href="${esc(b.rute)}"${kini(b.rute, lokasi)}>${svg(IKON[b.ikon])}${esc(b.nama)}</a>` + anak(b);
+      if (buka(b) || b.id === ini.id) return `<a href="${esc(b.rute)}"${kini(b.rute, lokasi)}>${svg(IKON[b.ikon])}${esc(b.nama)}</a>`;
       return tanpaSegera && !TAMPIL.size ? "" : `<a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir">${svg(IKON[b.ikon])}${esc(b.nama)}<em class="bc-segera">${TAMPIL.size ? "Soon" : "Segera"}</em></a>`;
     }).join("");
     d.querySelector(".menu").innerHTML = butir;
   };
   menu([]);
-  peta.then(p => { const hal = (p?.halaman || []).filter(h => h.pintu === "publik" && h.grup === "bencana"); if (hal.length) menu(hal); });
+  peta.then(p => { const hal = (p?.halaman || []).filter(h => h.pintu === "publik" && h.rute === "/semua"); if (hal.length) menu(hal); });
   const sr = d.querySelector("summary .sr")?.outerHTML || "";
   if (!semua) d.querySelector("summary").innerHTML = svg(IKON[ini.ikon]) + sr + esc(ini.nama);
   /* Kemitraan pindah ke kaki situs (PS-05); "Tentang kami" dicabut dari menu (pemilik, 20 Okt 2026) */

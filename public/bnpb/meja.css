@@ -1,6 +1,6 @@
 /* Meja Kerja petugas (/meja). Layout dari bnpb.css; pil, tabel, tombol dasar dari /admin/meja.css (satu salinan); di sini hanya yang khas halaman petugas. */
 .mj-kop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 14px}
-.mj-kop h1{font-size:1.25rem;font-weight:800}.mj-kop .mj-ruang{margin-left:auto}
+.mj-kop .mj-ruang{margin-left:auto}
 .mj-meja{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(max-content,1fr);gap:4px;background:var(--card);border-radius:16px;padding:5px;box-shadow:var(--bayang);overflow-x:auto;scrollbar-width:none;margin-bottom:14px}
 .mj-meja button{height:42px;border:0;background:none;border-radius:12px;padding:0 14px;cursor:pointer;font-weight:700;font-size:0.8125rem;color:var(--ink2);display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
 .mj-meja button[aria-pressed="true"]{background:var(--gradien);color:var(--on-brand);box-shadow:0 0 0 1px color-mix(in srgb,var(--emas) 50%,transparent)}
@@ -22,7 +22,7 @@
 .mj-pesan.galat{background:color-mix(in srgb,var(--c1) 12%,transparent);color:var(--c1)}
 .mj-rincian{font-size:0.7812rem;color:var(--ink2);margin:4px 0 0}
 .mj-jejak{margin:8px 0 0;padding-left:16px;font-size:0.75rem;color:var(--ink2)}
-@media (max-width:640px){.mj-kop h1{font-size:1.125rem}.mj-tabel{font-size:0.7812rem;min-width:0}.mj-tabel th:nth-child(4),.mj-tabel td:nth-child(4){display:none}}
+@media (max-width:640px){.mj-tabel{font-size:0.7812rem;min-width:0}.mj-tabel th:nth-child(4),.mj-tabel td:nth-child(4){display:none}}
 .mj-form h2 svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* meja dampak: formulir per bagian, Nihil, meter, impor */
@@ -76,3 +76,14 @@
 .mj-pita,.mj-beda{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:color-mix(in srgb,var(--c3) 12%,transparent);font-size:0.8125rem;margin:6px 0}
 .mj-pita b,.mj-beda>b{display:inline-flex;align-items:center;gap:6px}.mj-pita svg,.mj-beda svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .mj-beda{display:grid}.mj-beda-baris{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}.mj-beda-baris>span:first-child{font-weight:700;min-width:8rem}
+
+/* kerangka standar staf (pemilik 26 Nov 2026): kepala situs dan panel Pusdalops hanya untuk sesi staf (data-opsional); petugas berkode tampil apa adanya */
+body:not(.mp-model-a)>.ad-top{display:none}
+
+/* WIL-3 (RU-081) draf kaji cepat */
+.mj-draf{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:14px 16px;margin:0 0 14px;display:grid;gap:10px}
+.mj-draf-hd{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}.mj-draf-hd h2{margin:0;font-size:1.0625rem}
+.mj-draf-bag h3{margin:0 0 4px;font-size:.875rem}.mj-draf-bag dl{display:grid;grid-template-columns:minmax(0,1fr);gap:2px 0;margin:0}
+.mj-draf-bag dt{font-weight:700;font-size:.8125rem}.mj-draf-bag dd{margin:0 0 6px;font-size:.8125rem;color:var(--ink2)}
+@media (min-width:700px){.mj-draf-bag dl{grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:4px 14px}.mj-draf-bag dd{margin:0}}
+.mj-draf .mj-aksi{display:flex;flex-wrap:wrap;gap:8px}

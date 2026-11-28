@@ -32,7 +32,7 @@ async function daftar(isi, sk) {
   let prov0 = null; try { prov0 = localStorage.getItem("sk-prov"); } catch (e) { /* penyimpanan diblokir */ }
   const S = {prov: new URLSearchParams(location.search).get("prov") || prov0 || "32", renkon: "", jenis: "semua", status: "semua", rk: [], baris: null, kej: []}, pj = penjaga(); sk.periode = () => ({kab4: null});
   const hasil = h("div", {}), ctl = h("div", {class: "sk-ctl"}), aksi = h("span", {}), rancang = h("div", {});
-  const kart = kartu({ey: [ik("sirene", 12), "Gladi"], judul: ["Gladi ", hl("menunggu"), " data"], kanan: aksi, isi: [ctl, hasil], id: "daftar"}), judul = kart.querySelector("h3");
+  const kart = kartu({ey: [ik("sirene", 12), "Gladi"], judul: ["Gladi ", hl("menunggu"), " data"], kanan: aksi, isi: [ctl, hasil], id: "daftar"}), judul = kart.querySelector(".sk-ring");
   const optProv = Object.entries(K.provinsi ?? {}).sort((a, b) => a[0].localeCompare(b[0]));
 
   function kontrol() {
@@ -96,7 +96,7 @@ async function daftar(isi, sk) {
 async function detail(isi, sk, id) {
   const S = {d: null, skor: null, p: {}, semua: false}, pj = penjaga(); sk.periode = () => ({kab4: null});
   const hasil = h("div", {}), aksi = h("span", {class: "sk-aksi"});
-  const kart = kartu({ey: [ik("sirene", 12), "Gladi"], judul: ["Gladi ", hl("menunggu"), " data"], kanan: aksi, isi: hasil, id: "gladi"}), judul = kart.querySelector("h3");
+  const kart = kartu({ey: [ik("sirene", 12), "Gladi"], judul: ["Gladi ", hl("menunggu"), " data"], kanan: aksi, isi: hasil, id: "gladi"}), judul = kart.querySelector(".sk-ring");
   const g = () => S.d.gladi;
 
   async function ubahStatus(ke) {

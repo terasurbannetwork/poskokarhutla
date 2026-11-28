@@ -18,7 +18,7 @@ const Peta = {
   async init() {
     document.head.insertAdjacentHTML("beforeend", '<link rel="stylesheet" href="../inti/peta/lapis.css"><link rel="stylesheet" href="../inti/peta/legenda.css">');
     PI = await import("../inti/peta/lapis.js").catch(() => null);
-    const T = tersedia(), ada = {abrasi: T.abrasi, rob: T.rob, pasut: T.pasang, ombak: !!S.gel, bmkg: !!(S.glb.length && S.geo)};
+    const T = tersedia(), ada = {abrasi: T.abrasi, rob: T.rob, pasut: T.pasang, ombak: !!S.gel, bmkg: !!(S.glb.length && S.geo), dp_gel: true};
     document.querySelectorAll("#lapis label").forEach(l => { const k = l.querySelector("input").dataset.l; if (!ada[k]) l.remove(); });
     PI?.ubinLapis($("#lapis"), {katalog: UBIN, pendek: UBIN_PENDEK});
     LG = await import("../inti/peta/legenda.js").catch(() => null);

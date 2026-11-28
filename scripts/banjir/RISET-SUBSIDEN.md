@@ -34,3 +34,15 @@ Kuartalan atau tahunan, dijalankan manual di mesin lokal (bukan workflow); hanya
 ## Hambatan 21 Okt 2026
 Izin menolak menjalankan atau menyunting kode LiCSBAS hasil klon (kelas "Code from External") setelah env dan klon jadi.
 Keputusan pemilik diperlukan: aturan izin untuk `~/licsbas/lb.sh` dan pengunduh `~/licsbas/ambil.py`.
+
+## Tinjauan jalur LiCSBAS (PT-02, 26 Nov 2026)
+Q1 dijawab pemilik 25 Nov 2026: dua skrip boleh dijalankan. Tinjauan dibaca dari mesin pemilik, bukan dari ingatan.
+- Klon `~/licsbas/LiCSBAS` dari `https://github.com/yumorishita/LiCSBAS.git`, komit `5ca6550c8adbcb90e47aefc338d36ef33e122f03` (29 Nov 2024, "Update README.md").
+- Lisensi: GPL v3 (berkas `LICENSE`). Kode tidak disalin ke repo ini, hanya dijalankan di luar repo, jadi tidak ada kewajiban turunan di repo.
+- Satu tambalan lokal tak terkomit di klon: `LiCSBAS_lib/LiCSBAS_plot_lib.py` (`set_major_locator` tidak lagi mengembalikan locator, `grid(b=)` menjadi `grid(visible=)` untuk matplotlib baru). Hanya penyesuaian API gambar.
+- `lb.sh`: membungkus `micromamba run -n lb python <skrip LiCSBAS>` di env `~/licsbas/mamba`, tanpa pasang global, tanpa hak khusus.
+- `ambil.py`: hanya mengunduh (GDAL `/vsicurl/` dan `urlretrieve`) dari `gws-access.jasmin.ac.uk` dan `dap.ceda.ac.uk` (produk LiCSAR publik), memotong ke jendela kota, menulis ke folder keluaran yang diberikan. Tanpa `eval`, `exec`, `subprocess`, atau kredensial.
+- `gacos.py`: sama, hanya unduh potongan `sltd` GACOS dari CEDA. Skrip LiCSBAS yang dipakai (02, 03, 05, 11 sampai 16) hanya memuat satu `subprocess` (di `LiCSBAS02_ml_prep.py`, pemanggil `multilook` bawaan).
+- Vonis tinjauan: tidak ada temuan keamanan. Yang tersisa untuk pemeriksa independen (`security-reviewer`): membaca ulang `LiCSBAS02_ml_prep.py` baris pemanggil `subprocess`.
+
+Pemeriksa `security-reviewer` (26 Nov 2026): SETUJU, tanpa temuan keamanan. Pelengkap cakupan: selain `LiCSBAS02_ml_prep.py:185`, ada satu `check_output(['grep', field, mlipar])` di `LiCSBAS_lib/LiCSBAS_io_lib.py:236` (daftar argumen tanpa shell, jalur GAMMA yang tidak dipakai di sini); `~/licsbas/shim/sitecustomize.py` dimuat otomatis lewat PYTHONPATH di `lb.sh` dan hanya menambal `register_cmap`. Tidak diaudit: paket micromamba dan isi `~/licsbas/mamba/` (risiko rantai pasok di luar lingkup tinjauan ini), serta `tahan.py` dan `variogram.py`.

@@ -1,0 +1,31 @@
+{
+ "catatan": "Kriteria uji balik MB-4 (ALGORITMA 5.7, pola 0.9). Dikunci 26 Nov 2026 SEBELUM uji dijalankan dan tanpa melihat hasilnya. Mengubah berkas ini (termasuk bobot) mengubah kriteria_sha di keluaran MT-2, DIK-1, PLP-2, PD-2. Mencari bobot yang lulus dengan melihat hasil dilarang (pemeriksa validasi-model). Uji belum dijalankan.",
+ "klaim": "kab dengan skor S tinggi adalah kab yang kemudian benar-benar mengalami dampak berat",
+ "berlaku_untuk": ["MT-2", "DIK-1", "PLP-2", "PD-2"],
+ "komponen": {
+  "risiko": "persentil +1 atas maks_b terpapar.json kab[k].h[b][2], potret 2026 (kebocoran tak langsung, dicatat)",
+  "celah_kapasitas": "persentil +1 atas 1 - ikd.json kab[k].c, potret 2026 (kebocoran tak langsung, dicatat)",
+  "kejadian": "persentil +1 atas jumlah kejadian dibi_kab_tahun.json tahun 2015 sampai 2020 saja, semua jenis"
+ },
+ "bobot": {"risiko": 1, "celah_kapasitas": 1, "kejadian": 1},
+ "pembagian": {"masukan_kejadian": [2015, 2020], "sasaran": [2021, 2025]},
+ "sasaran": {
+  "satuan": "per kab, jumlah tahun 2021 sampai 2025 yang berdampak berat",
+  "berdampak_berat": "meninggal_hilang >= 1 ATAU mengungsi >= 1% penduduk n terpapar.json ATAU rumah_rusak_berat >= 100",
+  "ambang": {"meninggal_hilang_min": 1, "mengungsi_persen_penduduk_min": 1, "rumah_rusak_berat_min": 100},
+  "ambang_asumsi": true
+ },
+ "metrik": {
+  "a": "korelasi peringkat Spearman S lawan sasaran",
+  "b": "angkat 20% teratas = (porsi kab-tahun berdampak berat yang jatuh di 20% kab S teratas) / 0,2"
+ },
+ "pembanding": {
+  "B1": "penduduk terpapar.json n saja",
+  "B2": "jumlah kejadian DIBI 2015 sampai 2020 saja",
+  "B3": "komponen risiko saja"
+ },
+ "syarat_lulus": "angkat_S >= 1,5 DAN spearman_S >= spearman_B1 DAN angkat_S >= angkat_B2",
+ "syarat_lulus_angka": {"angkat_min": 1.5, "spearman_lawan": "B1", "angkat_lawan": "B2"},
+ "kab_tanpa_kode_dibi": "kab tanpa satu pun baris DIBI dikeluarkan dari uji (kode wilayah tak cocok bukan nol kejadian)",
+ "bila_gagal": "kartu tetap tampil sebagai urutan skor dengan pil 'Asumsi: belum lulus uji balik'; pembanding yang menang di title; kata prioritas tidak dipakai di judul"
+}

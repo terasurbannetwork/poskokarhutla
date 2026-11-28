@@ -176,9 +176,9 @@
 
     // tab (focusgroup bila didukung; panah kiri/kanan dipasang sendiri sebagai cadangan)
     const TAB = [...(DAS ? [["peta", "Peta", "wilayah"]] : []), ["tren", "Tren", "grafik"], ["sebaran", "Sebaran", "peringkat"], ["tabel", "Tabel", "tabel"], ...(DAS ? [["profil", "Profil kab/kota", "rumah"]] : [])];
-    const tabB = TAB.map(([k, t, ik]) => h("button", {type: "button", role: "tab", class: DAS ? "db-nav" : null, id: "dtTab-" + k, title: t, "aria-selected": String(k === st.tab), tabindex: k === st.tab ? "0" : "-1"}, ikon(ik), h("span", {teks: t})));
+    const tabB = TAB.map(([k, t, ik]) => h("button", {type: "button", role: "tab", class: DAS ? "dbt-nav" : null, id: "dtTab-" + k, title: t, "aria-selected": String(k === st.tab), tabindex: k === st.tab ? "0" : "-1"}, ikon(ik), h("span", {teks: t})));
     const panel = Object.fromEntries(TAB.map(([k]) => [k, h("div", {role: "tabpanel", id: "dtPanel-" + k, "aria-labelledby": "dtTab-" + k, hidden: k !== st.tab || null, class: "dt-panel"})]));
-    const tabList = h("div", {class: DAS ? "db-tabs" : "dt-tabs", role: "tablist", "aria-label": "Tampilan data DIBI", "aria-orientation": DAS ? "vertical" : null}, tabB);
+    const tabList = h("div", {class: DAS ? "db-tabs" : "dt-tabs", role: "tablist", "aria-label": "Tampilan data DIBI", "aria-orientation": DAS ? "horizontal" : null}, tabB);
     const pilihTab = (k, fokus) => { st.tab = k; tabB.forEach((b, i) => { const on = TAB[i][0] === k; b.setAttribute("aria-selected", String(on)); b.tabIndex = on ? 0 : -1; if (on && fokus) b.focus(); });
       for (const [kk, p] of Object.entries(panel)) p.hidden = kk !== k; akar.dataset.tab = k; bukaTurun(); gambarRingkasan();
       if (k === "peta") nanti(() => window.dispatchEvent(new Event("resize"))); nanti(gambarTab); };
@@ -248,9 +248,8 @@
         const d = document.documentElement, gelap = d.dataset.theme ? d.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches, t = gelap ? "light" : "dark";
         d.dataset.theme = t; try { localStorage.setItem("pk-tema", JSON.stringify(t)); } catch (e) {}
         requestAnimationFrame(() => dispatchEvent(new CustomEvent("pk-tema", {detail: t}))); });
-      const sisi = h("aside", {class: "db-sisi", "aria-label": "Menu data bencana"},
-        h("div", {class: "db-merek-baris"}, h("a", {class: "db-merek", href: "/bnpb"}, h("img", {src: "/lapor/lambang-bnpb.png", alt: "", width: "34", height: "34"}), h("div", {}, h("b", {id: "dtJudul", teks: "Data Bencana Indonesia"}), h("small", {teks: "Sumber DIBI BNPB"})))),
-        grup("Tampilan", tabList),
+      const sisi = h("div", {class: "db-sisi", role: "group", "aria-label": "Tampilan data bencana"},
+        tabList,
         /* tanggal data di dasar sidebar (pemilik 25 Nov 2026 "pindahin ke bawah") */
         h("p", {class: "db-segar"}, h("i", {"aria-hidden": "true"}), h("span", {class: "db-segar-l", teks: "Data diperbarui"}), h("b", {teks: tglPanjang(T.dibuat.slice(0, 10))})),
         );

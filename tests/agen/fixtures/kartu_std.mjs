@@ -55,10 +55,10 @@ export function pindai(src) {
 export const SCOPE = [
   ...['bnpb/dalops', 'bnpb/katalog-dokumen', 'bnpb/silang', 'bnpb/rapor-sumber', 'bnpb/kebutuhan_pasar', 'bnpb/saham', 'operasi_laporan', 'banjir/sungai_induk', 'banjir/longsor', 'prediksi/laporan_layar',
     'siklus/inti', 'siklus/publik', 'siklus/kaji', 'siklus/pulih', 'siklus/renkon', 'siklus/gladi', 'siklus/masadepan', 'siklus/pintu', 'siklus/registri', 'inti/dasbor_pimpinan', 'insiden_kaya', 'desa-waspada/desa-waspada'].map(f => `public/${f}.js`),
-  ...berkas('public/cuaca', /\.js$/), ...berkas('public/udara', /\.js$/),
+  ...berkas('public/cuaca', /\.js$/), ...berkas('public/udara', /\.js$/), ...berkas('public/bnpb/unit', /\.js$/),   // Ruang Unit: semua, G-3 RU-031
 ]
 /** Sudah dirombak: nol pelanggaran, tak boleh masuk daftar ratchet. */
-export const WAJIB_BERSIH = ['public/operasi_laporan.js', 'public/banjir/longsor.js', 'public/bnpb/dalops.js', 'public/bnpb/katalog-dokumen.js', 'public/inti/dasbor_pimpinan.js', 'public/insiden_kaya.js', 'public/desa-waspada/desa-waspada.js']
+export const WAJIB_BERSIH = ['public/operasi_laporan.js', 'public/banjir/longsor.js', 'public/bnpb/dalops.js', 'public/bnpb/katalog-dokumen.js', 'public/inti/dasbor_pimpinan.js', 'public/insiden_kaya.js', 'public/desa-waspada/desa-waspada.js', 'public/bnpb/unit/rapor.js']
 /** {kunci: jumlah} untuk berkas SCOPE yang melanggar; kunci = "berkas#jenis". */
 export function ukurSemua() {
   const u = {}

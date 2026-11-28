@@ -66,6 +66,9 @@ Berkas milikmu (glob paling spesifik menang):
 - `.dev.vars.example`
 - `scripts/lapor/**`
 - `tests/lapor/**`
+- `src/dampak_peringatan.js`
+- `src/potensi.js`
+- `src/rekomendasi_katalog.js`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

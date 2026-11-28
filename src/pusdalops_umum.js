@@ -9,7 +9,7 @@ import {RE_HP2} from "./logbook.js";
 export {json, gagal, acak};
 
 export const HARI = 864e5, MENIT = 6e4, WIB = 7 * 36e5;
-const PERAN = ["pusdalops", "koordalops", "pimpinan"], MAKS_BODY = 16384;
+export const PERAN = ["pusdalops", "koordalops", "pimpinan"], MAKS_BODY = 16384;
 const KONTROL = /[\u0000-\u001f\u007f​-‏‪-‮﻿]/, RE_TGL = /^\d{4}-\d\d-\d\d$/;
 export const NO_JSON = {"cache-control": "no-store"};
 
@@ -86,3 +86,14 @@ export async function dummyStaf(env, req, isi) {
 export const luarWilayah = (req, provs) => dalamWilayahStaf(req, provs) && provs.every(p => dalamWilayahStaf(req, [p])) ? null : gagal(403, "provinsi di luar wilayah staf");
 export const idSah = v => typeof v === "string" && /^[0-9a-f]{16}$/.test(v);
 export const persen = (a, b) => b > 0 ? Math.round(a / b * 1000) / 10 : null;
+
+/* KIB usulan 16 digit (Juknis 7/2023 hal. 7-8; kedeputian DESAIN-TEKNIS §6.5): prov(2) + kab(2) + kode bencana(3) + tanggal mulai YYYYMMDD(8) + indeks 1-9.
+   Murni. kab = 2 angka (atau 4 angka berawalan prov). Jenis tanpa kode (mis. kecelakaan) atau masukan tak sah = null. Satu rumus dengan scripts/bnpb/unit/pus2.py (RU-085).
+   Beda sengaja dengan KODE_BENCANA di logbook.js: daftar ini persis daftar DT §6.5. */
+export const KODE_KIB = {banjir: "101", longsor: "102", cuaca: "104", kekeringan: "105", karhutla: "106", gempabumi: "107", gunungapi: "109", kebakaran_permukiman: "202", konflik_sosial: "301"};
+export function kib(prov, kab, jenis, tanggal, indeks = 1) {
+  if (!/^\d{2}$/.test(String(prov))) return null;
+  const k4 = typeof kab === "string" && /^\d{4}$/.test(kab) ? kab : String(prov) + String(kab);
+  if (!/^\d{4}$/.test(k4) || !k4.startsWith(String(prov)) || !Object.hasOwn(KODE_KIB, jenis) || !tglSah(tanggal) || !Number.isInteger(indeks) || indeks < 1 || indeks > 9) return null;
+  return k4 + KODE_KIB[jenis] + tanggal.replaceAll("-", "") + indeks;
+}

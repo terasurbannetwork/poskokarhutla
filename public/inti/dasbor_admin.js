@@ -1,12 +1,15 @@
 /* Model A untuk halaman admin (sistem desain dashboard, pemilik 11 Nov 2026): deretan tombol halaman .ad-sub jadi panel seksi kiri
-   berkelompok, judul halaman jadi kepala navy. Hanya menyusun ulang tautan yang sudah dirender Worker (src/admin_halaman.js subNav, satu grup registri
+   berkelompok, judul halaman jadi kepala navy (tanpa .ad-sub: hanya dibungkus .db-kanan). Hanya menyusun ulang tautan yang sudah dirender Worker (src/admin_halaman.js subNav, satu grup registri
    src/peta_situs.js); tanpa daftar tautan tulisan tangan (peta-situs PS-09). Tidak ada tautan baru. Gaya di public/inti/dasbor.css (.db-a, .db-nav). Tanpa gaya inline (CSP). */
 (() => {
   "use strict";
   const el = (tag, kelas, teks) => { const e = document.createElement(tag); if (kelas) e.className = kelas; if (teks != null) e.textContent = teks; return e; };
   function pasang() {
     const main = document.querySelector("main.ad-wrap"), sub = main?.querySelector("nav.ad-sub");
-    if (!main || !sub || main.classList.contains("db-a")) return;
+    if (!main || main.classList.contains("db-a")) return;
+    /* tanpa sub-nav (semua halaman kerangka admin sejak 26 Nov 2026: menu satu-satunya = panel kiri Pusdalops, public/bnpb/menu_pusdalops.js):
+       isi tetap dibungkus .db-kanan supaya gaya kepala navy dan kartu sama, tanpa panel kedua */
+    if (!sub) { const kanan = el("div", "db-kanan"); kanan.append(...main.childNodes); main.classList.add("db-a", "db-a-satu"); main.append(kanan); return; }
     const tautan = [...sub.querySelectorAll("a[href]")];
     if (!tautan.length) return;   // tanpa tautan: nav bawaan Worker tetap tampil, panel tidak dibangun
     const pisah = a => { const t = a.textContent.trim(), m = /^(\S+)\s+(.*)$/u.exec(t); return m && !/[A-Za-z0-9]/.test(m[1]) ? [m[1], m[2]] : ["", t]; };

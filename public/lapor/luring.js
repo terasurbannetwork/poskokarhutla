@@ -2,8 +2,10 @@
    Saat tidak ada sinyal, tombol Lapor darurat dan Lapor kejadian membuka formulir pendek seperti Lapor darurat (jenis, lokasi GPS, ada korban atau tidak, catatan).
    Butir disimpan di HP lewat antrean bersama public/inti/antre.js (saluran "lapor-luring", 14 hari, Q4) dan dikirim otomatis begitu sinyal kembali.
    Pengiriman memutar ulang alur Lapor darurat di /api/lapor/pesan langkah demi langkah, jadi mesin percakapan tetap satu (src/lapor_mesin.js) dan meja menerima laporan biasa.
-   Hanya untuk perangkat yang sudah pernah melapor (nomor tersimpan, Q2). Foto luring belum ikut di versi ini (dilengkapi lewat Tambah kabar sesudah terkirim). */
-import {JENIS as JENIS_SPEK, KORBAN} from "../inti/luring_spek.js";
+   Hanya untuk perangkat yang sudah pernah melapor (nomor tersimpan, Q2).
+   LR-06: sampai 3 foto kamera ikut disimpan di butir (data URL yang sudah dikecilkan, batas 5 butir dan 20 MB dari spek) dan dikirim di langkah foto Lapor darurat.
+   LR-09: waktu simpan di HP ikut tiap pesan sebagai `luring`; Worker hanya memakainya sebagai keterangan meja dan penilai foto (Q1), tidak pernah sebagai waktu kejadian. */
+import {JENIS as JENIS_SPEK, KORBAN, BATAS, bolehSimpan} from "../inti/luring_spek.js";
 const $ = id => document.getElementById(id);
 const el = (tag, kelas, teks) => { const e = document.createElement(tag); if (kelas) e.className = kelas; if (teks != null) e.textContent = teks; return e; };
 const ikon = id => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"), u = document.createElementNS("http://www.w3.org/2000/svg", "use"); s.setAttribute("aria-hidden", "true"); u.setAttribute("href", `#${id}`); s.append(u); return s; };
@@ -13,21 +15,28 @@ const nomor = () => { try { const v = JSON.parse(localStorage.getItem("lapor-wa"
 const luring = () => navigator.onLine === false;
 
 /* ---- pengiriman: putar ulang alur Lapor darurat ---- */
-async function pesan(body) {
-  const r = await fetch("/api/lapor/pesan", {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, credentials: "same-origin",
-    body: JSON.stringify({wa: nomor(), saluran: "web", bahasa: "id", ...body}), signal: AbortSignal.timeout(45000)});
+async function kirimJson(url, body, w, ms) {
+  const r = await fetch(url, {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, credentials: "same-origin",
+    body: JSON.stringify({wa: nomor(), saluran: "web", bahasa: "id", ...body, ...(Number.isFinite(w) ? {luring: w, luring_kirim: Date.now()} : {})}), signal: AbortSignal.timeout(ms)});
   return {s: r.status, j: await r.json().catch(() => ({}))};
 }
+const ulangNanti = s => s === 0 || s === 401 || s === 403 || s === 408 || s === 429 || s >= 500;   // sama dengan kelas antre.js: butir tetap menunggu
 export async function putarUlang(d) {
   if (!nomor()) return {s: 401, j: {galat: "Nomor pelapor belum tersimpan di perangkat ini."}};
+  const w = d.waktu_klien ?? d.waktu_simpan, pesan = body => kirimJson("/api/lapor/pesan", body, w, 45000), foto = [...(d.foto || [])];
   let r = await pesan({teks: "darurat"});
-  for (let langkah = 0; langkah < 16; langkah++) {
+  for (let langkah = 0; langkah < 20; langkah++) {
     if (r.s !== 200) return r;
     const j = r.j, pil = j.pilihanAsli || j.pilihan || [];
     if (j.nomor) { catatTerkirim(j); return {s: 200, j: {nomor: j.nomor}}; }
     if (j.minta === "identitas") return {s: 401, j: {galat: "Identitas pelapor perlu diisi dulu saat ada sinyal."}};
     if (j.minta === "lokasi") { r = await pesan({lokasi: {lat: d.lat, lon: d.lon, akurasi: d.akurasi, sumber: "gps"}}); continue; }
-    if (j.minta === "foto") { r = await pesan({teks: "1"}); continue; }   // lewati foto; dilengkapi lewat Tambah kabar
+    if (j.minta === "foto" && foto.length) {   // LR-06: foto luring satu per satu lewat rute foto biasa; foto yang ditolak dilewati, laporan tetap terkirim
+      const f = foto.shift(), u = await kirimJson("/api/lapor/foto", {data: f.data, gps: f.gps || null, exif: f.exif || null}, w, 60000);
+      if (u.s === 200) r = u; else if (ulangNanti(u.s)) return u;
+      continue;
+    }
+    if (j.minta === "foto" || j.minta === "foto_cari") { r = await pesan({teks: "1"}); continue; }   // tanpa foto (lagi): lanjut ke ringkasan
     if (j.status === "darurat_jenis") { const i = pil.findIndex(x => x === d.jenis); if (i < 0) return {s: 422, j: {galat: `Jenis "${d.jenis}" tidak ada di pilihan.`}}; r = await pesan({teks: String(i + 1)}); continue; }
     if (j.status === "darurat_korban") { r = await pesan({teks: String(KORBAN.findIndex(x => x[0] === d.korban) + 1 || 3)}); continue; }
     // K98: korban "ya" membuka pertanyaan orang terjebak dan butuh medis; formulir luring tidak menanyakannya, jadi dijawab "Tidak tahu" (bukan "Tidak ada"), petugas menanyakan lewat tindak lanjut
@@ -96,6 +105,22 @@ function bukaFormulir() {
   const kg = el("fieldset", "lp-lr-korban"); kg.append(el("legend", null, "Ada korban?"));
   let korban = null;
   for (const [k, t] of KORBAN) { const b = el("button", "lp-lr-pil", t); b.type = "button"; b.setAttribute("aria-pressed", "false"); b.addEventListener("click", () => { korban = k; kg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); }); kg.append(b); }
+  // foto (LR-06): kamera saja, paling lama 5 menit sebelum disimpan (K75, Q1); GPS dibaca saat memotret
+  const foto = [], fg = el("div", "lp-lr-foto"), kisi = el("div", "lp-lr-foto-kisi"), fotoT = el("small", null, `Boleh dilewati. Paling banyak ${BATAS.fotoPerButir} foto, langsung dari kamera.`);
+  const masukan = el("input"); masukan.type = "file"; masukan.accept = "image/jpeg,image/*"; masukan.capture = "environment"; masukan.hidden = true;
+  const potret = el("button", "lp-kedua"); potret.type = "button"; potret.append(ikon("i-kamera"), "Ambil foto");
+  potret.addEventListener("click", () => masukan.click());
+  const gambarKisi = () => { kisi.replaceChildren(...foto.map((x, i) => { const b = el("button", "lp-lr-foto-item"); b.type = "button"; b.setAttribute("aria-label", `Hapus foto ${i + 1}`);
+    const im = el("img"); im.src = x.data; im.alt = ""; b.append(im, ikon("i-tutup")); b.addEventListener("click", () => { foto.splice(i, 1); gambarKisi(); }); return b; }));
+    potret.hidden = foto.length >= BATAS.fotoPerButir; };
+  masukan.addEventListener("change", async () => {
+    const f = masukan.files[0]; masukan.value = ""; if (!f) return;
+    fotoT.textContent = "Menyiapkan foto...";
+    const h = await siapkanFoto(f).catch(() => ({g: "Foto tidak terbaca. Coba ambil ulang."}));
+    if (h.g) { fotoT.textContent = h.g; return; }
+    foto.push(h.v); gambarKisi(); fotoT.textContent = `${foto.length} dari ${BATAS.fotoPerButir} foto. Ketuk foto untuk menghapusnya.`;
+  });
+  fg.append(potret, kisi, fotoT, masukan);
   const setuju = el("p", "lp-redup lp-kecil", "Dengan menyimpan, Anda menyetujui pemakaian data laporan seperti pada kebijakan privasi Pantau Bencana. Data hanya diterima petugas BNPB dan BPBD.");
   const simpan = el("button", "lp-utama"); simpan.type = "button"; simpan.append(ikon("i-centang"), "Simpan laporan");
   simpan.addEventListener("click", async () => {
@@ -103,11 +128,33 @@ function bukaFormulir() {
     if (!pos) { status.textContent = "Lokasi belum terbaca. Ambil lokasi dulu."; return; }
     if (!korban) { status.textContent = "Pilih ada korban atau tidak."; return; }
     const a = siapkanAntrean(); if (!a) { status.textContent = "Penyimpanan di HP ini tidak tersedia."; return; }
-    await a.tambah({jenis, korban, lat: Number(pos.latitude.toFixed(6)), lon: Number(pos.longitude.toFixed(6)), akurasi: Math.round(pos.accuracy), waktu_simpan: Date.now()});
+    const kini = Date.now(), tua = foto.filter(x => kini - x.diambil > BATAS.fotoSegarMs);   // Q1: 5 menit dihitung sampai saat simpan
+    if (tua.length) { for (const x of tua) foto.splice(foto.indexOf(x), 1); gambarKisi(); status.textContent = "Foto yang diambil lebih dari 5 menit lalu dilepas. Ambil foto baru, atau simpan lagi tanpa foto itu."; return; }
+    if (foto.length && a.cadangan) { status.textContent = "Foto tidak bisa disimpan di HP ini. Hapus fotonya untuk menyimpan laporan tanpa foto."; return; }
+    const ada = (await a.daftar()).filter(x => x.status === "menunggu"), ukur = l => l.reduce((n, x) => n + (x.data?.length || 0), 0);
+    let sisaKuota = null; try { const e = await navigator.storage?.estimate?.(); if (e?.quota) sisaKuota = e.quota - (e.usage || 0); } catch {}
+    const boleh = bolehSimpan({butirMenunggu: ada.length, foto: foto.length, byteTersimpan: ada.reduce((n, x) => n + ukur(x.data?.foto || []), 0), byteBaru: ukur(foto), sisaKuota});
+    if (!boleh.ok) { status.textContent = boleh.pesan; return; }
+    navigator.storage?.persist?.().catch(() => {});   // minta simpanan bertahan (DL10); ditolak pun butir tetap tersimpan
+    try { await a.tambah({jenis, korban, lat: Number(pos.latitude.toFixed(6)), lon: Number(pos.longitude.toFixed(6)), akurasi: Math.round(pos.accuracy), waktu_simpan: kini,
+      ...(foto.length ? {foto: foto.map(({data, exif, gps}) => ({data, exif, gps}))} : {})}); }
+    catch { status.textContent = "Penyimpanan HP penuh, laporan belum tersimpan. Kirim yang menunggu dulu atau kosongkan ruang."; return; }
     d.close(); gambarPita();
   });
-  f.append(jg, el("p", "lp-pw-label", "Lokasi kejadian"), lok, kg, setuju, simpan, status);
+  f.append(jg, el("p", "lp-pw-label", "Lokasi kejadian"), lok, kg, el("p", "lp-pw-label", "Foto kejadian"), fg, setuju, simpan, status);
   d.append(kep, pengantar, f); document.body.append(d); d.showModal();
+}
+/* foto kamera: EXIF wajib punya Make/Model, umur paling 5 menit menurut jam HP (aturan bukanKamera di lapor.js); dikecilkan lalu jadi data URL; GPS dibaca saat itu */
+const lokasiKini = () => new Promise(ok => navigator.geolocation ? navigator.geolocation.getCurrentPosition(p => ok({lat: p.coords.latitude, lon: p.coords.longitude, akurasi: Math.round(p.coords.accuracy), waktu: Date.now()}), () => ok(null),
+  {enableHighAccuracy: true, timeout: 15000, maximumAge: 60000}) : ok(null));
+async function siapkanFoto(f) {
+  const kini = Date.now(), exif = window.bacaExif ? window.bacaExif(await f.slice(0, 262144).arrayBuffer()) : null;
+  if (!exif || !exif.kamera) return {g: "Ambil foto langsung dengan kamera HP. Tangkapan layar dan gambar dari galeri tidak diterima."};
+  if (exif.waktu && Math.abs(kini - exif.waktu) > BATAS.fotoSegarMs || f.lastModified && kini - f.lastModified > BATAS.fotoSegarMs) return {g: "Foto ini diambil lebih dari 5 menit lalu. Ambil foto baru langsung dengan kamera."};
+  const [kecil, gps] = await Promise.all([window.fotoKecil ? window.fotoKecil(f) : null, lokasiKini()]);
+  if (!kecil) return {g: "Foto tidak terbaca atau terlalu besar. Coba ambil ulang."};
+  const data = await new Promise((ok, gagal) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = gagal; r.readAsDataURL(kecil); });
+  return {v: {data, exif, gps, diambil: exif.waktu || f.lastModified || kini}};
 }
 function tanpaNomor() {   // Q2: perangkat yang belum pernah melapor tidak bisa melapor luring
   const d = el("dialog", "lp-lr-dialog"), tutup = el("button", "lp-utama", "Tutup"); tutup.type = "button"; tutup.addEventListener("click", () => d.close()); d.addEventListener("close", () => d.remove());

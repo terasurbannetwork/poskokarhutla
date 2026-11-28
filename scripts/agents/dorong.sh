@@ -28,7 +28,10 @@ percobaan=1; putaran=0
 while [ "$percobaan" -le 5 ]; do
   git fetch -q origin main || { echo "dorong: gagal membaca GitHub."; exit 1; }
   if ! git merge-base --is-ancestor origin/main HEAD; then
-    if ! git pull -q --rebase --autostash origin main; then
+    # 26 Nov 2026: rebase --autostash di folder kerja bersama yang kotor sempat gagal memasang kembali autostash-nya, dan suntingan
+    # 68 berkas semua sesi hilang dari folder kerja, hanya tersisa di `git stash list`. Rebase hanya bila index dan berkas terlacak
+    # bersih; selain itu langsung gabung tanpa index di bawah, yang tidak pernah menyentuh suntingan yang belum di-commit.
+    if [ -n "$(git status --porcelain --untracked-files=no)" ] || ! git pull -q --rebase origin main; then
       git rebase --abort 2>/dev/null
       # 24 Nov 2026: rebase meratakan commit gabung lokal dan bentrok saat memutar ulang commit "gas" yang sudah tergabung,
       # padahal gabung biasa bersih. Coba gabung dulu sebelum menyerah.

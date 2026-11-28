@@ -135,42 +135,8 @@
 .sp-form-galat .sp-galat-isian{margin:0 0 4px;color:var(--bad);font-size:12.5px;font-weight:600}
 .sp-form-galat{padding:var(--sp-2) var(--sp-3);border-radius:var(--r-sm,10px);background:color-mix(in srgb,var(--bad) 10%,var(--card))}
 
-/* laptop dan tablet: tiga kolom tertambat di bawah bilah konteks (rel menu, peta dengan bilah kontrol di atasnya, panel kanan); hanya legenda dan pop-up di atas peta */
-@media (min-width:768px){
-  .sp-mode-peta{--sp-rel-w:232px;--sp-panel:400px}
-  .sp-mode-peta .sp-peta{position:fixed;inset:var(--top,58px) 0 0 var(--sp-rel-w);z-index:1;height:auto;display:grid;grid-template-columns:minmax(0,1fr) var(--sp-panel);grid-template-rows:minmax(0,1fr);gap:0;align-items:stretch;border-radius:0;box-shadow:none;overflow:hidden}
-  .sp-mode-peta .sp-peta-utama{display:grid;grid-template-rows:auto minmax(0,1fr);gap:0;min-width:0;min-height:0}
-  .sp-mode-peta .sp-rel{position:fixed;top:var(--top,58px);left:0;bottom:0;z-index:6;width:var(--sp-rel-w);box-sizing:border-box;max-height:none;overflow:auto;border-radius:0;box-shadow:none;border-right:1px solid var(--line);align-content:start}
-  .sp-mode-peta .sp-judul-baris{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-  /* bilah kontrol: baris 1 cari, satuan, kabupaten, riwayat, Daftar, lapisan; baris 2 chip ZONA dan AIR */
-  .sp-mode-peta .sp-peta-bilah{position:relative;z-index:5;gap:0 var(--sp-2);padding:var(--sp-1) var(--sp-3);border-radius:0;box-shadow:none;border-bottom:1px solid var(--line)}
-  .sp-mode-peta .sp-peta-bilah>*,.sp-mode-peta .sp-saring>*{margin-block:var(--sp-1)}
-  .sp-mode-peta .sp-peta-bilah::before{content:"";order:4;flex-basis:100%}
-  .sp-mode-peta .sp-peta-bilah>.sp-cari{order:0;flex:1 1 220px}
-  .sp-mode-peta .sp-seg-satuan{order:1}
-  .sp-mode-peta .sp-saring-isian{order:2;flex-wrap:nowrap}
-  .sp-mode-peta .sp-saring-isian select{max-width:170px}
-  .sp-mode-peta .sp-peta-aksi{order:3;margin-left:0}
-  .sp-mode-peta .sp-saring>.sp-chips{order:5;flex:0 1 auto}
-  .sp-mode-peta .sp-saring>.sp-chips+.sp-chips{padding-left:var(--sp-3);border-left:1px solid var(--line)}
-  .sp-mode-peta .sp-lapisan-menu{top:100%;right:var(--sp-3)}
-  .sp-mode-peta .sp-peta-bidang{position:relative;height:auto;min-height:0;border-radius:0;box-shadow:none}
-  .sp-mode-peta .sp-peta-pita{top:auto;bottom:12px;left:50%;right:auto;width:min(420px,60%);transform:translateX(-50%)}
-  .sp-mode-peta .sp-peta-leg{left:10px;bottom:30px;max-height:calc(100% - 60px)}
-  /* panel kanan: kolom sendiri, gulir sendiri */
-  .sp-mode-peta .sp-peta-panel{position:static;width:auto;max-height:none;min-height:0;padding:var(--sp-4);background:var(--paper);border-left:1px solid var(--line);box-sizing:border-box}
-  .sp-mode-peta .sp-panel-ringkas{padding:var(--sp-3)}
-  /* tabel zona muat tanpa gulir mendatar */
-  .sp-mode-peta .sp-ringkas-zona{overflow:visible;padding:0}
-  .sp-mode-peta .sp-ringkas-zona .ad-tabel{table-layout:fixed;width:100%}
-  .sp-mode-peta .sp-ringkas-zona .ad-tabel th:first-child{width:46px}
-  .sp-mode-peta .sp-ringkas-zona .ad-tabel th,.sp-mode-peta .sp-ringkas-zona .ad-tabel td{padding:8px 4px;overflow-wrap:anywhere}
-  .sp-mode-peta .sp-ringkas-zona .ad-tabel thead th{letter-spacing:0}
-  .sp-mode-peta .sp-ringkas-zona abbr{text-decoration:none;cursor:help}
-  .sp-mode-peta .sp-ringkas-zona .sp-yakin{padding:2px 6px}
-  .sp-ringkas-cat p{margin:0 0 var(--sp-2)}
-}
-@media (min-width:768px) and (max-width:1279px){.sp-mode-peta{--sp-rel-w:64px;--sp-panel:340px}.sp-mode-peta .sp-peta-leg{max-height:42%}}
+/* peta tampil di dalam main di sebelah panel kiri Pusdalops (pemilik 26 Nov 2026): tidak lagi tertambat penuh layar */
+.sp-ringkas-cat p{margin:0 0 var(--sp-2)}
 
 
 /* HP: peta penuh, panel jadi lembar bawah tiga tinggi (intip 96 px, setengah, penuh) */

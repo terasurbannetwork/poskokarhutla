@@ -1,0 +1,230 @@
+{
+ "catatan": "Tambahan masukan_bulanan.json untuk laporan harian 2026-10-31 dan mingguan 2026-W43 (LB-11). Bentuk prediksi dan tangga meniru public/prediksi/data/prediksi.json dan tangga.json (pemiliknya modul prediksi), dipotong ke beberapa baris.",
+ "harian": {
+  "kode": "2026-10-31",
+  "dirakit": "2026-11-01T03:10:00Z"
+ },
+ "mingguan": {
+  "kode": "2026-W43",
+  "dirakit": "2026-10-27T03:10:00Z"
+ },
+ "perubahan_level": [
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "tanggal": "2026-10-22",
+   "dari": 2,
+   "ke": 3
+  },
+  {
+   "gunung": "Dieng",
+   "tanggal": "2026-10-31",
+   "dari": 2,
+   "ke": 1
+  },
+  {
+   "gunung": "Ibu",
+   "tanggal": "2026-11-02",
+   "dari": 3,
+   "ke": 2
+  }
+ ],
+ "prediksi": {
+  "versi": 1,
+  "dibuat": "2026-11-01T04:46:15+07:00",
+  "kode": {
+   "HJN": {
+    "label": "Hujan",
+    "terbit": "2026-11-01",
+    "hari": [
+     "2026-11-02",
+     "2026-11-03",
+     "2026-11-04"
+    ],
+    "status": "dinilai"
+   }
+  },
+  "kab": [
+   {
+    "id": "1305",
+    "nama": "Kab. Padang Pariaman",
+    "prov": "13",
+    "pn": "Sumatera Barat"
+   },
+   {
+    "id": "1471",
+    "nama": "Kota Pekanbaru",
+    "prov": "14",
+    "pn": "Riau"
+   },
+   {
+    "id": "6371",
+    "nama": "Kota Banjarmasin",
+    "prov": "63",
+    "pn": "Kalimantan Selatan"
+   }
+  ],
+  "waspada": [
+   {
+    "kab": "1305",
+    "tenggang": 1,
+    "aturan": "banjir",
+    "maka": "Waspada banjir",
+    "dampak": {
+     "jiwa": 54308,
+     "kec": 7
+    }
+   },
+   {
+    "kab": "1471",
+    "tenggang": 1,
+    "aturan": "asap",
+    "maka": "Imbauan masker; sekolah kurangi kegiatan luar ruang",
+    "dampak": {
+     "jiwa": 1123348
+    }
+   },
+   {
+    "kab": "6371",
+    "tenggang": 1,
+    "aturan": "asap",
+    "maka": "Imbauan masker; sekolah kurangi kegiatan luar ruang",
+    "dampak": {
+     "jiwa": 692793
+    }
+   },
+   {
+    "kab": "1305",
+    "tenggang": 2,
+    "aturan": "longsor",
+    "maka": "Waspada longsor",
+    "dampak": {
+     "jiwa": 1000
+    }
+   }
+  ],
+  "batasan": [
+   "Semua peluang di halaman ini mentah sampai rapornya cukup (>= 30 pasangan) dan kalibrasinya lolos uji tahan 14 hari."
+  ]
+ },
+ "tangga": {
+  "versi": 1,
+  "dibuat": "2026-10-26T04:46:15+07:00",
+  "hari": "2026-10-26",
+  "sumber": {
+   "sepekan": {
+    "lembaga": "BMKG",
+    "nama": "Prakiraan Cuaca Indonesia Sepekan Periode 26 Oktober sampai 1 November 2026",
+    "terbit": "2026-10-26",
+    "cakupan": "provinsi",
+    "jenis": "resmi"
+   },
+   "kita_kering": {
+    "lembaga": "Centurisk97",
+    "nama": "Prediksi model: hari tanpa hujan berturut (HTH)",
+    "terbit": null,
+    "cakupan": "kabupaten",
+    "jenis": "kita"
+   },
+   "karhutla": {
+    "lembaga": "BMKG",
+    "nama": "Factsheet monitoring dan potensi karhutla",
+    "terbit": "2026-10-26",
+    "cakupan": "provinsi",
+    "jenis": "resmi"
+   },
+   "awan": {
+    "lembaga": "Centurisk97",
+    "nama": "Analisis awan dingin Himawari-9",
+    "terbit": null,
+    "cakupan": "kabupaten",
+    "jenis": "analisis"
+   }
+  },
+  "prov": {
+   "14": {
+    "sepekan": [
+     {
+      "a": "b",
+      "j": "hujan",
+      "tk": 2,
+      "t": "Siaga (hujan lebat)",
+      "x": "Prakiraan sepekan BMKG: 27 Okt sampai 29 Okt, Siaga (hujan lebat).",
+      "s": "sepekan",
+      "c": "prov",
+      "p": "26 Okt sampai 1 Nov"
+     },
+     {
+      "a": "k",
+      "j": "karhutla",
+      "tk": 1,
+      "t": "Potensi karhutla sedang",
+      "x": "Factsheet BMKG: potensi kemudahan terbakar sedang.",
+      "s": "karhutla",
+      "c": "prov",
+      "p": "26 Okt sampai 28 Okt"
+     }
+    ]
+   }
+  },
+  "kab": {
+   "1471": {
+    "sepekan": [
+     {
+      "a": "k",
+      "j": "hth",
+      "tk": null,
+      "t": "Ada hari hujan",
+      "x": "Prediksi model: ada hari hujan 1 mm atau lebih pada 29 Okt; bukan peringatan kekeringan.",
+      "s": "kita_kering",
+      "c": "kab",
+      "p": "sampai 29 Okt",
+      "u": "belum teruji"
+     },
+     {
+      "a": "b",
+      "j": "awan",
+      "tk": null,
+      "t": "Awan dingin",
+      "x": "Analisis awan.",
+      "s": "awan",
+      "c": "kab",
+      "p": "26 Okt"
+     }
+    ]
+   },
+   "6371": {
+    "sepekan": [
+     {
+      "a": "k",
+      "j": "hth",
+      "tk": null,
+      "t": "2 hari tanpa hujan",
+      "x": "Prediksi model: 2 hari tanpa hujan; bukan peringatan kekeringan.",
+      "s": "kita_kering",
+      "c": "kab",
+      "p": "sampai 29 Okt",
+      "u": "belum teruji"
+     }
+    ]
+   },
+   "1305": {
+    "sepekan": [
+     {
+      "a": "k",
+      "j": "hth",
+      "tk": null,
+      "t": "Ada hari hujan",
+      "x": "Prediksi model: ada hari hujan.",
+      "s": "kita_kering",
+      "c": "kab",
+      "p": "sampai 29 Okt",
+      "u": "belum teruji"
+     }
+    ]
+   }
+  },
+  "catatan": [
+   "Peringkat 0 sampai 3 hanya untuk sinyal; label resmi tidak diubah. Sinyal hanya dari BMKG; prediksi kita terpisah."
+  ]
+ }
+}

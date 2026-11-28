@@ -38,14 +38,14 @@ Migrasi produksi diterapkan pemilik.
 
 | Tiket | Isi | Cakupan | Pengerja → pemeriksa | Menunggu |
 | ----- | --- | ------- | -------------------- | -------- |
-| SA-22 | Ketinggian dan bahan | `semai.py`: ketinggian dasar awan per zona, deteksi inversi berasap, usulan bahan, jumlah sortie dan bahan (ALGORITMA §7b); `muatan_kg` kosong di `semai_bobot.json`; tampil di kartu Rekomendasi, dialog target, dan renlap OMC (PDF/KML/GPX) | `pipa-data` + `layar-peta` → `validasi-model`, `selera-angka` | SA-05, SA-09; angka jumlah: Q15, Q16 |
-| SA-23 | Mulai dari target | `kandidat_target` di pipeline untuk kab bercluster dan KHG prioritas; pemilih target di kolom kanan; zona target dihitung di peramban (ALGORITMA §7b) | `pipa-data` + `layar-peta` → `inp-reviewer`, `validasi-model` | SA-13 |
+| SA-22 | Ketinggian dan bahan | `semai.py`: ketinggian dasar awan per zona, deteksi inversi berasap, usulan bahan, jumlah sortie dan bahan (ALGORITMA §7b); `muatan_kg` kosong di `semai_bobot.json`; tampil di kartu Rekomendasi, dialog target, dan renlap OMC (PDF/KML/GPX) | `pipa-data` + `layar-peta` → `validasi-model`, `selera-angka` | SA-05, SA-09; angka jumlah: Q15, Q16. Sisa layar selesai 26 Nov 2026: dialog target dan altitude KML/GPX; muatan tetap kosong (Q15) |
+| SA-23 | Mulai dari target | `kandidat_target` di pipeline untuk kab bercluster dan KHG prioritas; pemilih target di kolom kanan; zona target dihitung di peramban (ALGORITMA §7b) | `pipa-data` + `layar-peta` → `inp-reviewer`, `validasi-model` | SA-13. Bagian kab selesai 26 Nov 2026 (pemilih target di kartu Zona usulan, zona dari `kandidat_target` di peramban); KHG belum ada, poligon tidak ada di repo |
 
 ## Fase 3c: kabar dan jejak keputusan
 
 | Tiket | Isi | Cakupan | Pengerja → pemeriksa | Menunggu |
 | ----- | --- | ------- | -------------------- | -------- |
-| SA-24 | Peringatan sebelum subuh | `semai.yml` putaran 22.00 UTC menulis ringkasan; bot WA Mac mini (`scripts/wa/**`) mengirimnya pukul 05.15 WIB; peringatan asap merah masuk Perlu tindakan | `wa-bot` + `layar-peta` → `security-reviewer` | Q17 (bawaan) |
+| SA-24 | Peringatan sebelum subuh | `semai.yml` putaran 22.00 UTC menulis ringkasan; bot WA Mac mini (`scripts/wa/**`) mengirimnya pukul 05.15 WIB; peringatan asap merah masuk Perlu tindakan | `wa-bot` + `layar-peta` → `security-reviewer` | Q17 (bawaan). Sisi bot selesai 26 Nov 2026: `scripts/wa/semai_subuh.mjs` (proses sendiri, plist 05.15 WIB, mati bawaan sampai `PENERIMA_SEMAI` diisi); membaca `semai.json` dari R2 lewat rute staf, tanpa perubahan `semai.yml`. Sisa: baris "Perlu tindakan" di Ringkasan Operasi Udara layar (`layar-peta`) dan pemasangan plist oleh pemilik |
 | SA-25 | Log keputusan harian | migrasi `op_semai_putusan` (base, tanggal, terbang/tidak, zona_id, alasan, putaran, oleh, dibuat; hapus lunak); rute tulis peran S7, baca pembaca `/operasi`; kartu "Keputusan hari ini" per base di seksi; ekspor CSV | `warga-api` + `layar-peta` → `guard-api`, `migrasi-idempoten` | – |
 
 ## Fase 4: kejujuran

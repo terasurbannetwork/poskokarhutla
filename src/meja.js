@@ -19,6 +19,8 @@ import {BAGIAN} from "../public/inti/kelengkapan.js";
 import {kab4Dari} from "./siklus_kab.js";
 import {MEJA, DAFTAR_MEJA, DAFTAR_PETUGAS, MEJA_RAPOR, PUSAT, EKSPOR_RISIKO, BENCANA, RAPOR, KOLOM_DAMPAK, spekPublik, validasi, statusEfektif, tandaBahaya, teksBersih} from "./meja_spek.js";
 import {gabungDampak} from "./lapor_lanjut_spek.js";
+import {stafOK} from "./staf.js";
+import {P_UNIT_BACA} from "./unit.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, LAJU_TULIS = [[JAM, 120]], LAJU_PELAPOR = [[JAM, 30]], TTL_RINGKAS = 2 * JAM, MAKS_EKSPOR = 20000, MAKS_ISIAN = 16384, MAKS_IMPOR = 256 * 1024, MAKS_BARIS_IMPOR = 50, MAKS_KAB_IMPOR = 8, LAJU_IMPOR = [[JAM, 5]], LAJU_TERIMA = [[JAM, 60]],   /* impor: batas CPU 10 ms akun Free */ RE_ID = /^[0-9a-f]{16}$/;
 /* Juklak 5/2025: identitas pelapor hanya untuk Inspektorat Utama dan Unit Layanan Pengaduan. Pemegangnya staf Inspektorat Utama (peran irtama, keputusan pemilik 10 Nov 2026, migrasi 0121); ulp disisakan bila kelak dipisah. */
@@ -863,6 +865,38 @@ async function dummy(env, req, kini) {
   return gagal(400, "aksi harus isi/hapus");
 }
 
+/* WIL-3 (RU-080, kedeputian DESAIN-TEKNIS §6.16): draf laporan awal kaji cepat dari JSON statis (env.ASSETS), tanpa D1 selain gerbang hak.
+   Hak: petugas berkode meja kaji_cepat untuk kabupatennya sendiri, atau admin/moderator, atau staf P_UNIT_BACA. Semua isi berlabel saran; gempa dan tsunami tidak pernah Siaga.
+   ponytail: tiga berkas besar (status_darurat 1,2 MB) diurai per permintaan; cache tepi atau ringkasan praterhitung bila CPU Workers terasa. */
+const KATA_JENIS = {karhutla: "kebakaran", banjir: "banjir", longsor: "longsor", kekeringan: "kekeringan", gunungapi: "gunung"};
+const median = a => { const b = [...a].sort((x, y) => x - y), m = b.length >> 1; return b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2; };
+async function drafKaji(env, req, url) {
+  const kab = url.searchParams.get("kab") ?? "";
+  let petugas = null, oleh;
+  if (req.headers.get("x-kode")) { const p = await pelaku(env, req); if (p instanceof Response) return p; petugas = p.petugas; oleh = p.oleh; if (!petugas?.meja.includes("kaji_cepat")) return gagal(403, "meja ini tidak diizinkan untuk kodemu"); }
+  else { const m = await modOK(env, req); oleh = m ? "admin:" + m : await stafOK(env, req, P_UNIT_BACA); if (!oleh) return tolak(); oleh = String(oleh); }
+  if (!/^\d{4}$/.test(kab)) return gagal(400, "kab harus kode 4 angka");
+  if (petugas && kab4Dari(petugas.prov, petugas.kab) !== kab) return gagal(403, "kamu hanya boleh membuat draf untuk kabupatenmu sendiri");
+  const lj = await laju(env, oleh, "meja.draf", [[JAM, 60]], Date.now()); if (lj) return lj;
+  if (!env.ASSETS) return gagal(503, "aset belum tersedia");
+  const ambil = async j => { const r = await env.ASSETS.fetch(new Request(new URL(j, url))); if (!r.ok) { r.body?.cancel().catch(() => {}); return null; } try { return await r.json(); } catch (e) { return null; } };
+  const [tp, ss, sd, lh] = await Promise.all(["/data/bnpb/terpapar.json", "/data/saran_status.json", "/data/status_darurat.json", "/data/laphar_riwayat.json"].map(ambil));
+  const t = tp?.kab?.[kab], kol = tp?.kolom_h ?? [];
+  const saran = (ss?.kab?.[kab] ?? []).filter(x => !(["gempa", "gempabumi", "tsunami"].includes(x.jenis) && /siaga/i.test(x.saran)))
+    .map(({jenis, saran, alasan, basi, tanggal_sinyal}) => ({jenis, saran, alasan, basi, tanggal_sinyal}));
+  const sk = (sd?.sk ?? []).filter(x => x.skala === "kabupaten" && String(x.kab_kode ?? "").replace(".", "") === kab).sort((a, b) => (b.mulai > a.mulai ? 1 : -1));
+  const hari = {}, jenisSaran = new Set(saran.map(x => x.jenis));   // sekali lintas: {jenis: [hari]} untuk SK kabupaten di provinsi ini
+  for (const x of sd?.sk ?? []) if (x.skala === "kabupaten" && x.prov_kode === kab.slice(0, 2) && x.hari > 0) { const jn = String(x.jenis ?? "").toLowerCase();
+    for (const j of jenisSaran) if (KATA_JENIS[j] && jn.includes(KATA_JENIS[j])) (hari[j] ??= []).push(x.hari); }
+  const masa = Object.fromEntries([...jenisSaran].filter(j => KATA_JENIS[j]).map(j => [j, hari[j] ? {median_hari: median(hari[j]), n: hari[j].length} : null]));
+  const kejadian = (lh?.episode ?? []).filter(e => e.tingkat === "kab" && kab4Dari(e.prov, String(e.kab).split("|")[1] ?? "") === kab).sort((a, b) => (b.terakhir > a.terakhir ? 1 : -1)).slice(0, 5)
+    .map(({jenis, tempat, mulai, terakhir, hari, status, puncak}) => ({jenis, tempat, mulai, terakhir, hari, status, puncak}));
+  return json({kab, label: "saran", catatan: "Draf untuk rapat koordinasi; yang menetapkan status adalah kepala daerah setelah kaji cepat.",
+    penduduk: t ? {total: t.n, terpapar: Object.fromEntries(Object.entries(t.h ?? {}).map(([b, v]) => [b, Object.fromEntries(kol.map((k, i) => [k, v[i]]))]))} : null,
+    saran_status: saran, sk_terkini: sk.slice(0, 5).map(({nomor, jenis, status, mulai, berakhir, hari}) => ({nomor, jenis, status, mulai, berakhir, hari})), perkiraan_masa: masa, kejadian_terkini: kejadian,
+    sumber_ada: {terpapar: !!tp, saran_status: !!ss, status_darurat: !!sd, laphar: !!lh}}, 200, {"cache-control": "private, no-store", vary: "cookie"});
+}
+
 /* ---------------------------------------------------------------- rute */
 const A = {
   "GET /meja": (env, req, url) => halamanBnpbPublik(env, url, "meja", {pribadi: true}),
@@ -874,6 +908,7 @@ const A = {
   "POST /api/meja/catatan": (env, req, url, kini) => buat(env, req, kini),
   "GET /api/meja/catatan/:id": (env, req, url, kini, ctx, id) => rincian(env, req, id, kini),
   "POST /api/meja/catatan/:id": (env, req, url, kini, ctx, id) => ubah(env, req, id, kini),
+  "GET /api/meja/kaji_cepat/draf": drafKaji,
   "GET /api/meja/rekap": rekap,
   "GET /api/meja/ringkas": ringkas,
   "GET /api/meja/ekspor": ekspor,

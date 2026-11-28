@@ -57,9 +57,11 @@ const _HALAMAN = [
     ["/lapor", "Lapor bencana", "pin", L, "tamu"],
     ["/lapor/lacak", "Lacak laporan", "meja", L, "tamu", null, "/lapor", true],
     ["/lapor/hari-ini", "Kejadian hari ini", "kalender", L, "tamu", null, "/lapor"],
+    ["/lapor/hilang", "Orang hilang", "personel", L, "sesi", null, "/lapor"],   // tab publik (orang-hilang-publik OH-09); akses "sesi" sampai pemilik mencatat keputusan publik di KEPUTUSAN-MASUK (G-4)
+    ["/lapor/h", "Profil orang hilang bertautan", "personel", L, "sesi", null, "/lapor", true],   // tautan bagikan bertoken (OH-09): butir token, tidak tampil di menu atau peta publik (pola /lapor/s)
     ["/lapor/s", "Kabar selamat bertautan", "sinyal", L, "tamu", null, "/lapor", true],
     ["/kabar", "Kabar api per kabupaten", "sinyal", L],
-    ["/alun-alun", "Alun-alun", "personel", L, "tamu"],
+    ["/alun-alun", "Situasi bencana", "personel", L, "tamu"],
     ["/lapor/poster.html", "Poster QR desa", "simpan", L, "sesi", null, "/lapor"],
     ["/bantu", "Tawaran bantuan organisasi", "personel", L, "tamu", null, null, true],
     ["/masuk", "Masuk", "personel", "masuk", "tamu"],
@@ -114,6 +116,8 @@ const _HALAMAN = [
     ["/bnpb/data-bencana", "Data bencana Indonesia", "grafik", "risiko", "tamu"],
     ["/bnpb/rapor-sumber", "Rapor sumber prakiraan", "grafik", "risiko"],
     ["/bnpb/silang", "Banding sumber data", "grafik", "risiko"],
+    ["/bnpb/unit", "Ruang Unit", "grafik", "risiko"],
+    ["/bnpb/unit/:kode", "Halaman unit", "grafik", "risiko", "sesi", null, "/bnpb/unit", true],   // token:true = tidak tampil di menu (rute berpola, dibuka dari kartu /bnpb/unit), bukan tautan bertoken
     ["/admin/pimpinan", "Layar pimpinan", "grafik", "pimpinan"],
     ["/bnpb/pimpinan", "Dashboard pimpinan", "grafik", "pimpinan"],
     ["/kinerja-bnpb", "Kinerja BNPB", "grafik", "pimpinan"],
@@ -178,7 +182,7 @@ const _HALAMAN = [
    lawan sumber Worker di tests/warga/peta_situs.test.mjs. */
 const ADMIN_SAJA = new Set(["statistik", "pesan", "foto", "labelfoto", "sosmed", "kunci-api", "biaya-bot", "kontak", "akun", "pengingat", "gakkum", "pimpinan", "alun", "riset", "relawan", "meja", "pendataan"].map(k => "/admin/" + k));
 /* gerbang sendiri halaman (bukan kunci HALAMAN_STAF): /admin/segel = PERAN_BACA src/segel.js */
-const PERAN_SENDIRI = {"/admin/segel": ["pimpinan", "pusdalops"]};
+const PERAN_SENDIRI = {"/admin/segel": ["pimpinan", "pusdalops"], "/bnpb/unit": ["unit", "pimpinan", "koordalops", "pusdalops", "operator_cc"]};   // /bnpb/unit = P_UNIT_BACA src/unit.js (dicocokkan tests/warga/unit.test.mjs)
 export const HALAMAN = _HALAMAN.map(e => ({...e, ...(ADMIN_SAJA.has(e.rute) ? {admin: true} : {}), ...(PERAN_SENDIRI[e.rute] ? {peran: PERAN_SENDIRI[e.rute]} : {})}));
 
 /* Menu untuk satu sesi (ALGORITMA "Penyaring menu"). sesi = {jenis: "admin"|"staf"|"instansi"|"petugas"|"kemitraan"|"pemirsa"|null, peran: []};

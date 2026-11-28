@@ -115,6 +115,10 @@ Karena K3, angka pengisi itu **tidak ditiru**. Semua bentuk layar lain ditiru.
   disamarkan mesin, nama tidak bisa. **[bawaan]** tetap ditampilkan, karena sudah publik di InaRISK.
 - **Q6:** dampak radius untuk kejadian logbook butuh pencari koordinat dari nama desa. **[terjawab K6]** dibuat; titik desa
   berlabel perkiraan (pusat desa, bukan titik kejadian).
+- **Q7 (IR-17, 26 Nov 2026):** ambang ACEBS 95% di D17 diukur dari titik yang jatuh di kab kodenya (85,9%), padahal sebab utama
+  tidak cocok adalah koordinat (11,4%), bukan kode (2,6%); kode desa sah Kemendagri 97,4% (RISET §7). Boleh ACEBS dicermin
+  per desa dan kab lewat kodenya saja, dengan baris berkode tidak sah dibuang dan dilaporkan? **[bawaan sementara]** belum:
+  ACEBS tetap ditahan sampai pemilik menjawab, karena ukuran D17 sudah diterima pemilik 25 Nov 2026.
 
 
 ## Jawaban pemilik 25 Nov 2026

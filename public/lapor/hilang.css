@@ -1,0 +1,115 @@
+/* Orang hilang publik (data/kajian-bnpb/orang-hilang-publik/DESIGN-SYSTEM.md): komposisi token tema.css, tanpa literal warna baru.
+   Dimuat oleh /lapor (kartu obrolan dan Laporan saya), /lapor/hilang, /lapor/h/<token>, dan meja petugas. Layar sempit dulu. */
+.oh-ik{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.oh-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.oh-pil{display:inline-flex;align-items:center;min-height:24px;padding:2px 10px;border-radius:var(--r-pill);border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:var(--fs-2);font-weight:700}
+.oh-pil.cari{background:color-mix(in oklab,var(--warn) 22%,var(--card));border-color:color-mix(in oklab,var(--warn) 50%,var(--line))}
+.oh-pil.tunggu{background:color-mix(in oklab,var(--info) 16%,var(--card))}
+.oh-pil.redup{background:var(--surface);color:var(--ink2)}
+.oh-pil.ok{background:color-mix(in oklab,var(--ok) 16%,var(--card));color:var(--ok-tx)}
+
+/* halaman daftar dan satu profil */
+.oh-halaman{max-width:1080px;margin:0 auto;padding:24px 16px 48px}
+.oh-judul h1{margin:0 0 6px;font:800 1.75rem/1.2 var(--display)}
+.oh-judul p{margin:0;color:var(--ink2);max-width:62ch}
+.oh-saring{display:grid;gap:12px;margin:20px 0 0;grid-template-columns:minmax(0,1fr)}
+.oh-saring label{display:grid;gap:4px;font-size:var(--fs-2);font-weight:700;color:var(--ink2)}
+.oh-saring input{min-height:44px;padding:0 12px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--card);color:var(--ink);font:inherit}
+.oh-daftar{display:grid;gap:20px;margin-top:20px;grid-template-columns:minmax(0,1fr)}
+.oh-kosong{padding:28px 20px;border:1px dashed var(--line);border-radius:var(--r);background:var(--surface);color:var(--ink2);text-align:center}
+.oh-kosong b{display:block;color:var(--ink);margin-bottom:4px}
+.oh-lagi{display:flex;justify-content:center;margin-top:20px}
+.oh-tombol{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--card);color:var(--ink);font:700 var(--fs-3) var(--font);cursor:pointer}
+.oh-tombol:disabled{opacity:.5;cursor:default}
+.oh-tombol.utama{background:var(--head-bg);border-color:var(--head-bg);color:var(--on-head)}
+.oh-profil a:focus-visible,.oh-halaman button:focus-visible,.oh-halaman input:focus-visible,.oh-dlg :focus-visible,.oh-chat :focus-visible,.oh-meja :focus-visible{outline:3px solid var(--brand2);outline-offset:2px}
+
+/* kartu profil */
+.oh-profil{display:grid;grid-template-columns:96px minmax(0,1fr);gap:0 16px;padding:16px;border:1px solid var(--line);border-radius:var(--r);background:var(--card);box-shadow:var(--shadow);min-width:0;content-visibility:auto;contain-intrinsic-size:auto 280px}
+.oh-profil.turun{opacity:.75}
+.oh-foto{width:96px;aspect-ratio:4/5;border-radius:var(--r-sm);overflow:hidden;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--ink2);text-align:center}
+.oh-foto img{width:100%;height:100%;object-fit:cover;display:block;-webkit-user-drag:none;user-select:none}
+.oh-foto.kosong .oh-ik{width:36px;height:36px}
+.oh-foto.kosong small{font-size:var(--fs-1);line-height:1.25;padding:0 6px}
+.oh-isi{display:grid;gap:8px;align-content:start;min-width:0}
+.oh-kepala{display:flex;flex-wrap:wrap;gap:8px}
+.oh-nama{margin:0;font:800 1.125rem/1.3 var(--display);overflow-wrap:anywhere}
+.oh-nama a{color:inherit;text-decoration:none}
+.oh-nama a:hover{text-decoration:underline}
+.oh-data{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:2px 12px;margin:0;font-size:var(--fs-3)}
+.oh-data dt{color:var(--ink2)}
+.oh-data dd{margin:0;overflow-wrap:anywhere}
+.oh-terlihat{display:flex;align-items:flex-start;gap:8px;margin:0;font-size:var(--fs-3);font-weight:600}
+.oh-terlihat .oh-ik{margin-top:2px}
+.oh-kejadian{margin:0;font-size:var(--fs-2);color:var(--ink2)}
+.oh-kaki{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.oh-info{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:1.5px solid var(--head-bg);border-radius:var(--r-sm);background:var(--card);color:var(--ink);font:700 var(--fs-3) var(--font);cursor:pointer}
+.oh-laporkan,.oh-bukan-saya{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0;border:0;background:none;color:var(--ink2);font:600 var(--fs-2) var(--font);text-decoration:underline;cursor:pointer}
+
+/* dialog formulir: <dialog> modal bawaan */
+.oh-dlg{width:min(480px,calc(100vw - 32px));padding:20px;border:1px solid var(--line);border-radius:var(--r);background:var(--card);color:var(--ink);box-shadow:var(--shadow-lg)}
+.oh-dlg:modal{overscroll-behavior:contain}
+.oh-dlg::backdrop{background:color-mix(in oklab,var(--ink) 45%,transparent);overflow:hidden;overscroll-behavior:contain}
+.oh-dlg h1{margin:0 0 6px;font:800 1.25rem/1.25 var(--display)}
+.oh-ket{margin:0 0 12px;color:var(--ink2);font-size:var(--fs-3)}
+.oh-form{display:grid;gap:12px}
+.oh-isi-baris{display:grid;gap:4px;font-size:var(--fs-2);font-weight:700;color:var(--ink2)}
+.oh-isi-baris select,.oh-isi-baris textarea{padding:10px 12px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--card);color:var(--ink);font:400 var(--fs-3) var(--font)}
+.oh-pesan{margin:0;min-height:1.4em;font-size:var(--fs-3);color:var(--bad-tx)}
+.oh-pesan.ok{color:var(--ok-tx)}
+.oh-pesan a{color:inherit}
+.oh-aksi-dua{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+
+/* kartu langkah di obrolan /lapor (kejadian, izin, wali): pilihan sama besar, tanpa pola gelap */
+.oh-chat{display:grid;gap:12px}
+.oh-kej-daftar{display:grid;gap:8px;margin:0;padding:0;border:0;min-width:0}
+.oh-kej{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:2px 12px;min-height:56px;padding:10px 14px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--card);cursor:pointer}
+.oh-kej input{grid-row:1/3;width:20px;height:20px;margin:0;accent-color:var(--brand)}
+.oh-kej b{font-size:var(--fs-4)}
+.oh-kej small{color:var(--ink2);font-size:var(--fs-2)}
+.oh-kej:has(input:checked){border-color:var(--head-bg);background:color-mix(in oklab,var(--brand) 8%,var(--card))}
+.oh-kej:has(input:focus-visible){outline:3px solid var(--brand2);outline-offset:2px}
+.oh-kej-kosong{padding:16px;border:1px dashed var(--line);border-radius:var(--r-sm);background:var(--surface);color:var(--ink2);font-size:var(--fs-3)}
+.oh-setuju-teks{display:grid;gap:10px;margin:0;padding:0;list-style:none;font-size:var(--fs-3)}
+.oh-setuju-teks li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px}
+.oh-setuju-teks .oh-ik{margin-top:2px;color:var(--ink2)}
+.oh-setuju-aksi{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.oh-setuju-aksi button{min-height:52px;padding:0 14px;border:1.5px solid var(--head-bg);border-radius:var(--r-sm);background:var(--card);color:var(--ink);font:700 var(--fs-3) var(--font);cursor:pointer}
+.oh-foto-catatan{margin:0;font-size:var(--fs-2);color:var(--ink2)}
+.oh-112{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--bad);border-radius:var(--r-sm);background:color-mix(in oklab,var(--bad) 8%,var(--card));color:var(--ink);text-decoration:none;font-weight:700}
+
+/* Laporan saya: cabut, perpanjang, foto publik */
+.oh-saya{display:grid;gap:10px;margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface)}
+.oh-saya p{margin:0;font-size:var(--fs-2);color:var(--ink2)}
+.oh-saya-aksi{display:flex;flex-wrap:wrap;gap:8px}
+.oh-saya-foto{display:flex;flex-wrap:wrap;gap:8px}
+.oh-saya-foto img{width:64px;height:80px;object-fit:cover;border-radius:var(--r-xs)}
+
+/* meja petugas */
+.oh-meja{display:grid;gap:20px}
+.oh-meja-kartu{display:grid;gap:14px;padding:14px;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+.oh-meja-kartu>.oh-profil{box-shadow:none;border-style:dashed}
+.oh-meja-kartu.prioritas{border-color:var(--warn)}
+.oh-privat{display:grid;gap:6px;padding:12px 14px;border-radius:var(--r-sm);background:var(--surface);color:var(--ink2);font-size:var(--fs-3)}
+.oh-privat h3{margin:0;font-size:var(--fs-2);font-weight:800;color:var(--ink)}
+.oh-privat dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:2px 12px;margin:0}
+.oh-privat dd{margin:0;overflow-wrap:anywhere}
+.oh-saran,.oh-syarat{display:grid;gap:4px;margin:0;padding:0;list-style:none;font-size:var(--fs-3)}
+.oh-saran li,.oh-syarat li{display:flex;gap:8px;align-items:flex-start}
+.oh-saran .ya,.oh-syarat .ok{color:var(--ok-tx)}
+.oh-saran .tidak,.oh-syarat .belum{color:var(--bad-tx)}
+.oh-meja-aksi{display:flex;flex-wrap:wrap;gap:8px}
+.oh-meja-aksi .oh-tombol{min-height:40px}
+.oh-meja-bagian{display:grid;gap:10px}
+.oh-meja-bagian>h2{margin:0;font:800 1rem/1.3 var(--display)}
+
+@media (min-width:640px){
+  .oh-saring{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .oh-daftar{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .oh-profil{grid-template-columns:132px minmax(0,1fr)}
+  .oh-foto{width:132px}
+}
+@media (prefers-reduced-motion:reduce){.oh-profil,.oh-kej{transition:none}}
+.oh-satu{grid-template-columns:minmax(0,640px)!important}
+.lp-tt-jenis article.hilang button[data-aksi="temu"]{margin-top:0;background:var(--card);border:1.5px solid var(--k);color:var(--ink)}
+.lp-tt-jenis article.hilang button[data-aksi="temu"]:hover{background:color-mix(in oklab,var(--k) 10%,var(--card))}

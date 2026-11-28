@@ -867,6 +867,46 @@ def relasi_dari(dok_id, segs, judul_dok):
     return [(k, hasil[k]) for k in urut if k[2] != "merujuk" or (k[0], k[1]) not in pasang]
 
 
+
+# ───────────────────────── amanat pengaturan turunan (HUK-2; ALGORITMA kedeputian 2.4) ─────────────────────────
+POLA_AMANAT = [("ditetapkan oleh Kepala", re.compile(r"ditetapkan\s+oleh\s+Kepala", re.I)),
+               ("diatur dengan Peraturan Badan", re.compile(r"diatur\s+dengan\s+Peraturan\s+Badan", re.I)),
+               ("diatur lebih lanjut", re.compile(r"diatur\s+lebih\s+lanjut", re.I)),
+               ("tercantum dalam Keputusan", re.compile(r"tercantum\s+dalam\s+.{0,80}?Keputusan", re.I))]
+RX_AYAT_AWAL = re.compile(r"(?:^|(?<=[.:;]\s))\((\d{1,2})\)\s")
+RX_PASAL_LABEL = re.compile(r"^Pasal\s+(\d+[A-Z]?)$")
+RX_UBAH_BUTIR = re.compile(r"\n\s*\d{1,3}\.\s+Ketentuan\s+Pasal\b")   # butir perubahan peraturan lain menempel di segmen sebelumnya
+RX_POTONG_TOPIK = re.compile(r"\s+(?:sebagaimana|yang\s+dimaksud|dimaksud)\b", re.I)
+KATA_TOPIK = 12
+
+
+def _topik(sebelum):
+    t = RX_AYAT_AWAL.sub("", sebelum, count=1)
+    t = RX_POTONG_TOPIK.split(t, maxsplit=1)[0]
+    return " ".join(t.split()[:KATA_TOPIK]).strip(" ,;:")
+
+
+def amanat(segmen):
+    """Kalimat delegasi per pasal: [{dok, pasal, ayat, pola, topik, kalimat}]. Hanya segmen jenis `pasal` berlabel 'Pasal N'.
+    Satu entri per ayat (pola yang paling awal muncul); pasal tanpa ayat bernomor ayat None. Tidak menilai berlaku atau tidaknya dokumen: pemanggil menyaring."""
+    out = []
+    for sg in segmen:
+        m = RX_PASAL_LABEL.match(sg.get("label") or "")
+        if sg.get("jenis") != "pasal" or not m:
+            continue
+        teks_ = RX_UBAH_BUTIR.split(sg["teks"], maxsplit=1)[0]
+        awal = list(RX_AYAT_AWAL.finditer(teks_))
+        bagian = [(None, teks_)] if not awal else [(int(a.group(1)), teks_[a.start():(awal[i + 1].start() if i + 1 < len(awal) else len(teks_))]) for i, a in enumerate(awal)]
+        for ayat, b in bagian:
+            kena = sorted(((mm.start(), nama, mm) for nama, rx in POLA_AMANAT for mm in [rx.search(b)] if mm), key=lambda x: x[0])
+            if not kena:
+                continue
+            _, nama, mm = kena[0]
+            out.append({"dok": sg["dok"], "pasal": f"Pasal {m.group(1)}", "ayat": ayat, "pola": nama, "topik": _topik(b[:mm.start()]),
+                        "kalimat": " ".join(b.split())[:300]})
+    return out
+
+
 # ───────────────────────── keluaran ─────────────────────────
 def sql(v):
     if v is None:
@@ -1188,6 +1228,16 @@ Ditetapkan di Jakarta"""
         assert all(d["n_segmen"] >= 1 for d in k["dok"])
         assert all(r["dari"] in ids and r["jenis"] in JENIS_REL and r["terdaftar"] == (r["ke"] in ids) for r in k["relasi"])
         assert all(df["dok"] in ids for df in k["definisi"])
+    # HUK-2: amanat pengaturan turunan per pasal
+    seg_a = [{"dok": "perban-4-2025", "jenis": "pasal", "label": "Pasal 38", "teks": "Tata cara pelaksanaan Uji Kompetensi bagi Analis Kebencanaan dan Pranata Kebencanaan ditetapkan oleh Kepala BNPB."},
+             {"dok": "perban-4-2025", "jenis": "pasal", "label": "Pasal 41", "teks": "(1) Pelatihan fungsional merupakan program pengembangan kompetensi. (2) Kurikulum pelatihan fungsional Analis Kebencanaan sebagaimana dimaksud pada ayat (1) ditetapkan oleh Kepala BNPB."},
+             {"dok": "x-1-2025", "jenis": "pasal", "label": "Pasal 5", "teks": "(1) Dana disalurkan kepada daerah. (2) Ketentuan lebih lanjut mengenai tata cara penyaluran diatur dengan Peraturan Badan.\n12. Ketentuan Pasal 6 diubah dan ditetapkan oleh Kepala BNPB."},
+             {"dok": "x-1-2025", "jenis": "menimbang", "label": "Menimbang", "teks": "bahwa tata cara ditetapkan oleh Kepala BNPB"},
+             {"dok": "x-1-2025", "jenis": "pasal", "label": "Pasal 7", "teks": "Pasal ini cukup jelas."}]
+    am = amanat(seg_a)
+    assert [(a["pasal"], a["ayat"]) for a in am] == [("Pasal 38", None), ("Pasal 41", 2), ("Pasal 5", 2)], am   # menimbang, pasal tanpa delegasi, dan butir perubahan lain tidak terhitung
+    assert am[0]["topik"] == "Tata cara pelaksanaan Uji Kompetensi bagi Analis Kebencanaan dan Pranata Kebencanaan" and am[1]["topik"] == "Kurikulum pelatihan fungsional Analis Kebencanaan"
+    assert am[2]["pola"] == "diatur dengan Peraturan Badan" and len(am[0]["topik"].split()) <= KATA_TOPIK
     print("hukum.py --cek: hijau")
 
 

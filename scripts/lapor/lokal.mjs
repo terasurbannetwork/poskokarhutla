@@ -17,7 +17,7 @@ import crypto from "node:crypto";
 import vm from "node:vm";
 import {execFile} from "node:child_process";
 import {fileURLToPath, pathToFileURL} from "node:url";
-import {putaran, sesiSekaliKetuk, mulaiDiJenisDarurat, lengkap, nilaiTampil, waktuLapor, T, KELOMPOK} from "../../src/lapor_mesin.js";
+import {putaran, sesiSekaliKetuk, mulaiDiJenisDarurat, nilaiFotoLuring, lengkap, nilaiTampil, waktuLapor, T, KELOMPOK} from "../../src/lapor_mesin.js";
 import {berlakuSesi, JENIS} from "../../src/lapor_spek.js";
 import {buatModel} from "../../src/lapor_model.js";
 import {buatWilayah} from "../../src/lapor_wilayah.js";
@@ -25,7 +25,7 @@ import {buatInfo} from "../../src/lapor_info.js";
 import {kontakBpbd, kalimatBpbd} from "../../src/lapor_kontak.js";
 import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "../../src/lapor_gugus.js";
 import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "../../src/media_berkas.js";
-import {HALAMAN_TUNGGU_DOK, tempatRusak} from "../../src/lapor_tampil.js";
+import {HALAMAN_TUNGGU_DOK, tempatRusak, daruratRingkas} from "../../src/lapor_tampil.js";
 import {jalanOsm} from "../../src/lapor_jalan.js";
 import {JENIS_PW, MAKS_KEC, endpointSah, titikTerdekat, NAMA_HARI, label as labelPw} from "../../src/pw_inti.js";
 
@@ -238,7 +238,7 @@ async function pesan(body) {
     lokasi = {lat: c.lat, lon: c.lon, sumber: lokasi.poster === true ? "poster" : "cari", wilayah: c.wilayah};   // poster: K92, D131
   }
   const h = await putaran({sesi: sesiAktif, pelapor: d.pelapor[wa] || null, model, wilayah, kandidat: ({kecKode, kini: k}) => kandidatLokal(d, kecKode, k),
-    pesan: {wa, teks, lokasi, form: body.form || null, pilih: Array.isArray(body.pilih) ? body.pilih.slice(0, 20) : null, foto: body.foto || null, lain: typeof body.lain === "string" ? body.lain.slice(0, 120) : null, kembali: body.kembali === true, saluran: "web"}, kini}); // rute ini hanya dipakai layar web
+    pesan: {wa, teks, lokasi, form: body.form || null, pilih: Array.isArray(body.pilih) ? body.pilih.slice(0, 20) : null, foto: body.foto || null, lain: typeof body.lain === "string" ? body.lain.slice(0, 120) : null, kembali: body.kembali === true, saluran: "web", luring: Number.isFinite(body.luring) ? body.luring : null, luringKirim: Number.isFinite(body.luring_kirim) ? body.luring_kirim : null}, kini}); // rute ini hanya dipakai layar web; luring = waktu simpan Lapor tanpa sinyal, sama dengan Worker
   h.sesi.id ||= `${kini.toString(36)}${crypto.randomBytes(3).toString("hex")}`;
   h.sesi.wa = wa; h.sesi.bahasa = bahasa;
   if (terj.diterjemahkan) { const t = [...h.sesi.transkrip].reverse().find(x => x.dari === "pelapor"); if (t) Object.assign(t, {asli: samarkan(terj.asli), bahasa}); } // teks asli disamarkan sama dengan terjemahannya
@@ -283,12 +283,15 @@ async function foto(body) {
   const buf = Buffer.from(String(body.data || "").replace(/^data:image\/jpeg;base64,/, ""), "base64");
   if (buf.length < 1000 || buf.length > 2.5 * 1048576 || buf[0] !== 0xff || buf[1] !== 0xd8) return [400, {galat: "Foto harus JPEG, paling besar 2,5 MB."}];
   const kini = Date.now(), g = body.gps, x = body.exif;
-  const gpsSah = g && Number.isFinite(g.lat) && Number.isFinite(g.lon) && g.akurasi <= 1000 && kini - g.waktu <= 10 * 6e4;
+  const L = nilaiFotoLuring(Number.isFinite(body.luring) ? body.luring : null, kini, Number.isFinite(x?.waktu) ? x.waktu : null), acuan = L?.acuan ?? kini;   // foto Lapor tanpa sinyal (LR-06), sama dengan Worker
+  if (L?.galat) return [400, {galat: L.galat}];
+  const gpsSah = g && Number.isFinite(g.lat) && Number.isFinite(g.lon) && g.akurasi <= 1000 && Math.abs(acuan - g.waktu) <= 10 * 6e4;
   if (x?.waktu && kini - x.waktu > 48 * 3600e3) return [400, {galat: "Foto diambil lebih dari 48 jam lalu. Kirim foto terbaru dari lokasi."}];
   if (x && x.kamera === false) return [400, {galat: "Foto harus diambil langsung dengan kamera ponsel. Tangkapan layar atau gambar hasil sunting tidak diterima."}];
   if (gpsSah && x?.lat != null && km(g.lat, g.lon, x.lat, x.lon) > 5) return [400, {galat: "Lokasi di foto lebih dari 5 km dari posisi Anda sekarang. Kirim foto yang diambil di lokasi ini."}];
   const meta = gpsSah ? {lencana: "gps", lencanaTeks: "Lokasi GPS perangkat", lat: g.lat, lon: g.lon, akurasi: g.akurasi}
     : x?.lat != null ? {lencana: "exif", lencanaTeks: "Lokasi dari data foto", lat: x.lat, lon: x.lon} : {lencana: "tanpa", lencanaTeks: "Tanpa lokasi"};
+  if (L) meta.lencanaTeks = `${meta.lencanaTeks}, ${L.tanda}`;
   const sAkt = sesiMentah(wa), MAKS = 10; // standar foto publik: paling banyak 10 foto per laporan
   if ((sAkt?.foto || []).filter(f => f.jenis !== "video").length >= MAKS) return [400, {galat: `Paling banyak ${MAKS} foto per laporan.`}];
   const id = crypto.randomBytes(8).toString("hex");
@@ -671,7 +674,7 @@ function meja(c) {
     return {nomor: s.nomor, status: s.tiket.status, statusLabel: STATUS[s.tiket.status], waktuLapor: waktuLapor(s.terkirim, w?.wilayah?.provKode), terkirim: s.terkirim,
       waktuKejadian: s.isian.waktu?.nilai || null, wa: s.wa, nama: p.nama || null, peran: PERAN[p.peran] || null, instansi: p.kab ? `BPBD ${p.kab}` : null,
       jenis: JENIS.find(j => j.id === s.isian.jenis?.nilai)?.label || null, jenisId: s.isian.jenis?.nilai || null, subjenis: s.isian.subjenis?.nilai || null,
-      lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length, versi: (s.versi || []).length, adaSusulan: !!s.susulanBaru, dampak: dampakRingkas(s), tempat: tempatRusak(s), tanggap: tanggap(s), darurat: s.darurat ? {korban: s.darurat.korban || null, ...(s.darurat.cara ? {cara: s.darurat.cara} : {}), ...(s.darurat.tertunda ? {tertunda: true} : {})} : null, dikenal: !!p.nama, periksa: s.periksa?.at(-1)?.hasil || null,
+      lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length, versi: (s.versi || []).length, adaSusulan: !!s.susulanBaru, dampak: dampakRingkas(s), tempat: tempatRusak(s), tanggap: tanggap(s), darurat: daruratRingkas(s.darurat), dikenal: !!p.nama, periksa: s.periksa?.at(-1)?.hasil || null,
       gugus: G.per[s.nomor] ? {kode: G.per[s.nomor], label: gk[G.per[s.nomor]].label, n_laporan: gk[G.per[s.nomor]].n_laporan, n_pelapor: gk[G.per[s.nomor]].n_pelapor, satu_desa: gk[G.per[s.nomor]].satu_desa} : null, kejadian: kejadianTampil(d, s)};
   })}];
 }

@@ -16,10 +16,10 @@ const kepala = judul => `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=14" rel="stylesheet">
+<link href="/admin/admin.css?v=15" rel="stylesheet">
 <link href="/inti/kartu.css?v=2" rel="stylesheet">
-<link href="/inti/dasbor.css?v=24" rel="stylesheet">
-<script src="/inti/dasbor_admin.js?v=2" defer></script>
+<link href="/inti/dasbor.css?v=31" rel="stylesheet">
+<script src="/inti/dasbor_admin.js?v=3" defer></script>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {segel: ["🔏", "Segel dokumen"], statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
@@ -38,7 +38,7 @@ export const aksesStaf = peran => [...Object.keys(HALAMAN_STAF).filter(k => bole
 /* null = semua peran KECUALI 'direktori' (peran itu hanya membuka Direktori, src/staf.js hanyaDirektori) */
 export const bolehStaf = (k, peran) => Object.hasOwn(HALAMAN_STAF, k) && (HALAMAN_STAF[k] === null ? peran.some(p => p !== "direktori") : peran.some(p => HALAMAN_STAF[k].includes(p)));
 /* Arah bawaan staf sesudah masuk tanpa ?ke= (peta-situs ALGORITMA "Arah sesudah masuk", Q7): Direktori saja ke /direktori, operator_cc saja ke /command-center,
-   lainnya /bnpb bila gerbang host ini membukanya untuk perannya, selain itu butir pertama menu staf perannya. Satu sumber untuk form sandi dan /api/masuk/sandi. */
+   lainnya /bnpb bila gerbang host ini membukanya untuk perannya, selain itu butir pertama menu staf perannya. Satu sumber untuk form sandi /masuk. */
 export function arahStaf(peran, terkunci) {
   if (peran.length && peran.every(p => p === "direktori")) return "/direktori";
   if (peran.length && peran.every(p => p === "operator_cc")) return "/command-center";
@@ -59,9 +59,6 @@ const menuSesi = ctx => { const sesi = ctx ? {jenis: "staf", peran: ctx.peran} :
 export const grupNav = ctx => menuSesi(ctx).find(p => p.pintu === "staf")?.grup || [];
 const butirReg = e => { const k = kunciHal(e); return [k || e.rute, k ? HAL[k][0] : EMOJI[e.ikon] || "📋", e.nama, e.rute]; };
 const navReg = ctx => grupNav(ctx).map(g => [g.nama, IKON_GRUP[g.id] || "📋", g.butir.map(butirReg)]);
-/* sub-nav (admin saja): deretan halaman satu grup dengan halaman ini; public/inti/dasbor_admin.js menyusunnya jadi panel kiri */
-const subNav = (aktif, ctx) => { const g = !ctx && grupNav().find(g => g.butir.some(e => kunciHal(e) === aktif));
-  return g && g.butir.length > 1 ? `<nav class="ad-sub" aria-label="${esc(g.nama)}">${g.butir.map(butirReg).map(([k, ik, l, href]) => `<a href="${href}" ${aktif === k ? 'aria-current="page"' : ""}>${ik} ${esc(l)}</a>`).join("")}</nav>` : ""; };
 /* Nav atas berkelompok (pemilik, 3 Nov 2026): tautan sejenis disatukan dalam satu menu tarik-turun seperti Direktori dan Dalops.
    Butir: [k, ikon, label, href]. Kelompok berisi satu butir tampil sebagai tautan biasa. <details name> = hanya satu menu terbuka, tanpa JS (CSP). */
 const butirNav = ([k, ik, l, href], kini) => `<a href="${href}" ${kini(k) ? 'aria-current="page"' : ""}>${ik} ${esc(l)}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`;
@@ -76,23 +73,22 @@ const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
   <nav aria-label="Halaman admin">${navGrup(navReg(), k => k === aktif)}</nav>
   <form method="post" action="/admin/keluar"><button class="ad-keluar" type="submit">Keluar</button></form>
 </header>`;
-/* halaman admin yang ada di menu Pusdalops: kepalanya memakai menu Pusdalops (public/bnpb/menu_pusdalops.js), tanpa sub-menu Ruang Koordinasi,
-   supaya pindah dari Pantau Banjir ke sini tidak terasa pindah situs (pemilik 4 Nov 2026) */
-const MENU_PUSDALOPS = new Set(["pantau", "laporan-karhutla", "omc"]);
-const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=14" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=25"></script>';
+/* semua halaman kerangka admin memakai menu Pusdalops (public/bnpb/menu_pusdalops.js) sebagai satu-satunya menu: panel kiri tetap sama di semua
+   halaman staf, tanpa menu atas berkelompok dan tanpa sub-nav grup (pemilik 4 Nov 2026; diperluas ke semua halaman admin 26 Nov 2026
+   "di atas ada menu di samping ada menu. Bingung"). Menu atas atas() tetap dikirim sebagai cadangan layar sempit dan tanpa JS; menu_pusdalops.js menggantinya. */
+const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=17" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=31"></script>';
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
 const halaman = (k, memuat, ekor, ctx) => `${kepala(`${HAL[k][1]} · Centurisk97`)}
 <body${ctx ? ` data-staf="1" data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
-${atas(k, ctx)}${MENU_PUSDALOPS.has(k) ? menuPusdalops : ""}
+${atas(k, ctx)}${menuPusdalops}
 <main class="ad-wrap">
-  ${MENU_PUSDALOPS.has(k) ? "" : subNav(k, ctx)}
   <div class="ad-judul"><span class="ad-ikon" aria-hidden="true">${HAL[k][0]}</span><h1>${HAL[k][1]}</h1><div class="ad-judul-aksi" id="aksiJudul"></div></div>
   <div class="ad-isi" id="app"><p class="ad-redup">${memuat}</p></div>
 </main>
 ${ekor}
 </body></html>`;
 
-export const halamanStatistik = () => halaman("statistik", "Memuat statistik…", `<script src="/admin/bersama.js?v=6"></script>
+export const halamanStatistik = () => halaman("statistik", "Memuat statistik…", `<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/statistik.js?v=3"></script>`);
 
 export const halamanPesan = () => halaman("pesan", "Memuat pesan…", `<script src="/admin/pesan.js?v=2"></script>`);
@@ -108,7 +104,7 @@ export const halamanSosmed = () => halaman("sosmed", "Memuat post…", `<link hr
 <script src="/admin/sosmed.js?v=1"></script>`);
 
 export const halamanPosko = ctx => halaman("posko", "Memuat Ruang Posko…", `<link href="/admin/posko.css?v=2" rel="stylesheet">
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/posko.js?v=3"></script>`, ctx);
 
 /* Akun Instansi & Tugas Api (/admin/instansi): helper bersama bersama.js lalu skrip halaman */
@@ -122,7 +118,7 @@ export const halamanInstansi = ctx => halaman("instansi", "Memuat Akun Instansi�
 <script src="/instansi_akses.js?v=1"></script>
 <script src="/instansi_kartu.js?v=1"></script>
 <script src="/instansi_tugaskan.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/instansi_profil.js?v=1"></script>
 <script src="/admin/instansi.js?v=8"></script>`, ctx);
 
@@ -130,14 +126,14 @@ export const halamanInstansi = ctx => halaman("instansi", "Memuat Akun Instansi�
 export const halamanInventaris = ctx => halaman("inventaris", "Memuat inventaris alat…", `<link href="/admin/inventaris.css?v=2" rel="stylesheet">
 <script src="/inti/format.js"></script>
 <script src="/instansi_wilayah.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/inventaris.js?v=3"></script>`, ctx);
 
 /* Laporan korban jiwa (/admin/korban): peta titik digambar SVG oleh skrip halaman (CSP admin tidak berubah) */
 export const halamanKorban = ctx => halaman("korban", "Memuat laporan korban…", `<link href="/admin/korban.css?v=2" rel="stylesheet">
 <script src="/inti/format.js"></script>
 <script src="/instansi_wilayah.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/inti/foto_kecil.js?v=1"></script>
 <script src="/admin/korban.js?v=3"></script>`, ctx);
 
@@ -145,14 +141,14 @@ export const halamanKorban = ctx => halaman("korban", "Memuat laporan korban…"
 export const halamanLaporanKarhutla = ctx => halaman("laporan-karhutla", "Memuat Laporan Karhutla…", `<link href="/admin/laporan_karhutla.css?v=3" rel="stylesheet">
 <script src="/inti/format.js"></script>
 <script src="/instansi_wilayah.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/laporan_karhutla.js?v=4" type="module"></script>`, ctx);
 
 /* Sortie OMC dan evaluasinya (/admin/omc): peta sasaran digambar SVG oleh skrip halaman (CSP admin tidak berubah) */
 export const halamanOmc = ctx => halaman("omc", "Memuat sortie OMC…", `<link href="/admin/omc.css?v=2" rel="stylesheet">
 <script src="/inti/format.js"></script>
 <script src="/instansi_wilayah.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/omc.js?v=3"></script>`, ctx);
 
 /* Ruang Laporan (/admin/laporan): sidebar kiri + halaman pantau yang sudah ada dalam iframe sesama asal (CSP_ADMIN: frame-ancestors 'self', default-src 'self' sudah mencakup frame-src).
@@ -177,51 +173,52 @@ export const ruangLaporan = ctx => { const ok = new Set(menuSesi(ctx).flatMap(p 
   return RUANG_LAPORAN.map(g => ({...g, item: g.item.filter(i => ok.has(i[2]))})).filter(g => g.item.length); };
 export const halamanRuangLaporan = ctx => `${kepala("Ruang Laporan · Centurisk97")}
 <body class="rl-badan" data-staf="${ctx ? "1" : "0"}"${ctx ? ` data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
-${atas("laporan", ctx)}
-<link href="/admin/ruang_laporan.css?v=1" rel="stylesheet">
-<div class="rl-tubuh">
+${atas("laporan", ctx)}${menuPusdalops}
+<link href="/admin/ruang_laporan.css?v=3" rel="stylesheet">
+<main class="rl-tubuh">
+  <div class="bn-judul"><h1>Ruang laporan</h1></div>
   <nav class="rl-rel" aria-label="Menu Ruang Laporan">${ruangLaporan(ctx).map((g, i) => `${g.kel ? `<h2 class="ad-ey rl-kel" id="rl-kel-${i}">${g.kel}</h2>` : ""}<ul${g.kel ? ` aria-labelledby="rl-kel-${i}"` : ""}>${g.item.map(([k, l, ke, ik]) => `<li><a href="#${k}" data-ke="${ke}">${ik}<span>${l}</span></a></li>`).join("")}</ul>`).join("")}</nav>
   <iframe id="rlBingkai" class="rl-bingkai rl-muat" title="Isi Ruang Laporan" src="about:blank"></iframe>
-</div>
+</main>
 <script src="/admin/ruang_laporan.js?v=1"></script>
 </body></html>`;
 
 /* Segel dokumen (/admin/segel, segel-dokumen SG-10, DESIGN-SYSTEM 4): daftar 100 segel terbaru dan cabut. Data: GET /api/segel, POST /api/segel/cabut (src/segel.js). */
 export const halamanSegel = ctx => halaman("segel", "Memuat daftar segel…", `<link href="/admin/akun.css?v=5" rel="stylesheet">
 <link href="/admin/segel.css?v=1" rel="stylesheet">
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/segel.js?v=1"></script>`, ctx);
 
 /* Akun (/admin/akun): buat akun staf, daftar semua akun dan halaman yang dibukanya. Data dari /api/staf/admin/daftar (Super Admin). */
 export const halamanAkun = () => halaman("akun", "Memuat daftar akun…", `<link href="/admin/akun.css?v=5" rel="stylesheet">
 <script src="/instansi_wilayah.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/akun.js?v=5"></script>
 <link href="/admin/orang_tinjau.css?v=1" rel="stylesheet">
 <script src="/admin/orang_tinjau.js?v=1"></script>`);
 
 /* Kunci API mitra (/admin/kunci-api): terbitkan, salin sekali, daftar, cabut. Data dari /api/kunci-api/admin/*. */
 export const halamanKunciApi = () => halaman("kunci-api", "Memuat daftar kunci…", `<link href="/admin/akun.css?v=5" rel="stylesheet">
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/kunci_api.js?v=3"></script>`);
 
 /* Biaya Claude Bot Laporan BNPB (/admin/biaya-bot, admin saja): harian dari D1 bl_biaya, per kegiatan dan per laporan dari ringkasan mesin bot. Data dari /api/wa/biaya/ringkas. */
 export const halamanBiayaBot = () => halaman("biaya-bot", "Memuat biaya bot…", `<link href="/admin/biaya_bot.css?v=1" rel="stylesheet">
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/biaya_bot.js?v=1"></script>`);
 
 /* Buku kontak pemangku kepentingan (/admin/kontak): kepala daerah, BPBD, TNI, Polri, dll. Data dari /api/kontak/admin (src/kontak.js). */
 export const halamanKontak = () => halaman("kontak", "Memuat buku kontak…", `<link href="/admin/akun.css?v=5" rel="stylesheet">
-<link href="/admin/kontak.css?v=2" rel="stylesheet">
+<link href="/admin/kontak.css?v=3" rel="stylesheet">
 <script src="/instansi_wilayah.js?v=1"></script>
-<script src="/admin/bersama.js?v=6"></script>
-<script src="/admin/kontak.js?v=2"></script>`);
+<script src="/admin/bersama.js?v=7"></script>
+<script src="/admin/kontak.js?v=3"></script>`);
 
 /* Ruang Koordinasi BNPB: satu pola untuk keempat halaman (skrip + gaya di public/admin/<k>.js|css) */
-export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=${k === "pantau" ? 3 : 2}" rel="stylesheet">
+export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=3" rel="stylesheet">
 ${k === "aktivasi" ? `<script src="/inti/pesan.js?v=1"></script>\n` : ""}${k === "pantau" || k === "aktivasi" ? `<script src="/inti/format.js"></script>\n<script src="/instansi_wilayah.js?v=1"></script>
 ` : k === "kinerja" ? `<script src="/inti/nanti.js"></script>
-` : ""}<script src="/admin/bersama.js?v=6"></script>
+` : ""}<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/${k}.js?v=${k === "pantau" ? 6 : k === "aktivasi" ? 2 : 2}"></script>`, ctx);
 
 export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'self'";
@@ -242,10 +239,10 @@ export const halamanSippa = (layar, ctx) => `<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/inti/tema.css?v=1" rel="stylesheet">
-<link href="/admin/admin.css?v=7" rel="stylesheet">
+<link href="/admin/admin.css?v=8" rel="stylesheet">
 <link href="/inti/kartu.css?v=1" rel="stylesheet">
 <link href="/inti/insight.css?v=1" rel="stylesheet">
-<link href="/pipa/pipa.css?v=10" rel="stylesheet">
+<link href="/pipa/pipa.css?v=11" rel="stylesheet">
 </head>
 <body data-staf="1" data-peran="${esc(ctx.peran.join(","))}" data-layar="${esc(layar)}" data-tulis="${ctx.tulis ? 1 : 0}" data-mod="${ctx.mod ? 1 : 0}" data-super="${ctx.super ? 1 : 0}" data-nama="${esc(ctx.nama || "")}">
 <div id="app"><p class="ad-redup">Memuat SIPPA…</p></div>
@@ -255,7 +252,7 @@ export const halamanSippa = (layar, ctx) => `<!doctype html>
 <script src="/inti/tabel.js"></script>
 <script src="/inti/nanti.js"></script>
 <script src="/inti/kartu.js"></script>
-<script type="module" src="/pipa/app.js?v=4"></script>
+<script type="module" src="/pipa/app.js?v=5"></script>
 </body></html>`;
 /* /pipa/lapangan: form luring operator berkode, tanpa sesi dan tanpa data staf; gaya dan skrip hanya 'self' (CSP_LAPANGAN di src/posko.js) */
 export const halamanSippaLapangan = () => `<!doctype html>
@@ -265,8 +262,8 @@ export const halamanSippaLapangan = () => `<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>SIPPA Lapangan, Centurisk97</title>
-<link href="/admin/admin.css?v=7" rel="stylesheet">
-<link href="/pipa/pipa.css?v=10" rel="stylesheet">
+<link href="/admin/admin.css?v=8" rel="stylesheet">
+<link href="/pipa/pipa.css?v=11" rel="stylesheet">
 </head>
 <body>
 <div id="app"><p>Memuat form lapangan…</p></div>
@@ -279,7 +276,7 @@ export const halamanSippaLapangan = () => `<!doctype html>
 export const halamanCc = ctx => halaman("command-center", "Memuat command center…", `<link href="/admin/command_bersama.css?v=1" rel="stylesheet">
 <link href="/admin/command_center.css?v=1" rel="stylesheet">
 <script src="/inti/format.js"></script>
-<script src="/admin/bersama.js?v=6"></script>
+<script src="/admin/bersama.js?v=7"></script>
 <script src="/admin/command_bersama.js?v=1"></script>
 <script src="/admin/command_center.js?v=1"></script>`, ctx);
 
@@ -295,7 +292,7 @@ export const halamanPublik = () => new Response(`<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=7" rel="stylesheet">
+<link href="/admin/admin.css?v=8" rel="stylesheet">
 </head>
 <body class="pb">
 <header class="ad-top"><a class="ad-logo" href="/">Centurisk97</a><span class="ad-sep">Statistik</span>

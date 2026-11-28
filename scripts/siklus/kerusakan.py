@@ -183,6 +183,11 @@ class Unduh:
         self.C.ambil = self.asli
 
 
+def kode_epsg(pr):
+    """proj:epsg (32748, "32748") atau proj:code ("EPSG:32748") -> int"""
+    return int(str(pr.get("proj:epsg") or pr["proj:code"]).split(":")[-1])
+
+
 def contoh_sel(cb, items, token, pusat, k, res_m):
     """per sel (lon, lat pusat) daftar k*k sub-nilai dB VV (None = tanpa data), sub-piksel di tengah petak k x k dalam sel 110 m, dibaca pada res_m.
     Tiap sel dibaca dari adegan pertama yang jejaknya menutup pusat sel."""
@@ -197,7 +202,8 @@ def contoh_sel(cb, items, token, pusat, k, res_m):
         sisa = [i for i in sisa if i not in ks]
         url = it["assets"]["vv"]["href"] + "?" + token
         c = C.COG(url)
-        epsg, tr = it["properties"]["proj:epsg"], it["properties"]["proj:transform"]
+        pr = it["properties"]
+        epsg, tr = kode_epsg(pr), pr["proj:transform"]
         t = c.ifd[C.level_untuk(c, tr[0], res_m)]
         W, H, T = t[256], t[257], t[322]
         r = tr[0] * c.ifd[0][256] / W
@@ -386,6 +392,7 @@ def naif_hand(kab4, prov, nama_geo, keluar=KELUAR_HAND, raster_kab=None):
 
 # ---------------------------------------------------------------- uji
 def _uji():
+    assert kode_epsg({"proj:epsg": 32748}) == kode_epsg({"proj:epsg": "32748"}) == kode_epsg({"proj:code": "EPSG:32748"}) == 32748
     d = tempfile.mkdtemp()
     kri, sid = os.path.join(d, "k.json"), os.path.join(d, "s.json")
     open(kri, "w").write('{"a":1}\n')

@@ -31,7 +31,6 @@
 .sm-bd .ex-std>.ex-bd{padding:12px 14px;gap:10px}
 .sm-bd .ex-std .ex-jd>h3{font-size:var(--fs-5)}
 /* isi kartu tidak boleh melebarkan kartu: tabel menggulir sendiri, pgn membungkus */
-.sm-ex>.ex-bd{grid-template-columns:minmax(0,1fr)}
 .sm-ex>.ex-bd>*{min-width:0;max-width:100%}
 .sm-ex .pgn{flex-wrap:wrap}
 .sm-met{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:0}

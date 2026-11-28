@@ -1,7 +1,11 @@
 /* Tracker pemulihan pascabencana (W2, migrasi 0096): huntara, huntap, dana tunggu hunian, jembatan gantung, sumur bor per kab/desa, dengan riwayat progres.
    Semua rute /api/pusdalops/pemulihan*: staf (pusdalops|koordalops|pimpinan) PERTAMA. Id 16 hex di akhir jalur dibaca router worker.js; aksi pada id membawa id di body. */
-import {json, gagal, acak, NO_JSON, cek, tolak, teks, teksOpsi, tanggal, tglWIB, kabKunci, kodeProv, luarWilayah, koordinat, angka, pilih, idSah, persen, tabelBelum, bacaStaf, tulisStaf, dummyStaf, lajuTulis} from "./pusdalops_umum.js";
-import {skKemajuanPemulihan} from "./hak.js";
+import {json, gagal, acak, NO_JSON, cek, tolak, teks, teksOpsi, tanggal, tglWIB, kabKunci, kodeProv, luarWilayah, koordinat, angka, pilih, idSah, persen, tabelBelum, PERAN, bacaStaf, tulisStaf, dummyStaf, lajuTulis} from "./pusdalops_umum.js";
+import {skKemajuanPemulihan, ketukUsulan, pemulihanDariUrl} from "./hak.js";
+import {bacaBody} from "./worker.js";
+import {laju} from "./bnpb.js";
+import {modAtauStaf} from "./staf.js";
+import {hakTulis} from "./unit.js";
 
 export const JENIS_PEMULIHAN = ["huntara", "huntap", "dana_tunggu_hunian", "jembatan_gantung", "sumur_bor", "lainnya"];
 export const STATUS_PEMULIHAN = ["rencana", "berjalan", "selesai", "terhenti"];
@@ -80,6 +84,22 @@ async function ringkasan(env, req, url) {
   });
 }
 
+/* RRP-2 (RU-103): usulan_pemulihan yang diterima staf di unit_ketuk diteruskan ke buat (baru) atau progres (bila ada "id" pemulihan); catatan = URL sumber.
+   Hak tulis Ruang Unit (modAtauStaf: akun gerbang 401) dulu; buat/progres lalu menerapkan gerbang Pusdalops dan wilayahnya sendiri. */
+async function terima(env, req, kini) {
+  const oleh = await hakTulis(env, req, await modAtauStaf(env, req, PERAN)); if (oleh instanceof Response) return oleh;   // peran Pusdalops saja, sebelum laju
+  const b = await bacaBody(req, 8192); if (b.galat) return gagal(b.status || 400, b.galat);
+  const {usulan_id, url, ...sisa} = b.o;
+  if (!idSah(usulan_id)) return gagal(400, "usulan_id harus 16 heks");
+  if (typeof url !== "string" || url.length > 500 || !/^https?:\/\//i.test(url) || !URL.canParse(url)) return gagal(400, "url sumber wajib alamat http atau https (maks 500 huruf)");
+  if ((await ketukUsulan(env, "usulan_pemulihan", usulan_id))?.keputusan !== "terima") return gagal(409, "usulan belum diterima staf di /api/unit/ketuk");
+  if (sisa.id === undefined) { const w = cek(() => ({...kabKunci(sisa.kab_kode ?? sisa.kab), jenis: pilih(sisa.jenis, JENIS_PEMULIHAN, "jenis")})); if (w.r) return w.r;
+    const ada = await pemulihanDariUrl(env, w.v.prov, w.v.kab, w.v.jenis, url); if (ada) return json({galat: "usulan dengan url itu sudah diteruskan", id: ada.id}, 409); }
+  const lj = await laju(env, oleh, "unit.terima", [[3600e3, 120]], kini); if (lj) return lj;
+  const teruskan = new Request(req.url, {method: "POST", headers: req.headers, body: JSON.stringify({...sisa, catatan: url})});
+  return sisa.id === undefined ? buat(env, teruskan, kini) : progres(env, teruskan, kini);
+}
+
 const CONTOH = [   // [jenis, kab, desa, lat, lon, target, realisasi, satuan, pelaksana, sumber_dana, status, [[hari lalu, realisasi, status, catatan]]]
   ["huntara", "11|Aceh Tamiang", "Kampung Dalam", 4.25, 98.05, 120, 90, "unit", "PT Contoh Bangun (dummy)", "APBN BNPB", "berjalan", [[20, 30, "berjalan", "pondasi selesai"], [5, 90, "berjalan", "dinding terpasang"]]],
   ["huntara", "11|Aceh Tamiang", "Sekerak", null, null, 80, 80, "unit", "PT Contoh Karya (dummy)", "Swasta (CSR)", "selesai", [[30, 40, "berjalan", ""], [3, 80, "selesai", "serah terima"]]],
@@ -110,6 +130,7 @@ const T = tabelBelum;
 export const RUTE_PEMULIHAN = {
   "POST /api/pusdalops/pemulihan": T((env, req, url, kini) => buat(env, req, kini)),
   "POST /api/pusdalops/pemulihan/progres": T((env, req, url, kini) => progres(env, req, kini)),
+  "POST /api/pusdalops/pemulihan/terima": T((env, req, url, kini) => terima(env, req, kini)),
   "GET /api/pusdalops/pemulihan": T((env, req, url) => daftar(env, req, url)),
   "GET /api/pusdalops/pemulihan/ringkasan": T((env, req, url) => ringkasan(env, req, url)),
   "GET /api/pusdalops/pemulihan/:id": T((env, req, url, kini, ctx, id) => rincian(env, req, id)),

@@ -13,5 +13,31 @@
  ],
  "alasan_versi": "K6 pemilik 25 Nov 2026: margin pra N = 7 hari (pra paling lambat tanggal DIBI dikurangi 7); belum ada vonis GS-13",
  "jangkar_commit": "f5331633ff21784e489d41d8e74001aadccdbbda",
- "catatan": "Isi jangkar_commit dengan hash commit yang memuat kedua berkas, sesudah commit, SEBELUM GS-03 atau GS-13 memulai. prasyarat menolak selama kosong."
+ "catatan": "Isi jangkar_commit dengan hash commit yang memuat kedua berkas, sesudah commit, SEBELUM GS-03 atau GS-13 memulai. prasyarat menolak selama kosong.",
+ "vonis": {
+  "dipilih": 300,
+  "sah": 30,
+  "blok_sah": 29,
+  "sah_per_dipilih": 0.1,
+  "label": "tak_dapat_dinilai",
+  "alasan": "blok sah < 20, atau sah/dipilih < 0,30 pada sampel uji",
+  "rincian": {
+   "gagal_baca": 0,
+   "tanpa_poligon": 0,
+   "tak_sah_radar": 270,
+   "sah_radar_tanpa_penduduk": 0,
+   "sah_radar_tanpa_naif": 0,
+   "sah_radar": 30,
+   "status": {
+    "ok": 260,
+    "tanpa_cakupan": 39,
+    "tanpa_pra": 1
+   }
+  },
+  "tiket": "GS-13",
+  "tanggal": "2026-11-26",
+  "kriteria_versi": 2,
+  "kriteria_sidik": "b48651fd48e21cfc4a71a2149b1c626d978730eece2f36cb0c8222a36548aace",
+  "cache_sidik": "2133515e59d0f7bd7073fa2079226e6f5b890a53e40304210be78e216f3e8a18"
+ }
 }

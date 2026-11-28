@@ -35,10 +35,10 @@ uji("katalog dokumen: penayang berkas hanya jalur di indeks, hanya Markdown dan 
   assert.equal(diambil.length, 0, "jalur di luar indeks tidak pernah diambil");
 });
 
-uji("katalog dokumen: halaman terbuka di centurisk97.id tanpa diindeks mesin pencari, .html dialihkan, tidak ada di navbar", async () => {
+uji("katalog dokumen: halaman terbuka di centurisk97.id tanpa diindeks mesin pencari, .html dialihkan, memuat panel kiri Pusdalops", async () => {
   const c = await man("https://centurisk97.id", "/bnpb/katalog-dokumen"); assert.equal(c.status, 200);
   assert.match(c.headers.get("x-robots-tag"), /noindex/); assert.match(c.headers.get("content-security-policy"), /worker-src 'self' blob:/, "worker PDF.js dari asal sendiri");
   const h = await man("http://bnpb.lokal", "/bnpb/katalog-dokumen.html"); assert.equal(h.status, 301); assert.equal(new URL(h.headers.get("location"), "http://bnpb.lokal").pathname, "/bnpb/katalog-dokumen");
   assert.doesNotMatch(readFileSync(path.join(AKAR, "public/bnpb/menu_pusdalops.js"), "utf8"), /katalog-dokumen/);
-  assert.doesNotMatch(readFileSync(path.join(AKAR, "public/bnpb/katalog-dokumen.html"), "utf8"), /menu_pusdalops/);
+  assert.match(readFileSync(path.join(AKAR, "public/bnpb/katalog-dokumen.html"), "utf8"), /menu_pusdalops\.js/, "panel kiri Pusdalops di semua halaman staf (pemilik 26 Nov 2026 \"satukan sistem tampilan semua\")");
 });

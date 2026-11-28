@@ -1,5 +1,5 @@
 /* Pembersih metadata berkas media (foto dan video) untuk Akun Instansi. Versi KETAT, terpisah dari buangExif di posko.js:
-   - JPEG: hanya segmen yang perlu untuk memecah gambar (SOF, DHT, DQT, DRI, DAC, SOS, APP0 JFIF, APP14 Adobe) yang dipertahankan. APP1 (EXIF/XMP), APP2 (ICC/MPF), APP13 (IPTC), komentar, dan segmen asing dibuang;
+   - JPEG: hanya segmen yang perlu untuk memecah gambar (SOF, DHT, DQT, DRI, DAC, SOS, APP0 JFIF tanpa thumbnail, APP14 Adobe) yang dipertahankan. APP1 (EXIF/XMP), APP2 (ICC/MPF), APP13 (IPTC), komentar, dan segmen asing dibuang;
      data sesudah EOI dipotong; struktur tak biasa (tanpa SOF/SOS/EOI, panjang segmen melewati berkas, byte liar di antara segmen) = ditolak (null).
    - WebP: hanya chunk gambar (VP8, VP8L, VP8X, ALPH, ANIM, ANMF, ICCP) yang dipertahankan; chunk EXIF dan XMP dibuang dan bendera VP8X-nya dimatikan; ukuran RIFF dihitung ulang.
    - MP4/MOV: atom udta, meta (termasuk keys/ilst dan ©xyz lokasi), dan uuid di tingkat atas diganti atom `free` berukuran SAMA berisi nol, jadi offset stco/co64 tidak bergeser dan video tetap bisa diputar.
@@ -26,9 +26,10 @@ export function bersihJpeg(b) {
     if (len < 2 || i + 2 + len > b.length) return null;
     const seg = b.subarray(i, i + 2 + len);
     const isSof = m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc;
-    const jfif = m === 0xe0 && len >= 7 && tag(b, i + 4) === "JFIF" && b[i + 8] === 0;
+    const jfif = m === 0xe0 && len >= 16 && tag(b, i + 4) === "JFIF" && b[i + 8] === 0;
     const adobe = m === 0xee && len >= 7 && tag(b, i + 4) === "Adob";
-    if (isSof || m === 0xc4 || m === 0xcc || m === 0xdb || m === 0xdd || m === 0xda || jfif || adobe) out.push(seg);
+    if (jfif) { const j = b.slice(i, i + 18); j[2] = 0; j[3] = 16; j[16] = j[17] = 0; out.push(j); }   // JFIF tanpa thumbnail: Xthumb=Ythumb=0
+    else if (isSof || m === 0xc4 || m === 0xcc || m === 0xdb || m === 0xdd || m === 0xda || adobe) out.push(seg);
     if (isSof) sof = true;
     i += 2 + len;
     if (m === 0xda) {

@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import {siapkan, berantai} from "../warga/_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
 import {jalankanPeringatan} from "../../src/pw_peringatan.js";
+import {idLangganan} from "../../src/pw_inti.js";
 
 const uji = berantai();
 const VAPID = {VAPID_PUBLIK_WARGA: "B" + "A".repeat(86), VAPID_PRIVAT_WARGA: "d".repeat(43), VAPID_SUBJEK: "mailto:uji@contoh.id"};
@@ -65,4 +66,45 @@ uji("cron: peristiwa naik tingkat tercatat sekali per terbitan; terbitan sama ti
   assert.equal(await n("pw_peristiwa"), 1, "tingkat sama di terbitan baru tidak memicu");
   await DB.prepare("INSERT INTO pw_kendali (kunci, nilai) VALUES ('jeda', '1') ON CONFLICT(kunci) DO UPDATE SET nilai = '1'").run();
   assert.equal((await jalankanPeringatan(env, kini + 180e3, () => async () => ({...P, dibuat: "x"}))).lewat, "jeda");
+});
+
+uji("DP-13: status.json hilang = tanpa push; status naik jadi peristiwa; satu notifikasi per perangkat per kab per jenis per hari lintas kedua pemicu", async () => {
+  const kini = Date.now() + 86400e3 * 3, wib = d => new Date(kini + 7 * 3600e3 + d * 864e5).toISOString().slice(0, 10);   // hari baru: tidak bentrok dengan uji di atas
+  const dibuat = new Date(kini - 3600e3).toISOString();
+  const hasHipo = {dibuat, kab: {"3172": {BNJ: {s: 2, hari: [0, 2, 0, 0], hipotesis: true}}}};
+  const P = {dibuat, kode: {HJN: {kol: ["tot"], hari: [wib(0), wib(1), wib(2)]}, BNJ: {kol: ["lv", "ps"]}, LSR: {kol: ["lv", "ps"]}, ASP: {kol: ["pm", "kat"]}, CEX: {kol: ["emb", "lv"]}},
+    kab: [{id: "3172", nama: "Kota Jakarta Utara", BNJ: [[0, 0], [0, 0], [0, 0]], LSR: [[0, 0], [0, 0], [0, 0]], ASP: [null, null, null], CEX: [[0, 0], [0, 0], [0, 0]]}]};
+  const muat = () => async () => P, media = isi => ({get: async () => isi && ({text: async () => JSON.stringify(isi)})});
+  const hStatus = {...hasHipo, dibuat: new Date(kini - 3600e3).toISOString().replace("Z", "+00:00")};
+  await DB.prepare("DELETE FROM pw_kendali WHERE kunci = 'jeda'").run();
+  const tanpa = await jalankanPeringatan({DB, ...VAPID, MEDIA: media(null)}, kini, muat);
+  assert.equal(tanpa.peristiwa_status, undefined, "berkas hilang: tidak ada pemicu status");
+  assert.equal(await n("pw_kendali_status"), 0);
+  // perangkat berlangganan di 3172 dan SUDAH menerima BNJ hari ini lewat pemicu lain: pemicu status tidak mengirim lagi
+  const EP3 = "https://fcm.googleapis.com/fcm/send/uji-perangkat-tiga";
+  assert.equal((await api("POST", "/api/lapor/peringatan/langganan", {endpoint: EP3, kunci: KUNCI, kec: ["31.72.01"], jenis: 15, ambang: 1}, PB)).s, 200);
+  await DB.prepare("INSERT INTO pw_kirim_harian (perangkat, kab_kode, jenis, tanggal) VALUES (?1, '3172', 'BNJ', ?2)").bind(await idLangganan(EP3, ""), wib(0)).run();
+  const h = await jalankanPeringatan({DB, ...VAPID, MEDIA: media(hStatus)}, kini, muat);
+  assert.equal(h.peristiwa_status, 1, JSON.stringify([h, dibuat, wib(0)]));
+  assert.equal(await n("pw_status", `kab_kode = '3172' AND jenis = 'BNJ'`), 1);
+  assert.equal(h.kirim?.ok ?? 0, 0, "dedupe: tidak ada kiriman");
+  assert.equal(await n("pw_peristiwa", "kab_kode = '3172' AND selesai = 1"), 1);
+  assert.equal(await n("pw_kirim_harian", "kab_kode = '3172'"), 1);
+  const lagi = await jalankanPeringatan({DB, ...VAPID, MEDIA: media(hStatus)}, kini + 60e3, muat);
+  assert.equal(lagi.peristiwa_status, undefined, "terbitan status sama tidak diproses ulang");
+});
+
+uji("DP-13 tanpa migrasi 0184: pemicu status dilewati, jalur prediksi tetap mengirim", async () => {
+  await DB.prepare("DROP TABLE pw_kirim_harian").run(); await DB.prepare("DROP TABLE pw_kendali_status").run();
+  const kini = Date.now() + 86400e3 * 6, wib = d => new Date(kini + 7 * 3600e3 + d * 864e5).toISOString().slice(0, 10), dibuat = new Date(kini - 3600e3).toISOString();
+  const EP4 = "https://fcm.googleapis.com/fcm/send/uji-perangkat-empat";
+  assert.equal((await api("POST", "/api/lapor/peringatan/langganan", {endpoint: EP4, kunci: KUNCI, kec: ["31.73.01"], jenis: 15, ambang: 1}, PB)).s, 200);
+  const P = {dibuat, kode: {HJN: {kol: ["tot"], hari: [wib(0), wib(1), wib(2)]}, BNJ: {kol: ["lv", "ps"]}, LSR: {kol: ["lv", "ps"]}, ASP: {kol: ["pm", "kat"]}, CEX: {kol: ["emb", "lv"]}},
+    kab: [{id: "3173", nama: "Kota Jakarta Pusat", BNJ: [[2, 0], [0, 0], [0, 0]], LSR: [[0, 0], [0, 0], [0, 0]], ASP: [null, null, null], CEX: [[0, 0], [0, 0], [0, 0]]}]};
+  const media = {get: async () => ({text: async () => JSON.stringify({dibuat, kab: {}})})};
+  // kunci VAPID uji palsu: pengirim nyata melempar saat menandatangani, artinya jalur kirim tercapai (bukan galat tabel hilang)
+  const e = await jalankanPeringatan({DB, ...VAPID, MEDIA: media}, kini, () => async () => P).then(() => null, x => x);
+  assert.ok(e && !/no such table/i.test(String(e.message)), "jalur kirim tercapai tanpa galat tabel: " + e);
+  assert.equal(await n("pw_peristiwa", "kab_kode = '3173'"), 1, "peristiwa prediksi tercatat");
+  assert.equal(await n("pw_kendali", `kunci = 'dibuat_terakhir' AND nilai = '${dibuat}'`), 1);
 });

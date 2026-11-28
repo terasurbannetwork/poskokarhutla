@@ -44,6 +44,10 @@ def uji():
                     periksa_dasar(v, f"{jalur}.{k}")
     periksa_dasar(b)
     ok(abs(sum(M.nilai(b, f"skor.w{x}") for x in "qdt") - 1) < 1e-9, "bobot skor berjumlah 1")
+    ps = param_skor(b)
+    ok(ps["bobot"] == {"q": b["skor"]["wq"]["nilai"], "d": b["skor"]["wd"]["nilai"], "t": b["skor"]["wt"]["nilai"]}
+       and ps["zona_skor_min"] == b["zona"]["skor_min"]["nilai"] and ps["zona_jarak_min_km"] == b["zona"]["jarak_min_km"]["nilai"]
+       and ps["zona_maks"] == b["zona"]["maks"]["nilai"], "param_skor sama dengan bobot")
 
     # LCL, level beku, w
     dekat(M.lcl_m(30, 24), 750, pesan="LCL")
@@ -287,6 +291,67 @@ def uji_banjir_murni(b, ok, dekat):
     ok("2026/11/25" in (tolak(M.pilih_sasaran, "2026/11/25", pred, bm, b) or ""), "d salah ditolak, pesan memuat nilainya")
     ok("12" in (tolak(M.pilih_sasaran, d, pred, bm, b, manual=["12"]) or ""), "kode manual 2 angka ditolak")
     ok("-2" in (tolak(M.pilih_sasaran, d, pred, bm, b, umur_prediksi_jam=-2) or ""), "umur negatif ditolak")
+    # SB-30 kuota provinsi ber-OMC (K5)
+    omc = {"aktif_hari_ini": {"baris": [
+        {"jenis_kegiatan": "Pengurangan CH - Bencana", "periode_awal": "2026-11-21", "periode_akhir": "2026-11-30", "kode_prov": "11"},
+        {"jenis_kegiatan": "Pengurangan CH - Bencana", "periode_awal": "2026-11-28", "periode_akhir": "2026-11-30", "kode_prov": "12"},
+        {"jenis_kegiatan": "Pengisian Waduk", "periode_awal": "2026-11-22", "periode_akhir": "2026-11-28", "kode_prov": "35"},
+        {"jenis_kegiatan": "Pengurangan CH - Karhutla", "periode_awal": "2026-11-01", "periode_akhir": "2026-11-30", "kode_prov": "14"}]}}
+    ok(M.prov_omc(omc, "2026-11-27", b) == ["11"], "P_omc: jenis persis + periode memuat d (12 belum mulai, Waduk dan Karhutla bukan)")
+    ok(M.prov_omc(omc, "2026-11-28", b) == ["11", "12"] and M.prov_omc(None, d, b) == [], "P_omc: tepi periode inklusif, tanpa berkas kosong")
+    # K7 / SB-34: posko OMC -> base
+    bdr = {"WITT": {"nama": "Sultan Iskandar Muda, Banda Aceh"}, "WAGI": {"nama": "Iskandar, Pangkalanbun"}, "BDJ": {"nama": "Syamsudin Noor / Lanud SAM"},
+           "WIMM": {"nama": "Kualanamu, Beringin"}}
+    ok(M.cocok_posko(["Bandar Udara Sultan Iskandar Muda"], bdr) == (["WITT"], []), "posko: nama longgar cocok")
+    ok(M.cocok_posko(["Lanud Soewondo"], bdr) == ([], ["Lanud Soewondo"]), "posko: tak tercocok dicatat, tidak dikarang")
+    ok(M.cocok_posko(["Lanud SAM"], bdr)[0] == ["BDJ"] and M.cocok_posko(["Bandara Iskandar"], bdr)[0] == ["WAGI"], "posko: alternatif '/' dan nama 1 kata sama persis")
+    ok(M.cocok_posko(["Iskandar Muda"], bdr)[0] == ["WITT"] and M.cocok_posko([], bdr) == ([], []), "posko: bagian >= 2 kata, kosong tanpa galat")
+    class _R:
+        def __init__(s, x): s.x = x
+        def read(s): return s.x
+    os.environ["SEMAI_TOKEN"] = "x" * 40
+    try:
+        isi = json.dumps({"baris": [], "posko": {"11": {"posko": ["Bandar Udara Sultan Iskandar Muda", "Lanud Soewondo"]}}}).encode()
+        o, cat = ambil_posko("2026-11-27", ["11"], bdr, buka=lambda r: _R(isi))
+        ok(o == {"11": ["WITT"]} and len(cat) == 1 and "Soewondo" in cat[0], "ambil_posko: tercocok + catatan tak tercocok")
+        def _503(r): raise OSError("HTTP Error 503")
+        o, cat = ambil_posko("2026-11-27", ["11"], bdr, buka=_503)
+        ok(o == {} and len(cat) == 1 and "503" in cat[0], "ambil_posko: 503 = tanpa posko + catatan")
+        o, cat = ambil_posko("2026-11-27", ["11"], bdr, buka=lambda r: _R(b'{"posko":{}}'))
+        ok(o == {} and "tanpa posko tercatat" in cat[0], "ambil_posko: provinsi tanpa posko")
+        del os.environ["SEMAI_TOKEN"]
+        o, cat = ambil_posko("2026-11-27", ["11"], bdr, buka=_503)
+        ok(o == {} and "SEMAI_TOKEN" in cat[0], "ambil_posko: tanpa token tidak memanggil")
+        ok(ambil_posko("2026-11-27", [], bdr) == ({}, []), "ambil_posko: tanpa provinsi ber-OMC")
+    finally:
+        os.environ.pop("SEMAI_TOKEN", None)
+    sk = [(0.0 + 2.0 * i, 100.0, 0.9 - 0.01 * i) for i in range(5)]               # 5 sel berderet 2 derajat (> 40 km), Aceh
+    sel = [dict(lat=y, lon=x, skor=z, provs={"11"}, kej=False) for y, x, z in sk] + [dict(lat=y, lon=x + 5, skor=z + 0.05, provs={"35"}, kej=False) for y, x, z in sk]
+    zk = M.zona_kuota(sel, ["11"], 40, 5, 0.35, 3)
+    ok(sum(1 for z in zk if z.get("kuota") == "11") == 3 and all(z["provs"] == {"11"} for z in zk if "kuota" in z), "kuota: 3 zona Aceh bertanda kuota")
+    ok(len(zk) == 8 and [z["skor"] for z in zk] == sorted((z["skor"] for z in zk), reverse=True), "5 nasional dari sisa + 3 kuota, urut skor")
+    ok(len(M.zona_kuota(sel, [], 40, 5, 0.35, 3)) == 5 and not any("kuota" in z for z in M.zona_kuota(sel, [], 40, 5, 0.35, 3)), "tanpa provinsi OMC: persis 5 nasional tanpa kuota")
+    ok([(z["lat"], z["lon"]) for z in M.zona_kuota(sel, [], 40, 5, 0.35, 3)] == [(z["lat"], z["lon"]) for z in M.zona_nms(sel, 40, 5, 0.35)], "tanpa OMC dan kejadian = zona_nms lama")
+    ok(all(M.haversine(a["lat"], a["lon"], c2["lat"], c2["lon"]) > 40 for i_, a in enumerate(zk) for c2 in zk[:i_]), "NMS 40 km juga antara zona kuota dan nasional")
+    ok(len(M.zona_kuota([dict(lat=0, lon=100, skor=0.3, provs={"11"})], ["11"], 40, 5, 0.35, 3)) == 0, "ambang 0,35 tetap berlaku untuk kuota")
+    sama = [dict(lat=0, lon=100, skor=0.601, provs=set(), kej=False), dict(lat=5, lon=100, skor=0.599, provs=set(), kej=True)]
+    ok(M.zona_kuota(sama, [], 40, 5, 0.35, 3)[0]["lat"] == 5, "skor sama (2 desimal): sel kejadian dulu")
+    sama[1]["skor"] = 0.5
+    ok(M.zona_kuota(sama, [], 40, 5, 0.35, 3)[0]["lat"] == 0, "skor beda: kejadian tidak menyalip")
+    # SB-31 sasaran asal kejadian (K6)
+    kota_ = [("1274", "12", "Kota Padang Sidempuan"), ("1201", "12", "Tapanuli Tengah"), ("1272", "12", "Kota Pematangsiantar"), ("1205", "12", "Pematangsiantar"),
+             ("6102", "61", "Sambas"), ("1311", "13", "Padang Pariaman"), ("1371", "13", "Kota Padang")]
+    ev = lambda kab, prov, jenis="banjir", st="berjalan": dict(jenis=jenis, kab=kab, prov=prov, status=st)
+    kb = {"dibuat": "2026-11-27T05:00+07:00", "kejadian": [ev("Kota Padangsidimpuan", "12"), ev("Sambas", "61"), ev("Sambas", "61", "banjir bandang"), ev("Padang", "13"),
+          ev("Kota Padang", "13"), ev("Pematangsiantar", "12"), ev("Tapanuli Tengah", "12", st="selesai"), ev("Padang Pariaman", "13", "longsor"), ev("Narnia", "12")]}
+    kd, ct = M.kab_dari_kejadian(kb, kota_, "2026-11-27T00:00:00Z", b)
+    ok(kd == ["1205", "1274", "1371", "6102"], f"cocok nama: Kota vs Kab dan ejaan, status/jenis lain dibuang ({kd})")
+    ok("Padang (13)" in "".join(ct) and "Narnia (12)" in "".join(ct), f"nama tak ketemu dicatat, 'Padang' tak jatuh ke Kota Padang ({ct})")
+    ok(M.kab_dari_kejadian(kb, kota_, "2026-11-30T12:00:00Z", b)[0] == [] and "kejadian basi" in M.kab_dari_kejadian(kb, kota_, "2026-11-30T12:00:00Z", b)[1][0], "umur > 72 jam: tak dipakai, 'kejadian basi'")
+    ok(M.kab_dari_kejadian(kb, kota_, "2026-11-29T22:00:00Z", b)[0] != [], "tepat di bawah 72 jam masih dipakai")
+    ok(M.kab_dari_kejadian(None, kota_, "2026-11-27T00:00:00Z", b)[0] == [], "tanpa kabar.json tak galat")
+    pk = M.pilih_sasaran(d, None, None, b, kejadian=["1274"])["sasaran"]
+    ok([s["asal"] for s in pk if s["kode"] == "1274"] == [["kejadian"]] and not [s for s in pk if s["kode"] == "1274"][0]["belum_teruji"], "asal kejadian masuk S(d)")
 
 
 def uji_fixture(b, ok):
@@ -396,6 +461,12 @@ def _np():
 
 def n_(b, j):
     return M.nilai(b, j)
+
+
+def param_skor(b):
+    """Parameter skor zona target untuk klien (operasi_semai_murni.js): sumber tunggal semai_bobot.json."""
+    return {"bobot": {"q": n_(b, "skor.wq"), "d": n_(b, "skor.wd"), "t": n_(b, "skor.wt")},
+            "zona_skor_min": n_(b, "zona.skor_min"), "zona_jarak_min_km": n_(b, "zona.jarak_min_km"), "zona_maks": n_(b, "zona.maks")}
 
 
 def lintang():
@@ -1088,7 +1159,7 @@ def kandidat_target(c, b):
         if kolom is None:
             kolom = kolom_kandidat(ev)
         hasil[f"{pv}|{kab}"] = {"nama": kab, "prov": c.prov_nm[pv], "n_cluster": len(cls), "frp24": round(sum(x["frp24"] for x in cls)), "baris": rows}
-    return {"kolom": kolom or [], "target": hasil, "catatan": "target KHG belum ada: poligon KHG tidak tersedia di repo"}
+    return {"kolom": kolom or [], "target": hasil, "param_skor": param_skor(b), "catatan": "target KHG belum ada: poligon KHG tidak tersedia di repo"}
 
 
 def ukur_w(putaran):
@@ -1336,7 +1407,7 @@ def _hari(init, jam, off):
     return (init + dt.timedelta(hours=jam + off)).strftime("%Y-%m-%d")
 
 
-def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, putaran, tak_peta=(), base=None):
+def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, putaran, tak_peta=(), base=None, prov_kuota=(), posko=None):
     """Inti §3 sampai §8. sasaran = hasil M.pilih_sasaran()['sasaran'] dengan kunci kab (kode) sudah punya geometri di `kabs`.
     tak_peta = [(lat, lon)] pusat kab yang geometrinya tidak ada: titik hujan di luar poligon dalam RADIUS_TAK_PETA_KM darinya "tak terpetakan"
     (bukan laut), ditolak seperti GB2. base = renlap.muat_base() untuk rute OMC (VOR); None -> rute tanpa radial. -> dict (zona, sasaran, kandidat_sasaran, alasan_kosong, ...). Tanpa IO; `ditolak` = hitungan
@@ -1432,10 +1503,14 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
     per_sel = {}
     for r in hasil:
         per_sel.setdefault((r["i"], r["j"]), {})[r["s"]] = r
+    prov_sas = {x["kode"]: x["k"]["prov"] for x in sas}
+    kej_sas = {x["kode"] for x in sas if "kejadian" in x["asal"]}
     cells = [dict(lat=v[max(v, key=lambda s: v[s]["skor"])]["lat"], lon=v[max(v, key=lambda s: v[s]["skor"])]["lon"],
-                  skor=max(x["skor"] for x in v.values()), ij=ij) for ij, v in per_sel.items()]
+                  skor=max(x["skor"] for x in v.values()), ij=ij,
+                  provs={prov_sas[q[0]] for x in v.values() for q in x["cegat"]}, kej=any(q[0] in kej_sas for x in v.values() for q in x["cegat"]))
+             for ij, v in per_sel.items()]
     belum = {x["kode"]: x["belum_teruji"] for x in sas}
-    zn, zona = M.zona_nms(cells, n("zona.jarak_min_km"), n("zona.maks"), n("zona.skor_min")), []
+    zn, zona = M.zona_kuota(cells, prov_kuota, n("zona.jarak_min_km"), n("zona.maks"), n("zona.skor_min"), n("banjir.kuota_maks_prov")), []
     lang = med.tampil
     for c in zn:
         v = per_sel[c["ij"]]
@@ -1447,7 +1522,8 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
         jr = M.jendela_rentang(per, ib, [med.init.hour + s for s in lang], zt, off_z, n("zona.jendela_persen"), n("gerbang.jam_mulai"), n("gerbang.jam_akhir"))
         if jr is None:
             continue
-        bid = min(bandara, key=lambda q: M.haversine(r["lat"], r["lon"], bandara[q]["lat"], bandara[q]["lon"]))
+        pk = [q for q in (posko or {}).get(c.get("kuota"), []) if q in bandara]     # K7: zona kuota provinsi ber-OMC -> posko tercatat
+        bid = min(pk or bandara, key=lambda q: M.haversine(r["lat"], r["lon"], bandara[q]["lat"], bandara[q]["lon"]))
         bd, km = bandara[bid], M.haversine(r["lat"], r["lon"], bandara[bid]["lat"], bandara[bid]["lon"])
         menit = M.menit_terbang(km, n("terbang.jelajah_kmj"), n("terbang.menit_bulat"))
         kaki = M.ketinggian_kaki(r["sel"]["lcl"], r["sel"]["elev"], n("ketinggian.lcl_min_m"), n("ketinggian.lcl_maks_m"), n("ketinggian.bulat_kaki"), n("ketinggian.m_ke_kaki"))
@@ -1456,7 +1532,7 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
         rute = rute_omc(types.SimpleNamespace(b=b, bandara=bandara, base=base or {}), bid, r["lat"], r["lon"],
                         r["sel"]["u_pengarah"], r["sel"]["v_pengarah"], kaki)   # angin pengarah sel zona, mesin rute sama dgn karhutla (§7c)
         zona.append({
-            "id": zid, "huruf": zid[-1], "tujuan": "banjir", "lat": round(r["lat"], 1), "lon": round(r["lon"], 1), "skor": round(r["skor"], 2),
+            "id": zid, "huruf": zid[-1], "tujuan": "banjir", **({"kuota": c["kuota"]} if "kuota" in c else {}), "lat": round(r["lat"], 1), "lon": round(r["lon"], 1), "skor": round(r["skor"], 2),
             "langkah": int(lang[ib]), "jendela": [(med.init.replace(hour=0) + dt.timedelta(hours=x)).strftime("%Y-%m-%dT%H:%MZ") for x in (jr["utc_mulai"], jr["utc_akhir"])],
             "jendela_teks": f"{jr['mulai_lokal']:02d}.00 sampai {jr['akhir_lokal']:02d}.00 {zt}", "zona_waktu": zt, "prov_kode": kota[kk][2],
             "prov": (prov_nm or {}).get(kota[kk][2], kota[kk][2]), "kota": kota[kk][6] if not r["laut"] else f"lepas pantai dekat {kota[kk][6]}", "laut": r["laut"],
@@ -1465,6 +1541,7 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
             "cegat": [{"kab": q[0], "tiba_jam": round(q[1], 2), "masuk": {"lat": round(q[2], 2), "lon": round(q[3], 2)}} for q in r["cegat"]],
             "ketinggian": {"kaki": kaki, "teks": "dasar awan tidak terbaca model" if kaki is None else f"sekitar {kaki:,} kaki (dasar awan perkiraan)".replace(",", ".")},
             "base": {"id": bid, "icao": bd["icao"], "nama": bd["nama"], "km": int(round(km)), "menit": menit, "perkiraan": True, "terdaftar": bd["terdaftar"]},
+            "base_asal": "posko" if pk else "terdekat",
             "belum_teruji": all(belum.get(q, False) for q in kd),
             "alasan": {"sasaran": kd, "C": f"awan layak semai, kualitas {r['Q']:.2f}".replace(".", ","),
                        "H": f"awan tiba di sasaran sekitar {r['tiba_h']:.1f} jam sesudah semai".replace(".", ","),
@@ -1522,6 +1599,37 @@ def muat_kab_repo():
     return kabs, hilang
 
 
+def ambil_posko(d, provs, bandara, buka=None):
+    """K7: GET /api/operasi/omc-posko?dari=d&sampai=d&prov=<kode> (Bearer SEMAI_TOKEN, hanya ke SEMAI_URL) per provinsi ber-OMC.
+    -> ({prov: [id bandara]}, catatan). Gagal apa pun (tanpa token, 503 tabel belum ada, jaringan) = tanpa posko + catatan; tidak pernah fatal.
+    `buka` (uji) menggantikan urlopen."""
+    import urllib.request
+    tok = os.environ.get("SEMAI_TOKEN", "")
+    if not provs:
+        return {}, []
+    if not tok:
+        return {}, ["posko OMC tidak dibaca: SEMAI_TOKEN kosong, base bandara terdekat"]
+    url = os.environ.get("SEMAI_URL", "https://centurisk97.id").rstrip("/")
+    buka = buka or (lambda r: urllib.request.urlopen(r, timeout=20))
+    out, cat = {}, []
+    for p in provs:
+        try:
+            req = urllib.request.Request(f"{url}/api/operasi/omc-posko?dari={d}&sampai={d}&prov={p}",
+                                         headers={"Authorization": "Bearer " + tok, "User-Agent": "semai-banjir"})
+            ent = ((json.loads(buka(req).read()).get("posko") or {}).get(p) or {})
+        except Exception as e:
+            cat.append(f"posko OMC provinsi {p} tidak terbaca ({type(e).__name__} {str(e)[:60].replace(tok, '***')}): base bandara terdekat")
+            continue
+        ids, tak = M.cocok_posko(ent.get("posko"), bandara)
+        if ids:
+            out[p] = ids
+        if tak:
+            cat.append(f"posko OMC provinsi {p} tak tercocok ke daftar bandara: {', '.join(tak)}")
+        if not ent.get("posko"):
+            cat.append(f"provinsi {p} ber-OMC tanpa posko tercatat: base bandara terdekat")
+    return out, cat
+
+
 def jalan_banjir(args, b, dibuat, keluar, c):
     """`jalan --tujuan banjir`: membaca putaran IFS yang sama dengan karhutla (c = siapkan()), menulis <keluar>/semai_banjir.json."""
     np = _np()
@@ -1533,7 +1641,15 @@ def jalan_banjir(args, b, dibuat, keluar, c):
                 for p in ("public/prediksi/data/prediksi.json", "public/banjir/data/cuaca_bmkg_kab10.json")]
     umur = max(0.0, (dibuat - dt.datetime.fromisoformat(pred["dibuat"])).total_seconds() / 3600) if pred else 0.0
     tercakup = d in {_hari(c.init, s, off) for s in c.tampil}
-    ps = M.pilih_sasaran(d, pred, bm, b, umur_prediksi_jam=umur, tercakup=tercakup)
+    omc, kabar = [json.load(open(os.path.join(REPO, p), encoding="utf-8")) if os.path.exists(os.path.join(REPO, p)) else None
+                  for p in ("public/udara/data/omc_bmkg.json", "public/data/alun/kabar.json")]
+    kej, cat_kej = M.kab_dari_kejadian(kabar, [(r[0], r[2], r[6]) for r in muat_json("scripts/udara/kota.json")["baris"]], c.init.strftime("%Y-%m-%dT%H:%M:%SZ"), b)
+    p_omc = M.prov_omc(omc, d, b)
+    posko, cat_posko = ambil_posko(d, p_omc, c.bandara)
+    ps = M.pilih_sasaran(d, pred, bm, b, umur_prediksi_jam=umur, tercakup=tercakup, kejadian=kej)
+    ps["sumber"] = list(ps["sumber"]) + cat_kej + cat_posko
+    if omc is None:
+        ps["sumber"].append("omc_bmkg.json tidak ada: tanpa kuota provinsi")
     kabs, hilang = muat_kab_repo()
     ada = {k["kode"] for k in kabs}
     sasaran = [s for s in ps["sasaran"] if s["kode"] in ada]
@@ -1548,7 +1664,8 @@ def jalan_banjir(args, b, dibuat, keluar, c):
            "putaran": {"model": "ECMWF IFS", "res": 0.1, "init": c.init.strftime("%Y-%m-%dT%H:%M:%SZ"), "lisensi": "CC BY 4.0"},
            "hari_sasaran": d,
            "sumber": {"prediksi": {"dibuat": pred["dibuat"] if pred else None, "vonis_bnj": _vonis_bnj(pred)},
-                      "bmkg_kab10": {"dibuat": bm["dibuat"] if bm else None}, "manual": {"n": 0}, "catatan": ps["sumber"]},
+                      "bmkg_kab10": {"dibuat": bm["dibuat"] if bm else None}, "manual": {"n": 0},
+                      "kejadian": {"dibuat": kabar["dibuat"] if kabar else None, "n": len(kej)}, "omc_prov": p_omc, "catatan": ps["sumber"]},
            "langkah": c.tampil, "raster": {"awan": "awan_{l}.png"}}
     if not sasaran:
         out.update(sasaran=[], zona=[], kandidat_kolom=[], kandidat_sasaran=[], alasan_kosong="tidak_ada_sasaran",
@@ -1571,7 +1688,7 @@ def jalan_banjir(args, b, dibuat, keluar, c):
             return r
         med = Medan(LAT0 - RES * i0, LON0 + RES * j0, i1 - i0, j1 - j0, sorted(c.P), c.tampil, c.init, A, sel)
         tempat, kota = tempat_py()
-        r = hitung_banjir(med, kabs, kota, c.bandara, tempat, c.prov_nm, b, sasaran, d, c.putaran, [(x[3], x[4]) for x in hilang], base=c.base)
+        r = hitung_banjir(med, kabs, kota, c.bandara, tempat, c.prov_nm, b, sasaran, d, c.putaran, [(x[3], x[4]) for x in hilang], base=c.base, prov_kuota=p_omc, posko=posko)
         for k in ("_hasil", "_sas", "n_kandidat", "n_lolos_gerbang", "n_evaluasi", "ditolak"):
             r.pop(k)
         urut = r.pop("urut_sasaran")

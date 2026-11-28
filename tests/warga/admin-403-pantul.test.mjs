@@ -10,7 +10,8 @@ test("tidak ada 403 -> /admin/masuk?ke= di luar Admin.keMasuk", () => {
   const dir = new URL("../../public/admin/", import.meta.url), salah = [];
   /* public/pipa/*.js (SIPPA, DESAIN-TEKNIS §1.4 butir 5) dipindai dengan aturan yang sama; folder belum ada = tidak ada yang dipindai */
   const pipa = new URL("../../public/pipa/", import.meta.url), berkasPipa = existsSync(pipa) ? readdirSync(pipa).filter(f => f.endsWith(".js") && !f.includes(" ")).map(f => [`pipa/${f}`, new URL(f, pipa)]) : [];
-  const berkas = [...readdirSync(dir).filter(f => f.endsWith(".js") && f !== "bersama.js" && !f.includes(" ")).map(f => [f, new URL(f, dir)]), ...berkasPipa];
+  const unit = new URL("../../public/bnpb/unit/", import.meta.url), berkasUnit = existsSync(unit) ? readdirSync(unit).filter(f => f.endsWith(".js") && !f.includes(" ")).map(f => [`bnpb/unit/${f}`, new URL(f, unit)]) : [];   // Ruang Unit (kedeputian DT §1.4 butir 3)
+  const berkas = [...readdirSync(dir).filter(f => f.endsWith(".js") && f !== "bersama.js" && !f.includes(" ")).map(f => [f, new URL(f, dir)]), ...berkasPipa, ...berkasUnit];
   for (const [f, u] of berkas)
     readFileSync(u, "utf8").split("\n").forEach((b, i) => { if (/403/.test(b) && /\/(?:admin\/)?masuk\?ke=/.test(b)) salah.push(`${f}:${i + 1}`); });
   assert.deepEqual(salah, [], `403 dialihkan ke /admin/masuk?ke= tanpa cek sesi (pantulan tak berujung untuk akun tak berhak): ${salah.join(", ")}`);

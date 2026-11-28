@@ -36,8 +36,12 @@ Pemicu (kejadian di repo):
 Pakai:  python3 scripts/umum/lampu_malam.py                      pemicu otomatis -> lampu_malam.json
         python3 scripts/umum/lampu_malam.py validasi             uji balik gempa Palu 2018 -> lampu_malam_validasi.json
         python3 scripts/umum/lampu_malam.py uji                  swa-uji luring (tanpa jaringan)
+        LAMPU_SUMBER=laads EARTHDATA_TOKEN=... python3 scripts/umum/lampu_malam.py validasi
+                                                                 LF-10: VNP46A2 asli LAADS, Palu 2018 + kontrol negatif Bali 2025,
+                                                                 vonis U-L1..U-L4 -> kunci "laads" di lampu_malam_validasi.json
+                                                                 (dijalankan .github/workflows/lab-lampu-malam.yml)
 """
-import array, datetime as dt, importlib.util, json, math, os, re, struct, sys, urllib.parse, urllib.request, zlib
+import array, datetime as dt, http.cookiejar, importlib.util, json, math, os, re, struct, sys, time, urllib.error, urllib.parse, urllib.request, zlib
 from concurrent.futures import ThreadPoolExecutor
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
@@ -440,21 +444,256 @@ def jalan(kini=None):
     print(f"lampu_malam: {len(calon)} pemicu, {len(kej)} kejadian terbaca")
 
 
+# ---------- LAADS (LF-10) ----------
+# VNP46A2 koleksi 5200 (v002) asli: DNB_BRDF-Corrected_NTL (tanpa gap-fill), Mandatory_Quality_Flag, QF_Cloud_Mask.
+# Grid sinusoidal-geografis Black Marble: ubin 10 x 10 derajat, 2400 x 2400 piksel (15 detik busur), h = (lon+180)/10, v = (90-lat)/10.
+# Daftar granul dari CMR (tanpa token); isi lewat OPeNDAP LAADS (subset ASCII, bertoken). Kriteria vonis: lifeline/ALGORITMA.md bagian 6.
+
+LAADS = "https://ladsweb.modaps.eosdis.nasa.gov"
+CMR = "https://cmr.earthdata.nasa.gov/search/granules.json"
+L_PIX = 2400
+MUTU_OK = {0, 1}            # Mandatory_Quality_Flag: 0 bermutu tinggi persisten, 1 bermutu tinggi sementara; 2 buruk, 255 kosong
+NTL_KOSONG = 65535
+
+
+class _Teruskan(urllib.request.HTTPRedirectHandler):
+    """Token hanya ikut redirect ke *.earthdata.nasa.gov dan *.eosdis.nasa.gov (pola scripts/cuaca/imerg.py)."""
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        r = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if r and not (urllib.parse.urlsplit(newurl).hostname or "").endswith((".earthdata.nasa.gov", ".eosdis.nasa.gov")):
+            r.headers.pop("Authorization", None)
+        return r
+
+
+# OPeNDAP LAADS mengalihkan ke login Earthdata lalu kembali dengan cookie sesi; tanpa cookie jar putaran itu berakhir 401.
+_LAADS = urllib.request.build_opener(_Teruskan, urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+
+
+def ambil_laads(url, maks=80_000_000):
+    """GET bertoken Earthdata (Authorization: Bearer); tanpa token -> RuntimeError. Dicoba ulang 3 kali."""
+    tok = os.environ.get("EARTHDATA_TOKEN", "").strip()
+    if not tok:
+        raise RuntimeError("EARTHDATA_TOKEN kosong")
+    for i in range(3):
+        try:
+            q = urllib.request.Request(url, headers={"Authorization": f"Bearer {tok}", "User-Agent": "centurisk97-lampu-malam"})
+            with _LAADS.open(q, timeout=180) as r:
+                return r.status, r.geturl(), r.headers.get("content-type", ""), r.read(maks)
+        except urllib.error.HTTPError as e:
+            if e.code in (401, 403, 404) or i == 2:
+                raise
+        except Exception:
+            if i == 2:
+                raise
+        time.sleep(5 * (i + 1))
+
+
+_GRANUL = {}
+
+
+def granul(hari, h, v):
+    """URL OPeNDAP granul VNP46A2 v002 untuk tanggal produk dan ubin, lewat CMR; None bila tidak ada."""
+    kunci = (hari, h, v)
+    if kunci not in _GRANUL:
+        lon0, lat1 = -180 + 10 * h, 90 - 10 * v
+        q = {"short_name": "VNP46A2", "version": "2", "page_size": 20, "temporal": f"{hari}T00:00:00Z,{hari}T23:59:59Z",
+             "bounding_box": f"{lon0 + 1},{lat1 - 9},{lon0 + 9},{lat1 - 1}"}
+        url = None
+        for e in json.loads(ambil(CMR + "?" + urllib.parse.urlencode(q)))["feed"]["entry"]:
+            if f".h{h:02d}v{v:02d}." in e["producer_granule_id"]:
+                url = next((l["href"][:-5] for l in e["links"] if "/opendap/" in l["href"] and l["href"].endswith(".h5.html")), None)
+        _GRANUL[kunci] = url
+    return _GRANUL[kunci]
+
+
+_NAMA = {}
+
+
+def nama_var(url):
+    """Nama variabel DAP untuk NTL, mutu, awan dari DDS granul (sekali per sesi; strukturnya sama tiap granul)."""
+    if not _NAMA:
+        dds = ambil_laads(url + ".dds")[3].decode("utf-8", "replace")
+        semua = re.findall(r"([A-Za-z0-9_.%/-]+)\[[A-Za-z_]*\s*=\s*2400\]\[", dds)
+        def cari(pola, tolak=None):
+            x = [n for n in semua if re.search(pola, n) and not (tolak and re.search(tolak, n))]
+            if not x:
+                raise RuntimeError(f"variabel {pola} tidak ada di DDS: {semua}")
+            return min(x, key=len)
+        _NAMA.update(ntl=cari(r"DNB_BRDF.Corrected_NTL$", r"Gap"), mutu=cari(r"Mandatory_Quality_Flag$"), awan=cari(r"QF_Cloud_Mask$"))
+        print(f"  variabel DAP: {_NAMA}", file=sys.stderr)
+    return _NAMA
+
+
+def urai_ascii(teks):
+    """ASCII DAP2 -> {nama: {baris: [nilai,...]}}. Baris data berbentuk 'nama[i], v, v' atau '[i], v, v' di bawah kepala bernama."""
+    out, kini = {}, None
+    for g in teks.splitlines():
+        g = g.strip()
+        m = re.match(r"^([^\[\],]*?)((?:\[\d+\])+),\s*(.*)$", g)
+        if m:
+            if m.group(1):
+                kini = m.group(1).split(".")[-1]
+            i = int(re.findall(r"\[(\d+)\]", m.group(2))[-1])
+            out.setdefault(kini, {})[i] = [float(x) for x in m.group(3).split(",")]
+        elif g and not g.startswith(("Dataset", "-")) and "," in g:
+            kini = g.split(",")[0].split(".")[-1].strip()
+    return out
+
+
+def subset(url, r0, r1, c0, c1):
+    """Tiga larik (ntl, mutu, awan) berukuran (r1-r0+1) x (c1-c0+1) dari satu ubin; None bila gagal."""
+    n = nama_var(url)
+    pot = f"[{r0}:1:{r1}][{c0}:1:{c1}]"
+    q = ",".join(n[k] + pot for k in ("ntl", "mutu", "awan"))
+    d = urai_ascii(ambil_laads(url + ".ascii?" + urllib.parse.quote(q, safe=":[],/"))[3].decode("utf-8", "replace"))
+    hasil = []
+    for k in ("ntl", "mutu", "awan"):
+        pendek = n[k].split("/")[-1].split(".")[-1]
+        x = d.get(pendek) or next((v for kk, v in d.items() if kk and kk.endswith(pendek)), None)
+        if not x or len(x) != r1 - r0 + 1:
+            raise RuntimeError(f"subset {k} tak lengkap: {len(x or {})} baris dari {r1 - r0 + 1}; kunci {list(d)[:6]}")
+        hasil.append(x)
+    return hasil
+
+
+def cerah_laads(mutu, awan):
+    """Piksel dipakai bila mutu 0/1, awan bit 6-7 yakin/mungkin cerah (00/01), bukan salju (bit 10), bukan air (bit 1-3 = 2 atau 3)."""
+    a = int(awan)
+    return int(mutu) in MUTU_OK and (a >> 6) & 3 <= 1 and not (a >> 10) & 1 and ((a >> 1) & 7) not in (2, 3)
+
+
+def malam_laads(k, hari, idx, *_):
+    """Pengganti malam() untuk VNP46A2 asli. k harus di grid 1/240 derajat (LANGKAH diset oleh pakai_laads)."""
+    lon0, lat1, w, h = k
+    X0, Y0 = round((lon0 + 180) * 240), round((90 - lat1) * 240)
+    nilai = {}
+    try:
+        for th in range(X0 // L_PIX, (X0 + w - 1) // L_PIX + 1):
+            for tv in range(Y0 // L_PIX, (Y0 + h - 1) // L_PIX + 1):
+                url = granul(hari, th, tv)
+                if not url:
+                    continue
+                c0, c1 = max(X0, th * L_PIX) - th * L_PIX, min(X0 + w, (th + 1) * L_PIX) - 1 - th * L_PIX
+                r0, r1 = max(Y0, tv * L_PIX) - tv * L_PIX, min(Y0 + h, (tv + 1) * L_PIX) - 1 - tv * L_PIX
+                ntl, mutu, awan = subset(url, r0, r1, c0, c1)
+                for r in range(r1 - r0 + 1):
+                    for c in range(c1 - c0 + 1):
+                        x, y = th * L_PIX + c0 + c - X0, tv * L_PIX + r0 + r - Y0
+                        nilai[y * w + x] = (ntl[r][c], mutu[r][c], awan[r][c])   # indeks ASCII DAP relatif terhadap subset
+    except Exception as e:
+        print(f"  {hari}: {type(e).__name__}: {e}", file=sys.stderr)
+        return "gagal"
+    out, ada = array.array("f"), False
+    for q in idx:
+        t = nilai.get(q)
+        if t is None or t[0] >= NTL_KOSONG or not cerah_laads(t[1], t[2]):
+            out.append(math.nan)
+        else:
+            out.append(t[0] * 0.1)   # skala produk 0,1 nW/cm²/sr per hitungan (Black Marble User Guide v2)
+            ada = True
+    return out if ada else None
+
+
+def pakai_laads():
+    """Alihkan mesin ke grid dan pembaca LAADS (dipanggil sekali, sebelum kotak() dan olah())."""
+    global LANGKAH, JENUH, malam
+    LANGKAH, JENUH, malam = 1 / 240, float("inf"), malam_laads
+
+
+def laads_cek():
+    """Probe: granul Palu 2018 lewat CMR, DDS, dan subset 3 x 3 di Kota Palu dari tiga variabel."""
+    url = granul("2018-09-28", 29, 9)
+    print("granul:", url)
+    # Diagnosa auth (token tidak pernah dicetak): arsip LAADS menerima Bearer langsung, OPeNDAP lewat OAuth URS.
+    arsip = url.replace("/opendap/RemoteResources/laads/", "/archive/")
+    for nama, u in (("arsip", arsip), ("dds", url + ".dds")):
+        try:
+            st, akhir, ct, b = ambil_laads(u, maks=2000)
+            print(f"auth {nama}: {st} {ct} {akhir} awal={b[:8]!r}")
+        except urllib.error.HTTPError as e:
+            print(f"auth {nama}: HTTP {e.code} di {e.geturl()} isi={e.read(600).decode('utf-8', 'replace')!r}")
+    st, akhir, ct, b = ambil_laads(url + ".dds")
+    print(st, ct, akhir, "\n", b.decode("utf-8", "replace")[:4000])
+    n = nama_var(url)
+    pot = "[210:1:212][2366:1:2368]"
+    t = ambil_laads(url + ".ascii?" + urllib.parse.quote(",".join(n[k] + pot for k in ("ntl", "mutu", "awan")), safe=":[],/"))[3]
+    print(t.decode("utf-8", "replace")[:3000])
+    print("urai:", json.dumps(urai_ascii(t.decode("utf-8", "replace")))[:800])
+
+
 # Uji balik: gempa Palu-Donggala M 7,5, 28 Sep 2018 10.02 UTC (USGS us1000h3p4). Pembanding dari laporan PLN di media,
 # dikutip di lampu_malam_validasi.json; semuanya angka tingkat kota/provinsi, bukan kecamatan.
 PALU = {"id": "usgs:us1000h3p4", "jenis": "gempa", "nama": "Palu-Donggala, Sulawesi Tengah", "besaran": "M 7,5",
         "waktu": dt.datetime(2018, 9, 28, 10, 2, 43, tzinfo=dt.timezone.utc), "pusat": [-0.256, 119.846]}
 
 
+BALI = {"id": "pln:bali-2025-05-02", "jenis": "padam", "nama": "Padam total Bali (kontrol negatif)", "besaran": "pulih sebelum lintasan",
+        "waktu": dt.datetime(2025, 5, 2, 8, 0, tzinfo=dt.timezone.utc), "pusat": [-8.45, 115.15]}
+
+
+def vonis_laads(palu, bali):
+    """Kriteria terkunci U-L1..U-L4 (lifeline/ALGORITMA.md bagian 6). Murni."""
+    def hari_gelap(b, n):
+        return [v for v in b["r"][:n] if v is not None]
+    u = {}
+    if not palu:
+        u["U-L1"] = {"vonis": "tak terbaca", "isi": "Palu tidak punya kecamatan terbaca"}
+    else:
+        kota = [b for b in palu["kec"] if b["k"].startswith("72|Kota Palu|")]
+        terbaca = [b for b in kota if hari_gelap(b, 5)]
+        gelap = [b for b in terbaca if min(hari_gelap(b, 5)) < AMBANG_GELAP]
+        u["U-L1"] = {"vonis": "tak terbaca" if not terbaca else "lulus" if len(gelap) >= 3 else "gagal",
+                     "isi": f"{len(gelap)} dari {len(terbaca)} kecamatan Kota Palu terbaca gelap pada H0 sampai H0+4 (syarat >= 3)"}
+        hp = palu["hari"]
+        lama = []
+        for b in palu["kec"]:
+            nyata = [(i, v) for i, v in enumerate(b["r"]) if v is not None]
+            j = next((n for n, (_, v) in enumerate(nyata) if v < AMBANG_REDUP), None)
+            if j is not None:
+                p = next((i for i, v in nyata[j + 1:] if v >= AMBANG_REDUP), None)
+                if p is not None:
+                    lama.append(p)
+        m = median(lama)
+        u["U-L2"] = {"vonis": "tak terbaca" if m is None else "lulus" if 5 <= m <= 21 else "gagal",
+                     "isi": f"median hari pulih {m} dari {len(lama)} kecamatan yang pernah gelap atau redup (syarat 5 sampai 21)"}
+    if not bali:
+        u["U-L3"] = {"vonis": "tak terbaca", "isi": "Bali tidak punya kecamatan terbaca"}
+    else:
+        terbaca = [b for b in bali["kec"] if hari_gelap(b, 8)]
+        gelap = [b for b in terbaca if min(hari_gelap(b, 8)) < AMBANG_GELAP]
+        f = len(gelap) / len(terbaca) if terbaca else None
+        u["U-L3"] = {"vonis": "tak terbaca" if f is None else "lulus" if f <= 0.10 else "gagal",
+                     "isi": f"{len(gelap)} dari {len(terbaca)} kecamatan Bali terbaca gelap pada H0 sampai H0+7 (syarat <= 10 persen)"}
+    ap = [(n, x["ringkas"]["alarm_palsu_dasar"]) for n, x in (("Palu", palu), ("Bali", bali)) if x]
+    u["U-L4"] = {"vonis": "tak terbaca" if len(ap) < 2 or any(v is None for _, v in ap) else "lulus" if all(v <= 0.05 for _, v in ap) else "gagal",
+                 "isi": ", ".join(f"{n} {v}" for n, v in ap) + " (syarat <= 0,05 masing-masing)"}
+    vs = [x["vonis"] for x in u.values()]
+    return {"uji": u, "vonis": "lulus" if all(v == "lulus" for v in vs) else "tak terbaca" if "tak terbaca" in vs and "gagal" not in vs else "gagal"}
+
+
 def validasi():
+    laads = os.environ.get("LAMPU_SUMBER") == "laads"
+    if laads:
+        pakai_laads()
     wil, p_ntl, p_awan, pusat_kec, jiwa = siapkan()
     r = 60  # Palu, Sigi, Donggala selatan: wilayah yang diberitakan padam
     kej = dict(PALU, target=di_radius(pusat_kec, [-0.9, 119.87], r), kotak=kotak_radius([-0.9, 119.87], r))
     x = olah(kej, wil, p_ntl, p_awan, jiwa, kej["waktu"].date() + dt.timedelta(days=HARI_PASCA))
     jalur = os.path.join(KELUAR, "lampu_malam_validasi.json")
     lama = baca(jalur, {}) or {}
-    simpan(jalur, {"sumber": SUMBER, "metode": METODE, "kejadian": [x], "pembanding": lama.get("pembanding", [])})
-    print(json.dumps(x["ringkas"], ensure_ascii=False))
+    if not laads:
+        simpan(jalur, dict(lama, sumber=SUMBER, metode=METODE, kejadian=[x]))
+        print(json.dumps(x["ringkas"], ensure_ascii=False))
+        return
+    kb = dict(BALI, target={k for k in pusat_kec if k.startswith("51|")}, kotak=(114.40, -8.90, 115.75, -8.05))
+    y = olah(kb, wil, p_ntl, p_awan, jiwa, kb["waktu"].date() + dt.timedelta(days=10))
+    v = vonis_laads(x, y)
+    lama["laads"] = {"dibuat": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
+                     "sumber": "VNP46A2 v002 (koleksi 5200) LAADS DAAC lewat OPeNDAP: DNB_BRDF-Corrected_NTL, Mandatory_Quality_Flag, QF_Cloud_Mask",
+                     "kriteria": "data/kajian-bnpb/lifeline/ALGORITMA.md bagian 6 (dikunci di commit b0440a589 sebelum unduhan)",
+                     "vonis": v["vonis"], "uji": v["uji"], "kejadian": [k for k in (x, y) if k]}
+    simpan(jalur, lama)
+    print(json.dumps({"vonis": v, "palu": x and x["ringkas"], "bali": y and y["ringkas"]}, ensure_ascii=False, indent=1))
 
 
 # ---------- swa-uji ----------
@@ -544,9 +783,47 @@ def uji():
     assert "B" not in r and "A" in r
     # 7. radius gempa
     assert r_gempa(5.5) == 30 and r_gempa(7.5) == 120 and r_gempa(9) == 150
+    # 7. LAADS (LF-10): pengurai ASCII DAP2, saringan cerah, perakit ubin lintas batas, vonis U-L1..U-L4
+    teks = ("Dataset: VNP46A2.h5\nDNB_BRDF-Corrected_NTL.DNB_BRDF-Corrected_NTL, [2][2]\n"
+            "DNB_BRDF-Corrected_NTL[0], 120, 65535\nDNB_BRDF-Corrected_NTL[1], 30, 40\n\n"
+            "Mandatory_Quality_Flag[0], 0, 0\nMandatory_Quality_Flag[1], 2, 1\n")
+    d = urai_ascii(teks)
+    assert d["DNB_BRDF-Corrected_NTL"] == {0: [120.0, 65535.0], 1: [30.0, 40.0]} and d["Mandatory_Quality_Flag"][1] == [2.0, 1.0], d
+    assert cerah_laads(0, 0) and cerah_laads(1, 1 << 6) and not cerah_laads(2, 0) and not cerah_laads(0, 2 << 6)
+    assert not cerah_laads(0, 1 << 10) and not cerah_laads(0, 3 << 1) and cerah_laads(0, 5 << 1)   # laut ditolak, pesisir dipakai
+    g = globals()
+    asli = {n: g[n] for n in ('granul', 'subset', 'LANGKAH', 'JENUH', 'malam')}
+    try:
+        pakai_laads()
+        g["granul"] = lambda hari, h, v: f"u{h}"
+        # kotak 4 x 2 piksel memotong batas ubin h29|h30 di lon 120: dua kolom kiri dari h29, dua kanan dari h30
+        k = (120 - 2 / 240, -1 / 240 * 3, 4, 2)
+        def palsu(url, r0, r1, c0, c1):
+            assert r1 - r0 == 1 and c1 - c0 == 1, (r0, r1, c0, c1)
+            dasar = 10 if url == "u29" else 50
+            return ({0: [dasar, dasar + 1], 1: [dasar + 2, 65535]}, {0: [0, 0], 1: [0, 0]}, {0: [0, 3 << 6], 1: [0, 0]})
+        g["subset"] = palsu
+        o = malam_laads(k, "2018-09-28", list(range(8)))
+        nilai = [None if v != v else round(v, 1) for v in o]
+        assert nilai == [1.0, None, 5.0, None, 1.2, None, 5.2, None], nilai   # awan (3<<6) dan kosong 65535 jadi NaN; skala 0,1
+    finally:
+        g.update(asli)
+    def kej(baris, ap):
+        return {"hari": [f"h{i}" for i in range(10)], "kec": baris, "ringkas": {"alarm_palsu_dasar": ap}}
+    gelap = lambda k, pulih: {"k": k, "r": [0.3, 0.3] + [0.3] * (pulih - 2) + [1.0] * (10 - pulih)}
+    palu = kej([gelap(f"72|Kota Palu|K{i}", 7) for i in range(3)], 0.02)
+    bali = kej([{"k": f"51|Badung|B{i}", "r": [1.0] * 10} for i in range(10)], 0.01)
+    v = vonis_laads(palu, bali)
+    assert v["vonis"] == "lulus", v
+    assert vonis_laads(kej(palu["kec"][:2], 0.02), bali)["uji"]["U-L1"]["vonis"] == "gagal"
+    bali2 = kej(bali["kec"][:8] + [gelap("51|Badung|X", 3), gelap("51|Badung|Y", 3)], 0.01)
+    assert vonis_laads(palu, bali2)["vonis"] == "gagal"                       # 2 dari 10 = 20 persen > 10 persen
+    assert vonis_laads(palu, kej([{"k": "51|B|B", "r": [None] * 10}], 0.0))["uji"]["U-L3"]["vonis"] == "tak terbaca"
+    assert vonis_laads(palu, None)["vonis"] == "tak terbaca"
+    assert vonis_laads(kej(palu["kec"], 0.08), bali)["uji"]["U-L4"]["vonis"] == "gagal"
     print("lampu_malam uji: hijau")
 
 
 if __name__ == "__main__":
     a = sys.argv[1] if len(sys.argv) > 1 else ""
-    uji() if a == "uji" else validasi() if a == "validasi" else jalan()
+    uji() if a == "uji" else validasi() if a == "validasi" else laads_cek() if a == "laads_cek" else jalan()

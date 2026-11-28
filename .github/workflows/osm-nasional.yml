@@ -38,6 +38,7 @@ jobs:
         run: |
           for k in $(python3 -c "import sys; sys.path.insert(0,'scripts/data'); from wilayah import PROVINSI; print(*PROVINSI)"); do
             python3 scripts/scrape/tarik_osm.py vital $k || echo "::warning::vital $k gagal"
+            python3 scripts/scrape/tarik_osm.py sirine $k || echo "::warning::sirine $k gagal"   # PD-2 sirine OSM (RU-089)
             python3 scripts/scrape/tarik_osm.py fasilitas $k || echo "::warning::fasilitas $k gagal"
           done
 

@@ -15,24 +15,18 @@
 <link rel="stylesheet" href="/inti/kepala.css">
 <link rel="stylesheet" href="/inti/tema.css">
 <link rel="stylesheet" href="/inti/gaya.css">
-<link rel="stylesheet" href="/akademisi.css?v=105">
+<link rel="stylesheet" href="/akademisi.css?v=106">
 </head>
 <body>
-<header class="top">
-  <div class="mark">
-    <button class="iconbtn" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="akTampil"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-    <a class="logo" href="/" title="Centurisk97"><img src="/img/logo.svg?v=2" alt="Centurisk97" width="30" height="30"></a><details class="bencana" data-bencana="karhutla" data-tentang><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg><span class="sr">Pilih bencana: </span>Karhutla</summary><div class="menu"><a href="/"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</a><hr style="border:0;border-top:1px solid var(--line);margin:4px 6px"><a href="/tentang"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Tentang kami</a></div></details>
-  </div>
-  <nav class="tabs" id="akTampil" role="group" aria-label="Tampilan direktori" hidden></nav>
-  <div class="stat">
-    <span class="l5-iklim" id="iklim" hidden></span>
-    <button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
-  </div>
+<header class="top ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep">Direktori</span>
 </header>
+<script src="/bnpb/menu_pusdalops.js?v=31" data-opsional></script>
+<main>
+<div class="bn-judul"><h1>Direktori jaringan kebencanaan</h1></div>
 
 <section class="ak-kepala">
   <div class="ak-kepala-isi">
-    <h1>Direktori Jaringan Kebencanaan</h1>
     <div class="ak-cari-besar"><label class="ak-cari"><span class="sr">Cari di seluruh direktori</span>
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="akCari" type="search" autocomplete="off" placeholder="Cari orang, lembaga, kampus, inovasi, dokumen, wilayah…" aria-controls="akCariPanel"><kbd class="ak-kbd" aria-hidden="true">/</kbd></label>
@@ -40,6 +34,7 @@
     <div id="akAngka" class="ak-ringkas" aria-label="Ringkasan direktori"></div>
   </div>
   <div class="ak-kepala-nav">
+  <nav id="akTampil" class="ak-seg ak-tampil" role="group" aria-label="Tampilan direktori" hidden></nav>
   <nav id="akSubTab" class="ak-seg ak-subtab" role="group" aria-label="Sub-tampilan" hidden></nav>
   <div id="akPkSeg" class="ak-seg" role="group" aria-label="Jenis pakar" hidden><button type="button" data-v="akademisi" aria-pressed="true"><svg class="ak-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11v5c2 2 10 2 12 0v-5"/></svg>Akademisi</button><button type="button" data-v="tokoh" aria-pressed="false"><svg class="ak-ikon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M18 4l1 2 2 .3-1.5 1.4.4 2L18 8.800 16.100 9.700l.4-2L15 6.300l2-.3z"/></svg>Tokoh publik</button></div>
   </div>
@@ -153,6 +148,7 @@
     <button type="button" role="menuitem" data-dpf="pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 17v-4h1.5a1.2 1.2 0 0 1 0 2.4H9"/></svg>PDF</button>
   </div>
 </div>
+</main>
 <div id="akSheet" class="ak-lembar ak-sheet" hidden>
   <div class="ak-latar" data-tutup-s></div>
   <article class="ak-dlg" role="dialog" aria-modal="true" aria-labelledby="akSJudul">
@@ -162,8 +158,8 @@
 </div>
 <div id="akTip" class="ak-gr-tip ak-bartip" hidden></div>
 <script type="module" src="/inti/klaster.js?v=1"></script>
-<script src="/fungsi_direktori.js?v=105"></script>
-<script src="/akademisi.js?v=105"></script>
+<script src="/fungsi_direktori.js?v=106"></script>
+<script src="/akademisi.js?v=106"></script>
 <script type="module" src="/inti/kepala.js"></script>
 </body>
 </html>

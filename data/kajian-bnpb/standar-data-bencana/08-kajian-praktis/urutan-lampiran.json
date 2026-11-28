@@ -1,0 +1,15 @@
+{
+    "judul": "Lampiran Kajian Penentuan Kejadian Bencana Versi Praktis",
+    "anak_judul": "SOP pengumpulan data lapangan, kamus data umum, lembar data khusus untuk sembilan jenis bencana, dan glosarium",
+    "label": "LAMPIRAN KAJIAN BNPB",
+    "folder": "../../standar-data-bencana/08-kajian-praktis/lampiran",
+    "gbr": "../../standar-data-bencana/01-kajian-penentuan-kejadian/gbr",
+    "keluaran": "../../standar-data-bencana/keluaran/08 Kajian Versi Praktis",
+    "nama_keluaran": "Lampiran Kajian Penentuan Kejadian Bencana Versi Praktis",
+    "berkas": [
+        "lampiran-a.md",
+        "lampiran-b.md",
+        "lampiran-c.md",
+        "lampiran-d.md"
+    ]
+}

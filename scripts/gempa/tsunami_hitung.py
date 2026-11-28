@@ -74,7 +74,8 @@ def setrun(claw_pkg="geoclaw"):
     c.lower[:] = [S["kotak"][0], S["kotak"][2]]
     c.upper[:] = [S["kotak"][1], S["kotak"][3]]
     c.num_cells[:] = S["sel"]
-    c.num_eqn = 3; c.num_aux = 1; c.capa_index = 0
+    geo2 = S["koordinat"] == 2  # lintang-bujur: aux = [B, kapa, lebar sel], kapa di indeks 2 (TS-11)
+    c.num_eqn = 3; c.num_aux = 3 if geo2 else 1; c.capa_index = 2 if geo2 else 0
     c.t0 = 0.0; c.output_style = 1; c.num_output_times = 1; c.tfinal = S["tfinal"]; c.output_t0 = True
     c.output_format = "ascii"; c.output_q_components = "all"; c.output_aux_components = "none"
     c.output_aux_onlyonce = True; c.verbosity = 0
@@ -87,7 +88,7 @@ def setrun(claw_pkg="geoclaw"):
     a.amr_levels_max = A["tingkat"]
     r = A.get("rasio") or [2]  # GeoClaw menolak daftar kosong walau tingkat 1
     a.refinement_ratios_x = r; a.refinement_ratios_y = r; a.refinement_ratios_t = r
-    a.aux_type = ["center"] * max(1, A["tingkat"] - 1)
+    a.aux_type = ["center", "capacity", "yleft"] if geo2 else ["center"] * max(1, A["tingkat"] - 1)
     a.flag_richardson = False; a.flag2refine = True; a.regrid_interval = 3; a.regrid_buffer_width = 2
     a.clustering_cutoff = 0.7
     for reg in S.get("regioes", []):
@@ -156,6 +157,9 @@ def hash_masukan(spec):
 
 def hitung(spec, nama):
     """Jalankan satu spesifikasi; kembalikan dict keluaran tunggal. Butuh python venv (numpy, clawpack)."""
+    # K12 (pemilik 26 Nov 2026, memperluas K10): tanpa Manning di hitungan pantai. Hanya diagnostik lab (lereng NTHMP) boleh manning > 0.
+    if spec.get("manning", 0) > 0 and (not spec.get("diagnostik_lab") or spec.get("koordinat") == 2):
+        raise ValueError("manning > 0 ditolak (K10/K12: tanpa gesekan); hanya spek kartesian dengan diagnostik_lab=True (bendera tidak berlaku di lintang-bujur)")
     exe, dexe = _exe(spec.get("qinit_f90"))
     d = os.path.join(RUN, nama)
     shutil.rmtree(d, ignore_errors=True)
@@ -167,16 +171,18 @@ def hitung(spec, nama):
         open(os.path.join(d, "soliter.data"), "w").write(spec.get("qinit_data", ""))
     json.dump(spec, open(os.path.join(d, "spec.json"), "w"), indent=1)
     t0 = time.time()
-    r0 = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
+    c0 = resource.getrusage(resource.RUSAGE_CHILDREN)
     _sh(["make", "data"], d, os.path.join(d, "data.log"))
     _sh(["make", "output"], d, os.path.join(d, "run.log"))
     detik = time.time() - t0
-    if "Missing" in open(os.path.join(d, "run.log")).read():
+    if "Missing" in open(os.path.join(d, "run.log")).read() or "ERROR" in open(os.path.join(d, "run.log")).read() or "STOP" in open(os.path.join(d, "run.log")).read():
         raise RuntimeError("masukan hilang, lihat %s/run.log" % d)
     # ru_maxrss anak = maks sepanjang proses; macOS satuan byte, Linux KiB
     mb = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss / (1024 * 1024 if sys.platform == "darwin" else 1024)
+    c1 = resource.getrusage(resource.RUSAGE_CHILDREN)
+    cpu = (c1.ru_utime - c0.ru_utime) + (c1.ru_stime - c0.ru_stime)  # waktu CPU, kebal beban mesin lain (waktu dinding tidak)
     out = _baca(spec, d)
-    out.update(skema=SKEMA, mesin=VERSI_MESIN, hash_masukan=hash_masukan(spec), nama=nama,
+    out.update(cpu_detik=round(cpu, 1), skema=SKEMA, mesin=VERSI_MESIN, hash_masukan=hash_masukan(spec), nama=nama,
                waktu_detik=round(detik, 2), memori_mb_puncak=round(mb, 1))
     json.dump(out, open(os.path.join(d, "keluaran.json"), "w"))
     return out
@@ -199,10 +205,14 @@ def _baca(spec, d):
         ru = max(darat, key=lambda i: (B[i], h[i])) if darat else None  # ujung genangan: sel darat basah tertinggi (definisi lab)
         em = max(darat, key=lambda i: B[i] + h[i]) if darat else None  # elevasi muka air maks di darat (definisi lama sampai 25 Nov 2026)
         tb = [float(tiba[i]) for i in basah if tiba[i] == tiba[i] and tiba[i] > 0]
-        out["fgmax"] = {"x": [float(v) for v in X], "y": [float(v) for v in Y], "B": [float(v) for v in B],
-                        "h_maks": [float(v) if v == v else None for v in h],
-                        "tiba_s": [float(v) if v == v and v > 0 else None for v in tiba]}
-        out["ringkasan"] = {"d_maks_darat": float(max(h[i] for i in darat)) if darat else None,  # kedalaman genangan, bukan kedalaman laut
+        if spec.get("ringkas"):  # skenario besar: larik ke npz di folder kerja, bukan ke keluaran.json (TS-11)
+            np.savez_compressed(os.path.join(d, "fgmax.npz"), X=X, Y=Y, B=B, h_maks=h, tiba_s=tiba)
+            out["fgmax"] = None
+        else:
+            out["fgmax"] = {"x": [float(v) for v in X], "y": [float(v) for v in Y], "B": [float(v) for v in B],
+                            "h_maks": [float(v) if v == v else None for v in h],
+                            "tiba_s": [float(v) if v == v and v > 0 else None for v in tiba]}
+        out["ringkasan"] = {"n_sel_fgmax": int(len(h)), "d_maks_darat": float(max(h[i] for i in darat)) if darat else None,  # kedalaman genangan, bukan kedalaman laut
                             "runup": float(B[ru] + h[ru]) if ru is not None else None,  # elevasi ujung genangan (B + h di sel terjauh)
                             "elevasi_air_maks": float(B[em] + h[em]) if em is not None else None,  # puncak muka air di darat, BUKAN run-up
                             "runup_x": float(X[ru]) if ru is not None else None,
@@ -296,6 +306,8 @@ def spek_lereng(H_d, d=1.0, tau_akhir=60.0, tingkat=2, soliter=True, kasar=10, e
                       "tstart": 0.0, "dt_check": tau / 4, "min_level": tingkat},
             "gauges": [[1, 0.25 * d, dxk * 1.5, 0.0, 1e10], [2, 9.95 * d, dxk * 1.5, 0.0, 1e10]],
             "tau": tau, "d": d, "H_d": H_d}
+    if manning > 0:
+        spec["diagnostik_lab"] = True  # K12: gesekan hanya untuk diagnostik lab lereng
     # sel fgmax harus tepat pusat sel terhalus: x1 = xl+dxf/2 + k*dxf, y1 = pusat sel baris kedua terhalus
     spec["fgmax"]["x2"] = xl + dxf / 2 + math.floor((X0 - xl - dxf / 2) / dxf) * dxf
     # dua baris sel terhalus: GeoClaw 5.14 mengisi fgmax NaN bila hanya satu baris (ny=1), dicoba 24 Nov 2026
@@ -444,6 +456,83 @@ def uji_tolok_ukur(lab=False):
     return lap, gagal
 
 
+# ---------------------------------------------------------------- TS-11: satu skenario sintetis di satu kotak
+MEDAN = os.path.join(AKAR, "data/raw/gempa/tsunami_medan/keluaran")
+ETOPO = os.path.join(AKAR, "public/gempa/data")
+# Skenario SINTETIS, bukan tiruan kejadian uji: megathrust selatan Bali-Jawa timur M 8,6, antarmuka, strike 85, dalam 20 km,
+# pusat 10,6 LS 115,0 BT (Banyuwangi 1994: M 7,8 di 10,5 LS 112,8 BT; sumber ini 2,2 derajat ke timur dan 0,8 M lebih besar).
+SKENARIO_TS11 = {"lat": -10.6, "lon": 115.0, "m": 8.6, "jenis": "subduksi", "strike": 85, "dalam": 20}
+DOMAIN_TS11 = [112.5, 117.0, -11.8, -8.2]  # kelipatan 3 menit busur pada dasar
+
+
+def siapkan_skenario(nama, kotak="banyuwangi_rajegwesi", res=3, tfinal=7200.0, t_halus=600.0, sumber=None):
+    """Tulis topo (ETOPO 3' kasar + kotak GLO-30/GEBCO 1 detik), dtopo Okada, dan spek. res = detik busur tingkat terhalus (1 atau 3)."""
+    sys.path.insert(0, CLAW)
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import numpy as np
+    from clawpack.geoclaw.topotools import Topography
+    from clawpack.geoclaw import dtopotools
+    import tsunami_sumber as S
+    sumber = sumber or SKENARIO_TS11
+    d0 = os.path.join(RUN, nama + "_masukan")
+    os.makedirs(d0, exist_ok=True)
+    # tingkat kasar: ETOPO 2022 yang sudah di repo (3 menit busur, int16, baris selatan->utara)
+    G = S.muat_grid(ETOPO + "/")
+    z = np.array(G["z"], dtype=float).reshape(G["ny"], G["nx"])
+    x = G["lon0"] + G["d"] * np.arange(G["nx"])
+    y = G["lat0"] + G["d"] * np.arange(G["ny"])
+    ix = (x >= DOMAIN_TS11[0] - 0.2) & (x <= DOMAIN_TS11[1] + 0.2)
+    iy = (y >= DOMAIN_TS11[2] - 0.2) & (y <= DOMAIN_TS11[3] + 0.2)
+    tk = Topography(); tk.set_xyZ(x[ix], y[iy], z[np.ix_(iy, ix)])
+    tk.write(os.path.join(d0, "kasar.tt3"), topo_type=3, Z_format="%.1f")
+    # kotak halus
+    m = json.load(open(os.path.join(MEDAN, kotak + ".json")))
+    Z = np.fromfile(os.path.join(MEDAN, kotak + ".bin"), dtype="<f4").reshape(m["ny"], m["nx"])[::-1].astype(float)  # utara->selatan jadi selatan->utara
+    xf = m["lon_barat"] + m["dlon"] * np.arange(m["nx"])
+    yf = m["lat_utara"] - m["dlat"] * (m["ny"] - 1) + m["dlat"] * np.arange(m["ny"])
+    tf = Topography(); tf.set_xyZ(xf, yf, Z)
+    tf.write(os.path.join(d0, "halus.tt3"), topo_type=3, Z_format="%.2f")
+    # dtopo: Okada per segmen 100 km, satu kali di t=0
+    r = S.rupture(sumber)
+    segs = S.segmentasi(r)
+    dx = 0.02
+    xs = np.arange(DOMAIN_TS11[0] + 0.3, DOMAIN_TS11[1] - 0.2 + 1e-9, dx)
+    ys = np.arange(DOMAIN_TS11[2] + 0.1, -9.0, dx)
+    dZ = np.array([[S.deformasi_segmen(segs, yy, xx) for xx in xs] for yy in ys])
+    dt = dtopotools.DTopography()
+    dt.X, dt.Y = np.meshgrid(xs, ys)
+    dt.times = np.array([0.0, 1.0])
+    dt.dZ = np.array([0 * dZ, dZ])
+    dt.write(os.path.join(d0, "dtopo.tt3"), dtopo_type=3)
+    # tingkat AMR: 3 menit -> 30 detik -> (5 detik) -> res detik
+    rasio = {1: [6, 6, 5], 3: [6, 10]}[res]
+    L = len(rasio) + 1
+    xl, xr, yb, yt = DOMAIN_TS11
+    bx1, by1, bx2, by2 = m["lon_barat"], m["lat_utara"] - m["dlat"] * (m["ny"] - 1), m["lon_barat"] + m["dlon"] * (m["nx"] - 1), m["lat_utara"]
+    reg = [[1, L - 1, 0.0, 1e10, xl, xr, yb, yt]]
+    if L == 4:
+        reg.append([3, 3, 0.0, 1e10, 113.3, 114.9, -9.6, -8.2])  # paparan Bali-Jawa timur
+    reg.append([L, L, t_halus, 1e10, bx1, bx2, by1, by2])
+    dxl = res / 3600.0
+    spec = {"koordinat": 2, "kotak": [xl, xr, yb, yt], "sel": [round((xr - xl) * 20), round((yt - yb) * 20)], "tfinal": tfinal,
+            "topo": [[3, os.path.join(d0, "kasar.tt3")], [3, os.path.join(d0, "halus.tt3")]],
+            "dtopo": [[3, os.path.join(d0, "dtopo.tt3")]], "qinit_eta": [],
+            "amr": {"tingkat": L, "rasio": rasio, "gelombang_tol": 0.1}, "manning": 0.0, "muka_laut": 0.0, "dry_tol": 0.001,
+            "regioes": reg, "ringkas": True,
+            "fgmax": {"x1": bx1 + dxl / 2, "x2": bx1 + dxl / 2 + dxl * ((m["nx"] - 1) // res - 1), "y1": by1 + dxl / 2,
+                      "y2": by1 + dxl / 2 + dxl * ((m["ny"] - 1) // res - 1), "dx": dxl, "tstart": t_halus, "dt_check": 10.0, "min_level": L},
+            "gauges": [], "sumber": sumber, "sumber_rupture": {q: r[q] for q in ("L", "W", "slip", "dip", "strike", "M0")},
+            "kotak_kunci": kotak, "res_detik": res, "label": "hipotesis; bukan peringatan"}
+    return spec, dZ
+
+
+def jalankan_skenario(nama, **kw):
+    spec, dZ = siapkan_skenario(nama, **kw)
+    import numpy as np
+    print("dtopo: uz maks %.2f m, min %.2f m; spek sel dasar %s, tingkat %d" % (dZ.max(), dZ.min(), spec["sel"], spec["amr"]["tingkat"]), flush=True)
+    return spec, hitung(spec, nama)
+
+
 def uji():
     py = os.path.join(VENV, "bin/python")
     if os.path.realpath(sys.executable) != os.path.realpath(py) and "TS_UJI_VENV" not in os.environ:
@@ -455,6 +544,17 @@ def uji():
     a = {"x": 1, "y": [2]}
     assert hash_masukan(a) == hash_masukan({"y": [2], "x": 1})
     s = spek_lereng(0.019)
+    try:  # K12: penjaga Manning
+        hitung(dict(s, manning=0.01), "uji_tolak_manning")
+        raise AssertionError("manning > 0 tanpa diagnostik_lab tidak ditolak")
+    except ValueError:
+        pass
+    assert spek_lereng(0.019, manning=0.01)["diagnostik_lab"] is True
+    try:  # K12: bendera diagnostik_lab tidak meloloskan spek pantai (lintang-bujur)
+        hitung(dict(s, manning=0.01, diagnostik_lab=True, koordinat=2), "uji_tolak_manning2")
+        raise AssertionError("diagnostik_lab lolos di koordinat 2")
+    except ValueError:
+        pass
     assert s["sel"][0] > 0 and s["fgmax"]["min_level"] == 2 and abs(hukum_synolakis(0.019) - 0.0888) < 1e-3
     lap, gagal = uji_tolok_ukur(lab="lab" in sys.argv)
     print(json.dumps(lap, indent=1))
@@ -471,5 +571,9 @@ def uji():
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "uji":
         uji()
+    elif len(sys.argv) > 1 and sys.argv[1] == "skenario":  # skenario <nama> <res 1|3> <tfinal> <t_halus> [kotak]
+        a = sys.argv[2:]
+        sp, o = jalankan_skenario(a[0], res=int(a[1]), tfinal=float(a[2]), t_halus=float(a[3]), **({"kotak": a[4]} if len(a) > 4 else {}))
+        print(json.dumps({q: o[q] for q in ("waktu_detik", "memori_mb_puncak", "ringkasan")}, indent=1))
     else:
         print(__doc__)

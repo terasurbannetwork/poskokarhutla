@@ -138,7 +138,7 @@ Tabel III.8. Lembar data khusus erupsi gunung api
 | Erupsi | Waktu, jenis (eksplosif, efusif), tinggi kolom abu di atas puncak (m) | PVMBG |
 | Hujan abu | Arah sebaran dan tebal abu per desa (mm) | Petugas lapangan |
 | Awan panas | Jarak luncur (km) dan arah | PVMBG |
-| Lahar | Sungai yang dialiri dan desa terdampak | Petugas lapangan, PVMBG |
+| Lahar letusan | Sungai yang dialiri dan desa terdampak; lahar letusan yang terjadi selama erupsi dicatat di sini, sedangkan banjir lahar hujan dicatat sebagai kejadian banjir yang ditautkan dengan erupsi ini | Petugas lapangan, PVMBG |
 | Penerbangan | Kode warna Volcano Observatory Notice for Aviation (VONA) dan bandar udara yang ditutup | PVMBG, otoritas bandara |
 | Kawasan rawan bencana | Desa dan jumlah penduduk per kawasan I, II, III | Peta PVMBG |
 | Ternak dan lahan | Ternak dievakuasi atau mati; lahan tertutup abu (ha) | Dinas pertanian |

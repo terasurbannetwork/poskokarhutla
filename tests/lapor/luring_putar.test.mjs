@@ -67,3 +67,62 @@ test("jenis dan korban luring.js sama dengan spek bersama", async () => {
   assert.doesNotMatch(src, /const (JENIS|KORBAN) = \[/, "tanpa salinan daftar sendiri");
   assert.equal(spek.KORBAN.length, 3);
 });
+
+/* LR-06 dan LR-09: waktu simpan di HP ikut sebagai keterangan, foto luring dinilai terhadap waktu simpan (Q1), pita darurat terlambat (Q3) */
+const JPEG = "data:image/jpeg;base64," + Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe0]), Buffer.alloc(2000, 7), Buffer.from([0xff, 0xd9])]).toString("base64");
+const MENIT = 6e4, JAM = 60 * MENIT;
+
+test("butir luring 3 jam: tercatat dari luring dan terlambat, waktu kejadian tetap jam terima", async () => {
+  benih("62812999900044");
+  const w = Date.now() - 3 * JAM, r = await putarUlang({jenis: "Banjir", korban: "tidak", ...GPS, waktu_simpan: w, waktu_klien: w});
+  assert.equal(r.s, 200, JSON.stringify(r.j));
+  const s = sesiTerkirim(r.j.nomor);
+  assert.deepEqual(s.darurat.luring, {simpan: w});
+  assert.equal(s.darurat.terlambat, true, "lebih dari 2 jam: tanpa pita darurat");
+  assert.ok(s.isian.waktu.ms > w + 2 * JAM, "waktu simpan HP tidak pernah jadi waktu kejadian");
+});
+
+test("butir luring 30 menit: dari luring, tidak terlambat; jam HP di depan 1 jam dicatat tanpa jam", async () => {
+  benih("62812999900045");
+  const w = Date.now() - 30 * MENIT;
+  let s = sesiTerkirim((await putarUlang({jenis: "Banjir", korban: "tidak", ...GPS, waktu_klien: w})).j.nomor);
+  assert.deepEqual(s.darurat.luring, {simpan: w}); assert.equal(s.darurat.terlambat, undefined);
+  benih("62812999900046");
+  s = sesiTerkirim((await putarUlang({jenis: "Banjir", korban: "tidak", ...GPS, waktu_klien: Date.now() + JAM})).j.nomor);
+  assert.deepEqual(s.darurat.luring, {simpan: null}, "waktuKlienSah menolak jam di depan");
+  assert.equal(s.darurat.terlambat, undefined, "keterlambatan tidak terbukti: pita tetap");
+});
+
+test("foto luring: dinilai terhadap waktu simpan, foto tua dilewati, laporan tetap terkirim", async () => {
+  benih("62812999900047");
+  const w = Date.now() - 40 * MENIT;
+  const sah = {data: JPEG, exif: {kamera: true, waktu: w - MENIT}, gps: {lat: GPS.lat, lon: GPS.lon, akurasi: 12, waktu: w - MENIT}};
+  const tua = {data: JPEG, exif: {kamera: true, waktu: w - 20 * MENIT}, gps: null};
+  const r = await putarUlang({jenis: "Banjir", korban: "tidak", ...GPS, waktu_klien: w, foto: [sah, tua]});
+  assert.equal(r.s, 200, JSON.stringify(r.j));
+  const s = sesiTerkirim(r.j.nomor);
+  assert.equal(s.foto.length, 1, "foto tua ditolak sendiri");
+  assert.equal(s.foto[0].lencana, "gps", "GPS 40 menit lalu sah karena dinilai terhadap waktu simpan");
+  assert.match(s.foto[0].lencanaTeks, /dikirim dari luring, jam HP belum diverifikasi/);
+});
+
+test("nilaiFotoLuring dan tandaLuring: batas foto Q1 dan pita darurat Q3", async () => {
+  const {nilaiFotoLuring, tandaLuring} = await import("../../src/lapor_mesin.js");
+  const kini = Date.now();
+  assert.equal(nilaiFotoLuring(null, kini), null);
+  assert.equal(nilaiFotoLuring(kini + JAM, kini), null, "jam di depan = bukan foto luring");
+  assert.ok(nilaiFotoLuring(kini - JAM, kini, kini - JAM - 6 * MENIT).tanda, "6 menit masih dalam 5 + 2 menit");
+  assert.ok(nilaiFotoLuring(kini - JAM, kini, kini - JAM - 8 * MENIT).galat);
+  assert.equal(tandaLuring({}, kini - 2 * JAM, kini, kini).terlambat, undefined, "tepat 2 jam masih berpita");
+  assert.equal(tandaLuring({}, kini - 2 * JAM - 1000, kini, kini).terlambat, true);
+  assert.equal(tandaLuring({}, kini - 3 * JAM, kini).terlambat, undefined, "tanpa jam kirim: ragu, pita tetap");
+  assert.equal(tandaLuring({}, kini - 3 * JAM, kini, kini + JAM).terlambat, undefined, "jam kirim tidak sah: pita tetap");
+  assert.deepEqual(tandaLuring({}, null, kini), {}, "bukan luring: tanpa tanda");
+});
+
+test("meja menerima tanda luring lewat ringkasan bersama", async () => {
+  const {daruratRingkas} = await import("../../src/lapor_tampil.js");
+  assert.deepEqual(daruratRingkas({korban: "ya", luring: {simpan: 5}, terlambat: true}), {korban: "ya", luring: {simpan: 5}, terlambat: true});
+  assert.deepEqual(daruratRingkas({korban: "tidak"}), {korban: "tidak"});
+  assert.equal(daruratRingkas(null), null);
+});

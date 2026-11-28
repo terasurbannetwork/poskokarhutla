@@ -35,7 +35,7 @@
   const KARTU = [
     ["sit", "Situasi per bencana", "api", "/bnpb/sitrep", "pm-penuh"], ["pri", "Prioritas dampak hari ini", "peta", "/bnpb/risiko", "pm-4"], ["rap", "Rapor BPBD: skor terendah", "rapor", "/admin/meja", "pm-5"],
     ["bhy", "Tanda bahaya lintas meja", "bahaya", "/admin/meja", "pm-3"], ["rel", "Relawan", "orang", "/admin/relawan", "pm-b3"], ["aln", "Alun-alun: butuh bantuan", "pesan", "/admin/alun", "pm-b3"],
-    ["keb", "Kebutuhan 30 hari", "uang", "/bnpb/kebutuhan", "pm-b3"], ["png", "Pengingat terbuka", "lonceng", "/admin/pengingat", "pm-b3"], ["rsp", "Respons laporan warga", "pesan", "/lapor/meja", "pm-5"]];
+    ["keb", "Kebutuhan 30 hari", "uang", "/bnpb/kebutuhan", "pm-b3"], ["png", "Pengingat terbuka", "lonceng", "/admin/pengingat", "pm-b3"], ["rsp", "Respons laporan warga", "pesan", "/lapor/meja", "pm-5"], ["dmp", "Dampak peringatan", "lonceng", "/bnpb/dalops#dampak", "pm-b3"]];
   const kartuHtml = ([id, judul, ik, href, kls]) => `<section class="ex ex-std db-std pm-k ${kls}" id="k_${id}" aria-label="${esc(judul)}"><header class="ex-hd"><div class="ex-jd"><h3>${IK[ik]}${esc(judul)}</h3><a class="pm-buka" href="${esc(href)}" aria-label="Buka ${esc(judul)}">Rincian${IK.buka}</a></div></header><div class="ex-bd pm-isi"><p class="pm-kosong">Memuat…</p></div></section>`;
   const isi = (id, html) => { const e = document.querySelector(`#k_${id} .pm-isi`); if (!e) return; e.innerHTML = html; e.querySelectorAll("[data-w]").forEach(x => x.style.setProperty("--w", x.dataset.w)); };
   const tabel = (kolom, baris) => `<div class="db-tabel-wadah"><table class="ex-tabel db-tabel"><thead><tr>${kolom.map(k => `<th scope="col">${esc(k)}</th>`).join("")}</tr></thead><tbody>${baris.join("")}</tbody></table></div>`;
@@ -80,6 +80,19 @@
       ${tabel(["BPBD", "Laporan", "Dilihat (median / p90)", "Ditangani (median / p90)"], j.bpbd.map(b => b.cukup
         ? `<tr><td data-label="BPBD"><b>${esc(b.wilayah)}</b></td><td data-label="Laporan" class="n">${N0.format(b.laporan)}</td><td data-label="Dilihat" class="n">${mp(b.dilihat)}${b.belum_dilihat ? `<small>${N0.format(b.belum_dilihat)} belum dilihat</small>` : ""}</td><td data-label="Ditangani" class="n">${mp(b.ditangani)}${b.belum_diambil ? `<small>${N0.format(b.belum_diambil)} belum diambil</small>` : ""}</td></tr>`
         : `<tr><td data-label="BPBD"><b>${esc(b.wilayah)}</b></td><td data-label="Laporan" class="n">${N0.format(b.laporan)}</td><td colspan="2" data-label="Respons">belum cukup data</td></tr>`))}`);
+  }
+
+  /* ---------- Dampak peringatan (DP-16): hitung dari status.json publik; angka tidak dihitung ulang, hanya dihitung kab dan dijumlah per kab yang sama bahaya tertinggi ---------- */
+  async function dampak() {
+    const [st, rg] = await Promise.all([statis("/api/dampak-peringatan/status"), statis("/api/dampak-peringatan/ringkas")]);
+    if (!st || st.belum_terukur || !st.kab) return isi("dmp", kosong("Status prakiraan belum terukur."));
+    /* kab dihitung sekali meski beberapa bahaya; tingkat tertinggi lintas bahaya; Siaga = 2, Awas = 3; Normal tanpa umpan segar bukan angka */
+    const tinggi = Object.entries(st.kab).filter(([k]) => /^\d{4}$/.test(k)).map(([k, v]) => [k, Math.max(-1, ...Object.values(v?.status || {}).map(e => Number.isInteger(e?.s) ? e.s : -1))]).filter(([, s]) => s >= 2);
+    const jiwa = tinggi.map(([k]) => Object.values(rg?.kab?.[k]?.bahaya || {}).map(b => b?.penduduk_area_peringatan?.dukcapil).filter(Number.isFinite)).map(a => a.length ? Math.max(...a) : null);
+    const ada = rg && !rg.belum_terukur && jiwa.length && jiwa.every(x => x != null), total = ada ? jiwa.reduce((a, b) => a + b, 0) : null;
+    const hip = st.boleh_tampil === true || (st.boleh_tampil && typeof st.boleh_tampil === "object" && Object.values(st.boleh_tampil).length && Object.values(st.boleh_tampil).every(v => v === true)) ? "" : pil("hipotesis, belum lulus uji balik", "info", "tunggu");
+    isi("dmp", `<div class="db-ubin-grid db-ubin-baris">${ukur(N0.format(tinggi.length), "kab/kota Siaga atau Awas", tinggi.length ? "bahaya" : "ok", "peta")}${ukur(total == null ? (tinggi.length ? "belum terukur" : "0") : "±" + kira(Math.round(total)), "penduduk di area peringatan", "", "orang")}</div>
+      <div class="pm-pils">${hip}${pil("perkiraan, satu sumber Dukcapil", "info", "info")}</div>`);
   }
 
   /* ---------- 3. rapor BPBD ---------- */
@@ -177,7 +190,7 @@
     <div class="pm-bar"><p id="pmWaktu" class="pm-redup"></p>${dummy() ? pil("memuat data dummy", "info", "tunggu") : ""}<p id="pmPesan" class="pm-pesan" role="status"></p></div>`;
   document.getElementById("pmWaktu").textContent = "Diperbarui " + wib(Date.now());
   Promise.all([muatSkrip("/bnpb/ringkas_bencana.js?v=1"), muatSkrip("/inti/nanti.js")]).then(() => {
-    const kerja = {sit: situasi, pri: prioritas, rap: rapor, bhy: bahaya, rel: relawan, aln: alun, keb: kebutuhan, png: pengingat, rsp: respons};
+    const kerja = {sit: situasi, pri: prioritas, rap: rapor, bhy: bahaya, rel: relawan, aln: alun, keb: kebutuhan, png: pengingat, rsp: respons, dmp: dampak};
     for (const [id, f] of Object.entries(kerja)) { const jalan = () => f().catch(() => isi(id, kosong())); window.nanti ? window.nanti(jalan) : jalan(); }   // kartu bermunculan satu per satu; klik tidak menunggu
   });
 })();

@@ -4,12 +4,13 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {siapkan, berantai, ADMIN, sha256} from "../warga/_bnpb.mjs";
 import {profilAktif} from "../warga/_profil.mjs";
+import {JPEG_SAH} from "../warga/_bantu.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
 import {bersihkanLapor} from "../../src/lapor_ai.js";
 
 const uji = berantai();
 const MESIN = {authorization: "Bearer mesin-rahasia"};
-const U = await siapkan("uji-lapor-selamat", {r2: true, ikat: {WA_MESIN: "mesin-rahasia"}}), {api, DB, n} = U;
+const U = await siapkan("uji-lapor-selamat", {r2: true, ikat: {WA_MESIN: "mesin-rahasia", OH_TULIS: "1"}}), {api, DB, n} = U;
 const WA = "6281200000051", WA2 = "6281200000052", WA_DICARI = "6281200000061", WA_LAIN = "6281200000062";
 const KAB = "32.01", KAB_LAIN = "32.73";
 const sesi = async (wa, i) => {   // sesi /masuk: nomor terbukti lewat kode (mk_akun + mk_sesi, seperti hasil /api/masuk/periksa)
@@ -160,7 +161,12 @@ uji("bersih-bersih: orang dicari ditutup lebih dari 2 tahun dianonimkan, yang la
   await ins("q67satu000000001", "tutup", kini - 400 * 864e5, kini - 365 * 864e5);
   await ins("q67buka000000001", "buka", kini - 1100 * 864e5, null);
   await DB.prepare("INSERT INTO lapor_cari_riwayat (cari_id, status, catatan, oleh, waktu) VALUES ('q67lama000000001', 'tutup', 'rahasia', 'uji', ?)").bind(kini).run();
-  await bersihkanLapor({DB}, kini);
+  const MEDIA = await U.mf.getR2Bucket("MEDIA"), kf = id => `lapor/foto/${id}.jpg`;
+  for (const [c, fo] of [["q67lama000000001", "c".repeat(16)], ["q67satu000000001", "d".repeat(16)]]) {
+    await DB.prepare("INSERT INTO lapor_cari_foto (cari_id, foto_id) VALUES (?, ?)").bind(c, fo).run(); await MEDIA.put(kf(fo), "x"); }
+  await bersihkanLapor({DB, MEDIA}, kini);
+  assert.equal(await MEDIA.head(kf("c".repeat(16))), null, "foto orang dicari yang dianonimkan ikut dihapus"); assert.ok(await MEDIA.head(kf("d".repeat(16))), "foto laporan lain tetap");
+  assert.equal(await n("lapor_cari_foto", "cari_id = 'q67lama000000001'"), 0); assert.equal(await n("lapor_cari_foto", "cari_id = 'q67satu000000001'"), 1);
   const g = id => DB.prepare("SELECT * FROM lapor_cari WHERE id = ?").bind(id).first();
   const a = await g("q67lama000000001");
   assert.equal(a.nama_dicari, "dihapus"); assert.equal(a.nomor_pencari, "62000000000");
@@ -208,12 +214,42 @@ uji("orang dicari lewat obrolan (pemilik 25 Nov 2026): tanpa kode, baris lapor_c
   for (const t of ["orang hilang", "1", "1", "Rina Wati"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
   r = await kirimP({lokasi: {lat: -6.6, lon: 106.8, akurasi: 12}}); assert.equal(r.s, 200, r.t.slice(0, 300));
   if (/Benar/.test(r.t)) r = await kirimP({teks: "1"});   // konfirmasi desa bila pembaca wilayah tersedia
-  for (const t of ["Joko", "Lewati", "4", "Lewati", "1", "Tidak tahu", "Pakai nomor saya", "Posko SDN 1 Paledang, Jl. Paledang"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
+  r = await kirimP({teks: "Joko"}); assert.equal(r.s, 200, r.t.slice(0, 300));
+  r = await kirimP({teks: "Lewati"}); assert.match(r.t, /Nama panggilan wajib diisi/, "nama panggilan wajib, Lewati ditolak (pemilik 26 Nov 2026)");
+  // nama panggilan, hubungan, kelamin, umur, tinggi tidak tahu, berat, pakaian, tanda 
+  await DB.prepare("DELETE FROM laju_bnpb").run();   // alur ini lebih dari 20 pesan dalam semenit; kuota diuji di berkas lain
+  for (const t of ["Jojo", "4", "Tidak tahu", "Tidak tahu"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
+  assert.match(r.t, /Tinggi badan Joko/); assert.equal(r.j.satuan, "cm");
+  r = await kirimP({teks: "400"}); assert.match(r.t, /antara 30 dan 250 cm/, "tinggi di luar batas wajar ditanya ulang");
+  for (const t of ["Tidak tahu", "55", "Kaus merah", "tidak ada"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
+  assert.match(r.t, /Foto Joko/, "sesudah ciri: foto orang dicari");
+  const f = await api("POST", "/api/lapor/foto", {wa: WA_CHAT, data: Buffer.from(JPEG_SAH).toString("base64")}, MESIN_H);   // dari galeri: tanpa lokasi, tetap diterima
+  assert.equal(f.s, 200, f.t.slice(0, 300)); assert.match(f.t, /Foto diterima/); const fid = f.j.fotoBaru.id;
+  assert.ok(await U.mf.getR2Bucket("MEDIA").then(b => b.head(`lapor/foto/${fid}.jpg`)), "berkas foto di R2");
+  const f2 = await api("POST", "/api/lapor/foto", {wa: WA_CHAT, data: Buffer.from(JPEG_SAH).toString("base64")}, MESIN_H);   // foto ke-2 masuk lapor_cari_foto_lain (0186)
+  assert.equal(f2.s, 200, f2.t.slice(0, 300)); const fid2 = f2.j.fotoBaru.id;
+  for (const t of ["Lanjut", "1", "Tidak tahu", "Pakai nomor saya", "Posko SDN 1 Paledang, Jl. Paledang"]) { r = await kirimP({teks: t}); assert.equal(r.s, 200, r.t.slice(0, 300)); }
+  assert.match(r.t, /Hilang karena kejadian apa/, "OH-04: penyaring bencana sebelum ringkasan");
+  r = await kirimP({teks: "1"}); assert.match(r.t, /Izin menampilkan di halaman Orang hilang/, "belum terdaftar, lalu persetujuan tayang");   // tanpa kejadian di Buku Besar hanya ada dua pilihan, "1" = belum terdaftar
+  r = await kirimP({teks: "1"}); assert.match(r.t, /Anda wali anak ini/, "umur tidak diketahui = anak: wali ditanya");
+  r = await kirimP({teks: "1"}); assert.equal(r.s, 200, r.t.slice(0, 300));
+  assert.match(r.t, /Foto: ada/);
   assert.match(r.t, /Ringkasan laporan orang dicari/);
   r = await kirimP({teks: "1"}); assert.equal(r.s, 200, r.t.slice(0, 300)); assert.match(r.t, /Laporan orang dicari diterima/);
+  // penilaian di layar terima kasih cari orang (tanpa nomor tiket) menempel pada sesi itu (pemilik 26 Nov 2026: "Pengalamannya gimana?")
+  const nl = await api("POST", "/api/lapor/nilai", {wa: WA_CHAT, nilai: 5, cari: true}, MESIN_H); assert.equal(nl.s, 200, nl.t.slice(0, 300));
   assert.equal(await n("lapor_cari"), cari0 + 1); assert.equal(await n("lapor_tiket"), tiket0, "tidak membuat tiket");
+  const lain = await DB.prepare("SELECT foto_id FROM lapor_cari_foto_lain WHERE cari_id = (SELECT id FROM lapor_cari ORDER BY dibuat DESC LIMIT 1)").all();
+  assert.deepEqual(lain.results.map(r => r.foto_id), [fid2], "foto ke-2 tersimpan di lapor_cari_foto_lain");
   const b = await DB.prepare("SELECT nomor_pencari, nama_dicari, hubungan, waktu_terakhir, nomor_dicari, status FROM lapor_cari ORDER BY dibuat DESC LIMIT 1").first();
   assert.deepEqual(b, {nomor_pencari: WA_CHAT, nama_dicari: "Joko", hubungan: "Saudara", waktu_terakhir: "Hari ini", nomor_dicari: null, status: "buka"});
-  const t = await DB.prepare("SELECT panggilan, nomor_kontak, tempat_tunggu FROM lapor_cari_temu ORDER BY rowid DESC LIMIT 1").first();
-  assert.deepEqual(t, {panggilan: null, nomor_kontak: WA_CHAT, tempat_tunggu: "Posko SDN 1 Paledang, Jl. Paledang"}, "nomor kontak dan tempat tunggu tersimpan (0177)");
+  const t = await DB.prepare("SELECT cari_id, panggilan, nomor_kontak, tempat_tunggu FROM lapor_cari_temu ORDER BY rowid DESC LIMIT 1").first();
+  assert.deepEqual({...t, cari_id: undefined}, {cari_id: undefined, panggilan: "Jojo", nomor_kontak: WA_CHAT, tempat_tunggu: "Posko SDN 1 Paledang, Jl. Paledang"}, "nomor kontak dan tempat tunggu tersimpan (0177)");
+  assert.equal((await DB.prepare("SELECT foto_id FROM lapor_cari_foto WHERE cari_id = ?").bind(t.cari_id).first())?.foto_id, fid, "foto tertaut ke laporan (0185)");
+  // OH-04: profil menunggu ditulis dalam batch yang sama; tidak tayang, tanpa kejadian terkonfirmasi, cr dari sesi (bukan teks)
+  const oh = await DB.prepare("SELECT * FROM oh_publik WHERE cari_id = ?").bind(t.cari_id).first();
+  assert.equal(oh.status, "menunggu"); assert.equal(oh.kejadian_id, null); assert.equal(oh.kejadian_oleh, null); assert.equal(oh.setuju_versi, 1); assert.ok(oh.setuju_waktu > 0);
+  assert.deepEqual({nama: oh.nama, panggilan: oh.panggilan, kec: oh.kec, kab: oh.kab, kab_nama: oh.kab_nama, umur: oh.umur, kelamin: oh.kelamin, kelas: oh.kelas, tinggi: oh.tinggi}, {nama: "Joko", panggilan: "Jojo", kec: "Bogor Tengah", kab: oh.kab, kab_nama: "Kota Bogor", umur: null, kelamin: null, kelas: "anak", tinggi: null}); assert.equal(oh.setuju_wali, 1); assert.equal(oh.wali_oleh, null, "wali belum diverifikasi petugas");
+  assert.equal(oh.pakaian, "Kaus merah"); assert.match(oh.token, /^[0-9a-f]{32}$/);
+  assert.equal(await DB.prepare("SELECT count(*) n FROM oh_riwayat WHERE cari_id = ? AND ke = 'menunggu'").bind(t.cari_id).first("n"), 1);
 });

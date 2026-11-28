@@ -200,7 +200,7 @@ function hapus() { K.simpul = []; K.tutup = false; K.kursor = null; K.nomor++; s
 function nyalakan() {
   if (typeof peta === "undefined" || !peta) { toast?.("Peta belum siap"); return; }
   K.aktif = true; tombol.setAttribute("aria-pressed", "true");
-  if (!K.kartu) { K.kartu = buatKartu(); tombol.after(K.kartu); }
+  if (!K.kartu) { K.kartu = buatKartu(); document.getElementById("lapis").before(K.kartu); }   // kartu tetap di tumpukan alat peta, tombolnya di panel Real Time
   K.kartu.hidden = false; peta.doubleClickZoom.disable();
   const c = peta.getCanvasContainer(); c.addEventListener("mousedown", onTurun, true); c.addEventListener("click", onKlik, true); c.addEventListener("dblclick", onDobel, true);
   peta.on("mousemove", onGerak); document.addEventListener("keydown", onKey);

@@ -17,6 +17,8 @@ Memakai kartu standar `.ex.ex-std` dari `public/inti/kartu.css` (AGENTS 3.5): ke
 | Berita | maksimal 5 baris: judul (tautan), media, jam terbit | "Belum ada berita yang cocok" |
 | Media sosial | satu baris | "Belum tersambung" |
 
+Pembaruan 26 Nov 2026 (pemilik: "Bagusin"): pita yang kosong tidak digambar. Sumber yang kosong disebut sekali di baris kecil di bawah kartu, misalnya "Belum ada laporan warga dan berita."; berita yang gagal dimuat tetap tampil sebagai pita karena itu gangguan, bukan kosong. Pita Media sosial tidak diulang di tiap kartu selama belum tersambung; keterangannya tampil sekali lewat saringan Medsos. Peta memuat legenda warna titik (Berjalan, Belum, Selesai, Belum ada laporan resmi).
+
 Pita dipisah jarak 20 px; kartu tidak menempel satu sama lain (AGENTS memori "kartu tidak menempel"). Pita Resmi memakai tabel `.ex-tabel` bila lebih dari satu baris angka.
 
 ## Teks

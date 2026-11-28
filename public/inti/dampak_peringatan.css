@@ -1,0 +1,12 @@
+/* Kartu kab status prakiraan (inti/dampak_peringatan.js, DP-10). Warna hanya token tema.css (--dp-*). Dasar kartu: .ex.ex-std di kartu.css. */
+.dp-kartu{margin:0}
+.dp-judul{display:flex;align-items:center;gap:8px;margin:0}
+.dp-ik{width:18px;height:18px;flex:none;fill:currentColor}
+.dp-baris{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px;min-width:0}
+.dp-lbl{font-size:var(--fs-2);font-weight:700;color:var(--ink2);flex:0 0 100%}
+.dp-baris>span:not(.dp-lbl){font-size:var(--fs-3);overflow-wrap:anywhere}
+.dp-sek{color:var(--ink2)}
+.dp-status{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:var(--fs-3);padding:2px 10px;border-radius:var(--r-pill);background:color-mix(in oklch,var(--dp-w) 22%,var(--card));border:1px solid var(--dp-w);color:var(--ink);cursor:help}
+.dp-status.dp-kecil{font-size:var(--fs-1);font-weight:700;padding:1px 8px}
+.dp-pil{font-size:var(--fs-1);font-weight:800;padding:2px 8px;border-radius:var(--r-pill);background:color-mix(in oklch,var(--brand2) 12%,transparent);color:var(--brand2)}
+.dp-bmkg a{color:var(--brand2)}

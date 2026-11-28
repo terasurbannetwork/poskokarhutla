@@ -1,6 +1,6 @@
 /* Halaman lacak laporan (/lapor/lacak.html): lebar penuh, pita berfoto dengan nomor dan QR, status bertahap mendatar,
    kejadian di kiri, balasan dan dokumen di kanan (pemilik 19 Nov 2026: "bagusin"). Token saja; campuran warna di oklab. */
-body{display:block;padding:0;background:var(--surface)}
+body.lk-mandiri{display:block;padding:0;background:var(--surface)}
 .lk{max-width:1280px;margin:0 auto;padding:20px 24px 40px;display:grid;gap:16px}
 .lk svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .lk-pita{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 24px;align-items:end;padding:22px 28px 26px;border-radius:22px;overflow:hidden;color:var(--on-head);

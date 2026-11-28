@@ -54,6 +54,7 @@ import {RUTE_PIPA} from "./pipa.js";
 import {RUTE_PREDIKSI} from "./prediksi.js";
 import {RUTE_LABEL} from "./label.js";
 import {RUTE_SIPPA, bersihkanSippa} from "./sippa.js";
+import {RUTE_UNIT} from "./unit.js";   // Ruang Unit BNPB /bnpb/unit, /api/unit/* baca (RU-019)
 import {RUTE_DRONE} from "./drone.js";
 import {RUTE_WA} from "./wa.js";
 import {RUTE_WA_PROYEK} from "./wa_proyek.js";
@@ -77,6 +78,8 @@ import {RUTE_BERANTAI} from "./berantai.js";
 import {RUTE_MEDSOS} from "./medsos_antre.js";
 import {RUTE_SENSOR} from "./sensor.js";
 import {RUTE_ALAT} from "./alat.js";
+import {RUTE_DAMPAK_PERINGATAN} from "./dampak_peringatan.js";
+import {RUTE_POTENSI} from "./potensi.js";
 import {RUTE_MONITOR} from "./monitor.js";
 import {layaniApiV1, RUTE_KUNCI_API} from "./api_v1.js";
 import {layaniMcp} from "./mcp.js";
@@ -91,6 +94,7 @@ import {RUTE_INVENTARIS} from "./inventaris.js";
 import {RUTE_LOGPAL} from "./logpal.js";
 import {RUTE_LAPOR, bersihkanLapor, peringatanTiapMenit, bersihPeringatanLapor} from "./lapor_ai.js";
 import {RUTE_LAPOR_DATA, tanyaHarian} from "./lapor_lanjut.js";
+import {RUTE_ORANG_HILANG} from "./orang_hilang.js";
 import {RUTE_KORBAN} from "./korban.js";
 import {RUTE_OMC} from "./omc.js";
 import {RUTE_OPERASI} from "./operasi_udara.js";
@@ -644,6 +648,7 @@ const RUTE = {
   ...RUTE_SAHAM,   // proksi data saham untuk /bnpb/saham, staf saja, kunci Stellar hanya di Worker (src/saham.js)
   ...RUTE_WA_FORM,   // form Bahan Laporan Harian /bnpb/bahan: isian -> teks WA baku -> wa_masuk, staf saja (src/wa_form.js)
   ...RUTE_DRONE,   // atur drone ke gambut membara: halaman staf/instansi /admin/drone (src/drone.js, docs/bnpb/PANDUAN-DRONE-GAMBUT.md)
+  ...RUTE_UNIT,   // Ruang Unit: halaman dan data R2 unit/ staf saja, menjaga dirinya sendiri (src/unit.js, kedeputian DT §1.4, §4.9)
   ...RUTE_SIPPA,   // SIPPA: web /pipa staf BNPB, kit, tugas, log gelar, lapangan berkode (src/sippa.js; awalan /api/sippa/*, bukan /api/pipa/*)
   ...RUTE_PUSH,   // Web Push akun instansi: langganan perangkat, status, uji (src/push.js)
   ...RUTE_UJI_PILOT,   // uji pilot SIPPA Kalteng tanpa login, token di fragmen #t= dan header x-uji (src/uji_pilot.js, keputusan SIPPA 59)
@@ -658,12 +663,15 @@ const RUTE = {
   ...RUTE_BERANTAI,   // peringatan berantai banjir/cuaca ke longsor/banjir susulan 3 hari, pola deskriptif (src/berantai.js, migrasi 0098)
   ...RUTE_MEDSOS,   // antrean verifikasi pantauan medsos/TV ke logbook dan jeda ukur (src/medsos_antre.js, migrasi 0098)
   ...RUTE_SENSOR,   // sensor lapangan: ingest HMAC per alat + status staf (src/sensor.js)
+  ...RUTE_POTENSI,   // Potensi Bencana Hidromet: analisis, rekomendasi staf, BMKG per desa (src/potensi.js, PH-07)
+  ...RUTE_DAMPAK_PERINGATAN,   // status prakiraan dan dampak peringatan BMKG (src/dampak_peringatan.js, DP-09)
   ...RUTE_ALAT,   // panel EWS banjir dan gunung api: pos dan seri (src/alat.js, EW-04)
   ...RUTE_DALOPS,   // Pantau Banjir Dalops: layar + JSON logbook privat dari R2, staf Pusdalops saja (src/dalops.js)
   ...RUTE_AKADEMISI,   // direktori pakar kebencanaan, hanya staf BNPB dan admin (src/akademisi.js, data di R2)
   ...RUTE_MONITOR,   // halaman staf /monitor: tanda baca peringatan, groundcheck, tindak lanjut (src/monitor.js)
   ...RUTE_PEMIRSA,   // akun pemirsa: hanya melihat tab tertentu situs Centurisk97 (src/pemirsa.js)
   ...RUTE_LAPOR,   // Lapor Bencana BNPB: chatbot pelaporan kejadian, tiket, meja staf, antrean PDF dan kabar untuk mesin WA (src/lapor_ai.js, migrasi 0155)
+  ...RUTE_ORANG_HILANG,   // orang hilang publik: pembaca kejadian untuk penyaring bencana, di belakang OH_PUBLIK (src/orang_hilang.js, migrasi 0188, paket orang-hilang-publik)
   ...RUTE_LAPOR_DATA,   // data lanjutan BPBD: berkas, tim, objek per rumah, pengungsi, korban (src/lapor_lanjut.js, migrasi 0161, paket lapor-lanjutan)
   ...RUTE_LOGPAL,   // Inventori LogPal: gudang, mutasi, opname, permintaan bantuan BNPB/BPBD (src/logpal.js, migrasi 0112)
   ...RUTE_INVENTARIS,   // inventaris peralatan pemadam per pihak dan gudang (src/inventaris.js)
@@ -709,8 +717,8 @@ export const tolakOrigin = (req, url) => {
 async function rute(env, req, url, ctx) {
   /* /lacak (halaman statis; token di fragmen #<36 hex>, dibaca peramban); API-nya (/api/lacak/*) membawa token di header x-lacak */
   if (url.pathname === "/lacak" || url.pathname === "/lacak/") { const h = await halamanLacak(env, req, url); if (h) return h; }
-  const jalur = url.pathname.replace(/\/+$/, "") || "/", vf = jalur.match(/^(\/api\/verifikasi)\/([^/]{1,40})$/), tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/) || jalur.match(/^(\/api\/operasi\/foto)\/(\d{1,12})$/), sm = jalur.match(/^(\/api\/operasi\/semai\/berkas)\/((?:arsip\/)?[^/]{1,40})$/), tn = jalur.match(/^(\/api\/logbook\/turunan)\/([a-z0-9_]{1,20})$/), ir = jalur.match(/^(\/api\/inarisk\/(?:kegiatan|ubin))\/[^/]/), sh = jalur.match(/^(\/api\/saham)\/[^/]{1,60}\/(info|transaksi|grafik)$/), lb = jalur.match(/^(\/api\/logbook\/kejadian)\/([0-9a-f]{16})\/(entri|tutup|sk)$/) || jalur.match(/^(\/api\/ai\/(?:agen|percakapan))\/([0-9a-f]{16})\/(hapus)$/) || jalur.match(/^(\/api\/ai\/agen)\/([0-9a-f]{16})\/(sumber)$/) || jalur.match(/^(\/api\/ai\/pengetahuan)\/([0-9a-f]{16})\/(hapus|indeks-ulang)$/) || jalur.match(/^(\/api\/orang)\/([0-9a-f]{16})\/(jejak)$/), lp = jalur.match(/^(\/api\/lapor\/meja)\/(cari\/[0-9a-f]{16}\/status)$/) || jalur.match(/^(\/api\/lapor\/s)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/lapor\/(?:meja|unduh|kabar|unggah|komen|data\/video))\/([^/]+(?:\/[^/]+)?)$/) || jalur.match(/^(\/api\/lapor\/foto)\/([0-9a-f]{16}\.(?:mp4|mov|webm))$/) || jalur.match(/^(\/api\/lapor\/pdf)\/(?!antre$)([^/]+\/\d{1,3})$/), id = lp ? lp[2] : sm ? sm[2] : tgl ? tgl[2] : tn ? tn[2] : nama ? nama[2] : rl ? rl[2] : lb ? lb[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
-  const kunci = vf ? vf[1] + "/:kode" : ir ? ir[1] + "/:x" : lp ? lp[1] + "/:x" : sm ? sm[1] + "/:nama" : sh ? `${sh[1]}/:kode/${sh[2]}` : tgl ? tgl[1] + "/:tanggal" : tn ? tn[1] + "/:nama" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : lb ? `${lb[1]}/:id/${lb[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
+  const jalur = url.pathname.replace(/\/+$/, "") || "/", vf = jalur.match(/^(\/api\/verifikasi)\/([^/]{1,40})$/), tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/(?:sippa|unit)\/data)\/([a-z0-9_]{1,40})$/), un = jalur.match(/^(\/bnpb\/unit)\/([a-z]{2,4})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/) || jalur.match(/^(\/api\/operasi\/foto)\/(\d{1,12})$/), sm = jalur.match(/^(\/api\/operasi\/semai\/berkas)\/((?:arsip\/)?[^/]{1,40})$/), tn = jalur.match(/^(\/api\/logbook\/turunan)\/([a-z0-9_]{1,20})$/), ir = jalur.match(/^(\/api\/inarisk\/(?:kegiatan|ubin))\/[^/]/), sh = jalur.match(/^(\/api\/saham)\/[^/]{1,60}\/(info|transaksi|grafik)$/), lb = jalur.match(/^(\/api\/logbook\/kejadian)\/([0-9a-f]{16})\/(entri|tutup|sk)$/) || jalur.match(/^(\/api\/ai\/(?:agen|percakapan))\/([0-9a-f]{16})\/(hapus)$/) || jalur.match(/^(\/api\/ai\/agen)\/([0-9a-f]{16})\/(sumber)$/) || jalur.match(/^(\/api\/ai\/pengetahuan)\/([0-9a-f]{16})\/(hapus|indeks-ulang)$/) || jalur.match(/^(\/api\/orang)\/([0-9a-f]{16})\/(jejak)$/), lp = jalur.match(/^(\/api\/lapor\/meja)\/(cari\/[0-9a-f]{16}\/status)$/) || jalur.match(/^(\/api\/lapor\/meja)\/(hilang\/[0-9a-f]{16}\/aksi)$/) || jalur.match(/^(\/api\/lapor\/hilang\/foto)\/([0-9a-f]{32})$/) || jalur.match(/^(\/api\/lapor\/hilang)\/([0-9a-f]{32})$/) || jalur.match(/^(\/api\/lapor\/s)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/lapor\/(?:meja|unduh|kabar|unggah|komen|data\/video))\/([^/]+(?:\/[^/]+)?)$/) || jalur.match(/^(\/api\/lapor\/foto)\/([0-9a-f]{16}\.(?:mp4|mov|webm))$/) || jalur.match(/^(\/api\/lapor\/pdf)\/(?!antre$)([^/]+\/\d{1,3})$/), id = un ? un[2] : lp ? lp[2] : sm ? sm[2] : tgl ? tgl[2] : tn ? tn[2] : nama ? nama[2] : rl ? rl[2] : lb ? lb[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
+  const kunci = vf ? vf[1] + "/:kode" : un ? un[1] + "/:kode" : ir ? ir[1] + "/:x" : lp ? lp[1] + "/:x" : sm ? sm[1] + "/:nama" : sh ? `${sh[1]}/:kode/${sh[2]}` : tgl ? tgl[1] + "/:tanggal" : tn ? tn[1] + "/:nama" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : lb ? `${lb[1]}/:id/${lb[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
   const f = tabel[req.method + " " + kunci];
   if (!f) {   // jalur ada tapi metode lain: 405, bukan jatuh ke aset statis (HEAD/OPTIONS tetap lewat seperti semula)
     const ok = ["GET", "POST", "PUT", "DELETE"].filter(m => tabel[m + " " + kunci]);
@@ -753,7 +761,7 @@ async function petaSitus(env, req, url, kini) {
   const r = json(menu, 200, {"cache-control": "private, no-store", vary: "cookie"});
   return req.method === "HEAD" ? new Response(null, {status: r.status, headers: r.headers}) : r;
 }
-function catatHTML(env, req, jalur, ctx) {
+export function catatHTML(env, req, jalur, ctx) {
   if (env.DB) ctx?.waitUntil?.(Pub.catatHit(env, req, jalur).catch(e => console.error("hit", e)));
 }
 /* pemirsa bertab 'pusdalops' (baca saja): <html data-baca-saja>, public/bnpb/menu_pusdalops.css menyembunyikan kontrol tulis. Satu titik untuk jawaban rute() dan layaniHTML.
@@ -810,6 +818,7 @@ async function layaniHTML(req, env, ctx, url) {
   /* HTML per orang (pemirsa) dan di balik login (host terkunci): jangan disimpan cache bersama */
   if (pmTab || (hostTerkunci(url.hostname) && !docs) || jalur === "/uji-lapangan") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.append("vary", "cookie"); }
   /* /petugas dan /petugas/panel memuat data pribadi: CSP ketat (tanpa skrip/gaya inline; aset sendiri + Google Fonts) dan tanpa referrer; kode pribadi ada di fragmen #k= */
+  if (jalur === "/lapor/h" || jalur === "/lapor/hilang") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.set("x-robots-tag", "noindex, nofollow"); keluaran.headers.set("referrer-policy", "no-referrer"); }   // orang hilang publik (OH-09): token profil ada di jalur /lapor/h/<token>; noindex dari header Worker, bukan hanya meta
   if (jalur === "/lapor/s") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.set("x-robots-tag", "noindex, nofollow"); keluaran.headers.set("referrer-policy", "no-referrer"); }   // token kabar selamat ada di jalur
   if (jalur === "/verifikasi") { keluaran.headers.set("cache-control", "no-store"); keluaran.headers.set("x-robots-tag", "noindex, nofollow"); keluaran.headers.set("referrer-policy", "no-referrer"); }   // segel: status dicabut harus langsung terbaca (D15)
   if (jalur === "/lapor/data") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.set("x-robots-tag", "noindex"); keluaran.headers.set("referrer-policy", "no-referrer"); }   // token tim ada di ?t= saat dibuka
@@ -862,7 +871,7 @@ async function masukSandi(env, req, url, kini) {
   return St.masuk(env, req, kini, async g => {   // aset dibaca hanya saat galat; sukses tidak menyentuh ASSETS
     const a = await env.ASSETS.fetch(new Request(new URL("/masuk.html", url)));
     const t = a.ok ? await a.text() : (a.body?.cancel(), "");
-    return t.includes("<body>") ? t.replace("<body>", () => `<body data-galat="${esc(g)}">`)   // fungsi pengganti: $& atau $1 di pesan tidak ditafsirkan
+    return /<body[\s>]/.test(t) ? t.replace(/<body(?=[\s>])/, () => `<body data-galat="${esc(g)}"`)   // fungsi pengganti: $& atau $1 di pesan tidak ditafsirkan
       : `<!doctype html><html lang="id"><meta charset="utf-8"><title>Masuk</title><p>${esc(g)}</p><p><a href="/masuk">Coba lagi</a></p></html>`;
   });
 }

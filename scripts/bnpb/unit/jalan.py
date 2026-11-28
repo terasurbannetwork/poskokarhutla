@@ -20,8 +20,47 @@ from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # -I tidak menaruh folder skrip
 
-# (nama, modul, frekuensi); didaftarkan tiket sistem. Mula-mula kosong.
-LANGKAH = []
+# (nama, modul, frekuensi); didaftarkan tiket sistem.
+LANGKAH = [
+    ("PLP-1", "plp1", "bulanan"),   # RU-042 unit/stok_penyangga.json
+    ("PERB-1", "perb1", "bulanan"),  # RU-043 unit/pendampingan_ikd.json
+    ("MT-2", "mt2", "bulanan"),     # RU-061 unit/mitigasi_prioritas.json
+    ("PUS-1", "pus1", "harian"),    # RU-044 unit/satu_data.json (jaringan: data.bnpb.go.id lewat panen.py)
+    ("MB-3", "jdih_daerah", "mingguan"),  # RU-026 unit/jdih_daerah.json (jaringan: situs JDIH provinsi lewat panen.py)
+    ("HUK-1", "huk1", "harian"),    # RU-037 unit/status_peraturan.json (dari public/data/bnpb/hukum/katalog.json)
+    ("REN-1", "ren1", "harian"),    # RU-048 unit/rb.json (dari pustaka/5-lakip.md)
+    ("REN-3", "ren3", "bulanan"),    # RU-049 unit/kalender_monev.json (dari Jam Aturan)
+    ("JF-1", "jf1", "harian"),    # RU-050 unit/kompetensi.json (dari data/hukum/seed.sql perban-5-2024)
+    ("KS-4", "ks4", "bulanan"),    # RU-053 unit/kalender_gladi.json (dari siaga.json, risiko_hvc.json, dibi_kab_tahun.json)
+    ("RRS-3", "rrs3", "harian"),    # RU-055 unit/fasilitas_sosial.json (OSM x jejak banjir aktif; gempa menunggu jejak MMI)
+    ("RRP-3", "ikk", "bulanan"),    # RU-054 unit/ikk.json (BPS WebAPI IKK, BPS_KEY; tanpa kunci cache terakhir)
+    ("PLP-2", "plp2", "bulanan"),    # RU-062 unit/hibah_prioritas.json (MB-4; risiko kecamatan, DIBI, IKD, PLP-1, Perka 17/2009)
+    ("OJL-2", "ojl2", "harian"),    # RU-063 unit/prepositioning.json (PLP-1 x kalender_operasi; jelang hanya bila /prediksi lolos gerbang)
+    ("PSPB-1", "pspb1", "mingguan"),    # RU-073 unit/rpbd.json, unit/usulan_rpbd.json (dari jdih_daerah.jalan, cache MB-3)
+    ("KS-1", "ks1", "mingguan"),    # RU-074 unit/dokumen_siaga.json, unit/usulan_dokumen_siaga.json (jdih_daerah, status_darurat, Jam Aturan)
+    ("SPB-1", "spb1", "harian"),    # RU-075 unit/peta_nspk.json (katalog hukum MB-1 x renstra_nspk.json)
+    ("PERB-2", "perb2", "bulanan"),    # RU-059 unit/kerugian.json (DIBI 365 hari x tarif stimulan; rupiah hanya bila gerbang 2025 layak)
+    ("PSPB-3", "pspb3", "bulanan"),    # RU-060 unit/sendai.json (DIBI x penduduk; C-1 dari perb2, E-2 dari pspb1.jalan, jaringan lewat cache MB-3)
+    ("OJL-3", "ojl3", "harian"),    # RU-064 unit/klaster_logistik.json (INALOGPAL get_progress via panen.py; jaringan)
+    ("RRP-1", "rrp1", "harian"),    # RU-065 unit/neraca_rumah.json (layer verifikasi ArcGIS BNPB via panen.py; jaringan)
+    ("RRS-1", "rrs1", "harian"),    # RU-067 unit/rugi_tani.json (puso.json x irisan WorldCover; rupiah hanya bila kalibrasi lulus kriteria terkunci)
+    ("DIK-1", "dik1", "bulanan"),    # RU-069 unit/diklat_sasaran.json (MB-4 x unggahan angkatan data/raw/unit/diklat_ringkas.json bila ada)
+    ("REN-2", "ren2", "bulanan"),    # RU-070 unit/belanja_risiko.json (cache SIRUP BNPB x terpapar x ikd)
+    ("SDU-1", "sdu1", "bulanan"),    # RU-071 unit/pengadaan.json (kelas T; cache SIRUP BNPB jalur penyedia)
+    ("HUK-2", "huk2", "harian"),    # RU-076 unit/amanat.json, unit/usulan_amanat.json (data/hukum/seed.sql x katalog hukum)
+    ("KPOD-1", "kpod1", "harian"),    # RU-077 unit/rapor_darurat.json (status_darurat x laphar_riwayat; IKU hanya bila gerbang tampil lulus)
+    ("WIL-1", "wil1", "harian"),    # RU-079 unit/meja_wilayah.json (status_darurat, saran_status, laphar_riwayat, prediksi; tipe tanpa sumber segar tidak dihitung)
+    ("RRI-1", "rri1", "harian"),    # RU-082 unit/akses_putus.json (layer ArcGIS BNPB via panen.py; jaringan; status dari D1 akses_status bila terbaca)
+    ("PUS-2", "pus2", "harian"),    # RU-085 unit/kib_cocok.json (logbook D1 lewat wrangler x dibi_kejadian.json; D1 gagal = langkah gagal)
+    ("PD-1", "pd1", "harian"),    # RU-088 unit/rapor_peringatan.json (shim ke scripts/prediksi/rapor_peringatan.py; D1 peringatan lewat wrangler; D1 gagal = langkah gagal)
+    ("PD-2", "pd2", "bulanan"),    # RU-090 unit/cakupan_ews.json (OSM emergency=siren x data/raw/unit/desa_terpapar.json; tanpa keduanya kartu 'belum ada data')
+    ("KS-3", "ks3", "bulanan"),    # RU-091 unit/evakuasi.json (kandidat OSM; desa kurang menunggu data/raw/unit/desa_terpapar.json)
+    ("MT-1", "mt1", "bulanan"),    # RU-092 RU-093 unit/dana_bersama_katalog.json (Juklak 4/2025 gz + standar_biaya_2026.json hasil `mt1.py ekstrak`)
+    ("MT-3", "mt3", "bulanan"),    # RU-095 unit/kampanye.json (siaga x terpapar x ews_tindakan.js lewat node)
+    ("DIK-4", "dik4", "bulanan"),    # RU-106 unit/pengajar.json (pencocok BM25 kemitraan; tanpa daftar mata pelatihan Pusdiklat atau data/raw/unit/pakar = 'belum ada data')
+    ("RRP-2", "rrp2", "harian"),    # RU-104 unit/usulan_pemulihan.json (arsip berita repo x leksikon pemulihan; kartu dan antrean MB-7 satu berkas; tanpa arsip = belum ada data)
+    ("JF-2", "jf2", "bulanan"),    # RU-107 unit/formasi_jf.json (DIBI, terpapar, status_darurat x norma_waktu.json bawaan; volume penyuluhan belum ada data)
+]
 
 BASI_JAM = {"harian": 48, "mingguan": 240, "bulanan": 1080}  # DT sec 9.4
 KELUAR = "/tmp/unit"

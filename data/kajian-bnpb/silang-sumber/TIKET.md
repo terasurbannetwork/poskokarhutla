@@ -32,3 +32,11 @@ Status per 10 Nov 2026. Ambil satu tiket, kerjakan hanya cakupannya. Pengulas di
 | SS-53 | F6: uji | `tests/bnpb/silang_kalender.test.mjs` | penulis-gerbang | pipa-umum | bersama SS-50 |
 
 Jumlah: 26 tiket (1 selesai, 1 dirujuk ke LG-14, 1 menunggu pemilik).
+
+## Status sebenarnya, diperiksa 26 Nov 2026
+
+Kolom status di tabel atas basi. SS-02 sampai SS-07, SS-10 sampai SS-15, SS-20 sampai SS-22, SS-41 sampai SS-43, SS-50, SS-51, SS-53 selesai di 340660433 (Rapor sumber digabung ke `/bnpb/silang` di a1d1d482d); SS-06 tercatat di `docs/TIKET-DATA-BMKG.md`. SS-44 selesai dengan uji `tests/gempa/silang_beruntun.test.mjs`.
+
+SS-43 ditinjau di browser 26 Nov 2026 (`http://localhost:8800/gempa/insight`): tabel 8 kolom (1.181 px) mendorong kartu melewati lebar layar karena kolom grid `.ex-bd` mengikuti isi. Dibetulkan di sumbernya, `public/inti/kartu.css` (`grid-template-columns:minmax(0,1fr)`), jadi tabel bergulir di dalam kartu; tambalan lokal yang sama di `alat_gambar.css` dan `gunungapi/sim.css` dihapus. Angka berformat Indonesia, kepala tabel rata tengah, tanpa huruf kapital.
+
+Sisa: SS-03 angka skor baru tampil sesudah arsip 30 hari (sekitar 10 Des 2026, menunggu waktu); SS-30 mengikuti LG-14; SS-52 (kalender di laporan) belum menunjuk skrip laporan.

@@ -59,7 +59,13 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
     /* halaman modul yang dilayani Worker modulnya sendiri (layaniKm, layaniSk, LogPal, SIPPA) */
     const MODUL = [["/kemitraan", "/kemitraan.html"], ["/kemitraan/masuk", "/kemitraan/masuk.html"], ["/kemitraan/daftar", "/kemitraan/daftar.html"], ["/kemitraan/buku", "/kemitraan/buku.html"], ["/kemitraan/panduan", "/kemitraan/panduan.html"], ["/siklus", "/siklus/index.html"], ["/instansi", "/instansi.html"], ["/instansi/logpal", "/logpal/index.html"], ["/instansi/data-bencana", "/bnpb/data-bencana.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"], ["/lapor", "/lapor/index.html"]];
     rute = [...w.HTML_RUTE, ...Object.entries(w.BNPB_BERSIH || {}).map(([k, j]) => [{test: p => p === j || p === j + "/"}, `/bnpb/${k}.html`]),
-      ...MODUL.map(([j, f]) => [{test: p => p === j || p === j + "/"}, f])]; } catch { rute = []; } }
+      ...MODUL.map(([j, f]) => [{test: p => p === j || p === j + "/"}, f]),
+      [{test: p => /^\/siklus\/[a-z-]+\/?$/.test(p)}, "/siklus/index.html"],   // bagian Siklus satu ruas (/siklus/kejadian, /siklus/paparan, ...) = cangkang yang sama; /siklus/kejadian/KJ-... tetap hulu
+      [{test: p => p === "/rumah-rusak" || p === "/rumah-rusak/"}, "/rumah_rusak.html"], [{test: p => p === "/meja" || p === "/meja/"}, "/bnpb/meja.html"],
+      /* Ruang Unit (src/unit.js): pintu = unit/index.html, /bnpb/unit/<kode> = cangkang unit/unit.html; data /api/unit/* tetap dari hulu */
+      [{test: p => p === "/bnpb/unit" || p === "/bnpb/unit/"}, "/bnpb/unit/index.html"], [{test: p => /^\/bnpb\/unit\/[a-z0-9-]+\/?$/.test(p)}, "/bnpb/unit/unit.html"],
+      /* halaman /bnpb/<nama> yang dilayani Worker lewat halamanBnpbPublik (mis. /bnpb/inarisk): berkas public/bnpb/<nama>.html bila ada, selain itu HTML hulu */
+      [{test: p => /^\/bnpb\/[a-z0-9-]+\/?$/.test(p)}, null, null, p => p.replace(/\/$/, "") + ".html"]]; } catch { rute = []; } }
   const H = new URL(hulu);
   return http.createServer(async (req, res) => {
     try {
@@ -84,6 +90,37 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
           const DB = {prepare: () => ({bind: () => ({first: async () => ({n: 0}), run: async () => ({})})})};
           const r = await fn({DB, IP_SALT: "lokal"}, new Request(new URL(req.url, "http://lokal"), {method: req.method, headers: req.headers, body: badan}), url);
           res.writeHead(r.status, Object.fromEntries(r.headers)); return res.end(Buffer.from(await r.arrayBuffer()));
+        }
+      }
+      /* Dampak peringatan dini (data/kajian-bnpb/dampak-peringatan) sebelum rutenya terbit: rute publik src/dampak_peringatan.js
+         dijalankan lokal, R2 diganti berkas keluaran pipeline di folder kerja (data/raw/dampak_peringatan, data/raw/prediksi/status.json) */
+      if (req.method === "GET" && /^\/api\/dampak-peringatan\/(ringkas|status)$/.test(jalur)) {
+        const {RUTE_DAMPAK_PERINGATAN} = await import(pathToFileURL(path.join(akar, "src/dampak_peringatan.js")).href);
+        const fn = RUTE_DAMPAK_PERINGATAN[`GET ${jalur}`];
+        if (fn) {
+          const BERKAS = {"ringkas.json": "data/raw/dampak_peringatan/ringkas.json", "status.json": "data/raw/prediksi/status.json"};
+          const MEDIA = {get: async k => { const f = BERKAS[k.replace(/^dampak_peringatan\//, "")]; if (!f) return null;
+            try { const t = await fs.readFile(path.join(akar, f), "utf8"); return {text: async () => t, json: async () => JSON.parse(t), size: t.length}; } catch { return null; } }};
+          const DB = {prepare: () => ({bind: () => ({first: async () => ({n: 0}), run: async () => ({}), all: async () => ({results: []})})})};
+          globalThis.caches ??= {default: {match: async () => undefined, put: async () => {}}};
+          const r = await fn({DB, MEDIA, IP_SALT: "lokal"}, new Request(new URL(req.url, "http://lokal")), url, {waitUntil() {}});
+          res.writeHead(r.status, {...Object.fromEntries(r.headers), "cache-control": "no-store"}); return res.end(Buffer.from(await r.arrayBuffer()));
+        }
+      }
+      /* Potensi Hidromet (data/kajian-bnpb/potensi-hidromet) sebelum rutenya terbit: /api/potensi/analisis dari
+         data/raw/prediksi/analisis.json, /api/bmkg/desa dengan ASSETS = folder public lokal (BMKG bisa menolak Mac, 403) */
+      if (req.method === "GET" && /^\/api\/(potensi\/analisis|bmkg\/desa)$/.test(jalur)) {
+        const {RUTE_POTENSI} = await import(pathToFileURL(path.join(akar, "src/potensi.js")).href);
+        const fn = RUTE_POTENSI[`GET ${jalur}`];
+        if (fn) {
+          const baca = async f => { try { const t = await fs.readFile(path.join(akar, f), "utf8"); return {text: async () => t, json: async () => JSON.parse(t), size: t.length}; } catch { return null; } };
+          const MEDIA = {get: async k => k === "dampak_peringatan/analisis.json" ? baca("data/raw/prediksi/analisis.json") : null};
+          const ASSETS = {fetch: async u => { const p = new URL(typeof u === "string" ? u : u.url, "http://lokal").pathname;
+            try { return new Response(await fs.readFile(path.join(akar, "public", p))); } catch { return new Response("", {status: 404}); } }};
+          const DB = {prepare: () => ({bind: () => ({first: async () => ({n: 0}), run: async () => ({}), all: async () => ({results: []})})})};
+          globalThis.caches ??= {default: {match: async () => undefined, put: async () => {}}};
+          const r = await fn({DB, MEDIA, ASSETS, IP_SALT: "lokal"}, new Request(new URL(req.url, "http://lokal")), url, {waitUntil() {}});
+          res.writeHead(r.status, {...Object.fromEntries(r.headers), "cache-control": "no-store"}); return res.end(Buffer.from(await r.arrayBuffer()));
         }
       }
       const kepala = {};
@@ -122,8 +159,12 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
         isi = Buffer.from(h); keluar["cache-control"] = "no-store"; keluar["x-tinjau"] = "lokal";
       } else if (r.ok && jalur.startsWith("/admin") && (r.headers.get("content-type") || "").includes("text/html")) {
         /* halaman admin dirender Worker: sisipkan lapisan dashboard lokal supaya perubahan public/inti/dasbor.css terlihat sebelum deploy */
-        const h = isi.toString("utf8");
-        if (!h.includes("/inti/dasbor.css")) { isi = Buffer.from(h.replace("</head>", '<link href="/inti/dasbor.css" rel="stylesheet">\n<script src="/inti/dasbor_admin.js" defer></script>\n</head>')); keluar["cache-control"] = "no-store"; }
+        let h = isi.toString("utf8");
+        if (!h.includes("/inti/dasbor.css")) h = h.replace("</head>", '<link href="/inti/dasbor.css" rel="stylesheet">\n<script src="/inti/dasbor_admin.js" defer></script>\n</head>');
+        /* tiru kerangka admin src/admin_halaman.js sebelum Worker baru terbit: satu menu = panel kiri Pusdalops, tanpa sub-nav grup (pemilik 26 Nov 2026) */
+        if (h.includes('<header class="ad-top">') && !h.includes("/bnpb/menu_pusdalops.js")) h = h.replace(/<nav class="ad-sub"[\s\S]*?<\/nav>/, "")
+          .replace("</header>", '</header><link href="/bnpb/menu_pusdalops.css" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js"></script>');
+        isi = Buffer.from(h); keluar["cache-control"] = "no-store";
       }
       /* tiru pasangKeluar src/worker.js: tombol Keluar di semua HTML sebelum Worker baru terbit (halaman tanpa sesi tidak dibedakan di sini) */
       if ((keluar["content-type"] || r.headers.get("content-type") || "").includes("text/html") && !/^\/(admin\/)?masuk\/?$/.test(jalur)) {

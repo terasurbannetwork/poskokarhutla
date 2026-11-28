@@ -774,6 +774,32 @@ jobs:
         continue-on-error: true
         run: python3 scripts/bnpb/iku.py --uji && python3 scripts/bnpb/iku.py
 
+      # Ruang Unit BNPB (data/kajian-bnpb/kedeputian/DESAIN-TEKNIS.md 2.3): hitungan ke /tmp/unit, unggah R2 unit/. Tidak di-commit (repo publik).
+      # Mingguan (Senin UTC) dan bulanan (tanggal 1). BPS_KEY belum ada di secret: bagian yang butuh kunci memakai berkas terakhir di cache.
+      - name: Pulihkan cache Ruang Unit
+        uses: actions/cache/restore@v4
+        with: {path: data/raw/unit, key: "unit-${{ github.run_id }}", restore-keys: "unit-"}
+      - name: Ruang Unit (boleh gagal)
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          BPS_KEY: ${{ secrets.BPS_KEY }}
+        run: |
+          [ -n "$BPS_KEY" ] || echo "::warning title=Ruang Unit::BPS_KEY kosong, bagian yang butuh kunci BPS memakai berkas terakhir di cache"
+          python3 -I scripts/bnpb/unit/jalan.py --cek
+          python3 -I scripts/bnpb/unit/jalan.py harian $([ "$(date -u +%u)" = 1 ] && echo --mingguan) $([ "$(date -u +%d)" = 01 ] && echo --bulanan)
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then echo "::warning title=Ruang Unit R2::token Cloudflare kosong, unggah dilewati"; exit 0; fi
+          gagal=0
+          for f in /tmp/unit/*.json; do
+            npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/unit/$(basename "$f") --file "$f" --content-type application/json --remote || { echo "::warning title=Ruang Unit R2::$f gagal diunggah"; gagal=1; }
+          done
+          exit $gagal
+      - name: Simpan cache Ruang Unit
+        if: always()
+        uses: actions/cache/save@v4
+        with: {path: data/raw/unit, key: "unit-${{ github.run_id }}"}
+
       # laporan harian + kurva musim (musim_harian.json ditimpa perbarui() di dalamnya). musim_harian.json SENGAJA tidak di daftar
       # git checkout HEAD: ia bergulir lewat cache data-; versi repo hanya dasar saat cache kosong.
       - name: Laporan harian & kurva musim (boleh gagal)

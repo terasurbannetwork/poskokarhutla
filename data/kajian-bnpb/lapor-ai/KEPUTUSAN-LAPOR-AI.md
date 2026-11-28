@@ -180,7 +180,7 @@ Pemilik menambah enam fitur pada hari yang sama. Dua belas fitur lanjutan sekara
 
 | No | Tanggal | Keputusan |
 | --- | --- | --- |
-| K37 | 19 Nov 2026 | Mode luring di web: laporan disimpan di HP saat sinyal hilang dan terkirim otomatis saat tersambung. |
+| K37 | 19 Nov 2026 | Mode luring di web: laporan disimpan di HP saat sinyal hilang dan terkirim otomatis saat tersambung. Diperinci paket `data/kajian-bnpb/lapor-luring/` (KEPUTUSAN-LURING DL1 sampai DL11, Q1 sampai Q11); untuk fitur ini paket itu menang atas D41 sampai D45, dan LA-35, LA-36 digantikan LR-02 sampai LR-12. |
 | K38 | 19 Nov 2026 | Foto dinilai otomatis: buram, foto lama, foto sama dari internet (hash perseptual atau pencarian balik), dan relevan atau tidak dengan jenis bencana yang dilaporkan. Hanya ditandai untuk staf, tidak menolak otomatis. |
 | K39 | 19 Nov 2026 | Ringkasan harian otomatis: tiap pagi rangkuman laporan warga 24 jam per provinsi dan jenis, siap ditempel ke Laporan Harian BNPB, tanpa buku kejadian kedua. |
 | K40 | 19 Nov 2026 | Penugasan tiket ke orang atau BPBD dengan tenggat dan pengingat; lewat tenggat tanpa tindakan ditandai merah di meja. |
@@ -695,3 +695,23 @@ Catatan pelaksanaan: semua isian baru tipe pilihan, tidak pernah wajib, selalu p
 | No | Tanggal | Keputusan | Kutipan |
 | --- | --- | --- | --- |
 | K105 | 25 Nov 2026 | Alur cari orang: pelapor boleh mengunggah foto orang yang dicari **dari galeri** (pengecualian K75, hanya langkah foto orang dicari; foto kejadian tetap wajib kamera). Sesudah pelapor setuju, foto dikirim ke Claude API (Anthropic, dipanggil dari Worker Cloudflare lewat `src/lapor_model.js`) untuk membaca ciri fisik: perkiraan rentang umur, jenis kelamin yang tampak, rambut, bentuk wajah dan hidung, perawakan, pakaian, tanda khusus. Hasilnya usulan yang diperiksa dan dibetulkan pelapor sebelum disimpan (pengecualian D17). Foto hanya untuk staf, tidak publik, tanpa vektor wajah, tidak dipakai untuk pencocokan otomatis. | "Ya kasih dong fotonya ... AI nya memproses ciri fisik ... range umur dll jenis kelamin jenis rambut hidung"; "Boleh ini tapi worker nya cloudflare atau Anthropic kan ada API nya ya" |
+| K106 | 26 Nov 2026 | Alur cari orang: **nama panggilan wajib**. Mesin menolak kosong dan "Lewati" di saluran mana pun lalu bertanya ulang; layar web hanya punya tombol Kirim. Nama lengkap dan nama panggilan tampil sebagai kartu isian (`minta: "teks"`), bukan kotak obrolan. | "Jangan ada lewati ya cukup kirim ya. Wajib. soalya" |
+| K107 | 26 Nov 2026 | Alur cari orang: sesudah umur ditanya **tinggi badan (cm)** dan **berat badan (kg)**. Batas wajar di mesin: tinggi 30-250 cm, berat 2-300 kg, di luar itu ditanya ulang. Bawaan sementara (belum diputuskan wajib): ada pilihan "Tidak tahu", tersimpan sebagai tidak diketahui, bukan 0. Satuan isian angka dikirim mesin (`satuan`) dan tampil di kanan kotak (umur "tahun"). Nilainya masuk ciri-ciri, data pribadi orang yang dicari, hanya untuk petugas. | "Oke tambahin kali ya berat dan tinggi badan gitu" |
+| K108 | 26 Nov 2026 | Alur cari orang: foto orang yang dicari **sampai 10** (dari galeri atau kamera, pengecualian K75 tetap). Batas ditegakkan di mesin (langkah foto berhenti di 10) dan di rute unggah (MAKS_FOTO). Lewati sebelum ada foto, Lanjut sesudahnya; tidak wajib. Foto pertama di `lapor_cari_foto` (0185), foto ke-2 sampai ke-10 di `lapor_cari_foto_lain` (0186), R2 privat, dihapus bersama aturan anonim Q67. Hapus per foto belum ada (bawaan sementara: tidak ada tombol hapus; foto keliru dibatalkan dengan membatalkan laporan). | "Oke ini bisa sampai 10 foto ya" |
+| K109 | 26 Nov 2026 | Alur cari orang: **pakaian terakhir wajib** (tanpa Lewati, ditolak di mesin). Panel Isian laporan saat lapor orang hilang memuat isian orang dicari (orang yang dicari, ciri-ciri, terakhir terlihat, kontak), bukan isian kejadian. | "Ini gausah ada lewati deh soalnya datanya penting" |
+
+## Keputusan pemilik 27 Nov 2026: orang hilang publik, menemukan, dan mencari lewat foto
+
+Pemilik: "lapor orang hilang agar dia tidak hanya melaporkan orang yang hilang atau mencari tapi juga jika menemukan orang hilang. Atau ada yang mencari orang hilang dari foto gitu. Jadi ketika ada orang yang melaporkan hilang dia harus setuju bahwa dia sepakat bahwa bisa ditunjukkan ke publik profil yang dia isi terkait orang hilang tersebut".
+
+| ID | Tanggal | Keputusan |
+| --- | --- | --- |
+| K110 | 27 Nov 2026 | Layanan Lapor orang hilang punya tiga jalur: melaporkan orang hilang (yang sudah ada), **melaporkan menemukan orang** (orang yang ditemukan dan belum diketahui keluarganya), dan **mencari lewat foto** (mencocokkan foto dengan profil orang hilang). |
+| K111 | 27 Nov 2026 | Pelapor orang hilang **wajib menyetujui** bahwa profil yang ia isi tentang orang itu **boleh ditampilkan ke publik**. Ini mengubah K91 dan D129 untuk orang dicari: laporan orang dicari tidak lagi "hanya untuk meja". Rinciannya (isian mana yang publik, anak, pencabutan, penutupan saat ditemukan) diatur paket `data/kajian-bnpb/orang-hilang-publik/`. |
+| K112 | 27 Nov 2026 | Isian profil publik: **nama, foto, umur, dan lokasi** tampil; **nomor kontak tidak pernah publik** (pemilik: "Nama foto umur lokasi nomor kontak ga usah publik"; dibaca sesi induk sebagai: empat yang pertama publik, nomor kontak tidak. Bila maksudnya lain, pemilik meralat). Kontak lewat petugas. |
+| K113 | 27 Nov 2026 | **Semua** profil orang hilang dan laporan menemukan orang diverifikasi petugas sebelum tampil publik ("Semua harus diverifikasi petugas lah"). |
+| K114 | 27 Nov 2026 | Pelapor boleh **mencabut** persetujuan; profil turun dari publik. |
+| K115 | 27 Nov 2026 | Profil turun dari publik **otomatis** saat orangnya ditemukan atau laporan ditutup petugas ("boleh"). |
+| K116 | 27 Nov 2026 | Hanya orang yang **hilang karena bencana** ("Intinya harus karena bencana hilangnya. Di luar itu ga bisa"). Laporan tanpa kaitan bencana tidak diterima di jalur ini. Cara menyaring dirancang paket (bawaan rancangan: lokasi terakhir terlihat jatuh di kab/kota yang punya kejadian bencana tercatat, yaitu Buku Besar, Dalops, laporan darurat terverifikasi, atau peringatan aktif, dalam jendela waktu; pelapor memilih kejadiannya; petugas memastikan saat verifikasi; di luar itu pelapor diarahkan ke kepolisian). |
+
+Sampai paket itu selesai dan tiketnya dikerjakan, perilaku lama tetap berlaku (tidak ada yang tampil publik).

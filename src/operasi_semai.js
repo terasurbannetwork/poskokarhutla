@@ -1,10 +1,10 @@
 /* Peluang semai awan: berkas prakiraan R2 + target renlap OMC (data/kajian-bnpb/semai-awan/DESAIN-TEKNIS.md §5, KEAMANAN-PRIVASI.md §4; skema migrations/0129_semai_target.sql).
    Baca = hak yang sama dengan /api/operasi/peta. Tulis = stafPeran PERAN_TULIS atau modOK (S7). Koordinat, skor, alasan, jendela SELALU dari arsip R2 putaran, bukan badan klien. */
-import {json, gagal, bacaBody, adminOK} from "./worker.js";
+import {json, gagal, bacaBody, adminOK, sha as shaHex} from "./worker.js";
 import {wib, modOK} from "./posko.js";
 import {stafPeran, pemirsaLihat} from "./staf.js";
 import {PERAN_BACA, bungkus} from "./operasi_udara.js";
-import {smTargetHari, smTargetRentang, smBase, smTargetAktif, smLajuBuat, smSisip, smLajuHapus, smHapus, ssHari, ssAktif, ssLajuBuat, ssLajuHapus, ssSisip, ssHapus} from "./hak.js";
+import {smTargetHari, smTargetRentang, smBase, smTargetAktif, smLajuBuat, smSisip, smLajuHapus, smHapus, ssHari, ssAktif, ssLajuBuat, ssLajuHapus, ssSisip, ssHapus, omcSisip, omcDaftar} from "./hak.js";
 import {NAMA_KAB4} from "./siklus_kab.js";
 
 export const PERAN_TULIS = ["pusdalops", "tmc"];
@@ -13,9 +13,9 @@ const NAMA_SAH = n => n === "semai.json" || n === "angin_asap.json" || n === "se
   || (/^(awan|asap)_(\d{1,2})\.png$/.test(n) && (m => m <= 36 && m % 3 === 0)(Number(n.match(/_(\d+)\./)[1])));
 const teks = (v, maks) => typeof v === "string" ? v.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, maks) : "";
 const bacaOK = async (env, req) => await adminOK(env, req) || await stafPeran(env, req, PERAN_BACA) || await pemirsaLihat(env, req);
-const tglSah = t => typeof t === "string" && /^\d{4}-\d\d-\d\d$/.test(t) && !Number.isNaN(Date.parse(t));
+const tglSah = t => typeof t === "string" && /^\d{4}-\d\d-\d\d$/.test(t) && !Number.isNaN(Date.parse(t)) && new Date(t).toISOString().slice(0, 10) === t;   // tolak tanggal bergulir (2026-02-31)
 const sha = async s => new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)));
-/* SEMAI_TOKEN (DESAIN-TEKNIS semai-banjir §4.1): hanya dipanggil dari dua rute GET di bawah; tanpa sesi, tanpa peran. Banding waktu tetap atas hash SHA-256.
+/* SEMAI_TOKEN (DESAIN-TEKNIS semai-banjir §4.1): hanya dipanggil dari rute GET di bawah (sasaran, arsip, omc-posko); tanpa sesi, tanpa peran. Banding waktu tetap atas hash SHA-256.
    Rahasia kosong = jalur mati. Dicek SEBELUM adminOK supaya token pipeline tidak masuk hitungan gagal-admin per IP. */
 async function tokenOK(env, req) {
   const t = (req.headers.get("authorization") || "").match(/^Bearer\s+(\S+)$/i)?.[1];
@@ -146,6 +146,75 @@ const bungkusSasaran = fn => async (...a) => {
   try { return await fn(...a); }
   catch (e) { if (/no such table: op_semai_sasaran/i.test(String(e?.message || e))) return gagal(503, "fitur sasaran semai banjir belum diaktifkan (tabel sasaran belum ada)"); throw e; }
 };
+/* SB-33: laporan OMC posko dari bot WA (hasil scripts/wa/urai_omc_posko.mjs + prov_kode). Tulis = Bearer WA_MESIN saja (banding hash).
+   Badan disaring ke daftar putih dan dinormalkan; yang tersimpan hanya hasil saringan, tanpa teks asli dan tanpa nama orang. */
+const mesinOK = async (env, req) => {   // WA_MESIN < 32 huruf = jalur mati, banding waktu tetap atas hash (sama dengan tokenOK)
+  const t = /^Bearer (\S+)$/i.exec(req.headers.get("authorization") || "")?.[1];
+  if (!t || typeof env.WA_MESIN !== "string" || env.WA_MESIN.length < 32) return false;
+  const [a, b] = await Promise.all([sha(t), sha(env.WA_MESIN)]); let d = 0;
+  for (let i = 0; i < 32; i++) d |= a[i] ^ b[i];
+  return d === 0;
+};
+const HP = /\d[\d\s.-]{7,}\d/;   // urutan 9 angka atau lebih (nomor HP) tidak boleh masuk teks bebas
+const tk = (v, maks) => typeof v === "string" && v.length <= maks && teks(v, maks) && !HP.test(v) ? teks(v, maks) : null;
+const bil = (v, lo, hi) => v == null ? null : typeof v === "number" && Number.isFinite(v) && v >= lo && v <= hi ? v : undefined;   // null = kosong (bukan 0), undefined = tidak sah
+const jam = v => v == null ? null : typeof v === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(v) ? v : undefined;
+const larik = (v, maks) => Array.isArray(v) && v.length <= maks ? v : null;
+
+function saring(o) {
+  const tanggal = o.tanggal, kode = o.prov_kode, nama = tk(o.provinsi ?? o.prov_nama, 60);
+  if (!tglSah(tanggal)) return "tanggal harus YYYY-MM-DD yang sah";
+  if (Date.now() - Date.parse(tanggal) > 400 * 864e5) return "tanggal lebih dari 400 hari ke belakang";
+  if (typeof kode !== "string" || !/^\d{2}$/.test(kode)) return "prov_kode harus 2 angka kode BPS";
+  if (!nama) return "provinsi wajib, maksimal 60 huruf";
+  const po = larik(o.posko ?? [], 10), ar = larik(o.armada, 12), ku = larik(o.kumulatif ?? [], 10);
+  if (!po || !ar?.length || !ku) return "posko maksimal 10, armada 1 sampai 12, kumulatif maksimal 10";
+  const posko = po.map(x => tk(x, 100)); if (posko.includes(null)) return "nama posko tidak sah";
+  let sorti = 0, kg = 0, salah = null;
+  const armada = ar.map(a => {
+    const s = larik(a?.sorti ?? [], 20), pesawat = tk(a?.pesawat, 80), reg = a?.registrasi == null ? null : tk(a.registrasi, 20);
+    if (!a || typeof a !== "object" || !s || !pesawat || (a.registrasi != null && !reg)) return salah = "armada tidak sah", null;
+    return {pesawat, registrasi: reg, sorti: s.map((r, i) => {
+      const mn = bil(r?.ketinggian_ft?.min, 0, 60000), mx = bil(r?.ketinggian_ft?.max, 0, 60000), k = bil(r?.kg, 0, 50000), h = jam(r?.mesin_hidup), m = jam(r?.mesin_mati);
+      const ws = r?.wilayah_semai == null ? null : tk(r.wilayah_semai, 200), bh = r?.bahan == null ? null : /^[A-Za-z0-9]{1,20}$/.test(r.bahan) ? r.bahan : undefined;
+      if (!r || typeof r !== "object" || [mn, mx, k, h, m, bh].includes(undefined) || (r.wilayah_semai != null && !ws)) return salah = "sorti tidak sah", null;
+      sorti++; kg += k ?? 0;
+      return {ke: i + 1, mesin_hidup: h, mesin_mati: m, wilayah_semai: ws, ketinggian_ft: mn == null ? null : {min: mn, max: mx ?? mn}, bahan: bh, kg: k};
+    })};
+  });
+  if (salah) return salah;
+  if (sorti > 100) return "terlalu banyak sorti (maks 100 per laporan)";
+  const kumulatif = ku.map(x => { const p = tk(x?.posko, 100), a = bil(x?.sorti, 0, 5000), b = bil(x?.kg, 0, 5e6), c = bil(x?.jam_terbang_menit, 0, 1e6); return p && a != null && b != null && c !== undefined ? {posko: p, sorti: a, kg: b, jam_terbang_menit: c} : salah = "kumulatif tidak sah"; });
+  if (salah) return salah;
+  return {tanggal, prov_kode: kode, prov_nama: nama, posko, armada, kumulatif, sorti, kg};
+}
+
+async function omcTerima(env, req, url, kini) {
+  if (!await mesinOK(env, req)) return gagal(403, "laporan OMC posko hanya dari mesin bot");
+  const b = await bacaBody(req, 65536); if (b.galat) return gagal(b.status || 400, b.galat);
+  const v = saring(b.o); if (typeof v === "string") return gagal(400, v);
+  if (v.tanggal > wib(kini + HARI)) return gagal(400, "tanggal tidak boleh lebih dari besok (WIB)");
+  const {sorti, kg, ...isi} = v, sidik = await shaHex(JSON.stringify(isi)), id = crypto.randomUUID();
+  try { await omcSisip(env, id, v.tanggal, v.prov_kode, v.prov_nama, JSON.stringify(v.posko), JSON.stringify(v.armada), sorti, kg, JSON.stringify(v.kumulatif), sidik, new Date(kini).toISOString()); }
+  catch (e) { if (/UNIQUE/i.test(String(e?.message || e))) return json({ok: true, ganda: true}); throw e; }
+  return json({ok: true, id}, 201);
+}
+
+/* Keluaran: {baris: [...terbaru dulu], posko: {<prov_kode>: {tanggal, prov_nama, posko[]}}}: posko = dari laporan terbaru per provinsi (dipakai SB-34) */
+async function omcDaftarRute(env, req, url, kini) {
+  const tolak = await bacaAtauToken(env, req, "laporan OMC posko hanya untuk token pipeline, akun centurisk97, staf berperan, atau moderator"); if (tolak) return tolak;
+  const sampai = url.searchParams.get("sampai") ?? wib(kini), dari = url.searchParams.get("dari") ?? wib(Date.parse(sampai) - 7 * HARI), prov = url.searchParams.get("prov");
+  if (!tglSah(sampai) || !tglSah(dari) || dari > sampai || Date.parse(sampai) - Date.parse(dari) > 120 * HARI) return gagal(400, "dari dan sampai harus YYYY-MM-DD sah, rentang paling lama 120 hari");
+  if (prov != null && !/^\d{2}$/.test(prov)) return gagal(400, "prov harus 2 angka kode BPS");
+  const baris = (await omcDaftar(env, dari, sampai, prov)).map(r => ({id: r.id, tanggal: r.tanggal, prov_kode: r.prov_kode, prov_nama: r.prov_nama, posko: JSON.parse(r.posko_json), armada: JSON.parse(r.armada_json),
+    sorti_hari: r.sorti_hari, kg_hari: r.kg_hari, kumulatif: JSON.parse(r.kumulatif_json), dibuat: r.dibuat}));
+  const posko = {}; for (const r of baris) if (r.posko.length && !posko[r.prov_kode]) posko[r.prov_kode] = {tanggal: r.tanggal, prov_nama: r.prov_nama, posko: r.posko};
+  return json({baris, posko}, 200, {"cache-control": "no-store"});
+}
+const bungkusOmc = fn => async (...a) => {
+  try { return await fn(...a); }
+  catch (e) { if (/no such table: op_omc_lapor/i.test(String(e?.message || e))) return gagal(503, "fitur laporan OMC posko belum diaktifkan (tabel belum ada)"); throw e; }
+};
 export const RUTE_SEMAI = Object.fromEntries(Object.entries({
   "GET /api/operasi/semai/berkas/:nama": berkas,
   "GET /api/operasi/semai/target": daftar,
@@ -154,4 +223,6 @@ export const RUTE_SEMAI = Object.fromEntries(Object.entries({
   "GET /api/operasi/semai/sasaran": bungkusSasaran(sasaranDaftar),
   "POST /api/operasi/semai/sasaran": bungkusSasaran(sasaranBuat),
   "POST /api/operasi/semai/sasaran/hapus": bungkusSasaran(sasaranHapus),
+  "GET /api/operasi/omc-posko": bungkusOmc(omcDaftarRute),
+  "POST /api/operasi/omc-posko": bungkusOmc(omcTerima),
 }).map(([k, f]) => [k, bungkus(f)]));

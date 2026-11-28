@@ -2943,5 +2943,84 @@
     }
    }
   ]
+ },
+ "kegiatan": {
+  "tarik": "2026-11-11",
+  "cakup": [
+   [
+    "2026-10-01",
+    "2026-10-31"
+   ]
+  ],
+  "butir": [
+   {
+    "tanggal": "2026-10-02",
+    "jam": "09:00",
+    "judul": "Kepala BNPB Tinjau Posko Contoh di Kabupaten Contoh Satu",
+    "tautan": "https://bnpb.go.id/berita/contoh-kepala-1",
+    "pelaksana": "Kepala BNPB",
+    "jenis": [],
+    "lokasi": "Kabupaten Contoh Satu",
+    "situasi": false,
+    "asal": "bnpb.go.id"
+   },
+   {
+    "tanggal": "2026-10-20",
+    "jam": "12:00",
+    "judul": "Perkembangan Situasi Contoh 20 Oktober 2026",
+    "tautan": "https://bnpb.go.id/berita/contoh-situasi-20",
+    "pelaksana": "Pusdatinkom",
+    "jenis": [],
+    "lokasi": null,
+    "situasi": true,
+    "asal": "bnpb.go.id"
+   },
+   {
+    "tanggal": "2026-10-21",
+    "jam": "12:00",
+    "judul": "Perkembangan Situasi Contoh 21 Oktober 2026",
+    "tautan": "https://bnpb.go.id/berita/contoh-situasi-21",
+    "pelaksana": "Pusdatinkom",
+    "jenis": [],
+    "lokasi": null,
+    "situasi": true,
+    "asal": "bnpb.go.id"
+   },
+   {
+    "tanggal": "2026-10-22",
+    "jam": "15:00",
+    "judul": "Satgas Contoh Lakukan Water Bombing Karhutla di Riau",
+    "tautan": "https://bnpb.go.id/berita/contoh-satgas-22",
+    "pelaksana": "Satgas operasi",
+    "jenis": [
+     "karhutla"
+    ],
+    "lokasi": "Riau",
+    "situasi": false,
+    "asal": "bnpb.go.id"
+   },
+   {
+    "tanggal": "2026-10-28",
+    "jam": "10:00",
+    "judul": "Seminar Contoh Ketangguhan Desa",
+    "tautan": "https://bnpb.go.id/berita/contoh-seminar-28",
+    "pelaksana": null,
+    "jenis": [],
+    "lokasi": null,
+    "situasi": false,
+    "asal": "bnpb.go.id"
+   },
+   {
+    "tanggal": "2026-10-29",
+    "jam": "10:00",
+    "judul": "<img src=x onerror=alert(1)>Judul Jahat <script>alert(2)</script> Contoh",
+    "tautan": "https://bnpb.go.id/berita/judul-jahat-contoh",
+    "pelaksana": null,
+    "jenis": [],
+    "lokasi": null,
+    "situasi": false,
+    "asal": "bnpb.go.id"
+   }
+  ]
  }
 }

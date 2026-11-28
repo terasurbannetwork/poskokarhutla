@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Pasang surut BMKG dari Mac pemilik, 05.30 dan 17.30 waktu Mac (scripts/banjir/pasut_lokal.sh).
+     Pasang sekali per mesin: npm run pasut:pasang. REPO diganti jalur repo oleh perintah itu. -->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>id.centurisk97.pasut-lokal</string>
+  <key>ProgramArguments</key><array><string>/bin/sh</string><string>REPO/scripts/banjir/pasut_lokal.sh</string></array>
+  <key>WorkingDirectory</key><string>REPO</string>
+  <key>EnvironmentVariables</key><dict><key>PATH</key><string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string></dict>
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict><key>Hour</key><integer>5</integer><key>Minute</key><integer>30</integer></dict>
+    <dict><key>Hour</key><integer>17</integer><key>Minute</key><integer>30</integer></dict>
+  </array>
+  <key>StandardOutPath</key><string>/tmp/pasut-lokal.log</string>
+  <key>StandardErrorPath</key><string>/tmp/pasut-lokal.log</string>
+</dict>
+</plist>

@@ -199,7 +199,10 @@
         "WARGA.md",
         ".dev.vars.example",
         "scripts/lapor/**",
-        "tests/lapor/**"
+        "tests/lapor/**",
+        "src/dampak_peringatan.js",
+        "src/potensi.js",
+        "src/rekomendasi_katalog.js"
       ]
     },
     {
@@ -242,7 +245,8 @@
         "scripts/situs/**",
         "scripts/terbit/**",
         "public/lapor/**",
-        "public/desa-waspada/**"
+        "public/desa-waspada/**",
+        "public/potensi/**"
       ]
     },
     {
@@ -265,7 +269,8 @@
         "public/inti/**",
         "tests/inti/**",
         "public/bencana.json",
-        "public/semua/**"
+        "public/semua/**",
+        "public/inti/dampak_peringatan.*"
       ]
     },
     {
@@ -397,7 +402,9 @@
         "tests/beban/**",
         "tests/e2e/**",
         "tests/desa-waspada/**",
-        "tests/alun-kabar/**"
+        "tests/alun-kabar/**",
+        "tests/dampak-peringatan/**",
+        "tests/potensi/**"
       ]
     },
     {
@@ -682,7 +689,14 @@
         "public/siklus/**",
         "scripts/siklus/**",
         "tests/siklus/**",
-        "data/kajian-bnpb/siklus/**"
+        "data/kajian-bnpb/siklus/**",
+        "scripts/siklus/dampak_peringatan.py",
+        "scripts/siklus/kelas_kab.py",
+        "public/data/kelas_bahaya_kab.json",
+        "scripts/siklus/kelas_desa_bnpb.py",
+        "public/data/kelas_desa_bnpb.json",
+        "public/data/kelas_desa/**",
+        "data/kajian-bnpb/potensi-hidromet/**"
       ]
     },
     {
@@ -729,7 +743,10 @@
       "milik": [
         "scripts/prediksi/**",
         "public/prediksi/**",
-        "tests/prediksi/**"
+        "tests/prediksi/**",
+        "scripts/prediksi/status_prakiraan*",
+        "public/prediksi/data/status_arsip/**",
+        "scripts/prediksi/analisis_wilayah.py"
       ]
     },
     {

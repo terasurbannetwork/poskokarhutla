@@ -184,5 +184,13 @@
   "0180_lp_komen.sql": "d00bce13b33deb866922987df6902d74316b1cbe23c415a4a3a6d6b5a32d4890",
   "0181_semai_sasaran.sql": "237ffd18d373a111d7202a548a90dad21a5a6710ec39fbf969669eedb5ccaaa2",
   "0182_semai_sasaran_indeks.sql": "8ae278b6ef766e78dcea0603b4cd11a76858cb523945db5f8573cecb2dbb974e",
-  "0183_lp_komen_putus.sql": "b5ecf86e5d8ca38e1a083a000f0bcfa2b6f2ee69eec7a940ffbcea4d26fba7e1"
+  "0183_lp_komen_putus.sql": "b5ecf86e5d8ca38e1a083a000f0bcfa2b6f2ee69eec7a940ffbcea4d26fba7e1",
+  "0184_pw_status_prakiraan.sql": "504b6805053602ff52438e241a91128f3d58fb9f14617b6053a96bd92e2feb16",
+  "0185_lapor_cari_foto.sql": "b33c0a3da8d016bf0e2573b3c3845d595bf2ee2014e72b25c00791e8701af12f",
+  "0186_lapor_cari_foto_banyak.sql": "70dc38a3cd6f9cddd9f1da31b8212a0e7982708c372adc07d8584a892302bb54",
+  "0187_unit.sql": "4fb574a0b6a973cf6c72e41a1886da9c2903a697e4608ecacc07925445141c06",
+  "0188_orang_hilang.sql": "b7e4882413e7d54e2c4cbf307498784acf9b264019b97a1dbd31e21c2a7eaca5",
+  "0189_omc_lapor.sql": "5316d8cc827c9678049e9a20314b8e865646847239b3ae42380a081a681b3c0c",
+  "0190_orang_hilang_usia.sql": "1687989d38fb33bb34d4f24456c61f88c7b4664a3e5d8afdef8e9b125c3e0c05",
+  "0191_oh_nomor_ketik.sql": "00b00c70313b18d40dada8367a89c66fd43e319fda1600284bb117e1ce104493"
 }

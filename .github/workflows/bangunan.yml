@@ -212,6 +212,39 @@ jobs:
           key: bangunan-grid-${{ github.run_id }}
           restore-keys: bangunan-grid-
 
+      # Cache Actions sering diusir (cache repo penuh): salinan grid ada di R2 (diunggah job bulanan), ambil dari sana.
+      # Kode provinsi = matriks job bangun di atas; nama yang tidak ada di R2 dilewati.
+      # ponytail: cache bisa diusir lagi; simpan ulang di bawah hanya mengurangi frekuensi, R2 tetap sumber tetap.
+      - name: Pulihkan grid dari R2 bila cache kosong (boleh gagal)
+        id: r2
+        continue-on-error: true
+        run: |
+          ls data/terkunci/bangunan/grid_*.json >/dev/null 2>&1 && exit 0
+          mkdir -p data/terkunci/bangunan
+          n=0
+          for nama in kec.json $(for p in 11 12 13 14 15 16 17 18 19 21 31 32 33 34 35 36 51 52 53 61 62 63 64 65 71 72 73 74 75 76 81 82 91 92 93 94 95 96; do echo grid_$p.json halus_$p.json; done); do
+            f="data/terkunci/bangunan/$nama"
+            if npx --yes wrangler@4.42.0 r2 object get "poskokarhutla-foto/bangunan/$nama" --file "$f" --remote >/dev/null 2>&1 && [ -s "$f" ] && python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f" 2>/dev/null; then
+              n=$((n+1))
+            else
+              rm -f "$f"
+            fi
+          done
+          echo "::warning::grid bangunan dipulihkan dari R2: $n berkas"
+          [ "$n" -gt 0 ] && echo dipulihkan=1 >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Simpan ulang grid ke cache (dari R2)
+        if: steps.r2.outputs.dipulihkan == '1'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data/terkunci/bangunan/grid_*.json
+            data/terkunci/bangunan/halus_*.json
+            data/terkunci/bangunan/kec.json
+          key: bangunan-grid-${{ github.run_id }}
+
       - name: Pulihkan data karhutla terakhir
         uses: actions/cache/restore@v4
         with:

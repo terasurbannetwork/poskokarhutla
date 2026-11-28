@@ -15,15 +15,16 @@ button,input,select{font:inherit;color:inherit}
 header.top .ds-merek{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;flex:none}
 header.top .ds-merek b{font-family:var(--display);font-weight:800;font-size:var(--ds-fs-4);white-space:nowrap}
 header.top .ds-merek small{display:block;font-size:var(--ds-fs-1);opacity:.75}
-.ds-sistem{display:flex;gap:4px;flex:1;justify-content:center;min-width:0}
-.ds-sistem a{color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:var(--ds-fs-3);text-decoration:none;white-space:nowrap}
-.ds-sistem a:hover{opacity:1;background:oklch(100% 0 0 / .08)}
-.ds-sistem a[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
+/* pilihan sistem: deretan .db-mode (dasbor.css) di dalam main, ujung ke ujung */
+.ds-wrap>.ds-sistem{margin:16px 16px 0}
+.pt>.ds-sistem{margin:0 0 16px}
+/* wide: panel Pusdalops menggantikan kepala, jadi tidak ada ruang kepala di atas */
+@media (min-width:901px){body.mp-model-a{padding-top:0;--top:0px}}
 #ds-menu{display:none}
 
 /* kerangka: sisi kiri lengket + isi */
 .ds{display:grid;grid-template-columns:var(--ds-sisi) minmax(0,1fr);gap:20px;max-width:1320px;margin:0 auto;padding:16px}
-.ds-sisi{position:sticky;top:calc(var(--top) + 16px);align-self:start;max-height:calc(100vh - var(--top) - 32px);overflow:auto;display:grid;gap:14px;padding:2px}
+.ds-sisi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;position:sticky;top:calc(var(--top) + 16px);align-self:start;max-height:calc(100vh - var(--top) - 32px);overflow:auto;display:grid;gap:14px}
 .ds-cari{position:relative}
 .ds-cari input{width:100%;height:38px;border-radius:999px;border:1px solid var(--line);background:var(--card);padding:0 14px 0 36px;font-size:var(--ds-fs-2);color:var(--ink);box-shadow:var(--shadow)}
 .ds-cari svg{position:absolute;left:13px;top:11px;width:16px;height:16px;color:var(--ink2)}
@@ -115,8 +116,6 @@ header.top .ds-merek small{display:block;font-size:var(--ds-fs-1);opacity:.75}
   .ds-remah{padding:12px 16px}
   .ds-isi{padding:4px 16px 28px}
   .ds-baris>div{grid-template-columns:minmax(0,1fr)}
-  header.top .ds-merek span{display:none}
-  .ds-sistem a{padding:8px 10px;font-size:var(--ds-fs-2)}
   .ds-pt{zoom:1.15}
   .ds-pratinjau{padding:12px}
 }

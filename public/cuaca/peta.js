@@ -21,7 +21,7 @@ const pilGel = i => `<span class="pl" style="--w:${GEL[i][3]}">${GEL[i][1]}</spa
 const Peta = {
   async init() {
     document.head.insertAdjacentHTML("beforeend", '<link rel="stylesheet" href="../inti/peta/lapis.css"><link rel="stylesheet" href="../inti/peta/legenda.css">');
-    Status.kontrol(); Rawan.kontrol(); Tambahan.kontrol(); Awan.kontrol();   /* overlay rawan longsor dan peringatan dini (rawan.js); mode dan overlay Status 72 jam, hanya bila datanya ada */
+    Status.kontrol(); Rawan.kontrol(); DampakStatus.kontrol(); Tambahan.kontrol(); Awan.kontrol();   /* overlay rawan longsor dan peringatan dini (rawan.js); mode dan overlay Status 72 jam, hanya bila datanya ada */
     PI = await import("../inti/peta/lapis.js").catch(() => null);
     PI?.ubinLapis($("#lapis"), {katalog: UBIN, pendek: UBIN_PENDEK});
     LG = await import("../inti/peta/legenda.js").catch(() => null);

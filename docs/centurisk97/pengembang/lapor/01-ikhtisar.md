@@ -59,7 +59,7 @@ Arti label penting:
 - Persen "Lengkap": bagian isian berlaku yang sudah terjawab. Angka 0 yang terjawab dan jawaban "tidak ada" menghitung sebagai terjawab; isian kosong tidak.
 - Kosong bukan nol: isian yang belum diketahui tampil "belum didata" dan tidak pernah ditulis 0.
 
-Batas pemakaian: 20 pesan per menit, 60 per jam, 120 per hari per nomor; paling banyak 5 laporan terkirim per hari per nomor; satu perangkat paling banyak 5 nomor. Lewat batas dibalas sopan dan laporan yang sedang diisi tetap tersimpan.
+Batas pemakaian: 30 pesan per menit, 100 per jam, 300 per hari per nomor; paling banyak 5 laporan terkirim per hari per nomor; satu perangkat paling banyak 5 nomor. Lewat batas dibalas sopan dan laporan yang sedang diisi tetap tersimpan.
 
 Hal yang sering disalahpahami:
 

@@ -1,0 +1,18 @@
+{
+ "_tentang": "MT-2 pemetaan bahaya ke kegiatan Dana Bersama prabencana (DESAIN-TEKNIS 6.11, ALGORITMA 10.15). Kode dan nama dari Lampiran I Juklak 4/2025 menurut riset/2-pencegahan.md baris MT-2; katalog lengkap 02.01.01 sampai 02.01.11 menyusul RU-092. Disunting direktorat lewat berkas ini, bukan di skrip.",
+ "sumber": "Juklak 4/2025 Lampiran I, lewat data/kajian-bnpb/kedeputian/riset/2-pencegahan.md",
+ "kegiatan": {
+  "02.01.07": "Mitigasi berbasis alam",
+  "02.01.09": "Peningkatan kapasitas badan air",
+  "02.01.10": "Penataan bangunan",
+  "02.01.11": "Relokasi"
+ },
+ "peta": {
+  "banjir": ["02.01.09", "02.01.07"],
+  "longsor": ["02.01.10"],
+  "abrasi": ["02.01.07"]
+ },
+ "bersyarat": [
+  {"kode": "02.01.11", "bahaya": "longsor", "syarat": "kejadian longsor DIBI di kab pada paling sedikit 2 dari 5 tahun terakhir yang lengkap", "tahun_min": 2, "jendela": 5}
+ ]
+}

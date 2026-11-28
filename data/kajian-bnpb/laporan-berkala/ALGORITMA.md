@@ -116,3 +116,15 @@ Semua langkah di atas ditulis untuk bulan `B`. Untuk periode lain, `B` diganti r
 | Usulan temuan (bagian 9) | tidak ada; kejadian menonjol = 5 kejadian dengan meninggal dan hilang, lalu terdampak, terbesar | aturan T1 sampai T7 dengan ambang dibagi 4 **[BAWAAN SEMENTARA, Q18]** | aturan T1 sampai T7 dengan ambang dikali 12 **[BAWAAN SEMENTARA, Q18]**, ditambah tren 10 tahun naik atau turun |
 
 Tahunan tidak menjumlah versi beku bulanan (D13). Lampirannya memuat, per bulan: kejadian bencana alam di versi beku bulanan terakhir, kejadian di tarikan tahunan, dan selisihnya.
+
+## 13. Kegiatan dari siaran pers (Bab 6, Lampiran; Q8, Q16, LB-09)
+
+1. Panen: `scripts/berkala/kegiatan.py panen` membaca halaman indeks `bnpb.go.id/berita/page/N` dari yang terbaru, berhenti pada halaman yang seluruhnya lebih tua dari tanggal awal. Per butir hanya judul (teks `alt` gambar, judul utuh), tanggal, jam, dan tautan `https://bnpb.go.id/berita/<slug>`; isi berita tidak diunduh. robots.txt dibaca dulu (26 Nov 2026: tidak ada, 404), jeda 3 detik antarhalaman.
+2. Arsip: R2 `berkala/kegiatan/<YYYY-MM>.json` dengan `cakup` = rentang tanggal yang sudah dipanen lengkap. Hari panen sendiri belum masuk cakupan (siaran pers sore belum terbit). Panen harian mulai dari akhir cakupan terakhir (tumpang satu hari), jadi hari yang terlewat tetap terpanen.
+3. Usulan dari judul, **[BAWAAN SEMENTARA, Q8]**; staf memilih dan boleh mengubah semuanya:
+   - pelaksana: judul memuat "Kepala BNPB" = Kepala BNPB; kata operasi lapangan (satgas, OMC, water bombing, pemadaman, patroli, posko, distribusi, logistik, evakuasi, armada, operasi udara, dry ice, semai, kerahkan) = Satgas operasi; kata informasi (perkembangan situasi, imbauan, waspada, prakiraan, informasi, data bencana, literasi, jurnalis) = Pusdatinkom; selain itu belum digolongkan (tidak ditebak).
+   - jenis: kata jenis bencana di judul (karhutla, banjir, longsor, cuaca ekstrem, kekeringan, gempa, erupsi, gelombang); boleh lebih dari satu atau kosong.
+   - lokasi: hanya "di/ke Kabupaten, Kota, atau Provinsi ..." atau "di/ke <nama provinsi>"; selain itu kosong.
+   - laporan situasi: judul diawali "Perkembangan Situasi", "Update Penanganan", atau "Laporan Situasi"; hitungannya hanya usulan untuk isian "laporan situasi harian yang terbit".
+4. Berkas angka: mingguan dan bulanan memuat `kegiatan.calon` (butir dalam rentang, urut tanggal) dan `kegiatan.rekap` (siaran pers per usulan pelaksana dan jenis, laporan situasi); tahunan hanya `kegiatan.bulan` per bulan tanpa daftar. Rentang yang tidak tercakup penuh: status `sebagian`, rekap `null`, bulan tahunan `siaran: null` (tertulis "belum dipanen", bukan 0). Harian tanpa kegiatan (PRD 2).
+5. Hitungan di berkas angka adalah siaran pers yang terbit, bukan kegiatan yang dipilih. Kegiatan di laporan hanya baris yang dicentang staf (Q8); tabel per pelaksana di Bab 6 dihitung dari baris terpilih itu. Rekap tahunan dari pilihan staf di versi beku bulanan belum bisa dirakit karena isian tidak ikut objek beku R2 (isian ada di D1), jadi tahunan memakai hitungan siaran pers per bulan.

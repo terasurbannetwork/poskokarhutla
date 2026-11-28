@@ -22,6 +22,7 @@ Sasaran `S(d)` = gabungan empat sumber, tiap kab/kota membawa `asal`:
 | `prakiraan` | `public/prediksi/data/prediksi.json`: tanggal tenggang dari `kode.BNJ.hari` (larik 3 tanggal), dipilih `t` 1 atau 2 dengan `kode.BNJ.hari[t-1] = d`; lalu baris `kab[]` dengan salah satu: `BNJ[t-1][0]` (level) >= 2; ada `waspada[]` beraturan `banjir` untuk kab itu dan tenggang itu; `HJN[t-1][2]` (peluang >= 50 mm) >= 0,3 | H (Q2, Q6) |
 | `bmkg` | `public/banjir/data/cuaca_bmkg_kab10.json`, `kab["PP.KK"].hari[]` dengan `tgl = d` dan `kondisi` `Hujan Lebat` atau `Hujan Petir` (kunci `"11.01"` diubah ke kode BPS `"1101"`). `tangga.json` tidak dipakai: anak tangga `h3`-nya seluruhnya model kita (`s: "kita"`), dan butir ber-`s` `kita` apa pun tidak boleh berlabel BMKG | H (Q6) |
 | `tetap` | `banjir.sasaran_tetap` di `semai_bobot.json`: 13 kab/kota daratan Jabodetabek (kode BPS) | H (Q5) |
+| `kejadian` | `public/data/alun/kabar.json`: kejadian `jenis` banjir atau banjir bandang dengan `status` `berjalan`; kab dicocokkan ke kode BPS lewat nama di `public/geo/kabupaten/*.json` (K6). Berkas berumur > 72 jam dari jam putaran: asal ini tidak dipakai dan bilah sumber menulis "kejadian basi" | K6 |
 | `manual` | baris aktif `op_semai_sasaran` untuk `d`, dibaca lewat `GET /api/operasi/semai/sasaran?tanggal=` dengan token pipeline | K2 |
 
 - Sasaran `tetap` dan `manual` dihitung walau prakiraan tidak menandainya, tetapi kartu menulis asalnya.
@@ -91,8 +92,16 @@ lintasan model (H). Bila sel melayani beberapa sasaran, H = maksimum, dan semua 
 `skor = gerbang x Q^wQ x H^wH x P^wP`, bobot dinormalkan, bawaan 0,45 / 0,40 / 0,15 (pembagian bobot induk, H untuk tujuan ini), fungsi
 `skor()` induk mode `bawaan` dipakai apa adanya dengan D diisi H dan T diisi P.
 
-Zona: NMS 40 km, paling banyak 5, skor >= 0,35, jendela terbang 85% puncak, dipotong 07.00 sampai 16.00 (I, `zona_nms`,
-`jendela_85`). Kode zona `<putaran>-B<huruf>` (KEPUTUSAN D6). Base: bandara terdekat tanpa batas jelajah (S10 induk). Ketinggian semai
+Zona: NMS 40 km, paling banyak 5 nasional (ditambah kuota provinsi di bawah), skor >= 0,35, jendela terbang 85% puncak, dipotong 07.00 sampai 16.00 (I, `zona_nms`,
+`jendela_85`). Kode zona `<putaran>-B<huruf>` (KEPUTUSAN D6). Base: bandara terdekat tanpa batas jelajah (S10 induk), kecuali
+provinsi ber-OMC yang punya posko tercatat (K7): base = posko terdekat dari provinsi itu.
+
+**Kuota provinsi ber-OMC (K5).** `P_omc(d)` = kode provinsi dengan baris `jenis_kegiatan` persis `Pengurangan CH - Bencana` dan
+`periode_awal <= d <= periode_akhir` di `omc_bmkg.json`. Urutan pilih:
+1. Untuk tiap provinsi di `P_omc(d)`: NMS atas sel yang melayani sedikitnya satu sasaran di provinsi itu, paling banyak 3 zona.
+2. Lima zona nasional dari sel sisa (NMS 40 km juga terhadap zona langkah 1), seperti semula.
+3. Saat memilih, sel yang melayani sasaran asal `kejadian` didahulukan pada skor sama; skor dan ambang 0,35 tidak diubah (K6).
+Huruf zona tetap urut skor di seluruh daftar; zona dari kuota provinsi membawa `kuota: "<kode prov>"`. Ketinggian semai
 LCL (induk §7b) ditulis; bahan tidak diusulkan mesin (Q9), kartu menulis "bahan dari BMKG".
 
 Contoh hitung (dipakai RENCANA-UJI §1): komponen 0,53 / 0,36 / 1 / 0,54 / 0,40 memberi Q = 0,566 (induk); tiba 3,5 jam memberi

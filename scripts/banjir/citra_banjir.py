@@ -25,6 +25,7 @@ from umum import simpan  # noqa: E402
 import bukti_das as B  # noqa: E402
 import citra as C  # noqa: E402
 import konsesi_citra as K  # noqa: E402
+import ringkas_citra as R  # noqa: E402
 
 PX_S2, KM_S2 = 320, 12
 PX_S1, KM_S1 = 320, 16
@@ -220,7 +221,7 @@ def s1(d):
         tgl = it["properties"]["datetime"][:10]
         f = f"{d['slug']}_s1_{nama}_{tgl.replace('-', '')}.png"
         g = abu(dbv)
-        open(os.path.join(DIR, f), "wb").write(C.png([g, g, g], PX_S1, MAKS_PNG))
+        open(os.path.join(DIR, f), "wb").write(R.png_abu(g, PX_S1, MAKS_PNG))
         keluar[nama] = {"tgl": tgl, "berkas": "citra/" + f, "adegan": it["id"], "orbit": orb(it)}
     return keluar
 

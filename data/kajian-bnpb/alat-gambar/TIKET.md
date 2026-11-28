@@ -30,3 +30,5 @@ Subagen tidak commit dan tidak push; sesi induk yang melakukannya (AGENTS §9). 
 - Jangan menyebut penduduk kecamatan sebagai penduduk di dalam gambar.
 - Jangan menyimpan atau membagikan koordinat gambar tanpa keputusan pemilik.
 - Jangan menyentuh `ukurAktif`, `S.ukur`, atau lapisan api 3D.
+
+Status 26 Nov 2026: AG-09 selesai. `terbit.yml` sukses pada b82e18782 yang memuat 1094734c7; `alat_gambar.js` dan `alat_gambar_geo.js` di centurisk97.id sama persis dengan repo (`cmp`); `index.html` hanya bertambah 454 bita (922.462 ke 922.916) oleh tiket ini. Halaman utama di produksi kini di balik `/masuk`, jadi pemeriksaan tampilan dilakukan pemilik di `http://localhost:8800/`.

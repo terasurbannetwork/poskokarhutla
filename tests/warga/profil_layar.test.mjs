@@ -39,10 +39,9 @@ const akun = async ({status = "aktif", prov = "13", wajibGanti = 0} = {}) => {
 const ketik = (sel, v) => tab.eval(`(() => { const e = document.querySelector(${JSON.stringify(sel)}); e.value = ${JSON.stringify(v)}; e.dispatchEvent(new Event("input", {bubbles: true})); return true; })()`);
 const masuk = async a => {
   await tab.kirim("Network.clearBrowserCookies");
-  /* satu pintu (KEPUTUSAN-MASUK K16, K21): /instansi mengalihkan tamu ke /masuk?ke=/instansi; "Masuk dengan sandi" membuka form sandi, yang mengembalikan ke /instansi */
-  await tab.buka(base + "/instansi", {tunggu: "#aSandi"});
-  await tab.tungguFungsi("location.pathname === '/masuk' && !document.getElementById('fNomor').hidden", 8000);
-  await tab.klik("#aSandi"); await tab.tungguFungsi("!document.getElementById('fAkun').hidden", 8000);
+  /* satu pintu (KEPUTUSAN-MASUK K16, K21, K25): /instansi mengalihkan tamu ke /masuk?ke=/instansi; form sandi langsung tampil dan mengembalikan ke /instansi */
+  await tab.buka(base + "/instansi", {tunggu: "#fAkun"});
+  await tab.tungguFungsi("location.pathname === '/masuk' && !!document.getElementById('fAkun')", 8000);
   await ketik("#iAkun", a.username); await ketik("#iSandiAkun", SANDI); await tab.klik("#bAkun");
   try { await tab.tungguFungsi("location.pathname === '/instansi' && ['vVerif', 'vUtama', 'vGanti', 'vProfil', 'vDaftarPic'].some(v => document.getElementById(v) && !document.getElementById(v).hidden)", 8000); }
   catch (e) { throw new Error(`login tidak berpindah layar: ${(await tab.teks()).slice(0, 300)} | galat: ${(await tab.galat()).join(" ; ")}`); }

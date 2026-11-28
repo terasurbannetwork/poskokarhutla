@@ -4,159 +4,51 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Masuk, Centurisk97</title>
-<meta name="description" content="Masuk ke Centurisk97 dengan kode WhatsApp atau dengan username dan sandi.">
+<meta name="description" content="Masuk ke Centurisk97 dengan username dan sandi.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/masuk.css?v=4" rel="stylesheet">
+<link href="/admin/admin.css?v=16" rel="stylesheet">
 </head>
-<body>
-<header class="ad-top">
-  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a>
-  <span class="ad-sep">Masuk</span>
-</header>
-<main class="mk-wrap">
-  <section class="bn-kartu mk-kartu" aria-labelledby="mkJudul">
-    <div class="mk-kepala">
-      <h1 id="mkJudul" tabindex="-1">Masuk</h1>
-      <p id="mkInfo" class="bn-label" hidden></p>
-    </div>
-    <p id="mkTerganggu" class="bn-pesan galat" role="status" hidden>Kode WhatsApp sedang terganggu. <a id="aTerganggu" href="#sandi">Masuk dengan sandi</a></p>
-
-    <p id="mkMuat" class="bn-label" role="status">Memuat...</p>
-
-    <form id="fNomor" class="bn-form" novalidate hidden>
-      <label class="bn-isian" for="iNomor">Nomor WhatsApp
-        <input id="iNomor" name="wa" type="tel" inputmode="numeric" autocomplete="tel" maxlength="20" placeholder="08xx xxxx xxxx" required>
-      </label>
-      <button class="bn-tombol" id="bKirim" type="submit">Kirim kode</button>
-      <p class="bn-pesan" role="status"></p>
-      <button class="mk-tautan" id="bEmailNomor" type="button" hidden>Kirim kode ke email</button>
-      <a class="mk-tautan" id="aSandi" href="#sandi">Masuk dengan sandi</a>
-    </form>
-
-    <form id="fAkun" class="bn-form" method="post" action="/masuk" hidden>
-      <label class="bn-isian" for="iAkun">Username atau email
-        <input id="iAkun" name="email" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="254" required>
-      </label>
-      <label class="bn-isian" for="iSandiAkun">Sandi
-        <input id="iSandiAkun" name="sandi" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" maxlength="200" required>
-      </label>
-      <button class="bn-tombol" id="bAkun" type="submit">Masuk</button>
-      <p class="bn-pesan" role="status"></p>
-      <button class="mk-tautan" id="bAkunKembali" type="button">Masuk dengan kode WhatsApp</button>
-    </form>
-
-    <form id="fKode" class="bn-form" novalidate hidden>
-      <label class="bn-isian" for="iKode">Kode enam angka
-        <input id="iKode" class="mk-kode" name="kode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder="______" required>
-      </label>
-      <button class="bn-tombol" id="bKode" type="submit">Masuk</button>
-      <p class="bn-pesan" role="status"></p>
-      <div class="mk-baris-bawah">
-        <button class="mk-tautan" id="bUlang" type="button" disabled>Kirim ulang</button>
-        <button class="mk-tautan" id="bGanti" type="button">Ganti nomor</button>
+<!-- satu pintu masuk, hanya username dan sandi (pemilik 26 Nov 2026, KEPUTUSAN-MASUK K25: "Sandi saja, WA hapus"); tata letak = halaman masuk lama sebelum PS-08 -->
+<body class="ad-masuk">
+<div class="ad-sisi-masuk">
+<div class="ad-pola" aria-hidden="true"></div>
+<main class="ad-kartu-masuk">
+  <div class="ad-kepala-masuk">
+    <img src="/img/logo.svg?v=2" alt="Centurisk97" width="44" height="44">
+    <h1>Pemantauan kondisi bencana di Indonesia secara <em>real time</em></h1>
+    <p>Staf BNPB, BPBD, instansi, dan mitra masuk di sini</p>
+  </div>
+  <div class="ad-isi-masuk">
+    <form id="fAkun" method="post" action="/masuk">
+      <div class="ad-isian">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+        <input id="iAkun" name="email" type="text" placeholder=" " autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="254" required autofocus>
+        <label for="iAkun">Username atau email</label>
       </div>
-      <button class="mk-tautan" id="bEmail" type="button" hidden>Kirim ke email</button>
-    </form>
-
-    <form id="fEmail" class="bn-form" novalidate hidden>
-      <label class="bn-isian" for="iEmail">Alamat email akunmu
-        <input id="iEmail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required>
-      </label>
-      <button class="bn-tombol" id="bEmailKirim" type="submit">Kirim kode</button>
-      <p class="bn-pesan" role="status"></p>
-      <button class="mk-tautan" id="bEmailKembali" type="button">Kembali</button>
-    </form>
-
-    <div id="vRuang" class="mk-ruang" hidden>
-      <ul id="daftarRuang" class="mk-daftar"></ul>
-      <ul id="daftarMenunggu" class="mk-daftar" hidden></ul>
-      <p class="bn-pesan" role="status"></p>
-      <div id="vAkun" class="mk-akun" hidden>
-        <h2 class="mk-sub-judul">Akunmu</h2>
-        <ul id="daftarSandi" class="mk-daftar"></ul>
-        <button class="mk-tautan mk-bahaya" id="bHapusAkun" type="button">Hapus akun</button>
+      <div class="ad-isian">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <input id="iSandiAkun" name="sandi" type="password" placeholder=" " autocomplete="current-password" autocapitalize="none" spellcheck="false" maxlength="200" required>
+        <label for="iSandiAkun">Kata sandi</label>
+        <button class="ad-mata" id="bMata" type="button" aria-label="Tampilkan sandi" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-8 10-8 10 8 10 8-3 8-10 8-10-8-10-8Z"/><circle cx="12" cy="12" r="3"/><path class="coret" d="m2 2 20 20"/></svg></button>
       </div>
-      <p id="mkAkunInfo" class="mk-catatan" hidden>Untuk mengatur sandi atau menghapus akun, masuk lagi dengan kode WhatsApp.</p>
-      <button class="mk-tautan" id="bPeran" type="button">Saya petugas atau relawan</button>
-      <button class="mk-tautan" id="bKeluar" type="button" hidden>Keluar</button>
-    </div>
-
-    <div id="vPeran" class="mk-ruang" hidden>
-      <ul id="daftarPeran" class="mk-daftar"></ul>
-      <div id="vGabung" class="bn-form" hidden>
-        <label class="bn-isian" for="iGProv">Provinsi
-          <select id="iGProv"><option value="">Pilih provinsi</option></select>
-        </label>
-        <label class="bn-isian" for="iGKab">Kabupaten atau kota
-          <select id="iGKab" disabled><option value="">Pilih kabupaten atau kota</option></select>
-        </label>
-        <ul id="daftarAkun" class="mk-daftar"></ul>
-      </div>
-      <p class="bn-pesan" role="status"></p>
-      <button class="mk-tautan" id="bPeranKembali" type="button">Kembali ke daftar ruang</button>
-    </div>
-
-    <form id="fSandi" class="bn-form" novalidate hidden>
-      <label class="bn-isian" for="iSandi">Sandi
-        <input id="iSandi" name="sandi" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" required>
-      </label>
-      <button class="bn-tombol" id="bSandi" type="submit">Masuk</button>
-      <p class="bn-pesan" role="status"></p>
-      <button class="mk-tautan" id="bKembali" type="button">Kembali ke daftar ruang</button>
+      <p id="pGalat" class="ad-galat" role="alert" hidden></p>
+      <button class="ad-tombol-masuk" id="bAkun" type="submit">Masuk</button>
     </form>
-
-    <form id="fSandiBaru" class="bn-form" novalidate hidden>
-      <label class="bn-isian" for="iSandiBaru" id="lSandiBaru">Sandi baru
-        <input id="iSandiBaru" name="sandi" type="password" autocomplete="new-password" autocapitalize="none" spellcheck="false" minlength="10" maxlength="100">
-      </label>
-      <button class="mk-tautan" id="bLihatSandi" type="button" aria-pressed="false">Tampilkan sandi</button>
-      <p class="mk-catatan" id="cSandiBaru">Paling sedikit 10 huruf. Sesi lain akun ini ikut keluar.</p>
-      <output id="oSandiHasil" class="mk-sandi-hasil" hidden></output>
-      <button class="bn-tombol" id="bSandiBaru" type="submit">Simpan sandi</button>
-      <p class="bn-pesan" role="status"></p>
-      <button class="mk-tautan" id="bSandiKembali" type="button">Kembali ke daftar ruang</button>
-    </form>
-
-    <form id="fHapus" class="bn-form" novalidate hidden>
-      <p class="mk-catatan" id="cHapus"></p>
-      <button class="bn-tombol mk-bahaya-tombol" id="bHapusYa" type="submit">Ya, hapus akun saya</button>
-      <p class="bn-pesan" role="status"></p>
-      <button class="mk-tautan" id="bHapusBatal" type="button">Batal</button>
-    </form>
-
-    <form id="fLengkapi" class="bn-form" novalidate hidden>
-      <label class="bn-isian" for="iNama">Nama
-        <input id="iNama" name="nama" type="text" autocomplete="name" minlength="2" maxlength="80" required>
-      </label>
-      <label class="bn-isian" for="iProv">Provinsi
-        <select id="iProv" name="prov" required><option value="">Pilih provinsi</option></select>
-      </label>
-      <label class="bn-isian" for="iKab">Kabupaten atau kota
-        <input id="iKab" name="kab" type="text" list="daftarKab" autocomplete="off" minlength="2" maxlength="60" required>
-      </label>
-      <datalist id="daftarKab"></datalist>
-      <label class="bn-setuju" for="iSetuju">
-        <input id="iSetuju" name="setuju" type="checkbox">
-        <span>Saya setuju nomor WhatsApp dan data ini dipakai untuk masuk, undangan, dan pemberitahuan tugas.</span>
-      </label>
-      <details class="mk-rinci">
-        <summary>Baca selengkapnya</summary>
-        <p>Yang kami simpan: nomor WhatsApp, nama, provinsi, dan kabupaten atau kota.</p>
-        <p>Gunanya: membuatmu bisa masuk, menerima undangan, dan menerima pemberitahuan tugas.</p>
-        <p>Data ini tidak ditampilkan ke publik. Kamu bisa menghapus akunmu sendiri dari halaman akun kapan saja.</p>
-      </details>
-      <button class="bn-tombol" id="bSimpan" type="submit">Simpan</button>
-      <p class="bn-pesan" role="status"></p>
-    </form>
-  </section>
+    <p class="ad-catatan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6Z"/></svg>Sesi 12 jam, percobaan masuk dibatasi</p>
+  </div>
 </main>
-<script src="/instansi_wilayah.js?v=1"></script>
-<script src="/bnpb/turnstile.js"></script>
-<script src="/inti/pesan.js?v=1"></script>
-<script src="/masuk.js?v=5"></script>
+</div>
+<aside class="ad-galeri" aria-label="Jenis bencana yang dipantau">
+  <figure class="ad-pita"><img src="/img/masuk/karhutla.webp?v=1" alt="Karhutla, Palangka Raya, Kalimantan Tengah"><figcaption><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s-6 6-6 11a6 6 0 0 0 12 0c0-5-6-11-6-11Z"/></svg><b>Karhutla</b><span>Palangka Raya, Kalimantan Tengah</span></figcaption><a class="ad-kredit" href="https://commons.wikimedia.org/wiki/File:Talawang_Monumen_Palangka_Raya_Haze.jpg" target="_blank" rel="noopener" title="Foto: ParadoxP P, CC BY 4.0" aria-label="Foto: ParadoxP P, CC BY 4.0">i</a></figure>
+  <figure class="ad-pita"><img src="/img/masuk/banjir-longsor.webp?v=1" alt="Banjir dan longsor, Agam, Sumatera Barat, 2025"><figcaption><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20c2.5 0 2.5-2 4.5-2s2 2 4.5 2 2.5-2 4.5-2 2 2 4.5 2"/><path d="m4 15 6-9 4 5 2-2 4 6"/></svg><b>Banjir dan longsor</b><span>Agam, Sumatera Barat, 2025</span></figcaption><a class="ad-kredit" href="https://commons.wikimedia.org/wiki/File:Landslides_in_Agam_Regency,_West_Sumatra.jpg" target="_blank" rel="noopener" title="Foto: BNPB, Public domain" aria-label="Foto: BNPB, Public domain">i</a></figure>
+  <figure class="ad-pita"><img src="/img/masuk/rob.webp?v=1" alt="Gelombang pasang dan abrasi, Demak, Jawa Tengah"><figcaption><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8c3 0 3 2 5 2s2-2 5-2 3 2 5 2 2-2 5-2M2 15c3 0 3 2 5 2s2-2 5-2 3 2 5 2 2-2 5-2"/></svg><b>Gelombang pasang dan abrasi</b><span>Demak, Jawa Tengah</span></figcaption><a class="ad-kredit" href="https://commons.wikimedia.org/wiki/File:Rumah_Mak_Jah_di_Desa_Bedono_yang_Tenggelam_karena_abrasi.jpg" target="_blank" rel="noopener" title="Foto: Tim LindungiHutan, CC BY 4.0" aria-label="Foto: Tim LindungiHutan, CC BY 4.0">i</a></figure>
+  <figure class="ad-pita"><img src="/img/masuk/gempa.webp?v=1" alt="Gempa dan tsunami, Palu, Sulawesi Tengah, 2018"><figcaption><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l2-6 4 13 3-9 2 2h5"/></svg><b>Gempa dan tsunami</b><span>Palu, Sulawesi Tengah, 2018</span></figcaption><a class="ad-kredit" href="https://commons.wikimedia.org/wiki/File:Bencana_Tsunami_Palu.jpg" target="_blank" rel="noopener" title="Foto: Ungkeito, CC BY-SA 4.0" aria-label="Foto: Ungkeito, CC BY-SA 4.0">i</a></figure>
+  <figure class="ad-pita"><img src="/img/masuk/cuaca.webp?v=1" alt="Cuaca ekstrem, Nusa Tenggara Timur, 2021"><figcaption><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17a4 4 0 1 1 1-7.9A6 6 0 0 1 19.5 11 3.5 3.5 0 0 1 18 17Z"/><path d="m12 13-2 4h3l-1 4"/></svg><b>Cuaca ekstrem</b><span>Nusa Tenggara Timur, 2021</span></figcaption><a class="ad-kredit" href="https://commons.wikimedia.org/wiki/File:Seroja_2021-04-05_0545Z.jpg" target="_blank" rel="noopener" title="Foto: NASA, LANCE / MODIS on Aqua, Public domain" aria-label="Foto: NASA, LANCE / MODIS on Aqua, Public domain">i</a></figure>
+  <figure class="ad-pita"><img src="/img/masuk/gunungapi.webp?v=1" alt="Letusan gunung api, Banyuwangi, Jawa Timur, 2015"><figcaption><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 21 7-12h6l7 12Z"/><path d="M12 9V3M9 5l3-2 3 2"/></svg><b>Letusan gunung api</b><span>Banyuwangi, Jawa Timur, 2015</span></figcaption><a class="ad-kredit" href="https://commons.wikimedia.org/wiki/File:Eruption_of_Raung_Volcano_(2015)_from_Bali_strait_at_dawn.jpg" target="_blank" rel="noopener" title="Foto: consigliere ivan, CC BY 2.0" aria-label="Foto: consigliere ivan, CC BY 2.0">i</a></figure>
+</aside>
+<script src="/masuk.js?v=6"></script>
 </body>
 </html>

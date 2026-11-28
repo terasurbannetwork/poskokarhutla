@@ -126,7 +126,7 @@ test('halaman publik di Chrome nyata: ringkasan resmi, panel atribusi, 404 serag
       const T = await pb.tab();
       for (const [w, h] of [[1440, 900], [390, 844]]) {
         await T.ukuran(w, h); await T.buka(`${s.url}/siklus/kejadian/${KJ}`, { tunggu: '#pk .ex-std' });
-        const d = await T.eval(`(() => ({t: document.querySelector('#pk').innerText, hl: !!document.querySelector('#pk h3 .hl'), ft: !!document.querySelector('.ex-ft'), lipat: document.querySelector('details.lipat summary').innerText, n: document.querySelectorAll('details.lipat .sk-atr > div').length, dummy: document.querySelectorAll('.sk-dummy').length}))()`);
+        const d = await T.eval(`(() => ({t: document.querySelector('#pk').innerText, hl: !!document.querySelector('#pk .sk-ring .hl'), ft: !!document.querySelector('.ex-ft'), lipat: document.querySelector('details.lipat summary').innerText, n: document.querySelectorAll('details.lipat .sk-atr > div').length, dummy: document.querySelectorAll('.sk-dummy').length}))()`);
         assert.match(d.t, /Banjir di Bogor, Jawa Barat, fase Tanggap/); assert.match(d.t, /Banjir bandang merendam/); assert.ok(d.hl && !d.ft); assert.match(d.lipat, /Lisensi dan atribusi/i); assert.ok(d.n >= 1); assert.equal(d.dummy, 0);
         const l = await T.lebihLebar(); assert.ok(l.sw <= l.iw + 1, `gulir mendatar di ${w}`);
       }

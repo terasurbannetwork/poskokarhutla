@@ -1,0 +1,32 @@
+{
+ "versi": 3,
+ "status": "hipotesis: dikunci sebelum uji balik dibuka (KEPUTUSAN-DAMPAK D11, D12; ALGORITMA 5). Mengubah satu angka = sidik baru.",
+ "bahaya": ["BNJ", "BDG", "LSR", "CEX"],
+ "kelas_kab": {"BNJ": "BNJ", "BDG": "BDG", "LSR": "LSR", "CEX": null},
+ "sumber_K": "public/data/kelas_desa_bnpb.json kab[k4].K[kode] (tinggi|sedang|rendah|null); aturan sebaran desa ke kab: KEPUTUSAN-POTENSI K6",
+ "sumber_E": {"BDG": "BNJ"},
+ "amandemen_3": "26 Nov 2026 (PH-02, KEPUTUSAN-POTENSI K3, K6, D8, D9, D12, D22): K BNJ dan LSR dari kelas desa BNPB (bukan kelas_bahaya_kab.json); BDG baru (hipotesis; K kelas bandang, E = E BNJ hari yang sama); status membawa e per hari; arsip harian mencatat versi_kriteria; jendela uji prospektif versi 3 mulai 26 Nov 2026, skor versi lama dinilai terpisah. Tabel tidak berubah.",
+ "hari": [0, 1, 2, 3],
+ "hari_bmkg": [0],
+ "tingkat": ["Normal", "Waspada", "Siaga", "Awas"],
+ "tabel": {
+  "K_rendah_plafon": 2,
+  "K_rendah_lepas_bila_R": 3,
+  "K_sedang_tinggi_atau_CEX": "S = E",
+  "K_null_plafon": 2,
+  "K_null": "E = 0: belum terukur; E > 0: tingkat min(E, K_null_plafon) dengan tanda sebagian (direvisi 26 Nov 2026 sebelum ada uji balik)"
+ },
+ "porsi_K_min": 0.10,
+ "tak_terliput_maks": 0.5,
+ "segar_jam": {"prakiraan": 36, "bmkg": 3},
+ "severity": {"minor": 1, "moderate": 2, "severe": 3, "extreme": 3},
+ "tambahan": {
+  "status": "hipotesis, K15 (26 Nov 2026): kekeringan dan gelombang, dikunci SEBELUM uji balik dibuka. Mengubah satu angka = sidik baru (.v3).",
+  "bahaya": ["KEK", "GEL"],
+  "tanpa_K_dan_R": "S = E; tanpa kelas bahaya, tanpa peringatan BMKG (tak ada umpan gelombang atau kekeringan di dampak_peringatan)",
+  "KEK": {"sumber": "public/data/kekeringan_wilayah.json (kab[prov|nama].lv 0..3, tingkat bawaan sistem itu)", "meta": "public/data/kekeringan_meta.json hari_ini", "segar_hari": 15, "wajib": [0], "hari": [0]},
+  "GEL": {"sumber": "prediksi.json kode GEL kolom lv (0..3) hari 1..3 dan lalu.json hari 0; hanya kab dengan titik pesisir", "wajib": [0, 1, 2, 3], "hari": [0, 1, 2, 3]}
+ },
+ "alarm": {"utama": 2, "terpisah": 1},
+ "arsip_mulai_wib": "07:00"
+}

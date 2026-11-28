@@ -1,0 +1,15 @@
+/* Kerangka standar halaman staf di luar keluarga /bnpb (pemilik 26 Nov 2026 "satukan sistem tampilan semua"):
+   panel kiri Pusdalops (bnpb/menu_pusdalops.js) jadi satu-satunya menu; di sini hanya kepala cadangan ad-top (layar sempit, halaman
+   data-opsional bagi bukan-staf, framing), kepala judul navy, dan main yang tidak lagi tertambat ke kepala tetap lama. Hanya token. */
+.ad-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 16px;background:var(--db-navy,var(--ink));color:var(--on-head,var(--card))}
+.ad-logo{display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none;font-weight:800;font-size:.9375rem}
+.ad-logo img{width:30px;height:30px;border-radius:9px}
+.ad-sep{font-size:.8125rem;font-weight:700;opacity:.85}
+.sematan .ad-top{display:none}
+main>.bn-judul{margin:0 0 14px}
+main>.bn-judul>h1{margin:0;padding:9px 16px;border-radius:14px;background:var(--db-navy,var(--ink));color:var(--on-head,var(--card));text-align:center;font-size:1.0625rem;font-weight:800}
+.mp-a>main,main.kr-isi{position:static;inset:auto}
+.mp-a>main .page,main.kr-isi .page{position:static}
+.mp-a>main .scroll,main.kr-isi .scroll{overflow:visible}
+main.kr-isi{padding:16px}
+@media print{main>.bn-judul{display:none}body.mp-model-a .mp-a{display:block;padding:0}}

@@ -1,0 +1,531 @@
+{
+ "_tentang": "Renstra BNPB 2025-2029 (Perban 5/2025) Lampiran III Matriks Kerangka Regulasi hlm. 196-202, 75 butir, diketik SEKALI (RU-075, DT 6.4) dari teks -layout data/raw/hukum/teks/perban-nomor-5-tahun-2025.json karena kolom tabelnya bercampur. judul diringkas (Perka = Peraturan Kepala BNPB); target = tahun akhir kolom Target Penyelesaian (rentang 2024-2025 ditulis 2025). kata = frasa pencocok judul dokumen berlaku di katalog hukum (huruf kecil). ganti = id katalog dokumen lama yang direvisi (bila revisi), atau null. Butir 69 (PP 27/2018) di luar kewenangan Perban; dicocokkan sama. Koreksi hanya lewat berkas ini; tidak dihitung ulang dari teks.",
+ "sumber": "perban-5-2025",
+ "butir": [
+  {
+   "no": 1,
+   "judul": "Revisi Perka BNPB 2/2012 tentang Pedoman Umum Pengkajian Risiko Bencana",
+   "kata": "pengkajian risiko bencana",
+   "target": 2025,
+   "ganti": "perka-2-2012"
+  },
+  {
+   "no": 2,
+   "judul": "Revisi Perka BNPB 3/2012 tentang Panduan Penilaian Kapasitas Daerah dalam Penanggulangan Bencana",
+   "kata": "penilaian kapasitas daerah",
+   "target": 2025,
+   "ganti": "perka-3-2012"
+  },
+  {
+   "no": 3,
+   "judul": "Peraturan BNPB tentang Penyusunan Indeks Risiko Bencana",
+   "kata": "indeks risiko bencana",
+   "target": 2027,
+   "ganti": null
+  },
+  {
+   "no": 4,
+   "judul": "Peraturan BNPB tentang Pedoman dan Tata Cara Pemantauan, Pengendalian, dan Evaluasi Pelaksanaan RIPB 2020-2044",
+   "kata": "rencana induk penanggulangan bencana",
+   "target": 2025,
+   "ganti": null
+  },
+  {
+   "no": 5,
+   "judul": "Peraturan BNPB tentang Rencana Nasional Penanggulangan Bencana 2025-2029",
+   "kata": "rencana nasional penanggulangan bencana",
+   "target": 2025,
+   "ganti": null
+  },
+  {
+   "no": 6,
+   "judul": "Revisi Perka BNPB 4/2008 tentang Pedoman Penyusunan Rencana Penanggulangan Bencana",
+   "kata": "penyusunan rencana penanggulangan bencana",
+   "target": 2025,
+   "ganti": "perka-4-2008"
+  },
+  {
+   "no": 7,
+   "judul": "Peraturan BNPB tentang Rencana Nasional Penanggulangan Bencana 2030-2034",
+   "kata": "rencana nasional penanggulangan bencana tahun 2030",
+   "target": 2030,
+   "ganti": null
+  },
+  {
+   "no": 8,
+   "judul": "Revisi Perka BNPB 4/2014 tentang Penerapan SMAB (satuan pendidikan sekolah/madrasah)",
+   "kata": "madrasah",
+   "target": 2025,
+   "ganti": "perka-4-2014"
+  },
+  {
+   "no": 9,
+   "judul": "Revisi Perka BNPB 7/2015 tentang Rambu dan Papan Informasi Bencana",
+   "kata": "rambu",
+   "target": 2029,
+   "ganti": "perka-7-2015"
+  },
+  {
+   "no": 10,
+   "judul": "Peraturan BNPB tentang MHEWS",
+   "kata": "peringatan dini",
+   "target": 2027,
+   "ganti": null
+  },
+  {
+   "no": 11,
+   "judul": "Revisi Perban BNPB 2/2023 tentang Penyusunan Rencana Kontingensi Bencana",
+   "kata": "rencana kontingensi",
+   "target": 2027,
+   "ganti": "perban-2-2023"
+  },
+  {
+   "no": 12,
+   "judul": "Peraturan BNPB tentang Forum Pengurangan Risiko Bencana",
+   "kata": "forum pengurangan risiko bencana",
+   "target": 2027,
+   "ganti": null
+  },
+  {
+   "no": 13,
+   "judul": "Revisi Perka BNPB 11/2014 tentang Peran Serta Masyarakat dalam Penyelenggaraan PB",
+   "kata": "peran serta masyarakat",
+   "target": 2027,
+   "ganti": "perka-11-2014"
+  },
+  {
+   "no": 14,
+   "judul": "Revisi Perka BNPB 12/2014 tentang Peran Serta Lembaga Usaha dalam Penyelenggaraan PB",
+   "kata": "peran serta lembaga usaha",
+   "target": 2027,
+   "ganti": "perka-12-2014"
+  },
+  {
+   "no": 15,
+   "judul": "Revisi Perka BNPB 13/2014 tentang Pengarusutamaan Gender di Bidang PB",
+   "kata": "pengarusutamaan gender",
+   "target": 2027,
+   "ganti": "perka-13-2014"
+  },
+  {
+   "no": 16,
+   "judul": "Revisi Perka BNPB 14/2014 tentang Penanganan, Perlindungan dan Partisipasi Penyandang Disabilitas dalam PB",
+   "kata": "disabilitas",
+   "target": 2027,
+   "ganti": "perka-14-2014"
+  },
+  {
+   "no": 17,
+   "judul": "Revisi Perka BNPB 1/2012 tentang Pedoman Umum Desa/Kelurahan Tangguh Bencana",
+   "kata": "tangguh bencana",
+   "target": 2028,
+   "ganti": "perka-1-2012"
+  },
+  {
+   "no": 18,
+   "judul": "Revisi Perka BNPB 17/2011 tentang Pedoman Relawan Penanggulangan Bencana",
+   "kata": "relawan",
+   "target": 2029,
+   "ganti": "perka-17-2011"
+  },
+  {
+   "no": 19,
+   "judul": "Revisi Pedoman Penetapan Status Keadaan Darurat Bencana Tahun 2016",
+   "kata": "status keadaan darurat",
+   "target": 2026,
+   "ganti": null
+  },
+  {
+   "no": 20,
+   "judul": "Revisi Perka BNPB 9/2008 tentang Prosedur Tim Reaksi Cepat",
+   "kata": "tim reaksi cepat",
+   "target": 2025,
+   "ganti": "perka-9-2008"
+  },
+  {
+   "no": 21,
+   "judul": "Revisi Perban BNPB 3/2018 tentang Penanganan Pengungsi pada Keadaan Darurat",
+   "kata": "penanganan pengungsi",
+   "target": 2027,
+   "ganti": "perban-3-2018"
+  },
+  {
+   "no": 22,
+   "judul": "Revisi Perban BNPB 6/2022 tentang Klaster Logistik Penanggulangan Bencana",
+   "kata": "klaster logistik",
+   "target": 2025,
+   "ganti": "perban-6-2022"
+  },
+  {
+   "no": 23,
+   "judul": "Revisi Perka BNPB 5/2017 tentang Pedoman Rencana Rehabilitasi dan Rekonstruksi",
+   "kata": "rencana rehabilitasi dan rekonstruksi",
+   "target": 2025,
+   "ganti": "perka-5-2017"
+  },
+  {
+   "no": 24,
+   "judul": "Revisi Perban BNPB 6/2017 tentang Penyelenggaraan Rehabilitasi dan Rekonstruksi Pascabencana",
+   "kata": "penyelenggaraan rehabilitasi dan rekonstruksi",
+   "target": 2026,
+   "ganti": "perban-6-2017"
+  },
+  {
+   "no": 25,
+   "judul": "Revisi Perka BNPB 3/2013 tentang Petunjuk Teknis Pelaksanaan Anggaran Kegiatan RR",
+   "kata": "pelaksanaan anggaran kegiatan rehabilitasi",
+   "target": 2026,
+   "ganti": "perka-3-2013"
+  },
+  {
+   "no": 26,
+   "judul": "Revisi Perka BNPB 6/2013 tentang Juknis Rehab Rekon Sektor Permukiman",
+   "kata": "sektor permukiman",
+   "target": 2027,
+   "ganti": "perka-6-2013"
+  },
+  {
+   "no": 27,
+   "judul": "Reviu Juklak 5/2024 tentang Bantuan Stimulan Perbaikan/Pembangunan Kembali Rumah Rusak",
+   "kata": "rumah rusak",
+   "target": 2025,
+   "ganti": "juklak-5-2024"
+  },
+  {
+   "no": 28,
+   "judul": "Pedoman penilaian pemulihan pada lokasi pascabencana yang mendapat bantuan",
+   "kata": "penilaian pemulihan",
+   "target": 2026,
+   "ganti": null
+  },
+  {
+   "no": 29,
+   "judul": "Reviu Juklak 9/2024 tentang pelaksanaan, pelaporan, pemantauan dan evaluasi kegiatan konstruksi Hibah RR",
+   "kata": "hibah rehabilitasi dan rekonstruksi",
+   "target": 2027,
+   "ganti": "juklak-9-2024"
+  },
+  {
+   "no": 30,
+   "judul": "Reviu Juklak 2/2019 tentang Pemanfaatan Hibah kepada Pemda untuk RR Perumahan",
+   "kata": "hibah",
+   "target": 2028,
+   "ganti": "juklak-2-2019"
+  },
+  {
+   "no": 31,
+   "judul": "Penyusunan Juklak monitoring dan evaluasi R3P sektor infrastruktur dan perumahan",
+   "kata": "monitoring dan evaluasi",
+   "target": 2029,
+   "ganti": null
+  },
+  {
+   "no": 32,
+   "judul": "Revisi Perban BNPB 4/2018 tentang Sistem Manajemen Logistik dan Peralatan",
+   "kata": "sistem manajemen logistik",
+   "target": 2025,
+   "ganti": "perban-4-2018"
+  },
+  {
+   "no": 33,
+   "judul": "Revisi Perka BNPB 6/2015 tentang Penyimpanan Peralatan Dasar PB",
+   "kata": "penyimpanan peralatan",
+   "target": 2025,
+   "ganti": "perka-6-2015"
+  },
+  {
+   "no": 34,
+   "judul": "Revisi Perka BNPB 23/2014 tentang Standarisasi Logistik PB",
+   "kata": "standarisasi logistik",
+   "target": 2026,
+   "ganti": "perka-23-2014"
+  },
+  {
+   "no": 35,
+   "judul": "Revisi Perka BNPB 24/2014 tentang Pedoman Bantuan Logistik",
+   "kata": "bantuan logistik",
+   "target": 2026,
+   "ganti": "perka-24-2014"
+  },
+  {
+   "no": 36,
+   "judul": "Revisi Perka BNPB 10/2012 tentang Pengelolaan Bantuan Logistik pada Status Keadaan Darurat",
+   "kata": "pengelolaan bantuan logistik",
+   "target": 2026,
+   "ganti": "perka-10-2012"
+  },
+  {
+   "no": 37,
+   "judul": "Revisi Perka BNPB 5/2015 tentang Penyimpanan Kendaraan PB",
+   "kata": "penyimpanan kendaraan",
+   "target": 2027,
+   "ganti": "perka-5-2015"
+  },
+  {
+   "no": 38,
+   "judul": "Revisi Perka BNPB 26/2014 tentang Pemanfaatan Bantuan Logistik PB",
+   "kata": "pemanfaatan bantuan logistik",
+   "target": 2027,
+   "ganti": "perka-26-2014"
+  },
+  {
+   "no": 39,
+   "judul": "Revisi Perka BNPB 25/2014 tentang Pertanggungjawaban Bantuan Logistik PB",
+   "kata": "pertanggungjawaban bantuan logistik",
+   "target": 2027,
+   "ganti": "perka-25-2014"
+  },
+  {
+   "no": 40,
+   "judul": "Revisi Perka BNPB 16/2012 tentang Pengelolaan Gudang Logistik dan Peralatan dalam Darurat",
+   "kata": "gudang logistik",
+   "target": 2027,
+   "ganti": "perka-16-2012"
+  },
+  {
+   "no": 41,
+   "judul": "Revisi Perka BNPB 3/2014 tentang Operasional Gudang Peralatan PB",
+   "kata": "gudang peralatan",
+   "target": 2028,
+   "ganti": "perka-3-2014"
+  },
+  {
+   "no": 42,
+   "judul": "Revisi Perka BNPB 2/2014 tentang Penggunaan Peralatan Khusus PB",
+   "kata": "peralatan khusus",
+   "target": 2028,
+   "ganti": "perka-2-2014"
+  },
+  {
+   "no": 43,
+   "judul": "Peraturan BNPB tentang Manajemen Risiko di Lingkungan BNPB",
+   "kata": "manajemen risiko",
+   "target": 2025,
+   "ganti": null
+  },
+  {
+   "no": 44,
+   "judul": "Peraturan BNPB tentang Pengawasan atas PPRG dan Implementasi PUG",
+   "kata": "pengarusutamaan gender",
+   "target": 2025,
+   "ganti": null
+  },
+  {
+   "no": 45,
+   "judul": "Peraturan BNPB tentang Rencana Strategis BNPB 2025-2029",
+   "kata": "rencana strategis",
+   "target": 2025,
+   "ganti": null
+  },
+  {
+   "no": 46,
+   "judul": "Revisi Perka BNPB 3/2015 tentang Layanan Operasional Keuangan Terintegrasi",
+   "kata": "layanan operasional keuangan",
+   "target": 2025,
+   "ganti": "perka-3-2015"
+  },
+  {
+   "no": 47,
+   "judul": "Revisi Perka BNPB 2/2016 tentang Tata Cara Pengelolaan dan Pertanggungjawaban Keuangan atas Beban APBN",
+   "kata": "pertanggungjawaban keuangan",
+   "target": 2026,
+   "ganti": "perka-2-2016"
+  },
+  {
+   "no": 48,
+   "judul": "Revisi Perka BNPB 10/2014 tentang Pedoman Verifikasi Dokumen Pertanggungjawaban Keuangan",
+   "kata": "verifikasi dokumen",
+   "target": 2027,
+   "ganti": "perka-10-2014"
+  },
+  {
+   "no": 49,
+   "judul": "Perka BNPB turunan PMK 183/PMK.05/2019 tentang Pengelolaan Rekening Pengeluaran",
+   "kata": "rekening",
+   "target": 2028,
+   "ganti": null
+  },
+  {
+   "no": 50,
+   "judul": "Perka BNPB tentang Kebijakan Akuntansi turunan PMK 22/PMK.05/2022",
+   "kata": "kebijakan akuntansi",
+   "target": 2029,
+   "ganti": null
+  },
+  {
+   "no": 51,
+   "judul": "Revisi Perban BNPB 4/2019",
+   "kata": "organisasi dan tata kerja",
+   "target": 2025,
+   "ganti": "perban-4-2019"
+  },
+  {
+   "no": 52,
+   "judul": "Peraturan BNPB terkait Unit Pelaksana Tugas BNPB",
+   "kata": "unit pelaksana",
+   "target": 2025,
+   "ganti": null
+  },
+  {
+   "no": 53,
+   "judul": "Peraturan BNPB tentang Petunjuk Teknis Jabatan Fungsional di Bidang Kebencanaan",
+   "kata": "jabatan fungsional",
+   "target": 2026,
+   "ganti": null
+  },
+  {
+   "no": 54,
+   "judul": "Revisi Perka BNPB 3/2020 tentang Peta Proses Bisnis BNPB",
+   "kata": "proses bisnis",
+   "target": 2026,
+   "ganti": "perka-3-2020"
+  },
+  {
+   "no": 55,
+   "judul": "Revisi Perka BNPB 1/2016 tentang Pelaksanaan Pemberian Tunjangan Kinerja Pegawai",
+   "kata": "tunjangan kinerja",
+   "target": 2025,
+   "ganti": "perka-1-2016"
+  },
+  {
+   "no": 56,
+   "judul": "Revisi Perka BNPB 15/2014 tentang Pakaian Dinas dan Atribut BNPB",
+   "kata": "pakaian dinas",
+   "target": 2026,
+   "ganti": "perka-15-2014"
+  },
+  {
+   "no": 57,
+   "judul": "Peraturan BNPB tentang Mutasi Masuk dan Keluar di Lingkungan BNPB",
+   "kata": "mutasi",
+   "target": 2027,
+   "ganti": null
+  },
+  {
+   "no": 58,
+   "judul": "Peraturan BNPB terkait manajemen talenta",
+   "kata": "manajemen talenta",
+   "target": 2028,
+   "ganti": null
+  },
+  {
+   "no": 59,
+   "judul": "Peraturan BNPB terkait administrasi pelayanan pegawai",
+   "kata": "pelayanan pegawai",
+   "target": 2029,
+   "ganti": null
+  },
+  {
+   "no": 60,
+   "judul": "Revisi Perban BNPB 1/2021 tentang Klasifikasi Arsip, Jadwal Retensi Arsip, dan Sistem Klasifikasi Keamanan dan Akses Arsip Dinamis",
+   "kata": "klasifikasi arsip",
+   "target": 2025,
+   "ganti": "perban-1-2021"
+  },
+  {
+   "no": 61,
+   "judul": "Peraturan BNPB terkait penyelamatan arsip kebencanaan",
+   "kata": "penyelamatan arsip",
+   "target": 2026,
+   "ganti": null
+  },
+  {
+   "no": 62,
+   "judul": "Revisi Perban BNPB 7/2020 tentang Tata Naskah Dinas di Lingkungan BNPB",
+   "kata": "tata naskah dinas",
+   "target": 2027,
+   "ganti": "perban-7-2020"
+  },
+  {
+   "no": 63,
+   "judul": "Revisi peraturan BNPB terkait pengelolaan arsip dinamis",
+   "kata": "arsip dinamis",
+   "target": 2028,
+   "ganti": null
+  },
+  {
+   "no": 64,
+   "judul": "Peraturan BNPB terkait program arsip terjaga",
+   "kata": "arsip terjaga",
+   "target": 2029,
+   "ganti": null
+  },
+  {
+   "no": 65,
+   "judul": "Revisi Perka BNPB 8/2014 tentang Pedoman Pengelolaan TI Kebencanaan",
+   "kata": "teknologi informasi",
+   "target": 2025,
+   "ganti": "perka-8-2014"
+  },
+  {
+   "no": 66,
+   "judul": "Revisi Perka BNPB 9/2013 tentang Pedoman Informasi dan Dokumentasi di BNPB",
+   "kata": "informasi dan dokumentasi",
+   "target": 2026,
+   "ganti": "perka-9-2013"
+  },
+  {
+   "no": 67,
+   "judul": "Revisi Perka BNPB 8/2013 tentang Pedoman Media Center Tanggap Darurat Bencana",
+   "kata": "media center",
+   "target": 2026,
+   "ganti": "perka-8-2013"
+  },
+  {
+   "no": 68,
+   "judul": "Revisi Perka BNPB 6/2013 tentang Pedoman Radio Komunikasi Kebencanaan",
+   "kata": "radio komunikasi",
+   "target": 2027,
+   "ganti": "perka-6-2013"
+  },
+  {
+   "no": 69,
+   "judul": "Revisi PP 27/2018 tentang Penerimaan Negara Bukan Pajak",
+   "kata": "penerimaan negara bukan pajak",
+   "target": 2025,
+   "ganti": null
+  },
+  {
+   "no": 70,
+   "judul": "Revisi Perka BNPB 4/2016 tentang Pendidikan dan Pelatihan Penanggulangan Bencana",
+   "kata": "pendidikan dan pelatihan",
+   "target": 2025,
+   "ganti": "perka-4-2016"
+  },
+  {
+   "no": 71,
+   "judul": "Peraturan BNPB tentang Standar Kompetensi Kerja Nasional Indonesia (SKKNI)",
+   "kata": "standar kompetensi kerja",
+   "target": 2026,
+   "ganti": null
+  },
+  {
+   "no": 72,
+   "judul": "Peraturan BNPB tentang Senior Disaster Management Training",
+   "kata": "senior disaster management",
+   "target": 2026,
+   "ganti": null
+  },
+  {
+   "no": 73,
+   "judul": "Revisi Perka BNPB 21/2014 tentang Mekanisme Pembelajaran dan Pertukaran Ilmu Pengetahuan (Knowledge Sharing)",
+   "kata": "pertukaran ilmu pengetahuan",
+   "target": 2029,
+   "ganti": "perka-21-2014"
+  },
+  {
+   "no": 74,
+   "judul": "Revisi Perka BNPB 15/2012 tentang Pedoman Pusdalops PB",
+   "kata": "pusat pengendalian operasi",
+   "target": 2026,
+   "ganti": "perka-15-2012"
+  },
+  {
+   "no": 75,
+   "judul": "Peraturan BNPB tentang Pengembangan Kompetensi dan Sertifikasi Operator Pusdalops",
+   "kata": "sertifikasi operator",
+   "target": 2029,
+   "ganti": null
+  }
+ ]
+}

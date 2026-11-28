@@ -2,19 +2,19 @@
 
 Kerjakan urut; ambil satu tiket, kerjakan hanya cakupannya. Bukti tiap tiket ditambah `python3 scripts/banjir/genangan/kunci_j4.py cek` (hasil ok = berkas beku J4 tidak berubah, D7). Tiket PT-04 sampai PT-07 menunggu Q1.
 
-| Tiket | Isi | Pengerja | Bukti siap | Bergantung |
-| --- | --- | --- | --- | --- |
-| PT-01 | Pemilik menjawab Q1 (aturan izin untuk `~/licsbas/lb.sh` dan `~/licsbas/ambil.py`, atau menjalankan sendiri), Q3, Q5, Q7 | pemilik | jawaban tertulis di KEPUTUSAN | - |
-| PT-02 | Tinjauan keamanan jalur LiCSBAS: catat hash komit klon, lisensi, dan isi dua skrip di `RISET-SUBSIDEN.md` | banjir (+ security-reviewer) | ringkasan tertulis | PT-01 |
-| PT-03 | `subsiden.py`: tambah p10, galat baku median, tanggal deret, versi; pertahankan swa-uji | banjir | T1, T2 | - |
-| PT-04 | Jalankan Jakarta: unduh, LiCSBAS, `subsiden.py hitung`, gerbang pola | pemilik atau banjir sesuai Q1 | `gerbang.lolos` benar di `subsiden.json` | PT-01, PT-02, PT-03 |
-| PT-05 | Gerbang pola Semarang dan Pekalongan (dan Surabaya bila ada rujukan), jalankan ketiganya | banjir (+ validasi-model) | T3 | PT-04 |
-| PT-06 | Ujian tahan-waktu dan perbandingan literatur (ALGORITMA 6.1 dan 6.2) | banjir (+ validasi-model) | T10 sebagian | PT-04 |
-| PT-07 | Pembanding GNSS atau levelling bila datanya ada (Q11) | banjir (+ validasi-model) | T10 | PT-06 |
-| PT-08 | `proyeksi_tanah.py` dengan swa-uji; keluaran `proyeksi_tanah.json` | banjir | T4, T6 | PT-03 |
-| PT-09 | Lapis, kartu penurunan, kartu proyeksi, pembaruan kartu rob dan catatan kaki; tahap kelurahan hanya sesudah validasi | banjir (+ selera-angka, inp-reviewer) | T8, T9, tinjau lokal | PT-08 |
-| PT-10 | DeltaDTM lokal, statistik elevasi per kecamatan, luas di bawah ambang (Q6) | banjir (+ validasi-model) | uji elevasi | PT-08, Q6 |
-| PT-11 | Berkas `tests/banjir/subsiden.test.mjs`; daftar swa-uji di `banjir.yml` | banjir | T5, T7 | PT-08 |
-| PT-12 | Pra-registrasi dan uji balik rob lawan penurunan sebelum angka gabungan (Q10) | pemilik memutuskan, banjir (+ validasi-model) | pra-registrasi terkunci | PT-07, Q10 |
+| Tiket | Isi | Pengerja | Bukti siap | Bergantung | Status (26 Nov 2026) |
+| --- | --- | --- | --- | --- | --- |
+| PT-01 | Pemilik menjawab Q1 (aturan izin untuk `~/licsbas/lb.sh` dan `~/licsbas/ambil.py`, atau menjalankan sendiri), Q3, Q5, Q7 | pemilik | jawaban tertulis di KEPUTUSAN | - | SELESAI 25 Nov 2026: Q1, Q6, Q7 dijawab di KEPUTUSAN; Q3 dan Q5 mengikuti bawaan (tidak ada jawaban terpisah). |
+| PT-02 | Tinjauan keamanan jalur LiCSBAS: catat hash komit klon, lisensi, dan isi dua skrip di `RISET-SUBSIDEN.md` | banjir (+ security-reviewer) | ringkasan tertulis | PT-01 | SELESAI 26 Nov 2026: hash komit, lisensi GPL v3, isi lb.sh/ambil.py/gacos.py di `scripts/banjir/RISET-SUBSIDEN.md`; menunggu `security-reviewer` independen. |
+| PT-03 | `subsiden.py`: tambah p10, galat baku median, tanggal deret, versi; pertahankan swa-uji | banjir | T1, T2 | - | SELESAI 15 Nov 2026 (77dbda474): p10, galat, rentang tanggal, versi; lalu v3 bootstrap (84fbd29cc) dan v4 variogram (b0924e640). |
+| PT-04 | Jalankan Jakarta: unduh, LiCSBAS, `subsiden.py hitung`, gerbang pola | pemilik atau banjir sesuai Q1 | `gerbang.lolos` benar di `subsiden.json` | PT-01, PT-02, PT-03 | SEBAGIAN: Jakarta dijalankan tiga putaran (cf045d040, d085a3462, 11ba735c0). Putaran 3 (2016-2023) gerbang pola GAGAL (utara -0,95 lawan selatan -0,25, perlu selisih 1,0); `gerbang.lolos` tidak benar, tidak ada berkas di `public/`. Hanya Penjaringan (sekitar -2 cm/tahun) tahan. |
+| PT-05 | Gerbang pola Semarang dan Pekalongan (dan Surabaya bila ada rujukan), jalankan ketiganya | banjir (+ validasi-model) | T3 | PT-04 | BELUM: Semarang dan Pekalongan tidak ada keluaran. Percobaan `~/licsbas/pky` mengunduh 0 dari 59 pasangan (404 di CEDA). Menunggu PT-04 lolos atau sumber data lain. |
+| PT-06 | Ujian tahan-waktu dan perbandingan literatur (ALGORITMA 6.1 dan 6.2) | banjir (+ validasi-model) | T10 sebagian | PT-04 | SEBAGIAN: 6.1 (rentang literatur) lolos putaran 2; 6.2 putaran 2 lolos tetapi tinjauan 6.10 menyebut bocor; uji belah independen putaran 3 (median selisih 0,4, ambang median 3,4) tidak diskriminatif. Belum ada vonis tahan-waktu yang bersih. |
+| PT-07 | Pembanding GNSS atau levelling bila datanya ada (Q11) | banjir (+ validasi-model) | T10 | PT-06 | BELUM: tidak ada data GNSS atau levelling di repo atau di `~/licsbas` (Q11 tanpa jawaban). |
+| PT-08 | `proyeksi_tanah.py` dengan swa-uji; keluaran `proyeksi_tanah.json` | banjir | T4, T6 | PT-03 | SELESAI 15 Nov 2026 (77dbda474): `proyeksi_tanah.py` dengan swa-uji, 10 dan 20 tahun; disesuaikan di 84fbd29cc dan b0924e640. `proyeksi_tanah.json` hanya di `~/licsbas/keluaran`, belum di `public/`. |
+| PT-09 | Lapis, kartu penurunan, kartu proyeksi, pembaruan kartu rob dan catatan kaki; tahap kelurahan hanya sesudah validasi | banjir (+ selera-angka, inp-reviewer) | T8, T9, tinjau lokal | PT-08 | BELUM: lapis penurunan tanah di `public/banjir/lapis_ekstra.js:37` masih titik per kota dari literatur; tidak ada pembaca `subsiden.json`. Tertahan: belum ada keluaran yang lolos gerbang. |
+| PT-10 | DeltaDTM lokal, statistik elevasi per kecamatan, luas di bawah ambang (Q6) | banjir (+ validasi-model) | uji elevasi | PT-08, Q6 | SELESAI 26 Nov 2026 (belum dikomit): `scripts/banjir/elevasi_tanah.py` (`ambil`, `hitung`, swa-uji `uji`; ditambahkan ke daftar swa-uji `banjir.yml`). Enam ubin 1 derajat (Jakarta, Semarang dan Demak, Pekalongan, Surabaya) dibaca dari `Asia.zip` lewat HTTP Range, total 53,6 MB (bukan 17,3 GB), di `data/raw/banjir/deltadtm/` (gitignored) dengan `unduhan.json` (sha256). Keluaran `elevasi_tanah.json` (luas di bawah 1, 2, 3 m per kecamatan, 126 kecamatan) hanya LOKAL, belum ke `public/`. Kunci `setelah_turun` (ambang p90 pasut + D(T)) hanya terisi bila `--proyeksi` diberi berkas proyeksi; `proyeksi_tanah.json` lab Jakarta kosong (gerbang pola PT-04 gagal), jadi kunci itu belum berisi data nyata. Menunggu vonis `validasi-model`. |
+| PT-11 | Berkas `tests/banjir/subsiden.test.mjs`; daftar swa-uji di `banjir.yml` | banjir | T5, T7 | PT-08 | SELESAI 15 Nov 2026 (77dbda474): `tests/banjir/subsiden.test.mjs`; `subsiden` dan `proyeksi_tanah` ada di daftar swa-uji `banjir.yml:106`. |
+| PT-12 | Pra-registrasi dan uji balik rob lawan penurunan sebelum angka gabungan (Q10) | pemilik memutuskan, banjir (+ validasi-model) | pra-registrasi terkunci | PT-07, Q10 | BELUM: bergantung PT-07 dan Q10; tidak ada pra-registrasi rob lawan penurunan. |
 
 Tiket tanpa Q1 yang tetap jalan: PT-03, PT-08 dengan data literatur per kota sebagai masukan (berlabel), PT-11.

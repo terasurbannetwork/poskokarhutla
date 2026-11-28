@@ -10,9 +10,24 @@
   const judulRute = (d, z) => banjir(z) ? `Rute OMC banjir zona ${z.huruf}: cegat awan di hulu angin, sasaran ${namaSasaran(d, z).join(", ") || "belum tercatat"}`
     : `Rute OMC zona ${z.huruf}: ${[z.kota, z.prov].filter(Boolean).join(", ")}`;
   const namaBerkas = z => `Renlap OMC${banjir(z) ? " banjir" : ""} zona ${z.huruf} ${z.id.slice(0, 10)}`;
-  if (typeof document === "undefined") { globalThis.RenlapOmcMurni = {banjir, namaSasaran, judulRute, namaBerkas}; return; }
+  /* SA-22: ketinggian semai zona (kaki ke meter) jadi altitude titik non-base; tanpa ketinggian, tanpa altitude dan clampToGround, bukan 0 palsu */
+  const mSemai = z => z.ketinggian?.kaki > 0 ? Math.round(z.ketinggian.kaki * 0.3048) : null;
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"})[c]);
+  const CATAT = "Ketinggian = dasar awan perkiraan model, bukan ketinggian terbang; usulan, bukan perintah terbang.";
+  function bangunBerkas(z, f) {
+    const t = z.rute.cp, nama = namaBerkas(z), x = s => esc(s), m = mSemai(z), akhir = t.length - 1, tinggi = i => m != null && i > 0 && i < akhir;
+    const ket = i => tinggi(i) ? `<${f === "gpx" ? "desc" : "description"}>${x(CATAT)}</${f === "gpx" ? "desc" : "description"}>` : "";
+    if (f === "gpx") return `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Centurisk97" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>${x(nama)}</name>${m != null ? `<desc>${x(CATAT)}</desc>` : ""}</metadata>\n${t.slice(0, -1).map((c, i) => `<wpt lat="${c.lat}" lon="${c.lon}">${tinggi(i) ? `<ele>${m}</ele>` : ""}<name>${x(c.kode)} ${x(c.nama)}</name>${ket(i)}</wpt>`).join("\n")}\n<rte><name>${x(nama)}</name>${t.map((c, i) => `<rtept lat="${c.lat}" lon="${c.lon}">${tinggi(i) ? `<ele>${m}</ele>` : ""}<name>${x(c.kode)}</name>${ket(i)}</rtept>`).join("")}</rte></gpx>`;
+    /* rute KML: segmen terbang absolute, segmen dari dan ke base clampToGround supaya base tetap di tanah */
+    const xyz = (c, i) => `${c.lon},${c.lat}${tinggi(i) ? `,${m}` : ""}`, garis = (nm, pts, mode) => `<Placemark><name>${nm}</name>${mode === "absolute" ? `<description>${x(CATAT)}</description>` : ""}<LineString><altitudeMode>${mode}</altitudeMode><coordinates>${pts.join(" ")}</coordinates></LineString></Placemark>`;
+    const rute = m != null && akhir >= 2
+      ? [garis("Rute berangkat", [xyz(t[0], 0), `${t[1].lon},${t[1].lat}`], "clampToGround"), garis("Rute terbang", t.slice(1, -1).map((c, i) => xyz(c, i + 1)), "absolute"), garis("Rute kembali", [`${t[akhir - 1].lon},${t[akhir - 1].lat}`, xyz(t[akhir], akhir)], "clampToGround")].join("\n")
+      : garis("Rute", t.map(c => `${c.lon},${c.lat}`), "clampToGround");
+    return `<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>${x(nama)}</name>${m != null ? `<description>${x(CATAT)}</description>` : ""}\n${t.slice(0, -1).map((c, i) => `<Placemark><name>${x(c.kode)} ${x(c.nama)}</name>${ket(i)}<Point><altitudeMode>${tinggi(i) ? "absolute" : "clampToGround"}</altitudeMode><coordinates>${xyz(c, i)}</coordinates></Point></Placemark>`).join("\n")}\n${rute}</Document></kml>`;
+  }
+  if (typeof document === "undefined") { globalThis.RenlapOmcMurni = {banjir, namaSasaran, judulRute, namaBerkas, mSemai, bangunBerkas}; return; }
   const {gpx, bingkai} = window.CitraUbin;
-  const $ = s => document.querySelector(s), esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"})[c]);
+  const $ = s => document.querySelector(s);
   const BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
   const ang = (x, d = 0) => Number(x).toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d});
   const hal3 = x => String(Math.round(x) % 360 || 360).padStart(3, "0") + "°";
@@ -76,10 +91,7 @@
   }
 
   function unduh(z, f) {
-    const t = z.rute.cp, nama = namaBerkas(z), x = s => esc(s);
-    const isi = f === "gpx"
-      ? `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Centurisk97" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>${x(nama)}</name></metadata>\n${t.slice(0, -1).map(c => `<wpt lat="${c.lat}" lon="${c.lon}"><name>${x(c.kode)} ${x(c.nama)}</name></wpt>`).join("\n")}\n<rte><name>${x(nama)}</name>${t.map(c => `<rtept lat="${c.lat}" lon="${c.lon}"><name>${x(c.kode)}</name></rtept>`).join("")}</rte></gpx>`
-      : `<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>${x(nama)}</name>\n${t.slice(0, -1).map(c => `<Placemark><name>${x(c.kode)} ${x(c.nama)}</name><Point><coordinates>${c.lon},${c.lat},0</coordinates></Point></Placemark>`).join("\n")}\n<Placemark><name>Rute</name><LineString><coordinates>${t.map(c => `${c.lon},${c.lat},0`).join(" ")}</coordinates></LineString></Placemark></Document></kml>`;
+    const nama = namaBerkas(z), isi = bangunBerkas(z, f);
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([isi], {type: f === "gpx" ? "application/gpx+xml" : "application/vnd.google-earth.kml+xml"}));
     a.download = `${nama.replace(/\s+/g, "_")}.${f}`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }

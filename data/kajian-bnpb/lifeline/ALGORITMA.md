@@ -48,3 +48,18 @@ Penyimpangan terdokumentasi dari tabel bagian 2 (semua berlabel hipotesis; alasa
 ## 5. Uji jujur
 
 Sesudah kalibrasi, laporkan per layanan: persentase usulan yang sama dengan status resmi, dan persentase sel resmi merah yang usulannya abu (kebutaan mesin). Angka itu tampil di catatan kisi.
+
+## 6. Lampu malam VNP46A2 dari LAADS (LF-10): kriteria uji balik, dikunci 26 Nov 2026 sebelum data diunduh
+
+Jalur: `scripts/umum/lampu_malam.py`, fungsi `malam()` diganti pembaca VNP46A2 asli dari LAADS DAAC (OPeNDAP, subset ASCII, stdlib) berisi `DNB_BRDF-Corrected_NTL`, `Mandatory_Quality_Flag`, dan `QF_Cloud_Mask`. Piksel dipakai hanya bila mutu wajib 0 (persisten bermutu tinggi) atau 1 (bermutu tinggi), masker awan "yakin cerah" atau "mungkin cerah", dan bukan salju atau air. Mesin dasar, rasio, gelap, redup, pulih, dan alarm palsu tidak diubah; ambang `AMBANG_GELAP` 0,5 dan `AMBANG_REDUP` tetap hipotesis dan tidak disetel ulang memakai kejadian uji.
+
+Kriteria berikut ditulis sebelum satu pun ubin LAADS diunduh. Hasil yang lolos sesudah kriteria diubah tidak dihitung lulus.
+
+| Uji | Kejadian | Lulus bila |
+| --- | --- | --- |
+| U-L1 kepekaan | Gempa Palu-Donggala M 7,5, 28 Sep 2018 10.02 UTC (PLN 2 Okt: pasokan 20 sampai 30 persen) | sedikitnya 3 kecamatan Kota Palu terbaca gelap pada salah satu malam H0 sampai H0+4 |
+| U-L2 pemulihan | Palu 2018 (PLN 6 Okt: 70 persen menyala; 18 Okt: hampir 100 persen) | median hari pulih kecamatan yang pernah gelap atau redup antara 5 dan 21 hari |
+| U-L3 kontrol negatif | Padam total Bali, 2 Mei 2025 16.00 WITA, pulih sebelum lintasan malam itu (PLN 19.30 WITA lebih dari 940 ribu pelanggan menyala) | paling banyak 10 persen kecamatan Bali yang dinilai terbaca gelap pada malam H0 sampai H0+7 |
+| U-L4 derau | masa dasar Palu dan Bali | alarm palsu dasar (kecamatan-hari gelap tanpa bencana) paling banyak 5 persen di masing-masing |
+
+Vonis `lulus` hanya bila keempatnya lulus. Malam yang tak terbaca karena awan tidak dihitung lulus maupun gagal; bila U-L1 atau U-L3 tak punya satu pun malam terbaca, vonisnya `tak terbaca`, bukan lulus. Selama vonis bukan `lulus`, lampu malam tidak menjadi isyarat listrik di Lifeline, tidak dijadwalkan di workflow, dan tidak tampil di layar.

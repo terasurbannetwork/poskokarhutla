@@ -440,7 +440,7 @@ Stok: urutan sumber (1) INALOGPAL `Api/gudang_sumbar` bila U4 mengizinkan (resmi
 
 Invarian: tepat 514 baris; kebutuhan pr4 = 4 x kebutuhan pr1 per kab; JP ≤ 0 atau bukan angka ditolak.
 
-Uji balik PR (riset/4 P1; RU §2.3): rasio_kt = mengungsi_kt / n_k dari `dibi_kab_tahun.json` 2015-2025, dipangkas di persentil 99 nasional. Keluaran: per kab `rasio_maks`, tahunnya, `lewat_1pct`; nasional: jumlah dan persen kab-tahun > 1% dan > 4% dengan penyebutnya, p95, p99. Penduduk 2026 dipakai untuk semua tahun (berlabel). Ini uji asumsi pasal, bukan klaim prediksi: hasilnya tampil sebagai fakta ("209 dari 5.654 kab-tahun melewati 1%", reproduksi riset/4 dengan sha256 masukan), tidak menggerbangi kartu. Kab yang pernah melewati 1% ditandai "calon PR 4%" (hitungan).
+Uji balik PR (riset/4 P1; RU §2.3): rasio_kt = mengungsi_kt / n_k dari `dibi_kab_tahun.json` 2015-2025, dipangkas di persentil 99 nasional. Keluaran: per kab `rasio_maks`, tahunnya, `lewat_1pct`; nasional: jumlah dan persen kab-tahun > 1% dan > 4% dengan penyebutnya, p95, p99. Penduduk 2026 dipakai untuk semua tahun (berlabel). Dua penyebut tampil berdampingan: kab-tahun bernilai 0 bila tidak tercatat DIBI, dan kab-tahun berdata (yang memberi persen, p95, p99 pemangkas); kab tanpa satu pun baris DIBI (kode wilayah belum dipadankan) keluar dari keduanya, dan penyebut riset/4 514 x 11 hanya pembanding sidik beku. Ini uji asumsi pasal, bukan klaim prediksi: hasilnya tampil sebagai fakta ("209 dari 5.654 kab-tahun melewati 1%", reproduksi riset/4 dengan sha256 masukan), tidak menggerbangi kartu. Kab yang pernah melewati 1% ditandai "calon PR 4%" (hitungan).
 
 ### 6.3 WIL-2 kebutuhan dasar per tempat pengungsian
 
@@ -665,14 +665,14 @@ Masukan: `public/data/bnpb/risiko_hvc.json` (`kab[k].H` per jenis, `v`), `ikd.js
 | Simbol | Arti | Satuan |
 | --- | --- | --- |
 | H_k | maks_j H_kj (agregasi lintas jenis = asumsi dokumen DT §5.1) | indeks 0-1 |
-| V_k | `v` | indeks 0-1 |
+| V_k | Phi(`v`), `v` berskala z (sama dengan `risiko_hvc.py`) | indeks 0-1 |
 | C_k | `c` (raster, proksi IKD) | indeks 0-1 |
 | d_k | 0,40 - C_k bila C_k < 0,40; 0,80 - C_k bila 0,40 ≤ C_k < 0,80; tidak ada bila C_k ≥ 0,80 | indeks |
 | n_k | 1/514 (agregasi IRB rata-rata sederhana, asumsi riset/1 pertanyaan 3) | - |
 
 `R_k(C) = (H_k x V_k x (1 - C))^(1/3)` (Buku RBI hal. 53, riset/1 §1.5).
 `manfaat_k = n_k x [R_k(C_k) - R_k(C_k + d_k)]`.
-`biaya_k` = jarak garis lurus (haversine, km) pusat kab ke Jakarta (-6,1754; 106,8272).
+`biaya_k` = maks(jarak garis lurus (haversine, km) pusat kab ke Jakarta (-6,1754; 106,8272), 100 km); lantai 100 km asumsi berpil (KEPUTUSAN-AWAL U13).
 Urut menurun `manfaat_k / biaya_k`. Kolom `naik_iku2` = benar bila C_k < 0,40 ≤ C_k + d_k dan IKD provinsi k di Lampiran 2 < 0,40 (kolom, bukan bonus angka).
 
 Kelas (`ikd_ambang_kelas`, asumsi): rendah C < 0,40; sedang 0,40 ≤ C < 0,80; tinggi C ≥ 0,80. Ambang ini berbeda dengan `ikd.json` `kelas_ambang` (0,33 dan 0,66) yang dipakai untuk raster; kartu PERB-1 memakai 0,40 dan 0,80 dan menyebut bedanya di `title`.

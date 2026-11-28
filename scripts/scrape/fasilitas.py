@@ -1,4 +1,4 @@
-"""Fasilitas rentan asap (sekolah, faskes, rumah sakit) 9 provinsi prioritas -> public/data/fasilitas.json
+"""Fasilitas rentan asap (sekolah, faskes, rumah sakit) 38 provinsi (sekolah hanya 9 prioritas; DP-26) -> public/data/fasilitas.json
 
 Pakai:  python3 scripts/scrape/fasilitas.py
 Mentah: data/raw/osm/prov-fasilitas-<kode>.json dari scripts/scrape/tarik_osm.py fasilitas.
@@ -6,12 +6,12 @@ Sumber: OpenStreetMap via Overpass (ODbL, (c) kontributor OpenStreetMap). Keleng
 (Kalteng: ± 430 di OSM vs ± 3.000+ di Dapodik) - peta ini menunjukkan yang terpeta, bukan semua.
 Bila hasil > BATAS titik, hanya yang <= 50 km dari kompleks siaga/prioritas yang disimpan.
 """
-import json, math, os, sys
+import json, math, os, re, sys
 
 AKAR = os.path.join(os.path.dirname(__file__), "../..")
 sys.path.insert(0, os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(AKAR, "scripts/data"))
-from wilayah import PRIORITAS
+from wilayah import PRIORITAS, PROVINSI
 
 MENTAH = os.path.join(AKAR, "data/raw/osm")
 KELUAR = os.path.join(AKAR, "public/data/fasilitas.json")
@@ -45,7 +45,12 @@ def susun(elemen_per_prov):
             if not c:
                 continue
             seen.add((el["type"], el["id"]))
-            out.append({"t": j, "nama": nama(el["tags"], j), "lat": round(c["lat"], 4), "lon": round(c["lon"], 4), "prov": prov})
+            if j == "sekolah" and prov not in PRIORITAS:
+                continue
+            f = {"t": j, "nama": nama(el["tags"], j), "lat": round(c["lat"], 4), "lon": round(c["lon"], 4), "prov": prov}
+            if j == "faskes" and re.match(r"\s*(upt\s+)?puskesmas", f["nama"], re.I):
+                f["pkm"] = 1  # puskesmas; t tetap faskes supaya pembaca lama tak berubah
+            out.append(f)
     return out
 
 
@@ -66,16 +71,22 @@ def dekat_kompleks(fas, kompleks, r_km=RADIUS_KM):
 
 def bangun():
     per = []
-    for kode in PRIORITAS:
+    for kode in PROVINSI:
         p = os.path.join(MENTAH, f"prov-fasilitas-{kode}.json")
         if os.path.exists(p):
             per.append((kode, json.load(open(p))["elements"]))
         else:
             print("lewati", kode, "(belum ditarik)", file=sys.stderr)
     fas = susun(per)
-    if len(fas) > BATAS:
+    if sum(f["t"] == "sekolah" for f in fas) > BATAS:  # hanya sekolah disaring; kesehatan semua provinsi tetap
         kl = json.load(open(os.path.join(AKAR, "public/data/kluster.json")))["features"]
-        fas = dekat_kompleks(fas, [(f["properties"]["lat"], f["properties"]["lon"]) for f in kl if f["properties"].get("level", 0) >= 2])
+        sk = dekat_kompleks([f for f in fas if f["t"] == "sekolah"], [(f["properties"]["lat"], f["properties"]["lon"]) for f in kl if f["properties"].get("level", 0) >= 2])
+        fas = [f for f in fas if f["t"] != "sekolah"] + sk
+    ada = {f["prov"] for f in fas}
+    if "--cek" in sys.argv:
+        assert ada == set(PROVINSI), f"provinsi kurang di keluaran: {sorted(set(PROVINSI) - ada)}"
+        print("cek: 38 provinsi ada,", len(fas), "titik")
+        return
     json.dump(fas, open(KELUAR, "w"), ensure_ascii=False, separators=(",", ":"))
     hit = {}
     for f in fas:
@@ -91,6 +102,8 @@ def uji():
     f = susun([("62", els), ("63", els)])  # lintas provinsi: elemen sama hanya sekali
     assert [x["t"] for x in f] == ["sekolah", "rs", "faskes"], f
     assert f[1]["nama"] == "Rumah sakit (tanpa nama)"
+    assert [x.get("pkm") for x in susun([("62", [{"type": "node", "id": 9, "lat": 0, "lon": 0, "tags": {"amenity": "clinic", "name": "UPT Puskesmas Y"}}])])] == [1]
+    assert not susun([("11", els[:1])])  # sekolah non-prioritas tak disimpan
     assert len(dekat_kompleks(f, [(-2.2, 113.9)], 5)) == 2  # puskesmas X ± 15 km: di luar 5 km
 
 

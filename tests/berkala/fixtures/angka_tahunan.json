@@ -1,0 +1,4236 @@
+{
+ "bab1": {
+  "alam": {
+   "dampak": {
+    "f_kantor": 0,
+    "f_pendidikan": 0,
+    "f_umum": 0,
+    "fasum_rusak": 0,
+    "hilang": 0,
+    "jembatan": 0,
+    "luka": 0,
+    "mengungsi": 0,
+    "meninggal": 3,
+    "meninggal_hilang": 3,
+    "rr_berat": 0,
+    "rr_ringan": 3,
+    "rr_sedang": 0,
+    "rumah_rusak": 3,
+    "terdampak": null,
+    "terdampak_mengungsi": null,
+    "terendam": 0
+   },
+   "kab": 7,
+   "kejadian": 370,
+   "prov": 6
+  },
+  "bukan_alam": {
+   "catatan_lainnya": "DIBI tidak merinci jenis kejadian Lainnya",
+   "jenis": {
+    "epidemi": {
+     "dampak": {
+      "f_kantor": 0,
+      "f_pendidikan": 0,
+      "f_umum": 0,
+      "fasum_rusak": 0,
+      "hilang": 0,
+      "jembatan": 0,
+      "luka": 0,
+      "mengungsi": 0,
+      "meninggal": 0,
+      "meninggal_hilang": 0,
+      "rr_berat": 0,
+      "rr_ringan": 0,
+      "rr_sedang": 0,
+      "rumah_rusak": 0,
+      "terdampak": 0,
+      "terdampak_mengungsi": 0,
+      "terendam": 0
+     },
+     "kab": 0,
+     "kejadian": 0,
+     "prov": 0
+    },
+    "gagal_teknologi": {
+     "dampak": {
+      "f_kantor": 0,
+      "f_pendidikan": 0,
+      "f_umum": 0,
+      "fasum_rusak": 0,
+      "hilang": 0,
+      "jembatan": 0,
+      "luka": 0,
+      "mengungsi": 0,
+      "meninggal": 0,
+      "meninggal_hilang": 0,
+      "rr_berat": 0,
+      "rr_ringan": 0,
+      "rr_sedang": 0,
+      "rumah_rusak": 0,
+      "terdampak": 0,
+      "terdampak_mengungsi": 0,
+      "terendam": 0
+     },
+     "kab": 0,
+     "kejadian": 0,
+     "prov": 0
+    },
+    "kebakaran_permukiman": {
+     "dampak": {
+      "f_kantor": 0,
+      "f_pendidikan": 0,
+      "f_umum": 0,
+      "fasum_rusak": 0,
+      "hilang": 0,
+      "jembatan": 0,
+      "luka": 0,
+      "mengungsi": 0,
+      "meninggal": 1,
+      "meninggal_hilang": 1,
+      "rr_berat": 0,
+      "rr_ringan": 0,
+      "rr_sedang": 0,
+      "rumah_rusak": 0,
+      "terdampak": 0,
+      "terdampak_mengungsi": 0,
+      "terendam": 0
+     },
+     "kab": 1,
+     "kejadian": 2,
+     "prov": 1
+    },
+    "kecelakaan_industri": {
+     "dampak": {
+      "f_kantor": 0,
+      "f_pendidikan": 0,
+      "f_umum": 0,
+      "fasum_rusak": 0,
+      "hilang": 0,
+      "jembatan": 0,
+      "luka": 0,
+      "mengungsi": 0,
+      "meninggal": 0,
+      "meninggal_hilang": 0,
+      "rr_berat": 0,
+      "rr_ringan": 0,
+      "rr_sedang": 0,
+      "rumah_rusak": 0,
+      "terdampak": 0,
+      "terdampak_mengungsi": 0,
+      "terendam": 0
+     },
+     "kab": 0,
+     "kejadian": 0,
+     "prov": 0
+    },
+    "konflik_sosial": {
+     "dampak": {
+      "f_kantor": 0,
+      "f_pendidikan": 0,
+      "f_umum": 0,
+      "fasum_rusak": 0,
+      "hilang": 0,
+      "jembatan": 0,
+      "luka": 0,
+      "mengungsi": 0,
+      "meninggal": 0,
+      "meninggal_hilang": 0,
+      "rr_berat": 0,
+      "rr_ringan": 0,
+      "rr_sedang": 0,
+      "rumah_rusak": 0,
+      "terdampak": 0,
+      "terdampak_mengungsi": 0,
+      "terendam": 0
+     },
+     "kab": 0,
+     "kejadian": 0,
+     "prov": 0
+    },
+    "lainnya": {
+     "dampak": {
+      "f_kantor": 0,
+      "f_pendidikan": 0,
+      "f_umum": 0,
+      "fasum_rusak": 0,
+      "hilang": 0,
+      "jembatan": 0,
+      "luka": 0,
+      "mengungsi": 0,
+      "meninggal": 0,
+      "meninggal_hilang": 0,
+      "rr_berat": 0,
+      "rr_ringan": 0,
+      "rr_sedang": 0,
+      "rumah_rusak": 0,
+      "terdampak": 0,
+      "terdampak_mengungsi": 0,
+      "terendam": 0
+     },
+     "kab": 0,
+     "kejadian": 0,
+     "prov": 0
+    }
+   },
+   "kab_teratas": [
+    {
+     "dampak": {
+      "f_kantor": 0,
+      "f_pendidikan": 0,
+      "f_umum": 0,
+      "fasum_rusak": 0,
+      "hilang": 0,
+      "jembatan": 0,
+      "luka": 0,
+      "mengungsi": 0,
+      "meninggal": 1,
+      "meninggal_hilang": 1,
+      "rr_berat": 0,
+      "rr_ringan": 0,
+      "rr_sedang": 0,
+      "rumah_rusak": 0,
+      "terdampak": 0,
+      "terdampak_mengungsi": 0,
+      "terendam": 0
+     },
+     "jenis": "kebakaran_permukiman",
+     "kejadian": 2,
+     "kode": "31.71",
+     "nama": "Kota Jakarta Selatan",
+     "prov": "DKI Jakarta",
+     "prov_kode": "31"
+    }
+   ],
+   "tahun_lalu": {
+    "epidemi": {
+     "arah": "tetap 0",
+     "kini": 0,
+     "lalu": 0,
+     "persen": null
+    },
+    "gagal_teknologi": {
+     "arah": "tetap 0",
+     "kini": 0,
+     "lalu": 0,
+     "persen": null
+    },
+    "kebakaran_permukiman": {
+     "arah": "baru",
+     "kini": 2,
+     "lalu": 0,
+     "persen": null
+    },
+    "kecelakaan_industri": {
+     "arah": "tetap 0",
+     "kini": 0,
+     "lalu": 0,
+     "persen": null
+    },
+    "konflik_sosial": {
+     "arah": "tetap 0",
+     "kini": 0,
+     "lalu": 0,
+     "persen": null
+    },
+    "lainnya": {
+     "arah": "tetap 0",
+     "kini": 0,
+     "lalu": 0,
+     "persen": null
+    }
+   }
+  },
+  "di_bawah_ambang": null,
+  "jenis": {
+   "banjir": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 1,
+     "meninggal_hilang": 1,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": null,
+     "terdampak_mengungsi": null,
+     "terendam": 0
+    },
+    "kab": 3,
+    "kejadian": 342,
+    "prov": 3
+   },
+   "cuaca_ekstrem": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": 0,
+     "terdampak_mengungsi": 0,
+     "terendam": 0
+    },
+    "kab": 0,
+    "kejadian": 0,
+    "prov": 0
+   },
+   "erupsi": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": 0,
+     "terdampak_mengungsi": 0,
+     "terendam": 0
+    },
+    "kab": 1,
+    "kejadian": 1,
+    "prov": 1
+   },
+   "gelombang": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": 0,
+     "terdampak_mengungsi": 0,
+     "terendam": 0
+    },
+    "kab": 0,
+    "kejadian": 0,
+    "prov": 0
+   },
+   "gempa": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 3,
+     "rr_sedang": 0,
+     "rumah_rusak": 3,
+     "terdampak": 0,
+     "terdampak_mengungsi": 0,
+     "terendam": 0
+    },
+    "kab": 1,
+    "kejadian": 1,
+    "prov": 1
+   },
+   "karhutla": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": 0,
+     "terdampak_mengungsi": 0,
+     "terendam": 0
+    },
+    "kab": 1,
+    "kejadian": 20,
+    "prov": 1
+   },
+   "kekeringan": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": null,
+     "terdampak_mengungsi": null,
+     "terendam": 0
+    },
+    "kab": 1,
+    "kejadian": 4,
+    "prov": 1
+   },
+   "longsor": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 2,
+     "meninggal_hilang": 2,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": 0,
+     "terdampak_mengungsi": 0,
+     "terendam": 0
+    },
+    "kab": 1,
+    "kejadian": 2,
+    "prov": 1
+   }
+  },
+  "kelompok": {
+   "basah": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 3,
+     "meninggal_hilang": 3,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": null,
+     "terdampak_mengungsi": null,
+     "terendam": 0
+    },
+    "kab": 4,
+    "kejadian": 344,
+    "prov": 4
+   },
+   "geologi": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 3,
+     "rr_sedang": 0,
+     "rumah_rusak": 3,
+     "terdampak": 0,
+     "terdampak_mengungsi": 0,
+     "terendam": 0
+    },
+    "kab": 2,
+    "kejadian": 2,
+    "prov": 2
+   },
+   "kering": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": null,
+     "terdampak_mengungsi": null,
+     "terendam": 0
+    },
+    "kab": 2,
+    "kejadian": 24,
+    "prov": 2
+   }
+  },
+  "label_angka": {
+   "alam": "Semua laporan DIBI, termasuk di bawah ambang bencana (cara laporan Oktober 2026 kepada Presiden)",
+   "resmi": "Resmi DIBI, tanpa laporan di bawah ambang bencana (Juklak BNPB 7/2023)"
+  },
+  "prov": [
+   {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": null,
+     "terdampak_mengungsi": null,
+     "terendam": 0
+    },
+    "jenis": {
+     "banjir": 330,
+     "karhutla": 20
+    },
+    "kejadian": 350,
+    "kelompok": {
+     "basah": 330,
+     "geologi": 0,
+     "kering": 20
+    },
+    "kode": "14",
+    "nama": "Riau"
+   },
+   {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": 40,
+     "terdampak_mengungsi": 40,
+     "terendam": 0
+    },
+    "jenis": {
+     "banjir": 7
+    },
+    "kejadian": 7,
+    "kelompok": {
+     "basah": 7,
+     "geologi": 0,
+     "kering": 0
+    },
+    "kode": "11",
+    "nama": "Aceh"
+   },
+   {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 1,
+     "meninggal_hilang": 1,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": null,
+     "terdampak_mengungsi": null,
+     "terendam": 0
+    },
+    "jenis": {
+     "banjir": 5
+    },
+    "kejadian": 5,
+    "kelompok": {
+     "basah": 5,
+     "geologi": 0,
+     "kering": 0
+    },
+    "kode": "12",
+    "nama": "Sumatera Utara"
+   },
+   {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": null,
+     "terdampak_mengungsi": null,
+     "terendam": 0
+    },
+    "jenis": {
+     "kekeringan": 4
+    },
+    "kejadian": 4,
+    "kelompok": {
+     "basah": 0,
+     "geologi": 0,
+     "kering": 4
+    },
+    "kode": "53",
+    "nama": "Nusa Tenggara Timur"
+   },
+   {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 2,
+     "meninggal_hilang": 2,
+     "rr_berat": 0,
+     "rr_ringan": 3,
+     "rr_sedang": 0,
+     "rumah_rusak": 3,
+     "terdampak": 0,
+     "terdampak_mengungsi": 0,
+     "terendam": 0
+    },
+    "jenis": {
+     "gempa": 1,
+     "longsor": 2
+    },
+    "kejadian": 3,
+    "kelompok": {
+     "basah": 2,
+     "geologi": 1,
+     "kering": 0
+    },
+    "kode": "32",
+    "nama": "Jawa Barat"
+   },
+   {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": 0,
+     "terdampak_mengungsi": 0,
+     "terendam": 0
+    },
+    "jenis": {
+     "erupsi": 1
+    },
+    "kejadian": 1,
+    "kelompok": {
+     "basah": 0,
+     "geologi": 1,
+     "kering": 0
+    },
+    "kode": "82",
+    "nama": "Maluku Utara"
+   }
+  ],
+  "prov_teratas": [
+   "14",
+   "11",
+   "12",
+   "53",
+   "32",
+   "82"
+  ],
+  "resmi": null,
+  "riwayat": [
+   {
+    "kejadian": {
+     "alam": 5,
+     "alam_resmi": null,
+     "banjir": 3,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 0,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kebakaran_permukiman": 0,
+     "kecelakaan_industri": 0,
+     "kekeringan": 0,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 2
+    },
+    "kode": "2025-01"
+   },
+   {
+    "kejadian": {
+     "alam": 0,
+     "alam_resmi": 0,
+     "banjir": 0,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 0,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kebakaran_permukiman": 0,
+     "kecelakaan_industri": 0,
+     "kekeringan": 0,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 0
+    },
+    "kode": "2025-02"
+   },
+   {
+    "kejadian": {
+     "alam": 1,
+     "alam_resmi": null,
+     "banjir": 1,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 0,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kebakaran_permukiman": 0,
+     "kecelakaan_industri": 0,
+     "kekeringan": 0,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 0
+    },
+    "kode": "2025-03"
+   },
+   {
+    "kejadian": {
+     "alam": 0,
+     "alam_resmi": 0,
+     "banjir": 0,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 0,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kebakaran_permukiman": 0,
+     "kecelakaan_industri": 0,
+     "kekeringan": 0,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 0
+    },
+    "kode": "2025-04"
+   },
+   {
+    "kejadian": {
+     "alam": 0,
+     "alam_resmi": 0,
+     "banjir": 0,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 0,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kebakaran_permukiman": 0,
+     "kecelakaan_industri": 0,
+     "kekeringan": 0,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 0
+    },
+    "kode": "2025-05"
+   },
+   {
+    "kejadian": {
+     "alam": 0,
+     "alam_resmi": 0,
+     "banjir": 0,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 0,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kebakaran_permukiman": 0,
+     "kecelakaan_industri": 0,
+     "kekeringan": 0,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 0
+    },
+    "kode": "2025-06"
+   },
+   {
+    "kejadian": {
+     "alam": 0,
+     "alam_resmi": 0,
+     "banjir": 0,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 0,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kebakaran_permukiman": 0,
+     "kecelakaan_industri": 0,
+     "kekeringan": 0,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 0
+    },
+    "kode": "2025-07"
+   },
+   {
+    "kejadian": {
+     "alam": 24,
+     "alam_resmi": null,
+     "banjir": 0,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 0,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 20,
+     "kebakaran_permukiman": 0,
+     "kecelakaan_industri": 0,
+     "kekeringan": 4,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 0
+    },
+    "kode": "2025-08"
+   },
+   {
+    "kejadian": {
+     "alam": 1,
+     "alam_resmi": null,
+     "banjir": 0,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 1,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kebakaran_permukiman": 0,
+     "kecelakaan_industri": 0,
+     "kekeringan": 0,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 0
+    },
+    "kode": "2025-09"
+   },
+   {
+    "kejadian": {
+     "alam": 331,
+     "alam_resmi": null,
+     "banjir": 330,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 0,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 1,
+     "karhutla": 0,
+     "kebakaran_permukiman": 0,
+     "kecelakaan_industri": 0,
+     "kekeringan": 0,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 0
+    },
+    "kode": "2025-10"
+   },
+   {
+    "kejadian": {
+     "alam": 5,
+     "alam_resmi": null,
+     "banjir": 5,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 0,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kebakaran_permukiman": 0,
+     "kecelakaan_industri": 0,
+     "kekeringan": 0,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 0
+    },
+    "kode": "2025-11"
+   },
+   {
+    "kejadian": {
+     "alam": 3,
+     "alam_resmi": 2,
+     "banjir": 3,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 0,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kebakaran_permukiman": 2,
+     "kecelakaan_industri": 0,
+     "kekeringan": 0,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 0
+    },
+    "kode": "2025-12"
+   }
+  ],
+  "riwayat_10_tahun": {
+   "banding": {
+    "arah": null,
+    "kini": null,
+    "lalu": 395.0,
+    "persen": null
+   },
+   "catatan": "Riwayat dan tahun laporan memakai angka resmi DIBI (memenuhi ambang bencana Juklak BNPB 7/2023) untuk tujuh jenis yang sama: banjir, tanah longsor, kekeringan, gelombang pasang, gempa bumi, karhutla, cuaca ekstrem. Angka semua laporan tidak dibandingkan dengan riwayat ini.",
+   "jenis": [
+    "banjir",
+    "cuaca_ekstrem",
+    "gelombang",
+    "gempa",
+    "karhutla",
+    "kekeringan",
+    "longsor"
+   ],
+   "rerata": 395.0,
+   "status": "ok",
+   "tahun_ada": 10,
+   "tarik": "2026-01-10",
+   "titik": [
+    {
+     "asal": "dibi_tren",
+     "jenis": {
+      "banjir": 300,
+      "cuaca_ekstrem": 0,
+      "gelombang": 0,
+      "gempa": 0,
+      "karhutla": 0,
+      "kekeringan": 0,
+      "longsor": 50
+     },
+     "kejadian": 350,
+     "tahun": 2015
+    },
+    {
+     "asal": "dibi_tren",
+     "jenis": {
+      "banjir": 310,
+      "cuaca_ekstrem": 0,
+      "gelombang": 0,
+      "gempa": 0,
+      "karhutla": 0,
+      "kekeringan": 0,
+      "longsor": 50
+     },
+     "kejadian": 360,
+     "tahun": 2016
+    },
+    {
+     "asal": "dibi_tren",
+     "jenis": {
+      "banjir": 320,
+      "cuaca_ekstrem": 0,
+      "gelombang": 0,
+      "gempa": 0,
+      "karhutla": 0,
+      "kekeringan": 0,
+      "longsor": 50
+     },
+     "kejadian": 370,
+     "tahun": 2017
+    },
+    {
+     "asal": "dibi_tren",
+     "jenis": {
+      "banjir": 330,
+      "cuaca_ekstrem": 0,
+      "gelombang": 0,
+      "gempa": 0,
+      "karhutla": 0,
+      "kekeringan": 0,
+      "longsor": 50
+     },
+     "kejadian": 380,
+     "tahun": 2018
+    },
+    {
+     "asal": "dibi_tren",
+     "jenis": {
+      "banjir": 340,
+      "cuaca_ekstrem": 0,
+      "gelombang": 0,
+      "gempa": 0,
+      "karhutla": 0,
+      "kekeringan": 0,
+      "longsor": 50
+     },
+     "kejadian": 390,
+     "tahun": 2019
+    },
+    {
+     "asal": "dibi_tren",
+     "jenis": {
+      "banjir": 350,
+      "cuaca_ekstrem": 0,
+      "gelombang": 0,
+      "gempa": 0,
+      "karhutla": 0,
+      "kekeringan": 0,
+      "longsor": 50
+     },
+     "kejadian": 400,
+     "tahun": 2020
+    },
+    {
+     "asal": "dibi_tren",
+     "jenis": {
+      "banjir": 360,
+      "cuaca_ekstrem": 0,
+      "gelombang": 0,
+      "gempa": 0,
+      "karhutla": 0,
+      "kekeringan": 0,
+      "longsor": 50
+     },
+     "kejadian": 410,
+     "tahun": 2021
+    },
+    {
+     "asal": "dibi_tren",
+     "jenis": {
+      "banjir": 370,
+      "cuaca_ekstrem": 0,
+      "gelombang": 0,
+      "gempa": 0,
+      "karhutla": 0,
+      "kekeringan": 0,
+      "longsor": 50
+     },
+     "kejadian": 420,
+     "tahun": 2022
+    },
+    {
+     "asal": "dibi_tren",
+     "jenis": {
+      "banjir": 380,
+      "cuaca_ekstrem": 0,
+      "gelombang": 0,
+      "gempa": 0,
+      "karhutla": 0,
+      "kekeringan": 0,
+      "longsor": 50
+     },
+     "kejadian": 430,
+     "tahun": 2023
+    },
+    {
+     "asal": "dibi_tren",
+     "jenis": {
+      "banjir": 390,
+      "cuaca_ekstrem": 0,
+      "gelombang": 0,
+      "gempa": 0,
+      "karhutla": 0,
+      "kekeringan": 0,
+      "longsor": 50
+     },
+     "kejadian": 440,
+     "tahun": 2024
+    },
+    {
+     "asal": "tarikan_tahunan",
+     "jenis": null,
+     "kejadian": null,
+     "semua_laporan": 369,
+     "tahun": 2025
+    }
+   ]
+  },
+  "sebelumnya": {
+   "banding": {
+    "arah": "naik",
+    "kini": 370,
+    "lalu": 330,
+    "persen": 12.1
+   },
+   "kejadian": {
+    "alam": 330,
+    "alam_resmi": null,
+    "banjir": 300,
+    "cuaca_ekstrem": 0,
+    "epidemi": 0,
+    "erupsi": 0,
+    "gagal_teknologi": 0,
+    "gelombang": 0,
+    "gempa": 0,
+    "karhutla": 0,
+    "kebakaran_permukiman": 0,
+    "kecelakaan_industri": 0,
+    "kekeringan": 0,
+    "konflik_sosial": 0,
+    "lainnya": 0,
+    "longsor": 30
+   },
+   "kode": "2024"
+  },
+  "tahun_lalu": {
+   "asal": "siklus_bersih",
+   "banding": {
+    "jenis": {
+     "banjir": {
+      "arah": "naik",
+      "kini": 342,
+      "lalu": 300,
+      "persen": 14.0
+     },
+     "cuaca_ekstrem": {
+      "arah": "tetap 0",
+      "kini": 0,
+      "lalu": 0,
+      "persen": null
+     },
+     "erupsi": {
+      "arah": "baru",
+      "kini": 1,
+      "lalu": 0,
+      "persen": null
+     },
+     "gelombang": {
+      "arah": "tetap 0",
+      "kini": 0,
+      "lalu": 0,
+      "persen": null
+     },
+     "gempa": {
+      "arah": "baru",
+      "kini": 1,
+      "lalu": 0,
+      "persen": null
+     },
+     "karhutla": {
+      "arah": "baru",
+      "kini": 20,
+      "lalu": 0,
+      "persen": null
+     },
+     "kekeringan": {
+      "arah": "baru",
+      "kini": 4,
+      "lalu": 0,
+      "persen": null
+     },
+     "longsor": {
+      "arah": "turun",
+      "kini": 2,
+      "lalu": 30,
+      "persen": 93.3
+     }
+    },
+    "kejadian": {
+     "arah": "naik",
+     "kini": 370,
+     "lalu": 330,
+     "persen": 12.1
+    },
+    "kejadian_resmi": {
+     "arah": null,
+     "kini": null,
+     "lalu": null,
+     "persen": null
+    },
+    "luka": {
+     "arah": "tetap 0",
+     "kini": 0,
+     "lalu": 0,
+     "persen": null
+    },
+    "meninggal_hilang": {
+     "arah": "baru",
+     "kini": 3,
+     "lalu": 0,
+     "persen": null
+    },
+    "rumah_rusak": {
+     "arah": "baru",
+     "kini": 3,
+     "lalu": 0,
+     "persen": null
+    },
+    "terdampak_mengungsi": {
+     "arah": null,
+     "kini": null,
+     "lalu": 0,
+     "persen": null
+    }
+   },
+   "dampak": {
+    "f_kantor": 0,
+    "f_pendidikan": 0,
+    "f_umum": 0,
+    "fasum_rusak": 0,
+    "hilang": 0,
+    "jembatan": 0,
+    "luka": 0,
+    "mengungsi": 0,
+    "meninggal": 0,
+    "meninggal_hilang": 0,
+    "rr_berat": 0,
+    "rr_ringan": 0,
+    "rr_sedang": 0,
+    "rumah_rusak": 0,
+    "terdampak": 0,
+    "terdampak_mengungsi": 0,
+    "terendam": 0
+   },
+   "kejadian": {
+    "alam": 330,
+    "alam_resmi": null,
+    "banjir": 300,
+    "cuaca_ekstrem": 0,
+    "epidemi": 0,
+    "erupsi": 0,
+    "gagal_teknologi": 0,
+    "gelombang": 0,
+    "gempa": 0,
+    "karhutla": 0,
+    "kebakaran_permukiman": 0,
+    "kecelakaan_industri": 0,
+    "kekeringan": 0,
+    "konflik_sosial": 0,
+    "lainnya": 0,
+    "longsor": 30
+   },
+   "kode": "2024"
+  }
+ },
+ "bab2": {
+  "akhir": {
+   "hot": 3,
+   "tanggal": "2025-12-31"
+  },
+  "belum": 0.1,
+  "bulan_puncak": {
+   "hot": 2060,
+   "kode": "2025-09"
+  },
+  "cakupan": {
+   "hari": 365,
+   "hari_rentang": 365
+  },
+  "harian": [
+   {
+    "hot": 3,
+    "tanggal": "2025-01-01"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-02"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-03"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-04"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-05"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-06"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-07"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-08"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-09"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-10"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-11"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-12"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-13"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-14"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-15"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-16"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-17"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-18"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-19"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-20"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-21"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-22"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-23"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-24"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-25"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-26"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-27"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-28"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-29"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-30"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-01-31"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-01"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-02"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-03"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-04"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-05"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-06"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-07"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-08"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-09"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-10"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-11"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-12"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-13"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-14"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-15"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-16"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-17"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-18"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-19"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-20"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-21"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-22"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-23"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-24"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-25"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-26"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-27"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-02-28"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-01"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-02"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-03"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-04"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-05"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-06"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-07"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-08"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-09"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-10"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-11"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-12"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-13"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-14"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-15"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-16"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-17"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-18"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-19"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-20"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-21"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-22"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-23"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-24"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-25"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-26"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-27"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-28"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-29"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-30"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-03-31"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-01"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-02"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-03"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-04"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-05"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-06"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-07"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-08"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-09"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-10"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-11"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-12"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-13"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-14"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-15"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-16"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-17"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-18"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-19"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-20"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-21"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-22"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-23"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-24"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-25"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-26"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-27"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-28"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-29"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-04-30"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-01"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-02"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-03"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-04"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-05"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-06"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-07"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-08"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-09"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-10"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-11"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-12"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-13"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-14"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-15"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-16"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-17"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-18"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-19"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-20"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-21"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-22"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-23"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-24"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-25"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-26"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-27"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-28"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-29"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-30"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-05-31"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-01"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-02"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-03"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-04"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-05"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-06"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-07"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-08"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-09"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-10"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-11"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-12"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-13"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-14"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-15"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-16"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-17"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-18"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-19"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-20"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-21"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-22"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-23"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-24"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-25"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-26"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-27"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-28"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-29"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-06-30"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-01"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-02"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-03"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-04"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-05"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-06"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-07"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-08"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-09"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-10"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-11"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-12"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-13"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-14"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-15"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-16"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-17"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-18"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-19"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-20"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-21"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-22"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-23"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-24"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-25"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-26"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-27"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-28"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-29"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-30"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-07-31"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-01"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-02"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-03"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-04"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-05"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-06"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-07"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-08"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-09"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-10"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-11"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-12"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-13"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-14"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-15"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-16"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-17"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-18"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-19"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-20"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-21"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-22"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-23"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-24"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-25"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-26"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-27"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-28"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-29"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-30"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-08-31"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-01"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-02"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-03"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-04"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-05"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-06"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-07"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-08"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-09"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-10"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-11"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-12"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-13"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-14"
+   },
+   {
+    "hot": 900,
+    "tanggal": "2025-09-15"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-16"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-17"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-18"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-19"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-20"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-21"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-22"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-23"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-24"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-25"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-26"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-27"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-28"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-29"
+   },
+   {
+    "hot": 40,
+    "tanggal": "2025-09-30"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-01"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-02"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-03"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-04"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-05"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-06"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-07"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-08"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-09"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-10"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-11"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-12"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-13"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-14"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-15"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-16"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-17"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-18"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-19"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-20"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-21"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-22"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-23"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-24"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-25"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-26"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-27"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-28"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-29"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-30"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-10-31"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-01"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-02"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-03"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-04"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-05"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-06"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-07"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-08"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-09"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-10"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-11"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-12"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-13"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-14"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-15"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-16"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-17"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-18"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-19"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-20"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-21"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-22"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-23"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-24"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-25"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-26"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-27"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-28"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-29"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-11-30"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-01"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-02"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-03"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-04"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-05"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-06"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-07"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-08"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-09"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-10"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-11"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-12"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-13"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-14"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-15"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-16"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-17"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-18"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-19"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-20"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-21"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-22"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-23"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-24"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-25"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-26"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-27"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-28"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-29"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-30"
+   },
+   {
+    "hot": 3,
+    "tanggal": "2025-12-31"
+   }
+  ],
+  "hot": 3065,
+  "kelas_batas": [
+   2000,
+   8000,
+   20000,
+   60000
+  ],
+  "label": [
+   "14"
+  ],
+  "luas": 182.5,
+  "luas_pembanding": {
+   "catatan": "Tiga angka luas berbeda cara ukur dan tidak dijumlah.",
+   "perkiraan": {
+    "asal": "sistem karhutla Centurisk97",
+    "ha": 182.5,
+    "status": "ok"
+   },
+   "resmi": {
+    "asal": "KLHK SiPongi",
+    "ha": 800.3,
+    "prov": {
+     "14": 800.3
+    },
+    "sampai": null,
+    "status": "ok",
+    "sumber": "KLHK SiPongi (sintetis)"
+   },
+   "satelit": {
+    "asal": "GWIS, MODIS MCD64A1",
+    "ha": 4250.0,
+    "prov": {
+     "14": 4000.0,
+     "62": 250.0
+    },
+    "sampai": "2025-11",
+    "status": "sebagian",
+    "sumber": "GWIS (sintetis)"
+   }
+  },
+  "per_bulan": [
+   {
+    "hari": 31,
+    "hari_rentang": 31,
+    "hot": 93,
+    "kode": "2025-01"
+   },
+   {
+    "hari": 28,
+    "hari_rentang": 28,
+    "hot": 84,
+    "kode": "2025-02"
+   },
+   {
+    "hari": 31,
+    "hari_rentang": 31,
+    "hot": 93,
+    "kode": "2025-03"
+   },
+   {
+    "hari": 30,
+    "hari_rentang": 30,
+    "hot": 90,
+    "kode": "2025-04"
+   },
+   {
+    "hari": 31,
+    "hari_rentang": 31,
+    "hot": 93,
+    "kode": "2025-05"
+   },
+   {
+    "hari": 30,
+    "hari_rentang": 30,
+    "hot": 90,
+    "kode": "2025-06"
+   },
+   {
+    "hari": 31,
+    "hari_rentang": 31,
+    "hot": 93,
+    "kode": "2025-07"
+   },
+   {
+    "hari": 31,
+    "hari_rentang": 31,
+    "hot": 93,
+    "kode": "2025-08"
+   },
+   {
+    "hari": 30,
+    "hari_rentang": 30,
+    "hot": 2060,
+    "kode": "2025-09"
+   },
+   {
+    "hari": 31,
+    "hari_rentang": 31,
+    "hot": 93,
+    "kode": "2025-10"
+   },
+   {
+    "hari": 30,
+    "hari_rentang": 30,
+    "hot": 90,
+    "kode": "2025-11"
+   },
+   {
+    "hari": 31,
+    "hari_rentang": 31,
+    "hot": 93,
+    "kode": "2025-12"
+   }
+  ],
+  "prov": [
+   {
+    "belum": 0.1,
+    "dibi_karhutla": 20,
+    "hot": 3065,
+    "kelas": 1,
+    "kode": "14",
+    "luas": 182.5,
+    "nama": "Riau"
+   }
+  ],
+  "puncak": {
+   "hot": 900,
+   "tanggal": "2025-09-15"
+  },
+  "satelit_lawan_dibi": [
+   {
+    "dibi_karhutla": 20,
+    "hot": 3065,
+    "kode": "14",
+    "nama": "Riau"
+   }
+  ],
+  "sebelumnya": {
+   "banding": {
+    "arah": null,
+    "kini": 3065,
+    "lalu": null,
+    "persen": null
+   },
+   "hari": 0,
+   "hari_rentang": 366,
+   "hot": null,
+   "kode": "2024"
+  },
+  "status": "ok",
+  "teratas": {
+   "hot": 3065,
+   "kode": [
+    "14"
+   ],
+   "n": 1,
+   "persen": 100.0
+  },
+  "turun_dari_puncak": 99.7
+ },
+ "bab3": {
+  "banjir": {
+   "bulan_puncak": {
+    "kejadian": 330,
+    "kode": "2025-10"
+   },
+   "gabung_banjir_longsor": 0,
+   "kab": [
+    {
+     "dampak": {
+      "f_kantor": 0,
+      "f_pendidikan": 0,
+      "f_umum": 0,
+      "fasum_rusak": 0,
+      "hilang": 0,
+      "jembatan": 0,
+      "luka": 0,
+      "mengungsi": 0,
+      "meninggal": 0,
+      "meninggal_hilang": 0,
+      "rr_berat": 0,
+      "rr_ringan": 0,
+      "rr_sedang": 0,
+      "rumah_rusak": 0,
+      "terdampak": 40,
+      "terdampak_mengungsi": 40,
+      "terendam": 0
+     },
+     "jenis": "banjir",
+     "kejadian": 7,
+     "kode": "11.08",
+     "nama": "Nagan Raya",
+     "prov": "Aceh",
+     "prov_kode": "11",
+     "surut": null,
+     "surut_tgl": null
+    },
+    {
+     "dampak": {
+      "f_kantor": 0,
+      "f_pendidikan": 0,
+      "f_umum": 0,
+      "fasum_rusak": 0,
+      "hilang": 0,
+      "jembatan": 0,
+      "luka": 0,
+      "mengungsi": 0,
+      "meninggal": 1,
+      "meninggal_hilang": 1,
+      "rr_berat": 0,
+      "rr_ringan": 0,
+      "rr_sedang": 0,
+      "rumah_rusak": 0,
+      "terdampak": null,
+      "terdampak_mengungsi": null,
+      "terendam": 0
+     },
+     "jenis": "banjir",
+     "kejadian": 5,
+     "kode": "12.71",
+     "nama": "Kota Medan",
+     "prov": "Sumatera Utara",
+     "prov_kode": "12",
+     "surut": null,
+     "surut_tgl": null
+    },
+    {
+     "dampak": {
+      "f_kantor": 0,
+      "f_pendidikan": 0,
+      "f_umum": 0,
+      "fasum_rusak": 0,
+      "hilang": 0,
+      "jembatan": 0,
+      "luka": 0,
+      "mengungsi": 0,
+      "meninggal": 0,
+      "meninggal_hilang": 0,
+      "rr_berat": 0,
+      "rr_ringan": 0,
+      "rr_sedang": 0,
+      "rumah_rusak": 0,
+      "terdampak": null,
+      "terdampak_mengungsi": null,
+      "terendam": 0
+     },
+     "jenis": "banjir",
+     "kejadian": 330,
+     "kode": "14.71",
+     "nama": "Kota Pekanbaru",
+     "prov": "Riau",
+     "prov_kode": "14",
+     "surut": null,
+     "surut_tgl": null
+    }
+   ],
+   "kab_n": 3,
+   "kab_sering_kode": [
+    "14.71",
+    "11.08",
+    "12.71"
+   ],
+   "per_bulan": [
+    {
+     "kab_n": 1,
+     "kejadian": 3,
+     "kode": "2025-01"
+    },
+    {
+     "kab_n": 0,
+     "kejadian": 0,
+     "kode": "2025-02"
+    },
+    {
+     "kab_n": 1,
+     "kejadian": 1,
+     "kode": "2025-03"
+    },
+    {
+     "kab_n": 0,
+     "kejadian": 0,
+     "kode": "2025-04"
+    },
+    {
+     "kab_n": 0,
+     "kejadian": 0,
+     "kode": "2025-05"
+    },
+    {
+     "kab_n": 0,
+     "kejadian": 0,
+     "kode": "2025-06"
+    },
+    {
+     "kab_n": 0,
+     "kejadian": 0,
+     "kode": "2025-07"
+    },
+    {
+     "kab_n": 0,
+     "kejadian": 0,
+     "kode": "2025-08"
+    },
+    {
+     "kab_n": 0,
+     "kejadian": 0,
+     "kode": "2025-09"
+    },
+    {
+     "kab_n": 1,
+     "kejadian": 330,
+     "kode": "2025-10"
+    },
+    {
+     "kab_n": 1,
+     "kejadian": 5,
+     "kode": "2025-11"
+    },
+    {
+     "kab_n": 2,
+     "kejadian": 3,
+     "kode": "2025-12"
+    }
+   ],
+   "prov_terbanyak": "14",
+   "ringkas": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 1,
+     "meninggal_hilang": 1,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": null,
+     "terdampak_mengungsi": null,
+     "terendam": 0
+    },
+    "kab": 3,
+    "kejadian": 342,
+    "prov": 3
+   },
+   "status": null,
+   "tabel": [
+    "11.08",
+    "12.71",
+    "14.71"
+   ]
+  },
+  "longsor": {
+   "kab": [
+    {
+     "dampak": {
+      "f_kantor": 0,
+      "f_pendidikan": 0,
+      "f_umum": 0,
+      "fasum_rusak": 0,
+      "hilang": 0,
+      "jembatan": 0,
+      "luka": 0,
+      "mengungsi": 0,
+      "meninggal": 2,
+      "meninggal_hilang": 2,
+      "rr_berat": 0,
+      "rr_ringan": 0,
+      "rr_sedang": 0,
+      "rumah_rusak": 0,
+      "terdampak": 0,
+      "terdampak_mengungsi": 0,
+      "terendam": 0
+     },
+     "jenis": "longsor",
+     "kejadian": 2,
+     "kode": "32.04",
+     "nama": "Bandung",
+     "prov": "Jawa Barat",
+     "prov_kode": "32"
+    }
+   ],
+   "ringkas": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 2,
+     "meninggal_hilang": 2,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": 0,
+     "terdampak_mengungsi": 0,
+     "terendam": 0
+    },
+    "kab": 1,
+    "kejadian": 2,
+    "prov": 1
+   }
+  },
+  "sebelumnya": {
+   "banjir": {
+    "arah": "naik",
+    "kini": 342,
+    "lalu": 300,
+    "persen": 14.0
+   },
+   "kode": "2024",
+   "longsor": {
+    "arah": "turun",
+    "kini": 2,
+    "lalu": 30,
+    "persen": 93.3
+   }
+  }
+ },
+ "bab4": {
+  "cuaca_ekstrem": {
+   "kab": [],
+   "ringkas": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": 0,
+     "terdampak_mengungsi": 0,
+     "terendam": 0
+    },
+    "kab": 0,
+    "kejadian": 0,
+    "prov": 0
+   }
+  },
+  "hujan": {
+   "bulan_tengah": "2026-01",
+   "status": "belum_ada"
+  },
+  "kekeringan": {
+   "kab": [
+    {
+     "dampak": {
+      "f_kantor": 0,
+      "f_pendidikan": 0,
+      "f_umum": 0,
+      "fasum_rusak": 0,
+      "hilang": 0,
+      "jembatan": 0,
+      "luka": 0,
+      "mengungsi": 0,
+      "meninggal": 0,
+      "meninggal_hilang": 0,
+      "rr_berat": 0,
+      "rr_ringan": 0,
+      "rr_sedang": 0,
+      "rumah_rusak": 0,
+      "terdampak": null,
+      "terdampak_mengungsi": null,
+      "terendam": 0
+     },
+     "jenis": "kekeringan",
+     "kejadian": 4,
+     "kode": "53.01",
+     "nama": "Kupang",
+     "prov": "Nusa Tenggara Timur",
+     "prov_kode": "53"
+    }
+   ],
+   "ringkas": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": null,
+     "terdampak_mengungsi": null,
+     "terendam": 0
+    },
+    "kab": 1,
+    "kejadian": 4,
+    "prov": 1
+   }
+  },
+  "sebelumnya": {
+   "cuaca_ekstrem": {
+    "arah": "tetap 0",
+    "kini": 0,
+    "lalu": 0,
+    "persen": null
+   },
+   "kekeringan": {
+    "arah": "baru",
+    "kini": 4,
+    "lalu": 0,
+    "persen": null
+   },
+   "kode": "2024"
+  },
+  "tabel": [
+   {
+    "jenis": "kekeringan",
+    "kode": "53.01"
+   }
+  ]
+ },
+ "bab5": {
+  "dampak": {
+   "erupsi": {
+    "f_kantor": 0,
+    "f_pendidikan": 0,
+    "f_umum": 0,
+    "fasum_rusak": 0,
+    "hilang": 0,
+    "jembatan": 0,
+    "luka": 0,
+    "mengungsi": 0,
+    "meninggal": 0,
+    "meninggal_hilang": 0,
+    "rr_berat": 0,
+    "rr_ringan": 0,
+    "rr_sedang": 0,
+    "rumah_rusak": 0,
+    "terdampak": 0,
+    "terdampak_mengungsi": 0,
+    "terendam": 0
+   },
+   "gempa": {
+    "f_kantor": 0,
+    "f_pendidikan": 0,
+    "f_umum": 0,
+    "fasum_rusak": 0,
+    "hilang": 0,
+    "jembatan": 0,
+    "luka": 0,
+    "mengungsi": 0,
+    "meninggal": 0,
+    "meninggal_hilang": 0,
+    "rr_berat": 0,
+    "rr_ringan": 3,
+    "rr_sedang": 0,
+    "rumah_rusak": 3,
+    "terdampak": 0,
+    "terdampak_mengungsi": 0,
+    "terendam": 0
+   }
+  },
+  "erupsi": [
+   {
+    "asal": "dibi",
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 0,
+     "rr_sedang": 0,
+     "rumah_rusak": 0,
+     "terdampak": 0,
+     "terdampak_mengungsi": 0,
+     "terendam": 0
+    },
+    "id": null,
+    "kab": [
+     "82.01"
+    ],
+    "laporan": 1,
+    "prov_kode": "82",
+    "tanggal": "2025-09-02"
+   }
+  ],
+  "gempa": [
+   {
+    "asal": "dibi",
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 0,
+     "mengungsi": 0,
+     "meninggal": 0,
+     "meninggal_hilang": 0,
+     "rr_berat": 0,
+     "rr_ringan": 3,
+     "rr_sedang": 0,
+     "rumah_rusak": 3,
+     "terdampak": 0,
+     "terdampak_mengungsi": 0,
+     "terendam": 0
+    },
+    "id": null,
+    "kab": [
+     "32.02"
+    ],
+    "laporan": 1,
+    "prov_kode": "32",
+    "tanggal": "2025-10-20"
+   }
+  ],
+  "gunungapi": {
+   "level_3": [
+    "Ibu",
+    "Semeru"
+   ],
+   "level_4": [],
+   "per_level": {
+    "1": 1,
+    "2": 1,
+    "3": 2,
+    "4": 0
+   },
+   "tanggal": "2026-01-01"
+  },
+  "laporan": {
+   "erupsi": 1,
+   "gempa": 1
+  },
+  "peristiwa": {
+   "erupsi": 1,
+   "gempa": 1
+  },
+  "perubahan_level": [
+   {
+    "dari": 2,
+    "gunung": "Ibu",
+    "ke": 3,
+    "tanggal": "2025-05-16"
+   }
+  ],
+  "selisih": {
+   "erupsi": 0,
+   "gempa": 0
+  }
+ },
+ "bab7": {
+  "catatan": "Angka ini bukan prakiraan resmi BMKG.",
+  "enso": {
+   "ambang": 0.5,
+   "dibuat": "2026-11-09T07:10+07:00",
+   "golongan": "di atas ambang El Niño",
+   "musim": "ASO",
+   "nilai": 1.97,
+   "status": "ok",
+   "sumber": "NOAA CPC (RONI)",
+   "tahun": 2026
+  },
+  "peluang": {
+   "asal": "logbook_riwayat",
+   "aturan": "paling sedikit separuh dari 9 tahun penuh logbook Pusdalops mencatat kejadian di bulan itu",
+   "bulan": [
+    {
+     "banjir": {
+      "kab": [],
+      "kab_n": 0
+     },
+     "bulan": "2026-01",
+     "gabung_n": 0,
+     "longsor": {
+      "kab": [],
+      "kab_n": 0
+     }
+    },
+    {
+     "banjir": {
+      "kab": [],
+      "kab_n": 0
+     },
+     "bulan": "2026-02",
+     "gabung_n": 0,
+     "longsor": {
+      "kab": [],
+      "kab_n": 0
+     }
+    }
+   ],
+   "mutu": "hipotesis",
+   "status": "ok",
+   "tahun_penuh": [
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2024,
+    2025
+   ]
+  }
+ },
+ "dirakit": "2026-01-20T03:10:00Z",
+ "kegiatan": {
+  "bulan": [
+   {
+    "bulan": "2025-01",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-02",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-03",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-04",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-05",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-06",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-07",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-08",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-09",
+    "siaran": null
+   },
+   {
+    "bulan": "2025-10",
+    "jenis": {
+     "banjir": 0,
+     "cuaca_ekstrem": 0,
+     "erupsi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kekeringan": 0,
+     "longsor": 0
+    },
+    "pelaksana": {
+     "Kepala BNPB": 1,
+     "Pusdatinkom": 0,
+     "Satgas operasi": 0,
+     "belum_digolongkan": 0
+    },
+    "siaran": 1,
+    "situasi": 0
+   },
+   {
+    "bulan": "2025-11",
+    "jenis": {
+     "banjir": 1,
+     "cuaca_ekstrem": 0,
+     "erupsi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kekeringan": 0,
+     "longsor": 0
+    },
+    "pelaksana": {
+     "Kepala BNPB": 0,
+     "Pusdatinkom": 1,
+     "Satgas operasi": 1,
+     "belum_digolongkan": 0
+    },
+    "siaran": 2,
+    "situasi": 1
+   },
+   {
+    "bulan": "2025-12",
+    "jenis": {
+     "banjir": 0,
+     "cuaca_ekstrem": 0,
+     "erupsi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kekeringan": 0,
+     "longsor": 0
+    },
+    "pelaksana": {
+     "Kepala BNPB": 0,
+     "Pusdatinkom": 0,
+     "Satgas operasi": 0,
+     "belum_digolongkan": 0
+    },
+    "siaran": 0,
+    "situasi": 0
+   }
+  ],
+  "cakup": [
+   [
+    "2025-10-01",
+    "2025-12-31"
+   ]
+  ],
+  "catatan": "Calon kegiatan dari daftar siaran pers bnpb.go.id (judul, tanggal, tautan; isi berita tidak disalin). Pelaksana, jenis, dan lokasi adalah usulan mesin dari judul; baris masuk laporan hanya bila dipilih staf (Q8). Hitungan di sini adalah siaran pers yang terbit, bukan kegiatan yang dipilih.",
+  "rekap": null,
+  "status": "sebagian",
+  "tarik": "2026-01-02"
+ },
+ "kode": "2025",
+ "label_jenis": {
+  "banjir": "Banjir",
+  "cuaca_ekstrem": "Cuaca ekstrem",
+  "epidemi": "Epidemi dan wabah penyakit",
+  "erupsi": "Erupsi gunung api",
+  "gagal_teknologi": "Gagal teknologi",
+  "gelombang": "Gelombang pasang dan abrasi",
+  "gempa": "Gempa bumi",
+  "karhutla": "Kebakaran hutan dan lahan",
+  "kebakaran_permukiman": "Kebakaran gedung dan permukiman",
+  "kecelakaan_industri": "Kecelakaan industri",
+  "kekeringan": "Kekeringan",
+  "konflik_sosial": "Konflik sosial",
+  "lainnya": "Lainnya",
+  "longsor": "Tanah longsor"
+ },
+ "lampiran": {
+  "metode": {
+   "catatan": [
+    "Satu peristiwa gempa dicocokkan per provinsi; gempa yang dirasakan dan dilaporkan di beberapa provinsi terhitung lebih dari satu peristiwa.",
+    "Dampak baris kembar dihitung sekali hanya bila paling sedikit dua kolom dampak sama dan lebih dari 0 di provinsi yang sama (Q20).",
+    "Dampak yang tidak tercatat di sumber ditulis tidak diketahui, bukan 0."
+   ],
+   "di_bawah_ambang": null,
+   "duplikat_dampak": 0,
+   "gabung_banjir_longsor": 0
+  },
+  "prov_bulan": [
+   {
+    "jenis": {
+     "banjir": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      2
+     ]
+    },
+    "kode": "11",
+    "nama": "Aceh"
+   },
+   {
+    "jenis": {
+     "banjir": [
+      3,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+     ]
+    },
+    "kode": "12",
+    "nama": "Sumatera Utara"
+   },
+   {
+    "jenis": {
+     "banjir": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      330,
+      0,
+      0
+     ],
+     "karhutla": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      20,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "kode": "14",
+    "nama": "Riau"
+   },
+   {
+    "jenis": {
+     "gempa": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "longsor": [
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "kode": "32",
+    "nama": "Jawa Barat"
+   },
+   {
+    "jenis": {
+     "kekeringan": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "kode": "53",
+    "nama": "Nusa Tenggara Timur"
+   },
+   {
+    "jenis": {
+     "erupsi": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+     ]
+    },
+    "kode": "82",
+    "nama": "Maluku Utara"
+   }
+  ],
+  "prov_jenis": [
+   {
+    "jenis": {
+     "banjir": 7
+    },
+    "kejadian": 7,
+    "kode": "11",
+    "nama": "Aceh"
+   },
+   {
+    "jenis": {
+     "banjir": 5
+    },
+    "kejadian": 5,
+    "kode": "12",
+    "nama": "Sumatera Utara"
+   },
+   {
+    "jenis": {
+     "banjir": 330,
+     "karhutla": 20
+    },
+    "kejadian": 350,
+    "kode": "14",
+    "nama": "Riau"
+   },
+   {
+    "jenis": {
+     "gempa": 1,
+     "longsor": 2
+    },
+    "kejadian": 3,
+    "kode": "32",
+    "nama": "Jawa Barat"
+   },
+   {
+    "jenis": {
+     "kekeringan": 4
+    },
+    "kejadian": 4,
+    "kode": "53",
+    "nama": "Nusa Tenggara Timur"
+   },
+   {
+    "jenis": {
+     "erupsi": 1
+    },
+    "kejadian": 1,
+    "kode": "82",
+    "nama": "Maluku Utara"
+   }
+  ],
+  "selisih_bulanan": {
+   "bulan": [
+    {
+     "asal": "siklus_bersih",
+     "beku": null,
+     "jenis": null,
+     "kode": "2025-01",
+     "selisih": null,
+     "status": "belum_ada_beku",
+     "tahunan": 5
+    },
+    {
+     "asal": "siklus_bersih",
+     "beku": null,
+     "jenis": null,
+     "kode": "2025-02",
+     "selisih": null,
+     "status": "belum_ada_beku",
+     "tahunan": 0
+    },
+    {
+     "asal": "siklus_bersih",
+     "beku": null,
+     "jenis": null,
+     "kode": "2025-03",
+     "selisih": null,
+     "status": "belum_ada_beku",
+     "tahunan": 1
+    },
+    {
+     "asal": "siklus_bersih",
+     "beku": null,
+     "jenis": null,
+     "kode": "2025-04",
+     "selisih": null,
+     "status": "belum_ada_beku",
+     "tahunan": 0
+    },
+    {
+     "asal": "siklus_bersih",
+     "beku": null,
+     "jenis": null,
+     "kode": "2025-05",
+     "selisih": null,
+     "status": "belum_ada_beku",
+     "tahunan": 0
+    },
+    {
+     "asal": "siklus_bersih",
+     "beku": null,
+     "jenis": null,
+     "kode": "2025-06",
+     "selisih": null,
+     "status": "belum_ada_beku",
+     "tahunan": 0
+    },
+    {
+     "asal": "siklus_bersih",
+     "beku": null,
+     "jenis": null,
+     "kode": "2025-07",
+     "selisih": null,
+     "status": "belum_ada_beku",
+     "tahunan": 0
+    },
+    {
+     "asal": "siklus_bersih",
+     "beku": null,
+     "jenis": null,
+     "kode": "2025-08",
+     "selisih": null,
+     "status": "belum_ada_beku",
+     "tahunan": 24
+    },
+    {
+     "asal": "siklus_bersih",
+     "beku": null,
+     "jenis": null,
+     "kode": "2025-09",
+     "selisih": null,
+     "status": "belum_ada_beku",
+     "tahunan": 1
+    },
+    {
+     "asal": "siklus_bersih",
+     "beku": {
+      "alam": 324,
+      "tarik": "2025-11-05",
+      "versi": 2
+     },
+     "catatan": "selisih memuat beda sumber, bukan hanya susulan",
+     "jenis": {
+      "banjir": 7
+     },
+     "kode": "2025-10",
+     "selisih": 7,
+     "status": "beda_sumber",
+     "tahunan": 331
+    },
+    {
+     "asal": "siklus_bersih",
+     "beku": null,
+     "jenis": null,
+     "kode": "2025-11",
+     "selisih": null,
+     "status": "belum_ada_beku",
+     "tahunan": 5
+    },
+    {
+     "asal": "dibi_kejadian",
+     "beku": {
+      "alam": 3,
+      "tarik": "2026-01-06",
+      "versi": 1
+     },
+     "jenis": {},
+     "kode": "2025-12",
+     "selisih": 0,
+     "status": "ok",
+     "tahunan": 3
+    }
+   ],
+   "bulan_beda_sumber": 1,
+   "bulan_beku": 1,
+   "catatan": null,
+   "status": "sebagian"
+  }
+ },
+ "nama": "2025",
+ "periode": "tahunan",
+ "rentang": [
+  "2025-01-01",
+  "2025-12-31"
+ ],
+ "siklus": {
+  "kaji_ulang": {
+   "hari": "2026-01-15",
+   "lewat_tenggat": 1,
+   "status": "ok",
+   "terbuka": 4,
+   "tertutup": 3,
+   "total": 7
+  },
+  "lifeline": {
+   "catatan": "Warna adalah status yang ditetapkan staf; sel tanpa status tetap abu. Usulan mesin tidak ditampilkan dan tidak pernah menjadi status resmi.",
+   "kejadian": [
+    {
+     "id": "KJ-2512-0001",
+     "jenis": "banjir",
+     "kab": [
+      {
+       "diubah": {
+        "listrik": 1767000000000
+       },
+       "kab4": "1107",
+       "nama": "Aceh Barat",
+       "warna": {
+        "air": "abu",
+        "bbm": "abu",
+        "faskes": "abu",
+        "jalan": "abu",
+        "listrik": "hijau",
+        "pangan": "abu",
+        "pengungsian": "abu",
+        "sinyal": "abu"
+       }
+      },
+      {
+       "diubah": {
+        "air": 1767000000000,
+        "listrik": 1767000000000
+       },
+       "kab4": "1108",
+       "nama": "Nagan Raya",
+       "warna": {
+        "air": "kuning",
+        "bbm": "abu",
+        "faskes": "abu",
+        "jalan": "abu",
+        "listrik": "merah",
+        "pangan": "abu",
+        "pengungsian": "abu",
+        "sinyal": "abu"
+       }
+      }
+     ],
+     "nama": "Banjir Aceh Desember 2025",
+     "per_warna": {
+      "air": {
+       "abu": 1,
+       "hijau": 0,
+       "kuning": 1,
+       "merah": 0
+      },
+      "bbm": {
+       "abu": 2,
+       "hijau": 0,
+       "kuning": 0,
+       "merah": 0
+      },
+      "faskes": {
+       "abu": 2,
+       "hijau": 0,
+       "kuning": 0,
+       "merah": 0
+      },
+      "jalan": {
+       "abu": 2,
+       "hijau": 0,
+       "kuning": 0,
+       "merah": 0
+      },
+      "listrik": {
+       "abu": 0,
+       "hijau": 1,
+       "kuning": 0,
+       "merah": 1
+      },
+      "pangan": {
+       "abu": 2,
+       "hijau": 0,
+       "kuning": 0,
+       "merah": 0
+      },
+      "pengungsian": {
+       "abu": 2,
+       "hijau": 0,
+       "kuning": 0,
+       "merah": 0
+      },
+      "sinyal": {
+       "abu": 2,
+       "hijau": 0,
+       "kuning": 0,
+       "merah": 0
+      }
+     }
+    }
+   ],
+   "layanan": [
+    "listrik",
+    "sinyal",
+    "air",
+    "jalan",
+    "bbm",
+    "faskes",
+    "pangan",
+    "pengungsian"
+   ],
+   "status": "ok",
+   "tarik": "2026-01-15"
+  }
+ },
+ "sumber": {
+  "beku_bulanan": {
+   "status": "sebagian",
+   "tarik": "2026-01-06"
+  },
+  "dalops_banjir": {
+   "asal": null,
+   "hari": 0,
+   "hari_rentang": 365,
+   "status": "belum_ada",
+   "tarik": null
+  },
+  "dibi": {
+   "bukan_alam": {
+    "Kebakaran Gedung dan Permukiman": 2
+   },
+   "di_bawah_ambang": null,
+   "duplikat_dampak": 0,
+   "kejadian": 370,
+   "kejadian_resmi": null,
+   "status": "ok",
+   "tarik": "2026-01-15"
+  },
+  "dibi_tahun_lalu": {
+   "asal": "siklus_bersih",
+   "status": "ok",
+   "tarik": "2026-01-15"
+  },
+  "dibi_tren": {
+   "status": "ok",
+   "tarik": "2026-01-10"
+  },
+  "gempa": {
+   "status": "belum_ada",
+   "tarik": null
+  },
+  "gunungapi": {
+   "status": "ok",
+   "tanggal": "2026-01-01",
+   "tarik": "2026-01-01"
+  },
+  "kaji_ulang": {
+   "status": "ok",
+   "tarik": "2026-01-15"
+  },
+  "karhutla": {
+   "asal": "potong",
+   "hari": 365,
+   "hari_kosong": [],
+   "hari_rentang": 365,
+   "status": "ok",
+   "tarik": "2026-01-01"
+  },
+  "kegiatan": {
+   "status": "sebagian",
+   "tarik": "2026-01-02"
+  },
+  "lifeline": {
+   "status": "ok",
+   "tarik": "2026-01-15"
+  },
+  "luas_resmi": {
+   "sampai": null,
+   "status": "ok",
+   "tarik": null
+  },
+  "luas_satelit": {
+   "sampai": "2025-11",
+   "status": "sebagian",
+   "tarik": null
+  },
+  "peluang": {
+   "asal": "logbook_riwayat",
+   "status": "ok",
+   "tahun_penuh": [
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2024,
+    2025
+   ],
+   "tarik": "2026-11-01"
+  },
+  "prakiraan_hujan": {
+   "status": "belum_ada",
+   "tarik": "2026-11-09",
+   "terbit": "2026-11-09"
+  }
+ },
+ "usulan_temuan": [
+  {
+   "angka": {
+    "gunung": [
+     "Ibu",
+     "Semeru"
+    ],
+    "rumah_rusak_gempa": 3
+   },
+   "kalimat": "Gempa bumi merusak 3 rumah selama 2025; 2 gunung api berstatus Level III atau IV per 1 Januari 2026: Ibu, Semeru.",
+   "kode": "T4",
+   "pil": "vulkanologi",
+   "sumber": "DIBI dan PVMBG"
+  },
+  {
+   "angka": {
+    "belum": 0.1
+   },
+   "kalimat": "Pada 31 Desember 2025 perkiraan luas belum padam 0,1 ha.",
+   "kode": "T5",
+   "pil": "karhutla",
+   "sumber": "Sistem karhutla Centurisk97"
+  },
+  {
+   "angka": {
+    "golongan": "di atas ambang El Niño",
+    "musim": "ASO",
+    "nilai": 1.97,
+    "tahun": 2026
+   },
+   "kalimat": "Indeks Pasifik (RONI) ASO 2026 bernilai 1,97, di atas ambang El Niño.",
+   "kode": "T7",
+   "pil": "iklim",
+   "sumber": "NOAA CPC (RONI)"
+  }
+ ],
+ "v": 1
+}

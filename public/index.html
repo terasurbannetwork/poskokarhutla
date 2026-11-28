@@ -1575,6 +1575,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
           <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
           <label><input type="checkbox" data-l="kabluas"> Luas terbakar per kabupaten</label><!-- peta_kab.js; kabluas dan kabbelum saling eksklusif -->
           <label><input type="checkbox" data-l="kabbelum"> Masih terdeteksi per kabupaten (perkiraan satelit)</label>
+          <label title="Status prakiraan Normal sampai Awas per kab/kota (hipotesis sampai uji balik lulus). Ketuk kab/kota untuk kartunya"><input type="checkbox" data-l="dampakstatus"> Status prakiraan karhutla per kab/kota</label><!-- DP-17: modul bersama inti/dampak_peringatan.js, bawaan mati -->
           <label><input type="checkbox" data-l="langganan"> Lokasi langganan api (pencegahan)</label><!-- riwayat_sel.py langganan: jendela ~16 km terbakar >= 1/3 tahun 2012-2025 -->
           <label><input type="checkbox" data-l="satelit" checked> Citra satelit &amp; titik api Himawari 10 menit</label>
           <label title="Zoom jauh: VIIRS NOAA-20 lintasan siang terbaru (±375 m). Diperbesar: Sentinel-2 terbaru 14 hari (10 m), bisa berawan"><input type="checkbox" data-l="harian"> Citra harian (asap terlihat)</label>
@@ -1766,7 +1767,7 @@ function muatSatelit() {
    sendiri bila tab Operasi sedang terbuka. Ditunda sampai DOMContentLoaded supaya operasi_peta.js (window.OpsUdara) pasti sudah jalan. */
 function muatOperasiLaporan() {
   return muatOperasiLaporan._p ||= new Promise(ok => document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", ok, {once: true}) : ok())
-    .then(() => new Promise((ok, no) => { const s = document.createElement("script"); s.src = "/operasi_laporan.js"; s.onload = ok; s.onerror = () => { s.remove(); no(new Error("operasi_laporan.js")); }; document.head.appendChild(s); }))
+    .then(() => ["/inti/dasbor.js?v=7", "/operasi_laporan.js"].reduce((p, src) => p.then(() => new Promise((ok, no) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => { s.remove(); no(new Error(src)); }; document.head.appendChild(s); })), Promise.resolve()))   // dasbor.js = pembantu bersama (DB-02) harus ada sebelum operasi_laporan.js merender
     .catch(e => { muatOperasiLaporan._p = null; console.warn("Operasi:", e.message); });
 }
 /* akun pemirsa (src/pemirsa.js): worker menulis tab yang boleh dilihat di <html data-pemirsa-tab>; tab lain disembunyikan dan dialihkan ke tab pertamanya */
@@ -2762,6 +2763,9 @@ function renderDaftar() {
         : `<span class="n" style="font-weight:700">${fmt(i.v)}</span><span class="n">${f(fs)}</span><span class="n" title="${akt ? `${fmt(nk || 0)} cluster bertitik hari itu, ${fmt(akt)} masih aktif` : ""}">${f(nk)}</span>`}
       <span style="text-align:right" data-sort="${i.kw[2]}">${pilStatus(i.kw[2])}</span><span style="text-align:right" data-sort="${i.as?.lv || 0}">${pilAsap(i.as)}</span></button>`;
   }).join("") : `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`);
+  { /* tombol Gambar wilayah duduk di samping tombol unduh (pemilik, 27 Nov 2026); simpul yang sama dipindah tiap render agar pendengar klik alat_gambar.js tetap hidup */
+    const b = window._agBtn ||= document.getElementById("alatGambarBtn"), w = $("#rows .tr-sw"), ud = w?.querySelector("[data-unduh]");
+    if (b && w) ud ? ud.before(b) : w.append(b); }
   terapkanUrut();
 }
 /* ---- asap per wilayah: prakiraan PM2,5 CAMS 72 jam per kab/kota + asal asap lintasan angin mundur (modul udara, pola emisi.app).
@@ -7339,6 +7343,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="pesan.js?v=1014c" defer></script>
 <script>/* Overlay: semua grup (termasuk yang ditambah modul) selalu terbuka; judul grup hanya kepala */
 document.addEventListener("click", e => { if (e.target.closest("#lapisBtn")) setTimeout(() => document.querySelectorAll("#lapis details").forEach(d => d.open = true), 0); });</script>
+<script src="/dampak_status_kht.js?v=1"></script>
 <script type="module" src="/inti/kepala.js"></script>
 <script src="/inti/alarm.js" defer></script>
 <script src="/inti/peta/nasa.js"></script>

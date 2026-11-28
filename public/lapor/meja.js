@@ -4,7 +4,8 @@
    INP (aturan pemilik 2): tombol saring berganti keadaan seketika, peta dan tabel digambar ulang sesudah cat berikutnya.
    Angka dampak antarlaporan tidak dijumlah (laporan warga bisa ganda untuk satu kejadian): ringkasan menghitung LAPORAN, bukan korban. */
 import {labelKode} from "./kode.js";
-import {bukaOrangDicari} from "./meja_cari.js?v=4";   // LA-82: orang dicari (K91)
+import {bukaOrangDicari} from "./meja_cari.js?v=5";   // LA-82: orang dicari (K91)
+import {bukaHilangPublik} from "./meja_hilang.js?v=1";   // OH-07, OH-11: profil orang hilang untuk halaman publik
 import {pasangDataLanjutan, bukaDaftarData} from "./meja_data.js";   // LJ-16: data lanjutan BPBD (rincian tiket dan daftar lintas kab)
 const $ = id => document.getElementById(id);
 const el = (t, k, x) => { const e = document.createElement(t); if (k) e.className = k; if (x != null) e.textContent = x; return e; };
@@ -82,7 +83,9 @@ async function muat(latar = false) {
 
 /* Lapor darurat (K68): pita merah di atas meja untuk laporan darurat yang belum selesai; laporan darurat baru membunyikan nada,
    mengedipkan judul tab, dan memunculkan notifikasi peramban bila diizinkan. Yang sudah pernah terlihat disimpan di perangkat. */
-const AKTIF_DARURAT = b => b.darurat && !["selesai", "tidak_valid"].includes(b.status);
+const AKTIF_DARURAT = b => b.darurat && !b.darurat.terlambat && !["selesai", "tidak_valid"].includes(b.status);   // terlambat: butir luring tiba > 2 jam sesudah disimpan, laporan biasa tanpa pita (LR-09, Q3)
+/* Lapor tanpa sinyal (LR-09): jam simpan di HP hanya keterangan; waktu kejadian dan waktu lapor tetap dari server */
+const teksLuring = d => d.luring.simpan == null ? "Dikirim dari luring, jam HP tidak sah" : `Dikirim dari luring, disimpan di HP ${new Date(d.luring.simpan).toLocaleString("id-ID", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})}`;
 const KORBAN_DARURAT = {ya: "Ada korban atau orang terjebak", tidak: "Tidak ada korban", belum_tahu: "Korban belum diketahui"};
 let daruratDikenal = null;
 function bunyiDarurat() {
@@ -125,6 +128,7 @@ function gambarDarurat() {
     const pil = el("span", "mj-darurat-pil"), pk = el("i", kls, teks), pw = el("i", "netral"), ps = el("i", "status");
     pw.append(ikon("m-log"), `${durasi(Math.round((Date.now() - b.terkirim) / 60000))} lalu`); ps.style.setProperty("--st", WARNA[b.status] || "var(--ink2)"); ps.append(b.statusLabel);
     pil.append(pk, pw, ps);
+    if (b.darurat.luring) { const pl = el("i", "netral", "Dari luring"); pl.title = teksLuring(b.darurat); pil.append(pl); }
     isi.append(el("b", null, b.jenis || "Kejadian"), el("span", null, [w0.desa, w0.kec && `Kec. ${w0.kec}`, w0.kab].filter(Boolean).join(", ") || "Lokasi belum terbaca"), pil);
     const ke = el("span", "mj-darurat-ke"); ke.append(ikon("m-bawah"));
     k.append(ik, isi, ke); k.addEventListener("click", () => bukaRinci(b.nomor)); daftar.append(k); }
@@ -196,7 +200,7 @@ function gambarNav(daftar) {
     grup("Tampilan"), item("m-lokasi", "Peta laporan", ke("peta"), {aktif: tampil === "peta"}), item("m-daftar", "Daftar laporan", ke("daftar"), {aktif: tampil === "daftar", n: daftar.filter(cocokJenis).filter(cocokStatus).length}),
     grup("Antrean kerja"), ...ANTREAN.map(([t, st, ik]) => item(ik, t, () => { saringStatus = st; gambar(); },
       {n: st ? daftar.filter(b => st.includes(b.status)).length : daftar.length, aktif: String(saringStatus) === String(st), st: st ? WARNA[st[0]] : null})),
-    grup("Pintu lain"), item("m-orang", "Orang dicari", () => { bukaOrangDicari(); }), item("m-tiket", "Data lanjutan BPBD", () => { bukaDaftarData(new Map(semua.map(b => [b.nomor, b.wilayah?.kab]))); }), item("m-pesan", "Form lapor warga", null, {href: "/lapor/"}), item("m-daftar", "Poster QR desa", null, {href: "/lapor/poster.html"}),   // K92, LA-84
+    grup("Pintu lain"), item("m-orang", "Orang dicari", () => { bukaOrangDicari(); }), item("m-orang", "Orang hilang publik", () => { bukaHilangPublik(); }), item("m-tiket", "Data lanjutan BPBD", () => { bukaDaftarData(new Map(semua.map(b => [b.nomor, b.wilayah?.kab]))); }), item("m-pesan", "Form lapor warga", null, {href: "/lapor/"}), item("m-daftar", "Poster QR desa", null, {href: "/lapor/poster.html"}),   // K92, LA-84
     // Pantau Dalops halaman internal BNPB: tidak untuk akun BPBD (pemilik 20 Nov 2026 "ya sembunyikan")
     ...(akunBpbd() ? [] : [item("m-ringkas", "Pantau Dalops", null, {href: "/bnpb/dalops"})]));
 }
@@ -541,7 +545,9 @@ function gambarTabel(daftar) {
     const ft = el("span", "mj-mini"); ft.textContent = b.foto ? "" : "Tanpa foto";
     if (b.foto) fotoLaporan(b.nomor).then(fs => { if (fs[0]) { const im = el("img"); im.src = fs[0].sampul || fs[0].url; im.alt = ""; im.loading = "lazy"; ft.append(im); if (fs.length > 1) ft.append(el("small", null, `+${fs.length - 1}`)); } });
     const jn = el("div", "mj-sel-jenis"), ik = el("span", "mj-jenis-ikon kecil"); ik.style.setProperty("--jn", warnaJenis(b.jenisId)); ik.append(ikon(ikonJenis(b.jenisId)));
-    const jt = el("div"); if (b.darurat) { tr.classList.add("mj-baris-darurat"); jt.append(el("span", "mj-chip-darurat", "Darurat")); if (b.darurat.cara === "sekali_ketuk") jt.append(el("span", "mj-chip-sekali", "Sekali ketuk")); if (b.darurat.tertunda) jt.append(Object.assign(el("span", "mj-chip-sekali", "Tertunda"), {title: "Dikirim dari antrean HP sesudah sinyal kembali; waktu kejadian = jam ketukan"})); }
+    const jt = el("div");
+    if (b.darurat?.luring) jt.append(Object.assign(el("span", "mj-chip-luring", b.darurat.terlambat ? "Dikirim terlambat" : "Dari luring"), {title: teksLuring(b.darurat)}));
+    if (b.darurat && !b.darurat.terlambat) { tr.classList.add("mj-baris-darurat"); jt.append(el("span", "mj-chip-darurat", "Darurat")); if (b.darurat.cara === "sekali_ketuk") jt.append(el("span", "mj-chip-sekali", "Sekali ketuk")); if (b.darurat.tertunda) jt.append(Object.assign(el("span", "mj-chip-sekali", "Tertunda"), {title: "Dikirim dari antrean HP sesudah sinyal kembali; waktu kejadian = jam ketukan"})); }
     if (b.dikenal === false) jt.append(Object.assign(el("span", "mj-chip-sekali", "Belum dikenal"), {title: "Pelapor belum mengisi nama"}));   // K90, D124
     jt.append(el("b", null, b.jenis || "Belum dipilih"), el("small", null, b.subjenis || ""), ...(b.bahasa ? [el("span", "mj-pil-bahasa", b.bahasa)] : []), ...(b.gugus ? [chipGugus(b.gugus)] : [])); jn.append(ik, jt);
     const lok = el("div"); lok.append(el("b", null, b.wilayah?.kab || "Tanpa lokasi"), el("small", null, [b.wilayah?.desa && `Desa/Kel. ${b.wilayah.desa}`, b.wilayah?.prov].filter(Boolean).join(", "))); if (b.ditangani) lok.append(el("small", "mj-ditangani-kecil", b.ditangani));   // PF-08
@@ -749,7 +755,7 @@ function kartuBukti(j, nomor, kirim) {
   const k = el("section", "mj-kartu"), h = el("h3"); h.append(ikon("m-foto"), `Foto penanganan${j.bukti?.length ? ` (${j.bukti.length})` : ""}`);
   const w = el("div", "mj-isi-kartu"), kisi = el("div", "mj-bukti");
   for (const b of j.bukti || []) { const f = el("figure"), im = el("img"); im.src = b.url; im.alt = "Foto penanganan"; im.loading = "lazy";
-    const lb = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = b.publik; lb.append(cb, "Tampil di Alun-alun"); lb.title = "Pastikan tidak ada wajah korban atau pelat kendaraan";
+    const lb = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = b.publik; lb.append(cb, "Tampil di Situasi bencana"); lb.title = "Pastikan tidak ada wajah korban atau pelat kendaraan";
     cb.addEventListener("change", () => kirim("bukti-publik", {id: b.id, publik: cb.checked}, cb));
     f.append(im, el("small", null, `${b.waktu}${b.lokasi ? "" : ", tanpa lokasi"}`), lb); kisi.append(f); }
   const masuk = el("input"); masuk.type = "file"; masuk.accept = "image/jpeg,image/*"; masuk.capture = "environment"; masuk.hidden = true;
@@ -838,11 +844,11 @@ const LABEL_KOMEN = {tampil: "Tampil", dilaporkan: "Diadukan warga", tersembunyi
 const LABEL_ISIAN = {rumah_berat: "Rusak berat", rumah_sedang: "Rusak sedang", rumah_ringan: "Rusak ringan"};
 const LABEL_PUTUS = {terima: "Diterima", tolak: "Ditolak", sembunyi: "Disembunyikan", tampil: "Ditampilkan lagi"};
 function kartuKabarWarga(nomor, kartu, segarkan) {
-  const w = el("div", "mj-isi-kartu"), k = kartu("Kabar warga di Alun-alun", "m-pesan", w); k.hidden = true;
+  const w = el("div", "mj-isi-kartu"), k = kartu("Kabar warga di Situasi bencana", "m-pesan", w); k.hidden = true;
   const waktu = ms => new Date(ms).toLocaleString("id-ID", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"});
   const gambarKomen = j => {
     if (!j.kartu) { k.hidden = true; return; }
-    k.hidden = false; k.querySelector("h3").lastChild.textContent = `Kabar warga di Alun-alun (${F(j.komen.length)})`;
+    k.hidden = false; k.querySelector("h3").lastChild.textContent = `Kabar warga di Situasi bencana (${F(j.komen.length)})`;
     const gl = el("p", "mj-pesan-galat"); gl.setAttribute("role", "alert");
     const putus = async (badan, tb) => { gl.textContent = ""; tb.disabled = true;
       try { const r = await fetch(`/api/lapor/meja/${nomor}/komen`, {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify(badan)}), h = await r.json();

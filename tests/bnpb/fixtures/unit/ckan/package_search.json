@@ -1,0 +1,115 @@
+{
+ "help": "https://data.bnpb.go.id/api/3/action/help_show?name=package_search",
+ "success": true,
+ "_catatan": "Bentuk CKAN API v3 (action organization_list, package_search). Disusun tangan 26 Nov 2026 karena data.bnpb.go.id tidak terjangkau dari mesin pengerja; ganti dengan tangkapan yang dibersihkan dari nama dan email saat tarikan terjadwal pertama.",
+ "result": {
+  "count": 3,
+  "sort": "score desc, metadata_modified desc",
+  "facets": {},
+  "search_facets": {},
+  "results": [
+   {
+    "id": "pkt-1",
+    "name": "dataset-1",
+    "title": "Dataset contoh 1",
+    "notes": "Deskripsi",
+    "license_id": "cc-by",
+    "license_title": "cc-by",
+    "maintainer": "Pengelola",
+    "maintainer_email": "disamarkan",
+    "author": "Penulis A",
+    "author_email": "disamarkan",
+    "creator_user_id": "user-1",
+    "metadata_created": "2025-01-10T03:00:00.000000",
+    "metadata_modified": "2026-10-01T02:00:00.000000",
+    "num_resources": 1,
+    "organization": {
+     "id": "org-direktorat-b",
+     "name": "direktorat-b",
+     "title": "direktorat-b"
+    },
+    "state": "active",
+    "type": "dataset",
+    "private": false,
+    "extras": [],
+    "resources": [
+     {
+      "id": "r-1",
+      "format": "CSV",
+      "url": "https://data.bnpb.go.id/dataset/dataset-1/resource/r-1"
+     }
+    ],
+    "frequency": "bulanan"
+   },
+   {
+    "id": "pkt-2",
+    "name": "dataset-2",
+    "title": "Dataset contoh 2",
+    "notes": "",
+    "license_id": "notspecified",
+    "license_title": "notspecified",
+    "maintainer": "",
+    "maintainer_email": "",
+    "author": "Penulis A",
+    "author_email": "disamarkan",
+    "creator_user_id": "user-1",
+    "metadata_created": "2025-01-10T03:00:00.000000",
+    "metadata_modified": "2026-06-15T02:00:00.000000",
+    "num_resources": 1,
+    "organization": {
+     "id": "org-direktorat-b",
+     "name": "direktorat-b",
+     "title": "direktorat-b"
+    },
+    "state": "active",
+    "type": "dataset",
+    "private": false,
+    "extras": [
+     {
+      "key": "frequency",
+      "value": "tahunan"
+     }
+    ],
+    "resources": [
+     {
+      "id": "r-2",
+      "format": "CSV",
+      "url": "https://data.bnpb.go.id/dataset/dataset-2/resource/r-2"
+     }
+    ]
+   },
+   {
+    "id": "pkt-3",
+    "name": "dataset-3",
+    "title": "Dataset contoh 3",
+    "notes": "Deskripsi",
+    "license_id": "cc-by",
+    "license_title": "cc-by",
+    "maintainer": "Pengelola",
+    "maintainer_email": "disamarkan",
+    "author": "Penulis A",
+    "author_email": "disamarkan",
+    "creator_user_id": "user-1",
+    "metadata_created": "2025-01-10T03:00:00.000000",
+    "metadata_modified": "2026-11-20T02:00:00.000000",
+    "num_resources": 1,
+    "organization": {
+     "id": "org-pusat-c",
+     "name": "pusat-c",
+     "title": "pusat-c"
+    },
+    "state": "active",
+    "type": "dataset",
+    "private": false,
+    "extras": [],
+    "resources": [
+     {
+      "id": "r-3",
+      "format": "CSV",
+      "url": "https://data.bnpb.go.id/dataset/dataset-3/resource/r-3"
+     }
+    ]
+   }
+  ]
+ }
+}

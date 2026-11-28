@@ -42,7 +42,7 @@ Singkatan: B = baca, T = tulis, `-` = ditolak. Kolom "Kerja lain" = `verifikator
 
 | Rute (DT §4.9, §6.15) | Tamu, pemirsa | Kerja lain | `operator_cc` | `unit` | Dalops | BPBD | Akun gerbang | Moderator |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `GET /bnpb/unit`, `/bnpb/unit/:kode` | 303 ke layar masuk | 403 polos | B | B | B | - | B | B |
+| `GET /bnpb/unit`, `/bnpb/unit/:kode` | tamu: 303 ke layar masuk; pemirsa: 303 ke tab pertamanya (`arahPemirsa`), atau 403 polos bila tidak ada tab tujuan | 403 polos | B | B | B | - | B | B |
 | `GET /api/unit/indeks` | 401 | 401 | B | B | B | - | B | B |
 | `GET /api/unit/data/:nama` kelas S (§3) | 401 | 401 | B | B | B | - | B | B |
 | `GET /api/unit/data/:nama` kelas T (§3) | 401 | 401 | B | B | B | - | **-** (§2.3) | B |
@@ -133,13 +133,15 @@ Ketetapan untuk Ruang Unit:
 | `kib_cocok.json` | PUS-2 | S | agregat, tanpa teks bebas logbook |
 | `rapor_peringatan.json` | PD-1 | S | |
 | `belanja_risiko.json` | REN-2 | S | agregat per kab, tanpa nama penyedia |
-| `usulan_laphar.json`, `usulan_rpbd.json`, `usulan_dokumen_siaga.json`, `usulan_pemulihan.json` | MB-7 | S | baris usulan dari dokumen; medan nama orang dibuang pengurai sebelum ditulis |
+| `usulan_laphar.json`, `usulan_rpbd.json`, `usulan_dokumen_siaga.json`, `usulan_pemulihan.json`, `usulan_amanat.json` | MB-7 | S | baris usulan dari dokumen; medan nama orang dibuang pengurai sebelum ditulis |
 | `ikk.json` | RRP-3 | S | angka BPS |
 | `pengajar.json` | DIK-4 | T | calon pengajar; lihat §4 butir 12 |
 | `pengadaan.json` | SDU-1 | T | agregat, tanpa nama penyedia, bahasa §9.3 |
 | `rapor_darurat.json` | KPOD-1 | T | penilaian intervensi per direktorat wilayah; internal dulu (PRD §9 R3) |
 | `pasca_hibah.json` | PLP-3 | T | kewajiban per pemda penerima; bisa dibaca sebagai teguran |
 | `pengungsian.json` | WIL-2 | T | rekap; tempat < 10 jiwa tidak per tempat (RU §7.1 butir e) |
+
+**RRP-2 terima pemulihan (RU-103).** `POST /api/pusdalops/pemulihan/terima` hanya untuk Pusdalops, Koordalops, dan Pimpinan (peran tracker `pemulihan`); peran `unit` ditolak 403 sebelum batas laju. Satu URL sumber hanya membuat satu baris pemulihan (409 bila diulang). `pemulihan.catatan` dapat berisi URL luar: siapa pun yang merendernya wajib memakai `esc`/`escUrl` (hanya http dan https) dan `rel="noopener noreferrer"`.
 
 Berkas yang ditambah ke `DATA_UNIT` kelak wajib masuk tabel ini di commit yang sama; bila tidak tercatat, kelasnya T.
 
@@ -196,6 +198,8 @@ Penjaga mekanis ada tiga lapis, semuanya wajib:
 1. **Sebelum permintaan:** `DILARANG` di `panen.py`, diuji `--cek` (DT §4.8).
 2. **Sebelum terbit:** G-5 `tests/agen/gerbang-privasi-unit.test.mjs` (RU §7.1), jalan tiap push.
 3. **Di skema:** CHECK tanpa kolom bebas untuk data pribadi; G-5 butir a membaca migrasi 0110 ke atas.
+
+Catatan DIK-4: kode repo tidak punya daftar id pengecualian direktori (KPK, wafat, nama yang disebut pemilik); pengecualian terjadi saat panen. Jangan jalankan `dik4.py` atas data pakar yang belum disaring panen; tanpa `data/raw/unit/pakar/kecuali.json` keluarannya berpil "Asumsi: data pakar sudah disaring panen".
 
 ---
 

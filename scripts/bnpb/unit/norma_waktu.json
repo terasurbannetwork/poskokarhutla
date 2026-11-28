@@ -1,0 +1,10 @@
+{
+ "catatan": "Norma waktu bawaan JF-2 (pola Analisis Beban Kerja KemenPANRB, riset/6 J2): bisa diubah Pusbin JF. Tiap norma wajib berlabel bawaan. jam null = belum ada norma, kegiatan dilewati (tidak dikarang). jenjang 'Semua jenjang' sampai cakupan kegiatan per jenjang (Perban 4/2025 Pasal 12 ayat 3) terdokumentasi; Pusbin boleh memecahnya per jenjang. Nilai kaji cepat 25 jam dan renkon 60 jam = contoh hitung riset/6 (RU 5.2), bukan standar resmi.",
+ "jam_efektif": {"nilai": 1250, "label": "bawaan", "sumber": "pola Analisis Beban Kerja KemenPANRB (riset/6 J2), bukan pasal korpus"},
+ "norma": [
+  {"kegiatan": "kaji_cepat", "nama": "Kaji cepat kejadian", "jenjang": "Semua jenjang", "jam": 25, "label": "bawaan"},
+  {"kegiatan": "renkon", "nama": "Rencana kontingensi", "jenjang": "Semua jenjang", "jam": 60, "label": "bawaan"},
+  {"kegiatan": "pendampingan_posko", "nama": "Pendampingan posko tanggap darurat", "jenjang": "Semua jenjang", "jam": null, "label": "bawaan"},
+  {"kegiatan": "penyuluhan", "nama": "Penyuluhan desa rawan", "jenjang": "Semua jenjang", "jam": null, "label": "bawaan"}
+ ]
+}

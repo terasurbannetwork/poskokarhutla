@@ -26,6 +26,23 @@ JENIS = {"Subduction_Thrust": "subduksi", "Dextral": "geser kanan", "Sinistral":
          "Sinistral_Transform": "geser kiri", "Reverse": "naik", "Normal": "turun", "Spreading_Ridge": "pemekaran"}
 
 
+def angka(t):
+    """GEM menulis '(90.0,,)': ambil angka pertama, None bila kosong."""
+    try:
+        return float(str(t).strip("()").split(",")[0])
+    except ValueError:
+        return None
+
+
+def jenis(p):
+    """Subduction_Thrust berbidang curam (> 45 derajat) bukan antarmuka subduksi. Contoh: EOS_AF1032, garis 77 km di darat
+    Sukabumi-Cianjur dengan dip 90 dan kedalaman 3-18 km. Jenisnya diturunkan dari rake di catatan yang sama: 90 = naik."""
+    j = JENIS.get(p.get("slip_type"), "lain")
+    if j == "subduksi" and (angka(p.get("average_dip")) or 0) > 45:
+        return "naik" if angka(p.get("average_rake")) == 90 else "lain"
+    return j
+
+
 def sesar(fc):
     keluar = []
     for f in fc["features"]:
@@ -40,7 +57,7 @@ def sesar(fc):
         if len(t) < 2 or not all(BBOX[2] <= x <= BBOX[3] and BBOX[0] <= y <= BBOX[1] for x, y in t):
             continue  # ponytail: seluruh garis harus di kotak Indonesia; sesar lintas batas dibuang, bukan dipotong
         keluar.append({"type": "Feature", "geometry": {"type": "LineString", "coordinates": t},
-                       "properties": {"nama": p.get("name") or None, "jenis": JENIS.get(p.get("slip_type"), "lain")}})
+                       "properties": {"nama": p.get("name") or None, "jenis": jenis(p)}})
     return {"type": "FeatureCollection", "atribusi": ATRIBUSI, "sumber": SUMBER,
             "dibuat": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "features": keluar}
 
@@ -60,6 +77,10 @@ def uji():
     assert len(fc["features"]) == 1, fc  # Bird dibuang (duplikat lempeng), lintas batas dibuang
     f = fc["features"][0]
     assert f["geometry"]["coordinates"] == [[100.123, 0], [101, 1]] and f["properties"]["jenis"] == "geser kanan", f
+    assert jenis({"slip_type": "Subduction_Thrust", "average_dip": "(30.0,,)", "average_rake": "(90.0,,)"}) == "subduksi"
+    assert jenis({"slip_type": "Subduction_Thrust", "average_dip": "(90.0,,)", "average_rake": "(90.0,,)"}) == "naik"
+    assert jenis({"slip_type": "Subduction_Thrust", "average_dip": "(90.0,,)", "average_rake": "(0.0,,)"}) == "lain"
+    assert jenis({"slip_type": "Subduction_Thrust"}) == "subduksi"  # dip kosong: ikut sumber
     j = os.path.join(KELUAR, "sesar.geojson")
     if os.path.exists(j):
         assert os.path.getsize(j) <= PLAFON, os.path.getsize(j)
@@ -67,6 +88,9 @@ def uji():
         assert d["type"] == "FeatureCollection" and d["features"] and "CC BY-SA" in d["atribusi"]
         for f in d["features"]:
             assert f["geometry"]["type"] == "LineString" and len(f["geometry"]["coordinates"]) >= 2
+            if f["properties"]["jenis"] == "subduksi":  # antarmuka subduksi di Jawa Barat ada di laut, jauh di selatan 7,5 LS
+                c = f["geometry"]["coordinates"]
+                assert not all(105.8 <= x <= 109 and -7.5 <= y <= -5.8 for x, y in c), c
     print("ok")
 
 

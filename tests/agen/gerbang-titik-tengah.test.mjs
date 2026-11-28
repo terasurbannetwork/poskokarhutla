@@ -4,7 +4,9 @@
 // kalimat biasa, label sendiri, atau baris baru.
 //
 // CAKUPAN: berkas dilacak git: public/**/*.js, public/**/*.html,
-// public/i18n/*.json. Dilewati: public/data/**, folder vendor/, maplibre.js,
+// public/i18n/*.json. Ruang Unit (public/bnpb/unit/**, RU-023, RENCANA-UJI
+// kedeputian §6.1 G-4 butir d): juga .css dan berkas yang belum dilacak git,
+// dibaca dari disk, supaya layar baru dihakimi sebelum di-commit. Dilewati: public/data/**, folder vendor/, maplibre.js,
 // *.min.*, serta berkas uji ini dan fixture-nya.
 //
 // HEURISTIK per baris (sederhana, sengaja tidak mengurai JS):
@@ -27,8 +29,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
+import { dirname, resolve, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
@@ -52,13 +54,25 @@ export function hitungBaris(teks) {
   return n
 }
 
+const RUANG_UNIT = 'public/bnpb/unit'
+
+function diskRuangUnit(dir = resolve(ROOT, RUANG_UNIT)) {
+  if (!existsSync(dir)) return []
+  return readdirSync(dir).flatMap((n) => {
+    const p = join(dir, n)
+    if (statSync(p).isDirectory()) return diskRuangUnit(p)
+    return /\.(?:js|html|css)$/.test(n) && !/ 2\./.test(n) ? [relative(ROOT, p)] : []
+  })
+}
+
 function berkasTercakup() {
   const daftar = execFileSync('git', ['ls-files', '-z', 'public'], { cwd: ROOT, maxBuffer: 1 << 28 })
     .toString().split('\0').filter(Boolean)
-  return daftar.filter((f) =>
+  const dilacak = daftar.filter((f) =>
     (/\.(?:js|html)$/.test(f) || /^public\/i18n\/[^/]+\.json$/.test(f)) &&
     !f.startsWith('public/data/') && !/(?:^|\/)vendor\//.test(f) &&
     !/maplibre\.js$/.test(f) && !/\.min\./.test(f))
+  return [...new Set([...dilacak, ...diskRuangUnit()])]
 }
 
 test('self-test: menangkap " · " di teks, mengabaikan rumus, regex, komentar', () => {
@@ -72,6 +86,16 @@ test('self-test: menangkap " · " di teks, mengabaikan rumus, regex, komentar', 
   assert.equal(hitungBaris('const a = 1 // contoh " · "'), 0)
   assert.equal(hitungBaris('<!-- a · b --><p>ok</p>'), 0)
   assert.equal(hitungBaris('a\nb · c\nd · e'), 2)
+})
+
+test('cakupan: tiap berkas js, html, css di public/bnpb/unit/** ikut dipindai, juga yang belum dilacak git', () => {
+  const tercakup = new Set(berkasTercakup())
+  const disk = diskRuangUnit()
+  assert.ok(disk.length > 0, `${RUANG_UNIT} kosong atau tidak terbaca: perluasan Ruang Unit tidak memeriksa apa pun`)
+  const lolos = disk.filter((f) => !tercakup.has(f))
+  assert.deepEqual(lolos, [],
+    'SEBAB: berkas Ruang Unit tidak masuk daftar pindai. AKIBAT: titik tengah di layar unit lolos (RU §6.1 G-4 butir d). ' +
+    'CARA MEMPERBAIKI: pastikan berkasTercakup() menggabungkan diskRuangUnit().')
 })
 
 test('titik tengah pemisah: sisa hanya menyusut, berkas baru bersih', () => {

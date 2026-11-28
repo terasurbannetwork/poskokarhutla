@@ -1,0 +1,1681 @@
+{
+ "_tentang": "Komponen biaya Lampiran II Juklak 2/2026 untuk kegiatan 02.01.01-02.01.11, diekstrak python3 -I scripts/bnpb/unit/mt1.py ekstrak <pdf> (RU-093). Tanpa harga satuan: Juklak menyerahkannya ke SBK Kemenkeu dan daerah.",
+ "sumber": "Juklak BNPB Nomor 2 Tahun 2026 Lampiran II",
+ "standar": {
+  "02.01.01": {
+   "kl": [
+    {
+     "uraian": "Sosialisasi kebencanaan kepada aparatur dan/atau masyarakat",
+     "variabel": "Layanan sosialisasi",
+     "kuantitas": "minimal 50 (lima puluh) orang peserta",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah orang x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) lokasi kegiatan sesuai dengan SBK yang ditetapkan PMK untuk tiap- tiap kementerian/ lembaga.",
+     "sifat": "Pokok",
+     "halaman": 112,
+     "batas": []
+    }
+   ],
+   "provinsi": [
+    {
+     "uraian": "Sosialisasi kebencanaan kepada aparatur dan/atau masyarakat",
+     "variabel": "Layanan sosialisasi",
+     "kuantitas": "minimal 50 (lima puluh) orang peserta",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah orang x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) lokasi kegiatan sesuai dengan SBK yang ditetapkan PMK untuk tiap- tiap kementerian/ lembaga.",
+     "sifat": "Pokok",
+     "halaman": 113,
+     "batas": []
+    }
+   ],
+   "kabkota": [
+    {
+     "uraian": "Sosialisasi kebencanaan kepada aparatur dan/atau masyarakat",
+     "variabel": "Layanan sosialisasi",
+     "kuantitas": "minimal 50 (lima puluh) orang peserta",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah orang x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) lokasi kegiatan sesuai dengan SBK yang ditetapkan PMK untuk tiap- tiap kementerian/ lembaga.",
+     "sifat": "Pokok",
+     "halaman": 113,
+     "batas": []
+    }
+   ]
+  },
+  "02.01.02": {
+   "kl": [
+    {
+     "uraian": "Kegiatan budaya sadar bencana berupa pagelaran budaya",
+     "variabel": "Penyelenggaraan kegiatan budaya sadar bencana tingkat nasional",
+     "kuantitas": "1 (satu) paket (dalam bentuk Pagelaran budaya sadar bencana)",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah paket x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan sesuai dengan SBK yang ditetapkan PMK untuk tiap-tiap kementerian/lemba ga dan/atau Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 114,
+     "batas": []
+    },
+    {
+     "uraian": "Kegiatan budaya sadar bencana berupa pagelaran budaya",
+     "variabel": "Persiapan penyelenggaraan budaya sadar bencana (koordinasi internal, koordinasi dengan pemerintah daerah & unsur terkait)",
+     "kuantitas": "Jumlah kegiatan sesuai kebutuhan (maksimal untuk 3 (tiga) kegiatan, termasuk 2 (dua) kali rapat internal dan 1 (satu) kali rapat dengan pemerintah daerah /instansi terkait)",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 114,
+     "batas": []
+    },
+    {
+     "uraian": "Kegiatan budaya sadar bencana berupa pagelaran budaya",
+     "variabel": "Panitia internal Komunikasi Kebencanaan",
+     "kuantitas": "1 (satu) paket (termasuk transport lokal panitia)",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah paket x Jumlah lokasi x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 115,
+     "batas": []
+    }
+   ],
+   "provinsi": [
+    {
+     "uraian": "Kegiatan budaya sadar bencana berupa pagelaran budaya",
+     "variabel": "Penyelenggaraan kegiatan budaya sadar bencana tingkat provinsi",
+     "kuantitas": "1 (satu) paket (dalam bentuk Pagelaran budaya sadar bencana)",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah paket x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan sesuai dengan SBK yang ditetapkan PMK untuk tiap-tiap kementerian/ lembaga dan/atau Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 115,
+     "batas": []
+    },
+    {
+     "uraian": "Kegiatan budaya sadar bencana berupa pagelaran budaya",
+     "variabel": "Persiapan penyelenggaraan budaya sadar bencana (koordinasi internal, koordinasi dengan pemerintah daerah & unsur terkait)",
+     "kuantitas": "Jumlah kegiatan sesuai kebutuhan (maksimal untuk 3 (tiga) kegiatan, termasuk 2 (dua) kali rapat internal dan 1 (satu) kali rapat dengan pemerintah daerah /instansi terkait)",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 115,
+     "batas": []
+    },
+    {
+     "uraian": "Kegiatan budaya sadar bencana berupa pagelaran budaya",
+     "variabel": "Panitia internal Komunikasi Kebencanaan",
+     "kuantitas": "1 (satu) paket (termasuk transpor lokal panitia)",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah paket x Jumlah lokasi x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 116,
+     "batas": []
+    }
+   ],
+   "kabkota": [
+    {
+     "uraian": "Kegiatan budaya sadar bencana berupa pagelaran budaya",
+     "variabel": "Penyelenggaraan kegiatan budaya sadar bencana tingkat kabupaten/ kota",
+     "kuantitas": "1 (satu) paket (dalam bentuk Pagelaran budaya sadar bencana)",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah paket x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan sesuai dengan SBK yang ditetapkan PMK untuk tiap-tiap kementerian/lemba ga dan/atau Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 116,
+     "batas": []
+    },
+    {
+     "uraian": "Kegiatan budaya sadar bencana berupa pagelaran budaya",
+     "variabel": "Persiapan penyelenggaraan budaya sadar bencana (koordinasi internal, koordinasi dengan pemerintah daerah & unsur terkait)",
+     "kuantitas": "Jumlah kegiatan sesuai kebutuhan (maksimal untuk 3 (tiga) kegiatan, termasuk 2 (dua) kali rapat internal dan 1 (satu) kali rapat dengan pemerintah daerah /instansi terkait)",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 117,
+     "batas": []
+    },
+    {
+     "uraian": "Kegiatan budaya sadar bencana berupa pagelaran budaya",
+     "variabel": "Panitia internal Komunikasi Kebencanaan",
+     "kuantitas": "1 (satu) paket (termasuk transport lokal panitia)",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah paket x Jumlah lokasi x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 117,
+     "batas": []
+    }
+   ]
+  },
+  "02.01.03": {
+   "kl": [
+    {
+     "uraian": "Sektor publik tangguh bencana",
+     "variabel": "Fasilitas publik nasional",
+     "kuantitas": "Jumlah fasilitas publik disesuaikan dengan kebutuhan",
+     "volume": "Jumlah daerah disesuaikan dengan lokasi fasilitas publik",
+     "rumus": "Jumlah fasilitas publik x Jumlah lokasi x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang berlaku di kementerian/ lembaga.",
+     "sifat": "Pokok",
+     "halaman": 119,
+     "batas": []
+    }
+   ],
+   "provinsi": [
+    {
+     "uraian": "Sektor publik tangguh bencana",
+     "variabel": "Fasilitas publik provinsi",
+     "kuantitas": "Jumlah fasilitas publik disesuaikan dengan kebutuhan",
+     "volume": "Jumlah daerah disesuaikan dengan lokasi fasilitas publik",
+     "rumus": "Jumlah fasilitas publik x Jumlah lokasi x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 120,
+     "batas": []
+    }
+   ],
+   "kabkota": [
+    {
+     "uraian": "Sektor publik tangguh bencana",
+     "variabel": "Fasilitas publik kabupaten/kota",
+     "kuantitas": "Jumlah fasilitas publik disesuaikan dengan kebutuhan",
+     "volume": "Jumlah daerah disesuaikan dengan lokasi fasilitas publik",
+     "rumus": "Jumlah fasilitas publik x Jumlah lokasi x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 120,
+     "batas": []
+    }
+   ]
+  },
+  "02.01.04": {
+   "kl": [
+    {
+     "uraian": "Pembentukan wilayah administratif",
+     "variabel": "Pendampingan teknis provinsi tangguh bencana",
+     "kuantitas": "Jumlah provinsi sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah provinsi x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang",
+     "sifat": "Pokok",
+     "halaman": 121,
+     "batas": []
+    },
+    {
+     "uraian": "tangguh bencana",
+     "variabel": "Pendampingan teknis kabupaten/Kota tangguh bencana",
+     "kuantitas": "Jumlah kabupaten/ kota sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kabupaten/kota x Harga satuan",
+     "catatan": "berlaku di kementerian/ lembaga.",
+     "sifat": "Opsional",
+     "halaman": 121,
+     "batas": []
+    },
+    {
+     "uraian": "tangguh bencana",
+     "variabel": "Pendampingan teknis kecamatan tangguh bencana",
+     "kuantitas": "Jumlah kecamatan sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kecamatan x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 121,
+     "batas": []
+    },
+    {
+     "uraian": "tangguh bencana",
+     "variabel": "Pendampingan teknis desa/ kelurahan tangguh bencana",
+     "kuantitas": "Jumlah desa/ kelurahan sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah desa atau kelurahan x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 121,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan wilayah administratif",
+     "variabel": "Pendampingan teknis provinsi tangguh bencana",
+     "kuantitas": "Jumlah provinsi sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah provinsi x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang",
+     "sifat": "Pokok",
+     "halaman": 121,
+     "batas": []
+    },
+    {
+     "uraian": "tangguh bencana",
+     "variabel": "Pendampingan teknis kabupaten/Kota tangguh bencana",
+     "kuantitas": "Jumlah kabupaten/ kota sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kabupaten/kota x Harga satuan",
+     "catatan": "berlaku di kementerian/ lembaga.",
+     "sifat": "Opsional",
+     "halaman": 121,
+     "batas": []
+    },
+    {
+     "uraian": "tangguh bencana",
+     "variabel": "Pendampingan teknis kecamatan tangguh bencana",
+     "kuantitas": "Jumlah kecamatan sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kecamatan x Harga satuan",
+     "catatan": "Bagi yang sudah membentuk wilayah",
+     "sifat": "Opsional",
+     "halaman": 121,
+     "batas": []
+    },
+    {
+     "uraian": "tangguh bencana",
+     "variabel": "Pendampingan teknis desa/ kelurahan tangguh bencana",
+     "kuantitas": "Jumlah desa/ kelurahan sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah desa atau kelurahan x Harga satuan",
+     "catatan": "administratif tangguh bencana",
+     "sifat": "Opsional",
+     "halaman": 122,
+     "batas": []
+    }
+   ],
+   "provinsi": [
+    {
+     "uraian": "Pembentukan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis kabupaten/Kota tangguh bencana",
+     "kuantitas": "Jumlah kabupaten/ kota sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kabupaten/kota x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 122,
+     "batas": []
+    },
+    {
+     "uraian": "Pembentukan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis provinsi tangguh bencana",
+     "kuantitas": "Jumlah provinsi sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah provinsi x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 122,
+     "batas": []
+    },
+    {
+     "uraian": "Pembentukan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis kecamatan tangguh bencana",
+     "kuantitas": "Jumlah kecamatan sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kecamatan x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 122,
+     "batas": []
+    },
+    {
+     "uraian": "Pembentukan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis desa/ kelurahan tangguh bencana",
+     "kuantitas": "Jumlah desa/ kelurahan sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah desa atau kelurahan x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 122,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis kabupaten/Kota tangguh bencana",
+     "kuantitas": "Jumlah kabupaten/ kota sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kabupaten/kota x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 122,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis provinsi tangguh bencana",
+     "kuantitas": "Jumlah provinsi sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah provinsi x Harga satuan",
+     "catatan": "Bagi yang sudah membentuk wilayah",
+     "sifat": "Opsional",
+     "halaman": 123,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis kecamatan tangguh bencana",
+     "kuantitas": "Jumlah kecamatan sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kecamatan x Harga satuan",
+     "catatan": "administratif tangguh bencana",
+     "sifat": "Opsional",
+     "halaman": 123,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis desa/ kelurahan tangguh bencana",
+     "kuantitas": "Jumlah desa/ kelurahan sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah desa atau kelurahan x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 123,
+     "batas": []
+    }
+   ],
+   "kabkota": [
+    {
+     "uraian": "Pembentukan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis desa/ kelurahan tangguh bencana",
+     "kuantitas": "Jumlah desa/ kelurahan sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah desa atau kelurahan x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 123,
+     "batas": []
+    },
+    {
+     "uraian": "Pembentukan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis kabupaten/kota tangguh bencana",
+     "kuantitas": "Jumlah kabupaten/ kota sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kabupaten/kota x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 123,
+     "batas": []
+    },
+    {
+     "uraian": "Pembentukan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis kecamatan tangguh bencana",
+     "kuantitas": "Jumlah kecamatan sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kecamatan x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 123,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis desa/ kelurahan tangguh bencana",
+     "kuantitas": "Jumlah desa/ kelurahan sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah desa atau kelurahan x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 123,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis kabupaten/kota tangguh bencana",
+     "kuantitas": "Jumlah kabupaten/ kota sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kabupaten/kota x harga satuan",
+     "catatan": "Bagi yang sudah membentuk wilayah administratif",
+     "sifat": "Opsional",
+     "halaman": 124,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan wilayah administratif tangguh bencana",
+     "variabel": "Pendampingan teknis kecamatan tangguh bencana",
+     "kuantitas": "Jumlah kecamatan sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kecamatan x harga satuan",
+     "catatan": "tangguh bencana",
+     "sifat": "Opsional",
+     "halaman": 124,
+     "batas": []
+    }
+   ]
+  },
+  "02.01.05": {
+   "kl": [],
+   "provinsi": [],
+   "kabkota": [
+    {
+     "uraian": "Pembentukan komunitas tangguh bencana",
+     "variabel": "Pembentukan komunitas tangguh bencana",
+     "kuantitas": "1 (satu) komunitas",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah komunitas x Jumlah lokasi x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang",
+     "sifat": "Pokok",
+     "halaman": 125,
+     "batas": []
+    },
+    {
+     "uraian": "Pembentukan komunitas tangguh bencana",
+     "variabel": "Pendampingan teknis pembentukan komunitas tangguh bencana",
+     "kuantitas": "1 (satu) komunitas",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah komunitas x Jumlah lokasi x Harga satuan",
+     "catatan": "berlaku di daerah",
+     "sifat": "Opsional",
+     "halaman": 125,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan komunitas tangguh bencana",
+     "variabel": "Pengembangan komunitas tangguh bencana",
+     "kuantitas": "1 (satu) komunitas",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah komunitas x Jumlah lokasi x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang",
+     "sifat": "Pokok",
+     "halaman": 125,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan komunitas tangguh bencana",
+     "variabel": "Pendampingan teknis pengembangan komunitas tangguh bencana",
+     "kuantitas": "1 (satu) komunitas",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah komunitas x Jumlah lokasi x Harga satuan",
+     "catatan": "berlaku di daerah. Bagi yang sudah membentuk komunitas tangguh bencana",
+     "sifat": "Opsional",
+     "halaman": 125,
+     "batas": []
+    }
+   ]
+  },
+  "02.01.06": {
+   "kl": [
+    {
+     "uraian": "Pembentukan kawasan tangguh bencana",
+     "variabel": "Pembentukan kawasan tangguh bencana",
+     "kuantitas": "1 (satu) kawasan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kawasan x Jumlah lokasi x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang",
+     "sifat": "Pokok",
+     "halaman": 127,
+     "batas": []
+    },
+    {
+     "uraian": "Pembentukan kawasan tangguh bencana",
+     "variabel": "Pendampingan teknis pembentukan kawasan tangguh bencana",
+     "kuantitas": "1 (satu) kawasan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kawasan x Jumlah lokasi x Harga satuan",
+     "catatan": "berlaku di kementerian/lemba ga.",
+     "sifat": "Opsional",
+     "halaman": 127,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan kawasan tangguh bencana",
+     "variabel": "Pengembangan kawasan tangguh bencana",
+     "kuantitas": "1 (satu) kawasan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kawasan x Jumlah lokasi x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang",
+     "sifat": "Pokok",
+     "halaman": 127,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan kawasan tangguh bencana",
+     "variabel": "Pendampingan teknis pengembangan kawasan tangguh bencana",
+     "kuantitas": "1 (satu) kawasan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kawasan x Jumlah lokasi x Harga satuan",
+     "catatan": "berlaku di kementerian/ lembaga Bagi yang sudah membentuk kawasan tangguh bencana",
+     "sifat": "Opsional",
+     "halaman": 127,
+     "batas": []
+    }
+   ],
+   "provinsi": [
+    {
+     "uraian": "Pembentukan kawasan tangguh bencana",
+     "variabel": "Pembentukan kawasan tangguh bencana",
+     "kuantitas": "1 (satu) kawasan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kawasan x Jumlah lokasi x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang",
+     "sifat": "Pokok",
+     "halaman": 128,
+     "batas": []
+    },
+    {
+     "uraian": "Pembentukan kawasan tangguh bencana",
+     "variabel": "Pendampingan teknis pembentukan kawasan tangguh bencana",
+     "kuantitas": "1 (satu) kawasan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kawasan x Jumlah lokasi x Harga satuan",
+     "catatan": "berlaku di daerah",
+     "sifat": "Opsional",
+     "halaman": 128,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan kawasan tangguh bencana",
+     "variabel": "Pengembangan kawasan tangguh bencana",
+     "kuantitas": "1 (satu) kawasan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kawasan x Jumlah lokasi x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang",
+     "sifat": "Pokok",
+     "halaman": 128,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan kawasan tangguh bencana",
+     "variabel": "Pendampingan teknis pengembangan kawasan tangguh bencana",
+     "kuantitas": "1 (satu) kawasan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kawasan x Jumlah lokasi x Harga satuan",
+     "catatan": "berlaku di daerah Bagi yang sudah membentuk kawasan tangguh bencana",
+     "sifat": "Opsional",
+     "halaman": 128,
+     "batas": []
+    }
+   ],
+   "kabkota": [
+    {
+     "uraian": "Pembentukan kawasan tangguh bencana",
+     "variabel": "Pembentukan kawasan tangguh bencana",
+     "kuantitas": "1 (satu) kawasan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kawasan x Jumlah lokasi x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang",
+     "sifat": "Pokok",
+     "halaman": 129,
+     "batas": []
+    },
+    {
+     "uraian": "Pembentukan kawasan tangguh bencana",
+     "variabel": "Pendampingan teknis pembentukan kawasan tangguh bencana",
+     "kuantitas": "1 (satu) kawasan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kawasan x Jumlah lokasi x Harga satuan",
+     "catatan": "berlaku di daerah",
+     "sifat": "Opsional",
+     "halaman": 129,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan kawasan tangguh bencana",
+     "variabel": "Pengembangan kawasan tangguh bencana",
+     "kuantitas": "1 (satu) kawasan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kawasan x Jumlah lokasi x Harga satuan",
+     "catatan": "Dapat didetailkan sesuai dengan Standar Biaya yang",
+     "sifat": "Pokok",
+     "halaman": 129,
+     "batas": []
+    },
+    {
+     "uraian": "Pengembangan kawasan tangguh bencana",
+     "variabel": "Pendampingan teknis pengembangan kawasan tangguh bencana",
+     "kuantitas": "1 (satu) kawasan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kawasan x Jumlah lokasi x Harga satuan",
+     "catatan": "berlaku di daerah Bagi yang sudah membentuk kawasan tangguh bencana",
+     "sifat": "Opsional",
+     "halaman": 129,
+     "batas": []
+    }
+   ]
+  },
+  "02.01.07": {
+   "kl": [
+    {
+     "uraian": "Mitigasi bencana berbasis alam",
+     "variabel": "Pembangunan mitigasi bencana berbasis alam",
+     "kuantitas": "Jumlah hektar disesuaikan dengan luas kawasan mitigasi bencana berbasis alam",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah hektar x Harga satuan",
+     "catatan": "Harga satuan per hektar, sudah termasuk biaya bahan baku, honor, dsb - tidak termasuk pemeliharaan. Biaya pemeliharaan menjadi tanggung jawab pemrakarsa",
+     "sifat": "Pokok",
+     "halaman": 130,
+     "batas": []
+    },
+    {
+     "uraian": "Mitigasi bencana berbasis alam",
+     "variabel": "Perencanaan dan koordinasi pembangunan",
+     "kuantitas": "Jumlah paket sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah paket x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 130,
+     "batas": []
+    }
+   ],
+   "provinsi": [
+    {
+     "uraian": "Mitigasi bencana berbasis alam",
+     "variabel": "Pembangunan mitigasi bencana berbasis alam",
+     "kuantitas": "Jumlah hektar disesuaikan dengan luas kawasan mitigasi bencana berbasis alam",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah hektar x Harga satuan",
+     "catatan": "Harga satuan per hektar, sudah termasuk biaya bahan baku, honor, dsb - tidak termasuk pemeliharaan. Biaya pemeliharaan menjadi tanggung jawab pemrakarsa",
+     "sifat": "Pokok",
+     "halaman": 131,
+     "batas": []
+    },
+    {
+     "uraian": "Mitigasi bencana berbasis alam",
+     "variabel": "Perencanaan dan koordinasi pembangunan",
+     "kuantitas": "Jumlah paket sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah paket x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 131,
+     "batas": []
+    }
+   ],
+   "kabkota": [
+    {
+     "uraian": "Mitigasi bencana berbasis alam",
+     "variabel": "Pembangunan mitigasi bencana berbasis alam",
+     "kuantitas": "Jumlah hektar disesuaikan dengan luas kawasan mitigasi bencana berbasis alam",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah hektar x Harga satuan",
+     "catatan": "Harga satuan per hektar, sudah termasuk biaya bahan baku, honor, dsb - tidak termasuk pemeliharaan. Biaya pemeliharaan menjadi tanggung jawab pemrakarsa",
+     "sifat": "Pokok",
+     "halaman": 132,
+     "batas": []
+    },
+    {
+     "uraian": "Mitigasi bencana berbasis alam",
+     "variabel": "Perencanaan dan koordinasi pembangunan",
+     "kuantitas": "Jumlah paket sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah paket x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 132,
+     "batas": []
+    }
+   ]
+  },
+  "02.01.08": {
+   "kl": [
+    {
+     "uraian": "Pembangunan/ penguatan infrastruktur pendukung ketahanan bencana",
+     "variabel": "Pembangunan struktural",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di kementerian/ lembaga.",
+     "sifat": "Pokok",
+     "halaman": 134,
+     "batas": []
+    },
+    {
+     "uraian": "Pembangunan/ penguatan infrastruktur pendukung ketahanan bencana",
+     "variabel": "Penguatan struktural",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Dilakukan terhadap infrastruktur yang telah ada.",
+     "sifat": "Pokok",
+     "halaman": 134,
+     "batas": []
+    }
+   ],
+   "provinsi": [
+    {
+     "uraian": "Persiapan",
+     "variabel": "Perencanaan dan koordinasi pembangunan",
+     "kuantitas": "Jumlah paket sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah paket x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 135,
+     "batas": []
+    },
+    {
+     "uraian": "Pembangunan/ penguatan infrastruktur pendukung ketahanan bencana",
+     "variabel": "Pembangunan struktural",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 135,
+     "batas": []
+    },
+    {
+     "uraian": "Pembangunan/ penguatan infrastruktur pendukung ketahanan bencana",
+     "variabel": "Penguatan struktural",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah. Dilakukan terhadap infrastruktur yang telah ada.",
+     "sifat": "Pokok",
+     "halaman": 135,
+     "batas": []
+    }
+   ],
+   "kabkota": [
+    {
+     "uraian": "Persiapan",
+     "variabel": "Perencanaan dan koordinasi pembangunan",
+     "kuantitas": "Jumlah paket sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah paket x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 136,
+     "batas": []
+    },
+    {
+     "uraian": "Pembangunan/ penguatan infrastruktur pendukung ketahanan bencana",
+     "variabel": "Pembangunan struktural",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 136,
+     "batas": []
+    },
+    {
+     "uraian": "Pembangunan/ penguatan infrastruktur pendukung ketahanan bencana",
+     "variabel": "Penguatan struktural",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah. Dilakukan terhadap infrastruktur yang telah ada.",
+     "sifat": "Pokok",
+     "halaman": 136,
+     "batas": []
+    }
+   ]
+  },
+  "02.01.09": {
+   "kl": [
+    {
+     "uraian": "Persiapan",
+     "variabel": "Perencanaan dan koordinasi pembangunan",
+     "kuantitas": "Jumlah paket sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah paket x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 137,
+     "batas": []
+    },
+    {
+     "uraian": "Peningkatan kapasitas badan air",
+     "variabel": "Peningkatan/ perbaikan infrastruktur",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di kementerian/ lembaga.",
+     "sifat": "Pokok",
+     "halaman": 137,
+     "batas": []
+    },
+    {
+     "uraian": "Peningkatan kapasitas badan air",
+     "variabel": "Pembangunan infrastruktur",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di kementerian/ lembaga.",
+     "sifat": "Opsional",
+     "halaman": 137,
+     "batas": []
+    },
+    {
+     "uraian": "Peningkatan kapasitas badan air",
+     "variabel": "Pengelolaan badan air",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di kementerian/ lembaga.",
+     "sifat": "Opsional",
+     "halaman": 138,
+     "batas": []
+    }
+   ],
+   "provinsi": [
+    {
+     "uraian": "Persiapan",
+     "variabel": "Perencanaan dan koordinasi pembangunan",
+     "kuantitas": "Jumlah paket sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah paket x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 138,
+     "batas": []
+    },
+    {
+     "uraian": "Peningkatan kapasitas badan air",
+     "variabel": "Peningkatan/ perbaikan infrastruktur",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 138,
+     "batas": []
+    },
+    {
+     "uraian": "Peningkatan kapasitas badan air",
+     "variabel": "Pembangunan infrastruktur",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Opsional",
+     "halaman": 138,
+     "batas": []
+    },
+    {
+     "uraian": "Peningkatan kapasitas badan air",
+     "variabel": "Pengelolaan badan air",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Opsional",
+     "halaman": 139,
+     "batas": []
+    }
+   ],
+   "kabkota": [
+    {
+     "uraian": "Persiapan",
+     "variabel": "Perencanaan dan koordinasi pembangunan",
+     "kuantitas": "Jumlah paket sesuai kebutuhan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah paket x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 139,
+     "batas": []
+    },
+    {
+     "uraian": "Peningkatan kapasitas badan air",
+     "variabel": "Peningkatan/ perbaikan infrastruktur",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 139,
+     "batas": []
+    },
+    {
+     "uraian": "Peningkatan kapasitas badan air",
+     "variabel": "Pembangunan infrastruktur",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Opsional",
+     "halaman": 140,
+     "batas": []
+    },
+    {
+     "uraian": "Peningkatan kapasitas badan air",
+     "variabel": "Pengelolaan badan air",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Opsional",
+     "halaman": 140,
+     "batas": []
+    }
+   ]
+  },
+  "02.01.10": {
+   "kl": [
+    {
+     "uraian": "Penataan bangunan dan/atau lingkungan di kawasan rawan bencana",
+     "variabel": "Penataan bangunan di kawasan rawan bencana",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di kementerian/ lembaga.",
+     "sifat": "Pokok",
+     "halaman": 141,
+     "batas": []
+    },
+    {
+     "uraian": "Penataan bangunan dan/atau lingkungan di kawasan rawan bencana",
+     "variabel": "Penataan lingkungan di kawasan rawan bencana",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di kementerian/ lembaga.",
+     "sifat": "Pokok",
+     "halaman": 141,
+     "batas": []
+    }
+   ],
+   "provinsi": [
+    {
+     "uraian": "Penataan bangunan dan/atau lingkungan di kawasan rawan bencana",
+     "variabel": "Penataan bangunan di kawasan rawan bencana",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 142,
+     "batas": []
+    },
+    {
+     "uraian": "Penataan bangunan dan/atau lingkungan di kawasan rawan bencana",
+     "variabel": "Penataan lingkungan di kawasan rawan bencana",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 142,
+     "batas": []
+    }
+   ],
+   "kabkota": [
+    {
+     "uraian": "Penataan bangunan dan/atau lingkungan di kawasan rawan bencana",
+     "variabel": "Penataan bangunan di kawasan rawan bencana",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 142,
+     "batas": []
+    },
+    {
+     "uraian": "Penataan bangunan dan/atau lingkungan di kawasan rawan bencana",
+     "variabel": "Penataan lingkungan di kawasan rawan bencana",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "1 (satu) lokasi",
+     "rumus": "Jumlah kegiatan x Jumlah lokasi x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Pokok",
+     "halaman": 142,
+     "batas": []
+    }
+   ]
+  },
+  "02.01.11": {
+   "kl": [
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Transport Peserta",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Pokok",
+     "halaman": 144,
+     "batas": []
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Honor Narasumber dan fasilitator",
+     "kuantitas": "Jumlah narasumber sesuai kebutuhan",
+     "volume": "Jumlah jam kerja sesuai kebutuhan (maksimal 4 (empat) jam kerja total untuk 1 (satu) kali rapat)",
+     "rumus": "Jumlah narasumber x Jumlah jam kerja x Jumlah rapat x Harga Satuan",
+     "catatan": "Maksimal 5 (lima) kali Rapat koordinasi",
+     "sifat": "Opsional",
+     "halaman": 144,
+     "batas": [
+      {
+       "nilai": 5,
+       "teks": "Maksimal 5 (lima) kali Rapat koordinasi",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Paket pertemuan",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 144,
+     "batas": []
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Konsumsi rapat",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 144,
+     "batas": []
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Snack rapat",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 144,
+     "batas": []
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Perbanyakan materi",
+     "kuantitas": "Sesuai jumlah lembar materi yang dibutuhkan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 144,
+     "batas": []
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium Ketua Tim",
+     "kuantitas": "1 (satu) orang",
+     "volume": "Jumlah bulan kerja Ketua Tim",
+     "rumus": "1 (satu) orang x Jumlah bulan kerja x Harga satuan",
+     "catatan": "Maksimal 7 (tujuh) bulan",
+     "sifat": "Opsional",
+     "halaman": 144,
+     "batas": [
+      {
+       "nilai": 7,
+       "teks": "Maksimal 7 (tujuh) bulan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium tenaga ahli",
+     "kuantitas": "Jumlah tenaga ahli maksimal 1 (satu) orang",
+     "volume": "Jumlah bulan kerja tiap-tiap tenaga ahli",
+     "rumus": "Jumlah tenaga ahli x Jumlah bulan kerja x Harga satuan",
+     "catatan": "Maksimal 6 (enam) bulan",
+     "sifat": "Opsional",
+     "halaman": 145,
+     "batas": [
+      {
+       "nilai": 6,
+       "teks": "Maksimal 6 (enam) bulan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium tenaga ahli",
+     "kuantitas": "Jumlah tenaga ahli maksimal 1 (satu) orang",
+     "volume": "Jumlah bulan kerja tiap-tiap tenaga ahli",
+     "rumus": "Jumlah tenaga ahli x Jumlah bulan kerja x Harga satuan",
+     "catatan": "Maksimal 6 (enam) bulan",
+     "sifat": "Opsional",
+     "halaman": 145,
+     "batas": [
+      {
+       "nilai": 6,
+       "teks": "Maksimal 6 (enam) bulan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium tim penulis",
+     "kuantitas": "Jumlah tenaga penulis maksimal 1 (satu) orang",
+     "volume": "Jumlah bulan kerja tiap-tiap tenaga penulis",
+     "rumus": "Jumlah tim penulis x Jumlah bulan kerja x Harga satuan",
+     "catatan": "Maksimal 6 (enam) bulan",
+     "sifat": "Opsional",
+     "halaman": 145,
+     "batas": [
+      {
+       "nilai": 6,
+       "teks": "Maksimal 6 (enam) bulan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium tim substansi/ tim teknis",
+     "kuantitas": "Jumlah tim teknis sesuai kebutuhan berdasarkan identifikasi kementerian/ lembaga dan entitas utama terkait relokasi berdasarkan ketentuan peraturan perundang- undangan.",
+     "volume": "Jumlah bulan kerja atau hari kerja tiap- tiap tim substansi/ tim teknis",
+     "rumus": "Jumlah personil x Jumlah bulan kerja atau hari kerja x Harga satuan",
+     "catatan": "Tim Teknis adalah diluar tenaga ahli dan ditetapkan melalui Surat Keputusan Eselon I",
+     "sifat": "Opsional",
+     "halaman": 145,
+     "batas": []
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Paket Lokakarya",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah pertemuan sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah lokakarya x Harga satuan",
+     "catatan": "Maksimal 5 (lima) kali Lokakarya",
+     "sifat": "Opsional",
+     "halaman": 145,
+     "batas": [
+      {
+       "nilai": 5,
+       "teks": "Maksimal 5 (lima) kali Lokakarya",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Perbanyakan materi",
+     "kuantitas": "Sesuai jumlah lembar materi yang dibutuhkan",
+     "volume": "Jumlah lokakarya sesuai kebutuhan",
+     "rumus": "Jumlah lokakarya x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 145,
+     "batas": []
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Cetak dokumen",
+     "kuantitas": "Paket dokumen",
+     "volume": "Jumlah eksemplar penggandaan",
+     "rumus": "Jumlah lembar x Jumlah penggandaan x Harga satuan",
+     "catatan": "Maksimal 5 (lima) eksemplar penggandaan",
+     "sifat": "Opsional",
+     "halaman": 146,
+     "batas": [
+      {
+       "nilai": 5,
+       "teks": "Maksimal 5 (lima) eksemplar penggandaan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Relokasi masyarakat dan/atau bangunan",
+     "variabel": "Relokasi masyarakat berisiko bencana",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kegiatan x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di kementerian/ lembaga.",
+     "sifat": "Opsional",
+     "halaman": 146,
+     "batas": []
+    },
+    {
+     "uraian": "Relokasi masyarakat dan/atau bangunan",
+     "variabel": "Relokasi bangunan berisiko bencana",
+     "kuantitas": "Jumlah unit sesuai kebutuhan",
+     "volume": "sesuai Kebutuhan",
+     "rumus": "Jumlah unit x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) unit dapat didetailkan sesuai dengan Standar Biaya yang berlaku di kementerian/ lembaga.",
+     "sifat": "Opsional",
+     "halaman": 146,
+     "batas": []
+    }
+   ],
+   "provinsi": [
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Transport Peserta",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Pokok",
+     "halaman": 146,
+     "batas": []
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Honor Narasumber dan fasilitator",
+     "kuantitas": "Jumlah narasumber sesuai kebutuhan",
+     "volume": "Jumlah jam kerja sesuai kebutuhan (maksimal 4 (empat) jam kerja total untuk 1 (satu) kali rapat)",
+     "rumus": "Jumlah narasumber x Jumlah jam kerja x Jumlah rpat x Harga Satuan",
+     "catatan": "Maksimal 5 (lima) kali Rapat koordinasi",
+     "sifat": "Opsional",
+     "halaman": 146,
+     "batas": [
+      {
+       "nilai": 5,
+       "teks": "Maksimal 5 (lima) kali Rapat koordinasi",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Paket pertemuan",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 147,
+     "batas": []
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Konsumsi rapat",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 147,
+     "batas": []
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Snack rapat",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 147,
+     "batas": []
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Perbanyakan materi",
+     "kuantitas": "Sesuai jumlah lembar materi yang dibutuhkan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 147,
+     "batas": []
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium Ketua Tim",
+     "kuantitas": "1 (satu) orang",
+     "volume": "Jumlah bulan kerja Ketua Tim",
+     "rumus": "1 (satu) orang x Jumlah bulan kerja x Harga satuan",
+     "catatan": "Maksimal 7 (tujuh) bulan",
+     "sifat": "Opsional",
+     "halaman": 147,
+     "batas": [
+      {
+       "nilai": 7,
+       "teks": "Maksimal 7 (tujuh) bulan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium tenaga ahli",
+     "kuantitas": "Jumlah tenaga ahli maksimal 1 (satu) orang",
+     "volume": "Jumlah bulan kerja tiap-tiap tenaga ahli",
+     "rumus": "Jumlah tenaga ahli x Jumlah bulan kerja x Harga satuan",
+     "catatan": "Maksimal 6 (enam) bulan",
+     "sifat": "Opsional",
+     "halaman": 147,
+     "batas": [
+      {
+       "nilai": 6,
+       "teks": "Maksimal 6 (enam) bulan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium tenaga ahli",
+     "kuantitas": "Jumlah tenaga ahli maksimal 1 (satu) orang",
+     "volume": "Jumlah bulan kerja tiap-tiap tenaga ahli",
+     "rumus": "Jumlah tenaga ahli x Jumlah bulan kerja x Harga satuan",
+     "catatan": "Maksimal 6 (enam) bulan",
+     "sifat": "Opsional",
+     "halaman": 147,
+     "batas": [
+      {
+       "nilai": 6,
+       "teks": "Maksimal 6 (enam) bulan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium tim penulis",
+     "kuantitas": "Jumlah tenaga penulis maksimal 1 (satu) orang",
+     "volume": "Jumlah bulan kerja tiap-tiap tenaga penulis",
+     "rumus": "Jumlah tim penulis x Jumlah bulan kerja x Harga satuan",
+     "catatan": "Maksimal 6 (enam) bulan",
+     "sifat": "Opsional",
+     "halaman": 147,
+     "batas": [
+      {
+       "nilai": 6,
+       "teks": "Maksimal 6 (enam) bulan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium tim substansi/ tim teknis",
+     "kuantitas": "Jumlah tim teknis sesuai kebutuhan berdasarkan identifikasi Perangkat Daerah dan entitas utama terkait relokasi berdasarkan ketentuan peraturan perundang- undangan.",
+     "volume": "Jumlah bulan kerja atau hari kerja tiap- tiap tim substansi/ tim teknis",
+     "rumus": "Jumlah personil x Jumlah bulan kerja atau hari kerja x Harga satuan",
+     "catatan": "Tim Teknis adalah diluar tenaga ahli dan ditetapkan melalui Surat Keputusan Eselon II",
+     "sifat": "Opsional",
+     "halaman": 148,
+     "batas": []
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Paket Lokakarya",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah pertemuan sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah diskusi t x Harga satuan",
+     "catatan": "Maksimal 5 (lima) kali Lokakarya",
+     "sifat": "Opsional",
+     "halaman": 148,
+     "batas": [
+      {
+       "nilai": 5,
+       "teks": "Maksimal 5 (lima) kali Lokakarya",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Perbanyakan materi",
+     "kuantitas": "Sesuai jumlah lembar materi yang dibutuhkan",
+     "volume": "Jumlah lokakarya sesuai kebutuhan",
+     "rumus": "Jumlah lokakarya x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 148,
+     "batas": []
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Cetak dokumen",
+     "kuantitas": "Paket dokumen",
+     "volume": "Jumlah eksemplar penggandaan",
+     "rumus": "Jumlah lembar x Jumlah penggandaan x Harga satuan",
+     "catatan": "Maksimal 5 (lima) eksemplar penggandaan",
+     "sifat": "Opsional",
+     "halaman": 148,
+     "batas": [
+      {
+       "nilai": 5,
+       "teks": "Maksimal 5 (lima) eksemplar penggandaan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Relokasi masyarakat dan/atau bangunan",
+     "variabel": "Relokasi masyarakat berisiko bencana",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kegiatan x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Opsional",
+     "halaman": 148,
+     "batas": []
+    },
+    {
+     "uraian": "Relokasi masyarakat dan/atau bangunan",
+     "variabel": "Relokasi bangunan berisiko bencana",
+     "kuantitas": "Jumlah unit sesuai kebutuhan",
+     "volume": "sesuai Kebutuhan",
+     "rumus": "Jumlah unit x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) unit dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Opsional",
+     "halaman": 148,
+     "batas": []
+    }
+   ],
+   "kabkota": [
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Transport Peserta",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Pokok",
+     "halaman": 149,
+     "batas": []
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Honor Narasumber dan fasilitator",
+     "kuantitas": "Jumlah narasumber sesuai kebutuhan",
+     "volume": "Jumlah jam kerja sesuai kebutuhan (maksimal 4 (empat) jam kerja total untuk 1 (satu) kali rapat)",
+     "rumus": "Jumlah narasumber x Jumlah jam kerja x Jumlah rpat x Harga Satuan",
+     "catatan": "Maksimal 5 (lima) kali Rapat koordinasi",
+     "sifat": "Opsional",
+     "halaman": 149,
+     "batas": [
+      {
+       "nilai": 5,
+       "teks": "Maksimal 5 (lima) kali Rapat koordinasi",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Paket pertemuan",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 149,
+     "batas": []
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Konsumsi rapat",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 149,
+     "batas": []
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Snack rapat",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 149,
+     "batas": []
+    },
+    {
+     "uraian": "Koordinasi",
+     "variabel": "Perbanyakan materi",
+     "kuantitas": "Sesuai jumlah lembar materi yang dibutuhkan",
+     "volume": "Jumlah rapat sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah rapat x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 149,
+     "batas": []
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium Ketua Tim",
+     "kuantitas": "1 (satu) orang",
+     "volume": "Jumlah bulan kerja Ketua Tim",
+     "rumus": "1 (satu) orang x Jumlah bulan kerja x Harga satuan",
+     "catatan": "Maksimal 7 (tujuh) bulan",
+     "sifat": "Opsional",
+     "halaman": 150,
+     "batas": [
+      {
+       "nilai": 7,
+       "teks": "Maksimal 7 (tujuh) bulan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium tenaga ahli",
+     "kuantitas": "Jumlah tenaga ahli maksimal 1 (satu) orang",
+     "volume": "Jumlah bulan kerja tiap-tiap tenaga ahli",
+     "rumus": "Jumlah tenaga ahli x Jumlah bulan kerja x Harga satuan",
+     "catatan": "Maksimal 6 (enam) bulan",
+     "sifat": "Opsional",
+     "halaman": 150,
+     "batas": [
+      {
+       "nilai": 6,
+       "teks": "Maksimal 6 (enam) bulan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium tenaga ahli",
+     "kuantitas": "Jumlah tenaga ahli maksimal 1 (satu) orang",
+     "volume": "Jumlah bulan kerja tiap-tiap tenaga ahli",
+     "rumus": "Jumlah tenaga ahli x Jumlah bulan kerja x Harga satuan",
+     "catatan": "Maksimal 6 (enam) bulan",
+     "sifat": "Opsional",
+     "halaman": 150,
+     "batas": [
+      {
+       "nilai": 6,
+       "teks": "Maksimal 6 (enam) bulan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium tim penulis",
+     "kuantitas": "Jumlah tenaga penulis maksimal 1 (satu) orang",
+     "volume": "Jumlah bulan kerja tiap-tiap tenaga penulis",
+     "rumus": "Jumlah tim penulis x Jumlah bulan kerja x Harga satuan",
+     "catatan": "Maksimal 6 (enam) bulan",
+     "sifat": "Opsional",
+     "halaman": 150,
+     "batas": [
+      {
+       "nilai": 6,
+       "teks": "Maksimal 6 (enam) bulan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Biaya honorarium tim substansi/tim teknis",
+     "kuantitas": "Jumlah tim teknis sesuai kebutuhan berdasarkan identifikasi Perangkat Daerah dan entitas utama terkait relokasi berdasarkan ketentuan peraturan perundang- undangan.",
+     "volume": "Jumlah bulan kerja atau hari kerja tiap- tiap tim substansi/ tim teknis",
+     "rumus": "Jumlah personil x Jumlah bulan kerja atau hari kerja x Harga satuan",
+     "catatan": "Tim Teknis adalah diluar tenaga ahli dan ditetapkan melalui Surat Keputusan Eselon II",
+     "sifat": "Opsional",
+     "halaman": 150,
+     "batas": []
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Paket Lokakarya",
+     "kuantitas": "Jumlah peserta sesuai kebutuhan",
+     "volume": "Jumlah pertemuan sesuai kebutuhan",
+     "rumus": "Jumlah peserta x Jumlah diskusi t x Harga satuan",
+     "catatan": "Maksimal 5 (lima) kali Lokakarya",
+     "sifat": "Opsional",
+     "halaman": 150,
+     "batas": [
+      {
+       "nilai": 5,
+       "teks": "Maksimal 5 (lima) kali Lokakarya",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Perbanyakan materi",
+     "kuantitas": "Sesuai jumlah lembar materi yang dibutuhkan",
+     "volume": "Jumlah lokakarya sesuai kebutuhan",
+     "rumus": "Jumlah lokakarya x Harga satuan",
+     "catatan": "",
+     "sifat": "Opsional",
+     "halaman": 151,
+     "batas": []
+    },
+    {
+     "uraian": "Penyusunan Rencana Relokasi",
+     "variabel": "Cetak dokumen",
+     "kuantitas": "Paket dokumen",
+     "volume": "Jumlah eksemplar penggandaan",
+     "rumus": "Jumlah lembar x Jumlah penggandaan x Harga satuan",
+     "catatan": "Maksimal 5 (lima) eksemplar penggandaan",
+     "sifat": "Opsional",
+     "halaman": 151,
+     "batas": [
+      {
+       "nilai": 5,
+       "teks": "Maksimal 5 (lima) eksemplar penggandaan",
+       "peran": "volume"
+      }
+     ]
+    },
+    {
+     "uraian": "Relokasi masyarakat dan/atau bangunan",
+     "variabel": "Relokasi masyarakat berisiko bencana",
+     "kuantitas": "1 (satu) kegiatan",
+     "volume": "Sesuai kebutuhan",
+     "rumus": "Jumlah kegiatan x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) kegiatan dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Opsional",
+     "halaman": 151,
+     "batas": []
+    },
+    {
+     "uraian": "Relokasi masyarakat dan/atau bangunan",
+     "variabel": "Relokasi bangunan berisiko bencana",
+     "kuantitas": "Jumlah unit sesuai kebutuhan",
+     "volume": "sesuai Kebutuhan",
+     "rumus": "Jumlah unit x Harga satuan",
+     "catatan": "Harga satuan untuk 1 (satu) unit dapat didetailkan sesuai dengan Standar Biaya yang berlaku di daerah",
+     "sifat": "Opsional",
+     "halaman": 151,
+     "batas": []
+    }
+   ]
+  }
+ }
+}

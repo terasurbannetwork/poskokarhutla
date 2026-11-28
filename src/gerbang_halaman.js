@@ -63,6 +63,8 @@ export const HTML_RUTE = [
   [/^\/lapor\/?$/, "/lapor/index.html", "/lapor"],   // Lapor Bencana BNPB, pintu warga (public/lapor/, src/lapor_ai.js); publik (KEPUTUSAN-MASUK K14)
   [/^\/lapor\/lacak\/?$/, "/lapor/lacak.html", "/lapor/lacak"],   // halaman lacak bertoken ?t=, publik (K14)
   [/^\/lapor\/s\/[^/]+\/?$/, "/lapor/s/index.html", "/lapor/s"],   // tautan kabar selamat bertoken (LA-80/81, K91 D128): tamu, noindex; token tidak masuk statistik hit (kunci jalur "/lapor/s")
+  [/^\/lapor\/hilang\/?$/, "/lapor/hilang.html", "/lapor/hilang"],   // tab Orang hilang (orang-hilang-publik OH-09, K112): di balik login sampai pemilik memutuskan di KEPUTUSAN-MASUK, noindex; data hanya dari /api/lapor/hilang di balik OH_PUBLIK
+  [/^\/lapor\/h\/[0-9a-f]{32}\/?$/, "/lapor/h/index.html", "/lapor/h"],   // tautan bagikan satu profil bertoken (OH-09): di balik login sampai keputusan pemilik, noindex; token tidak masuk statistik hit (kunci jalur "/lapor/h"), tidak di Peta Situs
   [/^\/lapor\/hari-ini\/?$/, "/lapor/hari-ini.html", "/lapor/hari-ini"],   // kejadian hari ini dari laporan terverifikasi BPBD (lapor-kejadian K86, LK-06); publik, data dari /api/lapor/hari-ini di balik saklar LAPOR_HARI_INI
   [/^\/lapor\/data\/?$/, "/lapor/data/index.html", "/lapor/data"],   // data lanjutan BPBD (LJ-16): token tim di URL ditukar kuki; halaman tidak memuat data, API menjaga kuki tim atau sesi staf
   [/^\/lapor\/meja\/?$/, "/lapor/meja.html", "/lapor/meja"],   // meja laporan staf; tertutup di centurisk97.id, /api/lapor/meja* menjaga sesi staf
@@ -111,7 +113,7 @@ export function halamanTerkunci(url) {
   if (/^\/command-center(\/|$)/.test(jalur)) return false;
   if (jalur === "/instansi/data-bencana") return false;   // menjaga dirinya sendiri (src/instansi.js): staf atau akun instansi aktif, tanpa sesi 303 ke /instansi
   if (jalur === "/instansi/logpal" || jalur === "/logpal/index.html") return false;   // LogPal menjaga dirinya sendiri (src/logpal.js halaman): tanpa sesi sah 303 ke /instansi; BUKAN daftar putih (keputusan pemilik 9 Nov 2026: wajib login)   // meja menjaga dirinya sendiri (src/command_center.js): tamu 303 ke /admin/masuk?ke=
-  return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur);   // /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/masuk?ke= (satu pintu)
+  return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur) && !/^\/bnpb\/unit(\/|$)/.test(jalur);   // /bnpb/unit* (src/unit.js, kedeputian DT §1.4) dan /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/masuk?ke= (satu pintu)
 }
 /* Peran staf yang membuka halaman terkunci di centurisk97.id (selain admin): operator command center melihat semuanya, staf berperan Direktori membuka /direktori, peran Dalops membuka menu Pusdalops. Satu sumber untuk gerbang di fetch() DAN bolehHalaman. */
 export const perananGerbang = jalur => /^\/direktori\/?$/.test(jalur) ? ["operator_cc", ...P_AKADEMISI] : MENU_PUSDALOPS.test(jalur) ? ["operator_cc", ...PERAN_DALOPS] : ["operator_cc"];

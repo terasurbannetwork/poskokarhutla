@@ -64,3 +64,108 @@ Uji asap v2 (3 pasangan kalibrasi, belum vonis kelayakan karena n < 20): 209 sat
 Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
 
 - Q4: ambang lulus angka ALGORITMA 3, dikunci sebelum dihitung.
+
+## Kalibrasi KS-02 dengan kunci v2 berjangkar (26 Nov 2026)
+
+Pemilik mengizinkan (26 Nov 2026) menarik Sentinel-1 RTC dari Planetary Computer, anggaran total sekitar 2,5 GB. Kunci lolos `periksa_kunci` penuh (sidik `7eddd1f5...`, jangkar `c2c20f19...`), tanpa `--asap-tanpa-jangkar` untuk pasangan baru. Hanya bagian kalibrasi yang dijalankan; bagian uji tidak dibuka. Aturan urutan ditulis di sini dan diverifikasi dari indeks keluaran (12 indeks kalibrasi pertama, 3 sampai 18, tanpa lubang): indeks naik di `kerusakan_kriteria.json` di antara pasangan `bagian` = kalibrasi, satu per satu; berhenti saat n >= 20 atau anggaran habis. Aturan urutan yang permanen butuh kriteria v3 (belum dibuat). Anggaran habis lebih dulu.
+
+Pasangan dihitung (status ok, plasebo ada, n = 11): 3 (Aceh Besar 2025-11-11), 4 (Aceh Jaya 2025-11-04), 13 (Kota Cilegon 2025-12-17), 14 (Kota Cilegon 2025-12-31), 15 (Kota Cilegon 2026-03-07), 16 (Kota Serang 2025-11-10), 17 (Kota Serang 2025-12-18), 18 (Kota Serang 2026-01-03), 209, 212, 218 (tiga terakhir BUKAN menurut urutan indeks: diikutkan karena sudah dihitung di uji asap v2 dan sudah dilihat di v1 sebelum kunci v2; ditandai `tanpa_jangkar` di berkasnya).
+
+Dikeluarkan atau tidak terhitung, tercatat dengan alasan mekanis (bukan melihat skor): 205 (dari catatan v1: adegan sesudah terdekat +8 hari, tidak diverifikasi ulang di v2); 7 dan 8 (Aceh Timur, `bagian_terliput` 0,0008 < 0,9); 12 (Kota Cilegon 2025-11-08, tanpa adegan sah); 10 (Kota Denpasar): menunggu karena keadaan mesin (grid bangunan provinsi 51 tidak ada), BUKAN pengecualian mekanis; bila grid ada nanti, 10 dihitung di luar urutan. Kegagalan kode: pasangan 15 sempat berhenti karena item STAC baru memakai `proj:code` bukan `proj:epsg`; `contoh_sel` kini membaca keduanya, lalu 15 dijalankan ulang tanpa mengubah kriteria.
+
+Unduhan: sekitar 2,28 GB total (pasangan 3 dan 4 saja 497 dan 814 MB karena kabupaten luas). Pengendali berhenti di atas 2,2 GB sebelum pasangan berikutnya.
+
+Kelayakan per ambang (n = 11, syarat n >= 20, proporsi menang >= 0,6, rasio jumlah >= 2,0):
+
+| Ambang dB | n | Informatif | Menang | Proporsi | Jumlah satelit | Jumlah plasebo | Rasio | Vonis |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| -16 | 11 | 6 | 3 | 0,5 | 71 | 91 | 0,78 | menunggu: n 11 < 20 |
+| -17 | 11 | 6 | 4 | 0,667 | 16 | 69 | 0,23 | menunggu: n 11 < 20 |
+| -18 | 11 | 4 | 2 | 0,5 | 7 | 41 | 0,17 | menunggu: n 11 < 20 |
+| -19 | 11 | 2 | 0 | 0,0 | 10 | 12 | 0,83 | menunggu: n 11 < 20 |
+| -20 | 11 | 1 | 0 | 0,0 | 0 | 1 | 0 | menunggu: n 11 < 20 |
+
+Vonis: belum ada ambang layak, karena n belum mencapai 20 (anggaran unduhan habis). Sebagai catatan deskriptif, bukan vonis: tidak ada ambang yang rasio jumlahnya mencapai 2,0 (terbaik 0,83) dan hanya -17 yang proporsinya di atas 0,6. Jika n sampai 20 hasilnya tetap harus dihitung ulang apa adanya. KS-03 tidak jalan: gerbang butuh paling sedikit satu ambang layak. Tidak ada ambang baru yang diusulkan. Jalan keluar yang butuh keputusan pemilik: menambah anggaran unduhan (sekitar 1 GB lagi untuk 9 pasangan, lebih bila kabupaten luas) untuk melanjutkan urutan indeks yang sama.
+
+Catatan sah dan batas:
+- 209, 212, 218 sah menurut kriteria (sidik kriteria identik), tetapi versi kode saat ketiganya dijalankan tidak terbukti sama dengan kode sekarang.
+- Pembacaan proyeksi kini `kode_epsg` (menerima 32748, "32748", "EPSG:32748"), diuji di `kerusakan.py uji`. `scripts/banjir/citra_banjir.py:131` (milik `banjir`, tidak disentuh) akan crash pada item `proj:code`.
+- Fraksi dikeluarkan per sumber dan tahun mulai (`pengecualian_mekanis.lapor`), semuanya sumber DIBI publik 2025-10-28 sampai 2026-10-28: mulai 2025 n 11 (ok 7, dikeluarkan 3, menunggu 1, tanpa plasebo 0); mulai 2026 n 4 (ok 4, dikeluarkan 0). Revisit adegan: 12 hari 12 pasangan, 6 hari 1 pasangan.
+- Ambang -19 dengan informatif = 2 (n 11) dan 0 (n 8) tidak bermakna; -20 sama.
+
+Kelayakan di samping, n = 8 (hanya 3, 4, 13 sampai 18, tanpa 209, 212, 218) dan n = 11:
+
+| Ambang dB | n=8 informatif | menang | proporsi | rasio | n=11 informatif | menang | proporsi | rasio |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| -16 | 4 | 2 | 0,5 | 1,93 | 6 | 3 | 0,5 | 0,78 |
+| -17 | 4 | 3 | 0,75 | 1,8 | 6 | 4 | 0,667 | 0,23 |
+| -18 | 2 | 2 | 1,0 | 2,0 | 4 | 2 | 0,5 | 0,17 |
+| -19 | 0 | 0 | tidak ada | tidak ada | 2 | 0 | 0,0 | 0,83 |
+| -20 | 0 | 0 | tidak ada | tidak ada | 1 | 0 | 0,0 | 0 |
+
+Kedua kolom berstatus menunggu (n < 20); beda arah antar kolom menunjukkan angka belum stabil.
+
+## Kalibrasi KS-02 putaran kedua (26 Nov 2026, anggaran tambahan)
+
+Pemilik mengizinkan tambahan unduhan (batas 2,5 GB unduhan baru). Aturan sama: hanya bagian kalibrasi, indeks naik dari sesudah 18, kunci penuh berjangkar, satu per satu, tanpa memilih berdasarkan hasil, pasangan uji tidak dibuka.
+
+Dihitung baru (ok, plasebo ada): 19 (Kota Serang 2026-01-29), 20 (Kota Tangerang 2025-11-01), 24, 25, 26 (Kota Tangerang Selatan 2025-11-01, 2025-11-18, 2026-01-23), 34 (Pandeglang 2026-01-12, 810 MB). Total n = 17 (11 putaran 1 ditambah 6).
+Dikeluarkan mekanis: 21 (Kota Tangerang 2026-03-08) dan 28 (Kota Tangerang Selatan 2026-03-08), tanpa adegan sah; 31, 32, 33 (Pandeglang), `bagian_terliput` 0,8371, 0,6838, 0,8375 di bawah 0,9. Indeks 22, 23, 27, 29, 30 bukan bagian kalibrasi.
+Unduhan baru: sekitar 2,18 GB (di bawah 2,5 GB). Saya berhenti sebelum pasangan berikutnya (indeks 36) karena satu pasangan kabupaten luas bisa 800 MB dan akan melewati batas; n = 17 belum 20.
+
+Fraksi per sumber dan tahun mulai (sumber DIBI publik 2025-10-28 sampai 2026-10-28; semua pasangan): mulai 2025 n 16 (ok 10, dikeluarkan 5, menunggu 1); mulai 2026 n 10 (ok 7, dikeluarkan 3). Revisit: 12 hari 21 pasangan, 6 hari 1 pasangan.
+
+Kelayakan n = 17 (termasuk 209, 212, 218), syarat n >= 20, proporsi >= 0,6, rasio >= 2,0:
+
+| Ambang dB | informatif | menang | proporsi | jumlah satelit | jumlah plasebo | rasio | vonis |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| -16 | 7 | 3 | 0,429 | 84 | 105 | 0,8 | menunggu: n 17 < 20 |
+| -17 | 8 | 4 | 0,5 | 22 | 85 | 0,26 | menunggu: n 17 < 20 |
+| -18 | 5 | 2 | 0,4 | 11 | 54 | 0,2 | menunggu: n 17 < 20 |
+| -19 | 3 | 1 | 0,333 | 12 | 12 | 1,0 | menunggu: n 17 < 20 |
+| -20 | 1 | 0 | 0,0 | 0 | 1 | 0 | menunggu: n 17 < 20 |
+
+Tanpa 209, 212, 218 (n = 14):
+
+| Ambang dB | informatif | menang | proporsi | jumlah satelit | jumlah plasebo | rasio |
+| --- | --- | --- | --- | --- | --- | --- |
+| -16 | 5 | 2 | 0,4 | 42 | 29 | 1,45 |
+| -17 | 6 | 3 | 0,5 | 15 | 21 | 0,71 |
+| -18 | 3 | 2 | 0,667 | 8 | 15 | 0,53 |
+| -19 | 1 | 1 | 1,0 | 2 | 0 | tak hingga |
+| -20 | 0 | 0 | tidak ada | 0 | 0 | tidak ada |
+
+Vonis apa adanya: tidak ada ambang layak; semua menunggu karena n 17 < 20. Pada n = 17 belum ada ambang yang memenuhi syarat angka (andai n cukup): proporsi menang tertinggi 0,5 (di bawah 0,6) dan rasio jumlah tertinggi 1,0 (di bawah 2,0). Ini deskriptif, bukan vonis resmi (n < 20); -19 dan -20 informatif <= 3 tidak bermakna. KS-03 tidak jalan: gerbang butuh paling sedikit satu ambang layak. Tanpa ambang baru. Sisa pasangan kalibrasi berurutan dari indeks 36 belum dihitung; melanjutkannya butuh keputusan pemilik soal anggaran lagi.
+
+## Kalibrasi KS-02 putaran ketiga dan vonis kelayakan (26 Nov 2026)
+
+Aturan sama dengan putaran sebelumnya: hanya bagian kalibrasi, kunci penuh berjangkar, indeks naik dari 36, satu per satu, tanpa memilih berdasarkan hasil, pasangan uji tidak dibuka. Berhenti saat n ok = 20.
+
+Dihitung baru (ok, plasebo ada): 36 (Serang 2025-11-15, 400 MB), 40 (Serang 2026-03-07, 412 MB), 41 (Tangerang 2026-01-20, 317 MB). Total n = 20.
+Dikeluarkan mekanis: 37, 38, 39 (Serang 2025-12-17, 2025-12-29, 2026-01-10), `bagian_terliput` sekitar 0,066, di bawah 0,9. Unduhan baru putaran ini sekitar 1,27 GB (total tiga putaran dan uji asap sekitar 5,7 GB; tiap putaran di bawah 2,5 GB baru). Pasangan 209, 212, 218 tetap sah dengan catatan T3 di atas.
+
+Fraksi per sumber dan tahun mulai (sumber DIBI publik 2025-10-28 sampai 2026-10-28): mulai 2025 n 19 (ok 11, dikeluarkan 7, menunggu 1); mulai 2026 n 13 (ok 9, dikeluarkan 4). Revisit: 12 hari 27 pasangan, 6 hari 1 pasangan.
+
+Kelayakan n = 20 (vonis resmi; syarat proporsi menang >= 0,6 dan rasio jumlah >= 2,0):
+
+| Ambang dB | informatif | menang | proporsi | jumlah satelit | jumlah plasebo | rasio | layak |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| -16 | 10 | 5 | 0,5 | 273 | 250 | 1,09 | tidak |
+| -17 | 11 | 6 | 0,545 | 96 | 161 | 0,6 | tidak |
+| -18 | 8 | 4 | 0,5 | 20 | 60 | 0,33 | tidak |
+| -19 | 4 | 2 | 0,5 | 19 | 15 | 1,27 | tidak |
+| -20 | 3 | 0 | 0,0 | 1 | 4 | 0,25 | tidak |
+
+Tanpa 209, 212, 218 (n = 17, di bawah n minimum sehingga deskriptif, bukan vonis):
+
+| Ambang dB | informatif | menang | proporsi | jumlah satelit | jumlah plasebo | rasio |
+| --- | --- | --- | --- | --- | --- | --- |
+| -16 | 8 | 4 | 0,5 | 231 | 174 | 1,33 |
+| -17 | 9 | 5 | 0,556 | 89 | 97 | 0,92 |
+| -18 | 6 | 4 | 0,667 | 17 | 21 | 0,81 |
+| -19 | 2 | 2 | 1,0 | 9 | 3 | 3,0 |
+| -20 | 2 | 0 | 0,0 | 1 | 3 | 0,33 |
+
+Pada -19 tanpa ketiganya proporsi dan rasio tampak memenuhi syarat, tetapi informatif hanya 2 dan n 17 < 20: tidak bermakna dan bukan vonis.
+
+Vonis resmi: TIDAK ADA ambang layak (n = 20 terpenuhi; proporsi tertinggi 0,545 di -17 dan rasio tertinggi 1,27 di -19, tidak ada yang memenuhi keduanya). Sesuai kriteria, KS-03 tidak jalan. Akibatnya: tidak ada uji balik banjir, tidak ada vonis lulus, dan tidak ada angka bangunan terendam dari satelit di layar mana pun (D2: tanpa angka, bukan nol; status "menunggu uji" atau "gagal uji" dengan alasan saja). Tidak ada ambang baru yang diusulkan; mengubah kriteria berarti berkas baru, sidik baru (kriteria v3), keputusan pemilik.

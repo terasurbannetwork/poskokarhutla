@@ -12,8 +12,8 @@ import {emailAktif} from "./ews.js";
 import {kirimEmail} from "./keluar.js";
 import {adaPemda} from "./profil_konst.js";
 import {bakuKab} from "./lapor_meja_hak.js";
-import {sesiUntuk as sesiInstansi, cabutSemuaSesi, PROV as PROV_INSTANSI} from "./instansi.js";
-import {mkInstansiById, mkAkunPilihan, mkUndangBerlaku, mkKontakCocok, mkAnggotaCari, mkMenungguHitung, mkAnggotaTulis, mkLogMasuk, mkJedaTerakhir, mkHanguskan, mkKodeEmailBaru,
+import {cabutSemuaSesi, PROV as PROV_INSTANSI} from "./instansi.js";
+import {mkInstansiById, mkAkunPilihan, mkUndangBerlaku, mkKontakCocok, mkAnggotaCari, mkMenungguHitung, mkAnggotaTulis, mkJedaTerakhir, mkHanguskan, mkKodeEmailBaru,
   mkDomainCocok, mkDomainTulis, mkDomainHapus, mkAnggotaMenunggu, mkAnggotaAkun, mkAnggotaById, mkAnggotaSetujui, mkAnggotaCabut, mkAkunSaya, mkUndangHitung, mkSudahAnggota, mkUndangAda,
   mkUndangBaru, mkUndangDaftar, mkUndangById, mkUndangCabut, mkKontakById, mkPapanHitung, mkPapanRinci, mkUndangNomorHitung, mkUndangCabutOleh, pfPapanAkun, pfAkunWilayah, pfAkunPemdaById, pfProfilRinci, pfKontakBpbd, pfUndangAntre} from "./hak.js";
 import {sesiMasuk} from "./masuk_sesi.js";
@@ -23,7 +23,6 @@ import * as K from "./masuk_konst.js";
 
 const reId = /^[0-9a-f]{16}$/;
 const jsonCakupan = s => { try { return JSON.parse(s || "[]"); } catch (e) { return []; } };
-const kuki = (r, daftar) => { for (const c of daftar) r.headers.append("set-cookie", c); return r; };
 const KATEGORI_SEMUA = [...new Set(Object.values(K.PETA_KATEGORI).flat())];
 const IKUT = "/instansi";
 
@@ -93,10 +92,10 @@ async function jalurBukti(env, nomor, a, kini) {
   const k = kategori ? await mkKontakCocok(env, nomor, kategori, a) : null;
   return k ? {jalur: "kontak", rujukan: "kontak:" + k.id, oleh: null, undangId: null} : null;
 }
+/* K25 (pemilik 26 Nov 2026, "Cabut dari login saja"): keanggotaan tetap dicatat, tetapi kode WA tidak menerbitkan sesi instansi; anggota masuk lewat sandi di /masuk */
 async function sesiAnggota(env, s, a, kini, ekstra) {
-  const c = await sesiInstansi(env, a.id, kini); if (!c) return gagal(403, "akun lembaga itu tidak aktif");
-  await mkLogMasuk(env, [{id: acak(8), tabel: "instansi_akun", akun_id: a.id}], s.id, kini);
-  return kuki(json({ok: true, status: "aktif", ke: IKUT, ...ekstra}), c);
+  if (a.status !== "aktif") return gagal(403, "akun lembaga itu tidak aktif");
+  return json({ok: true, status: "aktif", ke: "/masuk?ke=" + encodeURIComponent(IKUT), ...ekstra});
 }
 async function mohon(env, req, url, kini) {
   const g = penjaga(req, url); if (g) return g;

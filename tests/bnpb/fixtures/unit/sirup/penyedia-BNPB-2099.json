@@ -1,0 +1,2 @@
+[{"id": 1, "tahun": 2099, "jalur": "penyedia", "klpd": "BNPB", "paket": "Genset", "pagu": 1000, "metode": "E-Purchasing", "lokasi": "DKI Jakarta, Jakarta Timur (Kota)", "idBulan": 1, "isPDN": true, "namaPenyedia": "PT Rahasia", "pemenang": "CV Contoh", "npwp": "00"},
+ {"id": 2, "tahun": 2099, "jalur": "penyedia", "klpd": "BNPB", "paket": "Tenda", "pagu": 2000, "metode": "Pengadaan Langsung", "lokasi": "", "idBulan": 4}]

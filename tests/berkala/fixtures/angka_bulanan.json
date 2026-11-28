@@ -1058,6 +1058,12 @@
    }
   ],
   "sebelumnya": {
+   "banding": {
+    "arah": "naik",
+    "kini": 58,
+    "lalu": 31,
+    "persen": 87.1
+   },
    "kejadian": {
     "alam": 31,
     "alam_resmi": 31,
@@ -2364,6 +2370,101 @@
   }
  },
  "dirakit": "2026-11-25T03:10:00Z",
+ "kegiatan": {
+  "cakup": [
+   [
+    "2026-10-01",
+    "2026-10-31"
+   ]
+  ],
+  "calon": [
+   {
+    "jam": "09:00",
+    "jenis": [],
+    "judul": "Kepala BNPB Tinjau Posko Contoh di Kabupaten Contoh Satu",
+    "lokasi": "Kabupaten Contoh Satu",
+    "pelaksana": "Kepala BNPB",
+    "situasi": false,
+    "tanggal": "2026-10-02",
+    "tautan": "https://bnpb.go.id/berita/contoh-kepala-1"
+   },
+   {
+    "jam": "12:00",
+    "jenis": [],
+    "judul": "Perkembangan Situasi Contoh 20 Oktober 2026",
+    "lokasi": null,
+    "pelaksana": "Pusdatinkom",
+    "situasi": true,
+    "tanggal": "2026-10-20",
+    "tautan": "https://bnpb.go.id/berita/contoh-situasi-20"
+   },
+   {
+    "jam": "12:00",
+    "jenis": [],
+    "judul": "Perkembangan Situasi Contoh 21 Oktober 2026",
+    "lokasi": null,
+    "pelaksana": "Pusdatinkom",
+    "situasi": true,
+    "tanggal": "2026-10-21",
+    "tautan": "https://bnpb.go.id/berita/contoh-situasi-21"
+   },
+   {
+    "jam": "15:00",
+    "jenis": [
+     "karhutla"
+    ],
+    "judul": "Satgas Contoh Lakukan Water Bombing Karhutla di Riau",
+    "lokasi": "Riau",
+    "pelaksana": "Satgas operasi",
+    "situasi": false,
+    "tanggal": "2026-10-22",
+    "tautan": "https://bnpb.go.id/berita/contoh-satgas-22"
+   },
+   {
+    "jam": "10:00",
+    "jenis": [],
+    "judul": "Seminar Contoh Ketangguhan Desa",
+    "lokasi": null,
+    "pelaksana": null,
+    "situasi": false,
+    "tanggal": "2026-10-28",
+    "tautan": "https://bnpb.go.id/berita/contoh-seminar-28"
+   },
+   {
+    "jam": "10:00",
+    "jenis": [],
+    "judul": "<img src=x onerror=alert(1)>Judul Jahat <script>alert(2)</script> Contoh",
+    "lokasi": null,
+    "pelaksana": null,
+    "situasi": false,
+    "tanggal": "2026-10-29",
+    "tautan": "https://bnpb.go.id/berita/judul-jahat-contoh"
+   }
+  ],
+  "catatan": "Calon kegiatan dari daftar siaran pers bnpb.go.id (judul, tanggal, tautan; isi berita tidak disalin). Pelaksana, jenis, dan lokasi adalah usulan mesin dari judul; baris masuk laporan hanya bila dipilih staf (Q8). Hitungan di sini adalah siaran pers yang terbit, bukan kegiatan yang dipilih.",
+  "rekap": {
+   "jenis": {
+    "banjir": 0,
+    "cuaca_ekstrem": 0,
+    "erupsi": 0,
+    "gelombang": 0,
+    "gempa": 0,
+    "karhutla": 1,
+    "kekeringan": 0,
+    "longsor": 0
+   },
+   "pelaksana": {
+    "Kepala BNPB": 1,
+    "Pusdatinkom": 2,
+    "Satgas operasi": 1,
+    "belum_digolongkan": 2
+   },
+   "siaran": 6,
+   "situasi": 2
+  },
+  "status": "ok",
+  "tarik": "2026-11-11"
+ },
  "kode": "2026-10",
  "label_jenis": {
   "banjir": "Banjir",
@@ -2480,6 +2581,14 @@
   "2026-10-01",
   "2026-10-31"
  ],
+ "siklus": {
+  "kaji_ulang": {
+   "status": "belum_tersedia"
+  },
+  "lifeline": {
+   "status": "belum_tersedia"
+  }
+ },
  "sumber": {
   "dalops_banjir": {
    "asal": "potong",
@@ -2533,6 +2642,10 @@
    "tanggal": "2026-11-01",
    "tarik": "2026-11-01"
   },
+  "kaji_ulang": {
+   "status": "belum_ada",
+   "tarik": null
+  },
   "karhutla": {
    "asal": "potong",
    "hari": 31,
@@ -2540,6 +2653,14 @@
    "hari_rentang": 31,
    "status": "ok",
    "tarik": "2026-11-01"
+  },
+  "kegiatan": {
+   "status": "ok",
+   "tarik": "2026-11-11"
+  },
+  "lifeline": {
+   "status": "belum_ada",
+   "tarik": null
   },
   "peluang": {
    "asal": "logbook_riwayat",

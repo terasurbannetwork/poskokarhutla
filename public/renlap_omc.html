@@ -9,12 +9,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link href="/renlap_cetak.css?v=3" rel="stylesheet">
-<link href="/renlap_omc.css?v=1" rel="stylesheet">
+<link href="/inti/tema.css" rel="stylesheet">
+<link href="/renlap_cetak.css?v=4" rel="stylesheet">
+<link href="/kerangka_staf.css?v=1" rel="stylesheet">
+<link href="/bnpb/menu_pusdalops.css?v=17" rel="stylesheet">
+<link href="/renlap_omc.css?v=2" rel="stylesheet">
 </head>
 <body>
-<header class="alat">
-  <b>Renlap OMC</b>
+<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep">Renlap OMC</span>
+</header>
+<script src="/bnpb/menu_pusdalops.js?v=31"></script>
+<main>
+  <div class="bn-judul"><h1>Renlap OMC</h1></div>
+  <section class="alat" aria-label="Pilihan dan cetak">
   <label>Zona <select id="zona" aria-label="Pilih zona semai"></select></label>
   <span id="info" class="info"></span>
   <span class="tombol">
@@ -22,9 +30,10 @@
     <button type="button" id="gpx">Unduh GPX</button>
     <button type="button" id="cetak">Cetak atau simpan PDF</button>
   </span>
-</header>
-<p id="pesan" class="pesan" role="status">Memuat renlap OMC…</p>
-<main id="isi"></main>
+</section>
+  <p id="pesan" class="pesan" role="status">Memuat renlap OMC…</p>
+  <div id="isi"></div>
+</main>
 <script src="/inti/citra_ubin.js?v=1"></script>
 <script src="/renlap_omc.js?v=2"></script>
 </body>

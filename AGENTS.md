@@ -721,6 +721,39 @@ Sebelum menyentuh tujuan banjir di mesin semai (sasaran, koridor lintasan mundur
 
 Aturan berhentinya sama dengan §2.1. Satu mesin semai dengan sumbu `tujuan` (karhutla atau banjir), tanpa `semai_banjir.py` salinan; mesin lintasan tetap satu (`lintasan.py`); zona usulan, tidak pernah masuk renlap sendiri; zona cegat tidak boleh di daratan kab/kota sasaran atau kab yang sendiri terancam banjir; karhutla tidak mundur (uji golden); penguji hanya melaporkan kesesuaian, bukan sebab-akibat, dan hasilnya hanya untuk staf (Q4); tidak pernah menulis "aman", "akan hujan", atau "mencegah banjir".
 
+### 2.53 Dampak Peringatan Dini (status prakiraan Normal sampai Awas per kab/kota, penduduk dan fasilitas di area peringatan BMKG per desa; Alun-alun `/lapor`, `/prediksi` tab Besok, `/bnpb/dalops`, Layar Pimpinan, peta tiap bencana): baca dulu, baru bangun
+
+Sebelum menyentuh status prakiraan per kab per bahaya, keterpaparan per desa dari poligon peringatan BMKG, tabel kelas bahaya kab nasional, lapisan peta bersama `public/inti/dampak_peringatan.*`, atau notifikasi dari status, baca dokumen di
+`data/kajian-bnpb/dampak-peringatan/` dengan urutan otoritas ini (`scripts/siklus/dampak_peringatan.py`, `scripts/siklus/kelas_kab.py`, perluasan `scripts/siklus/paparan.py` milik `siklus`; `scripts/prediksi/status_prakiraan*` milik `prediksi`; `public/inti/dampak_peringatan.*` milik `inti-layar`; `src/dampak_peringatan.js` dan migrasinya milik `warga-api`; `tests/dampak-peringatan/**` milik `penulis-gerbang`; pemasangan per layar milik pemilik layarnya):
+
+1. `KEPUTUSAN-DAMPAK.md`: keputusan pemilik K1-K14, rancangan D1-D36, pertanyaan terbuka dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`DP-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Pakai cara kita, bukan angka InaRISK (K8); satu mesin paparan (`paparan.py`); status berpil hipotesis sampai uji balik lulus, hijau Normal hanya bila semua sumber masuk dan segar, selain itu abu "belum terukur"; tidak pernah menulis "aman" atau "terdampak" sebagai fakta; angka dibulatkan di keluaran; angka antarsumber tidak dijumlah; rincian per desa hanya untuk staf (R2); tinjau tiap layar di `http://localhost:8800`.
+
+### 2.54 Potensi Bencana Hidromet (mode Peringatan Alun-alun `/lapor`, K7; modul `public/potensi/**`: tab Status, Dampak, Iklim, Analisis, Lapisan, Ringkasan, Sumber, Rekomendasi staf; kelas bahaya desa BNPB, status banjir bandang, ONI dan IOD, debit GloFAS per kab, prakiraan BMKG per desa): baca dulu, baru bangun
+
+Sebelum menyentuh mode Peringatan `/lapor` atau modul `public/potensi/**`, kelas bahaya per desa dari berkas BNPB, kode status `BDG`, analisis wilayah, rute `/api/potensi/*` atau `/api/bmkg/desa`, atau katalog rekomendasi per pihak, baca dokumen di
+`data/kajian-bnpb/potensi-hidromet/` dengan urutan otoritas ini (`public/potensi/**` dan `public/lapor/peringatan_potensi.*` milik `layar-peta`; `scripts/siklus/kelas_desa_bnpb.py` milik `siklus`; `scripts/prediksi/status_prakiraan*`, `scripts/prediksi/analisis_wilayah.py` milik `prediksi`; `src/potensi.js`, `src/rekomendasi_katalog.js` milik `warga-api`; `public/inti/dampak_peringatan.*` milik `inti-layar`; `tests/potensi/**` milik `penulis-gerbang`). Paket induk `data/kajian-bnpb/dampak-peringatan/` tetap berlaku:
+
+1. `KEPUTUSAN-POTENSI.md`: keputusan pemilik K1-K7 (K7: semua tab di mode Peringatan `/lapor`, halaman `/potensi` dihapus), rancangan D1-D21, pertanyaan terbuka Q1-Q8 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (status per hari, kelas kab dari kelas desa terkunci), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PH-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Rekomendasi per pihak hanya staf, tidak pernah di `public/` atau respons publik; debit dan nowcast bandang tidak menaikkan status; status dan kelas baru berpil hipotesis sampai uji balik lulus; kelas desa kosong "belum terukur", tidak pernah rendah atau 0; yang ditiru dari Foundry dan METI pola tata letak, bukan rupa atau angka; tanpa kotak tanya; tidak pernah menulis "aman"; tinjau di `http://localhost:8800/lapor/` mode Peringatan.
+
+### 2.55 Orang Hilang Publik (`/lapor`, layanan Lapor orang hilang: profil publik terverifikasi, menemukan orang, mencari lewat foto): baca dulu, baru bangun
+
+Sebelum menyentuh profil publik orang hilang, persetujuan tayang, verifikasi petugas, laporan menemukan orang, mencari lewat foto, atau penyaring "hilang karena bencana", baca dokumen di
+`data/kajian-bnpb/orang-hilang-publik/` dengan urutan otoritas ini (kode Worker, migrasi, `src/lapor_selamat.js`, `src/kejadian_tautan.js` milik `warga-api`; layar `public/lapor/**` milik `layar-peta`; cek `ilmu.mjs pemilik`). Paket induk `data/kajian-bnpb/lapor-ai/` (K110-K116) tetap berlaku:
+
+1. `KEPUTUSAN-ORANG-HILANG.md`: keputusan pemilik K110-K116, rancangan D1-D35, pertanyaan terbuka Q1-Q26 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`OH-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Hanya orang yang hilang karena bencana (K116), lewat pencocok kejadian yang ada, tanpa buku kejadian kedua; semua profil diverifikasi petugas sebelum tayang (K113); nomor kontak tidak pernah publik (K112); profil turun saat dicabut, ditemukan, atau ditutup; tanpa vektor wajah dan tanpa vonis identitas dari foto; tayang publik dan cari lewat foto di belakang bendera `OH_PUBLIK` dan `OH_FOTO` yang mati sampai pemilik menjawab Q yang menahan; tidak pernah menulis "aman".
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

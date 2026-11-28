@@ -121,20 +121,22 @@ uji("gel2/W6: feed CAP 1.2: elemen wajib, satu info per peringatan, circle bila 
 });
 
 uji("gel2/W6: aturan karhutla: tugas level 3 baru -> Siaga satu kali; level 2, lama, dummy, padam tidak; alarm Himawari siaga tidak ikut (hanya tugas yang ada di tugas_api)", async () => {
-  await DB.prepare("DELETE FROM peringatan").run(); await DB.prepare("DELETE FROM tugas_api").run();
+  await DB.prepare("DELETE FROM peringatan").run(); await DB.prepare("DELETE FROM peringatan_x").run(); await DB.prepare("DELETE FROM tugas_api").run();
   const kini = Date.now(), baru = await tugas({lat: -2.5678, lon: 114.4321, dibuat: kini - 30 * MENIT, luas_ha: 120}), l2 = await tugas({level: 2, lat: -2.7}), lama = await tugas({dibuat: kini - 8 * JAM, lat: -2.8}), dm = await tugas({dummy: 1, lat: -2.9}), pd = await tugas({status: "padam", lat: -3.1});
   await sisip("alarm_himawari", {id: id16(), lat: -4, lon: 116, pertama: kini - 30 * MENIT, terakhir: kini - 10 * MENIT, status: "siaga"});
   await cron(kini); await cron(kini + 1000);
+  // cron di menit tertentu (UTC mod 10 = 1) juga menulis peringatan_x kekeringan BMKG dari data repo; asersi CAP di bawah hanya untuk karhutla (CI 27 Nov 19.21Z merah).
+  await DB.prepare("DELETE FROM peringatan_x").run();
   const rows = (await DB.prepare("SELECT * FROM peringatan").all()).results; assert.equal(rows.length, 1, "satu peringatan, putaran ulang tidak menggandakan"); const p = rows[0];
   assert.equal(p.kunci, `karhutla:${createHash("sha256").update("pk|" + baru).digest("hex").slice(0, 12)}:siaga`, "id tugas tidak keluar di kunci publik"); assert.equal(p.jenis, "karhutla"); assert.equal(p.tingkat, "Siaga"); assert.equal(p.sumber, "Deteksi Pantau Bencana"); assert.equal((await api("GET", "/api/peringatan/aktif")).j.peringatan.find(x => x.kunci === p.kunci)?.sumber, "Deteksi Centurisk97", "API menampilkan merek Centurisk97, nilai D1 lama tidak bocor"); assert.equal(p.prov, "62"); assert.equal(p.lat, -2.57); assert.equal(p.lon, 114.43, "dibulatkan 0,01");
   assert.match(p.judul, /Api level 3 baru di Kec Uji, Katingan, Kalimantan Tengah/); assert.match(p.teks, /9 titik panas/); assert.match(p.teks, /120 ha/); assert.equal(p.berlaku_hingga, baru && p.dibuat + 0 + (p.berlaku_hingga - p.dibuat), "berlaku");
   assert.ok(p.berlaku_hingga > kini + 10 * JAM && p.berlaku_hingga <= kini + 13 * JAM);
   const cap = uraiXml((await api("GET", "/api/peringatan/aktif.cap")).t), i = anak(cap, "info"); assert.equal(i.length, 1); assert.equal(satu(i[0], "category").teks, "Fire"); assert.equal(satu(i[0], "event").teks, "Kebakaran hutan dan lahan"); assert.equal(satu(satu(i[0], "area"), "circle").teks, "-2.57,114.43 0");
-  await DB.prepare("DELETE FROM peringatan").run(); await DB.prepare("DELETE FROM tugas_api").run();
+  await DB.prepare("DELETE FROM peringatan").run(); await DB.prepare("DELETE FROM peringatan_x").run(); await DB.prepare("DELETE FROM tugas_api").run();
 });
 
 uji("gel2/W6: teks pop-up karhutla memakai pemisah ribuan Indonesia (titik) untuk titik panas dan luas; di bawah 1.000 tanpa pemisah; kunci dan bentuk lain tak berubah", async () => {
-  await DB.prepare("DELETE FROM peringatan").run(); await DB.prepare("DELETE FROM tugas_api").run();
+  await DB.prepare("DELETE FROM peringatan").run(); await DB.prepare("DELETE FROM peringatan_x").run(); await DB.prepare("DELETE FROM tugas_api").run();
   const kini = Date.now(), besar = await tugas({n24: 1234, luas_ha: 12345.6, lat: -2.31, dibuat: kini - 30 * MENIT}), pas = await tugas({n24: 1000, luas_ha: 999.4, lat: -2.32, dibuat: kini - 30 * MENIT}), jutaan = await tugas({n24: 1234567, luas_ha: 1234567.5, lat: -2.33, dibuat: kini - 30 * MENIT});
   const kecil = await tugas({n24: 999, luas_ha: 120, lat: -2.34, dibuat: kini - 30 * MENIT}), tanpaLuas = await tugas({n24: 5, luas_ha: null, lat: -2.35, dibuat: kini - 30 * MENIT});
   await cron(kini);
@@ -145,7 +147,7 @@ uji("gel2/W6: teks pop-up karhutla memakai pemisah ribuan Indonesia (titik) untu
   assert.match(ambil(jutaan), /\(1\.234\.567 titik panas 24 jam, perkiraan 1\.234\.568 ha\)/); assert.match(ambil(kecil), /\(999 titik panas 24 jam, perkiraan 120 ha\)/); assert.match(ambil(tanpaLuas), /\(5 titik panas 24 jam\) terdeteksi/);
   for (const id of [besar, pas, jutaan]) assert.doesNotMatch(ambil(id), /\d{4,}/, "tidak ada bilangan 4 angka tanpa pemisah"); 
   assert.match(ambil(besar), /Perlu konfirmasi lapangan; lokasi dibulatkan 0,01 derajat\.$/, "sisa teks tidak berubah");
-  await DB.prepare("DELETE FROM peringatan").run(); await DB.prepare("DELETE FROM tugas_api").run();
+  await DB.prepare("DELETE FROM peringatan").run(); await DB.prepare("DELETE FROM peringatan_x").run(); await DB.prepare("DELETE FROM tugas_api").run();
 });
 
 uji("gel2/W6: karhutla tanpa migrasi 0029 (tabel tugas_api tidak ada) dilewati: cron tidak melempar dan gempa tetap diproses", async () => {

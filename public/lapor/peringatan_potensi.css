@@ -1,0 +1,27 @@
+/* Mode Peringatan /lapor (K7): pil tab, slot bawah, tampilan penuh tab baca. Token tema saja. */
+/* bilah tab melayang di tengah atas peta, satu baris, gelap tembus pandang, seperti bilah Foundry (pemilik 26 Nov 2026: "Ini nya yang kayak disini") */
+.pp-pil.lp-alun-sumber{position:absolute;z-index:4;top:12px;left:12px;right:12px;display:flex;flex-wrap:nowrap;gap:2px;width:auto;margin:0;padding:5px;overflow-x:auto;scrollbar-width:none;border-radius:999px;background:color-mix(in oklab,var(--brand) 86%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:var(--shadow)}
+.pp-pil[hidden]{display:none}
+.pp-pil.lp-alun-sumber button{flex:none;min-height:36px;padding:0 16px;border:0;border-radius:999px;background:none;color:color-mix(in oklab,var(--on-brand) 72%,transparent);font:600 .875rem var(--font);box-shadow:none;cursor:pointer}
+.pp-pil.lp-alun-sumber button{display:inline-flex;align-items:center;gap:7px}
+.pp-pil.lp-alun-sumber button svg{display:block;width:16px;height:16px}
+.pp-pil.lp-alun-sumber button:hover{color:var(--on-brand)}
+.pp-pil.lp-alun-sumber button[aria-selected="true"]{background:color-mix(in oklab,var(--on-brand) 18%,transparent);color:var(--on-brand)}
+.pp-pil.lp-alun-sumber button:focus-visible{outline:2px solid var(--on-brand);outline-offset:-2px}
+@media (min-width:900px){.pp-pil.lp-alun-sumber{right:auto;left:calc(var(--tarik-lebar,520px) + (100% - var(--tarik-lebar,520px)) / 2);transform:translateX(-50%);max-width:calc(100% - var(--tarik-lebar,520px) - 120px)}}
+.pp-panel{display:grid;gap:12px;min-width:0}
+.pp-panel[hidden],#ppGunung[hidden],.pp-baca[hidden],.pp-bawah[hidden]{display:none}
+.pp-baca{position:absolute;inset:0;z-index:2;overflow:auto;overscroll-behavior:contain;background:var(--paper);padding:16px 16px 40px;display:grid;gap:12px;align-content:start}
+.pp-baca>.po-pb{width:100%}
+.pp-balik{justify-self:center;min-height:44px;padding:0 16px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:700 .8125rem var(--font);cursor:pointer}
+.pp-bawah{position:absolute;pointer-events:none;left:12px;top:12px;bottom:auto;z-index:3;max-width:calc(100% - 80px)}
+@media (min-width:900px){
+  .pp-bawah{top:auto;bottom:28px;left:calc(var(--tarik-lebar,520px) + 40px);max-width:calc(100% - var(--tarik-lebar,520px) - 80px);width:max-content}
+  .pp-baca{padding-left:calc(var(--tarik-lebar,520px) + 48px)}
+}
+#petaAlun:has(.pp-baca:not([hidden])) .maplibregl-ctrl-top-right{display:none}
+.lp-alun-tanggal[hidden]{display:none}   /* mode Peringatan: garis waktu hari menggantikan Tanggal data (K7) */
+.lp-alun:has(#isiPeringatan:not([hidden])) .lp-alun-tanggal,body:has(#isiPeringatan:not([hidden])) #periodeAlun{display:none}   /* Tanggal data dibuat sesudah mode dinyalakan; disembunyikan lewat CSS */
+.pp-bawah .st-hari{flex-wrap:wrap;overflow:visible}
+/* satu bilah sebaris rata tengah di atas peta: sakelar Kejadian | Peringatan lalu tab Peringatan (pemilik 26 Nov 2026) */
+.pp-pil.lp-alun-sumber{position:static;transform:none;max-width:none;padding:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;border-radius:0;overflow:visible}

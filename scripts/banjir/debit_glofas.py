@@ -5,6 +5,8 @@
                                                                   reanalisis harian MULAI..kemarin, satu titik sungai per kab, cache
   python3 -I scripts/banjir/debit_glofas.py ringkas              berapa kab layak / tanpa_sungai_besar / belum diambil
   python3 -I scripts/banjir/debit_glofas.py snapshot             ansambel 50 anggota + kontrol hari ini (prospektif; reanalisis tak punya ansambel)
+  python3 -I scripts/banjir/debit_glofas.py terbit               public/banjir/data/debit_kab.json dari snapshot hari ini (diambil bila belum ada); PH-04, hipotesis
+  python3 -I scripts/banjir/debit_glofas.py cek                  assert ringkasan terbit (tanpa jaringan)
 
 Titik: scripts/banjir/data/titik_glofas_kab.json ({kode kab: [lat, lon]}, dipakai ulang, bukan titik baru). API menempelkan titik ke sungai
 terbesar dalam ~5 km; kab yang debit mediannya < MIN_MEDIAN atau mayoritas kosong = `tanpa_sungai_besar` dan TIDAK dipakai.
@@ -221,9 +223,10 @@ def ringkas(cache=None):
     return {"titik": len(T), "layak": sorted(ok), "tanpa_sungai_besar": sorted(tanpa), "belum_diambil": len(sisa)}
 
 
-def snapshot(cache=None, per_panggil=10):
-    """Ansambel prakiraan 3 hari (+1 hari lalu) untuk kab layak; simpan data/raw/banjir/glofas/ensemble/<hari>.json (hanya-tambah per hari)."""
-    kode = ringkas(cache)["layak"]
+def snapshot(cache=None, per_panggil=10, semua=False, nama=None):
+    """Ansambel prakiraan 3 hari (+1 hari lalu) untuk kab layak; simpan data/raw/banjir/glofas/ensemble/<hari>.json (hanya-tambah per hari).
+    semua=True: seluruh titik kab (dipakai `terbit` bila cache reanalisis belum ada sehingga belum ada kab "layak")."""
+    kode = sorted(titik_kab()) if semua else ringkas(cache)["layak"]
     T = titik_kab()
     out = {}
     for a in range(0, len(kode), per_panggil):
@@ -235,12 +238,66 @@ def snapshot(cache=None, per_panggil=10):
             m = [v for n, v in sorted(x["daily"].items()) if n.startswith("river_discharge_member")]
             out[k] = {"t": x["daily"]["time"], "kontrol": x["daily"].get("river_discharge"), "anggota": m}
         time.sleep(5)
-    p = os.path.join(cache or CACHE, "ensemble", f"{dt.date.today()}.json")
+    p = os.path.join(cache or CACHE, "ensemble", nama or f"{dt.date.today()}.json")
     os.makedirs(os.path.dirname(p), exist_ok=True)
     if os.path.exists(p):
         sys.exit(f"{p} sudah ada: snapshot hari ini tidak ditimpa")
     json.dump({"diambil": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "kab": out}, open(p, "w"), separators=(",", ":"))
     return len(out)
+
+
+# ------------------------------------------------------------------ terbit (PH-04, KEPUTUSAN-POTENSI D6)
+KELUAR = os.path.join(AKAR, "public/banjir/data/debit_kab.json")
+
+
+def ringkas_kab(kab, hari0, q2=None):
+    """kab = {kode: {t, anggota}} dari snapshot -> {kode: {puncak_m3s, hari_puncak, q2_m3s, rasio_q2}}.
+    Puncak = maksimum RERATA ansambel pada hari hari0..hari0+3 yang tersedia; tanpa satu pun nilai -> kab tak ditulis (bukan 0).
+    q2 = {kode: m3/s}; tak ada -> q2 dan rasio null."""
+    out = {}
+    for k, x in kab.items():
+        t = x["t"]
+        if hari0 not in t:
+            continue
+        i0 = t.index(hari0)
+        rer = []
+        for j in range(i0, min(i0 + 4, len(t))):
+            v = [m[j] for m in x["anggota"] if j < len(m) and m[j] is not None]
+            rer.append(sum(v) / len(v) if v else None)
+        ada = [(r, h) for h, r in enumerate(rer) if r is not None]
+        if not ada:
+            continue
+        pk, hp = max(ada, key=lambda a: (a[0], -a[1]))
+        qq = (q2 or {}).get(k)
+        out[k] = {"puncak_m3s": round(pk, 1), "hari_puncak": hp, "q2_m3s": qq, "rasio_q2": round(pk / qq, 1) if qq else None}
+    return out
+
+
+def terbit(cache=None, keluar=KELUAR):
+    hari = str(dt.date.today())
+    # berkas sendiri untuk seluruh titik kab: snapshot harian <hari>.json hanya memuat kab "layak" (arsip prospektif PRAREG-DEBIT,
+    # tidak disentuh), jadi terbit dari berkas itu memberi 1 kab di runner (27 Nov 2026)
+    p = os.path.join(cache or CACHE, "ensemble", f"{hari}_semua.json")
+    if not os.path.exists(p):
+        snapshot(cache, semua=True, nama=f"{hari}_semua.json")
+    snap = json.load(open(p))
+    # Q2 per titik kab: belum ada di repo (ambang sungai.py ada di titik sungai lain, bukan titik kab) -> null, tidak dikarang
+    kab = ringkas_kab(snap["kab"], hari)
+    doc = {"versi": 1, "dibuat": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+           "sumber": "Copernicus GloFAS lewat Open-Meteo Flood API", "hipotesis": True, "kab": kab}
+    with open(keluar + ".tmp", "w") as f:
+        json.dump(doc, f, separators=(",", ":"), ensure_ascii=False)
+    os.replace(keluar + ".tmp", keluar)
+    return doc
+
+
+def cek():
+    kab = {"a": {"t": ["d0", "d1", "d2", "d3", "d4"], "anggota": [[10, 20, 30, 40, 99], [20, 30, 50, 60, 99]]},
+           "b": {"t": ["d0", "d1"], "anggota": [[None, None]]}, "c": {"t": ["x"], "anggota": [[1]]}}
+    r = ringkas_kab(kab, "d0", {"a": 25.0})
+    assert r == {"a": {"puncak_m3s": 50.0, "hari_puncak": 3, "q2_m3s": 25.0, "rasio_q2": 2.0}}, r   # hari 4 diabaikan; b kosong, c tanpa hari0 tak ditulis
+    assert ringkas_kab(kab, "d0")["a"]["rasio_q2"] is None and ringkas_kab(kab, "d0")["a"]["q2_m3s"] is None
+    print("debit_glofas.py cek: ok")
 
 
 # ------------------------------------------------------------------ swauji
@@ -309,6 +366,11 @@ if __name__ == "__main__":
     elif c == "ringkas":
         r = ringkas()
         print(json.dumps({**r, "layak": len(r["layak"]), "tanpa_sungai_besar": len(r["tanpa_sungai_besar"])}))
+    elif c == "cek":
+        cek()
+    elif c == "terbit":
+        d = terbit()
+        print("terbit", len(d["kab"]), "kab")
     elif c == "snapshot":
         print("snapshot", snapshot(), "kab")
     else:

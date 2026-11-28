@@ -291,7 +291,7 @@
 .bd-judul{margin:8px 0 16px;font:800 var(--fs-8)/1.2 var(--display);color:var(--ink)}
 /* mode tanam: peta mengisi wadah kerangka (.db-peta 100dvh, sesi DIBI) */
 .bd-tanam{block-size:100%;gap:0}
-.bd-tanam .bd-peta{block-size:100%;height:100%;min-block-size:max(560px,calc(100dvh - 64px));border-radius:0;box-shadow:none}
+.bd-tanam .bd-peta{block-size:100%;height:100%;min-block-size:max(560px,calc(100dvh - 202px));border-radius:0;box-shadow:none}
 @media (max-width:1100px){.bd-tanam .bd-peta{block-size:auto;height:auto;min-block-size:0}.bd-peta>*{flex:none}}   /* QA 25 Nov 2026: kanvas peta di HP tidak lagi tergencet jadi 125px oleh legenda dan kartu di bawahnya */
 
 /* legenda: skala di atas, pengatur ukuran dan lapisan di bawah */

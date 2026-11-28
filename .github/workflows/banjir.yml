@@ -103,7 +103,7 @@ jobs:
           done; true
 
       - name: Uji aturan
-        run: for s in hujan ansambel_hujan uji_aifs sungai bahaya kejadian status uji_balik rob posko peringatan pasut riwayat terdampak seri_status kejadian_aktif prospektif dampak dampak_kab laporan_banjir peluang_banjir pasang_astro rob_presiden wilayah_hari jaga_banjir hulu unit_respons sungai_pos floodhub floodhub_nilai prediksi_kab2 arsip_debit siaga_persentil arsip_bmkg_desa arsip_petabencana subsiden proyeksi_tanah; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
+        run: for s in hujan ansambel_hujan uji_aifs sungai bahaya kejadian status uji_balik rob posko peringatan pasut riwayat terdampak seri_status kejadian_aktif prospektif dampak dampak_kab laporan_banjir peluang_banjir pasang_astro rob_presiden wilayah_hari jaga_banjir hulu unit_respons sungai_pos floodhub floodhub_nilai prediksi_kab2 arsip_debit siaga_persentil arsip_bmkg_desa arsip_petabencana subsiden proyeksi_tanah elevasi_tanah; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
 
       # 13 Okt 2026: Open-Meteo mengirim JSON rusak 5x berturut-turut, job gagal, data banjir tidak terbit sehari.
       # Satu ulangan setelah 10 menit sebelum menyerah. Tetap gagal: run tidak jatuh, hujan.json lama bertahan,
@@ -157,6 +157,21 @@ jobs:
             p=${s%% *}; a=${s#"$p"}; p=scripts/$p.py
             python3 $p uji && { python3 $p $a || echo "::warning title=panen $p::$p gagal; berkas lamanya dibiarkan"; } || echo "::warning title=panen $p::uji $p gagal"
           done
+
+      # Pasut dari Mac pemilik (scripts/banjir/pasut_lokal.sh, 26 Nov 2026): BMKG Maritim memblokir runner GitHub, jadi versi repo bisa lebih baru dari cache.
+      - name: Pasut dari repo bila lebih baru dari cache
+        run: |
+          python3 - <<'PY'
+          import json, subprocess, datetime as d
+          awal = d.datetime(1970, 1, 1, tzinfo=d.timezone.utc)
+          t = lambda s: d.datetime.fromisoformat(json.loads(s).get("dibuat", "1970-01-01T00:00:00+00:00").replace("Z", "+00:00"))
+          for f in ["public/banjir/data/pasut.json", "public/banjir/data/pasut_30h.json"]:
+              try: r = t(subprocess.run(["git", "show", "HEAD:" + f], capture_output=True, text=True, check=True).stdout)
+              except Exception: continue
+              try: c = t(open(f).read())
+              except Exception: c = awal
+              if r > c: subprocess.run(["git", "checkout", "HEAD", "--", f], check=True); print(f, "dari repo", r, ">", c)
+          PY
 
       # prediksi pasang surut BMKG Maritim per stasiun (tanpa kuota); rob.py menyusul. public/banjir/data ikut di-add di langkah terbit
       - name: Prediksi pasang surut BMKG (boleh gagal)
@@ -343,6 +358,27 @@ jobs:
           python3 scripts/banjir/arsip_pos.py uji
           python3 scripts/banjir/arsip_pos.py susul --maks 7 || echo "::warning title=arsip pos::susul gagal, dicoba lagi besok"
 
+      # ST-11 (data/kajian-bnpb/satelit): genangan GFM harian per kab aktif (Dalops banjir belum surut + KJ banjir tanggap), staf saja (Q10):
+      # hanya ke R2 data/satelit/, tidak ke public/. Katalog dan cache kab-hari (data/raw/banjir/gfm_nasional) ikut cache banjir di bawah.
+      - name: Genangan GFM harian per kab (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 35
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PIPA_TOKEN: ${{ secrets.PIPA_TOKEN }}
+          GFM_DETIK: "1500"
+        run: |
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "::warning title=genangan harian::tanpa token Cloudflare, dilewati"; exit 0; }
+          python3 -I scripts/banjir/genangan_harian.py uji
+          mkdir -p data/raw/dalops
+          npx --yes wrangler@4.42.0 r2 object get poskokarhutla-foto/dalops/banjir.json --file data/raw/dalops/banjir.json --remote \
+            || echo "::warning title=genangan harian::dalops/banjir.json tidak terbaca, hanya KJ Buku Besar"
+          python3 -I scripts/banjir/genangan_nasional.py katalog --dari "$(date -u -d '75 days ago' +%Y-%m)"
+          python3 -I scripts/banjir/genangan_harian.py jalan --keluar "$RUNNER_TEMP/genangan_harian.json"
+          npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/data/satelit/genangan_harian.json \
+            --file "$RUNNER_TEMP/genangan_harian.json" --content-type application/json --remote
+
       - name: Simpan data banjir untuk jalan berikutnya
         if: always()
         uses: actions/cache/save@v4
@@ -398,6 +434,12 @@ jobs:
           n=$(git ls-files data/banjir/arsip_glofas_ens | wc -l); m=$(ls data/banjir/arsip_glofas_ens | wc -l)
           [ "$m" -ge "$n" ] || echo "::error title=glofas ens::arsip menyusut ($m < $n berkas)"
 
+      # PH-06: debit_kab.json (hipotesis) dari snapshot hari ini; dibaca analisis_wilayah.py dan tab Iklim /potensi. Dicommit lewat JP di Terbitkan.
+      - name: Terbit debit GloFAS per kab (PH-04, boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 10
+        run: python3 -I scripts/banjir/debit_glofas.py terbit && python3 -I scripts/banjir/debit_glofas.py cek || echo "::warning title=debit_kab::terbit gagal; berkas lama dipakai"
+
       # Sumber tanpa arsip publik: hari yang tidak diarsip hilang. BMKG per desa wakil kab (513 desa, <=50/menit, ~11 mnt);
       # PetaBencana kemarin WIB + ulangi hari gagal <=7 hari. Append-only gzip, TIDAK tayang, di-commit oleh langkah Terbitkan (JP).
       - name: Arsip prakiraan BMKG per desa (boleh gagal)
@@ -422,7 +464,7 @@ jobs:
           # vonis prospektif + arsip hari terjangkar di git tiap run, juga di jalur token (jalur ini deploy lalu keluar); sebelum checkout FETCH_HEAD yang men-stage
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          JP="public/banjir/data/prospektif.json public/banjir/data/prospektif_skor.json public/banjir/data/siaga_persentil_log.json public/banjir/data/siaga_persentil_skor.json public/banjir/data/hari public/banjir/data/wilayah_hari.json data/banjir/arsip_kab2 data/banjir/arsip_debit data/banjir/arsip_bmkg_desa data/banjir/arsip_petabencana data/banjir/arsip_glofas_ens public/banjir/data/faktor_orografi.json public/banjir/data/faktor_surut_arsip.jsonl data/raw/banjir/orografi"
+          JP="public/banjir/data/debit_kab.json public/banjir/data/prospektif.json public/banjir/data/prospektif_skor.json public/banjir/data/siaga_persentil_log.json public/banjir/data/siaga_persentil_skor.json public/banjir/data/hari public/banjir/data/wilayah_hari.json data/banjir/arsip_kab2 data/banjir/arsip_debit data/banjir/arsip_bmkg_desa data/banjir/arsip_petabencana data/banjir/arsip_glofas_ens public/banjir/data/faktor_orografi.json public/banjir/data/faktor_surut_arsip.jsonl data/raw/banjir/orografi"
           for f in $JP; do [ -e "$f" ] && git add -f "$f"; done   # satu per satu: git add dengan satu path hilang tidak men-stage apa pun
           git diff --cached --quiet -- $JP 2>/dev/null || { git commit -q -m "data: prospektif dan arsip hari banjir $(TZ=Asia/Jakarta date +%F)" -- $(for f in $JP; do [ -e "$f" ] && echo "$f"; done) && { git pull -q --rebase --autostash && git push -q || { sleep 20; git pull -q --rebase --autostash && git push -q; }; } || echo "::error::commit prospektif/arsip hari gagal (arsip KAB2 hari ini hilang bila tidak terdorong)"; }
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data' ':!data/raw'

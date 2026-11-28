@@ -1,0 +1,9 @@
+{
+ "sidik": "6d4711b1714286f5",
+ "berkas": {
+  "scripts/prediksi/status_prakiraan_kriteria.json": "e1cdfbc0bc222000d3b92a89032643ff9b1d04e3234aa277b8afa80ee345079f"
+ },
+ "masukan": [],
+ "dibuat": "2026-11-26T02:08:46Z",
+ "catatan": "Amandemen 2, 26 Nov 2026 (DP-23, K15; sebelum ada uji balik KEK/GEL): blok 'tambahan' di berkas kriteria untuk kekeringan (KEK, dari kekeringan_wilayah.json) dan gelombang (GEL, dari prakiraan GEL). Tabel banjir/longsor/cuaca tidak berubah. Sidik sebelumnya di status_prakiraan.sidik.v2."
+}

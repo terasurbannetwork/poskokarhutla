@@ -18,7 +18,7 @@ TAG = re.compile(r'(<(?:script|link)\b[^>]*?\b(?:src|href)=")([^"#?:]+\.(?:js|cs
 LEWATI = {"data", "geo", "lambang", "img", "citra"}
 IMPOR = re.compile(r"""((?:\bfrom|\bimport)\s*\(?\s*["'])(\.{1,2}/[^"'?#]+\.js|/(?!/)[^"'?#]+\.js)(["'])""")
 IMPOR_V = re.compile(r"""((?:\bfrom|\bimport)\s*\(?\s*["'])(\.{1,2}/[^"'?#]+\.js|/(?!/)[^"'?#]+\.js)(?:\?v=[0-9a-f]{10})?(["'])""")
-LIPAT = ("/petugas/", "/pipa/", "/siklus/", "/admin/", "/inti/", "/bnpb/")   # /siklus/* juga run_worker_first: Worker menyusun ulang header, aturan ini hanya cermin statis   # 2 Nov 2026: tanpa /pipa/ 81 aturan, dengan 64 (batas dini gerbang 80)   # 11 Nov 2026: Meja Pantau membawa ke 81; /admin/ (staf, lalu lintas kecil) dilipat   # 14 Nov 2026: 81 lagi; /inti/ (5 aturan pengecualian) dilipat   # 23 Nov 2026: 82; /bnpb/ (staf) dilipat, 77
+LIPAT = ("/banjir/", "/lapor/", "/semua/", "/petugas/", "/pipa/", "/siklus/", "/admin/", "/inti/", "/bnpb/")   # /siklus/* juga run_worker_first: Worker menyusun ulang header, aturan ini hanya cermin statis   # 2 Nov 2026: tanpa /pipa/ 81 aturan, dengan 64 (batas dini gerbang 80)   # 11 Nov 2026: Meja Pantau membawa ke 81; /admin/ (staf, lalu lintas kecil) dilipat   # 14 Nov 2026: 81 lagi; /inti/ (5 aturan pengecualian) dilipat   # 23 Nov 2026: 82; /bnpb/ (staf) dilipat, 77   # 26 Nov 2026: 89 aturan; /banjir/, /lapor/, /semua/ dilipat (revalidasi ETag, bukan immutable), 78
 TANDA = "# --- dibuat scripts/terbit/versi.py saat terbit (jangan disunting; tidak di-commit) ---"
 
 
@@ -117,15 +117,16 @@ def jalan(akar=AKAR, maks=100):
             impor.add(web_(sasaran(akar, p, m.group(2))))
         dimuat[p] = IMPOR_V.sub('"x"', t)   # impor yang sudah diberi ?v juga bukan muatan tanpa versi
     abadi = []
+    dimuat_web = [(web_(p), t) for p, t in dimuat.items()]
     for web in sorted(versi):
         nama = web.rsplit("/", 1)[1]
         # di dalam string (muatan), bukan sebutan di komentar. Jalur mutlak ("/inti/unduh.js") hanya mengenai berkas itu sendiri,
         # bukan semua berkas senama (23 Nov 2026: "/inti/unduh.js" membuat enam <bencana>/unduh.js jadi pengecualian, _headers 84)
         pola = re.compile(r"[\"'`]([^\"'`\s]*/)?" + re.escape(nama) + r"[\"'`?#]")
         mutlak = lambda a: a.startswith("/") and a != "/" and "$" not in a and "{" not in a   # "/" saja atau templat = sambungan, tetap dianggap dinamis
-        kena = lambda t: any(not mutlak(m.group(1) or "") or m.group(1) + nama == web for m in pola.finditer(t))
-        dinamis = web in impor or any(kena(t) for p, t in dimuat.items() if "/" + os.path.relpath(p, akar).replace(os.sep, "/") != web) \
-            or any(kena(t) for t in sisa)
+        # saring substring dulu: regex ke tiap teks untuk ~1.000 berkas membuat versi.py 155 dtk CPU (26 Nov 2026)
+        kena = lambda t: nama in t and any(not mutlak(m.group(1) or "") or m.group(1) + nama == web for m in pola.finditer(t))
+        dinamis = web in impor or any(kena(t) for w, t in dimuat_web if w != web) or any(kena(t) for t in sisa)
         if not dinamis:
             abadi.append(web)
     hp = os.path.join(akar, "_headers")

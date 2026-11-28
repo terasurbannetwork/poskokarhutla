@@ -1,7 +1,10 @@
 /* Fungsi murni status darurat menurut Pedoman Penetapan Status Keadaan Darurat Bencana (BNPB 2016): dipakai /semua/darurat.js dan profil_wilayah.js.
    Tanpa DOM, tanpa fetch: uji di tests/agen/status-pedoman.test.mjs. */
+import {nilai} from "./jam_aturan.js";
+/* masa status dari Jam Aturan (masa_status_*, berlabel asumsi: Pedoman 2016 bukan dokumen JDIH) */
+const MASA_KAB = nilai("masa_status_kab"), MASA_PROV = nilai("masa_status_prov");
 export const SUMBER_PEDOMAN = "Pedoman Penetapan Status Keadaan Darurat Bencana BNPB 2016";
-export const TEKS_LEWAT = "Lewat masa pedoman (maks 14 hari kab, 1 bulan prov), perlu SK perpanjangan";
+export const TEKS_LEWAT = `Lewat masa pedoman (maks ${MASA_KAB} hari kab, ${MASA_PROV} bulan prov; asumsi), perlu SK perpanjangan`;
 export const TEKS_MULAI_PERKIRAAN = "mulai diperkirakan dari tanggal penetapan";
 export const TEKS_LEWAT_PERKIRAAN = "Perkiraan lewat masa pedoman (tanggal mulai SK tidak tertulis, dihitung dari tanggal penetapan)";
 /* lewat batas dari mulai yang diperkirakan = perkiraan, bukan fakta */
@@ -69,5 +72,5 @@ export function kalimatTanpaSK(nama, tahun, h, tg) {
 export function kalimatRingkas(r, fmt) {
   if (!r || r.kab_total == null) return null;
   const jeda = r.jeda_median_hari == null ? "" : `, jeda median ${fmt(r.jeda_median_hari)} hari${r.jeda_n != null ? ` dari ${fmt(r.jeda_n)} SK yang punya pasangan kejadian DIBI` : " dari kejadian ke SK"}`;
-  return `${fmt(r.kab_lewat_batas)} dari ${fmt(r.kab_total)} SK kabupaten/kota lewat batas 14 hari, ${fmt(r.prov_lewat_batas)} dari ${fmt(r.prov_total)} SK provinsi lewat batas 1 bulan${jeda}`;
+  return `${fmt(r.kab_lewat_batas)} dari ${fmt(r.kab_total)} SK kabupaten/kota lewat batas ${MASA_KAB} hari, ${fmt(r.prov_lewat_batas)} dari ${fmt(r.prov_total)} SK provinsi lewat batas ${MASA_PROV} bulan${jeda}`;
 }

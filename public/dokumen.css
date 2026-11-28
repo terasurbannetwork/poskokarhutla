@@ -1,8 +1,8 @@
 /* dokumen.css: generator dokumen /dokumen (dokumen.js). Token warna dari inti/tema.css. */
-main.dk{max-width:1240px;margin:0 auto;padding:calc(var(--top) + 18px) 16px 48px;display:grid;grid-template-columns:340px minmax(0,1fr);gap:20px;align-items:start}
-.dk h1{font:800 24px/1.2 var(--display);margin:0 0 4px;grid-column:1/-1}
+main.dk{max-width:1240px;margin:0 auto;padding:18px 16px 48px;display:grid;grid-template-columns:340px minmax(0,1fr);gap:20px;align-items:start}
+.dk>.bn-judul{grid-column:1/-1;margin:0}
 .dk .dk-intro{grid-column:1/-1;margin:0 0 4px;color:var(--ink2);max-width:72ch}
-.dk-kiri{position:sticky;top:calc(var(--top) + 12px);display:flex;flex-direction:column;gap:14px;max-height:calc(100dvh - var(--top) - 24px);overflow:auto;padding-bottom:4px}
+.dk-kiri{position:sticky;top:12px;display:flex;flex-direction:column;gap:14px;max-height:calc(100dvh - 24px);overflow:auto;padding-bottom:4px}
 .dk-grup{display:flex;flex-direction:column;gap:8px}
 .dk-item{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:var(--r-sm);background:var(--card);border:1px solid var(--line);transition:border-color .15s,box-shadow .15s}
 .dk-item:hover{border-color:var(--accent)}
@@ -10,7 +10,7 @@ main.dk{max-width:1240px;margin:0 auto;padding:calc(var(--top) + 18px) 16px 48px
 .dk-item[aria-pressed="true"]{border-color:var(--brand2);box-shadow:var(--shadow);background:color-mix(in oklch,var(--card),var(--brand2) 6%)}
 .dk-item b{font-size:14px;line-height:1.3}
 .dk-item small{color:var(--ink2);font-size:12.5px;line-height:1.4}
-.pill{align-self:flex-start;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:99px;background:var(--surface);color:var(--ink2)}
+.pill{align-self:flex-start;font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:99px;background:var(--surface);color:var(--ink2)}
 .pill-karhutla{background:oklch(93% .05 55);color:oklch(45% .13 45)}
 .pill-banjir,.pill-cuaca{background:oklch(93% .04 240);color:oklch(42% .11 245)}
 .pill-gempa,.pill-gunungapi{background:oklch(93% .03 30);color:oklch(42% .09 30)}

@@ -23,7 +23,7 @@ export function hitungStrip(d) {
 export async function buka(isi, sk) {
   sk.periode = () => null;
   const hasil = h("div", {}), ctl = h("div", {class: "sk-ctl"}), S = {fase: null, d: null, kej: []};
-  const kart = kartu({ey: [ik("semua", 12), "Siklus"], judul: ["Siklus bencana ", hl("menunggu"), " data"], isi: [ctl, hasil], id: "pintu"}), judul = kart.querySelector("h3"), ey = kart.querySelector(".ex-ey");
+  const kart = kartu({ey: [ik("semua", 12), "Siklus"], judul: ["Siklus bencana ", hl("menunggu"), " data"], isi: [ctl, hasil], id: "pintu"}), judul = kart.querySelector(".sk-ring"), ey = kart.querySelector(".ex-ey");
   const kejKart = h("div", {}), ingat = h("div", {});
 
   function gambar() {

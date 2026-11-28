@@ -65,7 +65,7 @@ test('layar kaji di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome tida
       const rekam = [], s = await sajikan(api('ko', rekam));
       try {
         const T = await pb.tab(); await T.ukuran(1440, 900); await T.buka(`${s.url}/siklus/kaji/${SID.g}`, {tunggu: '#kj-model .sk-ber'});
-        const d = await T.eval(`(() => ({jd: document.querySelector('#kj-kepala h3').innerText, kep: document.querySelector('#kj-kepala').innerText, rn: document.querySelector('#kj-rentang').innerText, md: document.querySelector('#kj-model').innerText, mj: document.querySelector('#kj-meja').innerText,
+        const d = await T.eval(`(() => ({jd: document.querySelector('#kj-kepala .sk-ring').innerText, kep: document.querySelector('#kj-kepala').innerText, rn: document.querySelector('#kj-rentang').innerText, md: document.querySelector('#kj-model').innerText, mj: document.querySelector('#kj-meja').innerText,
           bar: document.querySelectorAll('#kj-model .sk-rentang').length, pil: [...document.querySelectorAll('#kj-kepala .sk-pil')].map((x) => x.dataset.y), ft: !!document.querySelector('.ex-ft'), ex: document.querySelectorAll('.ex.ex-std').length, semua: document.body.innerText,
           lebar: [...document.querySelectorAll('#kj-rentang .sk-rentang > i > u')].map((u) => u.style.width), aksi: [...document.querySelectorAll('#kj-kepala [data-aksi]')].map((x) => x.textContent.trim())}))()`);
         assert.match(d.jd, /22 sampai 354/); assert.match(d.jd, /rumah rusak menunggu/); assert.ok(d.pil.includes('estimasi-model'), 'pil estimasi model di kepala');
@@ -89,7 +89,7 @@ test('layar kaji di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome tida
       const s = await sajikan(api('ko'));
       try {
         const T = await pb.tab(); await T.ukuran(1440, 900); await T.buka(`${s.url}/siklus/kaji/${SID.w}`, {tunggu: '#kj-rentang'});
-        const d = await T.eval(`({jd: document.querySelector('#kj-kepala h3').innerText, kep: document.querySelector('#kj-kepala').innerText, rn: document.querySelector('#kj-rentang').innerText, semua: document.body.innerText})`);
+        const d = await T.eval(`({jd: document.querySelector('#kj-kepala .sk-ring').innerText, kep: document.querySelector('#kj-kepala').innerText, rn: document.querySelector('#kj-rentang').innerText, semua: document.body.innerText})`);
         assert.match(d.jd, /Menunggu grid USGS/); assert.match(d.kep, /jam ambil terakhir/); assert.match(d.rn, /menunggu/i); assert.match(d.rn, /bukan nol/); assert.match(d.rn, /8 sampai 90/); assert.match(d.rn, /bukan angka resmi/i);
         assert.doesNotMatch(d.jd + d.rn, /\b0 sampai 0\b|\b0 jiwa\b/); assert.doesNotMatch(d.semua, SALAH);
         assert.deepEqual(galatNyata(T), []); await T.tutup();
@@ -99,7 +99,7 @@ test('layar kaji di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome tida
       const s = await sajikan(api('ko'));
       try {
         const T = await pb.tab(); await T.ukuran(1440, 900); await T.buka(`${s.url}/siklus/kaji/${SID.b}`, {tunggu: '#kj-model .sk-ber'});
-        const d = await T.eval(`({jd: document.querySelector('#kj-kepala h3').innerText, md: document.querySelector('#kj-model').innerText, semua: document.body.innerText})`);
+        const d = await T.eval(`({jd: document.querySelector('#kj-kepala .sk-ring').innerText, md: document.querySelector('#kj-model').innerText, semua: document.body.innerText})`);
         assert.match(d.jd, /600 sampai 1\.400/); assert.match(d.md, /kedalaman belum tersedia/); assert.match(d.md, /WorldPop[\s\S]*667/i); assert.match(d.md, /GHSL[\s\S]*tidak ada/i); assert.match(d.md, /1\.400 jiwa/); assert.doesNotMatch(d.semua, SALAH);
         await T.tutup();
       } finally { await s.tutup(); }
@@ -109,7 +109,7 @@ test('layar kaji di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome tida
       try {
         for (const [w, h] of [[1440, 900], [390, 844]]) {
           const T = await pb.tab(); await T.ukuran(w, h); await T.buka(`${s.url}/siklus/kaji`, {tunggu: '#daftar table'});
-          const d = await T.eval(`({jd: document.querySelector('#daftar h3').innerText, n: document.querySelectorAll('#daftar tbody tr').length, t: document.querySelector('#daftar').innerText, ft: !!document.querySelector('.ex-ft'), href: [...document.querySelectorAll('#daftar tbody a')].map((a) => a.getAttribute('href'))})`);
+          const d = await T.eval(`({jd: document.querySelector('#daftar .sk-ring').innerText, n: document.querySelectorAll('#daftar tbody tr').length, t: document.querySelector('#daftar').innerText, ft: !!document.querySelector('.ex-ft'), href: [...document.querySelectorAll('#daftar tbody a')].map((a) => a.getAttribute('href'))})`);
           assert.equal(d.n, 3); assert.match(d.jd, /2 kaji punya perkiraan, 1 menunggu data/); assert.match(d.t, /22 sampai 354/); assert.match(d.t, /600 sampai 1\.400/); assert.match(d.t, /menunggu data/i); assert.doesNotMatch(d.t, SALAH); assert.doesNotMatch(d.t, /\b0 sampai 0\b/);
           assert.ok(!d.ft && d.href.includes(`/siklus/kaji/${SID.g}`));
           const r = await T.eval(`(async () => { const t0 = performance.now(); const b = [...document.querySelectorAll('#daftar .seg.penuh button')].find((x) => /Menunggu data/.test(x.textContent)); b.click(); const p = b.getAttribute('aria-pressed'); await new Promise((r) => requestAnimationFrame(r)); return {ms: performance.now() - t0, p}; })()`);

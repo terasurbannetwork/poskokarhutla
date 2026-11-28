@@ -1,0 +1,21 @@
+{
+ "_tentang": "Kolom Formulir 08 Perka 15/2011 hlm. 104 (PDF hlm. 107), formulir penilaian kerusakan dan kerugian yang disebut lampiran 7 di hlm. 34; dibekukan sekali dari teks data/raw/hukum/teks/perka-nomor-15-tahun-2011.json (RU-054, RENCANA-UJI 2.5 invarian).",
+ "kolom": [
+  "No",
+  "Sektor/Sub Sektor",
+  "Komponen Kerusakan dan Kerugian",
+  "Lokasi",
+  "Data Kerusakan RB",
+  "Data Kerusakan RS",
+  "Data Kerusakan RR",
+  "Harga Satuan (Rp.) RB",
+  "Harga Satuan (Rp.) RS",
+  "Harga Satuan (Rp.) RR",
+  "Nilai Kerusakan (Damage) RB",
+  "Nilai Kerusakan (Damage) RS",
+  "Nilai Kerusakan (Damage) RR",
+  "Perkiraan Kerugian (Losses)",
+  "Kerusakan + Kerugian",
+  "Kebutuhan"
+ ]
+}

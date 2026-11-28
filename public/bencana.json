@@ -246,7 +246,8 @@
           "sinyal": false,
           "peta_kab": false,
           "cari": [],
-          "ukuran_provinsi": []
+          "ukuran_provinsi": [],
+          "status_dampak": ["kht"]
         }
       }
     },
@@ -477,7 +478,8 @@
           "sinyal": false,
           "peta_kab": false,
           "cari": [],
-          "ukuran_provinsi": []
+          "ukuran_provinsi": [],
+          "status_dampak": ["bnj", "lsr"]
         }
       }
     },
@@ -678,7 +680,8 @@
             "posko",
             "bpbd"
           ],
-          "ukuran_provinsi": []
+          "ukuran_provinsi": [],
+          "status_dampak": ["gel"]
         }
       }
     },
@@ -876,7 +879,8 @@
             "posko",
             "bpbd"
           ],
-          "ukuran_provinsi": []
+          "ukuran_provinsi": [],
+          "status_dampak": ["cex"]
         }
       }
     },
@@ -1081,7 +1085,8 @@
             "gempa",
             "dirasakan",
             "terbesar"
-          ]
+          ],
+          "status_dampak": []
         }
       }
     },
@@ -1259,7 +1264,8 @@
           "ukuran_provinsi": [
             "pm25",
             "jiwa"
-          ]
+          ],
+          "status_dampak": []
         }
       }
     },
@@ -1461,7 +1467,8 @@
             "radius",
             "erupsi",
             "tinggi"
-          ]
+          ],
+          "status_dampak": []
         }
       }
     },
@@ -1648,7 +1655,8 @@
             "status",
             "spi",
             "jiwa"
-          ]
+          ],
+          "status_dampak": ["kek"]
         }
       }
     },
@@ -1809,7 +1817,8 @@
           "sinyal": false,
           "peta_kab": false,
           "cari": [],
-          "ukuran_provinsi": []
+          "ukuran_provinsi": [],
+          "status_dampak": []
         }
       }
     }

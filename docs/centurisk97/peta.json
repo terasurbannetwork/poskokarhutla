@@ -1448,9 +1448,21 @@
       "isi": "panduan/07-prediksi.md: Prediksi kekeringan dan bulan rawan; Model percobaan"
      },
      {
+      "id": "status-dampak",
+      "judul": "Status prakiraan dan dampak peringatan",
+      "berkas": "panduan/prediksi/09-status-dampak.md",
+      "isi": "DP-21: Normal sampai Awas dan abu; pil hipotesis; di mana tampil; penduduk di area peringatan BMKG"
+     },
+     {
+      "id": "potensi-hidromet",
+      "judul": "Potensi bencana hidrometeorologi",
+      "berkas": "panduan/prediksi/10-potensi-hidromet.md",
+      "isi": "PH-14: cara membuka di Alun-alun mode Peringatan; tab Status, Dampak, Iklim, Analisis, Lapisan, Ringkasan, Sumber, Rekomendasi; chip fakta; kelas bahaya desa; banjir bandang; ONI dan IOD; debit; hari tanpa hujan"
+     },
+     {
       "id": "batasan",
       "judul": "Batasan dan tanya jawab",
-      "berkas": "panduan/prediksi/09-batasan.md",
+      "berkas": "panduan/prediksi/11-batasan.md",
       "isi": "panduan/07-prediksi.md: Batasan; Pertanyaan umum; Mengapa banyak kolom berlabel \"belum teruji\"?; Apa bedanya tab Besok dan tab Tangga?; Kolom saya kosong atau bertanda \"–\". Apakah itu berarti wilayah saya terbebas dari ancaman itu?; Mengapa angka di tombol bencana lebih kecil dari daftar di bawahnya?; Bisakah prakiraan yang sudah tampil diubah?; Apa arti \"perkiraan, belum diuji balik\" pada angka pengungsi?; Apakah laporan warga ikut menilai prakiraan?; Peluang 60% itu artinya apa?"
      }
     ],
@@ -1522,9 +1534,21 @@
       "isi": "07-prediksi.md: Pertanyaan pemilik yang masih terbuka"
      },
      {
+      "id": "status-dampak",
+      "judul": "Metode status prakiraan dan dampak",
+      "berkas": "pengembang/prediksi/12-status-dampak.md",
+      "isi": "DP-21: tabel status, sumber, batas ketelitian, status uji balik"
+     },
+     {
+      "id": "potensi-hidromet",
+      "judul": "Potensi bencana: data dan rute",
+      "berkas": "pengembang/prediksi/13-potensi-hidromet.md",
+      "isi": "PH-14: kelas desa BNPB, BDG, analisis wilayah, debit GloFAS, ONI dan IOD, rute potensi, katalog rekomendasi, jadwal"
+     },
+     {
       "id": "batasan",
       "judul": "Batasan dan perbedaan dokumen",
-      "berkas": "pengembang/prediksi/12-batasan.md",
+      "berkas": "pengembang/prediksi/14-batasan.md",
       "isi": "07-prediksi.md: Batasan metode; Selisih antara dokumen dan kode (kode menang); Hal yang sengaja dibatasi"
      }
     ]
@@ -1590,9 +1614,15 @@
       "isi": "panduan/08-lapor.md: Peringatan dini kecamatan"
      },
      {
+      "id": "orang-hilang",
+      "judul": "Orang hilang karena bencana",
+      "berkas": "panduan/lapor/08-orang-hilang.md",
+      "isi": "data/kajian-bnpb/orang-hilang-publik: Status saat ini; Tiga jalur; Penyaring bencana; Izin menampilkan profil; Pemeriksaan petugas; Setelah tampil; Masa tayang dan mencabut; Menemukan seseorang; Penyimpanan data"
+     },
+     {
       "id": "batasan",
       "judul": "Batasan dan tanya jawab",
-      "berkas": "panduan/lapor/08-batasan.md",
+      "berkas": "panduan/lapor/09-batasan.md",
       "isi": "panduan/08-lapor.md: Batasan; Pertanyaan umum; Apakah laporan saya langsung menjadi data resmi BNPB?; Perlu akun untuk melapor?; Mengapa foto saya ditolak?; Mengapa isian saya tertulis \"belum didata\" dan bukan 0?; Bagaimana bila tidak ada sinyal?; Apakah notifikasi peringatan dini sama dengan peringatan resmi?; Mengapa peringatan untuk kecamatan saya tingkatnya mengikuti kabupaten?; Siapa yang bisa melihat nomor WhatsApp dan identitas saya?"
      }
     ],
@@ -1658,9 +1688,21 @@
       "isi": "08-lapor.md: Pertanyaan pemilik yang belum diputuskan (bawaan sementara)"
      },
      {
+      "id": "orang-hilang",
+      "judul": "Orang hilang publik: rute, tabel, alur",
+      "berkas": "pengembang/lapor/11-orang-hilang.md",
+      "isi": "data/kajian-bnpb/orang-hilang-publik: Bendera; Berkas; Tabel D1; Rute; Alur status; Konstanta hipotesis; Penyaring bencana; Jalur menemukan; Pembersihan cron; Uji"
+     },
+     {
+      "id": "orang-hilang-alur",
+      "judul": "Orang hilang: alur dan pembersihan",
+      "berkas": "pengembang/lapor/12-orang-hilang-alur.md",
+      "isi": "data/kajian-bnpb/orang-hilang-publik: Bendera; Berkas; Tabel D1; Rute"
+     },
+     {
       "id": "batasan",
       "judul": "Batasan dan perbedaan dokumen",
-      "berkas": "pengembang/lapor/11-batasan.md",
+      "berkas": "pengembang/lapor/13-batasan.md",
       "isi": "08-lapor.md: Perbedaan kode dan dokumen paket (kode menang); Batasan"
      }
     ]

@@ -68,7 +68,7 @@ test('layar renkon dan gladi di Chrome nyata (1440 dan 390)', {skip: !chrome && 
       try {
         for (const [w, hh] of [[1440, 900], [390, 844]]) {
           const T = await pb.tab(); await T.ukuran(w, hh); await T.buka(`${s.url}/siklus/renkon`, {tunggu: '#daftar tbody tr'});
-          const d = await T.eval(`({jd: document.querySelector('#daftar h3').innerText, n: document.querySelectorAll('#daftar tbody tr').length, t: document.querySelector('#daftar').innerText, ked: document.querySelectorAll('#daftar .sk-fase[data-f=dibatalkan]').length, semua: document.body.innerText, ft: !!document.querySelector('.ex-ft'),
+          const d = await T.eval(`({jd: document.querySelector('#daftar .sk-ring').innerText, n: document.querySelectorAll('#daftar tbody tr').length, t: document.querySelector('#daftar').innerText, ked: document.querySelectorAll('#daftar .sk-fase[data-f=dibatalkan]').length, semua: document.body.innerText, ft: !!document.querySelector('.ex-ft'),
             aksi: [...document.querySelectorAll('#daftar [data-aksi]')].map((x) => x.textContent.trim())})`);
           assert.equal(d.n, 4); assert.match(d.jd, /2 berlaku, 1 kedaluwarsa, 1 berakhir dalam 90 hari/); assert.equal(d.ked, 1); assert.match(d.t, /lewat 3 hari/); assert.match(d.t, /menunggu/i); assert.doesNotMatch(d.semua, SALAH); assert.ok(!d.ft); assert.ok(d.aksi.includes('Renkon baru'));
           const r = await T.eval(`(async () => { const t0 = performance.now(); const b = [...document.querySelectorAll('#daftar .seg.penuh button')].find((x) => /Kedaluwarsa/.test(x.textContent)); b.click(); const p = b.getAttribute('aria-pressed');
@@ -84,7 +84,7 @@ test('layar renkon dan gladi di Chrome nyata (1440 dan 390)', {skip: !chrome && 
         for (const [w, hh] of [[1440, 900], [390, 844]]) {
           rekam.post.length = 0;
           const T = await pb.tab(); await T.ukuran(w, hh); await T.buka(`${s.url}/siklus/renkon/${R1}`, {tunggu: '#renkon .seg.penuh'});
-          const d = await T.eval(`({jd: document.querySelector('#renkon h3').innerText, t: document.querySelector('#renkon').innerText, semua: document.body.innerText, aksi: [...document.querySelectorAll('#renkon [data-aksi]')].map((x) => x.textContent.trim()), pil: document.querySelectorAll('#renkon .sk-pil').length})`);
+          const d = await T.eval(`({jd: document.querySelector('#renkon .sk-ring').innerText, t: document.querySelector('#renkon').innerText, semua: document.body.innerText, aksi: [...document.querySelectorAll('#renkon [data-aksi]')].map((x) => x.textContent.trim()), pil: document.querySelectorAll('#renkon .sk-pil').length})`);
           assert.match(d.jd, /1\.000 jiwa/); assert.match(d.jd, /skor kesiapan/); assert.match(d.t, /Kependudukan[\s\S]*belum diisi/); assert.match(d.t, /Kerangka respon menulis 1\.000 jiwa/); assert.match(d.t, /tidak menimpa isian tanpa persetujuan staf/);
           for (const a of ['Terima', 'Ubah', 'Tolak']) assert.ok(d.aksi.includes(a), a); assert.equal(rekam.post.length, 0, 'membuka layar tidak mengirim apa pun'); assert.doesNotMatch(d.semua, SALAH);
           const tolak = await T.eval(`(async () => { [...document.querySelectorAll('#renkon [data-aksi]')].find((x) => x.textContent.trim() === 'Tolak').click(); await new Promise((o) => setTimeout(o, 100)); return {t: document.querySelector('#renkon').innerText, aksi: [...document.querySelectorAll('#renkon [data-aksi]')].map((x) => x.textContent.trim())}; })()`);
@@ -106,7 +106,7 @@ test('layar renkon dan gladi di Chrome nyata (1440 dan 390)', {skip: !chrome && 
       try {
         for (const [w, hh] of [[1440, 900], [390, 844]]) {
           const T = await pb.tab(); await T.ukuran(w, hh); await T.buka(`${s.url}/siklus/gladi`, {tunggu: '#daftar tbody tr'});
-          const d = await T.eval(`({jd: document.querySelector('#daftar h3').innerText, n: document.querySelectorAll('#daftar tbody tr').length, t: document.querySelector('#daftar').innerText, semua: document.body.innerText})`);
+          const d = await T.eval(`({jd: document.querySelector('#daftar .sk-ring').innerText, n: document.querySelectorAll('#daftar tbody tr').length, t: document.querySelector('#daftar').innerText, semua: document.body.innerText})`);
           assert.equal(d.n, 2); assert.match(d.jd, /2 gladi, 1 rekomendasi belum tertaut ke renkon/); assert.match(d.t, /bukan simulasi dan bukan prakiraan/); assert.match(d.t, /1 dari 2/); assert.match(d.t, /belum ada/); assert.doesNotMatch(d.semua, SALAH);
           const r = await T.eval(`(async () => { const t0 = performance.now(); const b = [...document.querySelectorAll('#daftar .seg.penuh button')].find((x) => /Lapang/.test(x.textContent)); b.click(); const p = b.getAttribute('aria-pressed');
             await new Promise((o) => requestAnimationFrame(() => requestAnimationFrame(o))); return {p, ms: performance.now() - t0, n: document.querySelectorAll('#daftar tbody tr').length}; })()`);
@@ -114,7 +114,7 @@ test('layar renkon dan gladi di Chrome nyata (1440 dan 390)', {skip: !chrome && 
           const l = await T.lebihLebar(); assert.ok(l.sw <= l.iw + 1, `gulir mendatar di ${w}`); assert.deepEqual(galatNyata(T), []); await T.tutup();
         }
         const T = await pb.tab(); await T.ukuran(1440, 900); await T.buka(`${s.url}/siklus/gladi/${G1}`, {tunggu: '#gladi .sk-garis'});
-        const x = await T.eval(`({jd: document.querySelector('#gladi h3').innerText, t: document.querySelector('#gladi').innerText, hip: document.querySelectorAll('#gladi .sk-pil[data-y=hipotesis]').length, langkah: document.querySelectorAll('#gladi .sk-garis > li').length, semua: document.body.innerText,
+        const x = await T.eval(`({jd: document.querySelector('#gladi .sk-ring').innerText, t: document.querySelector('#gladi').innerText, hip: document.querySelectorAll('#gladi .sk-pil[data-y=hipotesis]').length, langkah: document.querySelectorAll('#gladi .sk-garis > li').length, semua: document.body.innerText,
           aksi: [...document.querySelectorAll('#gladi [data-aksi]')].map((a) => a.textContent.trim())})`);
         assert.match(x.t, /Model sederhana, bukan prakiraan/); assert.ok(x.hip >= 1); assert.equal(x.langkah, 3); assert.match(x.t, /Replay Maret 2025/); assert.match(x.t, /NC/); assert.match(x.t, /Radio komunikasi mati/); assert.match(x.t, /3 dari 4 komponen/);
         assert.match(x.t, /Belum ada rekomendasi; wajib terisi saat gladi selesai/); assert.match(x.jd, /3 langkah putar ulang/); assert.ok(x.aksi.includes('Lanjut ke dievaluasi')); assert.doesNotMatch(x.semua, SALAH); assert.doesNotMatch(x.t, /akan terjadi/);

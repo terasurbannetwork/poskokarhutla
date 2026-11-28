@@ -55,7 +55,7 @@ export const IZIN_PEMIRSA_PUSDALOPS = [
   /^\/api\/operasi\/(peta|monitor|nilai)$/,
   /^\/api\/pb\/(titik|renlap|kepatuhan|papan-sk|tindakan|ringkas)$/,   // paritas bencana: sarana, fasilitas, daftar renlap tanpa berkas, kepatuhan (src/pb_isian.js)
   /^\/api\/laporan-bnpb$/,
-  /^\/api\/laporan-berkala(\/angka)?$/,   // Laporan Berkala: baca draf, versi beku, berkas angka (K4); cetak, simpan, Bekukan tidak
+  /^\/api\/laporan-berkala(\/angka|\/foto)?$/,   // Laporan Berkala: baca draf, versi beku, berkas angka, foto (K4); cetak, simpan, Bekukan, unggah foto tidak
   /^\/api\/saham\/(konsesi|cari|dividen)$/, /^\/api\/saham\/[A-Za-z0-9.-]{1,12}\/(info|transaksi|grafik)$/,
   /^\/api\/pantau$/, /^\/api\/omc\/admin$/,
   /^\/api\/laporan-karhutla\/(hari|format-khusus|kiriman|snapshot\/[0-9-]{10})$/,

@@ -85,7 +85,7 @@ uji("satu pintu: sandi salah dan akun dicabut tetap 401 dengan pesan yang sama, 
   for (const [u, s] of [["poldasatupintu", "salah-sekali-123"], ["poldadicabut1", SANDI], ["tidakada99", SANDI]]) {
     const r = await masuk(u, s); assert.equal(r.status, 401, u);
     const t = await r.text();
-    assert.match(t, /<body data-galat="Username atau kata sandi salah\.">/, "pesan di atribut body, dibaca public/masuk.js");
+    assert.match(t, /<body data-galat="Username atau kata sandi salah\." class="ad-masuk">/, "pesan di atribut body, dibaca public/masuk.js");
     assert.match(t, /id="fAkun"/, "halaman /masuk yang sama");
     assert.match(r.headers.get("content-security-policy"), /frame-ancestors 'none'/);
   }

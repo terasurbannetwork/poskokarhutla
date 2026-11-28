@@ -26,22 +26,38 @@ export const waSamar = wa => `0${wa.slice(2, 5)}****${wa.slice(-4)}`;
 export const km = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return 6371 * Math.hypot(x, y); };
 export const labelJenis = id => JENIS.find(j => j.id === id)?.label || null;
 
+/* panel Isian laporan untuk lapor orang hilang: isian orang dicari, bukan isian kejadian (pemilik 26 Nov 2026: "kenapa Isian laporan disamping masih kejadian?").
+   null = sudah ditanya dan dijawab tidak tahu; tidak ada kuncinya = belum ditanya. Hanya untuk pelapor sendiri, tidak publik. */
+const CARI_ISIAN = [["nama", "Nama lengkap", "Orang yang dicari", true], ["panggilan", "Nama panggilan", "Orang yang dicari", true], ["hubungan", "Hubungan dengan Anda", "Orang yang dicari", true],
+  ["kelamin", "Jenis kelamin", "Ciri-ciri", false, "cr"], ["umur", "Umur", "Ciri-ciri", false, "cr", " tahun"], ["tinggi", "Tinggi badan", "Ciri-ciri", false, "cr", " cm"], ["berat", "Berat badan", "Ciri-ciri", false, "cr", " kg"],
+  ["pakaian", "Pakaian terakhir", "Ciri-ciri", true, "cr"], ["tanda", "Tanda lain", "Ciri-ciri", false, "cr"],
+  ["lokasi", "Lokasi terakhir terlihat", "Terakhir terlihat", true], ["waktu", "Waktu terakhir terlihat", "Terakhir terlihat", true], ["foto", "Foto", "Terakhir terlihat", false],
+  ["nomor", "Nomor WhatsApp orang itu", "Kontak", false], ["kontak", "Nomor yang dihubungi", "Kontak", true], ["tempat", "Tempat menunggu", "Kontak", true]];
+const isianCari = sesi => { const c = sesi.cari || {}, cr = c.cr || {};
+  return CARI_ISIAN.map(([nama, label, kelompok, wajib, dari, satuan = ""]) => {
+    let ada, v;
+    if (nama === "lokasi") { const l = sesi.isian.lokasi?.nilai?.wilayah; ada = !!l; v = l ? `Desa/Kel. ${l.desa}, Kec. ${l.kec}, ${l.kab}` : null; }
+    else if (nama === "foto") { const n = c.fotoIds?.length || (c.foto ? 1 : 0); ada = "foto" in c || n > 0; v = n ? `${n} foto` : null; }
+    else { const o = dari ? cr : c; ada = nama in o; v = o[nama]; }
+    return {nama: `cari_${nama}`, label, kelompok, wajib, status: !ada ? "kosong" : v == null || v === "" ? "tidaktahu" : "isi", tampil: v == null || v === "" ? (ada ? "Tidak tahu" : "") : `${v}${satuan}`, asal: null}; }); };
+const lengkapTampil = s => { if (!s.cari) return lengkap(s); const d = isianCari(s); return Math.round(100 * d.filter(x => x.status !== "kosong").length / d.length); };
 export function isianTampil(sesi) {
+  if (sesi.cari) return isianCari(sesi);
   return berlakuSesi(sesi).map(i => {
     const x = sesi.isian[i.nama];
     return {nama: i.nama, label: i.label, kelompok: KELOMPOK.find(k => k.id === i.kelompok).label, wajib: !!i.wajib,
       status: !x ? "kosong" : x.nihil ? "nihil" : x.belum ? (x.tidakTahu ? "tidaktahu" : "belum") : "isi", tampil: x ? nilaiTampil(i, x) : "", asal: x?.asal?.sumber || null};
   });
 }
-export const keluaran = (h, sesi) => ({balasan: h.inti, pilihan: h.pilihan, ket: h.pilihanKet || null, minta: h.minta || null, isiAwal: h.isiAwal || null, form: h.form || null,
-  banyak: !!h.banyak, grup: h.grup || null, kunci: h.kunci || null, saran: h.saran || 0, sudah: h.sudah || null, status: sesi.status, lengkap: lengkap(sesi), isian: isianTampil(sesi), foto: (sesi.foto || []).length, bisaKembali: !!sesi.jejak?.length, kembali: !!h.kembali});
+export const keluaran = (h, sesi) => ({balasan: h.inti, pilihan: h.pilihan, ket: h.pilihanKet || null, minta: h.minta || null, satuan: h.satuan || sesi.satuan || null, isiAwal: h.isiAwal || null, form: h.form || null,
+  banyak: !!h.banyak, grup: h.grup || null, kunci: h.kunci || null, saran: h.saran || 0, sudah: h.sudah || null, status: sesi.status, lengkap: lengkapTampil(sesi), isian: isianTampil(sesi), foto: (sesi.foto || []).length, bisaKembali: !!sesi.jejak?.length, kembali: !!h.kembali});
 /* bagian jawaban yang sama untuk sesi yang sedang berjalan (cek status, GET /sesi) */
-export const lanjutan = lanjut => ({pilihan: lanjut.pilihan, ket: lanjut.pilihanKet, minta: lanjut.minta, form: lanjut.form, banyak: lanjut.banyak, grup: lanjut.grup, kunci: lanjut.kunci, saran: lanjut.saran, isiAwal: lanjut.isiAwal,
-  lengkap: lengkap(lanjut), isian: isianTampil(lanjut)});
+export const lanjutan = lanjut => ({pilihan: lanjut.pilihan, ket: lanjut.pilihanKet, minta: lanjut.minta, satuan: lanjut.satuan || null, form: lanjut.form, banyak: lanjut.banyak, grup: lanjut.grup, kunci: lanjut.kunci, saran: lanjut.saran, isiAwal: lanjut.isiAwal,
+  lengkap: lengkapTampil(lanjut), isian: isianTampil(lanjut)});
 export function sesiTampil(s) {
   if (!s) return {transkrip: []};
-  return {transkrip: s.transkrip, nomor: s.nomor || null, pilihan: s.pilihan || null, ket: s.pilihanKet || null, minta: s.minta || null, isiAwal: s.isiAwal || null,
-    form: s.form || null, banyak: !!s.banyak, grup: s.grup || null, kunci: s.kunci || null, saran: s.saran || 0, status: s.status, lengkap: lengkap(s), isian: isianTampil(s), foto: (s.foto || []).length,
+  return {transkrip: s.transkrip, nomor: s.nomor || null, pilihan: s.pilihan || null, ket: s.pilihanKet || null, minta: s.minta || null, satuan: s.satuan || null, isiAwal: s.isiAwal || null,
+    form: s.form || null, banyak: !!s.banyak, grup: s.grup || null, kunci: s.kunci || null, saran: s.saran || 0, status: s.status, lengkap: lengkapTampil(s), isian: isianTampil(s), foto: (s.foto || []).length,
     balasan: s.akhir?.inti || [...(s.transkrip || [])].reverse().find(t => t.dari === "bot")?.teks || null, bisaKembali: !!s.jejak?.length};
 }
 
@@ -109,12 +125,15 @@ export const tempatRusak = s => { const o = {};
     if (d.length) o[k] = d; }
   return Object.keys(o).length ? o : null; };
 
+/* tanda darurat untuk meja (K68, K90). luring: Lapor tanpa sinyal, simpan = jam simpan di HP atau null bila jam HP tidak sah; terlambat = tiba > 2 jam sesudah disimpan, tanpa pita (LR-09, Q3) */
+export const daruratRingkas = d => d ? {korban: d.korban || null, ...(d.cara ? {cara: d.cara} : {}), ...(d.tertunda ? {tertunda: true} : {}),
+  ...(d.luring ? {luring: {simpan: Number.isFinite(d.luring.simpan) ? d.luring.simpan : null}} : {}), ...(d.terlambat ? {terlambat: true} : {})} : null;
 /* ---------- ringkasan beku saat terkirim (kolom lapor_sesi.ringkas): meja dan alun-alun tidak perlu mengurai sesi utuh ---------- */
 export function ringkasSesi(s) {
   const w = s.isian.lokasi?.nilai?.wilayah, angka = n => { const x = s.isian[n]; return x && !x.belum && !x.nihil ? x.nilai : 0; };
   return {waktuKejadian: s.isian.waktu?.nilai || null, waktuMs: s.isian.waktu?.ms || null, subjenis: s.isian.subjenis?.nilai || null,
     wilayah: w ? {kode: w.kode, desa: w.desa, kec: w.kec, kab: w.kab, kabKode: w.kabKode, prov: w.prov, provKode: w.provKode} : null,
-    lengkap: lengkap(s), foto: (s.foto || []).length, dampakMeja: dampakRingkas(s), tempat: tempatRusak(s), darurat: s.darurat ? {korban: s.darurat.korban || null, ...(s.darurat.cara ? {cara: s.darurat.cara} : {}), ...(s.darurat.tertunda ? {tertunda: true} : {})} : null, bahasa: s.bahasa && s.bahasa !== "id" ? s.bahasa : null,   // K68; bahasa pelapor untuk petugas meja
+    lengkap: lengkap(s), foto: (s.foto || []).length, dampakMeja: dampakRingkas(s), tempat: tempatRusak(s), darurat: daruratRingkas(s.darurat), bahasa: s.bahasa && s.bahasa !== "id" ? s.bahasa : null,   // K68; bahasa pelapor untuk petugas meja
     dampak: {meninggal: angka("meninggal"), hilang: angka("hilang"), luka: angka("luka"), mengungsi: angka("mengungsi_jiwa"),
       rumah: ["rumah_berat", "rumah_sedang", "rumah_ringan"].reduce((t, n) => t + angka(n), 0), terendam: angka("rumah_terendam")}};
 }

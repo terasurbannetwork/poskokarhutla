@@ -19,6 +19,6 @@
   "ai": { "binding": "AI" },
   "triggers": { "crons": ["* * * * *"] },
   // WA_NOMOR = nomor bot WhatsApp Fonnte, tampil sebagai tombol kontak WA di ringkasan /api/pantau/ringkas; isi di dashboard/secret per lingkungan
-  "vars": { "SIHKA_CADANGAN": "1", "TURNSTILE_SITEKEY": "0x4AAAAAAFu1dPb2NmkmX9Z5", "FOTO_DUMMY_PUBLIK": "0", "EMAIL_TO": "terasurbannetwork@gmail.com", "EMAIL_FROM": "Centurisk97 <onboarding@resend.dev>", "WA_NOMOR": "" },
+  "vars": { "SIHKA_CADANGAN": "1", "TURNSTILE_SITEKEY": "0x4AAAAAAFu1dPb2NmkmX9Z5", "FOTO_DUMMY_PUBLIK": "0", "EMAIL_TO": "terasurbannetwork@gmail.com", "EMAIL_FROM": "Centurisk97 <onboarding@resend.dev>", "WA_NOMOR": "", "OH_PUBLIK": "0", "OH_TULIS": "0", "OH_FOTO": "0" },
   "observability": { "enabled": true }
 }

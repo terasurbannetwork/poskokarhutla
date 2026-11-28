@@ -1,0 +1,55 @@
+name: Lab lampu malam VNP46A2 (LF-10)
+
+# Hanya dispatch manual. Uji balik pemadaman listrik dari lampu malam NASA Black Marble VNP46A2 asli (LAADS DAAC, OPeNDAP),
+# kriteria terkunci di data/kajian-bnpb/lifeline/ALGORITMA.md bagian 6 (commit b0440a589). Tidak menerbitkan dan tidak
+# dijadwalkan: lampu malam belum boleh jadi isyarat Lifeline sebelum vonis lulus.
+#   gh workflow run lab-lampu-malam.yml -f tugas=laads_cek   probe: daftar ubin, DDS, subset kecil (hanya log)
+#   gh workflow run lab-lampu-malam.yml -f tugas=validasi    uji balik -> commit public/banjir/data/lampu_malam_validasi.json
+on:
+  workflow_dispatch:
+    inputs:
+      tugas:
+        description: "laads_cek atau validasi"
+        default: "laads_cek"
+
+concurrency:
+  group: lab-lampu-malam
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  lampu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Swa-uji
+        run: python3 -I scripts/umum/lampu_malam.py uji
+      - name: Jalankan ${{ inputs.tugas }}
+        env:
+          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
+          LAMPU_SUMBER: laads
+          TUGAS: ${{ inputs.tugas }}
+        run: |
+          case "$TUGAS" in laads_cek|validasi) ;; *) echo "tugas tidak dikenal: $TUGAS"; exit 1;; esac
+          python3 -I scripts/umum/lampu_malam.py "$TUGAS" | tee hasil.txt
+          { echo '```'; head -c 60000 hasil.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit hasil validasi ke main
+        if: inputs.tugas == 'validasi'
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          B=public/banjir/data/lampu_malam_validasi.json
+          git add -f $B
+          git diff --cached --quiet -- $B && { echo "hasil tidak berubah"; exit 0; }
+          git commit -q -m "data: uji balik lampu malam VNP46A2 LAADS (LF-10)" -- $B
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          exit 1

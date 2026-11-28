@@ -8,7 +8,11 @@ Pakai:   from semai_murni import *   (diuji lewat `python3 scripts/operasi/semai
 Masukan: angka, daftar profil, dict sel/zona/bobot.
 Keluaran: angka, teks, daftar zona. Tidak ada berkas yang dibaca atau ditulis.
 """
+import datetime as dt
+import difflib
 import math
+import re
+import re
 
 R_UDARA = 287.05      # J/(kg K)
 G = 9.80665           # m/s2
@@ -246,10 +250,10 @@ def alasan_kosong_banjir(n_sasaran, semua_angin_lemah, n_sel_lolos, ada_ifs=True
     return None if n_sel_lolos > 0 else "tidak_ada_awan_hulu"
 
 
-_URUT_ASAL = ("tetap", "manual", "bmkg", "prakiraan")
+_URUT_ASAL = ("tetap", "manual", "kejadian", "bmkg", "prakiraan")
 
 
-def pilih_sasaran(d, prediksi, bmkg, bobot, manual=(), umur_prediksi_jam=0, tercakup=True):
+def pilih_sasaran(d, prediksi, bmkg, bobot, manual=(), umur_prediksi_jam=0, tercakup=True, kejadian=()):
     """S(d) (§2). d 'YYYY-MM-DD'. prediksi = prediksi.json (atau None), bmkg = cuaca_bmkg_kab10.json (atau None), manual = kode kab.
     Hasil: dict(sasaran=[dict(kode, asal=[...], pantau, belum_teruji)], sumber=[catatan], alasan_kosong).
     tercakup False: sasaran prakiraan tenggang 2 bertanda pantau (tanpa zona). belum_teruji: asalnya hanya `prakiraan` dan tak ada vonis lulus."""
@@ -270,6 +274,8 @@ def pilih_sasaran(d, prediksi, bmkg, bobot, manual=(), umur_prediksi_jam=0, terc
         tambah(k, "tetap")
     for k in manual:
         tambah(k, "manual")
+    for k in kejadian:                                      # K6: kode kab dari kabar.json (kab_dari_kejadian), sudah disaring basi
+        tambah(k, "kejadian")
     if bmkg:
         kond = nilai(bobot, "banjir.bmkg_kondisi")
         for kode, v in bmkg["kab"].items():
@@ -300,6 +306,126 @@ def pilih_sasaran(d, prediksi, bmkg, bobot, manual=(), umur_prediksi_jam=0, terc
     hasil = [dict(kode=k, asal=sorted(a, key=_URUT_ASAL.index), pantau=k in pantau and a == {"prakiraan"},
                   belum_teruji=a == {"prakiraan"} and belum) for k, a in sorted(asal.items())]
     return dict(sasaran=hasil, sumber=sumber, alasan_kosong=None if hasil else "tidak_ada_sasaran")
+
+
+def _jenis_kab(nama):
+    n = nama.strip().lower()
+    return "kota" if n.startswith("kota") else "kab"
+
+
+def _inti_nama(nama):
+    """Huruf kecil tanpa awalan Kab./Kabupaten/Kota/Administrasi, tanpa spasi dan tanda baca (ejaan 'Padang Sidempuan' = 'Padangsidimpuan' ditangani cocok_nama)."""
+    return re.sub(r"[^a-z]", "", re.sub(r"^(kabupaten|kab\.|kota administrasi|kota|administrasi)\s+", "", nama.strip().lower()))
+
+
+def cocok_nama(nama, kandidat):
+    """Satu nama kab/kota dari kabar.json lawan kandidat [(kode, nama_geo)] di provinsi yang sama; None bila tak ada atau ragu.
+    Jenis Kota/Kab harus sama ('Kota X' tak pernah jatuh ke 'X'); inti nama persis, atau mirip >= 0,9 dan tunggal (ejaan)."""
+    jenis, inti = _jenis_kab(nama), _inti_nama(nama)
+    pool = [(k, _inti_nama(n)) for k, n in kandidat if _jenis_kab(n) == jenis]
+    persis = [k for k, i in pool if i == inti]
+    if persis:
+        return persis[0] if len(persis) == 1 else None
+    mirip = [k for k, i in pool if difflib.SequenceMatcher(None, inti, i).ratio() >= 0.9]
+    return mirip[0] if len(mirip) == 1 else None
+
+
+def kab_dari_kejadian(kabar, kota, putaran_iso, bobot):
+    """K6 (ALGORITMA §2 `kejadian`): kode kab sasaran dari kabar.json. kota = [(kode, prov, nama_geo)]. putaran_iso = jam putaran 'YYYY-MM-DDTHH:MM:SSZ'.
+    -> (kode_terurut, catatan). Berkas lebih tua dari kejadian_basi_jam terhadap putaran: tak dipakai, catatan 'kejadian basi'."""
+    if not kabar:
+        return [], ["kejadian: kabar.json tidak ada"]
+    t_put = dt.datetime.fromisoformat(putaran_iso.replace("Z", "+00:00"))
+    try:
+        t_kab = dt.datetime.fromisoformat(str(kabar.get("dibuat") or ""))
+    except ValueError:
+        return [], ["kejadian: kabar.json tidak valid (tanpa waktu dibuat)"]
+    if t_kab.tzinfo is None:
+        t_kab = t_kab.replace(tzinfo=dt.timezone(dt.timedelta(hours=7)))
+    umur = (t_put - t_kab).total_seconds() / 3600
+    if umur > nilai(bobot, "banjir.kejadian_basi_jam"):
+        return [], [f"kejadian basi ({umur:.0f} jam)"]
+    jenis = nilai(bobot, "banjir.kejadian_jenis")
+    per_prov = {}
+    for kode, prov, nama in kota:
+        per_prov.setdefault(prov, []).append((kode, nama))
+    hasil, luput = set(), []
+    for x in kabar.get("kejadian", []):
+        if x.get("jenis") in jenis and x.get("status") == "berjalan":
+            k = cocok_nama(x["kab"], per_prov.get(str(x.get("prov")), []))
+            if k:
+                hasil.add(k)
+            else:
+                luput.append(f"{x['kab']} ({x.get('prov')})")
+    return sorted(hasil), ([f"kejadian: nama tak terpetakan ke kode BPS: {', '.join(luput)}"] if luput else [])
+
+
+def prov_omc(omc, d, bobot):
+    """P_omc(d) (K5): kode provinsi dengan baris OMC berjenis persis `banjir.omc_jenis` dan periode_awal <= d <= periode_akhir (string ISO, urut leksikal = urut tanggal)."""
+    jenis = nilai(bobot, "banjir.omc_jenis")
+    return sorted({r["kode_prov"] for r in ((omc or {}).get("aktif_hari_ini") or {}).get("baris", [])
+                   if r.get("jenis_kegiatan") == jenis and r.get("periode_awal", "9") <= d <= r.get("periode_akhir", "0")})
+
+
+_BUANG_POSKO = {"bandar", "udara", "bandara", "lanud", "pangkalan", "lanal", "international", "internasional", "airport", "air", "base", "militer", "tni", "au"}
+
+
+def _kata_posko(t):
+    return frozenset(w for w in re.sub(r"[^a-z0-9 ]", " ", str(t).lower()).split() if w not in _BUANG_POSKO)
+
+
+def cocok_posko(nama_posko, bandara):
+    """K7: nama posko dari laporan OMC -> id bandara/base mesin. bandara = {id: {nama, ...}} (nama boleh 'A, kota' atau 'A / B').
+    Cocok bila himpunan kata inti sama, atau satu menjadi himpunan bagian yang lain dengan sedikitnya 2 kata (nama 1 kata ('Iskandar')
+    tidak boleh menelan 'Sultan Iskandar Muda'). Ambigu (>1 id) dianggap tak tercocok, koordinat tidak pernah dikarang.
+    -> (daftar id, daftar nama tak tercocok)."""
+    ids, tak = [], []
+    for nm in nama_posko or []:
+        p = _kata_posko(nm)
+        hit = set()
+        for bid, bd in bandara.items():
+            for alt in re.split(r"[,/]", bd.get("nama", "")):
+                a = _kata_posko(alt)
+                if p and a and (p == a or (min(len(p), len(a)) >= 2 and (p <= a or a <= p))):
+                    hit.add(bid)
+        if len(hit) == 1:
+            ids += [h for h in hit if h not in ids]
+        else:
+            tak.append(nm)
+    return ids, tak
+
+
+def _urut_zona(c):
+    return (-round(c["skor"], 2), -bool(c.get("kej")), -c["skor"])      # K6: pada skor tampil sama, sel yang melayani kejadian dulu
+
+
+def zona_kuota(cells, prov, min_km, maks, ambang, maks_prov):
+    """K5 (ALGORITMA §6): sel dict lat, lon, skor, provs (kode prov sasaran yang dilayani), kej (melayani asal kejadian).
+    1) tiap provinsi di `prov`: NMS atas sel yang melayani provinsi itu, <= maks_prov zona (membawa kuota=<kode>); 2) <= maks zona nasional dari sisa,
+    NMS juga terhadap zona kuota. Hasil urut skor turun (huruf zona mengikuti). Skor dan ambang tidak diubah."""
+    pilih = []
+
+    def jauh(c):
+        return all(haversine(c["lat"], c["lon"], z["lat"], z["lon"]) > min_km for z in pilih)
+    urut = sorted(cells, key=_urut_zona)
+    # kode zona satu huruf A sampai Z (zona_id_banjir): kuota provinsi berhenti bila jatah huruf tinggal untuk 5 nasional
+    huruf = 26
+    for p in sorted(prov):
+        n = 0
+        for c in urut:
+            if n >= maks_prov or len(pilih) >= huruf - maks:
+                break
+            if c["skor"] >= ambang and p in c.get("provs", ()) and jauh(c):
+                pilih.append(dict(c, kuota=p))
+                n += 1
+    n = 0
+    for c in urut:
+        if n >= maks or len(pilih) >= huruf:
+            break
+        if c["skor"] >= ambang and jauh(c):
+            pilih.append(c)
+            n += 1
+    return sorted(pilih, key=_urut_zona)
 
 
 # ---- §4, §7 zona ---------------------------------------------------------------------------------------------

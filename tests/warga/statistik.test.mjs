@@ -392,7 +392,7 @@ uji("centurisk97.id: halaman terkunci sampai masuk, ?ke= dibawa pulang, domain l
   assert.notEqual((await panggil("GET", "/")).status, 303, "domain lain tidak terkunci");
   const f = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=%2Fpeta", {redirect: "manual", headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA}});
   await f.text(); assert.equal(f.status, 303); assert.equal(f.headers.get("location"), "/masuk?ke=%2Fpeta#sandi", "alamat lama ke form sandi /masuk, ?ke= ikut (K21)");
-  const hm = await buka("/masuk"); assert.equal(hm.status, 200, "/masuk terbuka untuk tamu"); assert.match(await hm.text(), /Centurisk97<\/a>[\s\S]*id="fAkun"/, "merek Centurisk97 dan form sandi di /masuk");
+  const hm = await buka("/masuk"); assert.equal(hm.status, 200, "/masuk terbuka untuk tamu"); assert.match(await hm.text(), /alt="Centurisk97"[\s\S]*id="fAkun"/, "merek Centurisk97 dan form sandi di /masuk (K25: logo di kepala kartu masuk)");
   const ok = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=%2Fpeta", {method: "POST", redirect: "manual", body: MASUK,
     headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, "content-type": "application/x-www-form-urlencoded", origin: "https://centurisk97.id"}});
   assert.equal(ok.status, 303); assert.equal(ok.headers.get("location"), "/peta");

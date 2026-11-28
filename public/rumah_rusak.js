@@ -103,6 +103,7 @@
       if (!window.maplibregl) { $("lokasi").textContent = "Peta tidak termuat. Pakai tombol lokasi saya."; return; }
       peta = new maplibregl.Map({container: $("peta"), style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.5, -11.5], [141.5, 6.3]], minZoom: 3, maxZoom: 19, dragRotate: false, attributionControl: {compact: true}});
       peta.addControl(new maplibregl.NavigationControl({showCompass: false}));
+      if (window.ResizeObserver) new ResizeObserver(() => peta.resize()).observe($("peta"));   // panel Pusdalops dipasang sesudah peta dibuat: lebar berubah
       peta.on("click", e => taruh(e.lngLat.lat, e.lngLat.lng, false));
       peta.on("load", () => {
         peta.addSource("saya", {type: "geojson", data: {type: "FeatureCollection", features: []}});

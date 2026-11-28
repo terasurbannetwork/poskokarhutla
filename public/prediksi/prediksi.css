@@ -212,3 +212,4 @@ main>.db-l1{display:none}
 #rapor td .pr-pil{white-space:nowrap}
 /* HP: chip jam data cukup tanggal, supaya tombol tema tetap di layar */
 @media (max-width:640px){.stat .pr-upd-j,.stat .pr-upd-l{display:none}.stat .pr-upd{padding:0 10px}}
+.dp-blok .dp-baris{gap:3px 10px;margin-top:10px}.dp-blok .dp-baris:first-child{margin-top:0}

@@ -50,7 +50,7 @@ export async function buka(isi, sk) {
     mapa.addLayer({id: "inarisk", type: "raster", source: "inarisk", paint: {"raster-opacity": 0.7, "raster-fade-duration": 0}});
   }
   const hasil = h("div", {}), ctl = h("div", {class: "sk-ctl"});
-  const utama = kartu({ey: [ik("bangunan", 12), "Paparan"], id: "p-utama", judul: ["Paparan ", hl("menunggu"), " pilihan wilayah"], isi: [ctl, hasil]}), judul = utama.querySelector("h3");
+  const utama = kartu({ey: [ik("bangunan", 12), "Paparan"], id: "p-utama", judul: ["Paparan ", hl("menunggu"), " pilihan wilayah"], isi: [ctl, hasil]}), judul = utama.querySelector(".sk-ring");
   isiPanel.append(utama);
 
   async function ringkas(prov) {

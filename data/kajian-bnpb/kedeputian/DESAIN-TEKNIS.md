@@ -122,8 +122,8 @@ Pemilik dari `scripts/agents/roster.json` (`milik`): `ruang-bnpb` memegang `publ
 | `src/pengingat.js` | ubah | baris 56-57: teks dan tanda DSP baru | warga-api |
 | `public/bnpb/meja.js`, `public/admin/meja.js` | ubah | peta warna status turunan baru; pilihan kaji cepat induk menjadi opsional | ruang-bnpb (public/bnpb), warga-api (public/admin) |
 | `migrations/0110_meja_rehab_lepas.sql` | baru | F0-3 (§3.3) | warga-api |
-| `migrations/0111_staf_peran_unit.sql` | baru | peran `unit` (§2.2) | warga-api |
-| `migrations/0112_unit.sql` | baru | `unit_ketuk`, `akses_status`, `hibah_bast`, `diklat_angkatan` (§2.2) | warga-api |
+| `migrations/0168_staf_peran_unit.sql` (semula dipesan 0111) | ada | peran `unit` (§2.2) | warga-api |
+| `migrations/0187_unit.sql` (semula dipesan 0112, terpakai LogPal) | baru | `unit_ketuk`, `akses_status`, `hibah_bast`, `diklat_angkatan` (§2.2), ditambah trigger anti timpa INSERT OR REPLACE | warga-api |
 | `migrations/0113_pengungsian.sql` | baru | WIL-2 (§6.15) | warga-api |
 | `src/unit.js` | baru | `RUTE_UNIT`, `DATA_UNIT`, `DATA_UNIT_TERBATAS`, `KODE_UNIT`, `P_UNIT_*`, rute §1.1 | warga-api |
 | `src/pengungsian.js` | baru | rute WIL-2 (pola `src/korban.js`) | warga-api |
@@ -154,11 +154,11 @@ Tidak dibuat: berkas `.html` per sistem (satu cangkang `unit.html` untuk 22 unit
 
 ### 2.2 Migrasi
 
-Nomor terakhir di `migrations/` adalah `0109_ai_pengetahuan.sql`; nomor 0051 kosong tetapi tidak dipakai mundur. Migrasi baru: 0110 sampai 0113. Migrasi lama tidak disunting; `tests/warga/migrasi_beku.json` mengunci sha256 0001-0108 (termasuk `0026_meja.sql`, baris 29). Semua migrasi baru idempoten (`IF NOT EXISTS`, `DROP ... IF EXISTS` sebelum `CREATE`), diperiksa `migrasi-idempoten`. Migrasi produksi diterapkan pemilik (memori `ruang-bnpb`: "prod D1 migrations must be applied by owner").
+Nomor terakhir di `migrations/` adalah `0109_ai_pengetahuan.sql`; nomor 0051 kosong tetapi tidak dipakai mundur. Migrasi baru Ruang Unit akhirnya bernomor 0168 (peran) dan 0187 (tabel), karena 0110 sampai 0113 sudah terpakai modul lain. Migrasi lama tidak disunting; `tests/warga/migrasi_beku.json` mengunci sha256 0001-0108 (termasuk `0026_meja.sql`, baris 29). Semua migrasi baru idempoten (`IF NOT EXISTS`, `DROP ... IF EXISTS` sebelum `CREATE`), diperiksa `migrasi-idempoten`. Migrasi produksi diterapkan pemilik (memori `ruang-bnpb`: "prod D1 migrations must be applied by owner").
 
 `0110_meja_rehab_lepas.sql`: lihat §3.3.
 
-`0111_staf_peran_unit.sql` (pola `0104`):
+`0168_staf_peran_unit.sql` (semula 0111, pola `0104`):
 
 ```sql
 -- Peran staf 'unit' (Ruang Unit BNPB, data/kajian-bnpb/kedeputian/DESAIN-TEKNIS.md §1.4). Idempoten; 0104 tidak disunting.
@@ -183,7 +183,7 @@ BEGIN
 END;
 ```
 
-`0112_unit.sql` (isian manusia Ruang Unit; kode kab = kode BPS 4 digit dari `public/data/bnpb/wilayah.json`, tidak seperti `meja_catatan.kab` yang menyimpan nama):
+`0187_unit.sql` (semula 0112; isian manusia Ruang Unit; kode kab = kode BPS 4 digit dari `public/data/bnpb/wilayah.json`, tidak seperti `meja_catatan.kab` yang menyimpan nama):
 
 ```sql
 -- Ruang Unit BNPB: isian manusia (DESAIN-TEKNIS kedeputian §2.2). Hasil hitungan TIDAK di sini (R2 unit/). Idempoten.
@@ -838,12 +838,12 @@ Pola keluaran: kecuali disebut lain, tiap sistem menulis satu berkas R2 `unit/<n
 | Jadwal | bulanan |
 
 Rumus (riset/1 §1.5; rumus RBI di catatan `1-rbi.md` hal. 53, Perka 2/2012 BERLAKU):
-- H_k = maks_j H_kj (asumsi: riset tidak menyebut agregasi lintas jenis; ditulis "asumsi" di kartu), V_k = `v`, C_k = `c`.
+- H_k = maks_j H_kj (asumsi: riset tidak menyebut agregasi lintas jenis; ditulis "asumsi" di kartu), V_k = Phi(`v`) karena `v` berskala z (sama dengan `risiko_hvc.py`), C_k = `c`.
 - R_k(C) = (H_k x V_k x (1 - C))^(1/3).
 - d_k = jarak C_k ke ambang kelas berikutnya: 0,40 bila C_k < 0,40; 0,80 bila 0,40 <= C_k < 0,80; 0 bila sudah di atas 0,80 (kab tidak masuk daftar). Ambang 0,40 dan 0,80 dari riset/1 §1.5, tidak berpasal di korpus: `asumsi: true` di MB-2 kunci `ikd_ambang_kelas`.
 - Manfaat_k = n_k x [R_k(C_k) - R_k(C_k + d_k)], n_k = 1/514 (bawaan riset/1 pertanyaan 3, rata-rata sederhana).
 - `naik_iku2` = benar bila C_k + d_k melewati 0,40 dan IKD provinsinya di Lampiran 2 di bawah 0,40 (ditampilkan sebagai kolom, bukan bonus angka, karena riset tidak menetapkan nilai B).
-- Biaya proksi = jarak garis lurus pusat kab ke Jakarta (km) dari `public/data/bnpb/wilayah.json` + koordinat pusat kab yang sudah dipakai pipeline; urut menurun Manfaat_k / Biaya_k.
+- Biaya proksi = maks(jarak garis lurus pusat kab ke Jakarta (km), 100 km), koordinat pusat kab dari `public/data/kemitraan/kode.json`; lantai 100 km adalah asumsi berpil (KEPUTUSAN-AWAL U13) supaya kab di sekitar Jakarta tidak meledakkan rasio; urut menurun Manfaat_k / Biaya_k.
 
 Skema `data`:
 

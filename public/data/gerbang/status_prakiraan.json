@@ -1,0 +1,898 @@
+{
+ "dibuat": "2026-11-26T18:04:03+07:00",
+ "versi": 1,
+ "boleh_tampil": false,
+ "boleh_per_bahaya": {
+  "BNJ": false,
+  "BDG": false,
+  "LSR": false,
+  "CEX": false,
+  "KEK": false,
+  "GEL": false
+ },
+ "catatan": "boleh_tampil per bahaya ditentukan label DIBI prospektif; logbook dinilai terpisah, tidak dirata-rata. Retrospektif (arsip prakiraan, tanpa R BMKG dan hari 0) hanya informasi.",
+ "keluaran": {
+  "BNJ_dibi": {
+   "metrik": "kejadian tertangkap pada jumlah alarm sama",
+   "arah": "rendah",
+   "pembanding": "persistensi dan klimatologi",
+   "n": 0,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "belum teruji: tidak ada pasangan berlabel",
+   "sumber_berkas": [],
+   "belum_teruji": true,
+   "versi_sebelumnya": {
+    "2": {
+     "siaga": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     },
+     "waspada": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     }
+    }
+   },
+   "versi_kriteria": 3,
+   "retrospektif": {
+    "siaga": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama (recall)",
+     "arah": "tinggi",
+     "pembanding": "klimatologi (pembanding terkuat dari persistensi dan klimatologi)",
+     "n": 9,
+     "skor_model": 0.037,
+     "skor_pembanding": 0.0296,
+     "selisih": 0.0074,
+     "selang95": [
+      -0.047,
+      0.0603
+     ],
+     "boleh_tampil": false,
+     "alasan": "retrospektif dari arsip prakiraan (hanya komponen P): informasi, bukan dasar boleh_tampil; belum teruji: 9 hari sasaran dan 135 kejadian (perlu >= 30 dan >= 30); batas bawah selang 95% -0.047 <= 0: belum terbukti mengalahkan pembanding; vonis prospektif = 'belum_cukup_data', wajib 'lolos'",
+     "vonis_prospektif": "belum_cukup_data",
+     "n_kejadian": 135,
+     "n_alarm": 54,
+     "recall_persistensi": 0.007407407407407408,
+     "recall_klimatologi": 0.02962962962962963,
+     "imbang_dipecah": {
+      "persistensi": true,
+      "klimatologi": true
+     },
+     "belum_teruji": true
+    },
+    "waspada": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama (recall)",
+     "arah": "tinggi",
+     "pembanding": "klimatologi (pembanding terkuat dari persistensi dan klimatologi)",
+     "n": 9,
+     "skor_model": 0.6963,
+     "skor_pembanding": 0.6667,
+     "selisih": 0.0296,
+     "selang95": [
+      -0.1688,
+      0.2705
+     ],
+     "boleh_tampil": false,
+     "alasan": "retrospektif dari arsip prakiraan (hanya komponen P): informasi, bukan dasar boleh_tampil; belum teruji: 9 hari sasaran dan 135 kejadian (perlu >= 30 dan >= 30); batas bawah selang 95% -0.1688 <= 0: belum terbukti mengalahkan pembanding; vonis prospektif = 'belum_cukup_data', wajib 'lolos'",
+     "vonis_prospektif": "belum_cukup_data",
+     "n_kejadian": 135,
+     "n_alarm": 2649,
+     "recall_persistensi": 0.5259259259259259,
+     "recall_klimatologi": 0.6666666666666666,
+     "imbang_dipecah": {
+      "persistensi": true,
+      "klimatologi": true
+     },
+     "belum_teruji": true
+    },
+    "label_sampai": "2026-11-09",
+    "baris_tanpa_label": 27756
+   },
+   "waspada": {
+    "metrik": "kejadian tertangkap pada jumlah alarm sama",
+    "arah": "rendah",
+    "pembanding": "persistensi dan klimatologi",
+    "n": 0,
+    "skor_model": null,
+    "skor_pembanding": null,
+    "selisih": null,
+    "selang95": null,
+    "vonis_prospektif": null,
+    "boleh_tampil": false,
+    "alasan": "belum teruji: tidak ada pasangan berlabel",
+    "sumber_berkas": [],
+    "belum_teruji": true
+   }
+  },
+  "BNJ_logbook": {
+   "metrik": "kejadian tertangkap pada jumlah alarm sama",
+   "arah": "rendah",
+   "pembanding": "persistensi dan klimatologi",
+   "n": 0,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "belum teruji: tidak ada pasangan berlabel",
+   "sumber_berkas": [],
+   "belum_teruji": true,
+   "versi_sebelumnya": {
+    "2": {
+     "siaga": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     },
+     "waspada": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     }
+    }
+   },
+   "versi_kriteria": 3,
+   "retrospektif": {
+    "siaga": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama",
+     "arah": "rendah",
+     "pembanding": "persistensi dan klimatologi",
+     "n": 0,
+     "skor_model": null,
+     "skor_pembanding": null,
+     "selisih": null,
+     "selang95": null,
+     "vonis_prospektif": null,
+     "boleh_tampil": false,
+     "alasan": "belum teruji: tidak ada pasangan berlabel",
+     "sumber_berkas": [],
+     "belum_teruji": true
+    },
+    "waspada": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama",
+     "arah": "rendah",
+     "pembanding": "persistensi dan klimatologi",
+     "n": 0,
+     "skor_model": null,
+     "skor_pembanding": null,
+     "selisih": null,
+     "selang95": null,
+     "vonis_prospektif": null,
+     "boleh_tampil": false,
+     "alasan": "belum teruji: tidak ada pasangan berlabel",
+     "sumber_berkas": [],
+     "belum_teruji": true
+    },
+    "label_sampai": "2026-10-29",
+    "baris_tanpa_label": 38550
+   },
+   "waspada": {
+    "metrik": "kejadian tertangkap pada jumlah alarm sama",
+    "arah": "rendah",
+    "pembanding": "persistensi dan klimatologi",
+    "n": 0,
+    "skor_model": null,
+    "skor_pembanding": null,
+    "selisih": null,
+    "selang95": null,
+    "vonis_prospektif": null,
+    "boleh_tampil": false,
+    "alasan": "belum teruji: tidak ada pasangan berlabel",
+    "sumber_berkas": [],
+    "belum_teruji": true
+   }
+  },
+  "BDG_dibi": {
+   "metrik": "kejadian tertangkap pada jumlah alarm sama",
+   "arah": "rendah",
+   "pembanding": "persistensi dan klimatologi",
+   "n": 0,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "belum teruji: tidak ada pasangan berlabel",
+   "sumber_berkas": [],
+   "belum_teruji": true,
+   "versi_sebelumnya": {
+    "2": {
+     "siaga": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     },
+     "waspada": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     }
+    }
+   },
+   "versi_kriteria": 3,
+   "retrospektif": {
+    "siaga": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama (recall)",
+     "arah": "tinggi",
+     "pembanding": "persistensi (pembanding terkuat dari persistensi dan klimatologi)",
+     "n": 9,
+     "skor_model": 0.0,
+     "skor_pembanding": 0.1111,
+     "selisih": -0.1111,
+     "selang95": [
+      -0.5,
+      0.0
+     ],
+     "boleh_tampil": false,
+     "alasan": "retrospektif dari arsip prakiraan (hanya komponen P): informasi, bukan dasar boleh_tampil; belum teruji: 9 hari sasaran dan 9 kejadian (perlu >= 30 dan >= 30); selisih -0.1111 <= 0: pembanding sederhana menang atau seri; vonis prospektif = 'belum_cukup_data', wajib 'lolos'",
+     "vonis_prospektif": "belum_cukup_data",
+     "n_kejadian": 9,
+     "n_alarm": 54,
+     "recall_persistensi": 0.1111111111111111,
+     "recall_klimatologi": 0.0,
+     "imbang_dipecah": {
+      "persistensi": true,
+      "klimatologi": true
+     },
+     "belum_teruji": true
+    },
+    "waspada": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama (recall)",
+     "arah": "tinggi",
+     "pembanding": "persistensi (pembanding terkuat dari persistensi dan klimatologi)",
+     "n": 9,
+     "skor_model": 0.6667,
+     "skor_pembanding": 1.0,
+     "selisih": -0.3333,
+     "selang95": [
+      -0.5,
+      -0.25
+     ],
+     "boleh_tampil": false,
+     "alasan": "retrospektif dari arsip prakiraan (hanya komponen P): informasi, bukan dasar boleh_tampil; belum teruji: 9 hari sasaran dan 9 kejadian (perlu >= 30 dan >= 30); selisih -0.3333 <= 0: pembanding sederhana menang atau seri; vonis prospektif = 'belum_cukup_data', wajib 'lolos'",
+     "vonis_prospektif": "belum_cukup_data",
+     "n_kejadian": 9,
+     "n_alarm": 2649,
+     "recall_persistensi": 1.0,
+     "recall_klimatologi": 0.7777777777777778,
+     "imbang_dipecah": {
+      "persistensi": true,
+      "klimatologi": true
+     },
+     "belum_teruji": true
+    },
+    "label_sampai": "2026-11-09",
+    "baris_tanpa_label": 27756
+   },
+   "waspada": {
+    "metrik": "kejadian tertangkap pada jumlah alarm sama",
+    "arah": "rendah",
+    "pembanding": "persistensi dan klimatologi",
+    "n": 0,
+    "skor_model": null,
+    "skor_pembanding": null,
+    "selisih": null,
+    "selang95": null,
+    "vonis_prospektif": null,
+    "boleh_tampil": false,
+    "alasan": "belum teruji: tidak ada pasangan berlabel",
+    "sumber_berkas": [],
+    "belum_teruji": true
+   }
+  },
+  "BDG_logbook": {
+   "metrik": "kejadian tertangkap pada jumlah alarm sama",
+   "arah": "rendah",
+   "pembanding": "persistensi dan klimatologi",
+   "n": 0,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "belum teruji: tidak ada pasangan berlabel",
+   "sumber_berkas": [],
+   "belum_teruji": true,
+   "versi_sebelumnya": {
+    "2": {
+     "siaga": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     },
+     "waspada": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     }
+    }
+   },
+   "versi_kriteria": 3,
+   "retrospektif": {
+    "siaga": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama",
+     "arah": "rendah",
+     "pembanding": "persistensi dan klimatologi",
+     "n": 0,
+     "skor_model": null,
+     "skor_pembanding": null,
+     "selisih": null,
+     "selang95": null,
+     "vonis_prospektif": null,
+     "boleh_tampil": false,
+     "alasan": "belum teruji: tidak ada pasangan berlabel",
+     "sumber_berkas": [],
+     "belum_teruji": true
+    },
+    "waspada": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama",
+     "arah": "rendah",
+     "pembanding": "persistensi dan klimatologi",
+     "n": 0,
+     "skor_model": null,
+     "skor_pembanding": null,
+     "selisih": null,
+     "selang95": null,
+     "vonis_prospektif": null,
+     "boleh_tampil": false,
+     "alasan": "belum teruji: tidak ada pasangan berlabel",
+     "sumber_berkas": [],
+     "belum_teruji": true
+    },
+    "label_sampai": "2026-10-29",
+    "baris_tanpa_label": 38550
+   },
+   "waspada": {
+    "metrik": "kejadian tertangkap pada jumlah alarm sama",
+    "arah": "rendah",
+    "pembanding": "persistensi dan klimatologi",
+    "n": 0,
+    "skor_model": null,
+    "skor_pembanding": null,
+    "selisih": null,
+    "selang95": null,
+    "vonis_prospektif": null,
+    "boleh_tampil": false,
+    "alasan": "belum teruji: tidak ada pasangan berlabel",
+    "sumber_berkas": [],
+    "belum_teruji": true
+   }
+  },
+  "LSR_dibi": {
+   "metrik": "kejadian tertangkap pada jumlah alarm sama",
+   "arah": "rendah",
+   "pembanding": "persistensi dan klimatologi",
+   "n": 0,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "belum teruji: tidak ada pasangan berlabel",
+   "sumber_berkas": [],
+   "belum_teruji": true,
+   "versi_sebelumnya": {
+    "2": {
+     "siaga": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     },
+     "waspada": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     }
+    }
+   },
+   "versi_kriteria": 3,
+   "retrospektif": {
+    "siaga": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama (recall)",
+     "arah": "tinggi",
+     "pembanding": "persistensi (pembanding terkuat dari persistensi dan klimatologi)",
+     "n": 9,
+     "skor_model": 0.0,
+     "skor_pembanding": 0.0845,
+     "selisih": -0.0845,
+     "selang95": [
+      -0.1094,
+      -0.0526
+     ],
+     "boleh_tampil": false,
+     "alasan": "retrospektif dari arsip prakiraan (hanya komponen P): informasi, bukan dasar boleh_tampil; belum teruji: 9 hari sasaran dan 71 kejadian (perlu >= 30 dan >= 30); selisih -0.0845 <= 0: pembanding sederhana menang atau seri; vonis prospektif = 'belum_cukup_data', wajib 'lolos'",
+     "vonis_prospektif": "belum_cukup_data",
+     "n_kejadian": 71,
+     "n_alarm": 143,
+     "recall_persistensi": 0.08450704225352113,
+     "recall_klimatologi": 0.0,
+     "imbang_dipecah": {
+      "persistensi": true,
+      "klimatologi": true
+     },
+     "belum_teruji": true
+    },
+    "waspada": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama (recall)",
+     "arah": "tinggi",
+     "pembanding": "klimatologi (pembanding terkuat dari persistensi dan klimatologi)",
+     "n": 9,
+     "skor_model": 0.6197,
+     "skor_pembanding": 0.6056,
+     "selisih": 0.0141,
+     "selang95": [
+      -0.2921,
+      0.6042
+     ],
+     "boleh_tampil": false,
+     "alasan": "retrospektif dari arsip prakiraan (hanya komponen P): informasi, bukan dasar boleh_tampil; belum teruji: 9 hari sasaran dan 71 kejadian (perlu >= 30 dan >= 30); batas bawah selang 95% -0.2921 <= 0: belum terbukti mengalahkan pembanding; vonis prospektif = 'belum_cukup_data', wajib 'lolos'",
+     "vonis_prospektif": "belum_cukup_data",
+     "n_kejadian": 71,
+     "n_alarm": 3652,
+     "recall_persistensi": 0.5211267605633803,
+     "recall_klimatologi": 0.6056338028169014,
+     "imbang_dipecah": {
+      "persistensi": true,
+      "klimatologi": true
+     },
+     "belum_teruji": true
+    },
+    "label_sampai": "2026-11-09",
+    "baris_tanpa_label": 27756
+   },
+   "waspada": {
+    "metrik": "kejadian tertangkap pada jumlah alarm sama",
+    "arah": "rendah",
+    "pembanding": "persistensi dan klimatologi",
+    "n": 0,
+    "skor_model": null,
+    "skor_pembanding": null,
+    "selisih": null,
+    "selang95": null,
+    "vonis_prospektif": null,
+    "boleh_tampil": false,
+    "alasan": "belum teruji: tidak ada pasangan berlabel",
+    "sumber_berkas": [],
+    "belum_teruji": true
+   }
+  },
+  "LSR_logbook": {
+   "metrik": "kejadian tertangkap pada jumlah alarm sama",
+   "arah": "rendah",
+   "pembanding": "persistensi dan klimatologi",
+   "n": 0,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "belum teruji: tidak ada pasangan berlabel",
+   "sumber_berkas": [],
+   "belum_teruji": true,
+   "versi_sebelumnya": {
+    "2": {
+     "siaga": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     },
+     "waspada": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     }
+    }
+   },
+   "versi_kriteria": 3,
+   "retrospektif": {
+    "siaga": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama",
+     "arah": "rendah",
+     "pembanding": "persistensi dan klimatologi",
+     "n": 0,
+     "skor_model": null,
+     "skor_pembanding": null,
+     "selisih": null,
+     "selang95": null,
+     "vonis_prospektif": null,
+     "boleh_tampil": false,
+     "alasan": "belum teruji: tidak ada pasangan berlabel",
+     "sumber_berkas": [],
+     "belum_teruji": true
+    },
+    "waspada": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama",
+     "arah": "rendah",
+     "pembanding": "persistensi dan klimatologi",
+     "n": 0,
+     "skor_model": null,
+     "skor_pembanding": null,
+     "selisih": null,
+     "selang95": null,
+     "vonis_prospektif": null,
+     "boleh_tampil": false,
+     "alasan": "belum teruji: tidak ada pasangan berlabel",
+     "sumber_berkas": [],
+     "belum_teruji": true
+    },
+    "label_sampai": "2026-10-29",
+    "baris_tanpa_label": 38550
+   },
+   "waspada": {
+    "metrik": "kejadian tertangkap pada jumlah alarm sama",
+    "arah": "rendah",
+    "pembanding": "persistensi dan klimatologi",
+    "n": 0,
+    "skor_model": null,
+    "skor_pembanding": null,
+    "selisih": null,
+    "selang95": null,
+    "vonis_prospektif": null,
+    "boleh_tampil": false,
+    "alasan": "belum teruji: tidak ada pasangan berlabel",
+    "sumber_berkas": [],
+    "belum_teruji": true
+   }
+  },
+  "CEX_dibi": {
+   "metrik": "kejadian tertangkap pada jumlah alarm sama",
+   "arah": "rendah",
+   "pembanding": "persistensi dan klimatologi",
+   "n": 0,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "belum teruji: tidak ada pasangan berlabel",
+   "sumber_berkas": [],
+   "belum_teruji": true,
+   "versi_sebelumnya": {
+    "2": {
+     "siaga": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     },
+     "waspada": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     }
+    }
+   },
+   "versi_kriteria": 3,
+   "retrospektif": {
+    "siaga": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama",
+     "arah": "rendah",
+     "pembanding": "persistensi dan klimatologi",
+     "n": 0,
+     "skor_model": null,
+     "skor_pembanding": null,
+     "selisih": null,
+     "selang95": null,
+     "vonis_prospektif": null,
+     "boleh_tampil": false,
+     "alasan": "belum teruji: tidak ada pasangan berlabel",
+     "sumber_berkas": [],
+     "belum_teruji": true
+    },
+    "waspada": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama",
+     "arah": "rendah",
+     "pembanding": "persistensi dan klimatologi",
+     "n": 0,
+     "skor_model": null,
+     "skor_pembanding": null,
+     "selisih": null,
+     "selang95": null,
+     "vonis_prospektif": null,
+     "boleh_tampil": false,
+     "alasan": "belum teruji: tidak ada pasangan berlabel",
+     "sumber_berkas": [],
+     "belum_teruji": true
+    },
+    "label_sampai": "2026-11-09",
+    "baris_tanpa_label": 13878
+   },
+   "waspada": {
+    "metrik": "kejadian tertangkap pada jumlah alarm sama",
+    "arah": "rendah",
+    "pembanding": "persistensi dan klimatologi",
+    "n": 0,
+    "skor_model": null,
+    "skor_pembanding": null,
+    "selisih": null,
+    "selang95": null,
+    "vonis_prospektif": null,
+    "boleh_tampil": false,
+    "alasan": "belum teruji: tidak ada pasangan berlabel",
+    "sumber_berkas": [],
+    "belum_teruji": true
+   }
+  },
+  "CEX_logbook": {
+   "metrik": "kejadian tertangkap pada jumlah alarm sama",
+   "arah": "rendah",
+   "pembanding": "persistensi dan klimatologi",
+   "n": 0,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "belum teruji: tidak ada pasangan berlabel",
+   "sumber_berkas": [],
+   "belum_teruji": true,
+   "versi_sebelumnya": {
+    "2": {
+     "siaga": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     },
+     "waspada": {
+      "metrik": "kejadian tertangkap pada jumlah alarm sama",
+      "arah": "rendah",
+      "pembanding": "persistensi dan klimatologi",
+      "n": 0,
+      "skor_model": null,
+      "skor_pembanding": null,
+      "selisih": null,
+      "selang95": null,
+      "vonis_prospektif": null,
+      "boleh_tampil": false,
+      "alasan": "kriteria versi 2 sudah diganti: skor terpisah, informasi; belum teruji: tidak ada pasangan berlabel",
+      "sumber_berkas": [],
+      "belum_teruji": true
+     }
+    }
+   },
+   "versi_kriteria": 3,
+   "retrospektif": {
+    "siaga": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama",
+     "arah": "rendah",
+     "pembanding": "persistensi dan klimatologi",
+     "n": 0,
+     "skor_model": null,
+     "skor_pembanding": null,
+     "selisih": null,
+     "selang95": null,
+     "vonis_prospektif": null,
+     "boleh_tampil": false,
+     "alasan": "belum teruji: tidak ada pasangan berlabel",
+     "sumber_berkas": [],
+     "belum_teruji": true
+    },
+    "waspada": {
+     "metrik": "kejadian tertangkap pada jumlah alarm sama",
+     "arah": "rendah",
+     "pembanding": "persistensi dan klimatologi",
+     "n": 0,
+     "skor_model": null,
+     "skor_pembanding": null,
+     "selisih": null,
+     "selang95": null,
+     "vonis_prospektif": null,
+     "boleh_tampil": false,
+     "alasan": "belum teruji: tidak ada pasangan berlabel",
+     "sumber_berkas": [],
+     "belum_teruji": true
+    },
+    "label_sampai": "2026-10-29",
+    "baris_tanpa_label": 13878
+   },
+   "waspada": {
+    "metrik": "kejadian tertangkap pada jumlah alarm sama",
+    "arah": "rendah",
+    "pembanding": "persistensi dan klimatologi",
+    "n": 0,
+    "skor_model": null,
+    "skor_pembanding": null,
+    "selisih": null,
+    "selang95": null,
+    "vonis_prospektif": null,
+    "boleh_tampil": false,
+    "alasan": "belum teruji: tidak ada pasangan berlabel",
+    "sumber_berkas": [],
+    "belum_teruji": true
+   }
+  },
+  "KEK_dibi": {
+   "metrik": "kejadian tertangkap pada jumlah alarm sama",
+   "arah": "rendah",
+   "pembanding": "persistensi dan klimatologi",
+   "n": 0,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "belum teruji: tidak ada pasangan berlabel (K15: arsip status mulai 26 Nov 2026; label kekeringan dan gelombang belum dipetakan ke gerbang ini)",
+   "sumber_berkas": [],
+   "belum_teruji": true
+  },
+  "GEL_dibi": {
+   "metrik": "kejadian tertangkap pada jumlah alarm sama",
+   "arah": "rendah",
+   "pembanding": "persistensi dan klimatologi",
+   "n": 0,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "belum teruji: tidak ada pasangan berlabel (K15: arsip status mulai 26 Nov 2026; label kekeringan dan gelombang belum dipetakan ke gerbang ini)",
+   "sumber_berkas": [],
+   "belum_teruji": true
+  }
+ }
+}

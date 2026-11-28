@@ -91,7 +91,7 @@ Setiap data dalam lampiran ini memuat lima komponen standar data, yaitu konsep, 
 | 56 | Sumber daya yang dikerahkan | Personel, peralatan, dan logistik yang dipakai dalam penanganan darurat, seperti tenda dan genset | Jenis; instansi | Total | orang; unit |
 | 57 | Sumber data | Asal angka yang dicatat | Pendataan lapangan; laporan perangkat daerah; laporan masyarakat; pemberitaan; sistem pemantauan | – | – |
 | 58 | Status konfirmasi | Keadaan pemeriksaan suatu laporan | Belum dikonfirmasi; dikonfirmasi BPBD kabupaten/kota; terverifikasi walidata bencana | – | – |
-| 59 | Keadaan isian | Keadaan nilai suatu isian angka | Ada nilai; nihil; belum didata; tidak tersedia | – | – |
+| 59 | Keadaan isian | Keadaan nilai suatu isian angka; selama kejadian berlangsung ada tiga keadaan, dan pada penutupan isian yang tetap belum didata berubah menjadi tidak tersedia | Selama kejadian: ada nilai; nihil; belum didata. Sesudah penutupan: ada nilai; nihil; tidak tersedia | – | – |
 | 60 | Nomor versi data | Penanda rilis data statis | Nomor dan tanggal rilis | – | – |
 | 61 | Permintaan bantuan nasional | Surat permintaan pemerintah daerah untuk diberikan bantuan nasional | Nomor dan tanggal surat; kejadian yang disebut | – | – |
 | 62 | Penetapan otoritas sektor | Penetapan atau laporan otoritas sektor untuk bencana nonalam dan sosial | Kejadian luar biasa atau wabah; laporan dinas pemadam kebakaran; status keadaan konflik | Nomor dan tanggal | – |

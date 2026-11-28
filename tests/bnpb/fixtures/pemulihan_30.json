@@ -1,0 +1,401 @@
+{
+ "cara_pilih": "Semua artikel unik (per url) di data/raw/dalops/berita_arsip/*.json, data/raw/dalops/*.json (urut nama berkas), dan data/raw/berita/arsip.json yang judul atau ringkasnya cocok regex /huntara|huntap|hunian (sementara|tetap)|dana tunggu|DTH|stimulan|dana (bantuan )?(perbaikan|rehabilitasi)/i; diurut tgl menurun, tanpa penyaringan lain. Hasil 50 (nama berkas fixture 'pemulihan_30' dipertahankan sesuai tiket). Arsip lain (berita karhutla/banjir 20.953 baris) tidak memuat satu pun yang cocok. Label tangan dari judul: huntara_unit, huntap_unit, dth_nilai, stimulan_rp (rupiah); medan yang tak ada = tidak disebut. 'kejadian' mengelompokkan duplikat berita lintas media (presisi dan positif dihitung per kejadian). Negatif keras sudah ada di arsip: Rp70 Juta bantuan huntap, Rp18 Miliar BAZNAS, 99,84 persen, 30 anak, Huntara 4. DTH tidak punya contoh positif di arsip. Kasus buatan ada sebagai assert di pemulihan.py, bukan di sini.",
+ "artikel": [
+  {
+   "judul": "Pemerintah Siapkan Huntap Penyintas Banjir di Lhok Puuk hingga Rumoh Rayeuk, Aceh Utara",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOeHhPZGRrckFyT1hWb21pazJFTkgxUXlRZzl6ZmtURWJWZDJ6dmR3RlBIVkl5LUxPVlM1MFFGVXFtYzRmckMxSDg0ek83Qmc0ZUtPYjVFWFdsT2VwcFBGQXhnNFFnLTZyQUNqcGRKYm9FT1lka3ZRNlhMeWVVS0Vha2lkbkZBZjNRaWJ1aWJ5SUhidXB2QnF4X0t0aWxvNDVPcTFUZ0lrbjdEOEpzWmtEbw?oc=5",
+   "tgl": "2026-11-25T15:04+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Padang Panjang Serahkan 10 Huntap untuk Penyintas Banjir",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTFB4VThfeVhRbFlwVVVsX0lEN2dQMmxWVWZ4RU5kVWEwWFBYU3U2UVRGclYwUkFyMFVjaWNSR2NDRlVISEdZVmotUXc1NTRadC1PZC03eGttRHBxd3NFclg2QzZQYXVOallMZE9UUkhQdHJULTJzRjlQOURB?oc=5",
+   "tgl": "2026-11-24T17:33+07:00",
+   "label": {
+    "huntap_unit": 10
+   },
+   "kejadian": "padang-panjang-10"
+  },
+  {
+   "judul": "Antisipasi Cuaca Ekstrem, Pemerintah Kejar Target Akhir Tahun Bangun Huntap Sumatera",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQYWdvSE5BQXdQNm5pSnVMVHB5OGhjWHNDb2kySXd2dkVVcjZ3UWFGV1NKOG5xSnVjOUlIMmhDckJmbkFvTk1jZ1hybm53eXF5akd2OTRQZ3ZEcjFyd09mYkJzNURCSFZudWNYWU13eGYwVHRUbjZGbTBXQmtJVVM3b3cwVFQ2NTVNdmhfMjRJUW9UUHMyYXRJOUFVQ2tiYkpVRG9kMzBfeGNQM2Q0Sm11c05VQzlHNnBJdk12N3k3THE0LUIzX3ZWb9IB0AFBVV95cUxNMi1lcDRnS3FYTFBBN3hfTGFPamtaLTBuWVpDMkpWNkllNEJOZmFlWXVlNjY4YTdXVGNoQkZMdUpWZ1FLOFh6TDl1TG9iYm9qQXBNRDB0MEFXVnBQWmpxc29kQm5ZWG5KYlAwbWxOcWNMUEN3N2FjWjVKMlR4bnEzTlJIRl9PSDB5T25BNmhVYlFnZTN2TFlyQmVGNTlwSWRvbkRWZU1CandaRFctUldYcFRUT21qNXhrc3NidU5pRE5XZGFkb2VJSjBITlhHeFFu?oc=5",
+   "tgl": "2026-11-24T16:36+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Caritas Indonesia Mulai Bangun Hunian Tetap bagi Tiga Penyintas Gempa Nagekeo",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQTnJDNmpHMlR5YUwtZV9ZSTBxZWdpUXhoU0h3LVZWY0RGdVdMLVR2SzdNNDFqU1RQWDhodkJfSzZqd0pQR0lSWW95b2pIb3JKX0ZKdmdiME5saEF6anZKTmNvVC02RjVrYW9Hbm1RSHBmYVNieHBub1BlNGZyeXEyUTkyQklBLUZpQTh6UjFtNDhReVM1ZzE3ZFI5Q09rOVFxdzNvMnNSVndDTVFzckh3SERMMzRFS2pC?oc=5",
+   "tgl": "2026-11-24T14:01+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Penyintas Banjir di Aceh Tamiang Mulai Tempati Hunian Tetap Insitu",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQQTZwSkVKcmZqMEhteW5FR2ZlZnItdHA5T3lrVU90V1ljWjcyV0VlRXd5bkg4WDdqMkk0TlZ6VmM3Rk5YcmI2OE9MQ0l4OXF1LXJjY01USEZxTHV4Q3ZjY0kzbGR4LXZqWjM5eHR2X3hZX2tBeXJpcWdFUXQxTlpRcklhR0hqVzJGM3I5WkJPZFphc3J0LTJJc0pTZ1U2VUlIczdr?oc=5",
+   "tgl": "2026-11-24T09:53+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Penyintas banjir di Aceh Tamiang mulai tempati hunian tetap insitu",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNWUt0SWt3ZDE1bnROWThTVHpJdXFtWFM5Y3ZPaWg4WmpqSXBweDJMS1NUdW5MUFF0S1hJTG5lakRzYTNkcXNYYnF3VDZqZ2R5VUtITHFYaGRMd2lqUW1NMnpfSWxmclcxOHBBaHNwM196RTJQOWgxSVJjcDcwWUZwUF8zQk0xMklIS2wydUk1ZmpwUkNFRy03NnI4TlhxWnlTblV3NElUNDFUMUFs0gGvAUFVX3lxTE1fMXpja24yLUxEeXVCZHdCelFIc3cyYndFTkt5WWpHNVQyWWRiU0VGcEx2aE1oWkxZU3E3Vm5ueU5qZEpJS1lKbm1nSzAwZjVyRHpRRGVlX2phTUExMWQ2Y21MYmFPenFTbmtJM2JCVlU0Q1NIVWo0N0lhTEFlRXJsR3FGMzJPRW5Pc2ZZZkNiTUg4OF9LTGdoRlR1TkpBdWh0OVNTMG5FMUxLT25ndXc?oc=5",
+   "tgl": "2026-11-24T04:51+07:00",
+   "label": {}
+  },
+  {
+   "judul": "104 Unit Huntap Korban Banjir Bandang di Lebakgedong Ditarget Selesai Akhir Desember",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPLVZEQlJIZzN6N1JDYWV5ckdUWFZxRG1KVHV5Vld6M3lBd2VMTmp4QmFGOXV6cE53VzltYm1ycFJxNGNLalV2R2V3UUljM3VVb1p1VVZSY253XzJNZjJvR0JZYS01bkVHSkt2enpSY1VsTmMybUx1ZTZUcDNZdlpRbmR3TDRQeDBzU01RWnNMckRVUzFHY1hIRUJibkJfdVIxNENyMEI0Zw?oc=5",
+   "tgl": "2026-11-23T16:04+07:00",
+   "label": {
+    "huntap_unit": 104
+   },
+   "kejadian": "lebakgedong-104"
+  },
+  {
+   "judul": "Pulihkan Trauma Anak Korban Banjir, Yayasan Geutanyoe Dampingi 30 Anak di Huntap Meunasah Bujok",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOb2FEdk9qdWJwejQxNFRNMUpZMXRFWldxM1VTYmdyNXJxSEtjZ0VsRTl2WXJyNTd5dHhNREpGUFM4NVQtN1NHdmpMZEViWWtDVmxHYkM5dndLSWpZRHZ2VjFOUXlvallIeUhmUUwxc190eFhuNWN5Z1dvRldtY09scE1zM1hJVFEzUERtZzNDWnMwZ3BOdXJnM2hiX3l6eU5ucHNLazJOSTBRbTJMSkRZQm9jdnRaWUF2a1E?oc=5",
+   "tgl": "2026-11-23T09:55+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Mulai huni huntap insitu, warga korban banjir Aceh Tamiang bersyukur",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOYUE0TzlzWTcyMk1zMUd0LWFoVFN5Y3VVclZYM19rRzBQV2s3d0tURHRwdVU1QjFtcmliXzFxZXJ5aXczTmFJc21faUhOOVA1MmVJLXZrTk56VmJNQUZReV9yZDQ0U3F4eUZBM0JEdS1EMFNrTWczVEdTQlU1X3k2Q1RDNDNWWWhyUUw4TW1GdVlOWks2MHpWZno5bEFnaHlrTUJLSTFOaHRSSVNnMUU4dtIBsAFBVV95cUxOYUE0TzlzWTcyMk1zMUd0LWFoVFN5Y3VVclZYM19rRzBQV2s3d0tURHRwdVU1QjFtcmliXzFxZXJ5aXczTmFJc21faUhOOVA1MmVJLXZrTk56VmJNQUZReV9yZDQ0U3F4eUZBM0JEdS1EMFNrTWczVEdTQlU1X3k2Q1RDNDNWWWhyUUw4TW1GdVlOWks2MHpWZno5bEFnaHlrTUJLSTFOaHRSSVNnMUU4dg?oc=5",
+   "tgl": "2026-11-21",
+   "label": {}
+  },
+  {
+   "judul": "Bantuan Huntap Korban Banjir dan Longsor Sumatra Naik Jadi Rp70 Juta, Ini Skema dan Cara Mendapatkannya",
+   "ringkas": "bengkuluekspress.disway.id",
+   "url": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxQcUVhRlpqTE1Jb3gycWhSb1d1UlRiSjd1c2hmakdESHJVWnFUWTZudHVobmg2SFpxYjdnVHhFRzhXdHlUZU5FT1pjZjZ4T2ViUl9MazlVUFFDc1BacW1jZ1BXbEZidERZT0ZSUEF0dVNIOG5xWi16eUxMWng5dVVDSTdqUGVya193NW00QVhSWnAybGJveFhsaFM2bmg3TENYSExHRlpyQU9sdFc2Um9QRVo1Wk1VRnhzOFZZSE40WTNIbFNjQl8wMHpXNVdvVFRFelFZS3diRy1zTG1xcDlCS3p4Q0p3TFUzenJSUmNB0gHiAUFVX3lxTE9RcTh5Q0pRN3B3Z0dLcEFfbnRmZmZkWXpISC15QXdZaHZTNVBLS0RxZGMydkNnUDRHQWsza0VYNHYweXZLbnUwQlpzRUNaV1J0QjU4NW9YMzdoR2lHOC1nekZ2U3pUM1Q5YlcySTd6LTNjTzVGRm1WMVdwNjdleVE0d2hQeFd5SXo1NHozakVvZldvd0lLcFJGSlBsY0JxOWo1QjdEOEYzT3JuZ0lXTlhwdDNTWWI1eUZvVnhtZ3piR290eG81UDJ3bmFzRFZ0Q244QkVLZFdJcnV0NlVaWUZvRFE?oc=5",
+   "tgl": "2026-11-20T18:00+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Hampir Setahun di Huntara, Penyintas Banjir Pidie Jaya Menanti Rumah Tetap",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1Hbm9OYnctdUxIb1RqOW5mTkc3QXZ3ektNOWVZeHYyVDM5OTNlRm56aE1tX1g2UWNnYVpjSUJfNUhIRmkwTG96U1ctRG5qVWI0cndiZm96TEJjT2ZVejFnX0hrRkFQYVByNWhpQm1jMW9fRFkyb2c?oc=5",
+   "tgl": "2026-11-18T08:24+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Huntara Bantu Penyintas Banjir Pidie Jaya Bangkit, Warga Berharap Segera Tempati Huntap",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQZG5fbXFsbDliV0IyYkdZWjB1ckdveGhIbmFKRzFnRTNwTGM2UmREams2SWM3al82cUdMVHR5QVdBWVA5R0xyaVhMdDdTc3FLdEp4NmJMd1VYb1lOQ29iLVJaSDB6b0hFYzZqWWNtZVdsQVJuZUxiU0JOaTdPVW93YWtfSnJKVmk3eXVNbFlEWUJyVXdyX0k1QXRNLUdNcTdoMXlUYWUtTGFUN25URGdONFBEV3M0RVlqdG9qMGFQYWc3T2xYR3F1S1AtcjA?oc=5",
+   "tgl": "2026-11-17T22:26+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Banjir Rendam Huntara 4 Aceh Tamiang, PU Perbaiki Tanggul dan Bangun Kolam Resapan",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQWUw3OENZXzZhdHI5MGlGeWFxakZaMk82MTRaR25GQUwtYmpCdHItV29nbHlSNzFvY0NFRWl5SlA0OXcxYV9rMmZNUU1WNHdrbHgtQV9BWVFEY1NZYW51MjlFTGtfTUtYRTl3aXdSeHVkQi1WUHpBV0o0TUUzcmRKV1FneFFJNGNkZjNzSVJ3YjItTkhyd1BoNHQyU05fNEl6NWpiWF9ON0x5X19DT05NeGZn?oc=5",
+   "tgl": "2026-11-17T11:16+07:00",
+   "label": {},
+   "kejadian": "banjir-huntara-4-tamiang"
+  },
+  {
+   "judul": "Kementerian PU Kerahkan Alat Berat dan Pompa untuk Tangani Banjir Huntara",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQaXdvRUl0VnpCLTk3aVBaT3NjeEVnd1BWT2Y1UG9ScDJtUjRjYm9uaDJLMWlTTjBJTzhTYndPbTIyVm9uSVlzRDI2VkN4T0N5TFdFd2psVlBELWRzZkE0RmFSNUIzYURMdG9jN0tKNnI4NGhFazhGdk9VbS1yYW11emhDWU9qUm03Nk1leFRvTnZPYmtuTFJJbF96eVhNZjJvUWtMcmFwRTJIUENwV0xMam50RS1VMTQ2Zk9V?oc=5",
+   "tgl": "2026-11-16T22:29+07:00",
+   "label": {},
+   "kejadian": "banjir-huntara-4-tamiang"
+  },
+  {
+   "judul": "Kementerian PU Buat Kolam Resapan Atasi Banjir di Huntara 4 Aceh",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOYWRJLWNSRk83VTVYR1FZWlZBdGY4cU1JNVNhUHBBVGVlc3JXdFJDd0EzelpnS2w1NjA1QmlIZ0ZfQjZxRWgwV01ONjUtR0Y2QWZUc1RlRHZrZkI5V3VnbC0talg2cnRYQUdDTzVXUXdiZUZUbnRoTGdnZVkyQUJhaTFFRG9uN05KWlpELXVCNA?oc=5",
+   "tgl": "2026-11-16T18:05+07:00",
+   "label": {},
+   "kejadian": "banjir-huntara-4-tamiang"
+  },
+  {
+   "judul": "Caritas Indonesia Tinjau Lokasi Terdampak Gempa untuk Pembangunan Huntap Flores",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNWVQ4cGZWcklSSGd2WG9vTHVrYjl0bXBJZUx5VFVWREJjdGNLcXBvcUZIZkhuYjJyM05WLWRDc0t3X28yMDNNT3ZGSWVOd3NLbTM0YXluX3JKemQzLU9qYksxeF92OWNNSjlYNEVwaXdLZVBxcEJKei10X1FPeUwxTUFUb0Ytb0J5RmJTZ3l0X3Q3ak1EM2xOZm0ydi1YeTdFQnl2cjV3U3NCNVVfaHNvX0VGblg5RU5XV3gyLQ?oc=5",
+   "tgl": "2026-11-16T13:56+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Pohon Tumbang Timpa Rumah Warga, BPBD Gunungsitoli Lakukan Evakuasi dan Salurkan Bantuan Stimulan",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxQSUo3dUk1QzBjb1ZsUU5KMWhoN1JOc3huaVV1NUhuQjZFNkQ4c1lUZHk0bXhBbWp2Q01WemtWQ1NYbnpjMEFXcE9LbFcxMVdSSHp0MVZMS0Q4dXdkWldtdXBqZEcxQlVfSjdvR2R1V3VWVWVUYU5sTnhTdmVGSGVyVnBDUkVGdnBHRml4R295Umg4ZVdiUHU1VFh6LVY1UzFYWEFoWWFoQU5ZSE1UbW9ZM3IwQ3NWcnR2c2xoZjNVcUtDanVaRUNvMkt3dGlCeGhxZGc?oc=5",
+   "tgl": "2026-11-16T10:13+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Sebulan Berlalu, Hunian Tetap Mandiri bagi Penyintas Erupsi Lewotobi Baru Dibangun Fondasi",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxQU3AzZ0o0R0RsdnVVUWVMYnFFaWo0bzI4WkZSUzhiWExPbUstTFVockxhQUs4bVV3UjltRGo3QUtEbWFkZnpld2JOT2pqeERneVV6cjBNZkpWc1EyMklFVDMxbEU1MjhmYks4U1YxalY2QllkSVZiRkZzUVk0QUlTTEgtOGhHU1BhOWxtVk1nUjc0VEZaeFd5U3JUTzRfM19lbEVWWHJmYWM0bVZ4OGgtMzFJendBY0dtSU9iOWtXSThYWUNrWWhvc3E2V1hWQQ?oc=5",
+   "tgl": "2026-11-15T21:51+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Tiga Bulan Usai Gempa, Huntara di Manggarai Barat Baru Terwujud Satu Persen, Vendor Bahkan Menarik Lagi Material",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMihAJBVV95cUxNeWtQQjNlMlVOQnF0dk1LTUNxNWZhYWoxdm1NSGZaMVJqZDRnaGtwUkhKdjkxZHVBOUF5RkhKOW9BNk9LRHVLbW1SMWNRcmpfTWdpa3pyMGFwSXdJYVhGMFNwQVF2b2E0dndNWDA1bjNkU1FOVkw0WXh3WkhtM21GMHJVSnRJT29OcFlMV3J6YzRic2hVUGtRQ1BwLXBQVWhEcEpxSXR4VU9QSGF3MnFxTEZHSXZRQnlzd1NrUkZIdVFDbWNSV0s1OFlVZ1JnakwzU0E1Qml5TERTX2c5Q0JmSDZHSU13a2xkaTRCVk1wVlBIWVY1UU5rTkhjcXZXekxtenEwTw?oc=5",
+   "tgl": "2026-11-15T20:53+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Sungai Tamiang Meluap, Alat Berat dan Pompa Disiapkan untuk Tangani Banjir di Huntara",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQaWlSNTlkODV1NFV2LW91ZWNIcDRzb045Q1M2MGgzbmhaMkwwQmV1dDJuSUlXWF96VmlGM0FnM0RwTU9vbDJBZjAzNjhOa0F3OV9HX2VzNjRxczJ3T3RfZlpkdVZIbzBsWDFYSkJsQ1Q2X3RaYVFyRmR0VjRnUHhhbmVFazRCQUNnRnVIWTVEWUMwd196T3NzaTlhSjgwME1lTmtZYU1SQ1BTc0lzRVRqMjJ3TkZtY19HMXpxRjNjMTU?oc=5",
+   "tgl": "2026-11-15T18:37+07:00",
+   "label": {},
+   "kejadian": "banjir-huntara-4-tamiang"
+  },
+  {
+   "judul": "H. Irmawan Dorong Percepatan Pembangunan Hunian Tetap Korban Banjir Gayo Lues",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNaXU5YWpBOUFZZlNfbkFRNFZzWE5GakNQT3dqbV9uT2lKTUFjVkdXWUxjNzRLcGdhVDktZlpDOC1rMHRvLWxOeWl6dURkdkNxWWFXTERRc2hENEktVUktYjM2RGZIOXlXckppSnFNcjZxNUFVTi1jZGxXeThlbUlwRmp1bVVXWndDUmRlaTRpcFB6YnpXWDVYOG9XY0RLYkNBMXc?oc=5",
+   "tgl": "2026-11-15T13:51+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Beredar Kondisi Aceh Pasca Bencana, Huntara Kini Terendam Banjir - Kilat",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPQTVKYjNFUDFMMzZTZjlBWUxEdnpua1ZpeUE3WTF0MTBrSl9lTVRLY1FlUDNORG5tZ2ppMzRrZTVRcVd6V2hBLTJNR19rSDM5UEpaY1p2cFh6R3NGbkU4UWlmekZCRUxFd2lIWFo5dDJTMnNVYmRhX0FEX1pNUWJjTm9seUlZMDc3YmRtcTh6MFZoQjl5azI1WDd6SVFXOGNMOXdnMHBLb1hud9IBrwFBVV95cUxOMTA3aVJac3Q1QlBkN3JrLWxBTjJvX3dMaW9jSFdSY043Tm1fTDBQMFlDSWg3MVdheUpFVzh3Q3UwX04tejdzUi1FWWNBYTdNajBRUXRnbjBsVnVWc2NqY0dpbi1heUp2dE0tOXY1UUR6cXpZeTNwQmktN2Y2WjVOQldUNGRlSkc0cjc1WlZ3amI1NmE0ME1IOGZWdkZ6YzJnUF9GWEhmTlB5X1NYcW9F?oc=5",
+   "tgl": "2026-11-14T19:17+07:00",
+   "label": {}
+  },
+  {
+   "judul": "DPRD Manggarai Desak Pemerintah Segera Bangun Huntara dan Huntap bagi Korban Gempa Flores",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQVk5xaTFoS2ZHelRGRFY3RW8yX05ZX2RwZm1qSE9aQWJqV09WZDhBd3RrVFF4OVBtTjcxMkNuaDVRaDZiNHZKampaekplWUphQ0ZEZEh4TEdMTFlvZENwSnF3UG5aOWxLcl9sOTZFYW1yNW5maHNXYXU2NUUyVThoM2dIUGJNcXFoZmhNaEdiVUd1VHBFOEg4LWdaa3FkT1NwMUZUUnFqUjlOMU5LV3puNkM1WXFoQ28weTg3Zzg0VXdNMzhGQ2hWTF9WUWFPcE5I?oc=5",
+   "tgl": "2026-11-13T16:58+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Tiga Bulan Gempa Flores, Musim Hujan Datang: Ribuan Penyintas di Manggarai Raya Masih Menanti Huntara",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQVEROZXZFbVJ6WHJtQXhVcEJxU3dMMmRuTVZ6Y3M4SGRSeHR5Yk5lbnJmUVdld2JZbC1IQWctakczeVo3cWZ5ZDBlalkzQ0hwaWxZdGEydFRhaHF2b2hKZXNsZ2lJR1prNmhQRU5pa1loVGFkWUwySTN0QzFEUFNYNGRPNHdhOHJVUHlsYTNCTXBNeGIwb19HenYxT1JfUGtNdHBiUTNULWo4OGppazZISkJpOVVKLU5kOFZYMGlHUnB3RlFzMmh6S2VqRFpyVkR5?oc=5",
+   "tgl": "2026-11-11T11:31+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Pemkab Jember Siapkan Hunian Sementara bagi Korban Angin Kencang di Sumbersalak",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQRnNPSUpoenJpeThiY1RpSVNJdmhES0ZLMmU1Z1gwdjRaaVhBWmtMSXRMb21udXQtVm1fUlAzX0JHSDJVTC1VMEJCdHVkTzFYVjFfaDg4UWN5SDhUYUZhRzZuWHdpY2Y2QkxOQkJIMWlXX0l4dkl1dmVSU0tmWkJqdVBsVTRvVElyT1A1LXF4dFNYNVBkU2hDdnYyRGt4U1oxanFyYTJfRDVPTU16TWg4Y3M5TDFPUXdQ?oc=5",
+   "tgl": "2026-11-10T17:35+07:00",
+   "label": {}
+  },
+  {
+   "judul": "2.212 Huntap Komunal Aceh Tamiang Mulai Dibangun, Adopsi Teknologi Tahan Gempa",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQMmFDTlRVRmxvTzNaZVB2ZGNMRmRBZUwzR0k4WVFZNmpRT0diT3gyN0dvVUVPLXIxaGVJTl84enMwN0FVaWZWVVpiTjI4c2NURU0xc3JET3dlUDRiOGFSeWViQmRuWHpiZWptc19pNkpDZmdfQ0xqbF9rRFQ5OElXb05TWFdRbk0yUGZwTFl3eXVITnZ1YW01ak9ibHlpd0JMUGNNSmI1ZUNsS1hma2NaZV9pa3lxbVFzODJCcHZEcw?oc=5",
+   "tgl": "2026-11-10T15:27+07:00",
+   "label": {
+    "huntap_unit": 2212
+   },
+   "kejadian": "pkp-2212-aceh-tamiang"
+  },
+  {
+   "judul": "Pemkab Manggarai Timur Perjuangkan Dana Rehabilitasi Pasca Gempa",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxNTzdWeDFqYWxxbXM0VTQzNEMwYnpfOGVBN2pGX0JiOURfWUNhQ0tqNEVRVXNGbTFNWk94dlhSYXRnbGh2QkM3aHJraVN5d1U4TVFBczBpNEQ3Q1VzeEI1RDJMdTdSdHJaZ2pFTXRBb0paQkJxRDdjYVRhVXRBWTNodVh4aHBEWlh0aGZ6RXVyME83M3luQzZldG13cHdiamx6SVdQY09LZw?oc=5",
+   "tgl": "2026-11-10T15:08+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Mendagri: Pembangunan Huntara Korban Banjir di Sumatra Capai 99,84 Persen",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQNjRMbnFxbTFoUkZ5ZTI3LVowWWo5SXVpUmZOV2V5cUU2WWoyajF2SlNYX2M3R1ZEbGFuOEROekRvd0xXV0hJVHp6TjVZNk5zWW5hRWF6VWdBQW96NE56Mlp0YzMyaG1LQzBoSndBUnlaVHRhanQ0U2FLdVlVdzVrQk4yQllFaUxVLUxOR2l6dTJfam9uQ3FXeA?oc=5",
+   "tgl": "2026-11-09T21:17+07:00",
+   "label": {}
+  },
+  {
+   "judul": "10 Huntara Ikut Rusak Diterjang Banjir Bandang Gayo Lues, Desa Pertik Paling Parah - Suara Merdeka Pekalongan",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxNTnVsTFJmcjJFQXN4OGVvdVlQX2xzUkxOdURzTEV1Q2Z5S3ZaNzNTbHFsNnFDVXpwME5oWkFwR1FBM0FhVUZwaS12UE05TGU5SGpZXy1IUUUtSDdzX3J5QzVkREFoampPZU5ENUYtWllxUHBPdnZwc25QWm9td3dtM1l3dFlSZWRJWE9teEJWZTAtZnB5RzF4UlJ2X044TkdudGdoeUtMNFZoWjBKUmZJNm9RdTRndl9QZWEzWGxoUkY4TExCQUl3RjB5eWQzVzZrWGw3SURB0gHbAUFVX3lxTE04eUtKYVM5MlNSZ09OWE9FNGVtQXdVcHJvbVVTQ2t6dGFCZG5ZOXV4TUZ3bVhOc21GTUwzZWFPTGhrQkRKY3lDUU11Y2xNa040TzE5YUk0WVZzNTNjWmlOcng3Q09qSHRKa0c0d3NhRlZCZk1Fdk5MbFVCWXdBT0dXWEhURmR6c3BHZHJHOHF2RjFJTXpSLU1BTFJwQnNKcEFpd1RuQzlKcVlmYzRyRldCcFVrY0xnXzg4ZXV5RWYyM0Vzbm1UQ3UxSFhydEFMRkx3eHY3YmFoRnZTSQ?oc=5",
+   "tgl": "2026-11-09T18:56+07:00",
+   "label": {
+    "huntara_unit": 10
+   },
+   "kejadian": "gayo-lues-10-huntara"
+  },
+  {
+   "judul": "10 Huntara-115 Rumah Rusak Akibat Banjir di Gayo Lues",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOYUZ2WmJ5NzdqcVFtSWwweTlRVUFWdnhJN25KQ3dGMmp4ZlNreWl4dUNHU1JveTB4LUVGdjlEbTVHVF8zTTdTTDlpdmNBalhYOGhia0tpZmFWYnlFSURTLUlnRXJ6Vks0VE15Vk42anJMNGJfWmZCaHcxY2g4MXFDQUtQRlNEZmN2WUNCVzR4d9IBjwFBVV95cUxOYUZ2WmJ5NzdqcVFtSWwweTlRVUFWdnhJN25KQ3dGMmp4ZlNreWl4dUNHU1JveTB4LUVGdjlEbTVHVF8zTTdTTDlpdmNBalhYOGhia0tpZmFWYnlFSURTLUlnRXJ6Vks0VE15Vk42anJMNGJfWmZCaHcxY2g4MXFDQUtQRlNEZmN2WUNCVzR4dw?oc=5",
+   "tgl": "2026-11-09T14:05+07:00",
+   "label": {
+    "huntara_unit": 10
+   },
+   "kejadian": "gayo-lues-10-huntara"
+  },
+  {
+   "judul": "Pemerintah Siapkan Pembangunan 22 Huntap Korban Banjir di Binjai",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPUDcwUm1GX19HUjlrcXZOSU9iWTl5NFEzMTZsSGo2N3ZoaFoyRXhGV1JIbE9WY3d4eEE2NVF2YllDazRhNFVhLWdzOFdRX2tlX2tkNkc0bWp1TmJZdUVfZkRKaHBuSUk3YWRUcUFISzhXT1N6b1FDQWFlU1Ntc2hBOWhNRnc1RDNYTFBsMEl3U1ZVcmdTdlVMdVpBNG9nXzNzZVNpem5CTmR6OHYxMTlBaQ?oc=5",
+   "tgl": "2026-11-09T11:35+07:00",
+   "label": {
+    "huntap_unit": 22
+   },
+   "kejadian": "binjai-22"
+  },
+  {
+   "judul": "115 Rumah dan 10 Huntara Rusak Akibat Banjir Bandang di Gayo Lues",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNQkw5SXVDUG5KRFd5MnlNN1hEcFNMRGZXZnZ2d1R5RlZBZWRHaUJBdENQTDZINTRhOWNGM0Z0eGR0WDdlVkdWMFBwd3BLLXRCNXRxeS0tXzdUb2pYT2Y0T1pDVExYWHEyRm1rZkVBMF80UUZDc0tPd1BzRElaR3JKbzRaenpiN05DcGdTNnI2RzY1Tkt5YzBQb2EzaVZnTkU0VjdBOFRpbmHSAa4BQVVfeXFMUENXTWdickdsdG4tcERMa0xGa09ta0RETTZPZmwzRUlhczB2QkpMbHh2cjdWdXZBMGctSGM2RUFseDZKYWd3a0tDZEg0VkZpR3VjSkdXcnR3VFhkalo3V2d1MWstUGRKVDRvMy1uTFZjLXZaaUpCeGFsZGNQaGZSLWtXQWhFOFBlczltRkdxOXJIdHdSZTJuNWhSRE82c1IyUlcwRnNDeHZDMVo2TE5n?oc=5",
+   "tgl": "2026-11-09T10:52+07:00",
+   "label": {
+    "huntara_unit": 10
+   },
+   "kejadian": "gayo-lues-10-huntara"
+  },
+  {
+   "judul": "10 Huntara-115 Rumah Rusak Akibat Banjir di Gayo Lues",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPTXhLNlhVMTh0YUZLb2pPSC1hZFR4MVJ4T2NrcDMzdkxGd3Vvd2kyQUFkQXBrVjYwN21YTXV0MEpfRDU2QzJ0UDg5VjkwYlBEY2lCMEtUdlRJNnhYUU9acGZRdy1La0tyQUFSd3FsY2NjandtemVpMXJiWFNyTWduWDFsQUpyY2pVQ3d4d0JsbGJNalNuaFFvaDgtZ0w0d2fSAaQBQVVfeXFMTjhQajBGWGtsNG1mVDJSM190SEVUZ2hMWm5wWnpUWm9kbVBxTksta0xWOXRBcUJaaFV2c1E5aE9kV1p2cGUzS0Q4TkFydjFiQzM5SXRtSHZwZlVLWWJLQnIxTzE4QUM5dWtxRnNGQ1JIMVVIRmdWdnNQOXV4UEo2cG1GdUxtZ01vaWJwR2NUbWFoMVpjQ0ZMY3JicXFnaFFYOVBkVzU?oc=5",
+   "tgl": "2026-11-09T09:43+07:00",
+   "label": {
+    "huntara_unit": 10
+   },
+   "kejadian": "gayo-lues-10-huntara"
+  },
+  {
+   "judul": "305 KK Korban Gempa Paralando Terima Bantuan dari Keerom, GRPD Soroti Kebutuhan Huntara",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxQUmVEamE4NEdNVDVOTlZ5ejNoOFNwS19kTzl4VWo2eWNkVG14ZVF3UmdiaWlST1VIVFgwQk9aMnlRaEtKZ21Ed3dSNjlFUG1fdjNleGlzVFZ6XzdaaEZmYllaaVQ1VzhXSDJCZGFmd3R4eXI4TmVaNWFLeVIyQ1J4LW5hTWczWm4wMHlLVFFkWHlQb2tKN0twcjRPRmRRdVhzdV9ycWxkM3djYU1mLUw3M1FlMjllV3pocDBEenBjMWk0U0k?oc=5",
+   "tgl": "2026-11-08T19:43+07:00",
+   "label": {}
+  },
+  {
+   "judul": "BNPB Salurkan Stimulan Rp278 Juta untuk Pemulihan Ekonomi Korban Longsor di Wilayah Selatan Bandung Barat - Koran Gala",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxOTkpnekNVbWJudnRkZHVqU3Zjb0p1ZDdkZXYtQzJmVDJkREtja085WERNLUFjNVdqNDItT18xT2h3bVRTMmxsTXplTU4xbkRnMW84YnQtZGswVGhPcTJZeFA2THVZMVpYWlpzOTN2bnE1NmpYY08yaGVSZUR2MGlacElvdW8tVmZtelZWNW40ZXM2TnhSRkY1TFEyUDJBTzA1elduSWpubnR6bTZLcjVfQzJ4OEg3WERQUmVBdDhjTnFyVVlmaW9PMGpfOVFEM2xZRmhmZHJIaWdhbk9Bd3dEV1hR0gHnAUFVX3lxTE4tcE9VbTYteFNQU2VVN2tjTHpDMDg3TXRoNTJ5ekY1QVZZd3NuN2gyTUd3dW5BWjZnVHlibi04OUE1dXZqbE1QRzVoWVV6V05fX0xMQTJfaUJJdklMVkFjOWwzeE5fMWlRN2JPeUlFaDlkSWZQY0FNVnJtTlhHOVphUFJjZ1NaN2x3LTBuWlQ5SFNUN3FScjJKOFpIblNnelM1c0s2Rm81VlM3WjJTNVRfSHIzQ2RzUDBNZGhCa1dST1FDV080Q2VhTzNGV18yY1NVOXhTRzlOVDJTWEVJVWhlVDF4QTQwcw?oc=5",
+   "tgl": "2026-11-06T17:30+07:00",
+   "label": {
+    "stimulan_rp": 278000000
+   },
+   "kejadian": "stimulan-bandung-barat"
+  },
+  {
+   "judul": "BAZNAS dan KSrelief Salurkan Bantuan Rp18 Miliar untuk Korban Gempa NTT, Siapkan Huntara hingga Beasiswa",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxNWGpsNlBxMlB4ZWV2NWdzanVIMDlJbVhkQU1OX0tqWlVKeGRMZFNfZnVnLURvNXkwMFpiZkVBOTd3Z1RhX3F2MHR1XzFwMkNiSS15Rk4zQW5OZmdNQzkwZlJtdkh2WWJfOE9UZ2FYaGRraEpwV0YwZzN2WXZzbzRPWHdUd2lRdGU3ZDdaLThBSWxUN3VwTnFzUGFUUFNpS0RST2dTcmg2eEZPbE80UnloTDJUMXQ4NW1DRXZWaUxnak5rYkJkT05IZ095ZTVSQVJsSkF1bUlHdUw2RzjSAeABQVVfeXFMT2dpUjlkOUpfcFRKdTZEaTFEajI3eFFwSkRPUGxHOXU2cl9mVWZ3ZlEzU01idjRqdk5GVUl1TFhZdURVaXM3dzVZUVdpbkh4TXd0UUU0ODNidm1zOHYzZ194blNZRG1PdnpzMWt0UWRWNVdZVXR5OG96enc2NVBEVnpzSmVSS1FiSFZ6YWhqTHotanFFenNVMDVFSFRvZUw5M3FJMmEydkprVVp4VWY2YmpFcTA4YW1ENXM3bS1fSmk2X2NNLVhwcFVSdGxqTnkxVXVUOUppSkZRN1BESFZIaWo?oc=5",
+   "tgl": "2026-11-06T16:25+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Kementerian PKP Bangun 2.212 Huntap Komunal Tahan Gempa di Aceh Tamiang",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQRXp1VkgtbzVDQ3ZXakhtNTRRY2pxaDRVX2FkajJlMzBTNXNQNVp0VmxsNF9uRTZvdW5OaFZIajhGVnRDa1JfSWs3VE9pQ2dXS1FVcEpSTGtlTmFiT1FxTU5sZUNuVjR0UkVFNF8zWEZQcjZuLW9ZZVMyclJjd1pidExtdlJWQTFnaXZqS0pybUxhZkZhNm13bjRHN1otUWIxTnRKcW1R0gGrAUFVX3lxTE9rblNsQXczRzVUN0tJWGI1MmkzQWZMMWZXOEQ0UzRGclZRWVZ5U3d3blNmZnBOMnF2ZldYWndJNUJHUnJWTXoyNkNCVkxFUk1xZlZncjFvZ1VIR09fZHpCNEVSNVl0RWNRNHRPUGxrZGR4WDV3Tk1makVLemxNd3JwU1NCN1MwT1p1c1pPUnlFZjdUdXYzOWhKYnF6S2lPNEVoWnJKQkhXeTZibw?oc=5",
+   "tgl": "2026-11-06T11:37+07:00",
+   "label": {
+    "huntap_unit": 2212
+   },
+   "kejadian": "pkp-2212-aceh-tamiang"
+  },
+  {
+   "judul": "Kementerian PKP Bangun 2.212 Huntap Komunal Tahan Gempa di Aceh Tamiang",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQTWU1dWFLaE1DRkxLRWxWRUVwSHVZUVR6aTh2bGM3aTVMVHIwSDEyck5XRkZLV0k0cUNvOUFUSUNBMV9fU3FJNUtfWnEwTkRhSTBndHRyUTRhdG44ZnF6bnpNM1JqMFVIa0RNTHJoclVzS2wweDZDUl9CY1djeTJaQUdqNVg1WUcxeVNtbDJENkx6YkIycUkyQlF1VWNBNWlQeXE1SktkTFlBdw?oc=5",
+   "tgl": "2026-11-06T09:00+07:00",
+   "label": {
+    "huntap_unit": 2212
+   },
+   "kejadian": "pkp-2212-aceh-tamiang"
+  },
+  {
+   "judul": "Kementerian PKP bangun 2.212 huntap tahan gempa di Aceh Tamiang",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxOY3FmY3M5UkFFcFNyR3pTVWUzRFl2aEJOcndpT2tHd2FPRll2dXh1NFRBb2VfSHVCVU9TWXprZFVNYl95eHFQQzIxajA1bEZNNzZEVHh2d0o1SU5GQ29nRkx5SXM4RjR5TDJHZjZPaDRSa3R1X0pvQ0d6b0ZGbEg4ek5qVWxnc01kZTJOdUJmMElZSm1halNUWnZfY1MyUHdJWGlyOEppTdIBqgFBVV95cUxQa0JBMGNoUkkwOHNWUExMaWdEOFVNcVJJa0JrdWxsMGhUc1l1RDZpaWN3V2EwSUd3V01iSFZYQjFOMUFXcU1KdFBkRlI0cXVBQV9iSS1FZUtOUHkteVBvVTRCd0pycnhnSjFKVXVVc2laSVNBZ3lUXy0yVWZYendyaXlKRDRZWWtnaDFSbVZicjFyYzk2VC1DOUh2YTFDNGtTdDJVQV9wYzdKZw?oc=5",
+   "tgl": "2026-11-05T19:43+07:00",
+   "label": {
+    "huntap_unit": 2212
+   },
+   "kejadian": "pkp-2212-aceh-tamiang"
+  },
+  {
+   "judul": "Pembangunan Huntara Korban Gempa Flores Terhambat Korupsi BNPB",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNc2RVd0JULWtoSjFHVC1jU3RXek5nZHp6RVRybWtvMUJ5RGZHM3Z1R3Y4VUZrOEEwVVJuOG9Ob0FrM2w5c24zejgxazdjMFpBNGozdGNnWmNrRVBKNUEteHRnbFlyYXlJLUtBdy10U09ENDlBRHRnZ3JncUdmRGNkSkV2Zi1DWVZMdlQxMmJyb2I3eWNYQUF2a1RDdm5CVU1yLW5DbUh5WkRCZVcxVU5KZkFxNnY0cjTSAbcBQVVfeXFMTXNkVXdCVC1raEoxR1QtY1N0V3pOZ2R6ekVUcm1rbzFCeURmRzN2dUd2OFVGazhBMFVSbjhvTm9BazNsOXNuM3o4MWs3YzBaQTRqM3RjZ1pja0VQSjVBLXh0Z2xZcmF5SS1LQXctdFNPRDQ5QUR0Z2dyZ3FHZkRjZEpFdmYtQ1lWTHZUMTJicm9iN3ljWEFBdmtUQ3ZuQlVNci1uQ21IeVpEQmVXMVVOSmZBcTZ2NHI0?oc=5",
+   "tgl": "2026-11-05T18:17+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Kementerian PKP bangun 2.212 huntap komunal tahan gempa di Aceh Tamiang",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNTFdWaER5ZFNmcHJPREJVYm4xVG8yb3hMN2lreGRRWTN0WkxZYnNfRWdIRHhsTWtZN0hjNHFXNFRRVE9uWVdIVy1uczJNaTlwWERKVDJVbVlTUnJTa1ZGdXlHYXNIcXo3SVhCSzZXQzNnWlJoNzgxcjJKYmMzTVVXRlFHMkFwN2FVLW1McVlwV1hKZTlxd3V5SHRVRGdaLUV1X0NfbHZWenFTMkFoVFl3NURR0gG3AUFVX3lxTE4zTlJyOVBjZmZJMHZfN0NNeEdjOEFjcGJ4NDZXZklZRVVUSzcwWjY3ZHNyZWVrNTF1bUJlM0NnbGloc0pwSVpDaVZZNzVtaFZ4dzEtM25FeVM1bU5QeXl6S0JaTldWRllvODl1cThTazdEbnN3OUdMZmw5RWs4TEdLdTVXWXd1ZXhzUmgyWXlZcXJFZlc1T2lCNWdLejllMEFkLTZxQ0RBaWhXU0dTSWVybUd3ZGgyaw?oc=5",
+   "tgl": "2026-11-05T18:07+07:00",
+   "label": {
+    "huntap_unit": 2212
+   },
+   "kejadian": "pkp-2212-aceh-tamiang"
+  },
+  {
+   "judul": "​2.212 Huntap Komunal Aceh Tamiang Mulai Dibangun, Gunakan Teknologi Tahan Gempa",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxPNFdOUnBfTVpyM1R0OFpqRWg0aEoteEVYbjJ4eHJQdHRoQ2htY1ZNQ1h0SkZaMVNibEV6NEhZWHI5ZnNQQTY1V1FNWldKencxNUdkNG52a1VIMXh4WW1GTDhseEQxMzd6SDJqcXpiSDRCa1diQlA1RF85S2F6aXRXSWIyaWlxSXNSRE9tQUNMZkFjNWl6Yjl0UTFTYUUzZ04wN3lWakxDc1ZIMzN5MnE2Zy04Y1NSYTNZamt4NnhWVGJLQ1hmMVFn?oc=5",
+   "tgl": "2026-11-05T16:24+07:00",
+   "label": {
+    "huntap_unit": 2212
+   },
+   "kejadian": "pkp-2212-aceh-tamiang"
+  },
+  {
+   "judul": "Bertemu Kepala BNPB, Bupati Al-Farlaky Perjuangkan Pencairan Dana Stimulan Banjir",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQX29SNFgtc2Q2U1VwRVUzUGY0S2xRUmI1bmk5OFpONnc1V3M3QlVRVGdDOWRJOGhRbVNvbGFPODlMVEtPNHFXejVISG9EZXVOS29oNVNZa0NaUkZwZlduQ2hIYXlseEdhSk1CY05lLWVMZExWUnZaM1BrZklsS1lkWDBmXzVBVjJJTXJYUFhmcnBScGoyQ3I4anBIc284V3VmWUQ2NXJDQjIzMy05N3NXdlFIRzZyQ3VWUFNfYlhYWV9BT216VGdGcw?oc=5",
+   "tgl": "2026-11-04T16:29+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Gempa Flores: 70 Persen Huntara Masih Swadaya Warga, Pemerintah Baru Bangun 30 Persen",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPU2VxdjhPWjg0cnVVSG00d2tlNU5fb0Z6MnRPT1NzVXBTd1JCZDd0RXNMYWFKNE5uNmNqd2hpdWc4S09lamlfdzlNd0xxQU1wcTFMc09PQUtZWkZSRVJPMW8zWDlHUGVVdmViQU9zcjNEY0RsdkZxRGlPZnNNX3ZMYTdncXNINkx6U0Y2MUdoUnk3X0dEUTJJeFpMV0JmUnBxQ3lpYnJXTTZvamFYRklFZmNtUWlsS0FqN21PMA?oc=5",
+   "tgl": "2026-11-03T11:16+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Nasib Penyintas Erupsi Semeru, Hunian Tetap Terancam Dicabut karena Ditinggal Merantau Cari Kerja",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxQSjJTNGFweGZlQUFzTUhmQ25mMUtQUHhnVGZleEFpSEc2SnFGUVdSMGZZbXQ4Y3lFUmtiNU42Sm5GZkJ2NmZicFRYZFlPRGZuRlc4RkVWV3lmY0E1MXJ0RFR6bmVzVWtqU29aaDVWMXNyZWtFU203d2pjN3AxMDhVcGhkUmpPSUZJQ0FXSHhja2pFMVpqQjk5SDFyUzduUUExQ1RYRXBuM3U0RFhQdzVHV1pxUmVJeGtwc2ZZSmtRSUpub0FJWWRBNGVUZ3YwTU5oc0F4MUQwUDJhWUhqZDVNZg?oc=5",
+   "tgl": "2026-11-02T00:07+07:00",
+   "label": {}
+  },
+  {
+   "judul": "5 Tahun Berlalu, Korban Erupsi Semeru Masih Kesulitan Cari Kerja dan Akses Kesehatan di Rumah Huntap",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxQNmZGel9lR19uN0trN1p3VUVsU3laQlZyUExtcnJfckNFcmxoRzM5OXJ6d1d1R0VuaDdoQmwzcUxLYVVvREMwLWU1OF9KOU9teUxiYUUtYXd6ZEp6LU5ZajNjMlhEN3RiUDVZV3lzSVFoV25QR3F3WXBlMmF4TnBCbzdhYTl1RTZrZWtBcHhSRk5kSzN5eDNQLWQ1eHdqVUJ6bU1rN0RIalhiWHNmTGVhV2k5R1NZeHBvTUozdlRndWZMeVdpNEdORVBJLU5qMzVPTk9rczc5Vk4?oc=5",
+   "tgl": "2026-10-31T20:31+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Huntara Masih Minim, DPRD NTT Minta Pemerintah Hadir untuk Korban Gempa Manggarai",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNT09IcnR1d0VYQTdqWkFNZjF1T0VHYTNoMlJnazBEWHVqRFNsRTFXaDJ2SFpNZzJMdHNqMF8tc1NVcF9BRVh3T3Q5eVVnVkxLdkM1MzB5emVCSmozak5HRjZMUlJoMGJ4ZjJtVDVacUI1M1duUThXTmszdWVoTEZxdVVDLUhUaEh4cktYbTF4Ti1yZXVlV2xxZl9yYThiWHZ4ZWhQQVVzNnpVaUNJYWtiUFIyVERReXF2?oc=5",
+   "tgl": "2026-10-31T12:57+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Pemkab Nagekeo Apresiasi Pembangunan Hunian Tetap bagi Korban Gempa",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOZE0yMkhKQVVxYXBVU0hNUWNxTDhJakVQZ1lpcmtVRzhOVWszcU9RZ1BfWFFmQmZqT01jUHphV3owbHJnU0JJb1NncTR6djBtTjAwTDlZWEVpcWRUdWJVb2l0dUV5R0doX0JVSjFCVjROQU05OEJjU2h2QzRobzUwZlF4QU5GdFlfOEFnMFFIVGpKRzNnRmN2M29JTjFtQ05vWEZLZ1RhemloWE1X?oc=5",
+   "tgl": "2026-10-30T16:37+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Keuskupan Agung Ende Mulai Bangun Rumah Contoh Huntap bagi Korban Gempa Flores",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOT3hVZnBBRnhHNGFmZWw2RFlKLWJtMkh1NGhaTTUzNTdkOVhjR2VLWEFlSWxDNWNvU1NtcFh3WmpvNnlxQVhaVnA4QkNLM0RiNkIweEpudGg4WDdzMHpYRkpNRkN1XzExb2FXYXctY0l6bzFXT1dYMnJSaV90TGZtaWlwYmdxYXJKV0tabnBCeV9CZzh5dVNla1VPVXUySEMxNDVwblRFRDJfU1Y4UklVeXhZek5FZ2V6YV9r?oc=5",
+   "tgl": "2026-10-30T16:20+07:00",
+   "label": {}
+  },
+  {
+   "judul": "Menko Polkam Dudung Evaluasi Huntara Manggarai Barat, Pastikan Penanganan Korban Gempa Tepat Sasaran",
+   "ringkas": "",
+   "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxPZTZzVjgtYTBmQkFfaHh2UnM1eUs4SHpTc19nc3A4bi1XUDFMTDdkSXhyMWJybHQ1NUZ1YUFIYklNcGYyVW90Y0xKTDMwY1VQS1lOU2FJZDlRbWNXYk1kT1FvWXhrSVNqWGthUkJtX21NeFRsWU5Id1ZwVnh4S01kRS1ZZHV4dFZUYzFhS1FzWmFjLVBYdlBweTZDc0piY2VzLWE1c2Y0cUZNM1BxTXZvYVAxR3FpTUFqUmpkSDhWWlJYTzhFN2d6eQ?oc=5",
+   "tgl": "2026-10-30T09:56+07:00",
+   "label": {}
+  }
+ ]
+}

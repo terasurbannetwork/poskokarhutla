@@ -5,7 +5,7 @@ Hitungan uji (TS-15) memanggil muat_kriteria() dulu; berkas kriteria hilang atau
 Sidik mengunci: kriteria, tsunami_sumber.py (Okada), tsunami_hitung.py (mesin), hash berkas run-up NCEI.
 Kode hitungan uji (TS-15) di berkas ini sengaja TIDAK ikut disidik; kriterianya yang beku.
 
-Pakai (dari akar repo, `python3 -I`):  uji | kunci (tulis .sidik, sekali) | cek
+Pakai (dari akar repo, `python3 -I`):  uji | kunci (tulis .sidik, sekali) | cek | amandemen "<alasan>"
 """
 import hashlib, importlib.util, json, os, sys, tempfile
 
@@ -28,6 +28,37 @@ def _sha(p):
 def kunci(kriteria=KRITERIA, sidik=SIDIK, kode=KODE, runup=RUNUP):
     """Tulis .sidik sekali (menolak menimpa). Dipanggil manusia, bukan hitungan uji."""
     return SD.tulis(sidik, kode, kriteria, [_sha(runup)])
+
+
+KELUARAN_UJI = "public/gempa/data/tsunami_ujibalik.json"
+
+
+def amandemen(alasan, kriteria=KRITERIA, sidik=SIDIK, keluaran=KELUARAN_UJI):
+    """Amandemen bernomor TERBUKA atas sidik beku, hanya selagi belum ada keluaran uji balik. Mengarsipkan .sidik lama
+    (`.sidik.<no-1>`), mencatat {no, tanggal, sidik_lama, berkas_berubah, alasan} di `amandemen` dalam kriteria, lalu menulis .sidik baru
+    (field `amandemen` = no, `sidik_lama`; sidik baru tak bisa dicatat di kriteria karena ia ikut menyidiknya).
+    Isi kriteria (ambang, kelas, pembagian) TIDAK diubah; yang ditambah hanya kunci `amandemen`."""
+    import time
+    if not alasan or not alasan.strip():
+        raise SystemExit("amandemen butuh alasan")
+    if os.path.exists(keluaran):
+        raise SystemExit("amandemen ditolak: %s sudah ada (uji sudah dihitung)" % keluaran)
+    lama = json.load(open(sidik))
+    berubah = [p for p, h in lama["berkas"].items() if _sha(p) != h]
+    k = json.load(open(kriteria))
+    riwayat = k.setdefault("amandemen", [])
+    no = len(riwayat) + 1
+    riwayat.append({"no": no, "tanggal": time.strftime("%Y-%m-%d", time.gmtime()), "sidik_lama": lama["sidik"],
+                    "sidik_baru": "lihat field sidik di .sidik (ikut menyidik berkas ini, jadi tak bisa tertulis di sini)",
+                    "berkas_berubah": berubah, "alasan": alasan})
+    json.dump(k, open(kriteria, "w"), indent=1, ensure_ascii=False)
+    open(kriteria, "a").write("\n")
+    os.rename(sidik, "%s.%d" % (sidik, no - 1))
+    d = kunci(kriteria, sidik)
+    d["amandemen"], d["sidik_lama"] = no, lama["sidik"]
+    json.dump(d, open(sidik, "w"), indent=1, ensure_ascii=False)
+    open(sidik, "a").write("\n")
+    return lama["sidik"], d["sidik"], berubah
 
 
 def muat_kriteria(kriteria=KRITERIA, sidik=SIDIK, runup=RUNUP):
@@ -78,6 +109,8 @@ if __name__ == "__main__":
     a = sys.argv[1] if len(sys.argv) > 1 else "uji"
     if a == "kunci":
         print(kunci()["sidik"])
+    elif a == "amandemen":
+        print("sidik lama %s -> baru %s; berubah: %s" % amandemen(sys.argv[2] if len(sys.argv) > 2 else ""))
     elif a == "cek":
         print(muat_kriteria()[1])
     else:

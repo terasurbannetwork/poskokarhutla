@@ -55,7 +55,7 @@ async function daftar(isi, sk) {
   const S = {prov: new URLSearchParams(location.search).get("prov") || prov0 || "32", kel: "semua", bencana: "", baris: null, terpotong: false}, pj = penjaga(), P = {};
   sk.periode = () => ({kab4: null});
   const hasil = h("div", {}), ctl = h("div", {class: "sk-ctl"}), aksi = h("span", {});
-  const kart = kartu({ey: [ik("timbangan", 12), "Renkon"], judul: ["Renkon ", hl("menunggu"), " data"], kanan: aksi, isi: [ctl, hasil], id: "daftar"}), judul = kart.querySelector("h3");
+  const kart = kartu({ey: [ik("timbangan", 12), "Renkon"], judul: ["Renkon ", hl("menunggu"), " data"], kanan: aksi, isi: [ctl, hasil], id: "daftar"}), judul = kart.querySelector(".sk-ring");
   const optProv = Object.entries(K.provinsi ?? {}).sort((a, b) => a[0].localeCompare(b[0])).map(([k, n]) => [k, n]), optB = [["", "Semua bencana"], ...Object.keys(K.jenis ?? {}).map(j => [j, namaJenis(j)])];
   ctl.append(seg([["semua", "Semua", "semua"], ["persiapan", "Persiapan", "mata"], ["berlaku", "Berlaku", "perisai"], ["kedaluwarsa", "Kedaluwarsa", "silang"], ["dimutakhirkan", "Dimutakhirkan", "panah"]], S.kel, v => { S.kel = v; gambar(); }, "Status renkon"),
     h("div", {class: "sk-baris"}, pilihan(optB, S.bencana, v => { S.bencana = v; muat(); }, "Bencana"), pilihan(optProv, S.prov, v => { S.prov = v; try { localStorage.setItem("sk-prov", v); } catch (e) { /* abaikan */ } muat(); }, "Wilayah")));
@@ -105,7 +105,7 @@ async function daftar(isi, sk) {
 async function detail(isi, sk, id) {
   const S = {tab: "asumsi", d: null, p: {}}, pj = penjaga(); sk.periode = () => ({kab4: S.d?.renkon?.kab4 ?? null});
   const hasil = h("div", {}), ctl = h("div", {class: "sk-ctl"}), aksi = h("span", {class: "sk-aksi"});
-  const kart = kartu({ey: [ik("timbangan", 12), "Renkon"], judul: ["Renkon ", hl("menunggu"), " data"], kanan: aksi, isi: [ctl, hasil], id: "renkon"}), judul = kart.querySelector("h3");
+  const kart = kartu({ey: [ik("timbangan", 12), "Renkon"], judul: ["Renkon ", hl("menunggu"), " data"], kanan: aksi, isi: [ctl, hasil], id: "renkon"}), judul = kart.querySelector(".sk-ring");
   const bisaSunting = () => (S.p.pd || S.p.ko || S.p.sa) && ["persiapan", "pelaksanaan", "finalisasi"].includes(S.d?.renkon?.status);
 
   async function kirimAsumsi(badan, pesan) {

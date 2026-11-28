@@ -104,11 +104,7 @@ async function mulai() {
   segar();
   if (location.hash.length > 1) document.getElementById(location.hash.slice(1))?.scrollIntoView({behavior: "instant"});   // token baru terpasang: tinggi halaman berubah
   matchMedia("(prefers-color-scheme:dark)").addEventListener("change", segar);
-  $("#ds-tema").addEventListener("click", () => {
-    akar.dataset.theme = gelap() ? "light" : "dark";
-    try { localStorage.setItem("pk-tema", JSON.stringify(akar.dataset.theme)); } catch (e) {}
-    segar();
-  });
+  new MutationObserver(segar).observe(akar, {attributes: true, attributeFilter: ["data-theme"]});   // tema diganti dari panel Pusdalops
   $("#ds-menu").addEventListener("click", e => {
     const buka = $(".ds").classList.toggle("buka"); e.currentTarget.setAttribute("aria-expanded", buka);
     if (buka) scrollTo({top: 0, behavior: "instant"});   // daftar isi ada di puncak halaman

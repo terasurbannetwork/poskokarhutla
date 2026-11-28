@@ -183,3 +183,9 @@ bahan dan perintah `buat` dikirim ke nomor baru. Mulai ulang satu bot: `launchct
 (atau `-laporan`). Balik ke satu nomor: bootout keduanya, `mv ~/.wa-lapor/auth ~/.wa-bot/auth` dan `mv ~/.wa-lapor/limit-state.json ~/.wa-bot/`, pasang lagi `id.centurisk97.wa-gateway.plist`.
 Jangan isi `WA_STATE_DIR` di `.env`: dua gateway lalu menulis satu `limit-state.json`.
 Uji: `node --test tests/wa/peran.test.mjs`.
+
+## Peringatan sebelum subuh (semai awan, SA-24)
+
+Proses terpisah `scripts/wa/semai_subuh.mjs` (tanpa menyentuh `otomatis.mjs`), plist `launchd/id.centurisk97.wa-semai-subuh.plist` (05.15, 05.45, 06.15, 06.45 WIB). Mati bawaan; hidup bila `PENERIMA_SEMAI` (JID grup Pusdalops) terisi di `.env`. Membaca `/api/operasi/semai/berkas/semai.json` lewat login akun pusdalops (`LOGBOOK_USER`, `LOGBOOK_SANDI`), menyusun teks dengan fungsi murni layar (`public/operasi_semai_murni.js`): zona usulan teratas (paling banyak 3) dengan jendela, ketinggian, bahan, asap, dan baris "Perlu tindakan" bila asap menyeberang ke negara lain. Satu kali per hari (`~/.wa-bot/semai_subuh.json`). Prakiraan lebih tua dari 9 jam dianggap putaran sebelumnya: ditunggu sampai 06.30, sesudahnya terkirim kalimat "data putaran pagi belum tersedia". Galat dikabari ke `PEMILIK` sekali per hari. Uji coba tanpa kirim: `node scripts/wa/semai_subuh.mjs --kering`.
+Koordinat zona di teks WA memakai blok `mitra` semai.json (dibulatkan 0,5 derajat di server, ditulis "sekitar"), bukan koordinat penuh (KEAMANAN-PRIVASI §3).
+Pasang (pemilik): isi `PENERIMA_SEMAI`, lalu `mkdir -p ~/.wa-bot/log` (tanpa itu launchd gagal diam-diam), lalu `sed -e "s#__REPO__#$HOME/Developer/poskokarhutla#" -e "s#__NODE__#$(which node)#" -e "s#__HOME__#$HOME#" scripts/wa/launchd/id.centurisk97.wa-semai-subuh.plist > ~/Library/LaunchAgents/id.centurisk97.wa-semai-subuh.plist && launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/id.centurisk97.wa-semai-subuh.plist`.

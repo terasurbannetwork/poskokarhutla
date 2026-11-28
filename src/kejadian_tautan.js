@@ -3,7 +3,7 @@
    Dipasang lewat RUTE_SIKLUS di src/siklus.js (izin "sistem"). Rancangan: data/kajian-bnpb/keterpaduan/ALGORITMA.md 1. */
 import {json} from "./worker.js";
 import {tolak, tglSah} from "./pusdalops_umum.js";
-import {gerbangIngest, masukan, JENIS_SAH} from "./siklus_kejadian.js";
+import {gerbangIngest, masukan, JENIS_SAH, SUMBER_TANPA_KEJADIAN} from "./siklus_kejadian.js";
 import {hariAntara} from "./siklus_hitung.js";
 import * as H from "./hak.js";
 import {lingkupKab4, NAMA_KAB4} from "./siklus_kab.js";
@@ -66,7 +66,7 @@ async function ingestModul(c) {
 /* KP-06: GET /api/siklus/kejadian/tautan?k=sumber:kode (sampai 50) atau ?sumber=&kode=. Staf (PD/KO/PM, SA, moderator) melihat semua; BP hanya kejadian yang kab4-nya di lingkup,
    selebihnya "belum" tanpa kejadian_id (sama dengan baris tidak ada). Petugas (x-kode) belum dipasang: ponytail, butuh pemetaan tugas lapangan ke kode sumber. */
 const kandidatDari = t => { try { const a = JSON.parse(t || "[]"); return Array.isArray(a) ? a : []; } catch { return []; } };   // kandidat rusak tidak menjatuhkan seluruh panggilan
-const MAKS_PASANG = 50, TERLIHAT = ["tugas_api", "logbook_d1", "sippa", "lapangan", "gempa_d1", "lapsus"];
+const MAKS_PASANG = 50, TERLIHAT = ["tugas_api", "logbook_d1", "sippa", "lapangan", "gempa_d1", "lapsus", ...SUMBER_TANPA_KEJADIAN];
 async function tautan(c) {
   const q = c.url.searchParams;
   const ps = masukan(() => {

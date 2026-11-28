@@ -1,0 +1,28 @@
+{
+ "catatan": "Kriteria uji kalibrasi P(puso) RRS-1 (ALGORITMA 10.33 dan 12, pola 0.9). Dikunci 26 Nov 2026 SEBELUM model dijalankan dan tanpa melihat hasilnya. Mengubah berkas ini mengubah kriteria_sha di unit/rugi_tani.json. Mencari ambang yang lulus dengan melihat hasil dilarang (pemeriksa validasi-model). Model belum dijalankan; puso.json 26 Nov 2026 tidak berisi satu pun sel kab-tahun.",
+ "klaim": "luas puso padi per kab-tahun diperkirakan lebih baik oleh A x P (luas sawah tergenang kali peluang puso kalibrasi) daripada rata-rata puso kab pada tahun latih",
+ "model": {
+  "rumus": "puso_taksir = A x P; P = jumlah puso / jumlah A atas kab-tahun latih",
+  "P_tingkat": "per provinsi bila kab-tahun latih provinsi itu >= 10, selain itu nasional",
+  "P_n_min_provinsi": 10,
+  "A": "luas sawah tergenang (ha): irisan genangan modul banjir dan kelas cropland ESA WorldCover; kab-tahun tanpa A tidak ikut latih maupun uji (bukan A = 0)"
+ },
+ "pembagian": {
+  "uji": "tahun terakhir yang punya data puso kab (ditahan)",
+  "latih": "semua tahun puso berdata sebelum tahun uji",
+  "bocor": "tahun latih tidak pernah sesudah tahun uji; sel puso kosong adalah hilang, bukan 0"
+ },
+ "pembanding": {
+  "rata_kab": "rata-rata puso kab itu pada tahun latih; kab tanpa satu pun tahun latih dikeluarkan dari uji dan jumlahnya dilaporkan"
+ },
+ "metrik": {
+  "mae": "rata-rata |puso_taksir - puso_BPS| dalam hektar atas kab-tahun uji yang punya A, puso uji, dan riwayat latih"
+ },
+ "syarat_lulus": "mae_model <= faktor x mae_pembanding DAN n_uji >= n_uji_min",
+ "syarat_lulus_angka": {"faktor": 0.9, "n_uji_min": 30, "ambang_asumsi": true},
+ "bila_gagal": "kartu hanya menampilkan luas sawah tergenang (ha), tanpa rupiah; alasan tertulis (jumlah uji kurang, MAE tidak mengalahkan, atau data kosong)",
+ "rupiah": {
+  "rumus": "A x P x Y x G; Y produktivitas padi kab (ton per ha) dan G harga GKP (rupiah per ton) dari BPS; salah satu kosong berarti rupiah tidak ditulis",
+  "label": "hipotesis sampai ada uji prospektif tahun berikut"
+ }
+}

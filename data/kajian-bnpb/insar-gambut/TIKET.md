@@ -30,3 +30,9 @@ Subagen tidak commit dan tidak push; sesi induk yang melakukannya (AGENTS §9). 
 - Jangan membuat mesin InSAR kedua; L-band dikerjakan di luar repo.
 - Jangan menyetel kriteria sesudah melihat hasil.
 - Jangan mengunduh sebelum izin pemilik.
+
+## Status (26 Nov 2026)
+
+- IG-01: selesai (24 Nov 2026), temuan di `tests/insar-gambut/CATATAN.md`: bingkai 003D_09241_131313, 1.481 pasangan, `subsiden` bisa diimpor tanpa efek samping, `luas_citra.py` tidak mengekspos piksel (hanya konstanta dipakai).
+- IG-02: selesai (commit `0944468f9`, 24 Nov 2026, sebelum lab). Kunci mesin: `MIN_PIKSEL`, `MIN_KOHEREN_PCT` di `insar_gambut.py` dicocokkan dengan RENCANA-UJI §2 oleh `tests/insar-gambut/gerbang.test.mjs` (uji pelanggar sintetis).
+- IG-03, IG-04, IG-05, IG-06, IG-08, IG-09 sudah dikerjakan di commit `8a01adc06` (vonis `tak_terukur`); IG-07 tidak terbuka.

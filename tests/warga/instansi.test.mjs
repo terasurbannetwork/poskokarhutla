@@ -870,6 +870,12 @@ uji("instansi: pembersih metadata ketat, JPEG, WebP, MP4 dan MOV: berkas dan thu
   for (const rahasia of ["Exif", "GPS-LOKASI-RAHASIA", "XMP-RAHASIA", "komentar-rahasia", "MPF-RAHASIA", "SAMPAH-SESUDAH-EOI"]) assert.ok(!ada(j, rahasia), `JPEG masih memuat ${rahasia}`);
   assert.deepEqual([j[0], j[1], j.at(-2), j.at(-1)], [0xff, 0xd8, 0xff, 0xd9], "SOI ... EOI, sisanya dipotong"); assert.ok(ada(j, "JFIF"), "APP0 JFIF dipertahankan");
   assert.deepEqual([...bersihJpeg(jpeg(2))], [...jpeg(2)], "JPEG bersih tidak berubah");
+  /* thumbnail RGB di APP0 JFIF (Xthumb x Ythumb x 3 byte) bisa memuat gambar lama yang belum disensor: dibuang, panjang segmen 16 */
+  const thumb = new Uint8Array([0xff, 0xd8, ...seg(0xe0, [...teks("JFIF"), 0, 1, 1, 0, 0, 3, 0, 1, 2, 1, ...teks("THUMB!")]), ...jpeg(3).slice(20)]);
+  const tb = bersihJpeg(thumb);
+  assert.ok(!ada(tb, "THUMB!"), "thumbnail JFIF ikut tersimpan");
+  assert.deepEqual([...tb.slice(2, 20)], [0xff, 0xe0, 0, 16, ...teks("JFIF"), 0, 1, 1, 0, 0, 3, 0, 1, 0, 0], "APP0 JFIF 16 byte, Xthumb=Ythumb=0, kerapatan utuh");
+  assert.deepEqual([...tb], [...jpeg(3)], "sisa berkas tidak berubah");
   const entropi = new Uint8Array([0xff, 0xd8, ...seg(0xc0, [8, 0, 1, 0, 1, 1, 1, 0x11, 0]), ...seg(0xda, [1, 1, 0, 0, 0x3f, 0]), 7, 0xff, 0x00, 0xff, 0xd0, 7, 0xff, 0xd9]);
   assert.deepEqual([...bersihJpeg(entropi)], [...entropi], "byte isian FF00 dan RSTn di data entropi utuh");
   const progresif = new Uint8Array([0xff, 0xd8, ...seg(0xc2, [8, 0, 1, 0, 1, 1, 1, 0x11, 0]), ...seg(0xda, [1, 1, 0, 0, 0x3f, 0]), 7, 7, ...seg(0xda, [1, 1, 0, 0, 0x3f, 0]), 8, 0xff, 0xd9]);

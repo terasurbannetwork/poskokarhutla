@@ -269,6 +269,14 @@
    "induk": "/lapor"
   },
   {
+   "rute": "/lapor/hilang",
+   "nama": "Orang hilang",
+   "ikon": "personel",
+   "pintu": "publik",
+   "grup": "lapor",
+   "induk": "/lapor"
+  },
+  {
    "rute": "/kabar",
    "nama": "Kabar api per kabupaten",
    "ikon": "sinyal",
@@ -278,7 +286,7 @@
   },
   {
    "rute": "/alun-alun",
-   "nama": "Alun-alun",
+   "nama": "Situasi bencana",
    "ikon": "personel",
    "pintu": "publik",
    "grup": "lapor",

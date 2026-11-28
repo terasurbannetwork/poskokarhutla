@@ -80,10 +80,14 @@ function* berkas(d) {
     else yield p;
   }
 }
+const LAB_DOCS = /hasil_lab|d_insar(_cm)?["']?\s*[:=]\s*-?\d|vonis["']?\s*[:=]\s*["']?(selaras|meremehkan)/i;
 export function cekPublic(daftar, isi) {
   const s = [];
   for (const p of daftar) {
-    if (/insar/i.test(p.split('/').pop())) s.push(`${p}: berkas bernama insar di public/ sebelum IG-07.`);
+    if (p.startsWith('public/docs/')) {
+      // docs-situs: dokumentasi METODE (rumus, tautan, status hipotesis) boleh; keluaran lab nyata tidak.
+      if (isi && LAB_DOCS.test(isi(p))) s.push(`${p}: memuat keluaran lab InSAR gambut (hasil_lab, d_insar bernilai, atau vonis sebagai hasil); belum boleh terbit sebelum IG-07.`);
+    } else if (/insar/i.test(p.split('/').pop())) s.push(`${p}: berkas bernama insar di public/ sebelum IG-07.`);
     else if (isi && /insar_gambut|insar-gambut|d_insar/i.test(isi(p))) s.push(`${p}: memuat keluaran lab InSAR gambut; belum boleh terbit (hipotesis, IG-07 menunggu vonis dan Q2).`);
   }
   return s;
@@ -132,4 +136,8 @@ test('pelanggar sintetis membuat pemeriksa merah', () => {
   assert.ok(cekKriteria(LAB_PY.replace(/^MIN_PIKSEL = 50/m, 'MIN_PIKSEL = 20'), baca(join(DOK, 'RENCANA-UJI.md'))).length === 1);
   assert.ok(cekPublic(['public/data/insar_gambut.json'], null).length === 1);
   assert.ok(cekPublic(['public/x.json'], () => '{"d_insar_cm": 3}').length === 1);
+  assert.ok(cekPublic(['public/docs/a.html'], () => '<p>d_insar_cm: 3.2</p>').length === 1);
+  assert.ok(cekPublic(['public/docs/a.html'], () => '<pre>hasil_lab.json jendela api</pre>').length === 1);
+  assert.ok(cekPublic(['public/docs/a.html'], () => '"vonis": "selaras"').length === 1);
+  assert.deepEqual(cekPublic(['public/docs/insar-gambut.html', 'public/docs/b.html'], () => '<a href="/docs/insar-gambut.html">D = penurunan InSAR dibagi laju, hipotesis</a>'), []);
 });

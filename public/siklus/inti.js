@@ -74,10 +74,15 @@ export function nilai(n, y, isi = {}) {
 }
 
 /* ---------- kartu standar dan keadaan ---------- */
+/* kepala kartu = NAMA SEKSI (AGENTS.md 3.5, pemilik 11 Nov dan 26 Nov 2026); kalimat temuan (judul yang memuat .hl) pindah ke baris ringkas .sk-ring di awal isi.
+   Nama diambil dari teks ey bila tidak diberi judul biasa. Pemanggil yang memperbarui angka menulis ke kart.querySelector(".sk-ring"), bukan h3. */
+const adaHl = judul => [judul].flat(Infinity).some(n => n?.nodeType === 1 && (n.classList.contains("hl") || n.querySelector(".hl")));
+const namaDariEy = ey => [ey].flat(Infinity).filter(x => typeof x === "string").join("").trim();
 export function kartu({ey, judul, kanan, isi, id}) {
+  const ringkas = adaHl(judul);
   return h("section", {class: "ex ex-std", id},
-    h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ey), h("div", {class: "ex-jd"}, h("h3", {}, judul), kanan || null)),
-    h("div", {class: "ex-bd"}, isi));
+    h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ey), h("div", {class: "ex-jd"}, h("h3", {}, ringkas ? namaDariEy(ey) : judul), kanan || null)),
+    h("div", {class: "ex-bd"}, ringkas ? h("p", {class: "sk-ring"}, judul) : null, isi));
 }
 /* wadah kelompok isi di dalam kartu (memori bagian-dalam-kartu): putih, bergaris, judul kecil kapital */
 export const wadah = (judul, ...isi) => h("div", {class: "sk-blok"}, judul ? h("h4", {}, judul) : null, ...isi);
@@ -174,16 +179,16 @@ export function tanya({judul, teks, kolom = [], ya = "Simpan", bahaya = false}) 
 /* ---------- cangkang: tema, tip, pilihan cantik, router ---------- */
 try { const t = localStorage.getItem("pb-tema"); if (t) document.documentElement.dataset.theme = t; } catch (e) { /* penyimpanan diblokir */ }
 const LAYAR = [
-  [/^\/siklus\/paparan$/, () => import("./paparan.js"), "paparan"],
-  [/^\/siklus\/kaji(\/[0-9a-f]{16})?$/, () => import("./kaji.js"), "kaji"],
-  [/^\/siklus\/pulih(\/[0-9a-f]{16})?$/, () => import("./pulih.js"), "pulih"],
-  [/^\/siklus\/renkon(\/[0-9a-f]{16})?$/, () => import("./renkon.js"), "renkon"],
-  [/^\/siklus\/gladi(\/[0-9a-f]{16})?$/, () => import("./gladi.js"), "renkon"],   // halaman dummy renkon mengisi renkon dan gladi
-  [/^\/siklus\/masa-depan$/, () => import("./masadepan.js"), "masadepan"],
-  [/^\/siklus\/kaji-ulang$/, () => import("./kaji_ulang.js"), "kejadian"],
-  [/^\/siklus\/registri$/, () => import("./registri.js"), "pintu"],
-  [/^\/siklus$/, () => import("./pintu.js"), "pintu"],
-  [/^\/siklus\/kejadian(\/.*)?$/, () => import("./kejadian.js"), "kejadian"],
+  [/^\/siklus\/paparan$/, () => import("./paparan.js"), "paparan", "Peta paparan"],
+  [/^\/siklus\/kaji(\/[0-9a-f]{16})?$/, () => import("./kaji.js"), "kaji", "Kaji cepat"],
+  [/^\/siklus\/pulih(\/[0-9a-f]{16})?$/, () => import("./pulih.js"), "pulih", "Jitupasna dan R3P"],
+  [/^\/siklus\/renkon(\/[0-9a-f]{16})?$/, () => import("./renkon.js"), "renkon", "Renkon hidup"],
+  [/^\/siklus\/gladi(\/[0-9a-f]{16})?$/, () => import("./gladi.js"), "renkon", "Gladi"],   // halaman dummy renkon mengisi renkon dan gladi
+  [/^\/siklus\/masa-depan$/, () => import("./masadepan.js"), "masadepan", "Risiko masa depan"],
+  [/^\/siklus\/kaji-ulang$/, () => import("./kaji_ulang.js"), "kejadian", "Kaji ulang"],
+  [/^\/siklus\/registri$/, () => import("./registri.js"), "pintu", "Registri sumber"],
+  [/^\/siklus$/, () => import("./pintu.js"), "pintu", "Siklus bencana"],
+  [/^\/siklus\/kejadian(\/.*)?$/, () => import("./kejadian.js"), "kejadian", "Buku besar kejadian"],
 ];
 async function mulai() {
   const isi = document.getElementById("sk"); if (!isi) return;
@@ -193,6 +198,7 @@ async function mulai() {
     try { localStorage.setItem("pb-tema", t); } catch (e) { /* abaikan */ }
   });
   const jalur = location.pathname.replace(/\/+$/, "") || "/siklus", cocok = LAYAR.find(([re]) => re.test(jalur));
+  const nm = document.getElementById("sk-nama"); if (nm && cocok?.[3]) { nm.textContent = cocok[3]; document.title = `${cocok[3]}, Siklus Bencana, Centurisk97`; }
   const sk = G.SK = {periode: () => null, halaman: cocok?.[2] ?? "kejadian"};
   if (!cocok) { isi.replaceChildren(kartu({ey: "Siklus", judul: ["Layar ini ", hl("belum dibuka")], isi: [kead("kosong", {teks: "Layar ini belum tersedia. Buka daftar kejadian.", aksi: {label: "Buka kejadian", fn: () => { location.href = "/siklus/kejadian"; }}})]})); }
   else { try { await (await cocok[1]()).buka(isi, sk); } catch (e) { console.error("siklus", e); isi.replaceChildren(kartu({ey: "Siklus", judul: ["Layar ", hl("belum bisa dimuat")], isi: [kead("galat", {ulang: () => location.reload()})]})); } }

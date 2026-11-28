@@ -49,7 +49,7 @@ test('layar pintu dan registri di Chrome nyata (1440 dan 390)', {skip: !chrome &
       try {
         for (const [w, hh] of [[1440, 900], [390, 844]]) {
           const T = await pb.tab(); await T.ukuran(w, hh); await T.buka(`${s.url}/siklus`, {tunggu: '#pintu .sk-pintu a'});
-          const d = await T.eval(`({jd: document.querySelector('#pintu h3').innerText, kartu: [...document.querySelectorAll('#pintu .sk-pintu a')].map((a) => a.dataset.kode), ey: document.querySelector('#pintu .ex-ey').innerText,
+          const d = await T.eval(`({jd: document.querySelector('#pintu .sk-ring').innerText, kartu: [...document.querySelectorAll('#pintu .sk-pintu a')].map((a) => a.dataset.kode), ey: document.querySelector('#pintu .ex-ey').innerText,
             semua: document.body.innerText, ft: !!document.querySelector('.ex-ft'), ex: document.querySelectorAll('.ex.ex-std').length, seg: [...document.querySelectorAll('#pintu .seg.penuh button')].map((b) => b.textContent.trim())})`);
           assert.match(d.jd, /1 kejadian aktif, 1 sedang tanggap, 1 menunggu PDNA/); assert.deepEqual(d.kartu, ['kejadian', 'pdna']); assert.match(d.ey, /Koordalops/i); assert.deepEqual(d.seg, ['Sebelum', 'Siaga', 'Tanggap', 'Pulih']);
           assert.ok(!d.ft && d.ex === 3); assert.doesNotMatch(d.semua, SALAH); assert.doesNotMatch(d.semua, /·|—/);
@@ -81,7 +81,7 @@ test('layar pintu dan registri di Chrome nyata (1440 dan 390)', {skip: !chrome &
       try {
         for (const [w, hh] of [[1440, 900], [390, 844]]) {
           const T = await pb.tab(); await T.ukuran(w, hh); await T.buka(`${s.url}/siklus/registri`, {tunggu: '#registri tbody tr'});
-          const d = await T.eval(`({jd: document.querySelector('#registri h3').innerText, t: document.querySelector('#registri').innerText, n: document.querySelectorAll('#registri tbody tr').length, semua: document.body.innerText})`);
+          const d = await T.eval(`({jd: document.querySelector('#registri .sk-ring').innerText, t: document.querySelector('#registri').innerText, n: document.querySelectorAll('#registri tbody tr').length, semua: document.body.innerText})`);
           assert.equal(d.n, 2); assert.match(d.jd, /1 dari 2 sumber sudah pernah diambil/); assert.match(d.t, /2 KB/); assert.match(d.t, /belum pernah diambil/); assert.match(d.t, /menunggu/i); assert.doesNotMatch(d.t, /\b0 byte\b/); assert.doesNotMatch(d.semua, SALAH);
           const l = await T.lebihLebar(); assert.ok(l.sw <= l.iw + 1, `gulir mendatar di ${w}`); assert.deepEqual(galatNyata(T), []); await T.tutup();
         }

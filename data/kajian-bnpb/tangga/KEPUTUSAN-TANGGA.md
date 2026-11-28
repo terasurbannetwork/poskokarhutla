@@ -48,3 +48,7 @@ Dokumen ini menang atas semua dokumen lain di folder ini. Keputusan pemilik dica
 
 Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
 
+
+## Catatan 26 Nov 2026: pengecualian pemilik K14 (paket dampak-peringatan, tiket DP-28)
+
+Keputusan pemilik K14 di `data/kajian-bnpb/dampak-peringatan/KEPUTUSAN-DAMPAK.md` menggantikan D2, K6, dan Q4 berkas ini **hanya untuk status prakiraan Centurisk97** (`scripts/prediksi/status_prakiraan.py`): status itu ikut Tangga sebagai masukan di skala h3, terpisah dari BMKG, tidak digabung menjadi satu skor, dan tiap pernyataannya berpil "hipotesis" sampai `public/data/gerbang/status_prakiraan.json` menyatakan `boleh_tampil`. Berkas status tidak ada atau basi berarti tidak ada pernyataan, bukan nol. Prakiraan kita yang lain tetap di luar sinyal "menguat" dan "belum selaras". Tidak pernah menulis "aman".

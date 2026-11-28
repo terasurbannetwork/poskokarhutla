@@ -1226,7 +1226,7 @@ def daftar_buka(tulis=False):
                 b = json.loads(ln)
             except ValueError:
                 continue
-            if b.get("jenis") in ("sia", "buka", "buka_mulai", "uji26", "latih", "segel", "sidik"):
+            if isinstance(b, dict) and b.get("jenis") in ("sia", "buka", "buka_mulai", "uji26", "latih", "segel", "sidik"):
                 rows.append({k: b.get(k) for k in ("jenis", "waktu", "sidik") if k in b})
         kutip[os.path.basename(f)] = rows
     out = {"tabel": [dict(zip(("no", "tanggal", "uji", "periode"), r)) for r in TABEL_BUKA], "jumlah": len(TABEL_BUKA), "m_konsisten": len(TABEL_BUKA) == M_KELUARGA - 3,

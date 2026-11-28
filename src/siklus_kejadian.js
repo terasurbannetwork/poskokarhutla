@@ -14,6 +14,8 @@ import {FASE, RE_KJ, idKejadian, kunciPendiri, selisihDampak, resolusiAlias, fas
 
 const JAM = 36e5, HARI = 864e5, MAKS_ARSIP = 128 * 1024, MAKS_BATCH = 200;
 export const JENIS_SAH = ["banjir", "cuaca", "gelombang", "gempa", "gunungapi", "karhutla", "kebakaran_permukiman", "kekeringan", "longsor", "tsunami"];   // kunci JENIS scripts/bnpb/kunci_kejadian.py
+/* sumber yang hanya boleh MENEMPEL pada kejadian yang sudah ada (orang-hilang-publik OH-03, D25): tidak membuat kejadian (aksi baru), tidak menambah kab, tidak membawa angka dampak. Ingest tidak pernah mengubah fase. */
+export const SUMBER_TANPA_KEJADIAN = ["orang_hilang"];
 const FASE_SEMUA = [...FASE, "dibatalkan"]; export const HIDUP = f => f !== "digabung" && f !== "dibatalkan";
 export const NO = () => gagal(404, "tidak ada");   // satu bentuk untuk "tidak ada" dan "di luar lingkup" (byte demi byte sama)
 const tglWib = kini => new Date(kini + 7 * JAM).toISOString().slice(0, 10);
@@ -388,6 +390,7 @@ function itemIngest(x, i, kini) {
       o.kab = [...new Set(x.kab.map(k => kab4Sah(k, "kab[]")))];
     }
     if (!tglSah(o.mulai)) tolak("mulai harus YYYY-MM-DD yang sah");
+    if (SUMBER_TANPA_KEJADIAN.includes(x.sumber) && (aksi !== "tambah" || o.kab4 || o.kab?.length || o.dampak)) tolak(`sumber ${x.sumber} hanya boleh menempel ke kejadian yang dipilih (aksi tambah tanpa kab4, kab, dan dampak)`);
     if (!Number.isInteger(o.diambil) || o.diambil <= 0 || o.diambil > kini + HARI) tolak("diambil harus ms epoch bulat");
     if (aksi === "tambah") { if (typeof x.kejadian_id !== "string" || !RE_KJ.test(x.kejadian_id)) tolak("kejadian_id wajib ID KJ-... untuk aksi tambah"); o.kejadian_id = x.kejadian_id; }
     if (aksi === "baru") { if (!o.kab4) tolak("kab4 wajib untuk aksi baru"); o.nama = bersihNama(x.nama); if (o.nama.length < 3) tolak("nama kejadian 3-160 karakter"); }

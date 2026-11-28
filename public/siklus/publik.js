@@ -6,7 +6,7 @@
   const isi = document.getElementById("pk"), id = /\/siklus\/kejadian\/(KJ-\d{4}-[0-9A-HJKMNP-TV-Z]{8})\/?$/.exec(location.pathname)?.[1];
   const h = (tag, atr, ...anak) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(atr || {})) if (v != null && v !== false) { if (k === "class") e.className = v; else e.setAttribute(k, String(v)); } e.append(...anak.flat(Infinity).filter(x => x != null && x !== false)); return e; };
   const hl = t => h("span", {class: "hl"}, t);
-  const kartu = (ey, judul, ...isiKartu) => h("section", {class: "ex ex-std"}, h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ey), h("div", {class: "ex-jd"}, h("h3", {}, judul))), h("div", {class: "ex-bd"}, isiKartu));
+  const kartu = (ey, judul, ...isiKartu) => h("section", {class: "ex ex-std"}, h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ey), h("div", {class: "ex-jd"}, h("h3", {}, [judul].flat(Infinity).some(n => n?.nodeType === 1 && (n.classList.contains("hl") || n.querySelector(".hl"))) ? ey : judul))), h("div", {class: "ex-bd"}, [judul].flat(Infinity).some(n => n?.nodeType === 1 && (n.classList.contains("hl") || n.querySelector(".hl"))) ? h("p", {class: "sk-ring"}, judul) : null, isiKartu));
   const kosong = teks => h("div", {class: "sk-kead", "data-k": "kosong"}, h("p", {}, teks));
   const tgl = t => /^\d{4}-\d\d-\d\d/.test(t ?? "") ? new Date(t.slice(0, 10) + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric", timeZone: "UTC"}) : "tidak ada";
   const ambil = async u => { try { const r = await fetch(u); return r.ok ? await r.json() : null; } catch (e) { return null; } };

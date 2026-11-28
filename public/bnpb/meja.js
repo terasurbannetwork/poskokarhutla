@@ -8,8 +8,9 @@ import {periksa, gambar as gambarSpek, dariMeja} from "/inti/spek.js";
 import {bacaXlsx, barisDariLembar, potong, angkaId} from "/inti/impor.js";
 import {bedaLapor, dariDaftar, rekapBaru, dataUbah} from "/bnpb/meja_lapor.js";
 import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/titik_pengungsian.js";
+import {kodeKab, panel as panelDraf, pdf as pdfDraf} from "/bnpb/meja_draf.js";
 {
-  const app = document.getElementById("app"), KUNCI = "meja_kode", HAL = 15;
+  const app = document.getElementById("app"), KUNCI = "meja_kode", HAL = 15, JUDUL = '<div class="bn-judul"><h1>Meja kerja</h1></div>';
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
   const ID = new Intl.NumberFormat("id-ID", {maximumFractionDigits: 2});
   const svg = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
@@ -28,6 +29,7 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
   const fmt = k => { const n = typeof k.desimal === "number" ? k.desimal : k.desimal ? 2 : 0; if (!FMT.has(n)) FMT.set(n, new Intl.NumberFormat("id-ID", {maximumFractionDigits: n})); return FMT.get(n); };
   const angkaF = (k, v) => k.rupiah ? "Rp" + ID.format(v) : fmt(k).format(v);
 
+  let draf = null, wilayahKab = null;   // WIL-3 (RU-081): draf kaji cepat {memuat} | {data, nama} | {galat}
   let segarkanPita = () => {}, kode = "", kajiOps = [], S = null, saya = null, meja = null, daftar = [], urut = "diubah", arah = -1, hal = 0, form = null, buka = new Map(), pesanT = "", pesanOk = true, imp = null;
   let titik = [], tp = {bukaForm: false, dekat: null, tutupId: null, nilai: {}, status: "", muat: false};   // KP-20: register titik pengungsian (meja pengungsi)
   const api = async (m, u, b) => {
@@ -340,17 +342,19 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
   }
   function gambar() {
     const m = M(), n = daftar.length;
-    app.innerHTML = `<div class="mj-kop"><h1>Meja Kerja</h1><span class="mj-pil t-info">${IK.kab}${esc(saya.petugas.kab)}</span><span class="mj-redup">${esc(saya.petugas.nama)}</span>
+    app.innerHTML = JUDUL + `<div class="mj-kop"><span class="mj-pil t-info">${IK.kab}${esc(saya.petugas.kab)}</span><span class="mj-redup">${esc(saya.petugas.nama)}</span>
       <button class="mj-btn kecil mj-ruang" data-keluar="1">${IK.keluar}Keluar</button></div>
       <nav class="mj-meja" aria-label="Pilih meja">${S.meja.filter(x => saya.petugas.meja.includes(x.id)).map(x => `<button data-meja="${x.id}" aria-pressed="${x.id === meja}">${svg(x.ikon)}${esc(x.nama)}</button>`).join("")}</nav>
       <p class="mj-pesan ${pesanOk ? "ok" : "galat"}" role="status">${esc(pesanT)}</p>
       ${form ? panelForm() : `<div class="mj-bar"><button class="mj-btn utama" data-baru="1">${IK.tambah}Tambah ${esc(m.nama.toLowerCase())}</button>
+        ${meja === "kaji_cepat" ? `<button class="mj-btn" data-draf="1" title="Draf laporan awal dari data sistem; berlabel saran">${IK.berkas}Draf kaji cepat</button>` : ""}
         ${dampakM() ? `<button class="mj-btn" data-impor-pilih="1">${IK.berkas}Impor dari Excel</button><a class="mj-btn" href="/bnpb/templat/data-dampak.xlsx" download>${IK.unduh}Unduh templat</a><input type="file" id="mjBerkas" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>` : ""}
         <span class="mj-redup" id="mjJumlah">${n} catatan di ${esc(saya.petugas.kab)}</span></div>`}
       <div id="mjTitik">${meja === "pengungsi" && !form ? kartuTitik() : ""}</div>
+      <div id="mjDraf"></div>
       <div id="mjImpor">${panelImpor()}</div>
       <div id="mjTabel">${form ? "" : htmlTabel()}</div>`;
-    pasangFormDampak(); pasangSpek();
+    pasangFormDampak(); pasangSpek(); isiDraf();
   }
   /* spek bersama (public/inti/spek.js): sama dengan yang dipakai server (src/meja_spek.js validasi). Kolom gudang dipilih admin, tidak diisi petugas. */
   const spekMeja = (m, tahap) => {
@@ -366,8 +370,27 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
     const el = document.getElementById("mjSpek"); if (!el || !form) return;
     const m = M(), sp = spekMeja(m, form.mode === "status" ? form.ke : null), awal = {};
     for (const c of sp.kolom) { const v = form.baris?.data?.[c.nama]; if (v != null && form.mode !== "status") awal[c.nama] = v; }
+    if (form.mode === "baru" && form.salin) for (const c of sp.kolom) { const v = form.salin[c.nama]; if (typeof v === "string" && v) awal[c.nama] = v.slice(0, 300); }   // KS-1: dari Ruang Unit
     form.spek = gambarSpek(sp, el, awal);
     for (const o of el.querySelectorAll('[id$="-titik_id"] option')) { const t = titik.find(x => x.id === o.value); if (t) o.textContent = t.nama; }   // nama titik, bukan kode
+  };
+  /* WIL-3 draf kaji cepat: panel disusun dari GET /api/meja/kaji_cepat/draf; layar tidak menghitung apa pun */
+  const isiDraf = () => {
+    const w = document.getElementById("mjDraf"); if (!w) return;
+    const el = (tag, kelas, teks) => { const e = document.createElement(tag); e.className = kelas; e.textContent = teks; return e; };
+    if (!draf || form || meja !== "kaji_cepat") return w.replaceChildren();
+    if (draf.memuat) { const p = el("p", "mj-redup", "Menyusun draf dari data sistem…"); p.setAttribute("aria-busy", "true"); return w.replaceChildren(p); }
+    if (draf.galat) { const p = el("p", "mj-pesan galat", draf.galat); p.setAttribute("role", "status"); return w.replaceChildren(p); }
+    w.replaceChildren(panelDraf(draf.data, draf.nama));
+  };
+  const buatDraf = async () => {
+    draf = {memuat: true}; isiDraf();   // chrome urgent: kabar "menyusun" muncul seketika, data menyusul
+    wilayahKab ||= (await fetch("/data/bnpb/wilayah.json").then(r => r.ok ? r.json() : null).catch(() => null))?.kab || null;
+    const kab = wilayahKab && kodeKab(saya.petugas.prov, saya.petugas.kab, wilayahKab);
+    if (!kab) { draf = {galat: wilayahKab ? "Kode kabupatenmu tidak bisa dicocokkan dari nama, jadi draf belum bisa dibuat. Hubungi admin." : "Daftar wilayah gagal dimuat. Coba lagi."}; return isiDraf(); }
+    const r = await api("GET", `/api/meja/kaji_cepat/draf?kab=${kab}`);
+    draf = r.ok ? {data: r.j, nama: saya.petugas.kab} : {galat: r.s === 429 ? `Terlalu sering membuat draf. Coba lagi ${r.tunggu ? `dalam ${r.tunggu} detik` : "sebentar lagi"}.` : r.j.galat || `Draf gagal dibuat (${r.s})`};
+    isiDraf();
   };
   const lapor = (t, ok) => { pesanT = t; pesanOk = ok; };
   async function muat(tanpaForm) {
@@ -386,6 +409,9 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
   app.addEventListener("click", async e => {
     const t = e.target.closest("button"); if (!t) return;
     const d = t.dataset;
+    if (d.draf) { t.disabled = true; await buatDraf(); t.disabled = false; return; }
+    if (d.drafTutup) { draf = null; return isiDraf(); }
+    if (d.drafPdf) { t.disabled = true; try { await pdfDraf(draf.data, draf.nama); } catch (err) { lapor("PDF draf gagal dibuat: " + err.message, false); } t.disabled = false; return; }
     if (d.tpTambah) { tp.bukaForm = true; tp.dekat = null; return segarkanTitik(); }   // chrome urgent: kartu berubah seketika
     if (d.tpTutupForm) { tp.bukaForm = false; tp.dekat = null; tp.nilai = {}; return segarkanTitik(); }
     if (d.tpTutup) { tp.tutupId = d.tpTutup; return segarkanTitik(); }
@@ -401,7 +427,7 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
     }
     const tr = t.closest("tr"), r = tr && daftar.find(x => x.id === tr.dataset.id);
     if (t.dataset.meja) {   // chrome urgent: tombol terpilih dan "Memuat" seketika, data menyusul
-      meja = t.dataset.meja; form = null; hal = 0; lapor("", true);
+      meja = t.dataset.meja; form = null; hal = 0; draf = null; lapor("", true);
       app.querySelectorAll("[data-meja]").forEach(b => b.setAttribute("aria-pressed", String(b === t)));
       const w = document.getElementById("mjTabel"); if (w) w.innerHTML = '<p class="mj-redup" aria-busy="true">Memuat…</p>';
       return muat();
@@ -500,17 +526,22 @@ import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/ti
 
   /* ---------- mulai ---------- */
   async function mulai() {
+    /* KS-1 (RU-074): #salin=<JSON> dari Ruang Unit membuka isian meja renkon terisi; hanya teks, hanya kolom spek renkon, tidak dikirim tanpa Simpan */
+    const salinUrl = location.hash.match(/(?:^|[#&])salin=([^&]{1,2000})/);
+    if (salinUrl) { try { const o = JSON.parse(decodeURIComponent(salinUrl[1])); if (o && typeof o === "object" && !Array.isArray(o)) sessionStorage.setItem("meja_salin", JSON.stringify(o)); } catch (e) {} history.replaceState(null, "", location.pathname + location.hash.replace(/[#&]?salin=[^&]*/, "").replace(/^&/, "#")); }
     const dariUrl = location.hash.match(/(?:^|[#&])k=([0-9a-fA-F]{26})(?:&|$)/);
     if (dariUrl) { sessionStorage.setItem(KUNCI, dariUrl[1].toLowerCase()); history.replaceState(null, "", location.pathname); }   // kode tidak tertinggal di bilah alamat
     kode = sessionStorage.getItem(KUNCI) || "";
     if (kode) { segarkanPita = antre.pasang(document.body, () => { if (meja) muat(); }); antre.pindah().then(() => antre.pindahLokal()); }   // kirim ulang segera, tanpa menunggu spek
-    if (!kode) { app.innerHTML = '<p class="mj-pesan galat">Halaman ini hanya untuk petugas yang punya tautan dari admin. Buka lagi tautan yang dikirim kepadamu.</p>'; return; }
+    if (!kode) { app.innerHTML = JUDUL + '<p class="mj-pesan galat">Halaman ini hanya untuk petugas yang punya tautan dari admin. Buka lagi tautan yang dikirim kepadamu.</p>'; return; }
     const [sp, sy] = await Promise.all([fetch("/api/meja/spek").then(r => r.json()).catch(() => null), api("GET", "/api/meja/saya")]);
-    if (sy.s === 0 || !sp) { app.innerHTML = '<p class="mj-pesan galat">Tidak ada sinyal, Meja Kerja belum bisa dibuka. Kiriman yang sudah disimpan di perangkat tetap dikirim otomatis saat sinyal kembali.</p>'; return; }
-    if (!sy.ok || sy.j.peran !== "petugas") { sessionStorage.removeItem(KUNCI); app.innerHTML = `<p class="mj-pesan galat">${esc(sy.j.galat || "Kodemu tidak berlaku.")} Minta tautan baru dari admin.</p>`; return; }
+    if (sy.s === 0 || !sp) { app.innerHTML = JUDUL + '<p class="mj-pesan galat">Tidak ada sinyal, Meja Kerja belum bisa dibuka. Kiriman yang sudah disimpan di perangkat tetap dikirim otomatis saat sinyal kembali.</p>'; return; }
+    if (!sy.ok || sy.j.peran !== "petugas") { sessionStorage.removeItem(KUNCI); app.innerHTML = JUDUL + `<p class="mj-pesan galat">${esc(sy.j.galat || "Kodemu tidak berlaku.")} Minta tautan baru dari admin.</p>`; return; }
     S = sp; saya = sy.j; meja = S.meja.find(m => saya.petugas.meja.includes(m.id))?.id;
-    if (!meja) { app.innerHTML = '<p class="mj-pesan galat">Kodemu belum punya meja yang boleh diisi.</p>'; return; }
+    if (!meja) { app.innerHTML = JUDUL + '<p class="mj-pesan galat">Kodemu belum punya meja yang boleh diisi.</p>'; return; }
+    let salin = null; try { salin = JSON.parse(sessionStorage.getItem("meja_salin") || "null"); } catch (e) {} sessionStorage.removeItem("meja_salin");
+    if (salin && saya.petugas.meja.includes("renkon")) { meja = "renkon"; form = {mode: "baru", salin}; }
     muat();
   }
-  mulai().catch(() => { app.innerHTML = '<p class="mj-pesan galat">Gagal memuat Meja Kerja. Periksa sambunganmu lalu muat ulang.</p>'; });
+  mulai().catch(() => { app.innerHTML = JUDUL + '<p class="mj-pesan galat">Gagal memuat Meja Kerja. Periksa sambunganmu lalu muat ulang.</p>'; });
 }

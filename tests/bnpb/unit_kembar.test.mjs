@@ -1,9 +1,10 @@
 // RU-006: kasus acuan fungsi murni Jam Aturan (RU §2.1, ALGORITMA §3.2).
-// Sisi Python dan acuan.json menyusul di RU-016; berkas ini hanya sisi JS.
+// RU-016: kembar Python scripts/bnpb/unit/aturan.py, kasus sama di tests/bnpb/fixtures/unit/acuan.json.
 import test from "node:test";
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { ATURAN, aturan, hariKerja, nilai, periksa, standar, tenggat } from "../../public/inti/jam_aturan.js";
+import { ATURAN, SATUAN, aturan, hariKerja, nilai, periksa, standar, tenggat, neraca, neracaBarang, kebutuhanDasar, rekap, selisih, stokPenyangga, prRisiko, rumah, estimasiRb, AMBANG_SELISIH, MIN_PEMBANDING } from "../../public/inti/jam_aturan.js";
 
 const h = (k, m) => tenggat(k, m).hasil;
 
@@ -179,4 +180,115 @@ test("kunci ALGORITMA 3.1 lengkap; asumsi wajib bertanda, bersitasi wajib berpas
   assert.equal(nilai("ews_radius_sirine_km"), 2);
   assert.deepEqual(tenggat("masa_status_nas", "2025-11-30"), { hasil: "2026-02-28", alasan: null, asumsi: true });
   assert.equal(tenggat("hibah_logpal_lapor", "2025-11-30").hasil, "2026-11-30"); // RU 2.1
+});
+
+// ---- RU-016: uji kembar JS lawan Python atas acuan.json ----
+
+const ACUAN = JSON.parse(readFileSync(new URL("./fixtures/unit/acuan.json", import.meta.url), "utf8"));
+const PY = new URL("../../scripts/bnpb/unit/aturan.py", import.meta.url).pathname;
+const py = (...a) => JSON.parse(execFileSync("python3", ["-I", PY, ...a], { encoding: "utf8" }));
+
+test("acuan.json: minimal 20 kasus Jam Aturan, id unik", () => {
+  const id = ACUAN.jam_aturan.map((k) => k.id);
+  assert.ok(id.length >= 20, `baru ${id.length} kasus`);
+  assert.equal(new Set(id).size, id.length);
+});
+
+for (const k of ACUAN.jam_aturan) {
+  test(`kembar ${k.id} ${k.kunci} ${JSON.stringify(k.mulai)}: JS = harapan = Python`, () => {
+    const js = tenggat(k.kunci, k.mulai);
+    for (const [kk, v] of Object.entries(k.harap)) assert.deepEqual(js[kk], v, `JS ${kk}`);
+    if (js.hasil === null) assert.ok(js.alasan, "hasil kosong tanpa alasan");
+    assert.deepEqual(py("--kembar", k.id), js, "Python beda dengan JS");
+  });
+}
+
+// Python dan JS (capSah di jam_aturan.js) sama-sama menolak tanggal/jam yang tidak ada di dalam cap waktu.
+for (const k of ACUAN.jam_aturan_beda_js) {
+  test(`kembar ${k.id} ${k.kunci} ${k.mulai}: tanggal tidak ada di cap waktu ditolak`, () => {
+    assert.equal(tenggat(k.kunci, k.mulai).hasil, k.harap.hasil);
+  });
+}
+
+test("SATUAN Python sama dengan JS", () => {
+  assert.deepEqual(py("--satuan"), SATUAN);
+});
+
+// ---- RU-029: MB-5 neraca kebutuhan, JS lawan harapan lawan Python neraca.py ----
+
+const NERACA_PY = new URL("../../scripts/bnpb/unit/neraca.py", import.meta.url).pathname;
+const pyNeraca = (id) => JSON.parse(execFileSync("python3", ["-I", NERACA_PY, "--kembar", id], { encoding: "utf8" }));
+const JS_FUNGSI = {
+  neraca: (m) => neraca(m.butuh, m.ada),
+  kebutuhan: (m) => kebutuhanDasar(m.jiwa, m.hari_sejak_buka, m.kk),
+  rekap: (m) => rekap(m.tempat, m.tanggal),
+  selisih: (m) => selisih(m.pusat, m.daerah),
+  stok_penyangga: (m) => stokPenyangga(m.jp, m.pr, m.balita),
+  pr_risiko: (m) => prRisiko(m.terpapar_tinggi, m.jp),
+  rumah: (m) => rumah(m.lapor, m.verif),
+  estimasi_rb: (m) => estimasiRb(m.lapor_rb, m.rasio_pembanding),
+};
+const dekat = (a, b, jalur, rel) => {
+  if (b !== null && typeof b === "object") {
+    for (const [k, v] of Object.entries(b)) dekat(a?.[k], v, `${jalur}.${k}`, rel);
+  } else if (typeof b === "number" && typeof a === "number") {
+    assert.ok(Math.abs(a - b) <= rel * Math.max(1, Math.abs(b)), `${jalur}: ${a} harap ${b}`);
+  } else assert.deepEqual(a, b, jalur);
+};
+
+test("acuan.json neraca: kasus S, K, R lengkap, id unik", () => {
+  const id = ACUAN.neraca.map((k) => k.id);
+  assert.equal(new Set(id).size, id.length);
+  for (const x of ["S1", "S11", "K1", "K5b", "R1", "R4b"]) assert.ok(id.includes(x), x);
+  for (const k of ACUAN.neraca) assert.ok(JS_FUNGSI[k.fungsi], `fungsi ${k.fungsi} tanpa kembar JS`);
+});
+
+for (const k of ACUAN.neraca) {
+  test(`kembar neraca ${k.id} ${k.fungsi}: JS = harapan = Python`, () => {
+    const js = JS_FUNGSI[k.fungsi](k.masukan);
+    dekat(js, k.harap, `JS ${k.id}`, 1e-5); // harapan dibulatkan di acuan.json
+    dekat(js, pyNeraca(k.id), `JS/Python ${k.id}`, 1e-9);
+    dekat(pyNeraca(k.id), js, `Python/JS ${k.id}`, 1e-9);
+    assert.deepEqual(Object.keys(js).sort(), Object.keys(pyNeraca(k.id)).sort(), "kunci hasil beda");
+    assert.ok(!JSON.stringify(js).includes("aman"), "kata terlarang");
+  });
+}
+
+test("neraca JS: kosong null bukan 0, masukan negatif atau bukan angka ditolak", () => {
+  const nb = neracaBarang({ beras_kg: 6000, air_minum_l: 37500 }, { beras_kg: 4500 });
+  assert.equal(nb.beras_kg.status, "kurang");
+  assert.equal(nb.air_minum_l.status, "belum_dilaporkan");
+  assert.equal(nb.air_minum_l.celah, null);
+  for (const salah of [-1, "500000", NaN, Infinity, true, undefined]) assert.throws(() => stokPenyangga(salah, 1), /harus/);
+  assert.throws(() => stokPenyangga(0, 1));
+  assert.throws(() => neraca(10, -1));
+  assert.throws(() => neraca(10, "4"));
+  assert.throws(() => kebutuhanDasar(10, 0, 0)); // kk 0, jiwa > 0
+  assert.throws(() => kebutuhanDasar(10.5, 0, 3));
+  assert.throws(() => kebutuhanDasar(10, -1, 3));
+  assert.equal(kebutuhanDasar(1, 2, 1).air_bersih_l, 7); // hari ke-3
+  assert.equal(kebutuhanDasar(1, 3, 1).air_bersih_l, 15); // hari ke-4
+  const r = rumah({ RB: 0, RS: 5 }, { RB: 0 });
+  assert.equal(r.susut_rb, null);
+  assert.equal(r.beban_lapor_juta, null);
+  assert.equal(r.kemajuan, null);
+  assert.throws(() => rekap([], "2026-02-30"), /bukan tanggal/);
+});
+
+test("invarian PLP-1 JS: PR 4% = 4 x PR 1%", () => {
+  for (const jp of [1, 17, 500000, 1057750, 12345678]) {
+    const a = stokPenyangga(jp, 1, Math.floor(jp / 10)), b = stokPenyangga(jp, 4, Math.floor(jp / 10));
+    for (const [k, v] of Object.entries(a)) if (k !== "pr" && k !== "hari") assert.ok(Math.abs(b[k] - 4 * v) <= 1e-9 * Math.max(1, b[k]), `${jp} ${k}`);
+  }
+});
+
+test("konstanta ambang JS sama dengan neraca.py", () => {
+  const src = readFileSync(NERACA_PY, "utf8");
+  assert.equal(+/^AMBANG_SELISIH = ([\d.]+)/m.exec(src)[1], AMBANG_SELISIH);
+  assert.equal(+/^MIN_PEMBANDING = (\d+)/m.exec(src)[1], MIN_PEMBANDING);
+  for (const l of ["LABEL_SELISIH", "LABEL_PR_RISIKO"]) {
+    const t = new RegExp(`^${l} = "([^"]+)"`, "m").exec(src)[1];
+    const js = l === "LABEL_SELISIH" ? selisih(1, 2).label : prRisiko(1, 1).label;
+    assert.equal(js, t, l);
+  }
 });

@@ -1,0 +1,195 @@
+{
+ "dibuat": "2026-11-26T14:54:21Z",
+ "versi_model": "genangan-1",
+ "skema": 1,
+ "status": "hipotesis",
+ "catatan": "simulasi, bukan peringatan; status tsunami resmi hanya BMKG dan PTWC",
+ "dem_diizinkan": [
+  "demnas",
+  "glo30"
+ ],
+ "atribusi": {
+  "glo30": "Produced using Copernicus WorldDEM-30 (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved.",
+  "gebco": "GEBCO Compilation Group (2020) GEBCO 2020 Grid, doi:10.5285/a29c5465-b138-234d-e053-6c86abc040b9",
+  "demnas": "BIG (DEMNAS)"
+ },
+ "anggaran": {
+  "skenario_byte": 102400,
+  "pustaka_byte": 2621440,
+  "animasi_bingkai": 24,
+  "animasi_byte": 122880
+ },
+ "batas_mesin": [
+  "tanpa gesekan dasar (manning 0, K10 dan K12): genangan dan run-up cenderung lebih jauh dan lebih tinggi dari kenyataan",
+  "BP04 tak pecah tanpa gesekan +12,2% lawan lab (batas mesin, bukan lulus 5%, bukan tervalidasi NOAA)",
+  "DSM: atap dan kanopi ikut tinggi, genangan di bawah kanopi cenderung tersempitkan",
+  "hanya awal gelombang yang dihitung: maksimum kedalaman dan luas belum tentu final",
+  "simulasi bukan peringatan; status tsunami resmi hanya BMKG dan PTWC"
+ ],
+ "pantai": {
+  "ujung_kulon": {
+   "nama": "Ujung Kulon (Banten)",
+   "kotak": [
+    104.95,
+    -6.95,
+    105.75,
+    -6.3
+   ],
+   "dem": "glo30",
+   "dem_atribusi": "Copernicus GLO-30",
+   "resolusi_m": 30,
+   "status": "hipotesis",
+   "skenario": [
+    "mt_uk_m80",
+    "mt_uk_m85",
+    "mt_uk_m88"
+   ]
+  },
+  "pangandaran_cilacap": {
+   "nama": "Pangandaran sampai Cilacap",
+   "kotak": [
+    108.25,
+    -7.95,
+    109.3,
+    -7.35
+   ],
+   "dem": "glo30",
+   "dem_atribusi": "Copernicus GLO-30",
+   "resolusi_m": 30,
+   "status": "hipotesis",
+   "skenario": [
+    "mt_pc_m80",
+    "mt_pc_m85",
+    "mt_pc_m88"
+   ]
+  },
+  "banyuwangi_rajegwesi": {
+   "nama": "Banyuwangi sampai Rajegwesi",
+   "kotak": [
+    113.75,
+    -8.9,
+    114.5,
+    -8.4
+   ],
+   "dem": "glo30",
+   "dem_atribusi": "Copernicus GLO-30",
+   "resolusi_m": 30,
+   "status": "hipotesis",
+   "skenario": [
+    "mt_bw_m80",
+    "mt_bw_m85",
+    "mt_bw_m88"
+   ]
+  }
+ },
+ "skenario": {
+  "mt_uk_m80": {
+   "nama": "Megathrust sintetis M 8,0 selatan Ujung Kulon (Banten)",
+   "m": 8.0,
+   "jenis": "subduksi",
+   "pusat": [
+    -9.95,
+    105.4
+   ],
+   "pantai": [
+    "ujung_kulon"
+   ]
+  },
+  "mt_uk_m85": {
+   "nama": "Megathrust sintetis M 8,5 selatan Ujung Kulon (Banten)",
+   "m": 8.5,
+   "jenis": "subduksi",
+   "pusat": [
+    -9.95,
+    105.4
+   ],
+   "pantai": [
+    "ujung_kulon"
+   ]
+  },
+  "mt_uk_m88": {
+   "nama": "Megathrust sintetis M 8,8 selatan Ujung Kulon (Banten)",
+   "m": 8.8,
+   "jenis": "subduksi",
+   "pusat": [
+    -9.95,
+    105.4
+   ],
+   "pantai": [
+    "ujung_kulon"
+   ]
+  },
+  "mt_pc_m80": {
+   "nama": "Megathrust sintetis M 8,0 selatan Pangandaran sampai Cilacap",
+   "m": 8.0,
+   "jenis": "subduksi",
+   "pusat": [
+    -9.65,
+    108.8
+   ],
+   "pantai": [
+    "pangandaran_cilacap"
+   ]
+  },
+  "mt_pc_m85": {
+   "nama": "Megathrust sintetis M 8,5 selatan Pangandaran sampai Cilacap",
+   "m": 8.5,
+   "jenis": "subduksi",
+   "pusat": [
+    -9.65,
+    108.8
+   ],
+   "pantai": [
+    "pangandaran_cilacap"
+   ]
+  },
+  "mt_pc_m88": {
+   "nama": "Megathrust sintetis M 8,8 selatan Pangandaran sampai Cilacap",
+   "m": 8.8,
+   "jenis": "subduksi",
+   "pusat": [
+    -9.65,
+    108.8
+   ],
+   "pantai": [
+    "pangandaran_cilacap"
+   ]
+  },
+  "mt_bw_m80": {
+   "nama": "Megathrust sintetis M 8,0 selatan Banyuwangi sampai Rajegwesi",
+   "m": 8.0,
+   "jenis": "subduksi",
+   "pusat": [
+    -10.5,
+    114.1
+   ],
+   "pantai": [
+    "banyuwangi_rajegwesi"
+   ]
+  },
+  "mt_bw_m85": {
+   "nama": "Megathrust sintetis M 8,5 selatan Banyuwangi sampai Rajegwesi",
+   "m": 8.5,
+   "jenis": "subduksi",
+   "pusat": [
+    -10.5,
+    114.1
+   ],
+   "pantai": [
+    "banyuwangi_rajegwesi"
+   ]
+  },
+  "mt_bw_m88": {
+   "nama": "Megathrust sintetis M 8,8 selatan Banyuwangi sampai Rajegwesi",
+   "m": 8.8,
+   "jenis": "subduksi",
+   "pusat": [
+    -10.5,
+    114.1
+   ],
+   "pantai": [
+    "banyuwangi_rajegwesi"
+   ]
+  }
+ }
+}

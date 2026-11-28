@@ -35,7 +35,8 @@ button{-webkit-tap-highlight-color:transparent}
 .ad-top form{margin:0}
 
 /* masuk */
-.ad-masuk{display:grid;grid-template-columns:minmax(0,44fr) minmax(0,56fr);height:100dvh;overflow:hidden;background:var(--paper)}
+html:has(> body.ad-masuk){height:100%}
+.ad-masuk{display:grid;grid-template-columns:minmax(0,44fr) minmax(0,56fr);grid-template-rows:minmax(0,1fr);height:100dvh;min-height:100%;overflow:hidden;background:var(--paper)}   /* min-height 100% dari html: tinggi tetap penuh walau dvh dihitung dari bingkai yang lebih kecil (pemilik 26 Nov 2026: "white space di bawah") */
 .ad-sisi-masuk{grid-area:1/1;position:relative;display:grid;place-items:center;padding:32px 24px;overflow:auto;background:radial-gradient(90% 60% at 8% 0%,color-mix(in srgb,var(--c5) 30%,transparent),transparent 70%),radial-gradient(80% 55% at 100% 22%,color-mix(in srgb,var(--navy2) 16%,transparent),transparent 72%),radial-gradient(95% 60% at 88% 100%,color-mix(in srgb,var(--c5) 36%,transparent),transparent 70%),radial-gradient(70% 45% at 0% 92%,color-mix(in srgb,var(--c7) 14%,transparent),transparent 72%),var(--paper)}
 .ad-pola{position:absolute;inset:0;pointer-events:none;background:var(--navy2);opacity:.22;-webkit-mask:url(/img/pola-kontur.svg?v=1) center/cover no-repeat;mask:url(/img/pola-kontur.svg?v=1) center/cover no-repeat}
 .ad-kartu-masuk{position:relative;z-index:1;width:min(440px,100%);border-radius:24px;background:var(--card);box-shadow:0 0 0 1px color-mix(in srgb,var(--ink) 6%,transparent),0 24px 60px -24px rgba(11,37,69,.28)}
@@ -347,3 +348,4 @@ button{-webkit-tap-highlight-color:transparent}
 
 /* dibingkai Ruang Laporan (/admin/laporan): induk menambah kelas .sematan; header dan sub-nav disembunyikan */
 .sematan .ad-top,.sematan .ad-sub{display:none}
+.sematan .ad-judul:not(:has(.ad-judul-aksi>*)){display:none}

@@ -60,6 +60,7 @@ export function gaya() {
 .mk .mk-ba{animation:mk-geser 9s ease-in-out infinite}.mk .mk-kaki{animation:mk-geserk 9s ease-in-out infinite}
 .mk.mk-a-lompat .mk-gb{animation:mk-lompat .7s ease-out}.mk.mk-a-kaget .mk-gb{animation:mk-kaget .5s ease-out}.mk.mk-a-geli .mk-gb{animation:mk-geli .3s ease-in-out 2}
 .mk.mk-a-lambai .mk-rk{animation:mk-lb 1s ease-in-out}img.lp-logo-pantau.mk-logo-pop{animation:mk-logo .6s ease-out}}
+.mk .mk-vol{pointer-events:none}
 @media (prefers-reduced-motion:reduce){.mk *{transition:none!important}}
 @keyframes mk-nafas{50%{transform:scaleY(1.015)}}@keyframes mk-kb{50%{transform:translateY(-1px)}}
 @keyframes mk-geser{50%{transform:rotate(.8deg) translateX(1px)}}@keyframes mk-geserk{50%{transform:skewX(-1.5deg)}}
@@ -121,13 +122,25 @@ function aksi(m, a) {
     if (b) { const g = arahPandang(b.left + b.width / 2 - r.left - r.width / 2, b.top + b.height / 2 - r.top - r.height * .39, 300); fokus(m, g.x, g.y, 1500); }
   }
 }
+/* lirikan sendiri (pemilik 26 Nov 2026: "matanya lihat ke depan terus"): tanpa kursor (HP) mata tetap melirik kiri, kanan, atas, bawah tiap 1-3 dtk */
+function lirik(m) {
+  clearTimeout(m.tl); if (!m.lihat || D.hidden || kurang()) return;
+  m.tl = setTimeout(() => {
+    const segar = pt && performance.now() - pt.t < 2500;
+    if (m.el.isConnected && m.lihat && !segar && m.sibuk < performance.now()) {
+      if (Math.random() < .3) fokus(m, 0, 0, 900);
+      else fokus(m, (Math.random() < .5 ? -1 : 1) * (2 + Math.random() * 2), (Math.random() - .55) * 5, 700 + Math.random() * 1100);
+    }
+    lirik(m);
+  }, 1200 + Math.random() * 1800);
+}
 function jadwal(m) {
   clearTimeout(m.ti); if (!m.lihat || D.hidden || kurang()) return;
   m.ti = setTimeout(() => {
     if (!m.el.isConnected) { daftar.delete(m.el); io.unobserve(m.el); if (m.lihat) nLihat--; return; }
     if (m.lihat && !D.hidden && m.sibuk < performance.now()) { const o = {kurang: kurang(), gelembung: !!D.querySelector(".lp-hg-gelembung")}; let a = pilihAksi(m.pose, Math.random(), o); if (a === m.ak) a = pilihAksi(m.pose, Math.random(), o); m.ak = a; aksi(m, a); }
     jadwal(m);
-  }, 3000 + Math.random() * 5000);
+  }, 2200 + Math.random() * 3000);
 }
 function pasang(el) {
   if (daftar.has(el)) return;
@@ -151,7 +164,7 @@ if (D) {
   gaya$();
   io = new IntersectionObserver(es => {
     for (const e of es) { const m = daftar.get(e.target); if (!m) continue; const v = e.isIntersecting; if (v === m.lihat) continue;
-      m.lihat = v; nLihat += v ? 1 : -1; m.kotor = true; e.target.classList.toggle("mk-jeda", !v); v ? (jadwal(m), kedipAcak(m)) : (clearTimeout(m.ti), clearTimeout(m.tk)); }
+      m.lihat = v; nLihat += v ? 1 : -1; m.kotor = true; e.target.classList.toggle("mk-jeda", !v); v ? (jadwal(m), kedipAcak(m), lirik(m)) : (clearTimeout(m.ti), clearTimeout(m.tk), clearTimeout(m.tl)); }
   });
   const cari = r => { if (r.nodeType !== 1) return; if (r.matches(".mk.sg")) pasang(r); for (const e of r.querySelectorAll(".mk.sg")) pasang(e); };
   const mulai = () => { cari(D.body); new MutationObserver(ms => { for (const x of ms) x.addedNodes.forEach(cari); }).observe(D.body, {childList: true, subtree: true}); };
@@ -173,7 +186,7 @@ if (D) {
     if (l && !kurang() && !l.classList.contains("mk-logo-pop")) { l.classList.add("mk-logo-pop"); setTimeout(() => l.classList.remove("mk-logo-pop"), 650); }
   }, {passive: true});
   D.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("mk")) { const m = daftar.get(e.target); if (m) reaksi(m); } });
-  D.addEventListener("visibilitychange", () => { for (const m of daftar.values()) D.hidden ? (clearTimeout(m.ti), clearTimeout(m.tk)) : (jadwal(m), kedipAcak(m)); kick(); });
+  D.addEventListener("visibilitychange", () => { for (const m of daftar.values()) D.hidden ? (clearTimeout(m.ti), clearTimeout(m.tk), clearTimeout(m.tl)) : (jadwal(m), kedipAcak(m), lirik(m)); kick(); });
 }
 const ALIS_K = "M86 88c5-4 12-5 18-3", ALIS_R = "M136 85c6-2 13-1 18 3", BUSUR = ["M89 113q9-10 18 0", "M133 113q9-10 18 0"];
 const G = "stroke-width=\"4\" stroke-linecap=\"round\" fill=\"none\"";
@@ -237,11 +250,12 @@ const LENGAN = {
       <g class="mk-ucap2"><rect x="186" y="96" width="34" height="22" rx="9" class="sg-gelembung dua"/><path d="M193 105h20" class="sg-hp-teks" stroke-width="2.4" stroke-linecap="round"/></g></g>`,
 };
 LENGAN.laporan = LENGAN.status;
-export function maskot(pose = "sapa", judul = "", aksi = "") {
+export function maskotSvg(pose = "sapa", judul = "", aksi = "") {   // gambar vektor lama; cadangan dan uji rig
   const i = `sg${++n}`, u = x => `url(#${i}${x})`, ao = (x, y, rx, ry, o = .4) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${u("bayang")}" opacity="${o}"/>`;
   const rim = (d, o = .4, w = 2.5) => `<path d="${d}" style="stroke:var(--on-head)" opacity="${o}" stroke-width="${w}" stroke-linecap="round" fill="none"/>`;
   const lengan = LENGAN[aksi]?.(u("kulit")) || "", ik = PAPAN[aksi];
   const st = (o, c) => `<stop offset="${o}" style="stop-color:${c}"/>`;
+  const vol = (b, o = 1) => `${b} fill="${u("vol")}"${o < 1 ? ` opacity="${o}"` : ""} class="mk-vol"/>`;   // bayangan bola: terang kiri atas, gelap kanan bawah (pemilik 26 Nov 2026: "harusnya 3D")
   return `<svg class="mk sg" data-pose="${pose}" data-mimik="${DASAR[pose] || "sapa"}"${ik ? ` data-aksi="${aksi}"` : ""} viewBox="0 0 240 280" ${judul ? `role="img" aria-label="${judul}"` : 'aria-hidden="true"'}>
   <defs>
     <radialGradient id="${i}kulit" cx=".38" cy=".3" r=".8"><stop offset="0" class="sg-g-kulit-a" stop-color="#fde4cf"/><stop offset="1" class="sg-g-kulit-b" stop-color="#f6c79f"/></radialGradient>
@@ -250,6 +264,7 @@ export function maskot(pose = "sapa", judul = "", aksi = "") {
     <radialGradient id="${i}bayang" cx=".5" cy=".5" r=".5"><stop offset="0" class="sg-g-bayang-a" stop-color="#13254a" stop-opacity=".35"/><stop offset="1" class="sg-g-bayang-b" stop-color="#13254a" stop-opacity="0"/></radialGradient>
     <linearGradient id="${i}iris" x1="0" y1="0" x2="0" y2="1">${st(0, "color-mix(in oklab,var(--brand2) 60%,var(--head-bg))")}${st(1, "color-mix(in oklab,var(--brand2) 45%,var(--on-head))")}</linearGradient>
     <linearGradient id="${i}kilap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--on-head);stop-opacity:.75"/><stop offset="1" style="stop-color:var(--on-head);stop-opacity:0"/></linearGradient>
+    <radialGradient id="${i}vol" cx=".34" cy=".26" r=".9"><stop offset="0" style="stop-color:var(--on-head);stop-opacity:.32"/><stop offset=".5" style="stop-color:var(--on-head);stop-opacity:0"/><stop offset="1" style="stop-color:var(--head-bg);stop-opacity:.4"/></radialGradient>
     <clipPath id="${i}cl"><ellipse cx="98" cy="110" rx="10.5" ry="13"/><ellipse cx="142" cy="110" rx="10.5" ry="13"/></clipPath>
   </defs>
   <ellipse cx="120" cy="268" rx="66" ry="8" fill="${u("bayang")}" class="mk-bayang"/>
@@ -265,7 +280,7 @@ export function maskot(pose = "sapa", judul = "", aksi = "") {
     <g class="mk-lk"><path d="M84 172c-10 10-12 26-8 40" class="sg-lengan" stroke-width="18" stroke-linecap="round" fill="none"/></g>
     <g class="mk-nf">
       <path d="M76 186c0-18 18-30 44-30s44 12 44 30v34c0 10-8 16-18 16H94c-10 0-18-6-18-16Z" fill="${u("baju")}"/>
-      <path d="M86 168c8-6 20-10 34-10s26 4 34 10l-3 62H89Z" class="sg-rompi"/>
+      <path d="M86 168c8-6 20-10 34-10s26 4 34 10l-3 62H89Z" class="sg-rompi"/>${vol('<path d="M76 186c0-18 18-30 44-30s44 12 44 30v34c0 10-8 16-18 16H94c-10 0-18-6-18-16Z"')}
       ${ao(150, 200, 16, 34, .35)}${ao(90, 196, 8, 24, .45)}${ao(150, 196, 8, 24, .45)}
       <path d="M120 162v66" class="sg-ritsleting" stroke-width="2.5" stroke-linecap="round"/>
       <path d="M89 196h62M88 216h64" class="sg-reflektor" stroke-width="5"/>
@@ -297,7 +312,7 @@ export function maskot(pose = "sapa", judul = "", aksi = "") {
     <g class="mk-kt"><g class="mk-kp"><g class="mk-kb"><g class="mk-kepala">
       <circle cx="69" cy="106" r="10" fill="${u("kulit")}" class="sg-o"/><circle cx="171" cy="106" r="10" fill="${u("kulit")}" class="sg-o"/>
       <path d="M66 106h5M169 106h5" class="sg-ruas" stroke-width="2" stroke-linecap="round"/>
-      <ellipse cx="120" cy="102" rx="54" ry="55" fill="${u("kulit")}"/>
+      <ellipse cx="120" cy="102" rx="54" ry="55" fill="${u("kulit")}"/>${vol('<ellipse cx="120" cy="102" rx="54" ry="55"', .55)}
       ${ao(158, 112, 15, 40, .3)}${rim("M171 94c2 10 1 22-4 32", .45)}
       <path d="M68 104c3-6 9-9 15-8 2 5 7 7 12 5 4-6 12-8 18-4 4 4 10 5 14 1 6-5 15-4 19 2 5 2 10 1 14-3 6 0 10 3 12 7l-2-14H70Z" class="sg-rambut"/>
       ${ao(120, 98, 48, 7, .5)}
@@ -319,7 +334,7 @@ export function maskot(pose = "sapa", judul = "", aksi = "") {
         ${Object.entries(MULUT).map(([k, v]) => `<g class="mk-mu mk-mu-${k}">${v}</g>`).join("")}
       </g>
       <g class="mk-hm">
-        <path d="M63 86c0-37 25-63 57-63s57 26 57 63Z" fill="${u("helm")}"/>
+        <path d="M63 86c0-37 25-63 57-63s57 26 57 63Z" fill="${u("helm")}"/>${vol('<path d="M63 86c0-37 25-63 57-63s57 26 57 63Z"')}
         ${ao(150, 62, 26, 28, .35)}
         <path d="M111 25c4-2 14-2 18 0l2 60h-22Z" class="sg-helm-gigir"/>
         <circle cx="120" cy="58" r="17" class="sg-lencana"/><image href="/lapor/lambang-bnpb.png" x="105" y="43" width="30" height="30" class="sg-lambang"/>
@@ -332,4 +347,124 @@ export function maskot(pose = "sapa", judul = "", aksi = "") {
     </g>
   </g></g>
 </svg>`;
+}
+
+/* ===== Sigap render 3D (pemilik 26 Nov 2026: "harusnya 3D"; set kedua hari yang sama: "pastikan yang digunakan yang konsisten, dibuat animasinya").
+   22 render dipilih dari 65 kiriman pemilik: hanya yang gayanya sama (mata manik hitam, helm oranye bulat, badan chibi pendek),
+   lalu disamakan skala dan garis kakinya oleh scripts/lapor/sigap.py. Gerak dari URUTAN BINGKAI:
+   - lambai dan lambai2 satu dasar render (beda tangan saja): dipudarkan cepat bergantian jadi tangan melambai;
+   - pindah ke pose lain disamarkan dengan lompatan kecil, gambar ditukar saat badan sedang naik
+     (pemilik: "perpindahan antar animasinya jelek banget"; potong langsung antar render terlihat seperti teleport);
+   - di atasnya napas dan angguk dari CSS.
+   Gerak berhenti sendiri sesudah DUA_PUTARAN (WCAG 2.2.2), hidup lagi saat disentuh atau disorot. Bingkai tetap svg.mk.sg 240x280. */
+const FOTO = "/lapor/sigap/";
+const LAMBAI = [["lambai2", 240], ["lambai", 240], ["lambai2", 240], ["lambai", 1800]];
+// satu urutan = [berkas, lama ms]; bingkai pertama juga yang tampil saat gerak dikurangi atau berhenti
+export const URUT = {
+  sapa: [["lambai", 1400], ...LAMBAI, ["jempol", 3200], ["lambai", 1000], ...LAMBAI],
+  semangat: [["semangat", 2600], ["lambai", 900], ...LAMBAI, ["jempol", 2600]],
+  senang: [["senang", 2600], ["jempol", 2600], ["lambai", 900], ...LAMBAI],
+  sedih: [["sedih", 0]],   // duka: satu wajah prihatin, tanpa lambai, tanpa tawa, tanpa gilir
+  berpikir: [["pikir", 3200], ["ide", 2800]],
+};
+export const AKSI_URUT = {
+  darurat: [["ht", 2600], ["tegas", 2400], ["ht2", 2600]],
+  penting: [["ht3", 2800], ["tunjuk", 2600]],
+  peringatan: [["teropong", 2800], ["stop", 2600]],
+  lapor: [["hp", 2800], ["tablet", 2800]],
+  pasang: [["hp", 2800], ["jempol2", 2400]],
+  laporan: [["tablet", 2800], ["status", 2800]],
+  status: [["status", 2800], ["jempol2", 2400]],
+  edukasi: [["ide", 2800], ["pikir", 2800]],
+  hilang: [["cari", 2800], ["teropong", 2800]],
+  info: [["tunjuk", 2800], ["ide", 2600]],
+  bahasa: [["sapa", 2600], ["tunjukkiri", 2600]],
+};
+export const TEGANG = ["ht", "ht2", "tegas", "stop"];   // wajah serius: hanya untuk aksi darurat, penting, peringatan
+const KETUK = [["semangat", 1400], ["lambai", 500], ...LAMBAI];   // diketuk: angkat tangan lalu melambai
+const SEDASAR = new Set(["lambai", "lambai2"]);
+const LONCAT = [{transform: "none"}, {transform: "translateY(2px) scale(1.05,.93)", offset: .16}, {transform: "translateY(-12px) scale(.97,1.04)", offset: .4},
+  {transform: "translateY(0) scale(1.03,.96)", offset: .7}, {transform: "none"}];
+const DUA_PUTARAN = 2;
+export function urutUntuk(pose = "sapa", aksi = "") { return AKSI_URUT[aksi] || URUT[pose] || URUT.sapa; }
+export function fotoUntuk(pose = "sapa", aksi = "") { return urutUntuk(pose, aksi)[0][0]; }
+export function maskot(pose = "sapa", judul = "", aksi = "") {
+  const f = fotoUntuk(pose, aksi), a = AKSI_URUT[aksi] ? aksi : "";
+  const img = k => `<image href="${FOTO}${k}.webp" x="-22" y="-6" width="284" height="284" class="mk-ft" preserveAspectRatio="xMidYMax meet"/>`;
+  return `<svg class="mk sg mk-foto" data-pose="${pose}"${a ? ` data-aksi="${a}"` : ""} data-foto="${f}" viewBox="0 0 240 280" ${judul ? `role="img" aria-label="${judul}"` : 'aria-hidden="true"'}>
+  <ellipse cx="120" cy="272" rx="62" ry="7" class="mk-bayang mk-ft-bayang"/>
+  <g class="mk-tubuh"><g class="mk-gb"><g class="mk-ftn">${img(f)}${img(f).replace('class="mk-ft"', 'class="mk-ft" opacity="0"')}</g></g></g></svg>`;
+}
+export function gayaFoto() {
+  return `.mk-foto .mk-ft-bayang{fill:var(--head-bg);opacity:.28}
+.mk-foto .mk-ftn,.mk-foto .mk-gb{transform-box:view-box;transform-origin:120px 272px}
+@media (prefers-reduced-motion:no-preference){
+.mk-foto .mk-ft.mk-pudar{transition:opacity .22s linear}
+.mk-foto .mk-ftn{animation:mk-ft-napas 3.2s ease-in-out infinite}
+.mk-foto.mk-a-angguk .mk-gb{animation:mk-ft-angguk .7s ease-in-out}}
+@keyframes mk-ft-napas{50%{transform:scale(1.012,.988)}}
+@keyframes mk-ft-angguk{30%{transform:translateY(4px) scale(1.03,.97)}60%{transform:translateY(-3px)}}`;
+}
+const muat = new Map();   // berkas -> Image yang sudah di-decode; dipegang supaya tukar bingkai tidak berkedip kosong
+function siapkan(daftar) {
+  return Promise.all(daftar.map(([k]) => {
+    if (!muat.has(k)) { const i = new Image(); i.src = FOTO + k + ".webp"; muat.set(k, i.decode().then(() => i, () => i)); }
+    return muat.get(k);
+  }));
+}
+/* tukar bingkai: dua <image> bertumpuk. Sedasar: yang baru naik ke atas dan dipudarkan masuk (tangan tampak bergerak), yang lama disembunyikan sesudahnya,
+   jadi tidak pernah dua-duanya setengah tembus. Beda render: badan melompat kecil, gambar ditukar langsung di fase naik saat mata tidak bisa membandingkan. */
+function tukar(svg, k, pudar) {
+  const [a, b] = svg.querySelectorAll(".mk-ft"); if (!b) return;
+  const kini = a.getAttribute("opacity") === "0" ? b : a, baru = kini === a ? b : a;
+  baru.setAttribute("href", FOTO + k + ".webp"); baru.classList.toggle("mk-pudar", pudar); kini.after(baru);
+  if (!pudar) { baru.setAttribute("opacity", "1"); kini.setAttribute("opacity", "0"); return; }
+  baru.setAttribute("opacity", "0"); baru.getBoundingClientRect(); baru.setAttribute("opacity", "1");
+  setTimeout(() => { if (baru.getAttribute("opacity") === "1") kini.setAttribute("opacity", "0"); }, 240);
+}
+function tampil(svg, k) {
+  const dulu = svg.dataset.foto; if (dulu === k) return;
+  svg.dataset.foto = k;
+  if (SEDASAR.has(k) && SEDASAR.has(dulu)) return tukar(svg, k, true);
+  const gb = svg.querySelector(".mk-gb");
+  if (!gb || !gb.animate) return tukar(svg, k, true);
+  if (svg.matches(".mk-a-lompat,.mk-a-kaget")) return void setTimeout(() => tukar(svg, k, false), 140);   // reaksi ketuk rig sudah melompatkan badan: jangan memantul dua kali
+  gb.animate(LONCAT, {duration: 520, easing: "ease-out"});
+  setTimeout(() => tukar(svg, k, false), 150);
+}
+/* satu penjadwal untuk semua maskot foto: maju ke bingkai berikutnya saat waktunya tiba, berhenti saat tab tersembunyi,
+   maskot di luar layar (mk-jeda dari IntersectionObserver rig), atau gerak dikurangi */
+let tJalan = 0;
+function jalan() {
+  clearTimeout(tJalan); if (!D || D.hidden || kurang()) return;
+  const t = performance.now(); let s = 500;
+  for (const svg of D.querySelectorAll("svg.mk-foto")) {
+    let g = svg._g;
+    if (!g) { const u = urutUntuk(svg.dataset.pose, svg.dataset.aksi); g = svg._g = {u, i: 0, t: t + u[0][1], n: 0, siap: false}; siapkan(u).then(() => { g.siap = true; g.t = performance.now() + u[0][1]; jalan(); }); }
+    const u = g.sela || g.u;
+    if (!g.siap || u.length < 2 || svg.classList.contains("mk-jeda") || g.n >= DUA_PUTARAN) continue;
+    if (t >= g.t) {
+      g.i++;
+      if (g.i >= u.length) { g.i = 0; if (g.sela) g.sela = null; else g.n++; }
+      const v = g.sela || g.u;
+      if (g.n >= DUA_PUTARAN) { tampil(svg, v[0][0]); continue; }
+      tampil(svg, v[g.i][0]); g.t = t + v[g.i][1];
+    }
+    s = Math.min(s, g.t - t);
+  }
+  tJalan = setTimeout(jalan, Math.max(30, s));
+}
+function bangunkan(svg, ketuk) {
+  const g = svg._g; if (!g) return jalan();
+  g.n = 0;
+  if (ketuk && svg.dataset.pose !== "sedih") { g.sela = KETUK; g.i = -1; g.t = 0; siapkan(KETUK); }
+  jalan();
+}
+if (D) {
+  if (!D.getElementById("mk-gaya-foto")) { const s = D.createElement("style"); s.id = "mk-gaya-foto"; s.textContent = gayaFoto(); D.head.appendChild(s); }
+  const dariFoto = e => e.target.closest && e.target.closest("svg.mk-foto");
+  D.addEventListener("click", e => { const s = dariFoto(e); if (s) bangunkan(s, true); }, {passive: true});
+  D.addEventListener("pointerover", e => { const s = dariFoto(e); if (s && s._g && s._g.n >= DUA_PUTARAN) bangunkan(s); }, {passive: true});
+  D.addEventListener("visibilitychange", jalan);
+  jalan();
 }

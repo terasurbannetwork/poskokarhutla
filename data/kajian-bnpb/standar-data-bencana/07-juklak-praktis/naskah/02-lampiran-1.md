@@ -2,7 +2,7 @@
 
 # FORMAT DATA KEJADIAN DAN DAMPAK BENCANA
 
-Lampiran ini memuat isian data umum yang berlaku untuk semua jenis bencana, petunjuk pengisian angka, dan uraian tingkat kerusakan. Kolom "Lapis" menunjukkan kepentingan isian: inti wajib pada laporan awal dan dapat disampaikan melalui saluran luring, penting wajib pada hasil awal *rapid assessment*, pelengkap dilengkapi pada pemutakhiran atau penutupan, dan otomatis diisi oleh sistem. Setiap isian angka memiliki salah satu dari tiga keadaan, yaitu ada nilai, nihil, atau belum didata. Angka dampak yang sudah diketahui sebelum lapisnya wajib diisi sejak laporan awal sebagai angka sementara.
+Lampiran ini memuat isian data umum yang berlaku untuk semua jenis bencana, petunjuk pengisian angka, dan uraian tingkat kerusakan. Kolom "Lapis" menunjukkan kepentingan isian: inti wajib pada laporan awal dan dapat disampaikan melalui saluran luring, penting wajib pada hasil awal *rapid assessment*, pelengkap dilengkapi pada pemutakhiran atau penutupan, dan otomatis diisi oleh sistem. Selama kejadian berlangsung, setiap isian angka memiliki salah satu dari tiga keadaan, yaitu ada nilai, nihil, atau belum didata; pada penutupan, isian yang tetap belum didata berubah menjadi tidak tersedia. Angka dampak yang sudah diketahui sebelum lapisnya wajib diisi sejak laporan awal sebagai angka sementara.
 
 ## A. ISIAN DATA UMUM
 
@@ -25,6 +25,7 @@ Tabel I.1. Isian kelompok identitas, waktu, dan lokasi
 | 3.2 | Koordinat | Lintang dan bujur desimal dengan sistem koordinat World Geodetic System 1984 (WGS 84), dengan jumlah angka di belakang koma sesuai ketelitian lokasi pada isian 3.3, yaitu enam angka untuk titik yang diukur dengan GPS dan tiga angka untuk perkiraan pusat desa | Penting |
 | 3.3 | Ketelitian lokasi | Pilihan: titik yang diukur dengan GPS, perkiraan tingkat desa, atau perkiraan tingkat kecamatan | Penting |
 | 3.4 | Kronologi singkat | Uraian paling banyak 500 karakter | Inti |
+
 Tabel I.2. Isian kelompok korban dan pengungsian
 
 | No | Isian | Isi dan format | Lapis |
@@ -41,11 +42,12 @@ Tabel I.2. Isian kelompok korban dan pengungsian
 | 5.2 | Evakuasi pencegahan | Jumlah orang yang dievakuasi karena peringatan dini atau perintah evakuasi sebelum dampak terjadi; dicatat terpisah dan tidak dihitung dalam kriteria maupun kelas, kecuali evakuasi dari radius bahaya gunung api yang dicatat pada isian 5.1 | Penting |
 | 5.3 | Titik pengungsian | Nama, koordinat, jenis tempat (tenda, gedung publik, rumah kerabat), jumlah jiwa | Penting |
 | 5.4 | Kelompok rentan di pengungsian | Bayi dan balita, ibu hamil dan menyusui, lansia, penyandang disabilitas | Pelengkap |
+
 Tabel I.3. Isian kelompok kerusakan, layanan vital, dan ekonomi
 
 | No | Isian | Isi dan format | Lapis |
 | ---: | --- | --- | --- |
-| 6.1 | Rumah | Unit rusak berat, rusak sedang, tidak dapat dihuni sementara, rusak ringan, dan terendam; satu rumah hanya masuk satu tingkat, diperiksa berurutan dari rusak berat. Tingkat kerusakan fisik: rusak berat lebih dari 70 persen, rusak sedang 30 sampai 70 persen, rusak ringan kurang dari 30 persen. Pada laporan awal boleh berupa jumlah rumah rusak yang belum dipilah tingkatnya atau penilaian visual menurut huruf E angka 1 sampai angka 5, dengan metode taksiran; perhitungan bobot komponen dipakai pada pendataan per rumah sebelum penutupan untuk kejadian bencana intensif, kejadian yang rumah rusak berat terbobotnya selisih tidak lebih dari 10 persen dengan batas kelas, dan rumah yang diusulkan menerima bantuan | Inti |
+| 6.1 | Rumah | Unit rusak berat, rusak sedang, tidak dapat dihuni sementara, rusak ringan, dan terendam; satu rumah hanya masuk satu tingkat, diperiksa berurutan dari rusak berat. Tingkat kerusakan fisik: rusak berat lebih dari 70 persen, rusak sedang 30 sampai 70 persen, rusak ringan kurang dari 30 persen. Pada laporan awal boleh berupa jumlah rumah rusak yang belum dipilah tingkatnya atau penilaian visual menurut huruf E angka 1 sampai angka 5, dengan metode perkiraan; perhitungan bobot komponen dipakai pada pendataan per rumah sebelum penutupan untuk kejadian bencana intensif, kejadian yang rumah rusak berat terbobotnya selisih tidak lebih dari 10 persen dengan batas kelas, dan rumah yang diusulkan menerima bantuan | Inti |
 | 6.2 | Satuan pendidikan | Unit per tingkat kerusakan; fasilitas publik | Penting |
 | 6.3 | Fasilitas pelayanan kesehatan | Unit per tingkat kerusakan; masih berfungsi atau tidak; fasilitas publik | Penting |
 | 6.4 | Rumah ibadat, kantor pemerintah, dan pasar | Unit per jenis dan per tingkat kerusakan; fasilitas publik | Penting |
@@ -59,11 +61,12 @@ Tabel I.3. Isian kelompok kerusakan, layanan vital, dan ekonomi
 | 7.5 | Transportasi | Pelabuhan, bandar udara, terminal, atau stasiun: tutup, terbatas, normal; lama gangguan (hari) | Penting |
 | 7.6 | Rumah sakit rujukan | Pilihan: tidak berfungsi, sebagian, normal; lama gangguan (hari) | Penting |
 | 8.1 | Sawah | Hektare terendam atau terdampak, hektare puso | Penting |
-| 8.2 | Kebun, hutan, tambak, kolam | Hektare terdampak; untuk kebun juga hektare puso | Penting |
+| 8.2 | Kebun, hutan, tambak, kolam | Hektare terdampak; untuk kebun juga hektare terendam dan hektare puso; untuk tambak dan kolam hektare rusak | Penting |
 | 8.3 | Ternak | Ekor mati per jenis | Penting |
 | 8.4 | Usaha | Kios, pabrik, kantor swasta, dan usaha kecil: unit rusak atau terganggu; tidak dihitung dalam kriteria | Pelengkap |
 | 8.5 | Nilai kerusakan dan nilai kerugian | Juta rupiah, dua angka terpisah, yaitu kerusakan aset dan kerugian ekonomi, dengan tahun harga | Pelengkap |
 | 8.6 | Luas terbakar | Hektare, khusus karhutla, dengan sumbernya menurut Tabel I.7; rincian per tutupan lahan pada lembar data khusus | Penting |
+
 Tabel I.4. Isian kelompok kebutuhan, penanganan, dan mutu data
 
 | No | Isian | Isi dan format | Lapis |
@@ -77,11 +80,12 @@ Tabel I.4. Isian kelompok kebutuhan, penanganan, dan mutu data
 | 10.1 | Sumber data | Pilihan: pendataan lapangan, laporan perangkat daerah, laporan masyarakat, pemberitaan, atau sistem pemantauan | Inti |
 | 10.2 | Pelapor | Jabatan dan instansi | Inti |
 | 10.3 | Status konfirmasi | Pilihan: belum dikonfirmasi, dikonfirmasi BPBD kabupaten/kota, atau terverifikasi walidata bencana; melekat pada laporan | Otomatis |
-| 10.4 | Status dampak | Diisi secara otomatis: ada dampak apabila paling sedikit satu isian 4.1 sampai 4.5, 5.1, 6.1 sampai 6.6, 8.1 sampai 8.3, atau 8.6 bernilai lebih dari nol, atau isian 7.1 sampai 7.6 berstatus selain normal (orang terancam, evakuasi pencegahan, kematian tidak langsung, irigasi, usaha, dan nilai rupiah tidak dihitung); menunggu data apabila belum ada isian yang lebih dari nol, tetapi masih ada isian yang belum didata; tanpa dampak apabila semua isian nihil | Otomatis |
+| 10.4 | Status dampak | Diisi secara otomatis: ada dampak apabila paling sedikit satu isian 4.1 sampai 4.5, 5.1, atau 6.1 bernilai lebih dari nol; isian 6.2 sampai 6.6 menunjukkan fasilitas publik, jalan, atau jembatan yang rusak, tidak hanya terendam; isian 8.1 menunjukkan sawah terendam atau puso; isian 8.2 menunjukkan kebun terendam atau puso atau tambak rusak; isian 8.3 atau 8.6 bernilai lebih dari nol; atau isian 7.1 sampai 7.6 berstatus selain normal. Hutan dan kolam pada isian 8.2, orang terancam, evakuasi pencegahan, kematian tidak langsung, irigasi, usaha, dan nilai rupiah tidak menentukan dampak; menunggu data apabila belum ada isian yang lebih dari nol, tetapi masih ada isian yang belum didata; tanpa dampak apabila semua isian nihil | Otomatis |
 | 10.5 | Kriteria kejadian bencana yang terpenuhi | Huruf a sampai d diisi otomatis dari angka dampak, termasuk luas puso (8.1 dan 8.2) dan luas terbakar (8.6) beserta tanda sumbernya; huruf e dan f diisi dari surat yang tercatat pada isian 9.3 dan 9.2; untuk bencana nonalam dan sosial juga dari isian 9.6 | Otomatis |
 | 10.6 | Kelas dan indikator penentu | Diisi secara otomatis: intensif atau ekstensif beserta indikator penentunya dan tanda sementara apabila indikator penentunya berupa angka perkiraan, dihitung dari korban meninggal dan hilang, rumah rusak berat terbobot, dan isian khusus longsor, kekeringan, dan karhutla | Otomatis |
 | 10.7 | Dokumentasi | Foto yang memuat koordinat dan waktu pengambilan | Penting |
 | 10.8 | Tanda mutu | Diisi otomatis: metode setiap angka (perkiraan, terhitung, atau terukur) dan tanda beda sumber, kemungkinan tumpang tindih, penyebab belum dipilah, perkiraan pada kriteria atau kelas, ditutup walidata, dan belum diperiksa | Otomatis |
+
 ## B. PETUNJUK PENGISIAN ANGKA
 
 Aturan dalam Tabel I.5 berlaku sama untuk data dinamis dan data statis.
@@ -146,7 +150,7 @@ Tabel I.8. Urutan isian laporan awal melalui saluran luring
 | 7 | Rumah rusak | Sekitar 12 rumah rusak, tingkat belum dipilah |
 | 8 | Sumber dan pelapor | Kepala desa, melalui telepon; jabatan pelapor |
 
-Pengentri mencatat waktu laporan dibuat di lapangan, memberi KIB, dan memberi tanda metode perkiraan pada angka yang berupa taksiran.
+Laporan diterima dan dientri oleh Pusat Pengendalian Operasi BPBD kabupaten/kota, yang memberi KIB. Apabila Pusat Pengendalian Operasi BPBD kabupaten/kota tidak dapat dihubungi, laporan dientri oleh Pusat Pengendalian Operasi BPBD provinsi atau Pusat Pengendalian Operasi BNPB atas nama kabupaten/kota tersebut, dan KIB diberikan oleh pengentri. Pengentri mencatat waktu laporan dibuat di lapangan dan memberi tanda metode perkiraan pada angka yang berupa taksiran.
 
 ## E. TINGKAT KERUSAKAN DAN KEADAAN TERENDAM BANGUNAN
 

@@ -12,6 +12,8 @@ export const KEPALA_BNPB = "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si
 export const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
 export const MAKS_TEMUAN = {temuan_ringkas: 4, temuan_bab7: 8};   // F-4, ALGORITMA 9 (Q18)
+/* LB-08 foto per laporan (PRD tabel empat periode): harian tidak ada, mingguan 4, tahunan 12; bulanan "per bab" tanpa angka, 24 = angka rancangan agent. Dipakai Worker dan layar. */
+export const MAKS_FOTO = {harian: 0, mingguan: 4, bulanan: 24, tahunan: 12};
 
 const ada = v => typeof v === "number" && Number.isFinite(v);
 
@@ -51,7 +53,7 @@ export function kelengkapan(angkaBerkas, isian = {}, periode = angkaBerkas?.peri
   if (a.sumber?.dibi?.status !== "ok") kurang.push("Sumber DIBI belum lengkap");
   if (!isi(s.pembuka)) kurang.push("Ringkasan Eksekutif: kalimat pembuka");
   if (periode !== "harian" && !isi(s.temuan_ringkas)) kurang.push("Ringkasan Eksekutif: temuan utama");
-  for (const [k, nama, n] of BAB) {
+  for (const [k, nama, n] of periode === "harian" ? [["bab1", "Laporan harian", BAB[0][2]]] : BAB) {   // harian: satu kotak action plan (PRD 2)
     if (!(a[k] || k === "bab1") || !(n(a) > 0)) continue;
     const ap = s.action?.[k] || {};
     if (!isi(ap.sudah) && !isi(ap.sedang) && !isi(ap.akan)) kurang.push(nama + ": action plan");

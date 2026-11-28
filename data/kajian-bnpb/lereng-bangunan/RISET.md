@@ -74,3 +74,9 @@ Dibaca dari halaman atau berkas sumber, bukan dari ingatan. Yang tidak bisa dibu
 **(e) Datum vertikal.** DEMNAS: EGM2008 (halaman produk BIG). GLO-30: EGM2008, EPSG:3855, satuan meter (halaman Copernicus di atas). Keduanya sama datum; metadata berkas tetap dicek di LT-04.
 
 Sisa **[periksa]**: jendela 3x3 Horn sebagai praktik umum (bagian 3), SK Mentan 837/1980, status Keppres 32/1990, lisensi DEMNAS, ESA User License.
+
+## 8. Hasil LT-03: batas desa dan grid pembanding (dijalankan 24 Nov 2026, `python3 scripts/longsor/lereng_bangunan.py batas`)
+
+- Asal `public/geo/desa/<kab>.json` (menjawab Q6): dibangun `scripts/scrape/desa_cari.py` dari `cahyadsn/wilayah_boundaries` (MIT), kode Kepmendagri 300.2.2-2430/2025; batas disederhanakan, bukan SK batas desa; properti hanya `kd`, nama desa ada di `public/data/desa_cari.json`. Bukan batas BIG. Lisensi data turunan batas: MIT untuk berkas; hak atas batas administrasi sumbernya **[tidak terverifikasi]**.
+- Bandung Raya: 611 desa (Bandung 280, Bandung Barat 165, Kota Bandung 151, Kota Cimahi 15). Semua desa jatuh (titik pusat dalam poligon) ke satu kecamatan BIG modul longsor; 0 desa tanpa kecamatan, 0 kecamatan BIG tanpa desa. Jumlah kecamatan BIG (31, 16, 30, 3) sama dengan jumlah `kd[:8]` Kemendagri tiap kab. Tally per kecamatan: `data/raw/lereng/batas.json` (gitignored, dihasilkan ulang murah).
+- Grid Open Buildings (`data/terkunci/bangunan/kec.json`): hanya provinsi 13, 33, 63. Jawa Barat (32) tidak ada, jadi kelengkapan Overture Bandung Raya berkelas "tidak diketahui" (ALGORITMA 8) sampai grid 32 dibuat. Usulan ke `mekanik-mesin` dan `pipa-umum` (di luar wilayah longsor): `bangunan.yml` sudah punya kelompok `jawa-barat` (prov 31,32,36); jalankan kelompok itu secara manual dan commit `kec.json` baru, tanpa mengubah modul ini.

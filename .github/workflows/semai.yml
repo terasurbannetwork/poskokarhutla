@@ -72,6 +72,9 @@ jobs:
       # semai banjir (semai-banjir SB-05): putaran dan folder keluar yang sama; gagal tidak menjatuhkan semai karhutla
       - name: Semai banjir
         continue-on-error: true
+        env:
+          SEMAI_TOKEN: ${{ secrets.SEMAI_TOKEN }}   # SB-34: baca posko OMC (base zona provinsi ber-OMC); kosong = bandara terdekat
+          SEMAI_URL: https://centurisk97.id
         run: |
           S=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           rm -f data/raw/semai/keluar/semai_banjir.json
