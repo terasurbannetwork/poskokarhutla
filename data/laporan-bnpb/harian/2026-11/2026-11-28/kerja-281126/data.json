@@ -1,0 +1,192 @@
+{
+ "hari": "2026-11-28",
+ "cutoff": "07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Kota Subulussalam",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 2666.0,
+    "mengungsi": 18.0,
+    "rumah_dampak": 2010.0
+   },
+   "teks": {
+    "dampak": "2.666 KK / 11.035 jiwa",
+    "status_darurat": "Tanggap Darurat Kab. TMT 20/11/2026 s.d 03/12/2026",
+    "kondisi": "Masih terdapat genangan air dengan tinggi muka air (TMA) berkisar 10–40 cm.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-19",
+   "dampak_pil": "2.666 KK"
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Gayo Lues",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 8.0,
+    "rumah": 8.0
+   },
+   "teks": {
+    "dampak": "8 KK terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Air sudah surut",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-27",
+   "dampak_pil": "8 KK"
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Singkil",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 3585.0,
+    "rumah_dampak": 3585.0
+   },
+   "teks": {
+    "dampak": "± 3.585 KK / 14.004 jiwa terdampak (masih dalam pendataan)",
+    "status_darurat": "Siaga Darurat Prov. TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Ada wilayah yang belum surut dengan TMA sekitar ± 15-50 cm, masih dalam penanganan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-14"
+  },
+  {
+   "jenis": "longsor",
+   "prov": "32",
+   "lokasi": "Cianjur",
+   "status": "belum",
+   "baru": false,
+   "label": "Tanah Longsor",
+   "angka": {
+    "kk": 398.0
+   },
+   "teks": {
+    "dampak": "± 398 KK / 1.091 jiwa terisolir (dalam pendataan), 2 KK terancam",
+    "status_darurat": "Siaga Darurat Prov. TMT 01/11/2026 s.d 30/04/2027",
+    "kondisi": "hujan masih berlangsung dan akses menuju lokasi belum dapat dilalui kendaraan R4",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-26"
+  },
+  {
+   "jenis": "banjir",
+   "prov": "32",
+   "lokasi": "Bandung",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 5940.0,
+    "rumah": 3.0
+   },
+   "teks": {
+    "dampak": "± 5.940 KK terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 01/11/2026 s.d 30/04/2027",
+    "kondisi": "Banjir berangsur surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-26"
+  },
+  {
+   "jenis": "longsor",
+   "prov": "32",
+   "lokasi": "Garut",
+   "status": "belum",
+   "baru": true,
+   "label": "Tanah Longsor",
+   "angka": {
+    "hilang": 1.0
+   },
+   "teks": {
+    "dampak": "1 jiwa hilang",
+    "status_darurat": "Siaga Darurat Prov. TMT 01/11/2026 s.d 30/04/2027",
+    "kondisi": "Masih dilakukan pencarian korban",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-27",
+   "dampak_pil": "1 hilang"
+  },
+  {
+   "jenis": "banjir",
+   "prov": "33",
+   "lokasi": "Cilacap",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {},
+   "teks": {
+    "dampak": "3 unit ruko terdampak (pendataan); Akses Jalan Provinsi (Cilacap - Jeruklegi) terdampak; Lahan pertanian / saluran irigasi terdampak (pendataan)",
+    "status_darurat": "-",
+    "kondisi": "Dalam penanganan BPBD dan unsur terkait lainnya",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-27"
+  },
+  {
+   "jenis": "banjir",
+   "prov": "35",
+   "lokasi": "Nganjuk",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 12.0,
+    "rumah_dampak": 12.0
+   },
+   "teks": {
+    "dampak": "±12 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Air telah surut",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-27"
+  },
+  {
+   "jenis": "banjir",
+   "prov": "65",
+   "lokasi": "Nunukan",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {},
+   "teks": {
+    "dampak": "Masih dalam pendataan",
+    "status_darurat": "-",
+    "kondisi": "air sudah surut dan tim gabungan melanjutkan pembersihan sisa endapan lumpu",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-27"
+  }
+ ],
+ "prioritas_baru": []
+}
