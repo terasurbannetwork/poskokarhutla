@@ -3,9 +3,13 @@
 // Daratan provinsi abu, batas kab/kota semua provinsi yang masuk bingkai, kab/kota berkejadian diwarnai warna jenis.
 // Keluaran <ke>/<nama>.png + <nama>.json (titik label nomor px, didorong supaya tidak bertumpuk; asal = pusat kab/kota).
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { luncur } from '../../../generator/pw.mjs';
 const SP = JSON.parse(fs.readFileSync(process.argv[2]));
-const { ke: KE, nama: NAMA, pw: PW, ph: PH, bbox: b, R, lok: L } = SP;
+const AKAR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../..');
+const { nama: NAMA, pw: PW, ph: PH, bbox: b, R, lok: L } = SP;
+const KE = path.resolve(AKAR, SP.ke);
 const GEO = new URL('../../../../../public/geo/', import.meta.url);
 // warna sama dengan JENIS_LAIN yang ditimpa jalan.py 20 Nov (pemilik: banjir, cuaca, gempa "mirip2"); palet tema BNPB
 const WARNA = {banjir: ['#2F86D1', '#B9D6F0'], cuaca: ['#3D6B5A', '#BCD5C9'], angin: ['#3D6B5A', '#BCD5C9'], longsor: ['#A07A32', '#E3D3B0'], gempabumi: ['#4B4F58', '#C8CBD1']};

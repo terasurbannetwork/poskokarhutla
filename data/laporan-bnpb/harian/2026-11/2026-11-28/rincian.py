@@ -123,7 +123,9 @@ def peta(isi_p, ke, nama, bbox, pw, ph, R_px):
     """Render satu panel (peta_kab.mjs); kembalikan isi <nama>.json (titik label px)."""
     import json, os, subprocess
     di = os.path.dirname(os.path.abspath(__file__)); sp = os.path.join(ke, f'{nama}_spek.json')
-    json.dump({'ke': ke, 'nama': nama, 'pw': pw, 'ph': ph, 'bbox': bbox, 'R': R_px,
+    akar = os.path.normpath(os.path.join(di, '..', '..', '..', '..', '..'))
+    ke_rel = os.path.relpath(ke, akar).replace(os.sep, '/')
+    json.dump({'ke': ke_rel, 'nama': nama, 'pw': pw, 'ph': ph, 'bbox': bbox, 'R': R_px,
                'lok': [{'no': n, 'prov': x['prov'], 'lokasi': x.get('lokasi_asli', x['lokasi']), 'jenis': x['jenis']} for n, x in isi_p]},
               open(sp, 'w', encoding='utf-8'), ensure_ascii=False)
     subprocess.run(['node', os.path.join(di, 'peta_kab.mjs'), sp], check=True)
